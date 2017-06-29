@@ -31,6 +31,8 @@ resource "datadog_downtime" "foo" {
 The following arguments are supported:
 
 * `scope` - (Required) A list of items to apply the downtime to, e.g. host:X
+* `active` - (Optional) A flag indicating if the downtime is active now.
+* `disabled` - (Optional) A flag indicating if the downtime was disabled.
 * `start` - (Optional) POSIX timestamp to start the downtime.
 * `end` - (Optional) POSIX timestamp to end the downtime.
 * `recurrence` - (Optional) A dictionary to configure the downtime to be recurring.
