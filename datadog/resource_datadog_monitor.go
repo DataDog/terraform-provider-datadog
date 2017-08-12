@@ -273,12 +273,18 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	for _, s := range m.Tags {
 		tags = append(tags, s)
 	}
+	// Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
+	apiReadType := m.GetType()
+	if apiReadType == "query alert" && d.Get("type") == "metric alert" {
+		log.Printf("[DEBUG] Monitor '%v' got a 'query alert' response for an expected 'metric alert' type. Overwriting type to suppress unnecessary change.", m.Id)
+		apiReadType = "metric alert"
+	}
 
 	log.Printf("[DEBUG] monitor: %v", m)
 	d.Set("name", m.GetName())
 	d.Set("message", m.GetMessage())
 	d.Set("query", m.GetQuery())
-	d.Set("type", m.GetType())
+	d.Set("type", apiReadType)
 	d.Set("thresholds", thresholds)
 
 	d.Set("new_host_delay", m.Options.GetNewHostDelay())

@@ -187,6 +187,22 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "tags.1", "quux"),
 				),
 			},
+			{
+				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.complex_metric_alert_example_monitor"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.complex_metric_alert_example_monitor", "type", "metric alert"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorConfigQueryAlertNotUpdated,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.complex_query_alert_example_monitor"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.complex_query_alert_example_monitor", "type", "query alert"),
+				),
+			},
 		},
 	})
 }
@@ -406,6 +422,26 @@ resource "datadog_monitor" "foo" {
 	"*" = 0
   }
   tags = ["baz:qux", "quux"]
+}
+`
+
+const testAccCheckDatadogMonitorConfigMetricAlertNotUpdated = `
+resource "datadog_monitor" "complex_metric_alert_example_monitor" {
+  name = "Terraform provider datadog complex metrics example Monitor"
+  type = "metric alert"
+  message = "a message"
+
+  query = "change(min(last_1m),last_5m):sum:org.eclipse.jetty.servlet.ServletContextHandler.5xx_responses{example,framework:chronos} + sum:org.eclipse.jetty.servlet.ServletContextHandler.4xx_responses{example,framework:chronos} + sum:org.eclipse.jetty.servlet.ServletContextHandler.3xx_responses{example,framework:chronos} > 5"
+}
+`
+
+const testAccCheckDatadogMonitorConfigQueryAlertNotUpdated = `
+resource "datadog_monitor" "complex_query_alert_example_monitor" {
+  name = "Terraform provider datadog complex query example Monitor"
+  type = "query alert"
+  message = "a message"
+
+  query = "change(min(last_1m),last_5m):sum:org.eclipse.jetty.servlet.ServletContextHandler.5xx_responses{example,framework:chronos} + sum:org.eclipse.jetty.servlet.ServletContextHandler.4xx_responses{example,framework:chronos} + sum:org.eclipse.jetty.servlet.ServletContextHandler.3xx_responses{example,framework:chronos} > 5"
 }
 `
 
