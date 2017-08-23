@@ -7205,6 +7205,192 @@ func (m *Metric) SetUnit(v string) {
 	m.Unit = &v
 }
 
+// GetDescription returns the Description field if non-nil, zero value otherwise.
+func (m *MetricMetadata) GetDescription() string {
+	if m == nil || m.Description == nil {
+		return ""
+	}
+	return *m.Description
+}
+
+// GetOkDescription returns a tuple with the Description field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (m *MetricMetadata) GetDescriptionOk() (string, bool) {
+	if m == nil || m.Description == nil {
+		return "", false
+	}
+	return *m.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (m *MetricMetadata) HasDescription() bool {
+	if m != nil && m.Description != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetDescription allocates a new m.Description and returns the pointer to it.
+func (m *MetricMetadata) SetDescription(v string) {
+	m.Description = &v
+}
+
+// GetPerUnit returns the PerUnit field if non-nil, zero value otherwise.
+func (m *MetricMetadata) GetPerUnit() string {
+	if m == nil || m.PerUnit == nil {
+		return ""
+	}
+	return *m.PerUnit
+}
+
+// GetOkPerUnit returns a tuple with the PerUnit field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (m *MetricMetadata) GetPerUnitOk() (string, bool) {
+	if m == nil || m.PerUnit == nil {
+		return "", false
+	}
+	return *m.PerUnit, true
+}
+
+// HasPerUnit returns a boolean if a field has been set.
+func (m *MetricMetadata) HasPerUnit() bool {
+	if m != nil && m.PerUnit != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetPerUnit allocates a new m.PerUnit and returns the pointer to it.
+func (m *MetricMetadata) SetPerUnit(v string) {
+	m.PerUnit = &v
+}
+
+// GetShortName returns the ShortName field if non-nil, zero value otherwise.
+func (m *MetricMetadata) GetShortName() string {
+	if m == nil || m.ShortName == nil {
+		return ""
+	}
+	return *m.ShortName
+}
+
+// GetOkShortName returns a tuple with the ShortName field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (m *MetricMetadata) GetShortNameOk() (string, bool) {
+	if m == nil || m.ShortName == nil {
+		return "", false
+	}
+	return *m.ShortName, true
+}
+
+// HasShortName returns a boolean if a field has been set.
+func (m *MetricMetadata) HasShortName() bool {
+	if m != nil && m.ShortName != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetShortName allocates a new m.ShortName and returns the pointer to it.
+func (m *MetricMetadata) SetShortName(v string) {
+	m.ShortName = &v
+}
+
+// GetStatsdInterval returns the StatsdInterval field if non-nil, zero value otherwise.
+func (m *MetricMetadata) GetStatsdInterval() int {
+	if m == nil || m.StatsdInterval == nil {
+		return 0
+	}
+	return *m.StatsdInterval
+}
+
+// GetOkStatsdInterval returns a tuple with the StatsdInterval field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (m *MetricMetadata) GetStatsdIntervalOk() (int, bool) {
+	if m == nil || m.StatsdInterval == nil {
+		return 0, false
+	}
+	return *m.StatsdInterval, true
+}
+
+// HasStatsdInterval returns a boolean if a field has been set.
+func (m *MetricMetadata) HasStatsdInterval() bool {
+	if m != nil && m.StatsdInterval != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetStatsdInterval allocates a new m.StatsdInterval and returns the pointer to it.
+func (m *MetricMetadata) SetStatsdInterval(v int) {
+	m.StatsdInterval = &v
+}
+
+// GetType returns the Type field if non-nil, zero value otherwise.
+func (m *MetricMetadata) GetType() string {
+	if m == nil || m.Type == nil {
+		return ""
+	}
+	return *m.Type
+}
+
+// GetOkType returns a tuple with the Type field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (m *MetricMetadata) GetTypeOk() (string, bool) {
+	if m == nil || m.Type == nil {
+		return "", false
+	}
+	return *m.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (m *MetricMetadata) HasType() bool {
+	if m != nil && m.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetType allocates a new m.Type and returns the pointer to it.
+func (m *MetricMetadata) SetType(v string) {
+	m.Type = &v
+}
+
+// GetUnit returns the Unit field if non-nil, zero value otherwise.
+func (m *MetricMetadata) GetUnit() string {
+	if m == nil || m.Unit == nil {
+		return ""
+	}
+	return *m.Unit
+}
+
+// GetOkUnit returns a tuple with the Unit field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (m *MetricMetadata) GetUnitOk() (string, bool) {
+	if m == nil || m.Unit == nil {
+		return "", false
+	}
+	return *m.Unit, true
+}
+
+// HasUnit returns a boolean if a field has been set.
+func (m *MetricMetadata) HasUnit() bool {
+	if m != nil && m.Unit != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetUnit allocates a new m.Unit and returns the pointer to it.
+func (m *MetricMetadata) SetUnit(v string) {
+	m.Unit = &v
+}
+
 // GetCreator returns the Creator field if non-nil, zero value otherwise.
 func (m *Monitor) GetCreator() Creator {
 	if m == nil || m.Creator == nil {

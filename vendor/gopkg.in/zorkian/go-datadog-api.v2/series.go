@@ -8,7 +8,10 @@
 
 package datadog
 
-import "strconv"
+import (
+	"net/url"
+	"strconv"
+)
 
 // DataPoint is a tuple of [UNIX timestamp, value]. This has to use floats
 // because the value could be non-integer.
@@ -59,9 +62,14 @@ func (client *Client) PostMetrics(series []Metric) error {
 // QueryMetrics takes as input from, to (seconds from Unix Epoch) and query string and then requests
 // timeseries data for that time peried
 func (client *Client) QueryMetrics(from, to int64, query string) ([]Series, error) {
+	v := url.Values{}
+	v.Add("from", strconv.FormatInt(from, 10))
+	v.Add("to", strconv.FormatInt(to, 10))
+	v.Add("query", query)
+
 	var out reqMetrics
-	if err := client.doJsonRequest("GET", "/v1/query?from="+strconv.FormatInt(from, 10)+"&to="+strconv.FormatInt(to, 10)+"&query="+query,
-		nil, &out); err != nil {
+	err := client.doJsonRequest("GET", "/v1/query?"+v.Encode(), nil, &out)
+	if err != nil {
 		return nil, err
 	}
 	return out.Series, nil
