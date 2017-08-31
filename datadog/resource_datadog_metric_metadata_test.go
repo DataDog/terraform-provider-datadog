@@ -2,7 +2,6 @@ package datadog
 
 import (
 	"fmt"
-	"log"
 	"testing"
 	"time"
 
@@ -17,9 +16,9 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				PreConfig: postEvent,
-				Config:    testAccCheckDatadogMetricMetadataConfig,
+				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
+					checkPostEvent(),
 					checkMetricMetadataExists("datadog_metric_metadata.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
@@ -45,9 +44,9 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				PreConfig: postEvent,
-				Config:    testAccCheckDatadogMetricMetadataConfig,
+				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
+					checkPostEvent(),
 					checkMetricMetadataExists("datadog_metric_metadata.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
@@ -101,14 +100,17 @@ func checkMetricMetadataExists(name string) resource.TestCheckFunc {
 	}
 }
 
-func postEvent() {
-	client := testAccProvider.Meta().(*datadog.Client)
-	metric := datadog.Metric{
-		Metric: datadog.String("foo"),
-		Points: []datadog.DataPoint{{float64(time.Now().Unix()), 1}},
-	}
-	if err := client.PostMetrics([]datadog.Metric{metric}); err != nil {
-		log.Fatalf("Failed to post `foo` metric: %s\n", err.Error())
+func checkPostEvent() resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		client := testAccProvider.Meta().(*datadog.Client)
+		metric := datadog.Metric{
+			Metric: datadog.String("foo"),
+			Points: []datadog.DataPoint{{float64(time.Now().Unix()), 1}},
+		}
+		if err := client.PostMetrics([]datadog.Metric{metric}); err != nil {
+			return err
+		}
+		return nil
 	}
 }
 
