@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
@@ -33,6 +34,27 @@ func TestAccDatadogDowntime_Basic(t *testing.T) {
 						"datadog_downtime.foo", "recurrence.0.period", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogDowntime_BasicWithMonitor(t *testing.T) {
+	start := time.Now().Local().Add(time.Hour * time.Duration(3))
+	end := start.Add(time.Hour * time.Duration(1))
+
+	config := testAccCheckDatadogDowntimeConfigWithMonitor(start.Unix(), end.Unix())
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Steps: []resource.TestStep{
+			resource.TestStep{
+				Config: config,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
 				),
 			},
 		},
@@ -207,6 +229,8 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 						"datadog_downtime.foo", "recurrence.0.period", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "monitor_id", "1234"),
 				),
 			},
 			resource.TestStep{
@@ -225,6 +249,8 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 						"datadog_downtime.foo", "recurrence.0.period", "3"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "monitor_id", "5678"),
 				),
 			},
 		},
@@ -292,6 +318,38 @@ resource "datadog_downtime" "foo" {
   message = "Example Datadog downtime message."
 }
 `
+
+func testAccCheckDatadogDowntimeConfigWithMonitor(start int64, end int64) string {
+	//When scheduling downtime, Datadog switches the silenced property of monitor to the "end" property of downtime.
+	//If that is omitted, the plan doesn't become empty after removing the downtime.
+	return fmt.Sprintf(`
+resource "datadog_monitor" "downtime_monitor" {
+  name = "name for monitor foo"
+  type = "metric alert"
+  message = "some message Notify: @hipchat-channel"
+  escalation_message = "the situation has escalated @pagerduty"
+
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+  thresholds {
+	warning = "1.0"
+	critical = "2.0"
+	}
+	silenced {
+		"*" : %d
+	}
+}
+
+resource "datadog_downtime" "foo" {
+  scope = ["*"]
+  start = %d
+  end   = %d
+
+  message = "Example Datadog downtime message."
+  monitor_id = "${datadog_monitor.downtime_monitor.id}"
+}
+`, end, start, end)
+}
 
 const testAccCheckDatadogDowntimeConfigMultiScope = `
 resource "datadog_downtime" "foo" {
@@ -377,6 +435,7 @@ resource "datadog_downtime" "foo" {
   }
 
   message = "Example Datadog downtime message."
+  monitor_id = 5678
 }
 `
 
@@ -496,7 +555,12 @@ func TestResourceDatadogDowntimeRecurrenceWeekDaysValidation(t *testing.T) {
 }
 
 func datadogDowntimeDestroyHelper(s *terraform.State, client *datadog.Client) error {
-	for _, r := range s.RootModule().Resources {
+	for n, r := range s.RootModule().Resources {
+		fmt.Printf("Resource %s, type = %s\n", n, r.Type)
+		if r.Type != "datadog_downtime" {
+			continue
+		}
+
 		id, _ := strconv.Atoi(r.Primary.ID)
 		dt, err := client.GetDowntime(id)
 
@@ -518,6 +582,10 @@ func datadogDowntimeDestroyHelper(s *terraform.State, client *datadog.Client) er
 
 func datadogDowntimeExistsHelper(s *terraform.State, client *datadog.Client) error {
 	for _, r := range s.RootModule().Resources {
+		if r.Type != "datadog_downtime" {
+			continue
+		}
+
 		id, _ := strconv.Atoi(r.Primary.ID)
 		if _, err := client.GetDowntime(id); err != nil {
 			return fmt.Errorf("Received an error retrieving downtime %s", err)

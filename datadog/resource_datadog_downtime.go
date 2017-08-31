@@ -86,6 +86,10 @@ func resourceDatadogDowntime() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
+			"monitor_id": {
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -104,6 +108,9 @@ func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
 	}
 	if attr, ok := d.GetOk("message"); ok {
 		dt.SetMessage(strings.TrimSpace(attr.(string)))
+	}
+	if attr, ok := d.GetOk("monitor_id"); ok {
+		dt.SetMonitorId(attr.(int))
 	}
 	if _, ok := d.GetOk("recurrence"); ok {
 		var recurrence datadog.Recurrence
@@ -194,6 +201,8 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 	d.Set("disabled", dt.GetDisabled())
 	d.Set("end", dt.GetEnd())
 	d.Set("message", dt.GetMessage())
+	d.Set("monitor_id", dt.GetMonitorId())
+
 	if r, ok := dt.GetRecurrenceOk(); ok {
 		recurrence := make(map[string]interface{})
 		recurrenceList := make([]map[string]interface{}, 0, 1)
@@ -248,6 +257,9 @@ func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) err
 	}
 	if attr, ok := d.GetOk("message"); ok {
 		dt.SetMessage(attr.(string))
+	}
+	if attr, ok := d.GetOk("monitor_id"); ok {
+		dt.SetMonitorId(attr.(int))
 	}
 
 	if _, ok := d.GetOk("recurrence"); ok {
