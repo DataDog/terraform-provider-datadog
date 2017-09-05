@@ -1,4 +1,10 @@
 ## 0.1.1 (Unreleased)
+
+FEATURES: 
+
+* **New Resource:** `datadog_metric_metadata` [GH-17]
+
+
 ## 0.1.0 (June 20, 2017)
 
 NOTES:
