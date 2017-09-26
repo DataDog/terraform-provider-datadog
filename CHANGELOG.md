@@ -1,8 +1,8 @@
-## 0.1.1 (Unreleased)
+## 0.1.1 (September 26, 2017)
 
 FEATURES: 
 
-* **New Resource:** `datadog_metric_metadata` [GH-17]
+* **New Resource:** `datadog_metric_metadata` ([#17](https://github.com/terraform-providers/terraform-provider-datadog/issues/17))
 
 
 ## 0.1.0 (June 20, 2017)
