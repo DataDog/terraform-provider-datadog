@@ -52,6 +52,7 @@ The following arguments are supported:
     * `service check`
     * `event alert`
     * `query alert`
+    * `composite`
 * `name` - (Required) Name of Datadog monitor
 * `query` - (Required) The monitor query to notify on with syntax varying depending on what type of monitor
     you are creating. See [API Reference](http://docs.datadoghq.com/api) for options.
