@@ -452,7 +452,7 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 		}
 
 		if v, ok := t["group"]; ok {
-			for _, g := range v.(*schema.Set).List() {
+			for _, g := range v.([]interface{}) {
 				d.Definition.Groups = append(d.Definition.Groups, g.(string))
 			}
 		}
@@ -462,7 +462,7 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 		}
 
 		if v, ok := t["scope"]; ok {
-			for _, s := range v.(*schema.Set).List() {
+			for _, s := range v.([]interface{}) {
 				d.Definition.Scopes = append(d.Definition.Groups, s.(string))
 			}
 		}
@@ -473,7 +473,7 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 		v := t["marker"].([]interface{})
 		appendMarkers(d, &v)
 
-		v = t["events"].(*schema.Set).List()
+		v = t["events"].([]interface{})
 		appendEvents(d, &v)
 
 		v = t["request"].([]interface{})
