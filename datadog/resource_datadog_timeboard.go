@@ -3,6 +3,7 @@ package datadog
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 
@@ -658,6 +659,7 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 	if err != nil {
 		return err
 	}
+	log.Printf("[DEBUG] timeboard: %v", timeboard)
 	if err = d.Set("title", timeboard.GetTitle()); err != nil {
 		return err
 	}
