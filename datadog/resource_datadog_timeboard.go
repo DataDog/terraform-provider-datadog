@@ -470,14 +470,17 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 		if v, ok := t["include_ungrouped_hosts"]; ok {
 			d.Definition.SetIncludeUngroupedHosts(v.(bool))
 		}
-		v := t["marker"].([]interface{})
-		appendMarkers(d, &v)
+		if v, ok := t["marker"].([]interface{}); ok {
+			appendMarkers(d, &v)
+		}
 
-		v = t["events"].([]interface{})
-		appendEvents(d, &v)
+		if v, ok := t["events"].([]interface{}); ok {
+			appendEvents(d, &v)
+		}
 
-		v = t["request"].([]interface{})
-		appendRequests(d, &v)
+		if v, ok := t["request"].([]interface{}); ok {
+			appendRequests(d, &v)
+		}
 	}
 	return &datadogGraphs
 }
@@ -530,9 +533,15 @@ func resourceDatadogTimeboardUpdate(d *schema.ResourceData, meta interface{}) er
 func appendTerraformGraphRequests(datadogRequests []datadog.GraphDefinitionRequest, requests *[]map[string]interface{}) {
 	for _, datadogRequest := range datadogRequests {
 		request := map[string]interface{}{}
-		request["q"] = datadogRequest.GetQuery()
-		request["stacked"] = datadogRequest.GetStacked()
-		request["type"] = datadogRequest.GetType()
+		if v, ok := datadogRequest.GetQueryOk(); ok {
+			request["q"] = v
+		}
+		if v, ok := datadogRequest.GetStackedOk(); ok {
+			request["stacked"] = v
+		}
+		if v, ok := datadogRequest.GetTypeOk(); ok {
+			request["type"] = v
+		}
 		if v, ok := datadogRequest.GetStyleOk(); ok {
 			style := map[string]string{}
 			if v, ok := v.GetPaletteOk(); ok {
@@ -548,12 +557,21 @@ func appendTerraformGraphRequests(datadogRequests []datadog.GraphDefinitionReque
 		}
 		conditionalFormats := []map[string]interface{}{}
 		for _, cf := range datadogRequest.ConditionalFormats {
-			conditionalFormat := map[string]interface{}{
-				"palette":         cf.Palette,
-				"comparator":      cf.Comparator,
-				"custom_bg_color": cf.CustomBgColor,
-				"value":           cf.Value,
-				"custom_fg_color": cf.CustomFgColor,
+			conditionalFormat := map[string]interface{}{}
+			if v, ok := cf.GetPaletteOk(); ok {
+				conditionalFormat["palette"] = v
+			}
+			if v, ok := cf.GetComparatorOk(); ok {
+				conditionalFormat["comparator"] = v
+			}
+			if v, ok := cf.GetCustomBgColorOk(); ok {
+				conditionalFormat["custom_bg_color"] = v
+			}
+			if v, ok := cf.GetValueOk(); ok {
+				conditionalFormat["value"] = v
+			}
+			if v, ok := cf.GetCustomFgColorOk(); ok {
+				conditionalFormat["custom_fg_color"] = v
 			}
 			conditionalFormats = append(conditionalFormats, conditionalFormat)
 		}
