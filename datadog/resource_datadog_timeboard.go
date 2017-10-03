@@ -549,12 +549,21 @@ func appendTerraformGraphRequests(datadogRequests []datadog.GraphDefinitionReque
 		}
 		conditionalFormats := []map[string]interface{}{}
 		for _, cf := range datadogRequest.ConditionalFormats {
-			conditionalFormat := map[string]interface{}{
-				"palette":         cf.Palette,
-				"comparator":      cf.Comparator,
-				"custom_bg_color": cf.CustomBgColor,
-				"value":           cf.Value,
-				"custom_fg_color": cf.CustomFgColor,
+			conditionalFormat := map[string]interface{}{}
+			if v, ok := cf.GetPaletteOk(); ok {
+				conditionalFormat["palette"] = v
+			}
+			if v, ok := cf.GetComparatorOk(); ok {
+				conditionalFormat["comparator"] = v
+			}
+			if v, ok := cf.GetCustomBgColorOk(); ok {
+				conditionalFormat["custom_bg_color"] = v
+			}
+			if v, ok := cf.GetValueOk(); ok {
+				conditionalFormat["value"] = v
+			}
+			if v, ok := cf.GetCustomFgColorOk(); ok {
+				conditionalFormat["custom_fg_color"] = v
 			}
 			conditionalFormats = append(conditionalFormats, conditionalFormat)
 		}
