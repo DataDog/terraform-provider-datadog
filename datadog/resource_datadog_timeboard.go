@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"gopkg.in/zorkian/go-datadog-api.v2"
 	"github.com/kr/pretty"
+	"gopkg.in/zorkian/go-datadog-api.v2"
 )
 
 func resourceDatadogTimeboard() *schema.Resource {
@@ -594,7 +594,7 @@ func buildTerraformGraph(datadog_graph datadog.Graph) map[string]interface{} {
 		if v, ok := datadog_marker.GetValueOk(); ok {
 			marker["value"] = v
 		}
-		if v , ok := datadog_marker.GetLabelOk(); ok  {
+		if v, ok := datadog_marker.GetLabelOk(); ok {
 			marker["label"] = v
 		}
 		markers = append(markers, marker)
