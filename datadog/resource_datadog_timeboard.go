@@ -142,7 +142,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Description: "The name of the graph.",
 				},
 				"events": &schema.Schema{
-					Type:        schema.TypeSet,
+					Type:        schema.TypeList,
 					Optional:    true,
 					Description: "Filter for events to be overlayed on the graph.",
 					Elem: &schema.Schema{
@@ -184,7 +184,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Optional: true,
 				},
 				"group": &schema.Schema{
-					Type:        schema.TypeSet,
+					Type:        schema.TypeList,
 					Optional:    true,
 					Description: "A list of groupings for hostmap type graphs.",
 					Elem: &schema.Schema{
@@ -197,7 +197,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Description: "Include hosts without metrics in hostmap graphs",
 				},
 				"scope": &schema.Schema{
-					Type:        schema.TypeSet,
+					Type:        schema.TypeList,
 					Optional:    true,
 					Description: "A list of scope filters for hostmap type graphs.",
 					Elem: &schema.Schema{
@@ -454,7 +454,7 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 		}
 
 		if v, ok := t["group"]; ok {
-			for _, g := range v.(*schema.Set).List() {
+			for _, g := range v.([]interface{}) {
 				d.Definition.Groups = append(d.Definition.Groups, g.(string))
 			}
 		}
@@ -464,8 +464,8 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 		}
 
 		if v, ok := t["scope"]; ok {
-			for _, s := range v.(*schema.Set).List() {
-				d.Definition.Scopes = append(d.Definition.Groups, s.(string))
+			for _, s := range v.([]interface{}) {
+				d.Definition.Scopes = append(d.Definition.Scopes, s.(string))
 			}
 		}
 
@@ -475,7 +475,7 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 		v := t["marker"].([]interface{})
 		appendMarkers(d, &v)
 
-		v = t["events"].(*schema.Set).List()
+		v = t["events"].([]interface{})
 		appendEvents(d, &v)
 
 		v = t["request"].([]interface{})
