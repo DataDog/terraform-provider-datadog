@@ -695,12 +695,17 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 		return err
 	}
 
-	templateVariables := []map[string]*string{}
+	templateVariables := []map[string]string{}
 	for _, templateVariable := range timeboard.TemplateVariables {
-		tv := map[string]*string{
-			"name":    templateVariable.Name,
-			"prefix":  templateVariable.Prefix,
-			"default": templateVariable.Default,
+		tv := map[string]string{}
+		if v, ok := templateVariable.GetNameOk(); ok {
+			tv["name"] = v
+		}
+		if v, ok := templateVariable.GetPrefixOk(); ok {
+			tv["prefix"] = v
+		}
+		if v, ok := templateVariable.GetDefaultOk(); ok {
+			tv["default"] = v
 		}
 		templateVariables = append(templateVariables, tv)
 	}
