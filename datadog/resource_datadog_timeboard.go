@@ -9,6 +9,7 @@ import (
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"gopkg.in/zorkian/go-datadog-api.v2"
+	"github.com/kr/pretty"
 )
 
 func resourceDatadogTimeboard() *schema.Resource {
@@ -580,14 +581,21 @@ func buildTerraformGraph(datadog_graph datadog.Graph) map[string]interface{} {
 	for _, datadog_event := range definition.Events {
 		events = append(events, datadog_event.Query)
 	}
-	graph["events"] = events
+	if len(events) > 0 {
+		graph["events"] = events
+	}
 
 	markers := []map[string]interface{}{}
 	for _, datadog_marker := range definition.Markers {
-		marker := map[string]interface{}{
-			"type":  datadog_marker.Type,
-			"value": datadog_marker.Value,
-			"label": datadog_marker.Label,
+		marker := map[string]interface{}{}
+		if v, ok := datadog_marker.GetTypeOk(); ok {
+			marker["type"] = v
+		}
+		if v, ok := datadog_marker.GetValueOk(); ok {
+			marker["value"] = v
+		}
+		if v , ok := datadog_marker.GetLabelOk(); ok  {
+			marker["label"] = v
 		}
 		markers = append(markers, marker)
 	}
@@ -609,10 +617,18 @@ func buildTerraformGraph(datadog_graph datadog.Graph) map[string]interface{} {
 
 	graph["yaxis"] = yaxis
 
-	graph["autoscale"] = definition.Autoscale
-	graph["text_align"] = definition.TextAlign
-	graph["precision"] = definition.Precision
-	graph["custom_unit"] = definition.CustomUnit
+	if v, ok := definition.GetAutoscaleOk(); ok {
+		graph["autoscale"] = v
+	}
+	if v, ok := definition.GetTextAlignOk(); ok {
+		graph["text_align"] = v
+	}
+	if v, ok := definition.GetPrecisionOk(); ok {
+		graph["precision"] = v
+	}
+	if v, ok := definition.GetCustomUnitOk(); ok {
+		graph["custom_unit"] = v
+	}
 
 	if v, ok := definition.GetStyleOk(); ok {
 		style := map[string]string{}
@@ -624,10 +640,18 @@ func buildTerraformGraph(datadog_graph datadog.Graph) map[string]interface{} {
 		}
 		graph["style"] = style
 	}
-	graph["group"] = definition.Groups
-	graph["include_no_metric_hosts"] = definition.IncludeNoMetricHosts
-	graph["scope"] = definition.Scopes
-	graph["include_ungrouped_hosts"] = definition.IncludeUngroupedHosts
+	if definition.Groups != nil {
+		graph["group"] = definition.Groups
+	}
+	if definition.Scopes != nil {
+		graph["scope"] = definition.Scopes
+	}
+	if v, ok := definition.GetIncludeNoMetricHostsOk(); ok {
+		graph["include_no_metric_hosts"] = v
+	}
+	if v, ok := definition.GetIncludeUngroupedHostsOk(); ok {
+		graph["include_ungrouped_hosts"] = v
+	}
 
 	requests := []map[string]interface{}{}
 	appendTerraformGraphRequests(definition.Requests, &requests)
@@ -645,15 +669,22 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 	if err != nil {
 		return err
 	}
-	log.Printf("[DEBUG] timeboard: %v", timeboard)
-	d.Set("title", timeboard.GetTitle())
-	d.Set("description", timeboard.GetDescription())
+	log.Printf("[DataDog] timeboard: %v", pretty.Sprint(timeboard))
+	if err := d.Set("title", timeboard.GetTitle()); err != nil {
+		return err
+	}
+	if err := d.Set("description", timeboard.GetDescription()); err != nil {
+		return err
+	}
 
 	graphs := []map[string]interface{}{}
 	for _, datadog_graph := range timeboard.Graphs {
 		graphs = append(graphs, buildTerraformGraph(datadog_graph))
 	}
-	d.Set("graph", graphs)
+	log.Printf("[DataDog] graphs: %v", pretty.Sprint(graphs))
+	if err := d.Set("graph", graphs); err != nil {
+		return err
+	}
 
 	templateVariables := []map[string]*string{}
 	for _, templateVariable := range timeboard.TemplateVariables {
@@ -664,7 +695,9 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 		}
 		templateVariables = append(templateVariables, tv)
 	}
-	d.Set("template_variable", templateVariables)
+	if err := d.Set("template_variable", templateVariables); err != nil {
+		return err
+	}
 
 	return nil
 }
