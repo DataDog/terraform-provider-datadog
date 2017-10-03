@@ -313,6 +313,7 @@ func buildTemplateVariables(terraformTemplateVariables *[]interface{}) *[]datado
 func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{}) {
 	for _, t_ := range *terraformRequests {
 		t := t_.(map[string]interface{})
+		log.Printf("[DataDog] request: %v", pretty.Sprint(t))
 		d := datadog.GraphDefinitionRequest{
 			Query:      datadog.String(t["q"].(string)),
 			Type:       datadog.String(t["type"].(string)),
@@ -568,12 +569,27 @@ func appendTerraformGraphRequests(datadogRequests []datadog.GraphDefinitionReque
 			conditionalFormats = append(conditionalFormats, conditionalFormat)
 		}
 		request["conditional_format"] = conditionalFormats
-		request["change_type"] = datadogRequest.GetChangeType()
-		request["order_direction"] = datadogRequest.GetOrderDirection()
-		request["compare_to"] = datadogRequest.GetCompareTo()
-		request["increase_good"] = datadogRequest.GetIncreaseGood()
-		request["order_by"] = datadogRequest.GetOrderBy()
-		request["extra_col"] = datadogRequest.GetExtraCol()
+		if v, ok := datadogRequest.GetAggregatorOk(); ok {
+			request["aggregator"] = v
+		}
+		if v, ok := datadogRequest.GetChangeTypeOk(); ok {
+			request["change_type"] = v
+		}
+		if v, ok := datadogRequest.GetOrderDirectionOk(); ok {
+			request["order_direction"] = v
+		}
+		if v, ok := datadogRequest.GetCompareToOk(); ok {
+			request["compare_to"] = v
+		}
+		if v, ok := datadogRequest.GetIncreaseGoodOk(); ok {
+			request["increase_good"] = v
+		}
+		if v, ok := datadogRequest.GetOrderByOk(); ok {
+			request["order_by"] = v
+		}
+		if v, ok := datadogRequest.GetExtraColOk(); ok {
+			request["extra_col"] = v
+		}
 
 		*requests = append(*requests, request)
 	}
