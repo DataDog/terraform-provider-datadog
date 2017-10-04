@@ -602,9 +602,11 @@ func buildTerraformGraph(datadog_graph datadog.Graph) map[string]interface{} {
 	definition := datadog_graph.Definition
 	graph["viz"] = definition.GetViz()
 
-	events := []*string{}
-	for _, datadog_event := range definition.Events {
-		events = append(events, datadog_event.Query)
+	events := []string{}
+	for _, e := range definition.Events {
+		if v, ok := e.GetQueryOk(); ok {
+			events = append(events, v)
+		}
 	}
 	if len(events) > 0 {
 		graph["events"] = events
