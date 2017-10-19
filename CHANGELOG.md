@@ -1,4 +1,10 @@
 ## 0.1.2 (Unreleased)
+
+BUG FIXES:
+
+* Improved detection of "drift" when graphs are reconfigured outside of Terraform. [TF-27]
+* Fixed API response decoding error on graphs. [TF-27]
+
 ## 0.1.1 (September 26, 2017)
 
 FEATURES: 
