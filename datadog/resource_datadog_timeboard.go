@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/kr/pretty"
 	"gopkg.in/zorkian/go-datadog-api.v2"
 )
 
@@ -141,7 +142,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Description: "The name of the graph.",
 				},
 				"events": &schema.Schema{
-					Type:        schema.TypeSet,
+					Type:        schema.TypeList,
 					Optional:    true,
 					Description: "Filter for events to be overlayed on the graph.",
 					Elem: &schema.Schema{
@@ -183,7 +184,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Optional: true,
 				},
 				"group": &schema.Schema{
-					Type:        schema.TypeSet,
+					Type:        schema.TypeList,
 					Optional:    true,
 					Description: "A list of groupings for hostmap type graphs.",
 					Elem: &schema.Schema{
@@ -196,7 +197,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Description: "Include hosts without metrics in hostmap graphs",
 				},
 				"scope": &schema.Schema{
-					Type:        schema.TypeSet,
+					Type:        schema.TypeList,
 					Optional:    true,
 					Description: "A list of scope filters for hostmap type graphs.",
 					Elem: &schema.Schema{
@@ -312,6 +313,7 @@ func buildTemplateVariables(terraformTemplateVariables *[]interface{}) *[]datado
 func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{}) {
 	for _, t_ := range *terraformRequests {
 		t := t_.(map[string]interface{})
+		log.Printf("[DataDog] request: %v", pretty.Sprint(t))
 		d := datadog.GraphDefinitionRequest{
 			Query:      datadog.String(t["q"].(string)),
 			Type:       datadog.String(t["type"].(string)),
@@ -452,7 +454,7 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 		}
 
 		if v, ok := t["group"]; ok {
-			for _, g := range v.(*schema.Set).List() {
+			for _, g := range v.([]interface{}) {
 				d.Definition.Groups = append(d.Definition.Groups, g.(string))
 			}
 		}
@@ -462,8 +464,8 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 		}
 
 		if v, ok := t["scope"]; ok {
-			for _, s := range v.(*schema.Set).List() {
-				d.Definition.Scopes = append(d.Definition.Groups, s.(string))
+			for _, s := range v.([]interface{}) {
+				d.Definition.Scopes = append(d.Definition.Scopes, s.(string))
 			}
 		}
 
@@ -473,7 +475,7 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 		v := t["marker"].([]interface{})
 		appendMarkers(d, &v)
 
-		v = t["events"].(*schema.Set).List()
+		v = t["events"].([]interface{})
 		appendEvents(d, &v)
 
 		v = t["request"].([]interface{})
@@ -548,22 +550,46 @@ func appendTerraformGraphRequests(datadogRequests []datadog.GraphDefinitionReque
 		}
 		conditionalFormats := []map[string]interface{}{}
 		for _, cf := range datadogRequest.ConditionalFormats {
-			conditionalFormat := map[string]interface{}{
-				"palette":         cf.Palette,
-				"comparator":      cf.Comparator,
-				"custom_bg_color": cf.CustomBgColor,
-				"value":           cf.Value,
-				"custom_fg_color": cf.CustomFgColor,
+			conditionalFormat := map[string]interface{}{}
+			if v, ok := cf.GetPaletteOk(); ok {
+				conditionalFormat["palette"] = v
+			}
+			if v, ok := cf.GetComparatorOk(); ok {
+				conditionalFormat["comparator"] = v
+			}
+			if v, ok := cf.GetCustomBgColorOk(); ok {
+				conditionalFormat["custom_bg_color"] = v
+			}
+			if v, ok := cf.GetValueOk(); ok {
+				conditionalFormat["value"] = v
+			}
+			if v, ok := cf.GetCustomFgColorOk(); ok {
+				conditionalFormat["custom_fg_color"] = v
 			}
 			conditionalFormats = append(conditionalFormats, conditionalFormat)
 		}
 		request["conditional_format"] = conditionalFormats
-		request["change_type"] = datadogRequest.GetChangeType()
-		request["order_direction"] = datadogRequest.GetOrderDirection()
-		request["compare_to"] = datadogRequest.GetCompareTo()
-		request["increase_good"] = datadogRequest.GetIncreaseGood()
-		request["order_by"] = datadogRequest.GetOrderBy()
-		request["extra_col"] = datadogRequest.GetExtraCol()
+		if v, ok := datadogRequest.GetAggregatorOk(); ok {
+			request["aggregator"] = v
+		}
+		if v, ok := datadogRequest.GetChangeTypeOk(); ok {
+			request["change_type"] = v
+		}
+		if v, ok := datadogRequest.GetOrderDirectionOk(); ok {
+			request["order_direction"] = v
+		}
+		if v, ok := datadogRequest.GetCompareToOk(); ok {
+			request["compare_to"] = v
+		}
+		if v, ok := datadogRequest.GetIncreaseGoodOk(); ok {
+			request["increase_good"] = v
+		}
+		if v, ok := datadogRequest.GetOrderByOk(); ok {
+			request["order_by"] = v
+		}
+		if v, ok := datadogRequest.GetExtraColOk(); ok {
+			request["extra_col"] = v
+		}
 
 		*requests = append(*requests, request)
 	}
@@ -576,18 +602,27 @@ func buildTerraformGraph(datadog_graph datadog.Graph) map[string]interface{} {
 	definition := datadog_graph.Definition
 	graph["viz"] = definition.GetViz()
 
-	events := []*string{}
-	for _, datadog_event := range definition.Events {
-		events = append(events, datadog_event.Query)
+	events := []string{}
+	for _, e := range definition.Events {
+		if v, ok := e.GetQueryOk(); ok {
+			events = append(events, v)
+		}
 	}
-	graph["events"] = events
+	if len(events) > 0 {
+		graph["events"] = events
+	}
 
 	markers := []map[string]interface{}{}
 	for _, datadog_marker := range definition.Markers {
-		marker := map[string]interface{}{
-			"type":  datadog_marker.Type,
-			"value": datadog_marker.Value,
-			"label": datadog_marker.Label,
+		marker := map[string]interface{}{}
+		if v, ok := datadog_marker.GetTypeOk(); ok {
+			marker["type"] = v
+		}
+		if v, ok := datadog_marker.GetValueOk(); ok {
+			marker["value"] = v
+		}
+		if v, ok := datadog_marker.GetLabelOk(); ok {
+			marker["label"] = v
 		}
 		markers = append(markers, marker)
 	}
@@ -609,10 +644,18 @@ func buildTerraformGraph(datadog_graph datadog.Graph) map[string]interface{} {
 
 	graph["yaxis"] = yaxis
 
-	graph["autoscale"] = definition.Autoscale
-	graph["text_align"] = definition.TextAlign
-	graph["precision"] = definition.Precision
-	graph["custom_unit"] = definition.CustomUnit
+	if v, ok := definition.GetAutoscaleOk(); ok {
+		graph["autoscale"] = v
+	}
+	if v, ok := definition.GetTextAlignOk(); ok {
+		graph["text_align"] = v
+	}
+	if v, ok := definition.GetPrecisionOk(); ok {
+		graph["precision"] = v
+	}
+	if v, ok := definition.GetCustomUnitOk(); ok {
+		graph["custom_unit"] = v
+	}
 
 	if v, ok := definition.GetStyleOk(); ok {
 		style := map[string]string{}
@@ -624,10 +667,18 @@ func buildTerraformGraph(datadog_graph datadog.Graph) map[string]interface{} {
 		}
 		graph["style"] = style
 	}
-	graph["group"] = definition.Groups
-	graph["include_no_metric_hosts"] = definition.IncludeNoMetricHosts
-	graph["scope"] = definition.Scopes
-	graph["include_ungrouped_hosts"] = definition.IncludeUngroupedHosts
+	if definition.Groups != nil {
+		graph["group"] = definition.Groups
+	}
+	if definition.Scopes != nil {
+		graph["scope"] = definition.Scopes
+	}
+	if v, ok := definition.GetIncludeNoMetricHostsOk(); ok {
+		graph["include_no_metric_hosts"] = v
+	}
+	if v, ok := definition.GetIncludeUngroupedHostsOk(); ok {
+		graph["include_ungrouped_hosts"] = v
+	}
 
 	requests := []map[string]interface{}{}
 	appendTerraformGraphRequests(definition.Requests, &requests)
@@ -645,26 +696,40 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 	if err != nil {
 		return err
 	}
-	log.Printf("[DEBUG] timeboard: %v", timeboard)
-	d.Set("title", timeboard.GetTitle())
-	d.Set("description", timeboard.GetDescription())
+	log.Printf("[DataDog] timeboard: %v", pretty.Sprint(timeboard))
+	if err := d.Set("title", timeboard.GetTitle()); err != nil {
+		return err
+	}
+	if err := d.Set("description", timeboard.GetDescription()); err != nil {
+		return err
+	}
 
 	graphs := []map[string]interface{}{}
 	for _, datadog_graph := range timeboard.Graphs {
 		graphs = append(graphs, buildTerraformGraph(datadog_graph))
 	}
-	d.Set("graph", graphs)
+	log.Printf("[DataDog] graphs: %v", pretty.Sprint(graphs))
+	if err := d.Set("graph", graphs); err != nil {
+		return err
+	}
 
-	templateVariables := []map[string]*string{}
+	templateVariables := []map[string]string{}
 	for _, templateVariable := range timeboard.TemplateVariables {
-		tv := map[string]*string{
-			"name":    templateVariable.Name,
-			"prefix":  templateVariable.Prefix,
-			"default": templateVariable.Default,
+		tv := map[string]string{}
+		if v, ok := templateVariable.GetNameOk(); ok {
+			tv["name"] = v
+		}
+		if v, ok := templateVariable.GetPrefixOk(); ok {
+			tv["prefix"] = v
+		}
+		if v, ok := templateVariable.GetDefaultOk(); ok {
+			tv["default"] = v
 		}
 		templateVariables = append(templateVariables, tv)
 	}
-	d.Set("template_variable", templateVariables)
+	if err := d.Set("template_variable", templateVariables); err != nil {
+		return err
+	}
 
 	return nil
 }
