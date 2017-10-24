@@ -117,6 +117,7 @@ Nested `graph` `request` blocks have the following structure:
 * `stacked` - (Optional) Boolean value to determine if this is this a stacked area graph. Default: false (line chart).
 * `type` - (Optional) Choose how to draw the graph. For example: "line", "bar" or "area". Default: "line".
 * `style` - (Optional) Nested block to customize the graph style.
+* `conditional_format` - (Optional) Nested block to customize the graph style if certain conditions are met. Currently only applies to `Query Value` and `Top List` type graphs.
 
 ### Nested `graph` `style` block
 The nested `style` block is used specifically for styling `hostmap` graphs, and has the following structure:
@@ -131,6 +132,16 @@ The nested `style` blocks has the following structure:
 * `palette` - (Optional) Color of the line drawn. For example: "classic", "cool", "warm", "purple", "orange" or "gray". Default: "classic".
 * `width` - (Optional) Line width. Possible values: "thin", "normal", "thick". Default: "normal".
 * `type` - (Optional) Type of line drawn. Possible values: "dashed", "solid", "dotted". Default: "solid".
+
+### Nested `graph` `request` `conditional_format` block
+
+The nested `conditional_format` blocks has the following structure:
+
+* `palette` - (Optional) Color scheme to be used if the condition is met. For example: "red_on_white", "white_on_red", "yellow_on_white", "white_on_yellow", "green_on_white", "white_on_green", "gray_on_white", "white_on_gray", "custom_text", "custom_bg", "custom_image".
+* `comparator` - (Required) Comparison operator. Example: ">", "<".
+* `value` - (Optional) Value that is the threshold for the conditional format.
+* `custom_fg_color` - (Optional) Used when `palette` is set to `custom_text`. Set the color of the text to a custom web color, such as "#205081".
+* `custom_bg_color` - (Optional) Used when `palette` is set to `custom_bg`. Set the color of the background to a custom web color, such as "#205081".
 
 ### Nested `template_variable` blocks
 
