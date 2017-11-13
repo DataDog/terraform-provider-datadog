@@ -51,6 +51,14 @@ func resourceDatadogMonitor() *schema.Resource {
 			"type": {
 				Type:     schema.TypeString,
 				Required: true,
+				// Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
+				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+					if oldVal == "query alert" && newVal == "metric alert" {
+						log.Printf("[DEBUG] Monitor '%s' got a '%s' response for an expected '%s' type. Suppressing change.", d.Get("name"), newVal, oldVal)
+						return true
+					}
+					return newVal == oldVal
+				},
 			},
 
 			// Options
@@ -273,18 +281,12 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	for _, s := range m.Tags {
 		tags = append(tags, s)
 	}
-	// Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
-	apiReadType := m.GetType()
-	if apiReadType == "query alert" && d.Get("type") == "metric alert" {
-		log.Printf("[DEBUG] Monitor '%v' got a 'query alert' response for an expected 'metric alert' type. Overwriting type to suppress unnecessary change.", m.Id)
-		apiReadType = "metric alert"
-	}
 
 	log.Printf("[DEBUG] monitor: %v", m)
 	d.Set("name", m.GetName())
 	d.Set("message", m.GetMessage())
 	d.Set("query", m.GetQuery())
-	d.Set("type", apiReadType)
+	d.Set("type", m.GetType())
 	d.Set("thresholds", thresholds)
 
 	d.Set("new_host_delay", m.Options.GetNewHostDelay())
