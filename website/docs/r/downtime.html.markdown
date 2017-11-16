@@ -42,6 +42,7 @@ The following arguments are supported:
     * `until_occurrences` - (Optional) How many times the downtime will be rescheduled. `until_occurrences` and `until_date` are mutually exclusive.
     * `until_date` - (Optional) The date at which the recurrence should end as a POSIX timestamp. `until_occurrences` and `until_date` are mutually exclusive.
 * `message` - (Optional) A message to include with notifications for this downtime.
+* `monitor_id` - (Optional) Reference to which monitor this downtime is applied. When scheduling downtime for a given monitor, datadog changes `silenced` property of the monitor  to match the `end` POSIX timestamp.
 
 ## Attributes Reference
 
