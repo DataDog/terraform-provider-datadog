@@ -197,11 +197,22 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 	}
 
 	log.Printf("[DEBUG] downtime: %v", dt)
-	d.Set("active", dt.GetActive())
-	d.Set("disabled", dt.GetDisabled())
-	d.Set("end", dt.GetEnd())
-	d.Set("message", dt.GetMessage())
-	d.Set("monitor_id", dt.GetMonitorId())
+
+	if err := d.Set("active", dt.GetActive()); err != nil {
+		return err
+	}
+	if err := d.Set("disabled", dt.GetDisabled()); err != nil {
+		return err
+	}
+	if err := d.Set("end", dt.GetEnd()); err != nil {
+		return err
+	}
+	if err := d.Set("message", dt.GetMessage()); err != nil {
+		return err
+	}
+	if err := d.Set("monitor_id", dt.GetMonitorId()); err != nil {
+		return err
+	}
 
 	if r, ok := dt.GetRecurrenceOk(); ok {
 		recurrence := make(map[string]interface{})

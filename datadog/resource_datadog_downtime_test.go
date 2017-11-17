@@ -229,8 +229,6 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 						"datadog_downtime.foo", "recurrence.0.period", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
-					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "monitor_id", "1234"),
 				),
 			},
 			resource.TestStep{
@@ -249,8 +247,6 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 						"datadog_downtime.foo", "recurrence.0.period", "3"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
-					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "monitor_id", "5678"),
 				),
 			},
 		},
@@ -332,11 +328,11 @@ resource "datadog_monitor" "downtime_monitor" {
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
 
   thresholds {
-	warning = "1.0"
-	critical = "2.0"
+		warning = "1.0"
+		critical = "2.0"
 	}
 	silenced {
-		"*" : %d
+		"*" = %d
 	}
 }
 
@@ -419,7 +415,7 @@ resource "datadog_downtime" "foo" {
 	week_days = ["Sat", "Sun"]
   }
 
-  message = "Example Datadog downtime message."
+	message = "Example Datadog downtime message."
 }
 `
 
@@ -435,7 +431,6 @@ resource "datadog_downtime" "foo" {
   }
 
   message = "Example Datadog downtime message."
-  monitor_id = 5678
 }
 `
 
