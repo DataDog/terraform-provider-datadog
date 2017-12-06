@@ -26,7 +26,7 @@ type NoDataTimeframe int
 
 func (tf *NoDataTimeframe) UnmarshalJSON(data []byte) error {
 	s := string(data)
-	if s == "false" {
+	if s == "false" || s == "null" {
 		*tf = 0
 	} else {
 		i, err := strconv.ParseInt(s, 10, 32)

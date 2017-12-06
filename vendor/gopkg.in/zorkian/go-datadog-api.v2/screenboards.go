@@ -107,7 +107,7 @@ type ScreenShareResponse struct {
 
 // ShareScreenboard shares an existing screenboard, it takes and updates ScreenShareResponse
 func (client *Client) ShareScreenboard(id int, response *ScreenShareResponse) error {
-	return client.doJsonRequest("GET", fmt.Sprintf("/v1/screen/share/%d", id), nil, response)
+	return client.doJsonRequest("POST", fmt.Sprintf("/v1/screen/share/%d", id), nil, response)
 }
 
 // RevokeScreenboard revokes a currently shared screenboard
