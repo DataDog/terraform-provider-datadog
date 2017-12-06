@@ -54,7 +54,11 @@ func (c *Client) SetKeys(apiKey, appKey string) {
 func (client *Client) Validate() (bool, error) {
 	var bodyreader io.Reader
 	var out valid
-	req, err := http.NewRequest("GET", client.uriForAPI("/v1/validate"), bodyreader)
+	uri, err := client.uriForAPI("/v1/validate")
+	if err != nil {
+		return false, err
+	}
+	req, err := http.NewRequest("GET", uri, bodyreader)
 
 	if err != nil {
 		return false, err

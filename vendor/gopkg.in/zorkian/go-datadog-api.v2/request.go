@@ -15,6 +15,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -24,40 +25,63 @@ import (
 
 // uriForAPI is to be called with something like "/v1/events" and it will give
 // the proper request URI to be posted to.
-func (client *Client) uriForAPI(api string) string {
-	url := os.Getenv("DATADOG_HOST")
-	if url == "" {
-		url = "https://app.datadoghq.com"
+func (client *Client) uriForAPI(api string) (string, error) {
+	baseUrl := os.Getenv("DATADOG_HOST")
+	if baseUrl == "" {
+		baseUrl = "https://app.datadoghq.com"
 	}
-	if strings.Index(api, "?") > -1 {
-		return url + "/api" + api + "&api_key=" +
-			client.apiKey + "&application_key=" + client.appKey
-	} else {
-		return url + "/api" + api + "?api_key=" +
-			client.apiKey + "&application_key=" + client.appKey
+	apiBase, err := url.Parse(baseUrl + "/api" + api)
+	if err != nil {
+		return "", err
 	}
+	q := apiBase.Query()
+	q.Add("api_key", client.apiKey)
+	q.Add("application_key", client.appKey)
+	apiBase.RawQuery = q.Encode()
+	return apiBase.String(), nil
 }
 
-// doJsonRequest is the simplest type of request: a method on a URI that returns
-// some JSON result which we unmarshal into the passed interface.
-func (client *Client) doJsonRequest(method, api string,
-	reqbody, out interface{}) error {
-	// Handle the body if they gave us one.
-	var bodyreader io.Reader
-	if method != "GET" && reqbody != nil {
-		bjson, err := json.Marshal(reqbody)
-		if err != nil {
-			return err
-		}
-		bodyreader = bytes.NewReader(bjson)
+// redactError removes api and application keys from error strings
+func (client *Client) redactError(err error) error {
+	if err == nil {
+		return nil
+	}
+	errString := err.Error()
+
+	if len(client.apiKey) > 0 {
+		errString = strings.Replace(errString, client.apiKey, "redacted", -1)
+	}
+	if len(client.appKey) > 0 {
+		errString = strings.Replace(errString, client.appKey, "redacted", -1)
 	}
 
-	req, err := http.NewRequest(method, client.uriForAPI(api), bodyreader)
-	if err != nil {
+	// Return original error if no replacements were made to keep the original,
+	// probably more useful error type information.
+	if errString == err.Error() {
 		return err
 	}
-	if bodyreader != nil {
-		req.Header.Add("Content-Type", "application/json")
+	return fmt.Errorf("%s", errString)
+}
+
+// doJsonRequest is the simplest type of request: a method on a URI that
+// returns some JSON result which we unmarshal into the passed interface. It
+// wraps doJsonRequestUnredacted to redact api and application keys from
+// errors.
+func (client *Client) doJsonRequest(method, api string,
+	reqbody, out interface{}) error {
+	if err := client.doJsonRequestUnredacted(method, api, reqbody, out); err != nil {
+		return client.redactError(err)
+	}
+	return nil
+}
+
+// doJsonRequestUnredacted is the simplest type of request: a method on a URI that returns
+// some JSON result which we unmarshal into the passed interface.
+func (client *Client) doJsonRequestUnredacted(method, api string,
+	reqbody, out interface{}) error {
+	req, err := client.createRequest(method, api, reqbody)
+	if err != nil {
+		return err
 	}
 
 	// Perform the request and retry it if it's not a POST or PUT request
@@ -83,6 +107,8 @@ func (client *Client) doJsonRequest(method, api string,
 	// If they don't care about the body, then we don't care to give them one,
 	// so bail out because we're done.
 	if out == nil {
+		// read the response body so http conn can be reused immediately
+		io.Copy(ioutil.Discard, resp.Body)
 		return nil
 	}
 
@@ -97,10 +123,7 @@ func (client *Client) doJsonRequest(method, api string,
 		body = []byte{'{', '}'}
 	}
 
-	if err := json.Unmarshal(body, &out); err != nil {
-		return err
-	}
-	return nil
+	return json.Unmarshal(body, &out)
 }
 
 // doRequestWithRetries performs an HTTP request repeatedly for maxTime or until
@@ -148,4 +171,29 @@ func (client *Client) doRequestWithRetries(req *http.Request, maxTime time.Durat
 	err = backoff.Retry(operation, bo)
 
 	return resp, err
+}
+
+func (client *Client) createRequest(method, api string, reqbody interface{}) (*http.Request, error) {
+	// Handle the body if they gave us one.
+	var bodyReader io.Reader
+	if method != "GET" && reqbody != nil {
+		bjson, err := json.Marshal(reqbody)
+		if err != nil {
+			return nil, err
+		}
+		bodyReader = bytes.NewReader(bjson)
+	}
+
+	apiUrlStr, err := client.uriForAPI(api)
+	if err != nil {
+		return nil, err
+	}
+	req, err := http.NewRequest(method, apiUrlStr, bodyReader)
+	if err != nil {
+		return nil, err
+	}
+	if bodyReader != nil {
+		req.Header.Add("Content-Type", "application/json")
+	}
+	return req, nil
 }

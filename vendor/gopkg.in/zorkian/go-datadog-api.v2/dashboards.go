@@ -132,12 +132,13 @@ type reqGetDashboard struct {
 }
 
 type DashboardConditionalFormat struct {
-	Palette       *string      `json:"palette,omitempty"`
-	Comparator    *string      `json:"comparator,omitempty"`
-	CustomBgColor *string      `json:"custom_bg_color,omitempty"`
-	Value         *json.Number `json:"value,omitempty"`
-	Inverted      *bool        `json:"invert,omitempty"`
-	CustomFgColor *string      `json:"custom_fg_color,omitempty"`
+	Palette        *string      `json:"palette,omitempty"`
+	Comparator     *string      `json:"comparator,omitempty"`
+	CustomBgColor  *string      `json:"custom_bg_color,omitempty"`
+	Value          *json.Number `json:"value,omitempty"`
+	Inverted       *bool        `json:"invert,omitempty"`
+	CustomFgColor  *string      `json:"custom_fg_color,omitempty"`
+	CustomImageUrl *string      `json:"custom_image,omitempty"`
 }
 
 // GetDashboard returns a single dashboard created on this account.

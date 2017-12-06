@@ -39,7 +39,7 @@ func (a *Alert) HasCreator() bool {
 	return false
 }
 
-// GetCreator allocates a new a.Creator and returns the pointer to it.
+// SetCreator allocates a new a.Creator and returns the pointer to it.
 func (a *Alert) SetCreator(v int) {
 	a.Creator = &v
 }
@@ -70,7 +70,7 @@ func (a *Alert) HasId() bool {
 	return false
 }
 
-// GetId allocates a new a.Id and returns the pointer to it.
+// SetId allocates a new a.Id and returns the pointer to it.
 func (a *Alert) SetId(v int) {
 	a.Id = &v
 }
@@ -101,7 +101,7 @@ func (a *Alert) HasMessage() bool {
 	return false
 }
 
-// GetMessage allocates a new a.Message and returns the pointer to it.
+// SetMessage allocates a new a.Message and returns the pointer to it.
 func (a *Alert) SetMessage(v string) {
 	a.Message = &v
 }
@@ -132,7 +132,7 @@ func (a *Alert) HasName() bool {
 	return false
 }
 
-// GetName allocates a new a.Name and returns the pointer to it.
+// SetName allocates a new a.Name and returns the pointer to it.
 func (a *Alert) SetName(v string) {
 	a.Name = &v
 }
@@ -163,7 +163,7 @@ func (a *Alert) HasNotifyNoData() bool {
 	return false
 }
 
-// GetNotifyNoData allocates a new a.NotifyNoData and returns the pointer to it.
+// SetNotifyNoData allocates a new a.NotifyNoData and returns the pointer to it.
 func (a *Alert) SetNotifyNoData(v bool) {
 	a.NotifyNoData = &v
 }
@@ -194,7 +194,7 @@ func (a *Alert) HasQuery() bool {
 	return false
 }
 
-// GetQuery allocates a new a.Query and returns the pointer to it.
+// SetQuery allocates a new a.Query and returns the pointer to it.
 func (a *Alert) SetQuery(v string) {
 	a.Query = &v
 }
@@ -225,7 +225,7 @@ func (a *Alert) HasSilenced() bool {
 	return false
 }
 
-// GetSilenced allocates a new a.Silenced and returns the pointer to it.
+// SetSilenced allocates a new a.Silenced and returns the pointer to it.
 func (a *Alert) SetSilenced(v bool) {
 	a.Silenced = &v
 }
@@ -256,7 +256,7 @@ func (a *Alert) HasState() bool {
 	return false
 }
 
-// GetState allocates a new a.State and returns the pointer to it.
+// SetState allocates a new a.State and returns the pointer to it.
 func (a *Alert) SetState(v string) {
 	a.State = &v
 }
@@ -287,7 +287,7 @@ func (a *AlertGraphWidget) HasAddTimeframe() bool {
 	return false
 }
 
-// GetAddTimeframe allocates a new a.AddTimeframe and returns the pointer to it.
+// SetAddTimeframe allocates a new a.AddTimeframe and returns the pointer to it.
 func (a *AlertGraphWidget) SetAddTimeframe(v bool) {
 	a.AddTimeframe = &v
 }
@@ -318,7 +318,7 @@ func (a *AlertGraphWidget) HasAlertId() bool {
 	return false
 }
 
-// GetAlertId allocates a new a.AlertId and returns the pointer to it.
+// SetAlertId allocates a new a.AlertId and returns the pointer to it.
 func (a *AlertGraphWidget) SetAlertId(v int) {
 	a.AlertId = &v
 }
@@ -349,7 +349,7 @@ func (a *AlertGraphWidget) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new a.Height and returns the pointer to it.
+// SetHeight allocates a new a.Height and returns the pointer to it.
 func (a *AlertGraphWidget) SetHeight(v int) {
 	a.Height = &v
 }
@@ -380,7 +380,7 @@ func (a *AlertGraphWidget) HasTimeframe() bool {
 	return false
 }
 
-// GetTimeframe allocates a new a.Timeframe and returns the pointer to it.
+// SetTimeframe allocates a new a.Timeframe and returns the pointer to it.
 func (a *AlertGraphWidget) SetTimeframe(v string) {
 	a.Timeframe = &v
 }
@@ -411,7 +411,7 @@ func (a *AlertGraphWidget) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new a.Title and returns the pointer to it.
+// SetTitle allocates a new a.Title and returns the pointer to it.
 func (a *AlertGraphWidget) SetTitle(v bool) {
 	a.Title = &v
 }
@@ -442,7 +442,7 @@ func (a *AlertGraphWidget) HasTitleAlign() bool {
 	return false
 }
 
-// GetTitleAlign allocates a new a.TitleAlign and returns the pointer to it.
+// SetTitleAlign allocates a new a.TitleAlign and returns the pointer to it.
 func (a *AlertGraphWidget) SetTitleAlign(v string) {
 	a.TitleAlign = &v
 }
@@ -473,7 +473,7 @@ func (a *AlertGraphWidget) HasTitleSize() bool {
 	return false
 }
 
-// GetTitleSize allocates a new a.TitleSize and returns the pointer to it.
+// SetTitleSize allocates a new a.TitleSize and returns the pointer to it.
 func (a *AlertGraphWidget) SetTitleSize(v int) {
 	a.TitleSize = &v
 }
@@ -504,7 +504,7 @@ func (a *AlertGraphWidget) HasTitleText() bool {
 	return false
 }
 
-// GetTitleText allocates a new a.TitleText and returns the pointer to it.
+// SetTitleText allocates a new a.TitleText and returns the pointer to it.
 func (a *AlertGraphWidget) SetTitleText(v string) {
 	a.TitleText = &v
 }
@@ -535,7 +535,7 @@ func (a *AlertGraphWidget) HasType() bool {
 	return false
 }
 
-// GetType allocates a new a.Type and returns the pointer to it.
+// SetType allocates a new a.Type and returns the pointer to it.
 func (a *AlertGraphWidget) SetType(v string) {
 	a.Type = &v
 }
@@ -566,7 +566,7 @@ func (a *AlertGraphWidget) HasVizType() bool {
 	return false
 }
 
-// GetVizType allocates a new a.VizType and returns the pointer to it.
+// SetVizType allocates a new a.VizType and returns the pointer to it.
 func (a *AlertGraphWidget) SetVizType(v string) {
 	a.VizType = &v
 }
@@ -597,7 +597,7 @@ func (a *AlertGraphWidget) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new a.Width and returns the pointer to it.
+// SetWidth allocates a new a.Width and returns the pointer to it.
 func (a *AlertGraphWidget) SetWidth(v int) {
 	a.Width = &v
 }
@@ -628,7 +628,7 @@ func (a *AlertGraphWidget) HasX() bool {
 	return false
 }
 
-// GetX allocates a new a.X and returns the pointer to it.
+// SetX allocates a new a.X and returns the pointer to it.
 func (a *AlertGraphWidget) SetX(v int) {
 	a.X = &v
 }
@@ -659,7 +659,7 @@ func (a *AlertGraphWidget) HasY() bool {
 	return false
 }
 
-// GetY allocates a new a.Y and returns the pointer to it.
+// SetY allocates a new a.Y and returns the pointer to it.
 func (a *AlertGraphWidget) SetY(v int) {
 	a.Y = &v
 }
@@ -690,7 +690,7 @@ func (a *AlertValueWidget) HasAddTimeframe() bool {
 	return false
 }
 
-// GetAddTimeframe allocates a new a.AddTimeframe and returns the pointer to it.
+// SetAddTimeframe allocates a new a.AddTimeframe and returns the pointer to it.
 func (a *AlertValueWidget) SetAddTimeframe(v bool) {
 	a.AddTimeframe = &v
 }
@@ -721,7 +721,7 @@ func (a *AlertValueWidget) HasAlertId() bool {
 	return false
 }
 
-// GetAlertId allocates a new a.AlertId and returns the pointer to it.
+// SetAlertId allocates a new a.AlertId and returns the pointer to it.
 func (a *AlertValueWidget) SetAlertId(v int) {
 	a.AlertId = &v
 }
@@ -752,7 +752,7 @@ func (a *AlertValueWidget) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new a.Height and returns the pointer to it.
+// SetHeight allocates a new a.Height and returns the pointer to it.
 func (a *AlertValueWidget) SetHeight(v int) {
 	a.Height = &v
 }
@@ -783,7 +783,7 @@ func (a *AlertValueWidget) HasPrecision() bool {
 	return false
 }
 
-// GetPrecision allocates a new a.Precision and returns the pointer to it.
+// SetPrecision allocates a new a.Precision and returns the pointer to it.
 func (a *AlertValueWidget) SetPrecision(v int) {
 	a.Precision = &v
 }
@@ -814,7 +814,7 @@ func (a *AlertValueWidget) HasTextAlign() bool {
 	return false
 }
 
-// GetTextAlign allocates a new a.TextAlign and returns the pointer to it.
+// SetTextAlign allocates a new a.TextAlign and returns the pointer to it.
 func (a *AlertValueWidget) SetTextAlign(v string) {
 	a.TextAlign = &v
 }
@@ -845,7 +845,7 @@ func (a *AlertValueWidget) HasTextSize() bool {
 	return false
 }
 
-// GetTextSize allocates a new a.TextSize and returns the pointer to it.
+// SetTextSize allocates a new a.TextSize and returns the pointer to it.
 func (a *AlertValueWidget) SetTextSize(v string) {
 	a.TextSize = &v
 }
@@ -876,7 +876,7 @@ func (a *AlertValueWidget) HasTimeframe() bool {
 	return false
 }
 
-// GetTimeframe allocates a new a.Timeframe and returns the pointer to it.
+// SetTimeframe allocates a new a.Timeframe and returns the pointer to it.
 func (a *AlertValueWidget) SetTimeframe(v string) {
 	a.Timeframe = &v
 }
@@ -907,7 +907,7 @@ func (a *AlertValueWidget) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new a.Title and returns the pointer to it.
+// SetTitle allocates a new a.Title and returns the pointer to it.
 func (a *AlertValueWidget) SetTitle(v bool) {
 	a.Title = &v
 }
@@ -938,7 +938,7 @@ func (a *AlertValueWidget) HasTitleAlign() bool {
 	return false
 }
 
-// GetTitleAlign allocates a new a.TitleAlign and returns the pointer to it.
+// SetTitleAlign allocates a new a.TitleAlign and returns the pointer to it.
 func (a *AlertValueWidget) SetTitleAlign(v string) {
 	a.TitleAlign = &v
 }
@@ -969,7 +969,7 @@ func (a *AlertValueWidget) HasTitleSize() bool {
 	return false
 }
 
-// GetTitleSize allocates a new a.TitleSize and returns the pointer to it.
+// SetTitleSize allocates a new a.TitleSize and returns the pointer to it.
 func (a *AlertValueWidget) SetTitleSize(v int) {
 	a.TitleSize = &v
 }
@@ -1000,7 +1000,7 @@ func (a *AlertValueWidget) HasTitleText() bool {
 	return false
 }
 
-// GetTitleText allocates a new a.TitleText and returns the pointer to it.
+// SetTitleText allocates a new a.TitleText and returns the pointer to it.
 func (a *AlertValueWidget) SetTitleText(v string) {
 	a.TitleText = &v
 }
@@ -1031,7 +1031,7 @@ func (a *AlertValueWidget) HasType() bool {
 	return false
 }
 
-// GetType allocates a new a.Type and returns the pointer to it.
+// SetType allocates a new a.Type and returns the pointer to it.
 func (a *AlertValueWidget) SetType(v string) {
 	a.Type = &v
 }
@@ -1062,7 +1062,7 @@ func (a *AlertValueWidget) HasUnit() bool {
 	return false
 }
 
-// GetUnit allocates a new a.Unit and returns the pointer to it.
+// SetUnit allocates a new a.Unit and returns the pointer to it.
 func (a *AlertValueWidget) SetUnit(v string) {
 	a.Unit = &v
 }
@@ -1093,7 +1093,7 @@ func (a *AlertValueWidget) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new a.Width and returns the pointer to it.
+// SetWidth allocates a new a.Width and returns the pointer to it.
 func (a *AlertValueWidget) SetWidth(v int) {
 	a.Width = &v
 }
@@ -1124,7 +1124,7 @@ func (a *AlertValueWidget) HasX() bool {
 	return false
 }
 
-// GetX allocates a new a.X and returns the pointer to it.
+// SetX allocates a new a.X and returns the pointer to it.
 func (a *AlertValueWidget) SetX(v int) {
 	a.X = &v
 }
@@ -1155,7 +1155,7 @@ func (a *AlertValueWidget) HasY() bool {
 	return false
 }
 
-// GetY allocates a new a.Y and returns the pointer to it.
+// SetY allocates a new a.Y and returns the pointer to it.
 func (a *AlertValueWidget) SetY(v int) {
 	a.Y = &v
 }
@@ -1186,7 +1186,7 @@ func (c *ChangeWidget) HasAggregator() bool {
 	return false
 }
 
-// GetAggregator allocates a new c.Aggregator and returns the pointer to it.
+// SetAggregator allocates a new c.Aggregator and returns the pointer to it.
 func (c *ChangeWidget) SetAggregator(v string) {
 	c.Aggregator = &v
 }
@@ -1217,7 +1217,7 @@ func (c *ChangeWidget) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new c.Height and returns the pointer to it.
+// SetHeight allocates a new c.Height and returns the pointer to it.
 func (c *ChangeWidget) SetHeight(v int) {
 	c.Height = &v
 }
@@ -1248,7 +1248,7 @@ func (c *ChangeWidget) HasTileDef() bool {
 	return false
 }
 
-// GetTileDef allocates a new c.TileDef and returns the pointer to it.
+// SetTileDef allocates a new c.TileDef and returns the pointer to it.
 func (c *ChangeWidget) SetTileDef(v TileDef) {
 	c.TileDef = &v
 }
@@ -1279,7 +1279,7 @@ func (c *ChangeWidget) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new c.Title and returns the pointer to it.
+// SetTitle allocates a new c.Title and returns the pointer to it.
 func (c *ChangeWidget) SetTitle(v bool) {
 	c.Title = &v
 }
@@ -1310,7 +1310,7 @@ func (c *ChangeWidget) HasTitleAlign() bool {
 	return false
 }
 
-// GetTitleAlign allocates a new c.TitleAlign and returns the pointer to it.
+// SetTitleAlign allocates a new c.TitleAlign and returns the pointer to it.
 func (c *ChangeWidget) SetTitleAlign(v string) {
 	c.TitleAlign = &v
 }
@@ -1341,7 +1341,7 @@ func (c *ChangeWidget) HasTitleSize() bool {
 	return false
 }
 
-// GetTitleSize allocates a new c.TitleSize and returns the pointer to it.
+// SetTitleSize allocates a new c.TitleSize and returns the pointer to it.
 func (c *ChangeWidget) SetTitleSize(v int) {
 	c.TitleSize = &v
 }
@@ -1372,7 +1372,7 @@ func (c *ChangeWidget) HasTitleText() bool {
 	return false
 }
 
-// GetTitleText allocates a new c.TitleText and returns the pointer to it.
+// SetTitleText allocates a new c.TitleText and returns the pointer to it.
 func (c *ChangeWidget) SetTitleText(v string) {
 	c.TitleText = &v
 }
@@ -1403,7 +1403,7 @@ func (c *ChangeWidget) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new c.Width and returns the pointer to it.
+// SetWidth allocates a new c.Width and returns the pointer to it.
 func (c *ChangeWidget) SetWidth(v int) {
 	c.Width = &v
 }
@@ -1434,7 +1434,7 @@ func (c *ChangeWidget) HasX() bool {
 	return false
 }
 
-// GetX allocates a new c.X and returns the pointer to it.
+// SetX allocates a new c.X and returns the pointer to it.
 func (c *ChangeWidget) SetX(v int) {
 	c.X = &v
 }
@@ -1465,7 +1465,7 @@ func (c *ChangeWidget) HasY() bool {
 	return false
 }
 
-// GetY allocates a new c.Y and returns the pointer to it.
+// SetY allocates a new c.Y and returns the pointer to it.
 func (c *ChangeWidget) SetY(v int) {
 	c.Y = &v
 }
@@ -1496,7 +1496,7 @@ func (c *Check) HasCheck() bool {
 	return false
 }
 
-// GetCheck allocates a new c.Check and returns the pointer to it.
+// SetCheck allocates a new c.Check and returns the pointer to it.
 func (c *Check) SetCheck(v string) {
 	c.Check = &v
 }
@@ -1527,7 +1527,7 @@ func (c *Check) HasHostName() bool {
 	return false
 }
 
-// GetHostName allocates a new c.HostName and returns the pointer to it.
+// SetHostName allocates a new c.HostName and returns the pointer to it.
 func (c *Check) SetHostName(v string) {
 	c.HostName = &v
 }
@@ -1558,7 +1558,7 @@ func (c *Check) HasMessage() bool {
 	return false
 }
 
-// GetMessage allocates a new c.Message and returns the pointer to it.
+// SetMessage allocates a new c.Message and returns the pointer to it.
 func (c *Check) SetMessage(v string) {
 	c.Message = &v
 }
@@ -1589,7 +1589,7 @@ func (c *Check) HasStatus() bool {
 	return false
 }
 
-// GetStatus allocates a new c.Status and returns the pointer to it.
+// SetStatus allocates a new c.Status and returns the pointer to it.
 func (c *Check) SetStatus(v Status) {
 	c.Status = &v
 }
@@ -1620,7 +1620,7 @@ func (c *Check) HasTimestamp() bool {
 	return false
 }
 
-// GetTimestamp allocates a new c.Timestamp and returns the pointer to it.
+// SetTimestamp allocates a new c.Timestamp and returns the pointer to it.
 func (c *Check) SetTimestamp(v string) {
 	c.Timestamp = &v
 }
@@ -1651,7 +1651,7 @@ func (c *CheckStatusWidget) HasCheck() bool {
 	return false
 }
 
-// GetCheck allocates a new c.Check and returns the pointer to it.
+// SetCheck allocates a new c.Check and returns the pointer to it.
 func (c *CheckStatusWidget) SetCheck(v string) {
 	c.Check = &v
 }
@@ -1682,7 +1682,7 @@ func (c *CheckStatusWidget) HasGroup() bool {
 	return false
 }
 
-// GetGroup allocates a new c.Group and returns the pointer to it.
+// SetGroup allocates a new c.Group and returns the pointer to it.
 func (c *CheckStatusWidget) SetGroup(v string) {
 	c.Group = &v
 }
@@ -1713,7 +1713,7 @@ func (c *CheckStatusWidget) HasGrouping() bool {
 	return false
 }
 
-// GetGrouping allocates a new c.Grouping and returns the pointer to it.
+// SetGrouping allocates a new c.Grouping and returns the pointer to it.
 func (c *CheckStatusWidget) SetGrouping(v string) {
 	c.Grouping = &v
 }
@@ -1744,7 +1744,7 @@ func (c *CheckStatusWidget) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new c.Height and returns the pointer to it.
+// SetHeight allocates a new c.Height and returns the pointer to it.
 func (c *CheckStatusWidget) SetHeight(v int) {
 	c.Height = &v
 }
@@ -1775,7 +1775,7 @@ func (c *CheckStatusWidget) HasTags() bool {
 	return false
 }
 
-// GetTags allocates a new c.Tags and returns the pointer to it.
+// SetTags allocates a new c.Tags and returns the pointer to it.
 func (c *CheckStatusWidget) SetTags(v string) {
 	c.Tags = &v
 }
@@ -1806,7 +1806,7 @@ func (c *CheckStatusWidget) HasTextAlign() bool {
 	return false
 }
 
-// GetTextAlign allocates a new c.TextAlign and returns the pointer to it.
+// SetTextAlign allocates a new c.TextAlign and returns the pointer to it.
 func (c *CheckStatusWidget) SetTextAlign(v string) {
 	c.TextAlign = &v
 }
@@ -1837,7 +1837,7 @@ func (c *CheckStatusWidget) HasTextSize() bool {
 	return false
 }
 
-// GetTextSize allocates a new c.TextSize and returns the pointer to it.
+// SetTextSize allocates a new c.TextSize and returns the pointer to it.
 func (c *CheckStatusWidget) SetTextSize(v string) {
 	c.TextSize = &v
 }
@@ -1868,7 +1868,7 @@ func (c *CheckStatusWidget) HasTimeframe() bool {
 	return false
 }
 
-// GetTimeframe allocates a new c.Timeframe and returns the pointer to it.
+// SetTimeframe allocates a new c.Timeframe and returns the pointer to it.
 func (c *CheckStatusWidget) SetTimeframe(v string) {
 	c.Timeframe = &v
 }
@@ -1899,7 +1899,7 @@ func (c *CheckStatusWidget) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new c.Title and returns the pointer to it.
+// SetTitle allocates a new c.Title and returns the pointer to it.
 func (c *CheckStatusWidget) SetTitle(v bool) {
 	c.Title = &v
 }
@@ -1930,7 +1930,7 @@ func (c *CheckStatusWidget) HasTitleAlign() bool {
 	return false
 }
 
-// GetTitleAlign allocates a new c.TitleAlign and returns the pointer to it.
+// SetTitleAlign allocates a new c.TitleAlign and returns the pointer to it.
 func (c *CheckStatusWidget) SetTitleAlign(v string) {
 	c.TitleAlign = &v
 }
@@ -1961,7 +1961,7 @@ func (c *CheckStatusWidget) HasTitleSize() bool {
 	return false
 }
 
-// GetTitleSize allocates a new c.TitleSize and returns the pointer to it.
+// SetTitleSize allocates a new c.TitleSize and returns the pointer to it.
 func (c *CheckStatusWidget) SetTitleSize(v int) {
 	c.TitleSize = &v
 }
@@ -1992,7 +1992,7 @@ func (c *CheckStatusWidget) HasTitleText() bool {
 	return false
 }
 
-// GetTitleText allocates a new c.TitleText and returns the pointer to it.
+// SetTitleText allocates a new c.TitleText and returns the pointer to it.
 func (c *CheckStatusWidget) SetTitleText(v string) {
 	c.TitleText = &v
 }
@@ -2023,7 +2023,7 @@ func (c *CheckStatusWidget) HasType() bool {
 	return false
 }
 
-// GetType allocates a new c.Type and returns the pointer to it.
+// SetType allocates a new c.Type and returns the pointer to it.
 func (c *CheckStatusWidget) SetType(v string) {
 	c.Type = &v
 }
@@ -2054,7 +2054,7 @@ func (c *CheckStatusWidget) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new c.Width and returns the pointer to it.
+// SetWidth allocates a new c.Width and returns the pointer to it.
 func (c *CheckStatusWidget) SetWidth(v int) {
 	c.Width = &v
 }
@@ -2085,7 +2085,7 @@ func (c *CheckStatusWidget) HasX() bool {
 	return false
 }
 
-// GetX allocates a new c.X and returns the pointer to it.
+// SetX allocates a new c.X and returns the pointer to it.
 func (c *CheckStatusWidget) SetX(v int) {
 	c.X = &v
 }
@@ -2116,7 +2116,7 @@ func (c *CheckStatusWidget) HasY() bool {
 	return false
 }
 
-// GetY allocates a new c.Y and returns the pointer to it.
+// SetY allocates a new c.Y and returns the pointer to it.
 func (c *CheckStatusWidget) SetY(v int) {
 	c.Y = &v
 }
@@ -2147,7 +2147,7 @@ func (c *Comment) HasHandle() bool {
 	return false
 }
 
-// GetHandle allocates a new c.Handle and returns the pointer to it.
+// SetHandle allocates a new c.Handle and returns the pointer to it.
 func (c *Comment) SetHandle(v string) {
 	c.Handle = &v
 }
@@ -2178,7 +2178,7 @@ func (c *Comment) HasId() bool {
 	return false
 }
 
-// GetId allocates a new c.Id and returns the pointer to it.
+// SetId allocates a new c.Id and returns the pointer to it.
 func (c *Comment) SetId(v int) {
 	c.Id = &v
 }
@@ -2209,7 +2209,7 @@ func (c *Comment) HasMessage() bool {
 	return false
 }
 
-// GetMessage allocates a new c.Message and returns the pointer to it.
+// SetMessage allocates a new c.Message and returns the pointer to it.
 func (c *Comment) SetMessage(v string) {
 	c.Message = &v
 }
@@ -2240,7 +2240,7 @@ func (c *Comment) HasRelatedId() bool {
 	return false
 }
 
-// GetRelatedId allocates a new c.RelatedId and returns the pointer to it.
+// SetRelatedId allocates a new c.RelatedId and returns the pointer to it.
 func (c *Comment) SetRelatedId(v int) {
 	c.RelatedId = &v
 }
@@ -2271,7 +2271,7 @@ func (c *Comment) HasResource() bool {
 	return false
 }
 
-// GetResource allocates a new c.Resource and returns the pointer to it.
+// SetResource allocates a new c.Resource and returns the pointer to it.
 func (c *Comment) SetResource(v string) {
 	c.Resource = &v
 }
@@ -2302,7 +2302,7 @@ func (c *Comment) HasUrl() bool {
 	return false
 }
 
-// GetUrl allocates a new c.Url and returns the pointer to it.
+// SetUrl allocates a new c.Url and returns the pointer to it.
 func (c *Comment) SetUrl(v string) {
 	c.Url = &v
 }
@@ -2333,7 +2333,7 @@ func (c *ConditionalFormat) HasColor() bool {
 	return false
 }
 
-// GetColor allocates a new c.Color and returns the pointer to it.
+// SetColor allocates a new c.Color and returns the pointer to it.
 func (c *ConditionalFormat) SetColor(v string) {
 	c.Color = &v
 }
@@ -2364,7 +2364,7 @@ func (c *ConditionalFormat) HasComparator() bool {
 	return false
 }
 
-// GetComparator allocates a new c.Comparator and returns the pointer to it.
+// SetComparator allocates a new c.Comparator and returns the pointer to it.
 func (c *ConditionalFormat) SetComparator(v string) {
 	c.Comparator = &v
 }
@@ -2395,7 +2395,7 @@ func (c *ConditionalFormat) HasInverted() bool {
 	return false
 }
 
-// GetInverted allocates a new c.Inverted and returns the pointer to it.
+// SetInverted allocates a new c.Inverted and returns the pointer to it.
 func (c *ConditionalFormat) SetInverted(v bool) {
 	c.Inverted = &v
 }
@@ -2426,7 +2426,7 @@ func (c *ConditionalFormat) HasValue() bool {
 	return false
 }
 
-// GetValue allocates a new c.Value and returns the pointer to it.
+// SetValue allocates a new c.Value and returns the pointer to it.
 func (c *ConditionalFormat) SetValue(v int) {
 	c.Value = &v
 }
@@ -2457,7 +2457,7 @@ func (c *Creator) HasEmail() bool {
 	return false
 }
 
-// GetEmail allocates a new c.Email and returns the pointer to it.
+// SetEmail allocates a new c.Email and returns the pointer to it.
 func (c *Creator) SetEmail(v string) {
 	c.Email = &v
 }
@@ -2488,7 +2488,7 @@ func (c *Creator) HasHandle() bool {
 	return false
 }
 
-// GetHandle allocates a new c.Handle and returns the pointer to it.
+// SetHandle allocates a new c.Handle and returns the pointer to it.
 func (c *Creator) SetHandle(v string) {
 	c.Handle = &v
 }
@@ -2519,7 +2519,7 @@ func (c *Creator) HasId() bool {
 	return false
 }
 
-// GetId allocates a new c.Id and returns the pointer to it.
+// SetId allocates a new c.Id and returns the pointer to it.
 func (c *Creator) SetId(v int) {
 	c.Id = &v
 }
@@ -2550,7 +2550,7 @@ func (c *Creator) HasName() bool {
 	return false
 }
 
-// GetName allocates a new c.Name and returns the pointer to it.
+// SetName allocates a new c.Name and returns the pointer to it.
 func (c *Creator) SetName(v string) {
 	c.Name = &v
 }
@@ -2581,7 +2581,7 @@ func (d *Dashboard) HasDescription() bool {
 	return false
 }
 
-// GetDescription allocates a new d.Description and returns the pointer to it.
+// SetDescription allocates a new d.Description and returns the pointer to it.
 func (d *Dashboard) SetDescription(v string) {
 	d.Description = &v
 }
@@ -2612,7 +2612,7 @@ func (d *Dashboard) HasId() bool {
 	return false
 }
 
-// GetId allocates a new d.Id and returns the pointer to it.
+// SetId allocates a new d.Id and returns the pointer to it.
 func (d *Dashboard) SetId(v int) {
 	d.Id = &v
 }
@@ -2643,7 +2643,7 @@ func (d *Dashboard) HasReadOnly() bool {
 	return false
 }
 
-// GetReadOnly allocates a new d.ReadOnly and returns the pointer to it.
+// SetReadOnly allocates a new d.ReadOnly and returns the pointer to it.
 func (d *Dashboard) SetReadOnly(v bool) {
 	d.ReadOnly = &v
 }
@@ -2674,7 +2674,7 @@ func (d *Dashboard) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new d.Title and returns the pointer to it.
+// SetTitle allocates a new d.Title and returns the pointer to it.
 func (d *Dashboard) SetTitle(v string) {
 	d.Title = &v
 }
@@ -2705,7 +2705,7 @@ func (d *DashboardConditionalFormat) HasComparator() bool {
 	return false
 }
 
-// GetComparator allocates a new d.Comparator and returns the pointer to it.
+// SetComparator allocates a new d.Comparator and returns the pointer to it.
 func (d *DashboardConditionalFormat) SetComparator(v string) {
 	d.Comparator = &v
 }
@@ -2736,7 +2736,7 @@ func (d *DashboardConditionalFormat) HasCustomBgColor() bool {
 	return false
 }
 
-// GetCustomBgColor allocates a new d.CustomBgColor and returns the pointer to it.
+// SetCustomBgColor allocates a new d.CustomBgColor and returns the pointer to it.
 func (d *DashboardConditionalFormat) SetCustomBgColor(v string) {
 	d.CustomBgColor = &v
 }
@@ -2767,9 +2767,40 @@ func (d *DashboardConditionalFormat) HasCustomFgColor() bool {
 	return false
 }
 
-// GetCustomFgColor allocates a new d.CustomFgColor and returns the pointer to it.
+// SetCustomFgColor allocates a new d.CustomFgColor and returns the pointer to it.
 func (d *DashboardConditionalFormat) SetCustomFgColor(v string) {
 	d.CustomFgColor = &v
+}
+
+// GetCustomImageUrl returns the CustomImageUrl field if non-nil, zero value otherwise.
+func (d *DashboardConditionalFormat) GetCustomImageUrl() string {
+	if d == nil || d.CustomImageUrl == nil {
+		return ""
+	}
+	return *d.CustomImageUrl
+}
+
+// GetOkCustomImageUrl returns a tuple with the CustomImageUrl field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *DashboardConditionalFormat) GetCustomImageUrlOk() (string, bool) {
+	if d == nil || d.CustomImageUrl == nil {
+		return "", false
+	}
+	return *d.CustomImageUrl, true
+}
+
+// HasCustomImageUrl returns a boolean if a field has been set.
+func (d *DashboardConditionalFormat) HasCustomImageUrl() bool {
+	if d != nil && d.CustomImageUrl != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomImageUrl allocates a new d.CustomImageUrl and returns the pointer to it.
+func (d *DashboardConditionalFormat) SetCustomImageUrl(v string) {
+	d.CustomImageUrl = &v
 }
 
 // GetInverted returns the Inverted field if non-nil, zero value otherwise.
@@ -2798,7 +2829,7 @@ func (d *DashboardConditionalFormat) HasInverted() bool {
 	return false
 }
 
-// GetInverted allocates a new d.Inverted and returns the pointer to it.
+// SetInverted allocates a new d.Inverted and returns the pointer to it.
 func (d *DashboardConditionalFormat) SetInverted(v bool) {
 	d.Inverted = &v
 }
@@ -2829,7 +2860,7 @@ func (d *DashboardConditionalFormat) HasPalette() bool {
 	return false
 }
 
-// GetPalette allocates a new d.Palette and returns the pointer to it.
+// SetPalette allocates a new d.Palette and returns the pointer to it.
 func (d *DashboardConditionalFormat) SetPalette(v string) {
 	d.Palette = &v
 }
@@ -2860,7 +2891,7 @@ func (d *DashboardConditionalFormat) HasValue() bool {
 	return false
 }
 
-// GetValue allocates a new d.Value and returns the pointer to it.
+// SetValue allocates a new d.Value and returns the pointer to it.
 func (d *DashboardConditionalFormat) SetValue(v json.Number) {
 	d.Value = &v
 }
@@ -2891,7 +2922,7 @@ func (d *DashboardLite) HasDescription() bool {
 	return false
 }
 
-// GetDescription allocates a new d.Description and returns the pointer to it.
+// SetDescription allocates a new d.Description and returns the pointer to it.
 func (d *DashboardLite) SetDescription(v string) {
 	d.Description = &v
 }
@@ -2922,7 +2953,7 @@ func (d *DashboardLite) HasId() bool {
 	return false
 }
 
-// GetId allocates a new d.Id and returns the pointer to it.
+// SetId allocates a new d.Id and returns the pointer to it.
 func (d *DashboardLite) SetId(v int) {
 	d.Id = &v
 }
@@ -2953,7 +2984,7 @@ func (d *DashboardLite) HasResource() bool {
 	return false
 }
 
-// GetResource allocates a new d.Resource and returns the pointer to it.
+// SetResource allocates a new d.Resource and returns the pointer to it.
 func (d *DashboardLite) SetResource(v string) {
 	d.Resource = &v
 }
@@ -2984,7 +3015,7 @@ func (d *DashboardLite) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new d.Title and returns the pointer to it.
+// SetTitle allocates a new d.Title and returns the pointer to it.
 func (d *DashboardLite) SetTitle(v string) {
 	d.Title = &v
 }
@@ -3015,7 +3046,7 @@ func (d *Downtime) HasActive() bool {
 	return false
 }
 
-// GetActive allocates a new d.Active and returns the pointer to it.
+// SetActive allocates a new d.Active and returns the pointer to it.
 func (d *Downtime) SetActive(v bool) {
 	d.Active = &v
 }
@@ -3046,7 +3077,7 @@ func (d *Downtime) HasCanceled() bool {
 	return false
 }
 
-// GetCanceled allocates a new d.Canceled and returns the pointer to it.
+// SetCanceled allocates a new d.Canceled and returns the pointer to it.
 func (d *Downtime) SetCanceled(v int) {
 	d.Canceled = &v
 }
@@ -3077,7 +3108,7 @@ func (d *Downtime) HasDisabled() bool {
 	return false
 }
 
-// GetDisabled allocates a new d.Disabled and returns the pointer to it.
+// SetDisabled allocates a new d.Disabled and returns the pointer to it.
 func (d *Downtime) SetDisabled(v bool) {
 	d.Disabled = &v
 }
@@ -3108,7 +3139,7 @@ func (d *Downtime) HasEnd() bool {
 	return false
 }
 
-// GetEnd allocates a new d.End and returns the pointer to it.
+// SetEnd allocates a new d.End and returns the pointer to it.
 func (d *Downtime) SetEnd(v int) {
 	d.End = &v
 }
@@ -3139,7 +3170,7 @@ func (d *Downtime) HasId() bool {
 	return false
 }
 
-// GetId allocates a new d.Id and returns the pointer to it.
+// SetId allocates a new d.Id and returns the pointer to it.
 func (d *Downtime) SetId(v int) {
 	d.Id = &v
 }
@@ -3170,7 +3201,7 @@ func (d *Downtime) HasMessage() bool {
 	return false
 }
 
-// GetMessage allocates a new d.Message and returns the pointer to it.
+// SetMessage allocates a new d.Message and returns the pointer to it.
 func (d *Downtime) SetMessage(v string) {
 	d.Message = &v
 }
@@ -3201,7 +3232,7 @@ func (d *Downtime) HasMonitorId() bool {
 	return false
 }
 
-// GetMonitorId allocates a new d.MonitorId and returns the pointer to it.
+// SetMonitorId allocates a new d.MonitorId and returns the pointer to it.
 func (d *Downtime) SetMonitorId(v int) {
 	d.MonitorId = &v
 }
@@ -3232,7 +3263,7 @@ func (d *Downtime) HasRecurrence() bool {
 	return false
 }
 
-// GetRecurrence allocates a new d.Recurrence and returns the pointer to it.
+// SetRecurrence allocates a new d.Recurrence and returns the pointer to it.
 func (d *Downtime) SetRecurrence(v Recurrence) {
 	d.Recurrence = &v
 }
@@ -3263,7 +3294,7 @@ func (d *Downtime) HasStart() bool {
 	return false
 }
 
-// GetStart allocates a new d.Start and returns the pointer to it.
+// SetStart allocates a new d.Start and returns the pointer to it.
 func (d *Downtime) SetStart(v int) {
 	d.Start = &v
 }
@@ -3294,7 +3325,7 @@ func (e *Event) HasAggregation() bool {
 	return false
 }
 
-// GetAggregation allocates a new e.Aggregation and returns the pointer to it.
+// SetAggregation allocates a new e.Aggregation and returns the pointer to it.
 func (e *Event) SetAggregation(v string) {
 	e.Aggregation = &v
 }
@@ -3325,7 +3356,7 @@ func (e *Event) HasAlertType() bool {
 	return false
 }
 
-// GetAlertType allocates a new e.AlertType and returns the pointer to it.
+// SetAlertType allocates a new e.AlertType and returns the pointer to it.
 func (e *Event) SetAlertType(v string) {
 	e.AlertType = &v
 }
@@ -3356,7 +3387,7 @@ func (e *Event) HasEventType() bool {
 	return false
 }
 
-// GetEventType allocates a new e.EventType and returns the pointer to it.
+// SetEventType allocates a new e.EventType and returns the pointer to it.
 func (e *Event) SetEventType(v string) {
 	e.EventType = &v
 }
@@ -3387,7 +3418,7 @@ func (e *Event) HasHost() bool {
 	return false
 }
 
-// GetHost allocates a new e.Host and returns the pointer to it.
+// SetHost allocates a new e.Host and returns the pointer to it.
 func (e *Event) SetHost(v string) {
 	e.Host = &v
 }
@@ -3418,7 +3449,7 @@ func (e *Event) HasId() bool {
 	return false
 }
 
-// GetId allocates a new e.Id and returns the pointer to it.
+// SetId allocates a new e.Id and returns the pointer to it.
 func (e *Event) SetId(v int) {
 	e.Id = &v
 }
@@ -3449,7 +3480,7 @@ func (e *Event) HasPriority() bool {
 	return false
 }
 
-// GetPriority allocates a new e.Priority and returns the pointer to it.
+// SetPriority allocates a new e.Priority and returns the pointer to it.
 func (e *Event) SetPriority(v string) {
 	e.Priority = &v
 }
@@ -3480,7 +3511,7 @@ func (e *Event) HasResource() bool {
 	return false
 }
 
-// GetResource allocates a new e.Resource and returns the pointer to it.
+// SetResource allocates a new e.Resource and returns the pointer to it.
 func (e *Event) SetResource(v string) {
 	e.Resource = &v
 }
@@ -3511,7 +3542,7 @@ func (e *Event) HasSourceType() bool {
 	return false
 }
 
-// GetSourceType allocates a new e.SourceType and returns the pointer to it.
+// SetSourceType allocates a new e.SourceType and returns the pointer to it.
 func (e *Event) SetSourceType(v string) {
 	e.SourceType = &v
 }
@@ -3542,7 +3573,7 @@ func (e *Event) HasText() bool {
 	return false
 }
 
-// GetText allocates a new e.Text and returns the pointer to it.
+// SetText allocates a new e.Text and returns the pointer to it.
 func (e *Event) SetText(v string) {
 	e.Text = &v
 }
@@ -3573,7 +3604,7 @@ func (e *Event) HasTime() bool {
 	return false
 }
 
-// GetTime allocates a new e.Time and returns the pointer to it.
+// SetTime allocates a new e.Time and returns the pointer to it.
 func (e *Event) SetTime(v int) {
 	e.Time = &v
 }
@@ -3604,7 +3635,7 @@ func (e *Event) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new e.Title and returns the pointer to it.
+// SetTitle allocates a new e.Title and returns the pointer to it.
 func (e *Event) SetTitle(v string) {
 	e.Title = &v
 }
@@ -3635,7 +3666,7 @@ func (e *Event) HasUrl() bool {
 	return false
 }
 
-// GetUrl allocates a new e.Url and returns the pointer to it.
+// SetUrl allocates a new e.Url and returns the pointer to it.
 func (e *Event) SetUrl(v string) {
 	e.Url = &v
 }
@@ -3666,7 +3697,7 @@ func (e *EventStreamWidget) HasEventSize() bool {
 	return false
 }
 
-// GetEventSize allocates a new e.EventSize and returns the pointer to it.
+// SetEventSize allocates a new e.EventSize and returns the pointer to it.
 func (e *EventStreamWidget) SetEventSize(v string) {
 	e.EventSize = &v
 }
@@ -3697,7 +3728,7 @@ func (e *EventStreamWidget) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new e.Height and returns the pointer to it.
+// SetHeight allocates a new e.Height and returns the pointer to it.
 func (e *EventStreamWidget) SetHeight(v int) {
 	e.Height = &v
 }
@@ -3728,7 +3759,7 @@ func (e *EventStreamWidget) HasQuery() bool {
 	return false
 }
 
-// GetQuery allocates a new e.Query and returns the pointer to it.
+// SetQuery allocates a new e.Query and returns the pointer to it.
 func (e *EventStreamWidget) SetQuery(v string) {
 	e.Query = &v
 }
@@ -3759,7 +3790,7 @@ func (e *EventStreamWidget) HasTimeframe() bool {
 	return false
 }
 
-// GetTimeframe allocates a new e.Timeframe and returns the pointer to it.
+// SetTimeframe allocates a new e.Timeframe and returns the pointer to it.
 func (e *EventStreamWidget) SetTimeframe(v string) {
 	e.Timeframe = &v
 }
@@ -3790,7 +3821,7 @@ func (e *EventStreamWidget) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new e.Title and returns the pointer to it.
+// SetTitle allocates a new e.Title and returns the pointer to it.
 func (e *EventStreamWidget) SetTitle(v bool) {
 	e.Title = &v
 }
@@ -3821,7 +3852,7 @@ func (e *EventStreamWidget) HasTitleAlign() bool {
 	return false
 }
 
-// GetTitleAlign allocates a new e.TitleAlign and returns the pointer to it.
+// SetTitleAlign allocates a new e.TitleAlign and returns the pointer to it.
 func (e *EventStreamWidget) SetTitleAlign(v string) {
 	e.TitleAlign = &v
 }
@@ -3852,7 +3883,7 @@ func (e *EventStreamWidget) HasTitleSize() bool {
 	return false
 }
 
-// GetTitleSize allocates a new e.TitleSize and returns the pointer to it.
+// SetTitleSize allocates a new e.TitleSize and returns the pointer to it.
 func (e *EventStreamWidget) SetTitleSize(v TextSize) {
 	e.TitleSize = &v
 }
@@ -3883,7 +3914,7 @@ func (e *EventStreamWidget) HasTitleText() bool {
 	return false
 }
 
-// GetTitleText allocates a new e.TitleText and returns the pointer to it.
+// SetTitleText allocates a new e.TitleText and returns the pointer to it.
 func (e *EventStreamWidget) SetTitleText(v string) {
 	e.TitleText = &v
 }
@@ -3914,7 +3945,7 @@ func (e *EventStreamWidget) HasType() bool {
 	return false
 }
 
-// GetType allocates a new e.Type and returns the pointer to it.
+// SetType allocates a new e.Type and returns the pointer to it.
 func (e *EventStreamWidget) SetType(v string) {
 	e.Type = &v
 }
@@ -3945,7 +3976,7 @@ func (e *EventStreamWidget) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new e.Width and returns the pointer to it.
+// SetWidth allocates a new e.Width and returns the pointer to it.
 func (e *EventStreamWidget) SetWidth(v int) {
 	e.Width = &v
 }
@@ -3976,7 +4007,7 @@ func (e *EventStreamWidget) HasX() bool {
 	return false
 }
 
-// GetX allocates a new e.X and returns the pointer to it.
+// SetX allocates a new e.X and returns the pointer to it.
 func (e *EventStreamWidget) SetX(v int) {
 	e.X = &v
 }
@@ -4007,7 +4038,7 @@ func (e *EventStreamWidget) HasY() bool {
 	return false
 }
 
-// GetY allocates a new e.Y and returns the pointer to it.
+// SetY allocates a new e.Y and returns the pointer to it.
 func (e *EventStreamWidget) SetY(v int) {
 	e.Y = &v
 }
@@ -4038,7 +4069,7 @@ func (e *EventTimelineWidget) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new e.Height and returns the pointer to it.
+// SetHeight allocates a new e.Height and returns the pointer to it.
 func (e *EventTimelineWidget) SetHeight(v int) {
 	e.Height = &v
 }
@@ -4069,7 +4100,7 @@ func (e *EventTimelineWidget) HasQuery() bool {
 	return false
 }
 
-// GetQuery allocates a new e.Query and returns the pointer to it.
+// SetQuery allocates a new e.Query and returns the pointer to it.
 func (e *EventTimelineWidget) SetQuery(v string) {
 	e.Query = &v
 }
@@ -4100,7 +4131,7 @@ func (e *EventTimelineWidget) HasTimeframe() bool {
 	return false
 }
 
-// GetTimeframe allocates a new e.Timeframe and returns the pointer to it.
+// SetTimeframe allocates a new e.Timeframe and returns the pointer to it.
 func (e *EventTimelineWidget) SetTimeframe(v string) {
 	e.Timeframe = &v
 }
@@ -4131,7 +4162,7 @@ func (e *EventTimelineWidget) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new e.Title and returns the pointer to it.
+// SetTitle allocates a new e.Title and returns the pointer to it.
 func (e *EventTimelineWidget) SetTitle(v bool) {
 	e.Title = &v
 }
@@ -4162,7 +4193,7 @@ func (e *EventTimelineWidget) HasTitleAlign() bool {
 	return false
 }
 
-// GetTitleAlign allocates a new e.TitleAlign and returns the pointer to it.
+// SetTitleAlign allocates a new e.TitleAlign and returns the pointer to it.
 func (e *EventTimelineWidget) SetTitleAlign(v string) {
 	e.TitleAlign = &v
 }
@@ -4193,7 +4224,7 @@ func (e *EventTimelineWidget) HasTitleSize() bool {
 	return false
 }
 
-// GetTitleSize allocates a new e.TitleSize and returns the pointer to it.
+// SetTitleSize allocates a new e.TitleSize and returns the pointer to it.
 func (e *EventTimelineWidget) SetTitleSize(v int) {
 	e.TitleSize = &v
 }
@@ -4224,7 +4255,7 @@ func (e *EventTimelineWidget) HasTitleText() bool {
 	return false
 }
 
-// GetTitleText allocates a new e.TitleText and returns the pointer to it.
+// SetTitleText allocates a new e.TitleText and returns the pointer to it.
 func (e *EventTimelineWidget) SetTitleText(v string) {
 	e.TitleText = &v
 }
@@ -4255,7 +4286,7 @@ func (e *EventTimelineWidget) HasType() bool {
 	return false
 }
 
-// GetType allocates a new e.Type and returns the pointer to it.
+// SetType allocates a new e.Type and returns the pointer to it.
 func (e *EventTimelineWidget) SetType(v string) {
 	e.Type = &v
 }
@@ -4286,7 +4317,7 @@ func (e *EventTimelineWidget) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new e.Width and returns the pointer to it.
+// SetWidth allocates a new e.Width and returns the pointer to it.
 func (e *EventTimelineWidget) SetWidth(v int) {
 	e.Width = &v
 }
@@ -4317,7 +4348,7 @@ func (e *EventTimelineWidget) HasX() bool {
 	return false
 }
 
-// GetX allocates a new e.X and returns the pointer to it.
+// SetX allocates a new e.X and returns the pointer to it.
 func (e *EventTimelineWidget) SetX(v int) {
 	e.X = &v
 }
@@ -4348,7 +4379,7 @@ func (e *EventTimelineWidget) HasY() bool {
 	return false
 }
 
-// GetY allocates a new e.Y and returns the pointer to it.
+// SetY allocates a new e.Y and returns the pointer to it.
 func (e *EventTimelineWidget) SetY(v int) {
 	e.Y = &v
 }
@@ -4379,7 +4410,7 @@ func (f *FreeTextWidget) HasColor() bool {
 	return false
 }
 
-// GetColor allocates a new f.Color and returns the pointer to it.
+// SetColor allocates a new f.Color and returns the pointer to it.
 func (f *FreeTextWidget) SetColor(v string) {
 	f.Color = &v
 }
@@ -4410,7 +4441,7 @@ func (f *FreeTextWidget) HasFontSize() bool {
 	return false
 }
 
-// GetFontSize allocates a new f.FontSize and returns the pointer to it.
+// SetFontSize allocates a new f.FontSize and returns the pointer to it.
 func (f *FreeTextWidget) SetFontSize(v string) {
 	f.FontSize = &v
 }
@@ -4441,7 +4472,7 @@ func (f *FreeTextWidget) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new f.Height and returns the pointer to it.
+// SetHeight allocates a new f.Height and returns the pointer to it.
 func (f *FreeTextWidget) SetHeight(v int) {
 	f.Height = &v
 }
@@ -4472,7 +4503,7 @@ func (f *FreeTextWidget) HasText() bool {
 	return false
 }
 
-// GetText allocates a new f.Text and returns the pointer to it.
+// SetText allocates a new f.Text and returns the pointer to it.
 func (f *FreeTextWidget) SetText(v string) {
 	f.Text = &v
 }
@@ -4503,7 +4534,7 @@ func (f *FreeTextWidget) HasTextAlign() bool {
 	return false
 }
 
-// GetTextAlign allocates a new f.TextAlign and returns the pointer to it.
+// SetTextAlign allocates a new f.TextAlign and returns the pointer to it.
 func (f *FreeTextWidget) SetTextAlign(v string) {
 	f.TextAlign = &v
 }
@@ -4534,7 +4565,7 @@ func (f *FreeTextWidget) HasType() bool {
 	return false
 }
 
-// GetType allocates a new f.Type and returns the pointer to it.
+// SetType allocates a new f.Type and returns the pointer to it.
 func (f *FreeTextWidget) SetType(v string) {
 	f.Type = &v
 }
@@ -4565,7 +4596,7 @@ func (f *FreeTextWidget) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new f.Width and returns the pointer to it.
+// SetWidth allocates a new f.Width and returns the pointer to it.
 func (f *FreeTextWidget) SetWidth(v int) {
 	f.Width = &v
 }
@@ -4596,7 +4627,7 @@ func (f *FreeTextWidget) HasX() bool {
 	return false
 }
 
-// GetX allocates a new f.X and returns the pointer to it.
+// SetX allocates a new f.X and returns the pointer to it.
 func (f *FreeTextWidget) SetX(v int) {
 	f.X = &v
 }
@@ -4627,7 +4658,7 @@ func (f *FreeTextWidget) HasY() bool {
 	return false
 }
 
-// GetY allocates a new f.Y and returns the pointer to it.
+// SetY allocates a new f.Y and returns the pointer to it.
 func (f *FreeTextWidget) SetY(v int) {
 	f.Y = &v
 }
@@ -4658,7 +4689,7 @@ func (g *Graph) HasDefinition() bool {
 	return false
 }
 
-// GetDefinition allocates a new g.Definition and returns the pointer to it.
+// SetDefinition allocates a new g.Definition and returns the pointer to it.
 func (g *Graph) SetDefinition(v GraphDefinition) {
 	g.Definition = &v
 }
@@ -4689,7 +4720,7 @@ func (g *Graph) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new g.Title and returns the pointer to it.
+// SetTitle allocates a new g.Title and returns the pointer to it.
 func (g *Graph) SetTitle(v string) {
 	g.Title = &v
 }
@@ -4720,7 +4751,7 @@ func (g *GraphDefinition) HasAutoscale() bool {
 	return false
 }
 
-// GetAutoscale allocates a new g.Autoscale and returns the pointer to it.
+// SetAutoscale allocates a new g.Autoscale and returns the pointer to it.
 func (g *GraphDefinition) SetAutoscale(v bool) {
 	g.Autoscale = &v
 }
@@ -4751,7 +4782,7 @@ func (g *GraphDefinition) HasCustomUnit() bool {
 	return false
 }
 
-// GetCustomUnit allocates a new g.CustomUnit and returns the pointer to it.
+// SetCustomUnit allocates a new g.CustomUnit and returns the pointer to it.
 func (g *GraphDefinition) SetCustomUnit(v string) {
 	g.CustomUnit = &v
 }
@@ -4782,7 +4813,7 @@ func (g *GraphDefinition) HasIncludeNoMetricHosts() bool {
 	return false
 }
 
-// GetIncludeNoMetricHosts allocates a new g.IncludeNoMetricHosts and returns the pointer to it.
+// SetIncludeNoMetricHosts allocates a new g.IncludeNoMetricHosts and returns the pointer to it.
 func (g *GraphDefinition) SetIncludeNoMetricHosts(v bool) {
 	g.IncludeNoMetricHosts = &v
 }
@@ -4813,7 +4844,7 @@ func (g *GraphDefinition) HasIncludeUngroupedHosts() bool {
 	return false
 }
 
-// GetIncludeUngroupedHosts allocates a new g.IncludeUngroupedHosts and returns the pointer to it.
+// SetIncludeUngroupedHosts allocates a new g.IncludeUngroupedHosts and returns the pointer to it.
 func (g *GraphDefinition) SetIncludeUngroupedHosts(v bool) {
 	g.IncludeUngroupedHosts = &v
 }
@@ -4844,7 +4875,7 @@ func (g *GraphDefinition) HasPrecision() bool {
 	return false
 }
 
-// GetPrecision allocates a new g.Precision and returns the pointer to it.
+// SetPrecision allocates a new g.Precision and returns the pointer to it.
 func (g *GraphDefinition) SetPrecision(v string) {
 	g.Precision = &v
 }
@@ -4875,7 +4906,7 @@ func (g *GraphDefinition) HasStyle() bool {
 	return false
 }
 
-// GetStyle allocates a new g.Style and returns the pointer to it.
+// SetStyle allocates a new g.Style and returns the pointer to it.
 func (g *GraphDefinition) SetStyle(v Style) {
 	g.Style = &v
 }
@@ -4906,7 +4937,7 @@ func (g *GraphDefinition) HasTextAlign() bool {
 	return false
 }
 
-// GetTextAlign allocates a new g.TextAlign and returns the pointer to it.
+// SetTextAlign allocates a new g.TextAlign and returns the pointer to it.
 func (g *GraphDefinition) SetTextAlign(v string) {
 	g.TextAlign = &v
 }
@@ -4937,7 +4968,7 @@ func (g *GraphDefinition) HasViz() bool {
 	return false
 }
 
-// GetViz allocates a new g.Viz and returns the pointer to it.
+// SetViz allocates a new g.Viz and returns the pointer to it.
 func (g *GraphDefinition) SetViz(v string) {
 	g.Viz = &v
 }
@@ -4968,7 +4999,7 @@ func (g *GraphDefinitionMarker) HasLabel() bool {
 	return false
 }
 
-// GetLabel allocates a new g.Label and returns the pointer to it.
+// SetLabel allocates a new g.Label and returns the pointer to it.
 func (g *GraphDefinitionMarker) SetLabel(v string) {
 	g.Label = &v
 }
@@ -4999,7 +5030,7 @@ func (g *GraphDefinitionMarker) HasMax() bool {
 	return false
 }
 
-// GetMax allocates a new g.Max and returns the pointer to it.
+// SetMax allocates a new g.Max and returns the pointer to it.
 func (g *GraphDefinitionMarker) SetMax(v json.Number) {
 	g.Max = &v
 }
@@ -5030,7 +5061,7 @@ func (g *GraphDefinitionMarker) HasMin() bool {
 	return false
 }
 
-// GetMin allocates a new g.Min and returns the pointer to it.
+// SetMin allocates a new g.Min and returns the pointer to it.
 func (g *GraphDefinitionMarker) SetMin(v json.Number) {
 	g.Min = &v
 }
@@ -5061,7 +5092,7 @@ func (g *GraphDefinitionMarker) HasType() bool {
 	return false
 }
 
-// GetType allocates a new g.Type and returns the pointer to it.
+// SetType allocates a new g.Type and returns the pointer to it.
 func (g *GraphDefinitionMarker) SetType(v string) {
 	g.Type = &v
 }
@@ -5092,7 +5123,7 @@ func (g *GraphDefinitionMarker) HasVal() bool {
 	return false
 }
 
-// GetVal allocates a new g.Val and returns the pointer to it.
+// SetVal allocates a new g.Val and returns the pointer to it.
 func (g *GraphDefinitionMarker) SetVal(v json.Number) {
 	g.Val = &v
 }
@@ -5123,7 +5154,7 @@ func (g *GraphDefinitionMarker) HasValue() bool {
 	return false
 }
 
-// GetValue allocates a new g.Value and returns the pointer to it.
+// SetValue allocates a new g.Value and returns the pointer to it.
 func (g *GraphDefinitionMarker) SetValue(v string) {
 	g.Value = &v
 }
@@ -5154,7 +5185,7 @@ func (g *GraphDefinitionRequest) HasAggregator() bool {
 	return false
 }
 
-// GetAggregator allocates a new g.Aggregator and returns the pointer to it.
+// SetAggregator allocates a new g.Aggregator and returns the pointer to it.
 func (g *GraphDefinitionRequest) SetAggregator(v string) {
 	g.Aggregator = &v
 }
@@ -5185,7 +5216,7 @@ func (g *GraphDefinitionRequest) HasChangeType() bool {
 	return false
 }
 
-// GetChangeType allocates a new g.ChangeType and returns the pointer to it.
+// SetChangeType allocates a new g.ChangeType and returns the pointer to it.
 func (g *GraphDefinitionRequest) SetChangeType(v string) {
 	g.ChangeType = &v
 }
@@ -5216,7 +5247,7 @@ func (g *GraphDefinitionRequest) HasCompareTo() bool {
 	return false
 }
 
-// GetCompareTo allocates a new g.CompareTo and returns the pointer to it.
+// SetCompareTo allocates a new g.CompareTo and returns the pointer to it.
 func (g *GraphDefinitionRequest) SetCompareTo(v string) {
 	g.CompareTo = &v
 }
@@ -5247,7 +5278,7 @@ func (g *GraphDefinitionRequest) HasExtraCol() bool {
 	return false
 }
 
-// GetExtraCol allocates a new g.ExtraCol and returns the pointer to it.
+// SetExtraCol allocates a new g.ExtraCol and returns the pointer to it.
 func (g *GraphDefinitionRequest) SetExtraCol(v string) {
 	g.ExtraCol = &v
 }
@@ -5278,7 +5309,7 @@ func (g *GraphDefinitionRequest) HasIncreaseGood() bool {
 	return false
 }
 
-// GetIncreaseGood allocates a new g.IncreaseGood and returns the pointer to it.
+// SetIncreaseGood allocates a new g.IncreaseGood and returns the pointer to it.
 func (g *GraphDefinitionRequest) SetIncreaseGood(v bool) {
 	g.IncreaseGood = &v
 }
@@ -5309,7 +5340,7 @@ func (g *GraphDefinitionRequest) HasOrderBy() bool {
 	return false
 }
 
-// GetOrderBy allocates a new g.OrderBy and returns the pointer to it.
+// SetOrderBy allocates a new g.OrderBy and returns the pointer to it.
 func (g *GraphDefinitionRequest) SetOrderBy(v string) {
 	g.OrderBy = &v
 }
@@ -5340,7 +5371,7 @@ func (g *GraphDefinitionRequest) HasOrderDirection() bool {
 	return false
 }
 
-// GetOrderDirection allocates a new g.OrderDirection and returns the pointer to it.
+// SetOrderDirection allocates a new g.OrderDirection and returns the pointer to it.
 func (g *GraphDefinitionRequest) SetOrderDirection(v string) {
 	g.OrderDirection = &v
 }
@@ -5371,7 +5402,7 @@ func (g *GraphDefinitionRequest) HasQuery() bool {
 	return false
 }
 
-// GetQuery allocates a new g.Query and returns the pointer to it.
+// SetQuery allocates a new g.Query and returns the pointer to it.
 func (g *GraphDefinitionRequest) SetQuery(v string) {
 	g.Query = &v
 }
@@ -5402,7 +5433,7 @@ func (g *GraphDefinitionRequest) HasStacked() bool {
 	return false
 }
 
-// GetStacked allocates a new g.Stacked and returns the pointer to it.
+// SetStacked allocates a new g.Stacked and returns the pointer to it.
 func (g *GraphDefinitionRequest) SetStacked(v bool) {
 	g.Stacked = &v
 }
@@ -5433,7 +5464,7 @@ func (g *GraphDefinitionRequest) HasStyle() bool {
 	return false
 }
 
-// GetStyle allocates a new g.Style and returns the pointer to it.
+// SetStyle allocates a new g.Style and returns the pointer to it.
 func (g *GraphDefinitionRequest) SetStyle(v GraphDefinitionRequestStyle) {
 	g.Style = &v
 }
@@ -5464,7 +5495,7 @@ func (g *GraphDefinitionRequest) HasType() bool {
 	return false
 }
 
-// GetType allocates a new g.Type and returns the pointer to it.
+// SetType allocates a new g.Type and returns the pointer to it.
 func (g *GraphDefinitionRequest) SetType(v string) {
 	g.Type = &v
 }
@@ -5495,7 +5526,7 @@ func (g *GraphDefinitionRequestStyle) HasPalette() bool {
 	return false
 }
 
-// GetPalette allocates a new g.Palette and returns the pointer to it.
+// SetPalette allocates a new g.Palette and returns the pointer to it.
 func (g *GraphDefinitionRequestStyle) SetPalette(v string) {
 	g.Palette = &v
 }
@@ -5526,7 +5557,7 @@ func (g *GraphDefinitionRequestStyle) HasType() bool {
 	return false
 }
 
-// GetType allocates a new g.Type and returns the pointer to it.
+// SetType allocates a new g.Type and returns the pointer to it.
 func (g *GraphDefinitionRequestStyle) SetType(v string) {
 	g.Type = &v
 }
@@ -5557,7 +5588,7 @@ func (g *GraphDefinitionRequestStyle) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new g.Width and returns the pointer to it.
+// SetWidth allocates a new g.Width and returns the pointer to it.
 func (g *GraphDefinitionRequestStyle) SetWidth(v string) {
 	g.Width = &v
 }
@@ -5588,7 +5619,7 @@ func (g *GraphEvent) HasQuery() bool {
 	return false
 }
 
-// GetQuery allocates a new g.Query and returns the pointer to it.
+// SetQuery allocates a new g.Query and returns the pointer to it.
 func (g *GraphEvent) SetQuery(v string) {
 	g.Query = &v
 }
@@ -5619,7 +5650,7 @@ func (g *GraphWidget) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new g.Height and returns the pointer to it.
+// SetHeight allocates a new g.Height and returns the pointer to it.
 func (g *GraphWidget) SetHeight(v int) {
 	g.Height = &v
 }
@@ -5650,7 +5681,7 @@ func (g *GraphWidget) HasLegend() bool {
 	return false
 }
 
-// GetLegend allocates a new g.Legend and returns the pointer to it.
+// SetLegend allocates a new g.Legend and returns the pointer to it.
 func (g *GraphWidget) SetLegend(v bool) {
 	g.Legend = &v
 }
@@ -5681,7 +5712,7 @@ func (g *GraphWidget) HasLegendSize() bool {
 	return false
 }
 
-// GetLegendSize allocates a new g.LegendSize and returns the pointer to it.
+// SetLegendSize allocates a new g.LegendSize and returns the pointer to it.
 func (g *GraphWidget) SetLegendSize(v int) {
 	g.LegendSize = &v
 }
@@ -5712,7 +5743,7 @@ func (g *GraphWidget) HasTileDef() bool {
 	return false
 }
 
-// GetTileDef allocates a new g.TileDef and returns the pointer to it.
+// SetTileDef allocates a new g.TileDef and returns the pointer to it.
 func (g *GraphWidget) SetTileDef(v TileDef) {
 	g.TileDef = &v
 }
@@ -5743,7 +5774,7 @@ func (g *GraphWidget) HasTimeframe() bool {
 	return false
 }
 
-// GetTimeframe allocates a new g.Timeframe and returns the pointer to it.
+// SetTimeframe allocates a new g.Timeframe and returns the pointer to it.
 func (g *GraphWidget) SetTimeframe(v string) {
 	g.Timeframe = &v
 }
@@ -5774,7 +5805,7 @@ func (g *GraphWidget) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new g.Title and returns the pointer to it.
+// SetTitle allocates a new g.Title and returns the pointer to it.
 func (g *GraphWidget) SetTitle(v bool) {
 	g.Title = &v
 }
@@ -5805,7 +5836,7 @@ func (g *GraphWidget) HasTitleAlign() bool {
 	return false
 }
 
-// GetTitleAlign allocates a new g.TitleAlign and returns the pointer to it.
+// SetTitleAlign allocates a new g.TitleAlign and returns the pointer to it.
 func (g *GraphWidget) SetTitleAlign(v string) {
 	g.TitleAlign = &v
 }
@@ -5836,7 +5867,7 @@ func (g *GraphWidget) HasTitleSize() bool {
 	return false
 }
 
-// GetTitleSize allocates a new g.TitleSize and returns the pointer to it.
+// SetTitleSize allocates a new g.TitleSize and returns the pointer to it.
 func (g *GraphWidget) SetTitleSize(v int) {
 	g.TitleSize = &v
 }
@@ -5867,7 +5898,7 @@ func (g *GraphWidget) HasTitleText() bool {
 	return false
 }
 
-// GetTitleText allocates a new g.TitleText and returns the pointer to it.
+// SetTitleText allocates a new g.TitleText and returns the pointer to it.
 func (g *GraphWidget) SetTitleText(v string) {
 	g.TitleText = &v
 }
@@ -5898,7 +5929,7 @@ func (g *GraphWidget) HasType() bool {
 	return false
 }
 
-// GetType allocates a new g.Type and returns the pointer to it.
+// SetType allocates a new g.Type and returns the pointer to it.
 func (g *GraphWidget) SetType(v string) {
 	g.Type = &v
 }
@@ -5929,7 +5960,7 @@ func (g *GraphWidget) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new g.Width and returns the pointer to it.
+// SetWidth allocates a new g.Width and returns the pointer to it.
 func (g *GraphWidget) SetWidth(v int) {
 	g.Width = &v
 }
@@ -5960,7 +5991,7 @@ func (g *GraphWidget) HasX() bool {
 	return false
 }
 
-// GetX allocates a new g.X and returns the pointer to it.
+// SetX allocates a new g.X and returns the pointer to it.
 func (g *GraphWidget) SetX(v int) {
 	g.X = &v
 }
@@ -5991,9 +6022,102 @@ func (g *GraphWidget) HasY() bool {
 	return false
 }
 
-// GetY allocates a new g.Y and returns the pointer to it.
+// SetY allocates a new g.Y and returns the pointer to it.
 func (g *GraphWidget) SetY(v int) {
 	g.Y = &v
+}
+
+// GetEndTime returns the EndTime field if non-nil, zero value otherwise.
+func (h *HostActionMute) GetEndTime() string {
+	if h == nil || h.EndTime == nil {
+		return ""
+	}
+	return *h.EndTime
+}
+
+// GetOkEndTime returns a tuple with the EndTime field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (h *HostActionMute) GetEndTimeOk() (string, bool) {
+	if h == nil || h.EndTime == nil {
+		return "", false
+	}
+	return *h.EndTime, true
+}
+
+// HasEndTime returns a boolean if a field has been set.
+func (h *HostActionMute) HasEndTime() bool {
+	if h != nil && h.EndTime != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetEndTime allocates a new h.EndTime and returns the pointer to it.
+func (h *HostActionMute) SetEndTime(v string) {
+	h.EndTime = &v
+}
+
+// GetMessage returns the Message field if non-nil, zero value otherwise.
+func (h *HostActionMute) GetMessage() string {
+	if h == nil || h.Message == nil {
+		return ""
+	}
+	return *h.Message
+}
+
+// GetOkMessage returns a tuple with the Message field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (h *HostActionMute) GetMessageOk() (string, bool) {
+	if h == nil || h.Message == nil {
+		return "", false
+	}
+	return *h.Message, true
+}
+
+// HasMessage returns a boolean if a field has been set.
+func (h *HostActionMute) HasMessage() bool {
+	if h != nil && h.Message != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMessage allocates a new h.Message and returns the pointer to it.
+func (h *HostActionMute) SetMessage(v string) {
+	h.Message = &v
+}
+
+// GetOverride returns the Override field if non-nil, zero value otherwise.
+func (h *HostActionMute) GetOverride() bool {
+	if h == nil || h.Override == nil {
+		return false
+	}
+	return *h.Override
+}
+
+// GetOkOverride returns a tuple with the Override field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (h *HostActionMute) GetOverrideOk() (bool, bool) {
+	if h == nil || h.Override == nil {
+		return false, false
+	}
+	return *h.Override, true
+}
+
+// HasOverride returns a boolean if a field has been set.
+func (h *HostActionMute) HasOverride() bool {
+	if h != nil && h.Override != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetOverride allocates a new h.Override and returns the pointer to it.
+func (h *HostActionMute) SetOverride(v bool) {
+	h.Override = &v
 }
 
 // GetHeight returns the Height field if non-nil, zero value otherwise.
@@ -6022,7 +6146,7 @@ func (h *HostMapWidget) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new h.Height and returns the pointer to it.
+// SetHeight allocates a new h.Height and returns the pointer to it.
 func (h *HostMapWidget) SetHeight(v int) {
 	h.Height = &v
 }
@@ -6053,7 +6177,7 @@ func (h *HostMapWidget) HasLegend() bool {
 	return false
 }
 
-// GetLegend allocates a new h.Legend and returns the pointer to it.
+// SetLegend allocates a new h.Legend and returns the pointer to it.
 func (h *HostMapWidget) SetLegend(v bool) {
 	h.Legend = &v
 }
@@ -6084,7 +6208,7 @@ func (h *HostMapWidget) HasLegendSize() bool {
 	return false
 }
 
-// GetLegendSize allocates a new h.LegendSize and returns the pointer to it.
+// SetLegendSize allocates a new h.LegendSize and returns the pointer to it.
 func (h *HostMapWidget) SetLegendSize(v int) {
 	h.LegendSize = &v
 }
@@ -6115,7 +6239,7 @@ func (h *HostMapWidget) HasQuery() bool {
 	return false
 }
 
-// GetQuery allocates a new h.Query and returns the pointer to it.
+// SetQuery allocates a new h.Query and returns the pointer to it.
 func (h *HostMapWidget) SetQuery(v string) {
 	h.Query = &v
 }
@@ -6146,7 +6270,7 @@ func (h *HostMapWidget) HasTileDef() bool {
 	return false
 }
 
-// GetTileDef allocates a new h.TileDef and returns the pointer to it.
+// SetTileDef allocates a new h.TileDef and returns the pointer to it.
 func (h *HostMapWidget) SetTileDef(v TileDef) {
 	h.TileDef = &v
 }
@@ -6177,7 +6301,7 @@ func (h *HostMapWidget) HasTimeframe() bool {
 	return false
 }
 
-// GetTimeframe allocates a new h.Timeframe and returns the pointer to it.
+// SetTimeframe allocates a new h.Timeframe and returns the pointer to it.
 func (h *HostMapWidget) SetTimeframe(v string) {
 	h.Timeframe = &v
 }
@@ -6208,7 +6332,7 @@ func (h *HostMapWidget) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new h.Title and returns the pointer to it.
+// SetTitle allocates a new h.Title and returns the pointer to it.
 func (h *HostMapWidget) SetTitle(v bool) {
 	h.Title = &v
 }
@@ -6239,7 +6363,7 @@ func (h *HostMapWidget) HasTitleAlign() bool {
 	return false
 }
 
-// GetTitleAlign allocates a new h.TitleAlign and returns the pointer to it.
+// SetTitleAlign allocates a new h.TitleAlign and returns the pointer to it.
 func (h *HostMapWidget) SetTitleAlign(v string) {
 	h.TitleAlign = &v
 }
@@ -6270,7 +6394,7 @@ func (h *HostMapWidget) HasTitleSize() bool {
 	return false
 }
 
-// GetTitleSize allocates a new h.TitleSize and returns the pointer to it.
+// SetTitleSize allocates a new h.TitleSize and returns the pointer to it.
 func (h *HostMapWidget) SetTitleSize(v int) {
 	h.TitleSize = &v
 }
@@ -6301,7 +6425,7 @@ func (h *HostMapWidget) HasTitleText() bool {
 	return false
 }
 
-// GetTitleText allocates a new h.TitleText and returns the pointer to it.
+// SetTitleText allocates a new h.TitleText and returns the pointer to it.
 func (h *HostMapWidget) SetTitleText(v string) {
 	h.TitleText = &v
 }
@@ -6332,7 +6456,7 @@ func (h *HostMapWidget) HasType() bool {
 	return false
 }
 
-// GetType allocates a new h.Type and returns the pointer to it.
+// SetType allocates a new h.Type and returns the pointer to it.
 func (h *HostMapWidget) SetType(v string) {
 	h.Type = &v
 }
@@ -6363,7 +6487,7 @@ func (h *HostMapWidget) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new h.Width and returns the pointer to it.
+// SetWidth allocates a new h.Width and returns the pointer to it.
 func (h *HostMapWidget) SetWidth(v int) {
 	h.Width = &v
 }
@@ -6394,7 +6518,7 @@ func (h *HostMapWidget) HasX() bool {
 	return false
 }
 
-// GetX allocates a new h.X and returns the pointer to it.
+// SetX allocates a new h.X and returns the pointer to it.
 func (h *HostMapWidget) SetX(v int) {
 	h.X = &v
 }
@@ -6425,7 +6549,7 @@ func (h *HostMapWidget) HasY() bool {
 	return false
 }
 
-// GetY allocates a new h.Y and returns the pointer to it.
+// SetY allocates a new h.Y and returns the pointer to it.
 func (h *HostMapWidget) SetY(v int) {
 	h.Y = &v
 }
@@ -6456,7 +6580,7 @@ func (i *IFrameWidget) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new i.Height and returns the pointer to it.
+// SetHeight allocates a new i.Height and returns the pointer to it.
 func (i *IFrameWidget) SetHeight(v int) {
 	i.Height = &v
 }
@@ -6487,7 +6611,7 @@ func (i *IFrameWidget) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new i.Title and returns the pointer to it.
+// SetTitle allocates a new i.Title and returns the pointer to it.
 func (i *IFrameWidget) SetTitle(v bool) {
 	i.Title = &v
 }
@@ -6518,7 +6642,7 @@ func (i *IFrameWidget) HasTitleAlign() bool {
 	return false
 }
 
-// GetTitleAlign allocates a new i.TitleAlign and returns the pointer to it.
+// SetTitleAlign allocates a new i.TitleAlign and returns the pointer to it.
 func (i *IFrameWidget) SetTitleAlign(v string) {
 	i.TitleAlign = &v
 }
@@ -6549,7 +6673,7 @@ func (i *IFrameWidget) HasTitleSize() bool {
 	return false
 }
 
-// GetTitleSize allocates a new i.TitleSize and returns the pointer to it.
+// SetTitleSize allocates a new i.TitleSize and returns the pointer to it.
 func (i *IFrameWidget) SetTitleSize(v int) {
 	i.TitleSize = &v
 }
@@ -6580,7 +6704,7 @@ func (i *IFrameWidget) HasTitleText() bool {
 	return false
 }
 
-// GetTitleText allocates a new i.TitleText and returns the pointer to it.
+// SetTitleText allocates a new i.TitleText and returns the pointer to it.
 func (i *IFrameWidget) SetTitleText(v string) {
 	i.TitleText = &v
 }
@@ -6611,7 +6735,7 @@ func (i *IFrameWidget) HasType() bool {
 	return false
 }
 
-// GetType allocates a new i.Type and returns the pointer to it.
+// SetType allocates a new i.Type and returns the pointer to it.
 func (i *IFrameWidget) SetType(v string) {
 	i.Type = &v
 }
@@ -6642,7 +6766,7 @@ func (i *IFrameWidget) HasUrl() bool {
 	return false
 }
 
-// GetUrl allocates a new i.Url and returns the pointer to it.
+// SetUrl allocates a new i.Url and returns the pointer to it.
 func (i *IFrameWidget) SetUrl(v string) {
 	i.Url = &v
 }
@@ -6673,7 +6797,7 @@ func (i *IFrameWidget) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new i.Width and returns the pointer to it.
+// SetWidth allocates a new i.Width and returns the pointer to it.
 func (i *IFrameWidget) SetWidth(v int) {
 	i.Width = &v
 }
@@ -6704,7 +6828,7 @@ func (i *IFrameWidget) HasX() bool {
 	return false
 }
 
-// GetX allocates a new i.X and returns the pointer to it.
+// SetX allocates a new i.X and returns the pointer to it.
 func (i *IFrameWidget) SetX(v int) {
 	i.X = &v
 }
@@ -6735,7 +6859,7 @@ func (i *IFrameWidget) HasY() bool {
 	return false
 }
 
-// GetY allocates a new i.Y and returns the pointer to it.
+// SetY allocates a new i.Y and returns the pointer to it.
 func (i *IFrameWidget) SetY(v int) {
 	i.Y = &v
 }
@@ -6766,7 +6890,7 @@ func (i *ImageWidget) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new i.Height and returns the pointer to it.
+// SetHeight allocates a new i.Height and returns the pointer to it.
 func (i *ImageWidget) SetHeight(v int) {
 	i.Height = &v
 }
@@ -6797,7 +6921,7 @@ func (i *ImageWidget) HasSizing() bool {
 	return false
 }
 
-// GetSizing allocates a new i.Sizing and returns the pointer to it.
+// SetSizing allocates a new i.Sizing and returns the pointer to it.
 func (i *ImageWidget) SetSizing(v string) {
 	i.Sizing = &v
 }
@@ -6828,7 +6952,7 @@ func (i *ImageWidget) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new i.Title and returns the pointer to it.
+// SetTitle allocates a new i.Title and returns the pointer to it.
 func (i *ImageWidget) SetTitle(v bool) {
 	i.Title = &v
 }
@@ -6859,7 +6983,7 @@ func (i *ImageWidget) HasTitleAlign() bool {
 	return false
 }
 
-// GetTitleAlign allocates a new i.TitleAlign and returns the pointer to it.
+// SetTitleAlign allocates a new i.TitleAlign and returns the pointer to it.
 func (i *ImageWidget) SetTitleAlign(v string) {
 	i.TitleAlign = &v
 }
@@ -6890,7 +7014,7 @@ func (i *ImageWidget) HasTitleSize() bool {
 	return false
 }
 
-// GetTitleSize allocates a new i.TitleSize and returns the pointer to it.
+// SetTitleSize allocates a new i.TitleSize and returns the pointer to it.
 func (i *ImageWidget) SetTitleSize(v TextSize) {
 	i.TitleSize = &v
 }
@@ -6921,7 +7045,7 @@ func (i *ImageWidget) HasTitleText() bool {
 	return false
 }
 
-// GetTitleText allocates a new i.TitleText and returns the pointer to it.
+// SetTitleText allocates a new i.TitleText and returns the pointer to it.
 func (i *ImageWidget) SetTitleText(v string) {
 	i.TitleText = &v
 }
@@ -6952,7 +7076,7 @@ func (i *ImageWidget) HasType() bool {
 	return false
 }
 
-// GetType allocates a new i.Type and returns the pointer to it.
+// SetType allocates a new i.Type and returns the pointer to it.
 func (i *ImageWidget) SetType(v string) {
 	i.Type = &v
 }
@@ -6983,7 +7107,7 @@ func (i *ImageWidget) HasUrl() bool {
 	return false
 }
 
-// GetUrl allocates a new i.Url and returns the pointer to it.
+// SetUrl allocates a new i.Url and returns the pointer to it.
 func (i *ImageWidget) SetUrl(v string) {
 	i.Url = &v
 }
@@ -7014,7 +7138,7 @@ func (i *ImageWidget) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new i.Width and returns the pointer to it.
+// SetWidth allocates a new i.Width and returns the pointer to it.
 func (i *ImageWidget) SetWidth(v int) {
 	i.Width = &v
 }
@@ -7045,7 +7169,7 @@ func (i *ImageWidget) HasX() bool {
 	return false
 }
 
-// GetX allocates a new i.X and returns the pointer to it.
+// SetX allocates a new i.X and returns the pointer to it.
 func (i *ImageWidget) SetX(v int) {
 	i.X = &v
 }
@@ -7076,7 +7200,7 @@ func (i *ImageWidget) HasY() bool {
 	return false
 }
 
-// GetY allocates a new i.Y and returns the pointer to it.
+// SetY allocates a new i.Y and returns the pointer to it.
 func (i *ImageWidget) SetY(v int) {
 	i.Y = &v
 }
@@ -7107,7 +7231,7 @@ func (m *Metric) HasHost() bool {
 	return false
 }
 
-// GetHost allocates a new m.Host and returns the pointer to it.
+// SetHost allocates a new m.Host and returns the pointer to it.
 func (m *Metric) SetHost(v string) {
 	m.Host = &v
 }
@@ -7138,7 +7262,7 @@ func (m *Metric) HasMetric() bool {
 	return false
 }
 
-// GetMetric allocates a new m.Metric and returns the pointer to it.
+// SetMetric allocates a new m.Metric and returns the pointer to it.
 func (m *Metric) SetMetric(v string) {
 	m.Metric = &v
 }
@@ -7169,7 +7293,7 @@ func (m *Metric) HasType() bool {
 	return false
 }
 
-// GetType allocates a new m.Type and returns the pointer to it.
+// SetType allocates a new m.Type and returns the pointer to it.
 func (m *Metric) SetType(v string) {
 	m.Type = &v
 }
@@ -7200,7 +7324,7 @@ func (m *Metric) HasUnit() bool {
 	return false
 }
 
-// GetUnit allocates a new m.Unit and returns the pointer to it.
+// SetUnit allocates a new m.Unit and returns the pointer to it.
 func (m *Metric) SetUnit(v string) {
 	m.Unit = &v
 }
@@ -7231,7 +7355,7 @@ func (m *MetricMetadata) HasDescription() bool {
 	return false
 }
 
-// GetDescription allocates a new m.Description and returns the pointer to it.
+// SetDescription allocates a new m.Description and returns the pointer to it.
 func (m *MetricMetadata) SetDescription(v string) {
 	m.Description = &v
 }
@@ -7262,7 +7386,7 @@ func (m *MetricMetadata) HasPerUnit() bool {
 	return false
 }
 
-// GetPerUnit allocates a new m.PerUnit and returns the pointer to it.
+// SetPerUnit allocates a new m.PerUnit and returns the pointer to it.
 func (m *MetricMetadata) SetPerUnit(v string) {
 	m.PerUnit = &v
 }
@@ -7293,7 +7417,7 @@ func (m *MetricMetadata) HasShortName() bool {
 	return false
 }
 
-// GetShortName allocates a new m.ShortName and returns the pointer to it.
+// SetShortName allocates a new m.ShortName and returns the pointer to it.
 func (m *MetricMetadata) SetShortName(v string) {
 	m.ShortName = &v
 }
@@ -7324,7 +7448,7 @@ func (m *MetricMetadata) HasStatsdInterval() bool {
 	return false
 }
 
-// GetStatsdInterval allocates a new m.StatsdInterval and returns the pointer to it.
+// SetStatsdInterval allocates a new m.StatsdInterval and returns the pointer to it.
 func (m *MetricMetadata) SetStatsdInterval(v int) {
 	m.StatsdInterval = &v
 }
@@ -7355,7 +7479,7 @@ func (m *MetricMetadata) HasType() bool {
 	return false
 }
 
-// GetType allocates a new m.Type and returns the pointer to it.
+// SetType allocates a new m.Type and returns the pointer to it.
 func (m *MetricMetadata) SetType(v string) {
 	m.Type = &v
 }
@@ -7386,7 +7510,7 @@ func (m *MetricMetadata) HasUnit() bool {
 	return false
 }
 
-// GetUnit allocates a new m.Unit and returns the pointer to it.
+// SetUnit allocates a new m.Unit and returns the pointer to it.
 func (m *MetricMetadata) SetUnit(v string) {
 	m.Unit = &v
 }
@@ -7417,7 +7541,7 @@ func (m *Monitor) HasCreator() bool {
 	return false
 }
 
-// GetCreator allocates a new m.Creator and returns the pointer to it.
+// SetCreator allocates a new m.Creator and returns the pointer to it.
 func (m *Monitor) SetCreator(v Creator) {
 	m.Creator = &v
 }
@@ -7448,7 +7572,7 @@ func (m *Monitor) HasId() bool {
 	return false
 }
 
-// GetId allocates a new m.Id and returns the pointer to it.
+// SetId allocates a new m.Id and returns the pointer to it.
 func (m *Monitor) SetId(v int) {
 	m.Id = &v
 }
@@ -7479,7 +7603,7 @@ func (m *Monitor) HasMessage() bool {
 	return false
 }
 
-// GetMessage allocates a new m.Message and returns the pointer to it.
+// SetMessage allocates a new m.Message and returns the pointer to it.
 func (m *Monitor) SetMessage(v string) {
 	m.Message = &v
 }
@@ -7510,7 +7634,7 @@ func (m *Monitor) HasName() bool {
 	return false
 }
 
-// GetName allocates a new m.Name and returns the pointer to it.
+// SetName allocates a new m.Name and returns the pointer to it.
 func (m *Monitor) SetName(v string) {
 	m.Name = &v
 }
@@ -7541,7 +7665,7 @@ func (m *Monitor) HasOptions() bool {
 	return false
 }
 
-// GetOptions allocates a new m.Options and returns the pointer to it.
+// SetOptions allocates a new m.Options and returns the pointer to it.
 func (m *Monitor) SetOptions(v Options) {
 	m.Options = &v
 }
@@ -7572,7 +7696,7 @@ func (m *Monitor) HasQuery() bool {
 	return false
 }
 
-// GetQuery allocates a new m.Query and returns the pointer to it.
+// SetQuery allocates a new m.Query and returns the pointer to it.
 func (m *Monitor) SetQuery(v string) {
 	m.Query = &v
 }
@@ -7603,7 +7727,7 @@ func (m *Monitor) HasType() bool {
 	return false
 }
 
-// GetType allocates a new m.Type and returns the pointer to it.
+// SetType allocates a new m.Type and returns the pointer to it.
 func (m *Monitor) SetType(v string) {
 	m.Type = &v
 }
@@ -7634,7 +7758,7 @@ func (n *NoteWidget) HasAutoRefresh() bool {
 	return false
 }
 
-// GetAutoRefresh allocates a new n.AutoRefresh and returns the pointer to it.
+// SetAutoRefresh allocates a new n.AutoRefresh and returns the pointer to it.
 func (n *NoteWidget) SetAutoRefresh(v bool) {
 	n.AutoRefresh = &v
 }
@@ -7665,7 +7789,7 @@ func (n *NoteWidget) HasColor() bool {
 	return false
 }
 
-// GetColor allocates a new n.Color and returns the pointer to it.
+// SetColor allocates a new n.Color and returns the pointer to it.
 func (n *NoteWidget) SetColor(v string) {
 	n.Color = &v
 }
@@ -7696,7 +7820,7 @@ func (n *NoteWidget) HasFontSize() bool {
 	return false
 }
 
-// GetFontSize allocates a new n.FontSize and returns the pointer to it.
+// SetFontSize allocates a new n.FontSize and returns the pointer to it.
 func (n *NoteWidget) SetFontSize(v int) {
 	n.FontSize = &v
 }
@@ -7727,7 +7851,7 @@ func (n *NoteWidget) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new n.Height and returns the pointer to it.
+// SetHeight allocates a new n.Height and returns the pointer to it.
 func (n *NoteWidget) SetHeight(v int) {
 	n.Height = &v
 }
@@ -7758,7 +7882,7 @@ func (n *NoteWidget) HasHtml() bool {
 	return false
 }
 
-// GetHtml allocates a new n.Html and returns the pointer to it.
+// SetHtml allocates a new n.Html and returns the pointer to it.
 func (n *NoteWidget) SetHtml(v string) {
 	n.Html = &v
 }
@@ -7789,7 +7913,7 @@ func (n *NoteWidget) HasNote() bool {
 	return false
 }
 
-// GetNote allocates a new n.Note and returns the pointer to it.
+// SetNote allocates a new n.Note and returns the pointer to it.
 func (n *NoteWidget) SetNote(v string) {
 	n.Note = &v
 }
@@ -7820,7 +7944,7 @@ func (n *NoteWidget) HasRefreshEvery() bool {
 	return false
 }
 
-// GetRefreshEvery allocates a new n.RefreshEvery and returns the pointer to it.
+// SetRefreshEvery allocates a new n.RefreshEvery and returns the pointer to it.
 func (n *NoteWidget) SetRefreshEvery(v int) {
 	n.RefreshEvery = &v
 }
@@ -7851,7 +7975,7 @@ func (n *NoteWidget) HasTextAlign() bool {
 	return false
 }
 
-// GetTextAlign allocates a new n.TextAlign and returns the pointer to it.
+// SetTextAlign allocates a new n.TextAlign and returns the pointer to it.
 func (n *NoteWidget) SetTextAlign(v string) {
 	n.TextAlign = &v
 }
@@ -7882,7 +8006,7 @@ func (n *NoteWidget) HasTick() bool {
 	return false
 }
 
-// GetTick allocates a new n.Tick and returns the pointer to it.
+// SetTick allocates a new n.Tick and returns the pointer to it.
 func (n *NoteWidget) SetTick(v bool) {
 	n.Tick = &v
 }
@@ -7913,7 +8037,7 @@ func (n *NoteWidget) HasTickEdge() bool {
 	return false
 }
 
-// GetTickEdge allocates a new n.TickEdge and returns the pointer to it.
+// SetTickEdge allocates a new n.TickEdge and returns the pointer to it.
 func (n *NoteWidget) SetTickEdge(v string) {
 	n.TickEdge = &v
 }
@@ -7944,7 +8068,7 @@ func (n *NoteWidget) HasTickPos() bool {
 	return false
 }
 
-// GetTickPos allocates a new n.TickPos and returns the pointer to it.
+// SetTickPos allocates a new n.TickPos and returns the pointer to it.
 func (n *NoteWidget) SetTickPos(v string) {
 	n.TickPos = &v
 }
@@ -7975,7 +8099,7 @@ func (n *NoteWidget) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new n.Title and returns the pointer to it.
+// SetTitle allocates a new n.Title and returns the pointer to it.
 func (n *NoteWidget) SetTitle(v bool) {
 	n.Title = &v
 }
@@ -8006,7 +8130,7 @@ func (n *NoteWidget) HasTitleAlign() bool {
 	return false
 }
 
-// GetTitleAlign allocates a new n.TitleAlign and returns the pointer to it.
+// SetTitleAlign allocates a new n.TitleAlign and returns the pointer to it.
 func (n *NoteWidget) SetTitleAlign(v string) {
 	n.TitleAlign = &v
 }
@@ -8037,7 +8161,7 @@ func (n *NoteWidget) HasTitleSize() bool {
 	return false
 }
 
-// GetTitleSize allocates a new n.TitleSize and returns the pointer to it.
+// SetTitleSize allocates a new n.TitleSize and returns the pointer to it.
 func (n *NoteWidget) SetTitleSize(v int) {
 	n.TitleSize = &v
 }
@@ -8068,7 +8192,7 @@ func (n *NoteWidget) HasTitleText() bool {
 	return false
 }
 
-// GetTitleText allocates a new n.TitleText and returns the pointer to it.
+// SetTitleText allocates a new n.TitleText and returns the pointer to it.
 func (n *NoteWidget) SetTitleText(v string) {
 	n.TitleText = &v
 }
@@ -8099,7 +8223,7 @@ func (n *NoteWidget) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new n.Width and returns the pointer to it.
+// SetWidth allocates a new n.Width and returns the pointer to it.
 func (n *NoteWidget) SetWidth(v int) {
 	n.Width = &v
 }
@@ -8130,7 +8254,7 @@ func (n *NoteWidget) HasX() bool {
 	return false
 }
 
-// GetX allocates a new n.X and returns the pointer to it.
+// SetX allocates a new n.X and returns the pointer to it.
 func (n *NoteWidget) SetX(v int) {
 	n.X = &v
 }
@@ -8161,7 +8285,7 @@ func (n *NoteWidget) HasY() bool {
 	return false
 }
 
-// GetY allocates a new n.Y and returns the pointer to it.
+// SetY allocates a new n.Y and returns the pointer to it.
 func (n *NoteWidget) SetY(v int) {
 	n.Y = &v
 }
@@ -8192,7 +8316,7 @@ func (o *Options) HasEscalationMessage() bool {
 	return false
 }
 
-// GetEscalationMessage allocates a new o.EscalationMessage and returns the pointer to it.
+// SetEscalationMessage allocates a new o.EscalationMessage and returns the pointer to it.
 func (o *Options) SetEscalationMessage(v string) {
 	o.EscalationMessage = &v
 }
@@ -8223,7 +8347,7 @@ func (o *Options) HasEvaluationDelay() bool {
 	return false
 }
 
-// GetEvaluationDelay allocates a new o.EvaluationDelay and returns the pointer to it.
+// SetEvaluationDelay allocates a new o.EvaluationDelay and returns the pointer to it.
 func (o *Options) SetEvaluationDelay(v int) {
 	o.EvaluationDelay = &v
 }
@@ -8254,7 +8378,7 @@ func (o *Options) HasIncludeTags() bool {
 	return false
 }
 
-// GetIncludeTags allocates a new o.IncludeTags and returns the pointer to it.
+// SetIncludeTags allocates a new o.IncludeTags and returns the pointer to it.
 func (o *Options) SetIncludeTags(v bool) {
 	o.IncludeTags = &v
 }
@@ -8285,7 +8409,7 @@ func (o *Options) HasLocked() bool {
 	return false
 }
 
-// GetLocked allocates a new o.Locked and returns the pointer to it.
+// SetLocked allocates a new o.Locked and returns the pointer to it.
 func (o *Options) SetLocked(v bool) {
 	o.Locked = &v
 }
@@ -8316,7 +8440,7 @@ func (o *Options) HasNewHostDelay() bool {
 	return false
 }
 
-// GetNewHostDelay allocates a new o.NewHostDelay and returns the pointer to it.
+// SetNewHostDelay allocates a new o.NewHostDelay and returns the pointer to it.
 func (o *Options) SetNewHostDelay(v int) {
 	o.NewHostDelay = &v
 }
@@ -8347,7 +8471,7 @@ func (o *Options) HasNotifyAudit() bool {
 	return false
 }
 
-// GetNotifyAudit allocates a new o.NotifyAudit and returns the pointer to it.
+// SetNotifyAudit allocates a new o.NotifyAudit and returns the pointer to it.
 func (o *Options) SetNotifyAudit(v bool) {
 	o.NotifyAudit = &v
 }
@@ -8378,7 +8502,7 @@ func (o *Options) HasNotifyNoData() bool {
 	return false
 }
 
-// GetNotifyNoData allocates a new o.NotifyNoData and returns the pointer to it.
+// SetNotifyNoData allocates a new o.NotifyNoData and returns the pointer to it.
 func (o *Options) SetNotifyNoData(v bool) {
 	o.NotifyNoData = &v
 }
@@ -8409,7 +8533,7 @@ func (o *Options) HasRenotifyInterval() bool {
 	return false
 }
 
-// GetRenotifyInterval allocates a new o.RenotifyInterval and returns the pointer to it.
+// SetRenotifyInterval allocates a new o.RenotifyInterval and returns the pointer to it.
 func (o *Options) SetRenotifyInterval(v int) {
 	o.RenotifyInterval = &v
 }
@@ -8440,7 +8564,7 @@ func (o *Options) HasRequireFullWindow() bool {
 	return false
 }
 
-// GetRequireFullWindow allocates a new o.RequireFullWindow and returns the pointer to it.
+// SetRequireFullWindow allocates a new o.RequireFullWindow and returns the pointer to it.
 func (o *Options) SetRequireFullWindow(v bool) {
 	o.RequireFullWindow = &v
 }
@@ -8471,7 +8595,7 @@ func (o *Options) HasThresholds() bool {
 	return false
 }
 
-// GetThresholds allocates a new o.Thresholds and returns the pointer to it.
+// SetThresholds allocates a new o.Thresholds and returns the pointer to it.
 func (o *Options) SetThresholds(v ThresholdCount) {
 	o.Thresholds = &v
 }
@@ -8502,7 +8626,7 @@ func (o *Options) HasTimeoutH() bool {
 	return false
 }
 
-// GetTimeoutH allocates a new o.TimeoutH and returns the pointer to it.
+// SetTimeoutH allocates a new o.TimeoutH and returns the pointer to it.
 func (o *Options) SetTimeoutH(v int) {
 	o.TimeoutH = &v
 }
@@ -8533,7 +8657,7 @@ func (q *QueryValueWidget) HasAggregator() bool {
 	return false
 }
 
-// GetAggregator allocates a new q.Aggregator and returns the pointer to it.
+// SetAggregator allocates a new q.Aggregator and returns the pointer to it.
 func (q *QueryValueWidget) SetAggregator(v string) {
 	q.Aggregator = &v
 }
@@ -8564,7 +8688,7 @@ func (q *QueryValueWidget) HasCalcFunc() bool {
 	return false
 }
 
-// GetCalcFunc allocates a new q.CalcFunc and returns the pointer to it.
+// SetCalcFunc allocates a new q.CalcFunc and returns the pointer to it.
 func (q *QueryValueWidget) SetCalcFunc(v string) {
 	q.CalcFunc = &v
 }
@@ -8595,7 +8719,7 @@ func (q *QueryValueWidget) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new q.Height and returns the pointer to it.
+// SetHeight allocates a new q.Height and returns the pointer to it.
 func (q *QueryValueWidget) SetHeight(v int) {
 	q.Height = &v
 }
@@ -8626,7 +8750,7 @@ func (q *QueryValueWidget) HasIsValidQuery() bool {
 	return false
 }
 
-// GetIsValidQuery allocates a new q.IsValidQuery and returns the pointer to it.
+// SetIsValidQuery allocates a new q.IsValidQuery and returns the pointer to it.
 func (q *QueryValueWidget) SetIsValidQuery(v bool) {
 	q.IsValidQuery = &v
 }
@@ -8657,7 +8781,7 @@ func (q *QueryValueWidget) HasMetric() bool {
 	return false
 }
 
-// GetMetric allocates a new q.Metric and returns the pointer to it.
+// SetMetric allocates a new q.Metric and returns the pointer to it.
 func (q *QueryValueWidget) SetMetric(v string) {
 	q.Metric = &v
 }
@@ -8688,7 +8812,7 @@ func (q *QueryValueWidget) HasMetricType() bool {
 	return false
 }
 
-// GetMetricType allocates a new q.MetricType and returns the pointer to it.
+// SetMetricType allocates a new q.MetricType and returns the pointer to it.
 func (q *QueryValueWidget) SetMetricType(v string) {
 	q.MetricType = &v
 }
@@ -8719,7 +8843,7 @@ func (q *QueryValueWidget) HasPrecision() bool {
 	return false
 }
 
-// GetPrecision allocates a new q.Precision and returns the pointer to it.
+// SetPrecision allocates a new q.Precision and returns the pointer to it.
 func (q *QueryValueWidget) SetPrecision(v int) {
 	q.Precision = &v
 }
@@ -8750,7 +8874,7 @@ func (q *QueryValueWidget) HasQuery() bool {
 	return false
 }
 
-// GetQuery allocates a new q.Query and returns the pointer to it.
+// SetQuery allocates a new q.Query and returns the pointer to it.
 func (q *QueryValueWidget) SetQuery(v string) {
 	q.Query = &v
 }
@@ -8781,7 +8905,7 @@ func (q *QueryValueWidget) HasResultCalcFunc() bool {
 	return false
 }
 
-// GetResultCalcFunc allocates a new q.ResultCalcFunc and returns the pointer to it.
+// SetResultCalcFunc allocates a new q.ResultCalcFunc and returns the pointer to it.
 func (q *QueryValueWidget) SetResultCalcFunc(v string) {
 	q.ResultCalcFunc = &v
 }
@@ -8812,7 +8936,7 @@ func (q *QueryValueWidget) HasTextAlign() bool {
 	return false
 }
 
-// GetTextAlign allocates a new q.TextAlign and returns the pointer to it.
+// SetTextAlign allocates a new q.TextAlign and returns the pointer to it.
 func (q *QueryValueWidget) SetTextAlign(v string) {
 	q.TextAlign = &v
 }
@@ -8843,7 +8967,7 @@ func (q *QueryValueWidget) HasTextSize() bool {
 	return false
 }
 
-// GetTextSize allocates a new q.TextSize and returns the pointer to it.
+// SetTextSize allocates a new q.TextSize and returns the pointer to it.
 func (q *QueryValueWidget) SetTextSize(v TextSize) {
 	q.TextSize = &v
 }
@@ -8874,7 +8998,7 @@ func (q *QueryValueWidget) HasTimeframe() bool {
 	return false
 }
 
-// GetTimeframe allocates a new q.Timeframe and returns the pointer to it.
+// SetTimeframe allocates a new q.Timeframe and returns the pointer to it.
 func (q *QueryValueWidget) SetTimeframe(v string) {
 	q.Timeframe = &v
 }
@@ -8905,7 +9029,7 @@ func (q *QueryValueWidget) HasTimeframeAggregator() bool {
 	return false
 }
 
-// GetTimeframeAggregator allocates a new q.TimeframeAggregator and returns the pointer to it.
+// SetTimeframeAggregator allocates a new q.TimeframeAggregator and returns the pointer to it.
 func (q *QueryValueWidget) SetTimeframeAggregator(v string) {
 	q.TimeframeAggregator = &v
 }
@@ -8936,7 +9060,7 @@ func (q *QueryValueWidget) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new q.Title and returns the pointer to it.
+// SetTitle allocates a new q.Title and returns the pointer to it.
 func (q *QueryValueWidget) SetTitle(v bool) {
 	q.Title = &v
 }
@@ -8967,7 +9091,7 @@ func (q *QueryValueWidget) HasTitleAlign() bool {
 	return false
 }
 
-// GetTitleAlign allocates a new q.TitleAlign and returns the pointer to it.
+// SetTitleAlign allocates a new q.TitleAlign and returns the pointer to it.
 func (q *QueryValueWidget) SetTitleAlign(v string) {
 	q.TitleAlign = &v
 }
@@ -8998,7 +9122,7 @@ func (q *QueryValueWidget) HasTitleSize() bool {
 	return false
 }
 
-// GetTitleSize allocates a new q.TitleSize and returns the pointer to it.
+// SetTitleSize allocates a new q.TitleSize and returns the pointer to it.
 func (q *QueryValueWidget) SetTitleSize(v TextSize) {
 	q.TitleSize = &v
 }
@@ -9029,7 +9153,7 @@ func (q *QueryValueWidget) HasTitleText() bool {
 	return false
 }
 
-// GetTitleText allocates a new q.TitleText and returns the pointer to it.
+// SetTitleText allocates a new q.TitleText and returns the pointer to it.
 func (q *QueryValueWidget) SetTitleText(v string) {
 	q.TitleText = &v
 }
@@ -9060,7 +9184,7 @@ func (q *QueryValueWidget) HasType() bool {
 	return false
 }
 
-// GetType allocates a new q.Type and returns the pointer to it.
+// SetType allocates a new q.Type and returns the pointer to it.
 func (q *QueryValueWidget) SetType(v string) {
 	q.Type = &v
 }
@@ -9091,7 +9215,7 @@ func (q *QueryValueWidget) HasUnit() bool {
 	return false
 }
 
-// GetUnit allocates a new q.Unit and returns the pointer to it.
+// SetUnit allocates a new q.Unit and returns the pointer to it.
 func (q *QueryValueWidget) SetUnit(v string) {
 	q.Unit = &v
 }
@@ -9122,7 +9246,7 @@ func (q *QueryValueWidget) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new q.Width and returns the pointer to it.
+// SetWidth allocates a new q.Width and returns the pointer to it.
 func (q *QueryValueWidget) SetWidth(v int) {
 	q.Width = &v
 }
@@ -9153,7 +9277,7 @@ func (q *QueryValueWidget) HasX() bool {
 	return false
 }
 
-// GetX allocates a new q.X and returns the pointer to it.
+// SetX allocates a new q.X and returns the pointer to it.
 func (q *QueryValueWidget) SetX(v int) {
 	q.X = &v
 }
@@ -9184,7 +9308,7 @@ func (q *QueryValueWidget) HasY() bool {
 	return false
 }
 
-// GetY allocates a new q.Y and returns the pointer to it.
+// SetY allocates a new q.Y and returns the pointer to it.
 func (q *QueryValueWidget) SetY(v int) {
 	q.Y = &v
 }
@@ -9215,7 +9339,7 @@ func (r *Recurrence) HasPeriod() bool {
 	return false
 }
 
-// GetPeriod allocates a new r.Period and returns the pointer to it.
+// SetPeriod allocates a new r.Period and returns the pointer to it.
 func (r *Recurrence) SetPeriod(v int) {
 	r.Period = &v
 }
@@ -9246,7 +9370,7 @@ func (r *Recurrence) HasType() bool {
 	return false
 }
 
-// GetType allocates a new r.Type and returns the pointer to it.
+// SetType allocates a new r.Type and returns the pointer to it.
 func (r *Recurrence) SetType(v string) {
 	r.Type = &v
 }
@@ -9277,7 +9401,7 @@ func (r *Recurrence) HasUntilDate() bool {
 	return false
 }
 
-// GetUntilDate allocates a new r.UntilDate and returns the pointer to it.
+// SetUntilDate allocates a new r.UntilDate and returns the pointer to it.
 func (r *Recurrence) SetUntilDate(v int) {
 	r.UntilDate = &v
 }
@@ -9308,7 +9432,7 @@ func (r *Recurrence) HasUntilOccurrences() bool {
 	return false
 }
 
-// GetUntilOccurrences allocates a new r.UntilOccurrences and returns the pointer to it.
+// SetUntilOccurrences allocates a new r.UntilOccurrences and returns the pointer to it.
 func (r *Recurrence) SetUntilOccurrences(v int) {
 	r.UntilOccurrences = &v
 }
@@ -9339,7 +9463,7 @@ func (r *reqComment) HasComment() bool {
 	return false
 }
 
-// GetComment allocates a new r.Comment and returns the pointer to it.
+// SetComment allocates a new r.Comment and returns the pointer to it.
 func (r *reqComment) SetComment(v Comment) {
 	r.Comment = &v
 }
@@ -9370,7 +9494,7 @@ func (r *reqGetDashboard) HasDashboard() bool {
 	return false
 }
 
-// GetDashboard allocates a new r.Dashboard and returns the pointer to it.
+// SetDashboard allocates a new r.Dashboard and returns the pointer to it.
 func (r *reqGetDashboard) SetDashboard(v Dashboard) {
 	r.Dashboard = &v
 }
@@ -9401,7 +9525,7 @@ func (r *reqGetDashboard) HasResource() bool {
 	return false
 }
 
-// GetResource allocates a new r.Resource and returns the pointer to it.
+// SetResource allocates a new r.Resource and returns the pointer to it.
 func (r *reqGetDashboard) SetResource(v string) {
 	r.Resource = &v
 }
@@ -9432,7 +9556,7 @@ func (r *reqGetDashboard) HasUrl() bool {
 	return false
 }
 
-// GetUrl allocates a new r.Url and returns the pointer to it.
+// SetUrl allocates a new r.Url and returns the pointer to it.
 func (r *reqGetDashboard) SetUrl(v string) {
 	r.Url = &v
 }
@@ -9463,7 +9587,7 @@ func (r *reqGetEvent) HasEvent() bool {
 	return false
 }
 
-// GetEvent allocates a new r.Event and returns the pointer to it.
+// SetEvent allocates a new r.Event and returns the pointer to it.
 func (r *reqGetEvent) SetEvent(v Event) {
 	r.Event = &v
 }
@@ -9494,7 +9618,7 @@ func (r *reqGetTags) HasTags() bool {
 	return false
 }
 
-// GetTags allocates a new r.Tags and returns the pointer to it.
+// SetTags allocates a new r.Tags and returns the pointer to it.
 func (r *reqGetTags) SetTags(v TagMap) {
 	r.Tags = &v
 }
@@ -9525,7 +9649,7 @@ func (s *Screenboard) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new s.Height and returns the pointer to it.
+// SetHeight allocates a new s.Height and returns the pointer to it.
 func (s *Screenboard) SetHeight(v string) {
 	s.Height = &v
 }
@@ -9556,7 +9680,7 @@ func (s *Screenboard) HasId() bool {
 	return false
 }
 
-// GetId allocates a new s.Id and returns the pointer to it.
+// SetId allocates a new s.Id and returns the pointer to it.
 func (s *Screenboard) SetId(v int) {
 	s.Id = &v
 }
@@ -9587,7 +9711,7 @@ func (s *Screenboard) HasReadOnly() bool {
 	return false
 }
 
-// GetReadOnly allocates a new s.ReadOnly and returns the pointer to it.
+// SetReadOnly allocates a new s.ReadOnly and returns the pointer to it.
 func (s *Screenboard) SetReadOnly(v bool) {
 	s.ReadOnly = &v
 }
@@ -9618,7 +9742,7 @@ func (s *Screenboard) HasShared() bool {
 	return false
 }
 
-// GetShared allocates a new s.Shared and returns the pointer to it.
+// SetShared allocates a new s.Shared and returns the pointer to it.
 func (s *Screenboard) SetShared(v bool) {
 	s.Shared = &v
 }
@@ -9649,7 +9773,7 @@ func (s *Screenboard) HasTemplated() bool {
 	return false
 }
 
-// GetTemplated allocates a new s.Templated and returns the pointer to it.
+// SetTemplated allocates a new s.Templated and returns the pointer to it.
 func (s *Screenboard) SetTemplated(v bool) {
 	s.Templated = &v
 }
@@ -9680,7 +9804,7 @@ func (s *Screenboard) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new s.Title and returns the pointer to it.
+// SetTitle allocates a new s.Title and returns the pointer to it.
 func (s *Screenboard) SetTitle(v string) {
 	s.Title = &v
 }
@@ -9711,7 +9835,7 @@ func (s *Screenboard) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new s.Width and returns the pointer to it.
+// SetWidth allocates a new s.Width and returns the pointer to it.
 func (s *Screenboard) SetWidth(v string) {
 	s.Width = &v
 }
@@ -9742,7 +9866,7 @@ func (s *ScreenboardLite) HasId() bool {
 	return false
 }
 
-// GetId allocates a new s.Id and returns the pointer to it.
+// SetId allocates a new s.Id and returns the pointer to it.
 func (s *ScreenboardLite) SetId(v int) {
 	s.Id = &v
 }
@@ -9773,7 +9897,7 @@ func (s *ScreenboardLite) HasResource() bool {
 	return false
 }
 
-// GetResource allocates a new s.Resource and returns the pointer to it.
+// SetResource allocates a new s.Resource and returns the pointer to it.
 func (s *ScreenboardLite) SetResource(v string) {
 	s.Resource = &v
 }
@@ -9804,7 +9928,7 @@ func (s *ScreenboardLite) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new s.Title and returns the pointer to it.
+// SetTitle allocates a new s.Title and returns the pointer to it.
 func (s *ScreenboardLite) SetTitle(v string) {
 	s.Title = &v
 }
@@ -9835,7 +9959,7 @@ func (s *Series) HasAggr() bool {
 	return false
 }
 
-// GetAggr allocates a new s.Aggr and returns the pointer to it.
+// SetAggr allocates a new s.Aggr and returns the pointer to it.
 func (s *Series) SetAggr(v string) {
 	s.Aggr = &v
 }
@@ -9866,7 +9990,7 @@ func (s *Series) HasDisplayName() bool {
 	return false
 }
 
-// GetDisplayName allocates a new s.DisplayName and returns the pointer to it.
+// SetDisplayName allocates a new s.DisplayName and returns the pointer to it.
 func (s *Series) SetDisplayName(v string) {
 	s.DisplayName = &v
 }
@@ -9897,7 +10021,7 @@ func (s *Series) HasEnd() bool {
 	return false
 }
 
-// GetEnd allocates a new s.End and returns the pointer to it.
+// SetEnd allocates a new s.End and returns the pointer to it.
 func (s *Series) SetEnd(v float64) {
 	s.End = &v
 }
@@ -9928,7 +10052,7 @@ func (s *Series) HasExpression() bool {
 	return false
 }
 
-// GetExpression allocates a new s.Expression and returns the pointer to it.
+// SetExpression allocates a new s.Expression and returns the pointer to it.
 func (s *Series) SetExpression(v string) {
 	s.Expression = &v
 }
@@ -9959,7 +10083,7 @@ func (s *Series) HasInterval() bool {
 	return false
 }
 
-// GetInterval allocates a new s.Interval and returns the pointer to it.
+// SetInterval allocates a new s.Interval and returns the pointer to it.
 func (s *Series) SetInterval(v int) {
 	s.Interval = &v
 }
@@ -9990,7 +10114,7 @@ func (s *Series) HasLength() bool {
 	return false
 }
 
-// GetLength allocates a new s.Length and returns the pointer to it.
+// SetLength allocates a new s.Length and returns the pointer to it.
 func (s *Series) SetLength(v int) {
 	s.Length = &v
 }
@@ -10021,7 +10145,7 @@ func (s *Series) HasMetric() bool {
 	return false
 }
 
-// GetMetric allocates a new s.Metric and returns the pointer to it.
+// SetMetric allocates a new s.Metric and returns the pointer to it.
 func (s *Series) SetMetric(v string) {
 	s.Metric = &v
 }
@@ -10052,7 +10176,7 @@ func (s *Series) HasScope() bool {
 	return false
 }
 
-// GetScope allocates a new s.Scope and returns the pointer to it.
+// SetScope allocates a new s.Scope and returns the pointer to it.
 func (s *Series) SetScope(v string) {
 	s.Scope = &v
 }
@@ -10083,7 +10207,7 @@ func (s *Series) HasStart() bool {
 	return false
 }
 
-// GetStart allocates a new s.Start and returns the pointer to it.
+// SetStart allocates a new s.Start and returns the pointer to it.
 func (s *Series) SetStart(v float64) {
 	s.Start = &v
 }
@@ -10114,7 +10238,7 @@ func (s *Style) HasPalette() bool {
 	return false
 }
 
-// GetPalette allocates a new s.Palette and returns the pointer to it.
+// SetPalette allocates a new s.Palette and returns the pointer to it.
 func (s *Style) SetPalette(v string) {
 	s.Palette = &v
 }
@@ -10145,7 +10269,7 @@ func (s *Style) HasPaletteFlip() bool {
 	return false
 }
 
-// GetPaletteFlip allocates a new s.PaletteFlip and returns the pointer to it.
+// SetPaletteFlip allocates a new s.PaletteFlip and returns the pointer to it.
 func (s *Style) SetPaletteFlip(v bool) {
 	s.PaletteFlip = &v
 }
@@ -10176,7 +10300,7 @@ func (t *TemplateVariable) HasDefault() bool {
 	return false
 }
 
-// GetDefault allocates a new t.Default and returns the pointer to it.
+// SetDefault allocates a new t.Default and returns the pointer to it.
 func (t *TemplateVariable) SetDefault(v string) {
 	t.Default = &v
 }
@@ -10207,7 +10331,7 @@ func (t *TemplateVariable) HasName() bool {
 	return false
 }
 
-// GetName allocates a new t.Name and returns the pointer to it.
+// SetName allocates a new t.Name and returns the pointer to it.
 func (t *TemplateVariable) SetName(v string) {
 	t.Name = &v
 }
@@ -10238,7 +10362,7 @@ func (t *TemplateVariable) HasPrefix() bool {
 	return false
 }
 
-// GetPrefix allocates a new t.Prefix and returns the pointer to it.
+// SetPrefix allocates a new t.Prefix and returns the pointer to it.
 func (t *TemplateVariable) SetPrefix(v string) {
 	t.Prefix = &v
 }
@@ -10269,7 +10393,7 @@ func (t *TextSize) HasAuto() bool {
 	return false
 }
 
-// GetAuto allocates a new t.Auto and returns the pointer to it.
+// SetAuto allocates a new t.Auto and returns the pointer to it.
 func (t *TextSize) SetAuto(v bool) {
 	t.Auto = &v
 }
@@ -10300,7 +10424,7 @@ func (t *TextSize) HasSize() bool {
 	return false
 }
 
-// GetSize allocates a new t.Size and returns the pointer to it.
+// SetSize allocates a new t.Size and returns the pointer to it.
 func (t *TextSize) SetSize(v int) {
 	t.Size = &v
 }
@@ -10331,7 +10455,7 @@ func (t *ThresholdCount) HasCritical() bool {
 	return false
 }
 
-// GetCritical allocates a new t.Critical and returns the pointer to it.
+// SetCritical allocates a new t.Critical and returns the pointer to it.
 func (t *ThresholdCount) SetCritical(v json.Number) {
 	t.Critical = &v
 }
@@ -10362,7 +10486,7 @@ func (t *ThresholdCount) HasOk() bool {
 	return false
 }
 
-// GetOk allocates a new t.Ok and returns the pointer to it.
+// SetOk allocates a new t.Ok and returns the pointer to it.
 func (t *ThresholdCount) SetOk(v json.Number) {
 	t.Ok = &v
 }
@@ -10393,7 +10517,7 @@ func (t *ThresholdCount) HasWarning() bool {
 	return false
 }
 
-// GetWarning allocates a new t.Warning and returns the pointer to it.
+// SetWarning allocates a new t.Warning and returns the pointer to it.
 func (t *ThresholdCount) SetWarning(v json.Number) {
 	t.Warning = &v
 }
@@ -10424,7 +10548,7 @@ func (t *TileDef) HasViz() bool {
 	return false
 }
 
-// GetViz allocates a new t.Viz and returns the pointer to it.
+// SetViz allocates a new t.Viz and returns the pointer to it.
 func (t *TileDef) SetViz(v string) {
 	t.Viz = &v
 }
@@ -10455,7 +10579,7 @@ func (t *TileDefEvent) HasQuery() bool {
 	return false
 }
 
-// GetQuery allocates a new t.Query and returns the pointer to it.
+// SetQuery allocates a new t.Query and returns the pointer to it.
 func (t *TileDefEvent) SetQuery(v string) {
 	t.Query = &v
 }
@@ -10486,7 +10610,7 @@ func (t *TimeseriesMarker) HasLabel() bool {
 	return false
 }
 
-// GetLabel allocates a new t.Label and returns the pointer to it.
+// SetLabel allocates a new t.Label and returns the pointer to it.
 func (t *TimeseriesMarker) SetLabel(v string) {
 	t.Label = &v
 }
@@ -10517,7 +10641,7 @@ func (t *TimeseriesMarker) HasType() bool {
 	return false
 }
 
-// GetType allocates a new t.Type and returns the pointer to it.
+// SetType allocates a new t.Type and returns the pointer to it.
 func (t *TimeseriesMarker) SetType(v string) {
 	t.Type = &v
 }
@@ -10548,7 +10672,7 @@ func (t *TimeseriesMarker) HasValue() bool {
 	return false
 }
 
-// GetValue allocates a new t.Value and returns the pointer to it.
+// SetValue allocates a new t.Value and returns the pointer to it.
 func (t *TimeseriesMarker) SetValue(v string) {
 	t.Value = &v
 }
@@ -10579,7 +10703,7 @@ func (t *TimeseriesRequest) HasQuery() bool {
 	return false
 }
 
-// GetQuery allocates a new t.Query and returns the pointer to it.
+// SetQuery allocates a new t.Query and returns the pointer to it.
 func (t *TimeseriesRequest) SetQuery(v string) {
 	t.Query = &v
 }
@@ -10610,7 +10734,7 @@ func (t *TimeseriesRequest) HasStyle() bool {
 	return false
 }
 
-// GetStyle allocates a new t.Style and returns the pointer to it.
+// SetStyle allocates a new t.Style and returns the pointer to it.
 func (t *TimeseriesRequest) SetStyle(v TimeseriesRequestStyle) {
 	t.Style = &v
 }
@@ -10641,7 +10765,7 @@ func (t *TimeseriesRequest) HasType() bool {
 	return false
 }
 
-// GetType allocates a new t.Type and returns the pointer to it.
+// SetType allocates a new t.Type and returns the pointer to it.
 func (t *TimeseriesRequest) SetType(v string) {
 	t.Type = &v
 }
@@ -10672,7 +10796,7 @@ func (t *TimeseriesRequestStyle) HasPalette() bool {
 	return false
 }
 
-// GetPalette allocates a new t.Palette and returns the pointer to it.
+// SetPalette allocates a new t.Palette and returns the pointer to it.
 func (t *TimeseriesRequestStyle) SetPalette(v string) {
 	t.Palette = &v
 }
@@ -10703,7 +10827,7 @@ func (t *TimeseriesWidget) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new t.Height and returns the pointer to it.
+// SetHeight allocates a new t.Height and returns the pointer to it.
 func (t *TimeseriesWidget) SetHeight(v int) {
 	t.Height = &v
 }
@@ -10734,7 +10858,7 @@ func (t *TimeseriesWidget) HasLegend() bool {
 	return false
 }
 
-// GetLegend allocates a new t.Legend and returns the pointer to it.
+// SetLegend allocates a new t.Legend and returns the pointer to it.
 func (t *TimeseriesWidget) SetLegend(v bool) {
 	t.Legend = &v
 }
@@ -10765,7 +10889,7 @@ func (t *TimeseriesWidget) HasTileDef() bool {
 	return false
 }
 
-// GetTileDef allocates a new t.TileDef and returns the pointer to it.
+// SetTileDef allocates a new t.TileDef and returns the pointer to it.
 func (t *TimeseriesWidget) SetTileDef(v TileDef) {
 	t.TileDef = &v
 }
@@ -10796,7 +10920,7 @@ func (t *TimeseriesWidget) HasTimeframe() bool {
 	return false
 }
 
-// GetTimeframe allocates a new t.Timeframe and returns the pointer to it.
+// SetTimeframe allocates a new t.Timeframe and returns the pointer to it.
 func (t *TimeseriesWidget) SetTimeframe(v string) {
 	t.Timeframe = &v
 }
@@ -10827,7 +10951,7 @@ func (t *TimeseriesWidget) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new t.Title and returns the pointer to it.
+// SetTitle allocates a new t.Title and returns the pointer to it.
 func (t *TimeseriesWidget) SetTitle(v bool) {
 	t.Title = &v
 }
@@ -10858,7 +10982,7 @@ func (t *TimeseriesWidget) HasTitleAlign() bool {
 	return false
 }
 
-// GetTitleAlign allocates a new t.TitleAlign and returns the pointer to it.
+// SetTitleAlign allocates a new t.TitleAlign and returns the pointer to it.
 func (t *TimeseriesWidget) SetTitleAlign(v string) {
 	t.TitleAlign = &v
 }
@@ -10889,7 +11013,7 @@ func (t *TimeseriesWidget) HasTitleSize() bool {
 	return false
 }
 
-// GetTitleSize allocates a new t.TitleSize and returns the pointer to it.
+// SetTitleSize allocates a new t.TitleSize and returns the pointer to it.
 func (t *TimeseriesWidget) SetTitleSize(v TextSize) {
 	t.TitleSize = &v
 }
@@ -10920,7 +11044,7 @@ func (t *TimeseriesWidget) HasTitleText() bool {
 	return false
 }
 
-// GetTitleText allocates a new t.TitleText and returns the pointer to it.
+// SetTitleText allocates a new t.TitleText and returns the pointer to it.
 func (t *TimeseriesWidget) SetTitleText(v string) {
 	t.TitleText = &v
 }
@@ -10951,7 +11075,7 @@ func (t *TimeseriesWidget) HasType() bool {
 	return false
 }
 
-// GetType allocates a new t.Type and returns the pointer to it.
+// SetType allocates a new t.Type and returns the pointer to it.
 func (t *TimeseriesWidget) SetType(v string) {
 	t.Type = &v
 }
@@ -10982,7 +11106,7 @@ func (t *TimeseriesWidget) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new t.Width and returns the pointer to it.
+// SetWidth allocates a new t.Width and returns the pointer to it.
 func (t *TimeseriesWidget) SetWidth(v int) {
 	t.Width = &v
 }
@@ -11013,7 +11137,7 @@ func (t *TimeseriesWidget) HasX() bool {
 	return false
 }
 
-// GetX allocates a new t.X and returns the pointer to it.
+// SetX allocates a new t.X and returns the pointer to it.
 func (t *TimeseriesWidget) SetX(v int) {
 	t.X = &v
 }
@@ -11044,7 +11168,7 @@ func (t *TimeseriesWidget) HasY() bool {
 	return false
 }
 
-// GetY allocates a new t.Y and returns the pointer to it.
+// SetY allocates a new t.Y and returns the pointer to it.
 func (t *TimeseriesWidget) SetY(v int) {
 	t.Y = &v
 }
@@ -11075,7 +11199,7 @@ func (t *ToplistWidget) HasHeight() bool {
 	return false
 }
 
-// GetHeight allocates a new t.Height and returns the pointer to it.
+// SetHeight allocates a new t.Height and returns the pointer to it.
 func (t *ToplistWidget) SetHeight(v int) {
 	t.Height = &v
 }
@@ -11106,7 +11230,7 @@ func (t *ToplistWidget) HasLegend() bool {
 	return false
 }
 
-// GetLegend allocates a new t.Legend and returns the pointer to it.
+// SetLegend allocates a new t.Legend and returns the pointer to it.
 func (t *ToplistWidget) SetLegend(v bool) {
 	t.Legend = &v
 }
@@ -11137,7 +11261,7 @@ func (t *ToplistWidget) HasLegendSize() bool {
 	return false
 }
 
-// GetLegendSize allocates a new t.LegendSize and returns the pointer to it.
+// SetLegendSize allocates a new t.LegendSize and returns the pointer to it.
 func (t *ToplistWidget) SetLegendSize(v int) {
 	t.LegendSize = &v
 }
@@ -11168,7 +11292,7 @@ func (t *ToplistWidget) HasTileDef() bool {
 	return false
 }
 
-// GetTileDef allocates a new t.TileDef and returns the pointer to it.
+// SetTileDef allocates a new t.TileDef and returns the pointer to it.
 func (t *ToplistWidget) SetTileDef(v TileDef) {
 	t.TileDef = &v
 }
@@ -11199,7 +11323,7 @@ func (t *ToplistWidget) HasTimeframe() bool {
 	return false
 }
 
-// GetTimeframe allocates a new t.Timeframe and returns the pointer to it.
+// SetTimeframe allocates a new t.Timeframe and returns the pointer to it.
 func (t *ToplistWidget) SetTimeframe(v string) {
 	t.Timeframe = &v
 }
@@ -11230,7 +11354,7 @@ func (t *ToplistWidget) HasTitle() bool {
 	return false
 }
 
-// GetTitle allocates a new t.Title and returns the pointer to it.
+// SetTitle allocates a new t.Title and returns the pointer to it.
 func (t *ToplistWidget) SetTitle(v bool) {
 	t.Title = &v
 }
@@ -11261,7 +11385,7 @@ func (t *ToplistWidget) HasTitleAlign() bool {
 	return false
 }
 
-// GetTitleAlign allocates a new t.TitleAlign and returns the pointer to it.
+// SetTitleAlign allocates a new t.TitleAlign and returns the pointer to it.
 func (t *ToplistWidget) SetTitleAlign(v string) {
 	t.TitleAlign = &v
 }
@@ -11292,7 +11416,7 @@ func (t *ToplistWidget) HasTitleSize() bool {
 	return false
 }
 
-// GetTitleSize allocates a new t.TitleSize and returns the pointer to it.
+// SetTitleSize allocates a new t.TitleSize and returns the pointer to it.
 func (t *ToplistWidget) SetTitleSize(v TextSize) {
 	t.TitleSize = &v
 }
@@ -11323,7 +11447,7 @@ func (t *ToplistWidget) HasTitleText() bool {
 	return false
 }
 
-// GetTitleText allocates a new t.TitleText and returns the pointer to it.
+// SetTitleText allocates a new t.TitleText and returns the pointer to it.
 func (t *ToplistWidget) SetTitleText(v string) {
 	t.TitleText = &v
 }
@@ -11354,7 +11478,7 @@ func (t *ToplistWidget) HasType() bool {
 	return false
 }
 
-// GetType allocates a new t.Type and returns the pointer to it.
+// SetType allocates a new t.Type and returns the pointer to it.
 func (t *ToplistWidget) SetType(v string) {
 	t.Type = &v
 }
@@ -11385,7 +11509,7 @@ func (t *ToplistWidget) HasWidth() bool {
 	return false
 }
 
-// GetWidth allocates a new t.Width and returns the pointer to it.
+// SetWidth allocates a new t.Width and returns the pointer to it.
 func (t *ToplistWidget) SetWidth(v int) {
 	t.Width = &v
 }
@@ -11416,7 +11540,7 @@ func (t *ToplistWidget) HasX() bool {
 	return false
 }
 
-// GetX allocates a new t.X and returns the pointer to it.
+// SetX allocates a new t.X and returns the pointer to it.
 func (t *ToplistWidget) SetX(v int) {
 	t.X = &v
 }
@@ -11447,7 +11571,7 @@ func (t *ToplistWidget) HasY() bool {
 	return false
 }
 
-// GetY allocates a new t.Y and returns the pointer to it.
+// SetY allocates a new t.Y and returns the pointer to it.
 func (t *ToplistWidget) SetY(v int) {
 	t.Y = &v
 }
@@ -11478,7 +11602,7 @@ func (u *User) HasDisabled() bool {
 	return false
 }
 
-// GetDisabled allocates a new u.Disabled and returns the pointer to it.
+// SetDisabled allocates a new u.Disabled and returns the pointer to it.
 func (u *User) SetDisabled(v bool) {
 	u.Disabled = &v
 }
@@ -11509,7 +11633,7 @@ func (u *User) HasEmail() bool {
 	return false
 }
 
-// GetEmail allocates a new u.Email and returns the pointer to it.
+// SetEmail allocates a new u.Email and returns the pointer to it.
 func (u *User) SetEmail(v string) {
 	u.Email = &v
 }
@@ -11540,7 +11664,7 @@ func (u *User) HasHandle() bool {
 	return false
 }
 
-// GetHandle allocates a new u.Handle and returns the pointer to it.
+// SetHandle allocates a new u.Handle and returns the pointer to it.
 func (u *User) SetHandle(v string) {
 	u.Handle = &v
 }
@@ -11571,7 +11695,7 @@ func (u *User) HasIsAdmin() bool {
 	return false
 }
 
-// GetIsAdmin allocates a new u.IsAdmin and returns the pointer to it.
+// SetIsAdmin allocates a new u.IsAdmin and returns the pointer to it.
 func (u *User) SetIsAdmin(v bool) {
 	u.IsAdmin = &v
 }
@@ -11602,7 +11726,7 @@ func (u *User) HasName() bool {
 	return false
 }
 
-// GetName allocates a new u.Name and returns the pointer to it.
+// SetName allocates a new u.Name and returns the pointer to it.
 func (u *User) SetName(v string) {
 	u.Name = &v
 }
@@ -11633,7 +11757,7 @@ func (u *User) HasRole() bool {
 	return false
 }
 
-// GetRole allocates a new u.Role and returns the pointer to it.
+// SetRole allocates a new u.Role and returns the pointer to it.
 func (u *User) SetRole(v string) {
 	u.Role = &v
 }
@@ -11664,7 +11788,7 @@ func (u *User) HasVerified() bool {
 	return false
 }
 
-// GetVerified allocates a new u.Verified and returns the pointer to it.
+// SetVerified allocates a new u.Verified and returns the pointer to it.
 func (u *User) SetVerified(v bool) {
 	u.Verified = &v
 }
@@ -11695,7 +11819,7 @@ func (w *Widget) HasAlertGraphWidget() bool {
 	return false
 }
 
-// GetAlertGraphWidget allocates a new w.AlertGraphWidget and returns the pointer to it.
+// SetAlertGraphWidget allocates a new w.AlertGraphWidget and returns the pointer to it.
 func (w *Widget) SetAlertGraphWidget(v AlertGraphWidget) {
 	w.AlertGraphWidget = &v
 }
@@ -11726,7 +11850,7 @@ func (w *Widget) HasAlertValueWidget() bool {
 	return false
 }
 
-// GetAlertValueWidget allocates a new w.AlertValueWidget and returns the pointer to it.
+// SetAlertValueWidget allocates a new w.AlertValueWidget and returns the pointer to it.
 func (w *Widget) SetAlertValueWidget(v AlertValueWidget) {
 	w.AlertValueWidget = &v
 }
@@ -11757,7 +11881,7 @@ func (w *Widget) HasChangeWidget() bool {
 	return false
 }
 
-// GetChangeWidget allocates a new w.ChangeWidget and returns the pointer to it.
+// SetChangeWidget allocates a new w.ChangeWidget and returns the pointer to it.
 func (w *Widget) SetChangeWidget(v ChangeWidget) {
 	w.ChangeWidget = &v
 }
@@ -11788,7 +11912,7 @@ func (w *Widget) HasCheckStatusWidget() bool {
 	return false
 }
 
-// GetCheckStatusWidget allocates a new w.CheckStatusWidget and returns the pointer to it.
+// SetCheckStatusWidget allocates a new w.CheckStatusWidget and returns the pointer to it.
 func (w *Widget) SetCheckStatusWidget(v CheckStatusWidget) {
 	w.CheckStatusWidget = &v
 }
@@ -11819,7 +11943,7 @@ func (w *Widget) HasDefault() bool {
 	return false
 }
 
-// GetDefault allocates a new w.Default and returns the pointer to it.
+// SetDefault allocates a new w.Default and returns the pointer to it.
 func (w *Widget) SetDefault(v string) {
 	w.Default = &v
 }
@@ -11850,7 +11974,7 @@ func (w *Widget) HasEventStreamWidget() bool {
 	return false
 }
 
-// GetEventStreamWidget allocates a new w.EventStreamWidget and returns the pointer to it.
+// SetEventStreamWidget allocates a new w.EventStreamWidget and returns the pointer to it.
 func (w *Widget) SetEventStreamWidget(v EventStreamWidget) {
 	w.EventStreamWidget = &v
 }
@@ -11881,7 +12005,7 @@ func (w *Widget) HasEventTimelineWidget() bool {
 	return false
 }
 
-// GetEventTimelineWidget allocates a new w.EventTimelineWidget and returns the pointer to it.
+// SetEventTimelineWidget allocates a new w.EventTimelineWidget and returns the pointer to it.
 func (w *Widget) SetEventTimelineWidget(v EventTimelineWidget) {
 	w.EventTimelineWidget = &v
 }
@@ -11912,7 +12036,7 @@ func (w *Widget) HasFreeTextWidget() bool {
 	return false
 }
 
-// GetFreeTextWidget allocates a new w.FreeTextWidget and returns the pointer to it.
+// SetFreeTextWidget allocates a new w.FreeTextWidget and returns the pointer to it.
 func (w *Widget) SetFreeTextWidget(v FreeTextWidget) {
 	w.FreeTextWidget = &v
 }
@@ -11943,7 +12067,7 @@ func (w *Widget) HasGraphWidget() bool {
 	return false
 }
 
-// GetGraphWidget allocates a new w.GraphWidget and returns the pointer to it.
+// SetGraphWidget allocates a new w.GraphWidget and returns the pointer to it.
 func (w *Widget) SetGraphWidget(v GraphWidget) {
 	w.GraphWidget = &v
 }
@@ -11974,7 +12098,7 @@ func (w *Widget) HasHostMapWidget() bool {
 	return false
 }
 
-// GetHostMapWidget allocates a new w.HostMapWidget and returns the pointer to it.
+// SetHostMapWidget allocates a new w.HostMapWidget and returns the pointer to it.
 func (w *Widget) SetHostMapWidget(v HostMapWidget) {
 	w.HostMapWidget = &v
 }
@@ -12005,7 +12129,7 @@ func (w *Widget) HasIFrameWidget() bool {
 	return false
 }
 
-// GetIFrameWidget allocates a new w.IFrameWidget and returns the pointer to it.
+// SetIFrameWidget allocates a new w.IFrameWidget and returns the pointer to it.
 func (w *Widget) SetIFrameWidget(v IFrameWidget) {
 	w.IFrameWidget = &v
 }
@@ -12036,7 +12160,7 @@ func (w *Widget) HasImageWidget() bool {
 	return false
 }
 
-// GetImageWidget allocates a new w.ImageWidget and returns the pointer to it.
+// SetImageWidget allocates a new w.ImageWidget and returns the pointer to it.
 func (w *Widget) SetImageWidget(v ImageWidget) {
 	w.ImageWidget = &v
 }
@@ -12067,7 +12191,7 @@ func (w *Widget) HasName() bool {
 	return false
 }
 
-// GetName allocates a new w.Name and returns the pointer to it.
+// SetName allocates a new w.Name and returns the pointer to it.
 func (w *Widget) SetName(v string) {
 	w.Name = &v
 }
@@ -12098,7 +12222,7 @@ func (w *Widget) HasNoteWidget() bool {
 	return false
 }
 
-// GetNoteWidget allocates a new w.NoteWidget and returns the pointer to it.
+// SetNoteWidget allocates a new w.NoteWidget and returns the pointer to it.
 func (w *Widget) SetNoteWidget(v NoteWidget) {
 	w.NoteWidget = &v
 }
@@ -12129,7 +12253,7 @@ func (w *Widget) HasPrefix() bool {
 	return false
 }
 
-// GetPrefix allocates a new w.Prefix and returns the pointer to it.
+// SetPrefix allocates a new w.Prefix and returns the pointer to it.
 func (w *Widget) SetPrefix(v string) {
 	w.Prefix = &v
 }
@@ -12160,7 +12284,7 @@ func (w *Widget) HasQueryValueWidget() bool {
 	return false
 }
 
-// GetQueryValueWidget allocates a new w.QueryValueWidget and returns the pointer to it.
+// SetQueryValueWidget allocates a new w.QueryValueWidget and returns the pointer to it.
 func (w *Widget) SetQueryValueWidget(v QueryValueWidget) {
 	w.QueryValueWidget = &v
 }
@@ -12191,7 +12315,7 @@ func (w *Widget) HasTimeseriesWidget() bool {
 	return false
 }
 
-// GetTimeseriesWidget allocates a new w.TimeseriesWidget and returns the pointer to it.
+// SetTimeseriesWidget allocates a new w.TimeseriesWidget and returns the pointer to it.
 func (w *Widget) SetTimeseriesWidget(v TimeseriesWidget) {
 	w.TimeseriesWidget = &v
 }
@@ -12222,7 +12346,7 @@ func (w *Widget) HasToplistWidget() bool {
 	return false
 }
 
-// GetToplistWidget allocates a new w.ToplistWidget and returns the pointer to it.
+// SetToplistWidget allocates a new w.ToplistWidget and returns the pointer to it.
 func (w *Widget) SetToplistWidget(v ToplistWidget) {
 	w.ToplistWidget = &v
 }
@@ -12253,7 +12377,7 @@ func (y *Yaxis) HasMax() bool {
 	return false
 }
 
-// GetMax allocates a new y.Max and returns the pointer to it.
+// SetMax allocates a new y.Max and returns the pointer to it.
 func (y *Yaxis) SetMax(v float64) {
 	y.Max = &v
 }
@@ -12284,7 +12408,7 @@ func (y *Yaxis) HasMin() bool {
 	return false
 }
 
-// GetMin allocates a new y.Min and returns the pointer to it.
+// SetMin allocates a new y.Min and returns the pointer to it.
 func (y *Yaxis) SetMin(v float64) {
 	y.Min = &v
 }
@@ -12315,7 +12439,7 @@ func (y *Yaxis) HasScale() bool {
 	return false
 }
 
-// GetScale allocates a new y.Scale and returns the pointer to it.
+// SetScale allocates a new y.Scale and returns the pointer to it.
 func (y *Yaxis) SetScale(v string) {
 	y.Scale = &v
 }
