@@ -17,9 +17,11 @@ import (
 )
 
 type ThresholdCount struct {
-	Ok       *json.Number `json:"ok,omitempty"`
-	Critical *json.Number `json:"critical,omitempty"`
-	Warning  *json.Number `json:"warning,omitempty"`
+	Ok               *json.Number `json:"ok,omitempty"`
+	Critical         *json.Number `json:"critical,omitempty"`
+	Warning          *json.Number `json:"warning,omitempty"`
+	CriticalRecovery *json.Number `json:"critical_recovery,omitempty"`
+	WarningRecovery  *json.Number `json:"warning_recovery,omitempty"`
 }
 
 type NoDataTimeframe int
