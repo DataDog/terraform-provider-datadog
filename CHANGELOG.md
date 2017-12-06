@@ -1,15 +1,15 @@
-## 1.0.1 (Unreleased)
+## 1.0.1 (December 06, 2017)
 
 BUG FIXES:
 
-* Fix issue reading resources that have been updated outside of Terraform [GH-34]
+* Fix issue reading resources that have been updated outside of Terraform ([#34](https://github.com/terraform-providers/terraform-provider-datadog/issues/34))
 
 ## 1.0.0 (October 20, 2017)
 
 BUG FIXES:
 
-* Improved detection of "drift" when graphs are reconfigured outside of Terraform. [GH-27]
-* Fixed API response decoding error on graphs. [GH-27]
+* Improved detection of "drift" when graphs are reconfigured outside of Terraform. ([#27](https://github.com/terraform-providers/terraform-provider-datadog/issues/27))
+* Fixed API response decoding error on graphs. ([#27](https://github.com/terraform-providers/terraform-provider-datadog/issues/27))
 
 ## 0.1.1 (September 26, 2017)
 
