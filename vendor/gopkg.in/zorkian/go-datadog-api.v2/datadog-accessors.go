@@ -10460,6 +10460,37 @@ func (t *ThresholdCount) SetCritical(v json.Number) {
 	t.Critical = &v
 }
 
+// GetCriticalRecovery returns the CriticalRecovery field if non-nil, zero value otherwise.
+func (t *ThresholdCount) GetCriticalRecovery() json.Number {
+	if t == nil || t.CriticalRecovery == nil {
+		return ""
+	}
+	return *t.CriticalRecovery
+}
+
+// GetOkCriticalRecovery returns a tuple with the CriticalRecovery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (t *ThresholdCount) GetCriticalRecoveryOk() (json.Number, bool) {
+	if t == nil || t.CriticalRecovery == nil {
+		return "", false
+	}
+	return *t.CriticalRecovery, true
+}
+
+// HasCriticalRecovery returns a boolean if a field has been set.
+func (t *ThresholdCount) HasCriticalRecovery() bool {
+	if t != nil && t.CriticalRecovery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCriticalRecovery allocates a new t.CriticalRecovery and returns the pointer to it.
+func (t *ThresholdCount) SetCriticalRecovery(v json.Number) {
+	t.CriticalRecovery = &v
+}
+
 // GetOk returns the Ok field if non-nil, zero value otherwise.
 func (t *ThresholdCount) GetOk() json.Number {
 	if t == nil || t.Ok == nil {
@@ -10520,6 +10551,37 @@ func (t *ThresholdCount) HasWarning() bool {
 // SetWarning allocates a new t.Warning and returns the pointer to it.
 func (t *ThresholdCount) SetWarning(v json.Number) {
 	t.Warning = &v
+}
+
+// GetWarningRecovery returns the WarningRecovery field if non-nil, zero value otherwise.
+func (t *ThresholdCount) GetWarningRecovery() json.Number {
+	if t == nil || t.WarningRecovery == nil {
+		return ""
+	}
+	return *t.WarningRecovery
+}
+
+// GetOkWarningRecovery returns a tuple with the WarningRecovery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (t *ThresholdCount) GetWarningRecoveryOk() (json.Number, bool) {
+	if t == nil || t.WarningRecovery == nil {
+		return "", false
+	}
+	return *t.WarningRecovery, true
+}
+
+// HasWarningRecovery returns a boolean if a field has been set.
+func (t *ThresholdCount) HasWarningRecovery() bool {
+	if t != nil && t.WarningRecovery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetWarningRecovery allocates a new t.WarningRecovery and returns the pointer to it.
+func (t *ThresholdCount) SetWarningRecovery(v json.Number) {
+	t.WarningRecovery = &v
 }
 
 // GetViz returns the Viz field if non-nil, zero value otherwise.
