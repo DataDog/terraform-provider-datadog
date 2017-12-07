@@ -149,7 +149,7 @@ Nested `template_variable` blocks have the following structure:
 
 * `name` - (Required) The variable name. Can be referenced as $name in `graph` `request` `q` query strings.
 * `prefix` - (Optional) The tag group. Default: no tag group.
-* `default` - (Required) The default tag. Default: "*" (match all).
+* `default` - (Optional) The default tag. Default: "*" (match all).
 
 ## Import
 
