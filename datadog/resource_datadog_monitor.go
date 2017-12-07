@@ -71,6 +71,14 @@ func resourceDatadogMonitor() *schema.Resource {
 							Type:     schema.TypeFloat,
 							Optional: true,
 						},
+						"warning_recovery": {
+							Type:     schema.TypeFloat,
+							Optional: true,
+						},
+						"critical_recovery": {
+							Type:     schema.TypeFloat,
+							Optional: true,
+						},
 					},
 				},
 				DiffSuppressFunc: suppressDataDogFloatIntDiff,
@@ -146,6 +154,12 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 	}
 	if r, ok := d.GetOk("thresholds.critical"); ok {
 		thresholds.SetCritical(json.Number(r.(string)))
+	}
+	if r, ok := d.GetOk("thresholds.warning_recovery"); ok {
+		thresholds.SetWarningRecovery(json.Number(r.(string)))
+	}
+	if r, ok := d.GetOk("thresholds.critical_recovery"); ok {
+		thresholds.SetCriticalRecovery(json.Number(r.(string)))
 	}
 
 	o := datadog.Options{
@@ -259,9 +273,11 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 
 	thresholds := make(map[string]string)
 	for k, v := range map[string]json.Number{
-		"ok":       m.Options.Thresholds.GetOk(),
-		"warning":  m.Options.Thresholds.GetWarning(),
-		"critical": m.Options.Thresholds.GetCritical(),
+		"ok":                m.Options.Thresholds.GetOk(),
+		"warning":           m.Options.Thresholds.GetWarning(),
+		"critical":          m.Options.Thresholds.GetCritical(),
+		"warning_recovery":  m.Options.Thresholds.GetWarningRecovery(),
+		"critical_recovery": m.Options.Thresholds.GetCriticalRecovery(),
 	} {
 		s := v.String()
 		if s != "" {
@@ -343,6 +359,12 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		}
 		if thresholds["critical"] != nil {
 			o.Thresholds.SetCritical(json.Number(thresholds["critical"].(string)))
+		}
+		if thresholds["warning_recovery"] != nil {
+			o.Thresholds.SetWarningRecovery(json.Number(thresholds["warning_recovery"].(string)))
+		}
+		if thresholds["critical_recovery"] != nil {
+			o.Thresholds.SetCriticalRecovery(json.Number(thresholds["critical_recovery"].(string)))
 		}
 	}
 
