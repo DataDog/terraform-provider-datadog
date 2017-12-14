@@ -26,7 +26,7 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "type", "metric alert"),
+						"datadog_monitor.foo", "type", "query alert"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
 					resource.TestCheckResourceAttr(
@@ -40,7 +40,11 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
+					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical", "2.0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.critical_recovery", "1.5"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
@@ -70,7 +74,7 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "type", "metric alert"),
+						"datadog_monitor.foo", "type", "query alert"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
 					resource.TestCheckResourceAttr(
@@ -110,7 +114,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "type", "metric alert"),
+						"datadog_monitor.foo", "type", "query alert"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_no_data", "false"),
 					resource.TestCheckResourceAttr(
@@ -122,7 +126,11 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
+					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical", "2.0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.critical_recovery", "1.5"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_audit", "false"),
 					resource.TestCheckResourceAttr(
@@ -152,7 +160,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "escalation_message", "the situation has escalated! @pagerduty"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "type", "metric alert"),
+						"datadog_monitor.foo", "type", "query alert"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_no_data", "true"),
 					resource.TestCheckResourceAttr(
@@ -168,7 +176,11 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
+					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical", "3.0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.critical_recovery", "2.5"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_audit", "true"),
 					resource.TestCheckResourceAttr(
@@ -206,7 +218,7 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "type", "metric alert"),
+						"datadog_monitor.foo", "type", "query alert"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
 					resource.TestCheckResourceAttr(
@@ -218,7 +230,11 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
+					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical", "2.0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.critical_recovery", "1.5"),
 				),
 			},
 		},
@@ -238,7 +254,11 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning", "1"),
 					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.warning_recovery", "0"),
+					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.critical_recovery", "1"),
 				),
 			},
 
@@ -249,7 +269,11 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
+					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical", "3.0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.critical_recovery", "2.0"),
 				),
 			},
 		},
@@ -278,7 +302,7 @@ func testAccCheckDatadogMonitorExists(n string) resource.TestCheckFunc {
 const testAccCheckDatadogMonitorConfig = `
 resource "datadog_monitor" "foo" {
   name = "name for monitor foo"
-  type = "metric alert"
+  type = "query alert"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
 
@@ -287,6 +311,8 @@ resource "datadog_monitor" "foo" {
   thresholds {
 	warning = "1.0"
 	critical = "2.0"
+	warning_recovery = "0.5"
+	critical_recovery = "1.5"
   }
 
   renotify_interval = 60
@@ -304,7 +330,7 @@ resource "datadog_monitor" "foo" {
 const testAccCheckDatadogMonitorConfigNoThresholds = `
 resource "datadog_monitor" "foo" {
   name = "name for monitor foo"
-  type = "metric alert"
+  type = "query alert"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
 
@@ -325,15 +351,17 @@ resource "datadog_monitor" "foo" {
 const testAccCheckDatadogMonitorConfig_ints = `
 resource "datadog_monitor" "foo" {
   name               = "name for monitor foo"
-  type               = "metric alert"
+  type               = "query alert"
   message            = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
 
   thresholds {
-    warning  = 1
-    critical = 2
+	warning           = 1
+	warning_recovery  = 0
+	critical          = 2
+	critical_recovery = 1
   }
 
   notify_no_data    = false
@@ -352,15 +380,17 @@ resource "datadog_monitor" "foo" {
 const testAccCheckDatadogMonitorConfig_ints_mixed = `
 resource "datadog_monitor" "foo" {
   name               = "name for monitor foo"
-  type               = "metric alert"
+  type               = "query alert"
   message            = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 3"
 
   thresholds {
-    warning  = 1
-    critical = 3.0 
+	warning           = 1
+	warning_recovery  = 0.5
+	critical          = 3.0
+	critical_recovery = 2
   }
 
   notify_no_data    = false
@@ -379,16 +409,18 @@ resource "datadog_monitor" "foo" {
 const testAccCheckDatadogMonitorConfigUpdated = `
 resource "datadog_monitor" "foo" {
   name = "name for monitor bar"
-  type = "metric alert"
+  type = "query alert"
   message = "a different message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} > 3"
 
   thresholds {
-	ok = "0.0"
-	warning = "1.0"
-	critical = "3.0"
+	ok                = "0.0"
+	warning           = "1.0"
+	warning_recovery  = "0.5"
+	critical          = "3.0"
+	critical_recovery = "2.5"
   }
 
   notify_no_data = true
@@ -412,7 +444,7 @@ resource "datadog_monitor" "foo" {
 const testAccCheckDatadogMonitorConfigWhitespace = `
 resource "datadog_monitor" "foo" {
   name = "name for monitor foo"
-  type = "metric alert"
+  type = "query alert"
   message = <<EOF
 some message Notify: @hipchat-channel
 EOF
@@ -425,7 +457,9 @@ EOF
   thresholds {
 	ok = "0.0"
 	warning = "1.0"
+	warning_recovery = "0.5"
 	critical = "2.0"
+	critical_recovery = "1.5"
   }
 
   notify_no_data = false

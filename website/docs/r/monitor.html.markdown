@@ -20,12 +20,14 @@ resource "datadog_monitor" "foo" {
   message            = "Monitor triggered. Notify: @hipchat-channel"
   escalation_message = "Escalation message @pagerduty"
 
-  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4"
 
   thresholds {
-    ok       = 0
-    warning  = 1
-    critical = 2
+    ok                = 0
+    warning           = 2
+    warning_recovery  = 1
+    critical          = 4
+    critical_recovery = 3
   }
 
   notify_no_data    = false
@@ -62,12 +64,14 @@ The following arguments are supported:
     notification allowed elsewhere.
 * `thresholds` - (Optional)
     * Metric alerts:
-    A dictionary of thresholds by threshold type. Currently we have two threshold types for metric alerts: critical and warning. Critical is defined in the query, but can also be specified in this option. Warning threshold can only be specified using the thresholds option.
+    A dictionary of thresholds by threshold type. Currently we have four threshold types for metric alerts: critical, critical recovery, warning, and warning recovery. Critical is defined in the query, but can also be specified in this option. Warning and recovery thresholds can only be specified using the thresholds option.
     Example usage:
         ```
         thresholds {
-            critical = 90
-            warning  = 80
+            critical          = 90
+            critical_recovery = 85
+            warning           = 80
+            warning_recovery  = 75
         }
         ```
     * Service checks:
