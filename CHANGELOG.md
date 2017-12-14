@@ -1,4 +1,9 @@
 ## 1.0.2 (Unreleased)
+
+IMPROVEMENTS:
+
+* `datadog_monitor` - Add support for monitor recovery thresholds [GH-37]
+
 ## 1.0.1 (December 06, 2017)
 
 BUG FIXES:
