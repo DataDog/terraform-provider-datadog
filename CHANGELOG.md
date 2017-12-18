@@ -4,6 +4,10 @@ IMPROVEMENTS:
 
 * `datadog_monitor` - Add support for monitor recovery thresholds [GH-37]
 
+BUG FIXES:
+
+* Fix issue with DataDog service converting metric alerts to query alerts [GH-16]
+
 ## 1.0.1 (December 06, 2017)
 
 BUG FIXES:
