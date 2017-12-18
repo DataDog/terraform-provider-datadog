@@ -51,6 +51,14 @@ func resourceDatadogMonitor() *schema.Resource {
 			"type": {
 				Type:     schema.TypeString,
 				Required: true,
+				// Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
+				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+					if oldVal == "query alert" && newVal == "metric alert" {
+						log.Printf("[DEBUG] Monitor '%s' got a '%s' response for an expected '%s' type. Suppressing change.", d.Get("name"), newVal, oldVal)
+						return true
+					}
+					return newVal == oldVal
+				},
 			},
 
 			// Options
