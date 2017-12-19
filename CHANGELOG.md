@@ -1,12 +1,12 @@
-## 1.0.2 (Unreleased)
+## 1.0.2 (December 19, 2017)
 
 IMPROVEMENTS:
 
-* `datadog_monitor` - Add support for monitor recovery thresholds [GH-37]
+* `datadog_monitor` - Add support for monitor recovery thresholds ([#37](https://github.com/terraform-providers/terraform-provider-datadog/issues/37))
 
 BUG FIXES:
 
-* Fix issue with DataDog service converting metric alerts to query alerts [GH-16]
+* Fix issue with DataDog service converting metric alerts to query alerts ([#16](https://github.com/terraform-providers/terraform-provider-datadog/issues/16))
 
 ## 1.0.1 (December 06, 2017)
 
