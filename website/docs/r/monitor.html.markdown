@@ -114,13 +114,13 @@ The following arguments are supported:
     To mute the alert completely:
 
         silenced {
-          '*' =  0
+          "*" =  0
         }
 
     To mute role:db for a short time:
 
         silenced {
-          'role:db' = 1412798116
+          "role:db" = 1412798116
         }
 
 ## Attributes Reference
