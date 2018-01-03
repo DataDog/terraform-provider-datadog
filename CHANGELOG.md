@@ -1,8 +1,8 @@
-## 1.0.3 (Unreleased)
+## 1.0.3 (January 03, 2018)
 
 IMPROVEMENTS:
 
-* `datadog_downtime` - adding support for setting `monitor_id` [GH-18]
+* `datadog_downtime` - adding support for setting `monitor_id` ([#18](https://github.com/terraform-providers/terraform-provider-datadog/issues/18))
 
 ## 1.0.2 (December 19, 2017)
 
