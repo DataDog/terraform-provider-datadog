@@ -1,4 +1,9 @@
-## 1.1.0 (Unreleased)
+## 1.0.3 (Unreleased)
+
+IMPROVEMENTS:
+
+* `datadog_downtime` - adding support for setting `monitor_id` [GH-18]
+
 ## 1.0.2 (December 19, 2017)
 
 IMPROVEMENTS:
