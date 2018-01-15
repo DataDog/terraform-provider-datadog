@@ -79,6 +79,10 @@ func resourceDatadogMonitor() *schema.Resource {
 							Type:     schema.TypeFloat,
 							Optional: true,
 						},
+						"unknown": {
+							Type:     schema.TypeFloat,
+							Optional: true,
+						},
 						"warning_recovery": {
 							Type:     schema.TypeFloat,
 							Optional: true,
@@ -159,6 +163,9 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 	}
 	if r, ok := d.GetOk("thresholds.warning"); ok {
 		thresholds.SetWarning(json.Number(r.(string)))
+	}
+	if r, ok := d.GetOk("thresholds.unknown"); ok {
+		thresholds.SetUnknown(json.Number(r.(string)))
 	}
 	if r, ok := d.GetOk("thresholds.critical"); ok {
 		thresholds.SetCritical(json.Number(r.(string)))
@@ -284,6 +291,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 		"ok":                m.Options.Thresholds.GetOk(),
 		"warning":           m.Options.Thresholds.GetWarning(),
 		"critical":          m.Options.Thresholds.GetCritical(),
+		"unknown":           m.Options.Thresholds.GetUnknown(),
 		"warning_recovery":  m.Options.Thresholds.GetWarningRecovery(),
 		"critical_recovery": m.Options.Thresholds.GetCriticalRecovery(),
 	} {
@@ -367,6 +375,9 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		}
 		if thresholds["critical"] != nil {
 			o.Thresholds.SetCritical(json.Number(thresholds["critical"].(string)))
+		}
+		if thresholds["unknown"] != nil {
+			o.Thresholds.SetUnknown(json.Number(thresholds["unknown"].(string)))
 		}
 		if thresholds["warning_recovery"] != nil {
 			o.Thresholds.SetWarningRecovery(json.Number(thresholds["warning_recovery"].(string)))
