@@ -20,6 +20,7 @@ type ThresholdCount struct {
 	Ok               *json.Number `json:"ok,omitempty"`
 	Critical         *json.Number `json:"critical,omitempty"`
 	Warning          *json.Number `json:"warning,omitempty"`
+	Unknown          *json.Number `json:"unknown,omitempty"`
 	CriticalRecovery *json.Number `json:"critical_recovery,omitempty"`
 	WarningRecovery  *json.Number `json:"warning_recovery,omitempty"`
 }

@@ -4,7 +4,7 @@
  *
  * Please see the included LICENSE file for licensing information.
  *
- * Copyright 2017 by authors and contributors.
+ * Copyright 2018 by authors and contributors.
 */
 
 package datadog
@@ -10522,6 +10522,37 @@ func (t *ThresholdCount) SetOk(v json.Number) {
 	t.Ok = &v
 }
 
+// GetUnknown returns the Unknown field if non-nil, zero value otherwise.
+func (t *ThresholdCount) GetUnknown() json.Number {
+	if t == nil || t.Unknown == nil {
+		return ""
+	}
+	return *t.Unknown
+}
+
+// GetOkUnknown returns a tuple with the Unknown field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (t *ThresholdCount) GetUnknownOk() (json.Number, bool) {
+	if t == nil || t.Unknown == nil {
+		return "", false
+	}
+	return *t.Unknown, true
+}
+
+// HasUnknown returns a boolean if a field has been set.
+func (t *ThresholdCount) HasUnknown() bool {
+	if t != nil && t.Unknown != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetUnknown allocates a new t.Unknown and returns the pointer to it.
+func (t *ThresholdCount) SetUnknown(v json.Number) {
+	t.Unknown = &v
+}
+
 // GetWarning returns the Warning field if non-nil, zero value otherwise.
 func (t *ThresholdCount) GetWarning() json.Number {
 	if t == nil || t.Warning == nil {
@@ -11636,6 +11667,37 @@ func (t *ToplistWidget) HasY() bool {
 // SetY allocates a new t.Y and returns the pointer to it.
 func (t *ToplistWidget) SetY(v int) {
 	t.Y = &v
+}
+
+// GetAccessRole returns the AccessRole field if non-nil, zero value otherwise.
+func (u *User) GetAccessRole() string {
+	if u == nil || u.AccessRole == nil {
+		return ""
+	}
+	return *u.AccessRole
+}
+
+// GetOkAccessRole returns a tuple with the AccessRole field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (u *User) GetAccessRoleOk() (string, bool) {
+	if u == nil || u.AccessRole == nil {
+		return "", false
+	}
+	return *u.AccessRole, true
+}
+
+// HasAccessRole returns a boolean if a field has been set.
+func (u *User) HasAccessRole() bool {
+	if u != nil && u.AccessRole != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAccessRole allocates a new u.AccessRole and returns the pointer to it.
+func (u *User) SetAccessRole(v string) {
+	u.AccessRole = &v
 }
 
 // GetDisabled returns the Disabled field if non-nil, zero value otherwise.
