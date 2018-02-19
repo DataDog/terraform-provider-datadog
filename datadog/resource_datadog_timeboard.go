@@ -126,6 +126,18 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Type:     schema.TypeString,
 					Optional: true,
 				},
+				"max": &schema.Schema{
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"min": &schema.Schema{
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"dim": &schema.Schema{
+					Type:     schema.TypeString,
+					Optional: true,
+				},
 			},
 		},
 	}

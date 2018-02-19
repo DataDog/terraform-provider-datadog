@@ -80,6 +80,9 @@ resource "datadog_timeboard" "acceptance_test" {
       label = "High Latency"
       type = "error solid"
       value = "y > 100"
+      max = "0.8"
+      min = "0"
+      dim = "y"
     }
     yaxis {
       max = "50"
@@ -167,6 +170,9 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.marker.0.label", "High Latency"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.marker.0.type", "error solid"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.marker.0.value", "y > 100"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.marker.0.max", "0.8"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.marker.0.min", "0"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.marker.0.dim", "y"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.yaxis.max", "50"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.yaxis.scale", "sqrt"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.1.title", "ELB Requests"),
