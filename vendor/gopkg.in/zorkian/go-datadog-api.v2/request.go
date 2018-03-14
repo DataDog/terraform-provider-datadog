@@ -16,7 +16,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 	"time"
 
@@ -26,11 +25,7 @@ import (
 // uriForAPI is to be called with something like "/v1/events" and it will give
 // the proper request URI to be posted to.
 func (client *Client) uriForAPI(api string) (string, error) {
-	baseUrl := os.Getenv("DATADOG_HOST")
-	if baseUrl == "" {
-		baseUrl = "https://app.datadoghq.com"
-	}
-	apiBase, err := url.Parse(baseUrl + "/api" + api)
+	apiBase, err := url.Parse(client.baseUrl + "/api" + api)
 	if err != nil {
 		return "", err
 	}
