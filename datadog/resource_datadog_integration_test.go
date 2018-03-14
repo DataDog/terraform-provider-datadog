@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/resource"
@@ -83,7 +84,16 @@ func datadogIntegrationPagerdutyExistsHelper(s *terraform.State, client *datadog
 func testAccCheckDatadogIntegrationPagerdutyDestroy(s *terraform.State) error {
 	client := testAccProvider.Meta().(*datadog.Client)
 
-	return client.DeleteIntegrationPD()
+	_, err := client.GetIntegrationPD()
+	if err != nil {
+		if strings.Contains(err.Error(), "pagerduty not found") {
+			return nil
+		}
+
+		return fmt.Errorf("Received an error retrieving integration pagerduty %s", err)
+	}
+
+	return fmt.Errorf("Integration pagerduty is not properly destroyed")
 }
 
 const testAccCheckDatadogIntegrationPagerdutyConfig = `
