@@ -30,7 +30,10 @@ type reqComment struct {
 // CreateComment adds a new comment to the system.
 func (client *Client) CreateComment(handle, message string) (*Comment, error) {
 	var out reqComment
-	comment := Comment{Handle: String(handle), Message: String(message)}
+	comment := Comment{Message: String(message)}
+	if len(handle) > 0 {
+		comment.Handle = String(handle)
+	}
 	if err := client.doJsonRequest("POST", "/v1/comments", &comment, &out); err != nil {
 		return nil, err
 	}
@@ -42,7 +45,10 @@ func (client *Client) CreateComment(handle, message string) (*Comment, error) {
 func (client *Client) CreateRelatedComment(handle, message string,
 	relid int) (*Comment, error) {
 	var out reqComment
-	comment := Comment{Handle: String(handle), Message: String(message), RelatedId: Int(relid)}
+	comment := Comment{Message: String(message), RelatedId: Int(relid)}
+	if len(handle) > 0 {
+		comment.Handle = String(handle)
+	}
 	if err := client.doJsonRequest("POST", "/v1/comments", &comment, &out); err != nil {
 		return nil, err
 	}
@@ -51,7 +57,10 @@ func (client *Client) CreateRelatedComment(handle, message string,
 
 // EditComment changes the message and possibly handle of a particular comment.
 func (client *Client) EditComment(id int, handle, message string) error {
-	comment := Comment{Handle: String(handle), Message: String(message)}
+	comment := Comment{Message: String(message)}
+	if len(handle) > 0 {
+		comment.Handle = String(handle)
+	}
 	return client.doJsonRequest("PUT", fmt.Sprintf("/v1/comments/%d", id),
 		&comment, nil)
 }
