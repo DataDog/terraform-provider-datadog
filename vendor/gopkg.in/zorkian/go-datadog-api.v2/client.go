@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"os"
 	"net/http"
 	"time"
 )
@@ -20,7 +21,7 @@ import (
 // Client is the object that handles talking to the Datadog API. This maintains
 // state information for a particular application connection.
 type Client struct {
-	apiKey, appKey string
+	apiKey, appKey, baseUrl string
 
 	//The Http Client that is used to make requests
 	HttpClient   *http.Client
@@ -36,9 +37,15 @@ type valid struct {
 // NewClient returns a new datadog.Client which can be used to access the API
 // methods. The expected argument is the API key.
 func NewClient(apiKey, appKey string) *Client {
+	baseUrl := os.Getenv("DATADOG_HOST")
+	if baseUrl == "" {
+		baseUrl = "https://app.datadoghq.com"
+	}
+
 	return &Client{
 		apiKey:       apiKey,
 		appKey:       appKey,
+		baseUrl:      baseUrl,
 		HttpClient:   http.DefaultClient,
 		RetryTimeout: time.Duration(60 * time.Second),
 	}
@@ -48,6 +55,16 @@ func NewClient(apiKey, appKey string) *Client {
 func (c *Client) SetKeys(apiKey, appKey string) {
 	c.apiKey = apiKey
 	c.appKey = appKey
+}
+
+// SetBaseUrl changes the value of baseUrl.
+func (c *Client) SetBaseUrl(baseUrl string) {
+	c.baseUrl = baseUrl
+}
+
+// GetBaseUrl returns the baseUrl.
+func (c *Client) GetBaseUrl() string {
+	return c.baseUrl
 }
 
 // Validate checks if the API and application keys are valid.
