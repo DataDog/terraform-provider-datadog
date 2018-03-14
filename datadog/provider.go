@@ -25,11 +25,12 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
-			"datadog_downtime":        resourceDatadogDowntime(),
-			"datadog_metric_metadata": resourceDatadogMetricMetadata(),
-			"datadog_monitor":         resourceDatadogMonitor(),
-			"datadog_timeboard":       resourceDatadogTimeboard(),
-			"datadog_user":            resourceDatadogUser(),
+			"datadog_downtime":              resourceDatadogDowntime(),
+			"datadog_metric_metadata":       resourceDatadogMetricMetadata(),
+			"datadog_monitor":               resourceDatadogMonitor(),
+			"datadog_timeboard":             resourceDatadogTimeboard(),
+			"datadog_user":                  resourceDatadogUser(),
+			"datadog_integration_pagerduty": resourceDatadogIntegrationPagerduty(),
 		},
 
 		ConfigureFunc: providerConfigure,
