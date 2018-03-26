@@ -568,6 +568,14 @@
 			"revisionTime": "2017-04-07T04:09:43Z"
 		},
 		{
+			"checksumSHA1": "PyQrNDcdX3zjfOzSNCbHC8BU9FA=",
+			"path": "github.com/robinbowes/go-datadog-api",
+			"revision": "0351e8e5b4f0098dbe21ddc1274ab9e78262377c",
+			"revisionTime": "2018-03-26T20:32:14Z",
+			"version": "dashboard_workarounds",
+			"versionExact": "dashboard_workarounds"
+		},
+		{
 			"checksumSHA1": "zmC8/3V4ls53DJlNTKDZwPSC/dA=",
 			"path": "github.com/satori/go.uuid",
 			"revision": "b061729afc07e77a8aa4fad0a2fd840958f1942a",
