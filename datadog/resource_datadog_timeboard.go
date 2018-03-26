@@ -420,11 +420,11 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 		if v, ok := t["yaxis"]; ok {
 			yaxis := v.(map[string]interface{})
 			if v, ok := yaxis["min"]; ok {
-				min, _ := strconv.ParseFloat(v.(string), 64)
+				min, _ := v.(string)
 				d.Definition.Yaxis.SetMin(min)
 			}
 			if v, ok := yaxis["max"]; ok {
-				max, _ := strconv.ParseFloat(v.(string), 64)
+				max, _ := v.(string)
 				d.Definition.Yaxis.SetMax(max)
 			}
 			if v, ok := yaxis["scale"]; ok {
@@ -643,11 +643,11 @@ func buildTerraformGraph(datadog_graph datadog.Graph) map[string]interface{} {
 	yaxis := map[string]string{}
 
 	if v, ok := definition.Yaxis.GetMinOk(); ok {
-		yaxis["min"] = strconv.FormatFloat(v, 'f', -1, 64)
+		yaxis["min"] = v
 	}
 
 	if v, ok := definition.Yaxis.GetMaxOk(); ok {
-		yaxis["max"] = strconv.FormatFloat(v, 'f', -1, 64)
+		yaxis["max"] = v
 	}
 
 	if v, ok := definition.Yaxis.GetScaleOk(); ok {
