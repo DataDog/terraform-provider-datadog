@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"gopkg.in/zorkian/go-datadog-api.v2"
+	"github.com/robinbowes/go-datadog-api"
 )
 
 func resourceDatadogUser() *schema.Resource {

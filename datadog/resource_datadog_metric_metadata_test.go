@@ -7,7 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-	datadog "gopkg.in/zorkian/go-datadog-api.v2"
+	datadog "github.com/robinbowes/go-datadog-api"
 )
 
 func TestAccDatadogMetricMetadata_Basic(t *testing.T) {

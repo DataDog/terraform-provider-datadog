@@ -3,7 +3,7 @@ package datadog
 import (
 	"log"
 
-	"gopkg.in/zorkian/go-datadog-api.v2"
+	"github.com/robinbowes/go-datadog-api"
 )
 
 // Config holds API and APP keys to authenticate to Datadog.

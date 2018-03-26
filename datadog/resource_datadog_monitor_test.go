@@ -8,7 +8,7 @@ import (
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-	"gopkg.in/zorkian/go-datadog-api.v2"
+	"github.com/robinbowes/go-datadog-api"
 )
 
 func TestAccDatadogMonitor_Basic(t *testing.T) {
