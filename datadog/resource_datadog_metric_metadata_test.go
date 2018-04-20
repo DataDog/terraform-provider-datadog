@@ -109,10 +109,7 @@ func checkPostEvent() resource.TestCheckFunc {
 			Metric: datadog.String("foo"),
 			Points: []datadog.DataPoint{{&dpNow, &dpValue}},
 		}
-		if err := client.PostMetrics([]datadog.Metric{metric}); err != nil {
-			return err
-		}
-		return nil
+		return client.PostMetrics([]datadog.Metric{metric})
 	}
 }
 
