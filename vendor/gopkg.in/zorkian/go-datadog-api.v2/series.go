@@ -15,7 +15,7 @@ import (
 
 // DataPoint is a tuple of [UNIX timestamp, value]. This has to use floats
 // because the value could be non-integer.
-type DataPoint [2]float64
+type DataPoint [2]*float64
 
 // Metric represents a collection of data points that we might send or receive
 // on one single metric line.
@@ -27,6 +27,20 @@ type Metric struct {
 	Tags   []string    `json:"tags,omitempty"`
 	Unit   *string     `json:"unit,omitempty"`
 }
+
+// Unit represents a unit definition that we might receive when query for timeseries data.
+type Unit struct {
+	Family string       `json:"family"`
+	ScaleFactor float32 `json:"scale_factor"`
+	Name string         `json:"name"`
+	ShortName string    `json:"short_name"`
+	Plural string       `json:"plural"`
+	Id int              `json:"id"`
+}
+
+// A Series is characterized by 2 units as: x per y
+// One or both could be missing
+type UnitPair []*Unit
 
 // Series represents a collection of data points we get when we query for timeseries data
 type Series struct {
@@ -40,6 +54,7 @@ type Series struct {
 	Length      *int        `json:"length,omitempty"`
 	Scope       *string     `json:"scope,omitempty"`
 	Expression  *string     `json:"expression,omitempty"`
+	Units       *UnitPair   `json:"unit,omitempty"`
 }
 
 // reqPostSeries from /api/v1/series
