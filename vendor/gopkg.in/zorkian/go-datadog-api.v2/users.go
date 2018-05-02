@@ -9,13 +9,18 @@
 package datadog
 
 type User struct {
-	Handle   *string `json:"handle,omitempty"`
-	Email    *string `json:"email,omitempty"`
-	Name     *string `json:"name,omitempty"`
-	Role     *string `json:"role,omitempty"`
-	IsAdmin  *bool   `json:"is_admin,omitempty"`
-	Verified *bool   `json:"verified,omitempty"`
-	Disabled *bool   `json:"disabled,omitempty"`
+	Handle     *string `json:"handle,omitempty"`
+	Email      *string `json:"email,omitempty"`
+	Name       *string `json:"name,omitempty"`
+	Role       *string `json:"role,omitempty"`
+	AccessRole *string `json:"access_role,omitempty"`
+	Verified   *bool   `json:"verified,omitempty"`
+	Disabled   *bool   `json:"disabled,omitempty"`
+
+	// DEPRECATED: IsAdmin is deprecated and will be removed in the next major
+	// revision. For more info on why it is being removed, see discussion on
+	// https://github.com/zorkian/go-datadog-api/issues/126.
+	IsAdmin *bool `json:"is_admin,omitempty"`
 }
 
 // reqInviteUsers contains email addresses to send invitations to.

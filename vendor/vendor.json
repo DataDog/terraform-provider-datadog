@@ -640,10 +640,10 @@
 			"revisionTime": "2017-08-04T00:04:37Z"
 		},
 		{
-			"checksumSHA1": "JurJlkycckJ+fK1kQw2VKndlK18=",
+			"checksumSHA1": "7vPX+PY7f/WfJX0XFyhYj6b08Cs=",
 			"path": "gopkg.in/zorkian/go-datadog-api.v2",
-			"revision": "2ba72e380572e4d47f66358c875618afe24721ee",
-			"revisionTime": "2017-12-01T21:35:26Z"
+			"revision": "e105a8d59e751cc42d6e7aed2eab4bc9a38aabeb",
+			"revisionTime": "2018-04-19T00:55:52Z"
 		},
 		{
 			"checksumSHA1": "wICWAGQfZcHD2y0dHesz9R2YSiw=",

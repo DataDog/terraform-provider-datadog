@@ -20,6 +20,7 @@ type ThresholdCount struct {
 	Ok               *json.Number `json:"ok,omitempty"`
 	Critical         *json.Number `json:"critical,omitempty"`
 	Warning          *json.Number `json:"warning,omitempty"`
+	Unknown          *json.Number `json:"unknown,omitempty"`
 	CriticalRecovery *json.Number `json:"critical_recovery,omitempty"`
 	WarningRecovery  *json.Number `json:"warning_recovery,omitempty"`
 }
@@ -65,7 +66,7 @@ type Monitor struct {
 	Query   *string  `json:"query,omitempty"`
 	Name    *string  `json:"name,omitempty"`
 	Message *string  `json:"message,omitempty"`
-	Tags    []string `json:"tags,omitempty"`
+	Tags    []string `json:"tags"`
 	Options *Options `json:"options,omitempty"`
 }
 
