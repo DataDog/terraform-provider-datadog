@@ -4,7 +4,7 @@
  *
  * Please see the included LICENSE file for licensing information.
  *
- * Copyright 2017 by authors and contributors.
+ * Copyright 2018 by authors and contributors.
 */
 
 package datadog
@@ -1470,6 +1470,99 @@ func (c *ChangeWidget) SetY(v int) {
 	c.Y = &v
 }
 
+// GetAccount returns the Account field if non-nil, zero value otherwise.
+func (c *ChannelSlackRequest) GetAccount() string {
+	if c == nil || c.Account == nil {
+		return ""
+	}
+	return *c.Account
+}
+
+// GetOkAccount returns a tuple with the Account field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (c *ChannelSlackRequest) GetAccountOk() (string, bool) {
+	if c == nil || c.Account == nil {
+		return "", false
+	}
+	return *c.Account, true
+}
+
+// HasAccount returns a boolean if a field has been set.
+func (c *ChannelSlackRequest) HasAccount() bool {
+	if c != nil && c.Account != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAccount allocates a new c.Account and returns the pointer to it.
+func (c *ChannelSlackRequest) SetAccount(v string) {
+	c.Account = &v
+}
+
+// GetChannelName returns the ChannelName field if non-nil, zero value otherwise.
+func (c *ChannelSlackRequest) GetChannelName() string {
+	if c == nil || c.ChannelName == nil {
+		return ""
+	}
+	return *c.ChannelName
+}
+
+// GetOkChannelName returns a tuple with the ChannelName field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (c *ChannelSlackRequest) GetChannelNameOk() (string, bool) {
+	if c == nil || c.ChannelName == nil {
+		return "", false
+	}
+	return *c.ChannelName, true
+}
+
+// HasChannelName returns a boolean if a field has been set.
+func (c *ChannelSlackRequest) HasChannelName() bool {
+	if c != nil && c.ChannelName != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetChannelName allocates a new c.ChannelName and returns the pointer to it.
+func (c *ChannelSlackRequest) SetChannelName(v string) {
+	c.ChannelName = &v
+}
+
+// GetTransferAllUserComments returns the TransferAllUserComments field if non-nil, zero value otherwise.
+func (c *ChannelSlackRequest) GetTransferAllUserComments() bool {
+	if c == nil || c.TransferAllUserComments == nil {
+		return false
+	}
+	return *c.TransferAllUserComments
+}
+
+// GetOkTransferAllUserComments returns a tuple with the TransferAllUserComments field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (c *ChannelSlackRequest) GetTransferAllUserCommentsOk() (bool, bool) {
+	if c == nil || c.TransferAllUserComments == nil {
+		return false, false
+	}
+	return *c.TransferAllUserComments, true
+}
+
+// HasTransferAllUserComments returns a boolean if a field has been set.
+func (c *ChannelSlackRequest) HasTransferAllUserComments() bool {
+	if c != nil && c.TransferAllUserComments != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTransferAllUserComments allocates a new c.TransferAllUserComments and returns the pointer to it.
+func (c *ChannelSlackRequest) SetTransferAllUserComments(v bool) {
+	c.TransferAllUserComments = &v
+}
+
 // GetCheck returns the Check field if non-nil, zero value otherwise.
 func (c *Check) GetCheck() string {
 	if c == nil || c.Check == nil {
@@ -2894,6 +2987,161 @@ func (d *DashboardConditionalFormat) HasValue() bool {
 // SetValue allocates a new d.Value and returns the pointer to it.
 func (d *DashboardConditionalFormat) SetValue(v json.Number) {
 	d.Value = &v
+}
+
+// GetDashboardCount returns the DashboardCount field if non-nil, zero value otherwise.
+func (d *DashboardList) GetDashboardCount() int {
+	if d == nil || d.DashboardCount == nil {
+		return 0
+	}
+	return *d.DashboardCount
+}
+
+// GetOkDashboardCount returns a tuple with the DashboardCount field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *DashboardList) GetDashboardCountOk() (int, bool) {
+	if d == nil || d.DashboardCount == nil {
+		return 0, false
+	}
+	return *d.DashboardCount, true
+}
+
+// HasDashboardCount returns a boolean if a field has been set.
+func (d *DashboardList) HasDashboardCount() bool {
+	if d != nil && d.DashboardCount != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetDashboardCount allocates a new d.DashboardCount and returns the pointer to it.
+func (d *DashboardList) SetDashboardCount(v int) {
+	d.DashboardCount = &v
+}
+
+// GetId returns the Id field if non-nil, zero value otherwise.
+func (d *DashboardList) GetId() int {
+	if d == nil || d.Id == nil {
+		return 0
+	}
+	return *d.Id
+}
+
+// GetOkId returns a tuple with the Id field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *DashboardList) GetIdOk() (int, bool) {
+	if d == nil || d.Id == nil {
+		return 0, false
+	}
+	return *d.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (d *DashboardList) HasId() bool {
+	if d != nil && d.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetId allocates a new d.Id and returns the pointer to it.
+func (d *DashboardList) SetId(v int) {
+	d.Id = &v
+}
+
+// GetName returns the Name field if non-nil, zero value otherwise.
+func (d *DashboardList) GetName() string {
+	if d == nil || d.Name == nil {
+		return ""
+	}
+	return *d.Name
+}
+
+// GetOkName returns a tuple with the Name field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *DashboardList) GetNameOk() (string, bool) {
+	if d == nil || d.Name == nil {
+		return "", false
+	}
+	return *d.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (d *DashboardList) HasName() bool {
+	if d != nil && d.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetName allocates a new d.Name and returns the pointer to it.
+func (d *DashboardList) SetName(v string) {
+	d.Name = &v
+}
+
+// GetId returns the Id field if non-nil, zero value otherwise.
+func (d *DashboardListItem) GetId() int {
+	if d == nil || d.Id == nil {
+		return 0
+	}
+	return *d.Id
+}
+
+// GetOkId returns a tuple with the Id field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *DashboardListItem) GetIdOk() (int, bool) {
+	if d == nil || d.Id == nil {
+		return 0, false
+	}
+	return *d.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (d *DashboardListItem) HasId() bool {
+	if d != nil && d.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetId allocates a new d.Id and returns the pointer to it.
+func (d *DashboardListItem) SetId(v int) {
+	d.Id = &v
+}
+
+// GetType returns the Type field if non-nil, zero value otherwise.
+func (d *DashboardListItem) GetType() string {
+	if d == nil || d.Type == nil {
+		return ""
+	}
+	return *d.Type
+}
+
+// GetOkType returns a tuple with the Type field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *DashboardListItem) GetTypeOk() (string, bool) {
+	if d == nil || d.Type == nil {
+		return "", false
+	}
+	return *d.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (d *DashboardListItem) HasType() bool {
+	if d != nil && d.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetType allocates a new d.Type and returns the pointer to it.
+func (d *DashboardListItem) SetType(v string) {
+	d.Type = &v
 }
 
 // GetDescription returns the Description field if non-nil, zero value otherwise.
@@ -7205,6 +7453,192 @@ func (i *ImageWidget) SetY(v int) {
 	i.Y = &v
 }
 
+// GetAPIToken returns the APIToken field if non-nil, zero value otherwise.
+func (i *integrationPD) GetAPIToken() string {
+	if i == nil || i.APIToken == nil {
+		return ""
+	}
+	return *i.APIToken
+}
+
+// GetOkAPIToken returns a tuple with the APIToken field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *integrationPD) GetAPITokenOk() (string, bool) {
+	if i == nil || i.APIToken == nil {
+		return "", false
+	}
+	return *i.APIToken, true
+}
+
+// HasAPIToken returns a boolean if a field has been set.
+func (i *integrationPD) HasAPIToken() bool {
+	if i != nil && i.APIToken != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAPIToken allocates a new i.APIToken and returns the pointer to it.
+func (i *integrationPD) SetAPIToken(v string) {
+	i.APIToken = &v
+}
+
+// GetSubdomain returns the Subdomain field if non-nil, zero value otherwise.
+func (i *integrationPD) GetSubdomain() string {
+	if i == nil || i.Subdomain == nil {
+		return ""
+	}
+	return *i.Subdomain
+}
+
+// GetOkSubdomain returns a tuple with the Subdomain field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *integrationPD) GetSubdomainOk() (string, bool) {
+	if i == nil || i.Subdomain == nil {
+		return "", false
+	}
+	return *i.Subdomain, true
+}
+
+// HasSubdomain returns a boolean if a field has been set.
+func (i *integrationPD) HasSubdomain() bool {
+	if i != nil && i.Subdomain != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSubdomain allocates a new i.Subdomain and returns the pointer to it.
+func (i *integrationPD) SetSubdomain(v string) {
+	i.Subdomain = &v
+}
+
+// GetAPIToken returns the APIToken field if non-nil, zero value otherwise.
+func (i *IntegrationPDRequest) GetAPIToken() string {
+	if i == nil || i.APIToken == nil {
+		return ""
+	}
+	return *i.APIToken
+}
+
+// GetOkAPIToken returns a tuple with the APIToken field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationPDRequest) GetAPITokenOk() (string, bool) {
+	if i == nil || i.APIToken == nil {
+		return "", false
+	}
+	return *i.APIToken, true
+}
+
+// HasAPIToken returns a boolean if a field has been set.
+func (i *IntegrationPDRequest) HasAPIToken() bool {
+	if i != nil && i.APIToken != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAPIToken allocates a new i.APIToken and returns the pointer to it.
+func (i *IntegrationPDRequest) SetAPIToken(v string) {
+	i.APIToken = &v
+}
+
+// GetRunCheck returns the RunCheck field if non-nil, zero value otherwise.
+func (i *IntegrationPDRequest) GetRunCheck() bool {
+	if i == nil || i.RunCheck == nil {
+		return false
+	}
+	return *i.RunCheck
+}
+
+// GetOkRunCheck returns a tuple with the RunCheck field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationPDRequest) GetRunCheckOk() (bool, bool) {
+	if i == nil || i.RunCheck == nil {
+		return false, false
+	}
+	return *i.RunCheck, true
+}
+
+// HasRunCheck returns a boolean if a field has been set.
+func (i *IntegrationPDRequest) HasRunCheck() bool {
+	if i != nil && i.RunCheck != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRunCheck allocates a new i.RunCheck and returns the pointer to it.
+func (i *IntegrationPDRequest) SetRunCheck(v bool) {
+	i.RunCheck = &v
+}
+
+// GetSubdomain returns the Subdomain field if non-nil, zero value otherwise.
+func (i *IntegrationPDRequest) GetSubdomain() string {
+	if i == nil || i.Subdomain == nil {
+		return ""
+	}
+	return *i.Subdomain
+}
+
+// GetOkSubdomain returns a tuple with the Subdomain field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationPDRequest) GetSubdomainOk() (string, bool) {
+	if i == nil || i.Subdomain == nil {
+		return "", false
+	}
+	return *i.Subdomain, true
+}
+
+// HasSubdomain returns a boolean if a field has been set.
+func (i *IntegrationPDRequest) HasSubdomain() bool {
+	if i != nil && i.Subdomain != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSubdomain allocates a new i.Subdomain and returns the pointer to it.
+func (i *IntegrationPDRequest) SetSubdomain(v string) {
+	i.Subdomain = &v
+}
+
+// GetRunCheck returns the RunCheck field if non-nil, zero value otherwise.
+func (i *IntegrationSlackRequest) GetRunCheck() bool {
+	if i == nil || i.RunCheck == nil {
+		return false
+	}
+	return *i.RunCheck
+}
+
+// GetOkRunCheck returns a tuple with the RunCheck field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationSlackRequest) GetRunCheckOk() (bool, bool) {
+	if i == nil || i.RunCheck == nil {
+		return false, false
+	}
+	return *i.RunCheck, true
+}
+
+// HasRunCheck returns a boolean if a field has been set.
+func (i *IntegrationSlackRequest) HasRunCheck() bool {
+	if i != nil && i.RunCheck != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRunCheck allocates a new i.RunCheck and returns the pointer to it.
+func (i *IntegrationSlackRequest) SetRunCheck(v bool) {
+	i.RunCheck = &v
+}
+
 // GetHost returns the Host field if non-nil, zero value otherwise.
 func (m *Metric) GetHost() string {
 	if m == nil || m.Host == nil {
@@ -10212,6 +10646,223 @@ func (s *Series) SetStart(v float64) {
 	s.Start = &v
 }
 
+// GetUnits returns the Units field if non-nil, zero value otherwise.
+func (s *Series) GetUnits() UnitPair {
+	if s == nil || s.Units == nil {
+		return UnitPair{}
+	}
+	return *s.Units
+}
+
+// GetOkUnits returns a tuple with the Units field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *Series) GetUnitsOk() (UnitPair, bool) {
+	if s == nil || s.Units == nil {
+		return UnitPair{}, false
+	}
+	return *s.Units, true
+}
+
+// HasUnits returns a boolean if a field has been set.
+func (s *Series) HasUnits() bool {
+	if s != nil && s.Units != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetUnits allocates a new s.Units and returns the pointer to it.
+func (s *Series) SetUnits(v UnitPair) {
+	s.Units = &v
+}
+
+// GetAccount returns the Account field if non-nil, zero value otherwise.
+func (s *ServiceHookSlackRequest) GetAccount() string {
+	if s == nil || s.Account == nil {
+		return ""
+	}
+	return *s.Account
+}
+
+// GetOkAccount returns a tuple with the Account field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *ServiceHookSlackRequest) GetAccountOk() (string, bool) {
+	if s == nil || s.Account == nil {
+		return "", false
+	}
+	return *s.Account, true
+}
+
+// HasAccount returns a boolean if a field has been set.
+func (s *ServiceHookSlackRequest) HasAccount() bool {
+	if s != nil && s.Account != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAccount allocates a new s.Account and returns the pointer to it.
+func (s *ServiceHookSlackRequest) SetAccount(v string) {
+	s.Account = &v
+}
+
+// GetUrl returns the Url field if non-nil, zero value otherwise.
+func (s *ServiceHookSlackRequest) GetUrl() string {
+	if s == nil || s.Url == nil {
+		return ""
+	}
+	return *s.Url
+}
+
+// GetOkUrl returns a tuple with the Url field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *ServiceHookSlackRequest) GetUrlOk() (string, bool) {
+	if s == nil || s.Url == nil {
+		return "", false
+	}
+	return *s.Url, true
+}
+
+// HasUrl returns a boolean if a field has been set.
+func (s *ServiceHookSlackRequest) HasUrl() bool {
+	if s != nil && s.Url != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetUrl allocates a new s.Url and returns the pointer to it.
+func (s *ServiceHookSlackRequest) SetUrl(v string) {
+	s.Url = &v
+}
+
+// GetServiceKey returns the ServiceKey field if non-nil, zero value otherwise.
+func (s *servicePD) GetServiceKey() string {
+	if s == nil || s.ServiceKey == nil {
+		return ""
+	}
+	return *s.ServiceKey
+}
+
+// GetOkServiceKey returns a tuple with the ServiceKey field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *servicePD) GetServiceKeyOk() (string, bool) {
+	if s == nil || s.ServiceKey == nil {
+		return "", false
+	}
+	return *s.ServiceKey, true
+}
+
+// HasServiceKey returns a boolean if a field has been set.
+func (s *servicePD) HasServiceKey() bool {
+	if s != nil && s.ServiceKey != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetServiceKey allocates a new s.ServiceKey and returns the pointer to it.
+func (s *servicePD) SetServiceKey(v string) {
+	s.ServiceKey = &v
+}
+
+// GetServiceName returns the ServiceName field if non-nil, zero value otherwise.
+func (s *servicePD) GetServiceName() string {
+	if s == nil || s.ServiceName == nil {
+		return ""
+	}
+	return *s.ServiceName
+}
+
+// GetOkServiceName returns a tuple with the ServiceName field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *servicePD) GetServiceNameOk() (string, bool) {
+	if s == nil || s.ServiceName == nil {
+		return "", false
+	}
+	return *s.ServiceName, true
+}
+
+// HasServiceName returns a boolean if a field has been set.
+func (s *servicePD) HasServiceName() bool {
+	if s != nil && s.ServiceName != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetServiceName allocates a new s.ServiceName and returns the pointer to it.
+func (s *servicePD) SetServiceName(v string) {
+	s.ServiceName = &v
+}
+
+// GetServiceKey returns the ServiceKey field if non-nil, zero value otherwise.
+func (s *ServicePDRequest) GetServiceKey() string {
+	if s == nil || s.ServiceKey == nil {
+		return ""
+	}
+	return *s.ServiceKey
+}
+
+// GetOkServiceKey returns a tuple with the ServiceKey field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *ServicePDRequest) GetServiceKeyOk() (string, bool) {
+	if s == nil || s.ServiceKey == nil {
+		return "", false
+	}
+	return *s.ServiceKey, true
+}
+
+// HasServiceKey returns a boolean if a field has been set.
+func (s *ServicePDRequest) HasServiceKey() bool {
+	if s != nil && s.ServiceKey != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetServiceKey allocates a new s.ServiceKey and returns the pointer to it.
+func (s *ServicePDRequest) SetServiceKey(v string) {
+	s.ServiceKey = &v
+}
+
+// GetServiceName returns the ServiceName field if non-nil, zero value otherwise.
+func (s *ServicePDRequest) GetServiceName() string {
+	if s == nil || s.ServiceName == nil {
+		return ""
+	}
+	return *s.ServiceName
+}
+
+// GetOkServiceName returns a tuple with the ServiceName field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *ServicePDRequest) GetServiceNameOk() (string, bool) {
+	if s == nil || s.ServiceName == nil {
+		return "", false
+	}
+	return *s.ServiceName, true
+}
+
+// HasServiceName returns a boolean if a field has been set.
+func (s *ServicePDRequest) HasServiceName() bool {
+	if s != nil && s.ServiceName != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetServiceName allocates a new s.ServiceName and returns the pointer to it.
+func (s *ServicePDRequest) SetServiceName(v string) {
+	s.ServiceName = &v
+}
+
 // GetPalette returns the Palette field if non-nil, zero value otherwise.
 func (s *Style) GetPalette() string {
 	if s == nil || s.Palette == nil {
@@ -10520,6 +11171,37 @@ func (t *ThresholdCount) HasOk() bool {
 // SetOk allocates a new t.Ok and returns the pointer to it.
 func (t *ThresholdCount) SetOk(v json.Number) {
 	t.Ok = &v
+}
+
+// GetUnknown returns the Unknown field if non-nil, zero value otherwise.
+func (t *ThresholdCount) GetUnknown() json.Number {
+	if t == nil || t.Unknown == nil {
+		return ""
+	}
+	return *t.Unknown
+}
+
+// GetOkUnknown returns a tuple with the Unknown field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (t *ThresholdCount) GetUnknownOk() (json.Number, bool) {
+	if t == nil || t.Unknown == nil {
+		return "", false
+	}
+	return *t.Unknown, true
+}
+
+// HasUnknown returns a boolean if a field has been set.
+func (t *ThresholdCount) HasUnknown() bool {
+	if t != nil && t.Unknown != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetUnknown allocates a new t.Unknown and returns the pointer to it.
+func (t *ThresholdCount) SetUnknown(v json.Number) {
+	t.Unknown = &v
 }
 
 // GetWarning returns the Warning field if non-nil, zero value otherwise.
@@ -11636,6 +12318,37 @@ func (t *ToplistWidget) HasY() bool {
 // SetY allocates a new t.Y and returns the pointer to it.
 func (t *ToplistWidget) SetY(v int) {
 	t.Y = &v
+}
+
+// GetAccessRole returns the AccessRole field if non-nil, zero value otherwise.
+func (u *User) GetAccessRole() string {
+	if u == nil || u.AccessRole == nil {
+		return ""
+	}
+	return *u.AccessRole
+}
+
+// GetOkAccessRole returns a tuple with the AccessRole field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (u *User) GetAccessRoleOk() (string, bool) {
+	if u == nil || u.AccessRole == nil {
+		return "", false
+	}
+	return *u.AccessRole, true
+}
+
+// HasAccessRole returns a boolean if a field has been set.
+func (u *User) HasAccessRole() bool {
+	if u != nil && u.AccessRole != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAccessRole allocates a new u.AccessRole and returns the pointer to it.
+func (u *User) SetAccessRole(v string) {
+	u.AccessRole = &v
 }
 
 // GetDisabled returns the Disabled field if non-nil, zero value otherwise.
