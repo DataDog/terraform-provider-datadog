@@ -1,4 +1,9 @@
-## 1.0.4 (Unreleased)
+## 1.0.4 (July 05, 2018)
+
+BUG FIXES:
+
+* Bump `go-datadog-api.v2` to v2.10.0 thus fixing tag removal on monitor updates ([#43](https://github.com/terraform-providers/terraform-provider-datadog/issues/43))
+
 ## 1.0.3 (January 03, 2018)
 
 IMPROVEMENTS:
@@ -30,7 +35,7 @@ BUG FIXES:
 
 ## 0.1.1 (September 26, 2017)
 
-FEATURES: 
+FEATURES:
 
 * **New Resource:** `datadog_metric_metadata` ([#17](https://github.com/terraform-providers/terraform-provider-datadog/issues/17))
 
