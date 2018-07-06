@@ -2,7 +2,7 @@
 
 BUG FIXES:
 
-* Bump `go-datadog-api.v2` to v2.10.0 thus fixing tag removal on monitor updates ([#43](https://github.com/terraform-providers/terraform-provider-datadog/issues/43))
+* Bump `go-datadog-api.v2` to v2.10.0 thus fixing tag removal on monitor updates [GH-43]
 
 ## 1.0.3 (January 03, 2018)
 
