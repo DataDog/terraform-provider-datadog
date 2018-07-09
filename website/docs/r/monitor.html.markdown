@@ -82,6 +82,7 @@ The following arguments are supported:
             ok       = 1
             critical = 1
             warning  = 1
+            unknown  = 1
         }
         ```
 

@@ -59,6 +59,54 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorServiceCheckConfig,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", "name for monitor foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "service check"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "query", `"custom.check".over("environment:foo").last(2).count_by_status()`),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notify_no_data", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "new_host_delay", "600"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "evaluation_delay", "700"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_interval", "60"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.warning", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.critical", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.unknown", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.ok", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "require_full_window", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "locked", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.0", "foo:bar"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.1", "baz"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -485,6 +533,35 @@ resource "datadog_monitor" "foo" {
   require_full_window = true
   locked = false
   tags = ["foo:bar", "bar:baz"]
+}
+`
+
+const testAccCheckDatadogMonitorServiceCheckConfig = `
+resource "datadog_monitor" "foo" {
+  name = "name for monitor foo"
+  type = "service check"
+  message = "some message Notify: @hipchat-channel"
+  escalation_message = "the situation has escalated @pagerduty"
+
+  query = "\"custom.check\".over(\"environment:foo\").last(2).count_by_status()"
+
+  thresholds {
+	warning = 1
+	critical = 1
+	unknown = 1
+	ok = 1
+  }
+
+  renotify_interval = 60
+
+  notify_audit = false
+  timeout_h = 60
+  new_host_delay = 600
+  evaluation_delay = 700
+  include_tags = true
+  require_full_window = true
+  locked = false
+  tags = ["foo:bar", "baz"]
 }
 `
 
