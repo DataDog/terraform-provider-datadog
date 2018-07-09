@@ -87,7 +87,7 @@ The following arguments are supported:
         ```
 
 * `notify_no_data` (Optional) A boolean indicating whether this monitor will notify when data stops reporting. Defaults
-    to true.
+    to false.
 * `new_host_delay` (Optional) Time (in seconds) to allow a host to boot and
     applications to fully start before starting the evaluation of monitor
     results. Should be a non negative integer. Defaults to 300.

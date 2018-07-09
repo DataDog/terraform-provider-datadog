@@ -267,6 +267,130 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 	})
 }
 
+func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorConfig,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", "name for monitor foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "escalation_message", "the situation has escalated @pagerduty"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "query alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notify_no_data", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "new_host_delay", "600"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "evaluation_delay", "700"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_interval", "60"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.warning", "1.0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.critical", "2.0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.critical_recovery", "1.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notify_audit", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "timeout_h", "60"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "include_tags", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "require_full_window", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "locked", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.0", "foo:bar"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.1", "baz"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorConfigUpdatedWithTagsRemoved,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", "name for monitor bar"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "message", "a different message Notify: @hipchat-channel"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} > 3"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "escalation_message", "the situation has escalated! @pagerduty"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "query alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notify_no_data", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "new_host_delay", "900"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "evaluation_delay", "800"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "no_data_timeframe", "20"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_interval", "40"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.ok", "0.0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.warning", "1.0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.critical", "3.0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.critical_recovery", "2.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notify_audit", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "timeout_h", "70"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "include_tags", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "silenced.*", "0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "require_full_window", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "locked", "true"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_monitor.foo", "tags.0"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_monitor.foo", "tags.1"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.complex_metric_alert_example_monitor"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.complex_metric_alert_example_monitor", "type", "metric alert"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorConfigQueryAlertNotUpdated,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.complex_query_alert_example_monitor"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.complex_query_alert_example_monitor", "type", "query alert"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -531,6 +655,40 @@ resource "datadog_monitor" "foo" {
 	"*" = 0
   }
   tags = ["baz:qux", "quux"]
+}
+`
+
+const testAccCheckDatadogMonitorConfigUpdatedWithTagsRemoved = `
+resource "datadog_monitor" "foo" {
+  name = "name for monitor bar"
+  type = "query alert"
+  message = "a different message Notify: @hipchat-channel"
+  escalation_message = "the situation has escalated @pagerduty"
+
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} > 3"
+
+  thresholds {
+	ok                = "0.0"
+	warning           = "1.0"
+	warning_recovery  = "0.5"
+	critical          = "3.0"
+	critical_recovery = "2.5"
+  }
+
+  notify_no_data = true
+  new_host_delay = 900
+  evaluation_delay = 800
+  no_data_timeframe = 20
+  renotify_interval = 40
+  escalation_message = "the situation has escalated! @pagerduty"
+  notify_audit = true
+  timeout_h = 70
+  include_tags = false
+  require_full_window = false
+  locked = true
+  silenced {
+	"*" = 0
+  }
 }
 `
 

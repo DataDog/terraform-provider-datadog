@@ -10,17 +10,16 @@ package datadog
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"time"
 )
 
 // Client is the object that handles talking to the Datadog API. This maintains
 // state information for a particular application connection.
 type Client struct {
-	apiKey, appKey string
+	apiKey, appKey, baseUrl string
 
 	//The Http Client that is used to make requests
 	HttpClient   *http.Client
@@ -36,9 +35,15 @@ type valid struct {
 // NewClient returns a new datadog.Client which can be used to access the API
 // methods. The expected argument is the API key.
 func NewClient(apiKey, appKey string) *Client {
+	baseUrl := os.Getenv("DATADOG_HOST")
+	if baseUrl == "" {
+		baseUrl = "https://app.datadoghq.com"
+	}
+
 	return &Client{
 		apiKey:       apiKey,
 		appKey:       appKey,
+		baseUrl:      baseUrl,
 		HttpClient:   http.DefaultClient,
 		RetryTimeout: time.Duration(60 * time.Second),
 	}
@@ -50,43 +55,44 @@ func (c *Client) SetKeys(apiKey, appKey string) {
 	c.appKey = appKey
 }
 
+// SetBaseUrl changes the value of baseUrl.
+func (c *Client) SetBaseUrl(baseUrl string) {
+	c.baseUrl = baseUrl
+}
+
+// GetBaseUrl returns the baseUrl.
+func (c *Client) GetBaseUrl() string {
+	return c.baseUrl
+}
+
 // Validate checks if the API and application keys are valid.
 func (client *Client) Validate() (bool, error) {
-	var bodyreader io.Reader
 	var out valid
+	var resp *http.Response
+
 	uri, err := client.uriForAPI("/v1/validate")
 	if err != nil {
 		return false, err
 	}
-	req, err := http.NewRequest("GET", uri, bodyreader)
 
+	req, err := http.NewRequest("GET", uri, nil)
 	if err != nil {
 		return false, err
 	}
-	if bodyreader != nil {
-		req.Header.Add("Content-Type", "application/json")
-	}
 
-	var resp *http.Response
-	resp, err = client.HttpClient.Do(req)
+	resp, err = client.doRequestWithRetries(req, client.RetryTimeout)
 	if err != nil {
 		return false, err
 	}
 
 	defer resp.Body.Close()
 
-	// Only care about 200 OK or 403 which we'll unmarshal into struct valid. Everything else is of no interest to us.
-	if resp.StatusCode != 200 && resp.StatusCode != 403 {
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return false, err
-		}
-		return false, fmt.Errorf("API error %s: %s", resp.Status, body)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return false, err
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	err = json.Unmarshal(body, &out)
-	if err != nil {
+	if err = json.Unmarshal(body, &out); err != nil {
 		return false, err
 	}
 

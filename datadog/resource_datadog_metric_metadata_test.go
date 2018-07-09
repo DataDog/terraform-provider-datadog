@@ -103,9 +103,11 @@ func checkMetricMetadataExists(name string) resource.TestCheckFunc {
 func checkPostEvent() resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		client := testAccProvider.Meta().(*datadog.Client)
+		datapointUnixTime := float64(time.Now().Unix())
+		datapointValue := float64(1)
 		metric := datadog.Metric{
 			Metric: datadog.String("foo"),
-			Points: []datadog.DataPoint{{float64(time.Now().Unix()), 1}},
+			Points: []datadog.DataPoint{{&datapointUnixTime, &datapointValue}},
 		}
 		if err := client.PostMetrics([]datadog.Metric{metric}); err != nil {
 			return err
