@@ -44,8 +44,9 @@ func resourceDatadogUser() *schema.Resource {
 				Required: true,
 			},
 			"role": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:       schema.TypeString,
+				Optional:   true,
+				Deprecated: "This parameter was removed from the API and has no effect",
 			},
 			"verified": {
 				Type:     schema.TypeBool,
