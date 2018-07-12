@@ -99,7 +99,7 @@ Nested `graph` `marker` blocks have the following structure:
 
 * `type` - (Required) How the marker lines will look. Possible values are {"error", "warning", "info", "ok"} {"dashed", "solid", "bold"}. Example: "error dashed".
 * `value` - (Required) Mathematical expression describing the marker. Examples: "y > 1", "-5 < y < 0", "y = 19".
-* `label` - (Optional) A label for the line or range. **Warning:** when a label is enabled but left empty through the UI, the Datadog API returns a boolean value, not a string, making `terraform plan` fail with a JSON decoding error.
+* `label` - (Optional) A label for the line or range. **Warning:** when a label is enabled but left empty through the UI, the Datadog API returns a boolean value, not a string. This makes `terraform plan` fail with a JSON decoding error.
 
 ### Nested `graph` `yaxis` block
 * `min` - (Optional) Minimum bound for the graph's yaxis, a string.
