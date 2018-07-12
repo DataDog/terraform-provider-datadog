@@ -57,7 +57,9 @@ The following arguments are supported:
     * `composite`
 * `name` - (Required) Name of Datadog monitor
 * `query` - (Required) The monitor query to notify on with syntax varying depending on what type of monitor
-    you are creating. See [API Reference](http://docs.datadoghq.com/api) for options.
+    you are creating. Note this is not the same query you see in the UI, the format is different depending on the
+    monitor `type`, please see the [API Reference](https://docs.datadoghq.com/api/?lang=python#create-a-monitor) for
+    details. **Warning:** `terraform plan` won't perform any validation of the query contents.
 * `message` - (Required) A message to include with notifications for this monitor.
     Email notifications can be sent to specific users by using the same '@username' notation as events.
 * `escalation_message` - (Optional) A message to include with a re-notification. Supports the '@username'
@@ -74,6 +76,10 @@ The following arguments are supported:
             warning_recovery  = 75
         }
         ```
+    **Warning:** the `critical` threshold value has to match the one contained in the `query` argument. For example, a
+    query like `avg(last_1h):avg:system.disk.in_use{role:sqlserver} by {host} > 90` would be fine with the `threshold` above,
+    while `avg(last_1h):avg:system.disk.in_use{role:sqlserver} by {host} > 95` would be not, with the Datadog API returning
+    a HTTP error 400 stating "The value provided for parameter 'query' is invalid".
     * Service checks:
     A dictionary of thresholds by status. Because service checks can have multiple thresholds, we don't define them directly in the query.
     Default values:

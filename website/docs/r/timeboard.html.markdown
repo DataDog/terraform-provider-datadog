@@ -93,22 +93,20 @@ Nested `graph` blocks have the following structure:
 * `yaxis` - (Optional) Nested block describing modifications to the yaxis rendering. The structure of this block is described below.
 * `marker` - (Optional) Nested block describing lines / ranges added to graph for formatting. The structure of this block is described below. Multiple marker blocks are allowed within a graph block.
 
-#### Nested `graph` `marker` blocks
+### Nested `graph` `marker` blocks
 
 Nested `graph` `marker` blocks have the following structure:
 
 * `type` - (Required) How the marker lines will look. Possible values are {"error", "warning", "info", "ok"} {"dashed", "solid", "bold"}. Example: "error dashed".
 * `value` - (Required) Mathematical expression describing the marker. Examples: "y > 1", "-5 < y < 0", "y = 19".
-* `label` - (Optional) A label for the line or range.
+* `label` - (Optional) A label for the line or range. **Warning:** when a label is enabled but left empty through the UI, the Datadog API returns a boolean value, not a string, making `terraform plan` fail with a JSON decoding error.
 
-{error, warning, info, ok} {dashed, solid, bold}
-
-#### Nested `graph` `yaxis` block
+### Nested `graph` `yaxis` block
 * `min` - (Optional) Minimum bound for the graph's yaxis, a string.
 * `max` - (Optional) Maximum bound for the graph's yaxis, a string.
 * `scale` - (Optional) How to scale the yaxis. Possible values are: "linear", "log", "sqrt", "pow##" (eg. pow2, pow0.5, 2 is used if only "pow" was provided). Default: "linear".
 
-#### Nested `graph` `request` blocks
+### Nested `graph` `request` blocks
 
 Nested `graph` `request` blocks have the following structure:
 
