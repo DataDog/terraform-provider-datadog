@@ -80,7 +80,6 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 	u.SetHandle(d.Get("handle").(string))
 	u.SetIsAdmin(d.Get("is_admin").(bool))
 	u.SetName(d.Get("name").(string))
-	u.SetRole(d.Get("role").(string))
 
 	// Datadog does not actually delete users, so CreateUser might return a 409.
 	// We ignore that case and proceed, likely re-enabling the user.
@@ -113,7 +112,6 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 	d.Set("handle", u.GetHandle())
 	d.Set("is_admin", u.GetIsAdmin())
 	d.Set("name", u.GetName())
-	d.Set("role", u.GetRole())
 	d.Set("verified", u.GetVerified())
 
 	return nil
@@ -127,7 +125,6 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 	u.SetHandle(d.Id())
 	u.SetIsAdmin(d.Get("is_admin").(bool))
 	u.SetName(d.Get("name").(string))
-	u.SetRole(d.Get("role").(string))
 
 	if err := client.UpdateUser(u); err != nil {
 		return fmt.Errorf("error updating user: %s", err.Error())
