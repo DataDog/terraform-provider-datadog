@@ -1,4 +1,11 @@
-## 1.0.5 (Unreleased)
+## 1.1.0 (Unreleased)
+
+IMPROVEMENTS:
+
+* Added more docs detailing expected weird behaviours from the Datadog API. ([#79](https://github.com/terraform-providers/terraform-provider-datadog/pull/79))
+* Added support for 'unknown' monitor threshold field. ([#45](https://github.com/terraform-providers/terraform-provider-datadog/pull/45))
+* Deprecated the `role` argument for `User` resources since it's now a noop on the Datadog API. ([#80](Finish deprecating `role` argument for User resource ))
+
 ## 1.0.4 (July 06, 2018)
 
 BUG FIXES:
