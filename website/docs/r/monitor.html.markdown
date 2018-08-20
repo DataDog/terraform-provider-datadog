@@ -55,6 +55,7 @@ The following arguments are supported:
     * `event alert`
     * `query alert`
     * `composite`
+    * `log alert`    
 * `name` - (Required) Name of Datadog monitor
 * `query` - (Required) The monitor query to notify on. Note this is not the same query you see in the UI and
     the syntax is different depending on the monitor `type`, please see the [API Reference](https://docs.datadoghq.com/api/?lang=python#create-a-monitor) for details. **Warning:** `terraform plan` won't perform any validation of the query contents.
