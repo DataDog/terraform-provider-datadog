@@ -7453,6 +7453,130 @@ func (i *ImageWidget) SetY(v int) {
 	i.Y = &v
 }
 
+// GetAccountID returns the AccountID field if non-nil, zero value otherwise.
+func (i *IntegrationAWSAccount) GetAccountID() string {
+	if i == nil || i.AccountID == nil {
+		return ""
+	}
+	return *i.AccountID
+}
+
+// GetOkAccountID returns a tuple with the AccountID field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationAWSAccount) GetAccountIDOk() (string, bool) {
+	if i == nil || i.AccountID == nil {
+		return "", false
+	}
+	return *i.AccountID, true
+}
+
+// HasAccountID returns a boolean if a field has been set.
+func (i *IntegrationAWSAccount) HasAccountID() bool {
+	if i != nil && i.AccountID != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountID allocates a new i.AccountID and returns the pointer to it.
+func (i *IntegrationAWSAccount) SetAccountID(v string) {
+	i.AccountID = &v
+}
+
+// GetRoleName returns the RoleName field if non-nil, zero value otherwise.
+func (i *IntegrationAWSAccount) GetRoleName() string {
+	if i == nil || i.RoleName == nil {
+		return ""
+	}
+	return *i.RoleName
+}
+
+// GetOkRoleName returns a tuple with the RoleName field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationAWSAccount) GetRoleNameOk() (string, bool) {
+	if i == nil || i.RoleName == nil {
+		return "", false
+	}
+	return *i.RoleName, true
+}
+
+// HasRoleName returns a boolean if a field has been set.
+func (i *IntegrationAWSAccount) HasRoleName() bool {
+	if i != nil && i.RoleName != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRoleName allocates a new i.RoleName and returns the pointer to it.
+func (i *IntegrationAWSAccount) SetRoleName(v string) {
+	i.RoleName = &v
+}
+
+// GetAccountID returns the AccountID field if non-nil, zero value otherwise.
+func (i *IntegrationAWSAccountDeleteRequest) GetAccountID() string {
+	if i == nil || i.AccountID == nil {
+		return ""
+	}
+	return *i.AccountID
+}
+
+// GetOkAccountID returns a tuple with the AccountID field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationAWSAccountDeleteRequest) GetAccountIDOk() (string, bool) {
+	if i == nil || i.AccountID == nil {
+		return "", false
+	}
+	return *i.AccountID, true
+}
+
+// HasAccountID returns a boolean if a field has been set.
+func (i *IntegrationAWSAccountDeleteRequest) HasAccountID() bool {
+	if i != nil && i.AccountID != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountID allocates a new i.AccountID and returns the pointer to it.
+func (i *IntegrationAWSAccountDeleteRequest) SetAccountID(v string) {
+	i.AccountID = &v
+}
+
+// GetRoleName returns the RoleName field if non-nil, zero value otherwise.
+func (i *IntegrationAWSAccountDeleteRequest) GetRoleName() string {
+	if i == nil || i.RoleName == nil {
+		return ""
+	}
+	return *i.RoleName
+}
+
+// GetOkRoleName returns a tuple with the RoleName field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationAWSAccountDeleteRequest) GetRoleNameOk() (string, bool) {
+	if i == nil || i.RoleName == nil {
+		return "", false
+	}
+	return *i.RoleName, true
+}
+
+// HasRoleName returns a boolean if a field has been set.
+func (i *IntegrationAWSAccountDeleteRequest) HasRoleName() bool {
+	if i != nil && i.RoleName != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRoleName allocates a new i.RoleName and returns the pointer to it.
+func (i *IntegrationAWSAccountDeleteRequest) SetRoleName(v string) {
+	i.RoleName = &v
+}
+
 // GetAPIToken returns the APIToken field if non-nil, zero value otherwise.
 func (i *integrationPD) GetAPIToken() string {
 	if i == nil || i.APIToken == nil {
