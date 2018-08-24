@@ -574,6 +574,14 @@
 			"revisionTime": "2016-09-27T10:08:44Z"
 		},
 		{
+			"checksumSHA1": "pS5615UBfIMbuO+xZPtxpMOz50Y=",
+			"path": "github.com/zorkian/go-datadog-api",
+			"revision": "114bbae3eb718f241d7d8e55c96d75dfedefb8b3",
+			"revisionTime": "2018-08-05T21:58:11Z",
+			"version": "=v2.11.0",
+			"versionExact": "v2.11.0"
+		},
+		{
 			"checksumSHA1": "vE43s37+4CJ2CDU6TlOUOYE0K9c=",
 			"path": "golang.org/x/crypto/bcrypt",
 			"revision": "9477e0b78b9ac3d0b03822fd95422e2fe07627cd",
@@ -638,12 +646,6 @@
 			"path": "golang.org/x/net/html/atom",
 			"revision": "1c05540f6879653db88113bc4a2b70aec4bd491f",
 			"revisionTime": "2017-08-04T00:04:37Z"
-		},
-		{
-			"checksumSHA1": "8fwudhaTgqCvOdurqXyIGigPWTE=",
-			"path": "gopkg.in/zorkian/go-datadog-api.v2",
-			"revision": "d74ca17e47a9d3708e6203fd48d3f8cdad055e1c",
-			"revisionTime": "2018-05-23T15:39:50Z"
 		},
 		{
 			"checksumSHA1": "wICWAGQfZcHD2y0dHesz9R2YSiw=",

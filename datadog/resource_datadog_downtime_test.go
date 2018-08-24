@@ -9,7 +9,7 @@ import (
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-	"gopkg.in/zorkian/go-datadog-api.v2"
+	"github.com/zorkian/go-datadog-api"
 )
 
 func TestAccDatadogDowntime_Basic(t *testing.T) {
