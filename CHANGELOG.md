@@ -1,4 +1,15 @@
 ## 1.1.1 (Unreleased)
+
+BUG FIXES:
+
+* Update "monitor type" options in docs ([#81](https://github.com/terraform-providers/terraform-provider-datadog/pull/81))
+* Fix typo in timeboard documentation ([#83](https://github.com/terraform-providers/terraform-provider-datadog/pull/83))
+
+IMPROVEMENTS:
+
+* Update `go-datadog-api` to v.2.11.0 and move vendoring from `gopkg.in/zorkian/go-datadog-api.v2` to `github.com/zorkian/go-datadog-api` ([#84](https://github.com/terraform-providers/terraform-provider-datadog/pull/84))
+* Deprecate `is_admin` as part of the work needed to add support for `access_role` ([#85](https://github.com/terraform-providers/terraform-provider-datadog/pull/85))
+
 ## 1.1.0 (July 30, 2018)
 
 IMPROVEMENTS:
