@@ -35,9 +35,10 @@ func resourceDatadogUser() *schema.Resource {
 				Required: true,
 			},
 			"is_admin": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
+				Type:       schema.TypeBool,
+				Optional:   true,
+				Default:    false,
+				Deprecated: "This parameter will be replaced by `access_role` and will be removed from the next Major version",
 			},
 			"name": {
 				Type:     schema.TypeString,
