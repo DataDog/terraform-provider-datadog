@@ -29,6 +29,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_metric_metadata": resourceDatadogMetricMetadata(),
 			"datadog_monitor":         resourceDatadogMonitor(),
 			"datadog_timeboard":       resourceDatadogTimeboard(),
+			"datadog_screenboard":     resourceDatadogScreenboard(),
 			"datadog_user":            resourceDatadogUser(),
 		},
 
