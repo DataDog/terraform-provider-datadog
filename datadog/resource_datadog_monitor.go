@@ -102,8 +102,8 @@ func resourceDatadogMonitor() *schema.Resource {
 			},
 			"new_host_delay": {
 				Type:     schema.TypeInt,
-				Computed: true,
 				Optional: true,
+				Default:  300,
 			},
 			"evaluation_delay": {
 				Type:     schema.TypeInt,
