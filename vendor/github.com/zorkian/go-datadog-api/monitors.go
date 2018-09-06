@@ -60,14 +60,15 @@ type Options struct {
 // Monitor allows watching a metric or check that you care about,
 // notifying your team when some defined threshold is exceeded
 type Monitor struct {
-	Creator *Creator `json:"creator,omitempty"`
-	Id      *int     `json:"id,omitempty"`
-	Type    *string  `json:"type,omitempty"`
-	Query   *string  `json:"query,omitempty"`
-	Name    *string  `json:"name,omitempty"`
-	Message *string  `json:"message,omitempty"`
-	Tags    []string `json:"tags"`
-	Options *Options `json:"options,omitempty"`
+	Creator      *Creator `json:"creator,omitempty"`
+	Id           *int     `json:"id,omitempty"`
+	Type         *string  `json:"type,omitempty"`
+	Query        *string  `json:"query,omitempty"`
+	Name         *string  `json:"name,omitempty"`
+	Message      *string  `json:"message,omitempty"`
+	OverallState *string  `json:"overall_state,omitempty"`
+	Tags         []string `json:"tags"`
+	Options      *Options `json:"options,omitempty"`
 }
 
 // Creator contains the creator of the monitor
