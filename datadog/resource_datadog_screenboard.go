@@ -11,9 +11,6 @@ import (
 	datadog "github.com/zorkian/go-datadog-api"
 )
 
-// TODO:
-// - User-facing doc
-
 func resourceDatadogScreenboard() *schema.Resource {
 
 	tileDefEvent := &schema.Schema{
