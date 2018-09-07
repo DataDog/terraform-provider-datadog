@@ -52,9 +52,56 @@ type GraphEvent struct {
 }
 
 type Yaxis struct {
-	Min   *float64 `json:"min,omitempty"`
-	Max   *float64 `json:"max,omitempty"`
-	Scale *string  `json:"scale,omitempty"`
+	Min     *float64 `json:"min,omitempty"`
+	AutoMin bool     `json:"-"`
+	Max     *float64 `json:"max,omitempty"`
+	AutoMax bool     `json:"-"`
+	Scale   *string  `json:"scale,omitempty"`
+}
+
+// UnmarshalJSON is a Custom Unmarshal for Yaxis.Min/Yaxis.Max. If the datadog API
+// returns "auto" for min or max, then we should set Yaxis.min or Yaxis.max to nil,
+// respectively.
+func (y *Yaxis) UnmarshalJSON(data []byte) error {
+	type Alias Yaxis
+	wrapper := &struct {
+		Min *json.Number `json:"min,omitempty"`
+		Max *json.Number `json:"max,omitempty"`
+		*Alias
+	}{
+		Alias: (*Alias)(y),
+	}
+
+	if err := json.Unmarshal(data, &wrapper); err != nil {
+		return err
+	}
+
+	if wrapper.Min != nil {
+		if *wrapper.Min == "auto" {
+			y.AutoMin = true
+			y.Min = nil
+		} else {
+			f, err := wrapper.Min.Float64()
+			if err != nil {
+				return err
+			}
+			y.Min = &f
+		}
+	}
+
+	if wrapper.Max != nil {
+		if *wrapper.Max == "auto" {
+			y.AutoMax = true
+			y.Max = nil
+		} else {
+			f, err := wrapper.Max.Float64()
+			if err != nil {
+				return err
+			}
+			y.Max = &f
+		}
+	}
+	return nil
 }
 
 type Style struct {
