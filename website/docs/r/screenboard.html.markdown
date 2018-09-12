@@ -358,29 +358,6 @@ resource "datadog_screenboard" "acceptance_test" {
   }
 
   widget {
-    type       = "uptime"
-    x          = 345
-    y          = 5
-    timeframes = ["7 days", "Month-to-date", "90 days"]
-
-    rule {
-      threshold = 95
-      timeframe = "Month-to-date"
-      color     = "green"
-    }
-
-    rule {
-      threshold = 98
-      timeframe = "7 days"
-      color     = "red"
-    }
-
-    monitor {
-      id = 123456
-    }
-  }
-
-  widget {
     type = "process"
     x    = 365
     y    = 5
@@ -420,7 +397,7 @@ The following arguments are supported:
 
 Nested `widget` blocks have the following structure:
 
-- `type` - (Required) The type of the widget. One of "free_text", "timeseries", "query_value", "toplist", "change", "event_timeline", "event_stream", "image", "note", "alert_graph", "alert_value", "iframe", "check_status", "trace_service", "hostmap", "manage_status", "log_stream", "uptime", or "process".
+- `type` - (Required) The type of the widget. One of "free_text", "timeseries", "query_value", "toplist", "change", "event_timeline", "event_stream", "image", "note", "alert_graph", "alert_value", "iframe", "check_status", "trace_service", "hostmap", "manage_status", "log_stream", or "process".
 - `x` - (Required) The position of the widget on the x (vertical) axis. Should be greater or equal to 0.
 - `y` - (Required) The position of the widget on the y (horizontal) axis. Should be greater or equal to 0.
 - `title` - (Optional) The title of the widget.
@@ -478,9 +455,6 @@ Nested `widget` blocks have the following structure:
 - `time` - (Optional, only for widgets of type "timeseries", "toplist", "event_timeline", "event_stream", "alert_graph", "check_status", "trace_service", "log_stream") Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. At most one such block should be present in a given widget.
 - `tile_def` - (Optional, only for widgets of type "timeseries", "query_value", "hostmap", "change", "toplist", "process") Nested block describing the content to display in the widget. The structure of this block is described below. At most one such block should be present in a given widget.
 - `params` - (Optional, only for widgets of type "manage_status") Nested block describing the monitors to display. The structure of this block is described below. At most one such block should be present in a given widget.
-- `timeframes` - (Optional, only for widgets of type "uptime") List of timeframes to use when calculating uptime. Items should be one of "7 days", "30 days", "Month-to-date", "90 days", "365 days", "Previous month".
-- `monitor` - (Optional, only for widgets of type "uptime") Nested block describing the monitor to use to calculate uptime. The structure of this block is described below. At most one such block should be present in a given widget.
-- `rule` - (Optional, only for widgets of type "uptime") Nested block describing the rules to use for conditionally formatting uptime result. The structure of this block is described below. Multiple rule blocks are allowed within a given widget block.
 
 ### Nested `widget` `time` blocks
 
@@ -500,24 +474,6 @@ Nested `widget` `params` blocks have the following structure:
 - `text` - (Optional) The query to use to get monitors. Example: "status:alert".
 - `count` - (Optional) The number of monitors to display.
 - `start` - (Optional) The start of the list. Typically 0.
-
-### Nested `widget` `monitor` blocks
-
-Only for widgets of type "uptime".
-
-Nested `widget` `monitor` blocks have the following structure:
-
-- `id` - (Optional) The numeric ID of the monitor to use in the uptime calculation. Example: 1234567.
-
-### Nested `widget` `rule` blocks
-
-Only for widgets of type "uptime".
-
-Nested `widget` `rule` blocks have the following structure:
-
-- `threshold` - (Optional) Threshold under which the color specified below should be displayed.
-- `timeframe` - (Optional) The timeframe to use to calculate uptime and compare it to the threshold. One of "7 days", "30 days", "Month-to-date", "90 days", "365 days", "Previous month"
-- `color` - (Optional) The color to display when the value is below the threshold. One of "green", "yellow", "red".
 
 ### Nested `widget` `tile_def` blocks
 
