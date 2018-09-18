@@ -2,14 +2,52 @@ package datadog
 
 import (
 	"fmt"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"strconv"
 	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/resource"
+	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/zorkian/go-datadog-api"
 )
+
+func TestMissingIncludeTagsTrue(t *testing.T) {
+	ret := `{
+  "tags": [],
+  "query": "",
+  "message": "",
+  "matching_downtimes": [],
+  "id": 12345,
+  "multi": true,
+  "name": "monitor",
+  "org_id": 12345,
+  "overall_state": "Alert",
+  "type": "metric alert",
+  "options": {}
+}
+`
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, ret)
+	}))
+	defer ts.Close()
+
+	d := schema.TestResourceDataRaw(t, resourceDatadogMonitor().Schema, map[string]interface{}{})
+
+	d.SetId("12345")
+	client := datadog.NewClient("appikey", "appkey")
+	client.SetBaseUrl(ts.URL)
+	err := resourceDatadogMonitorRead(d, client)
+	if err != nil {
+		t.Error(err)
+	}
+	if d.Get("include_tags") != true {
+		t.Error("expected include_tags to be true")
+	}
+}
 
 func TestAccDatadogMonitor_Basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
