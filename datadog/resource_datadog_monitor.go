@@ -284,6 +284,7 @@ func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) erro
 
 func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
+	res := resourceDatadogMonitor()
 
 	i, err := strconv.Atoi(d.Id())
 	if err != nil {
@@ -331,7 +332,15 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("timeout_h", m.Options.GetTimeoutH())
 	d.Set("escalation_message", m.Options.GetEscalationMessage())
 	d.Set("silenced", m.Options.Silenced)
-	d.Set("include_tags", m.Options.GetIncludeTags())
+	if includeTags, ok := m.Options.GetIncludeTagsOk(); ok {
+		d.Set("include_tags", includeTags)
+	} else {
+		default_, err := res.Schema["include_tags"].DefaultValue()
+		if err != nil {
+			return err
+		}
+		d.Set("include_tags", default_)
+	}
 	d.Set("tags", tags)
 	d.Set("require_full_window", m.Options.GetRequireFullWindow()) // TODO Is this one of those options that we neeed to check?
 	d.Set("locked", m.Options.GetLocked())
