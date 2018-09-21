@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"strconv"
@@ -481,7 +482,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"threshold": &schema.Schema{
-								Type:     schema.TypeInt,
+								Type:     schema.TypeFloat,
 								Optional: true,
 							},
 							"timeframe": &schema.Schema{
@@ -594,6 +595,14 @@ func setBoolFromDict(dict map[string]interface{}, key string, field **bool) {
 	}
 }
 
+// For setJSONNumberFromDict, dict[key] is expected to be a float64
+func setJSONNumberFromDict(dict map[string]interface{}, key string, field **json.Number) {
+	if v, ok := dict[key]; ok {
+		f := json.Number(strconv.FormatFloat(v.(float64), 'e', -1, 64))
+		*field = &f
+	}
+}
+
 func setStringListFromDict(dict map[string]interface{}, key string, field *[]*string) {
 	if v, ok := dict[key].([]interface{}); ok {
 		*field = []*string{}
@@ -611,6 +620,8 @@ func setFromDict(dict map[string]interface{}, key string, field interface{}) {
 		setIntFromDict(dict, key, field.(**int))
 	case **bool:
 		setBoolFromDict(dict, key, field.(**bool))
+	case **json.Number:
+		setJSONNumberFromDict(dict, key, field.(**json.Number))
 	case *[]*string:
 		setStringListFromDict(dict, key, field.(*[]*string))
 	default:
@@ -989,6 +1000,16 @@ func setIntToDict(dict map[string]interface{}, key string, field *int) {
 	}
 }
 
+func setJSONNumberToDict(dict map[string]interface{}, key string, field *json.Number) {
+	if field != nil {
+		v, err := (*field).Float64()
+		if err != nil {
+			panic(fmt.Sprintf("setJSONNumberToDict(): %v is not convertible to float", *field))
+		}
+		dict[key] = v
+	}
+}
+
 func setStringListToDict(dict map[string]interface{}, key string, field []*string) {
 	if len(field) != 0 {
 		s := make([]interface{}, len(field))
@@ -1007,6 +1028,8 @@ func setToDict(dict map[string]interface{}, key string, field interface{}) {
 		setBoolToDict(dict, key, field.(*bool))
 	case *int:
 		setIntToDict(dict, key, field.(*int))
+	case *json.Number:
+		setJSONNumberToDict(dict, key, field.(*json.Number))
 	case []*string:
 		setStringListToDict(dict, key, field.([]*string))
 	default:

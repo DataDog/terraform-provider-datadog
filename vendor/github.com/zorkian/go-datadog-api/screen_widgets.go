@@ -1,5 +1,7 @@
 package datadog
 
+import "encoding/json"
+
 type TileDef struct {
 	Events     []TileDefEvent   `json:"events,omitempty"`
 	Markers    []TileDefMarker  `json:"markers,omitempty"`
@@ -178,6 +180,7 @@ type Widget struct {
 	Logset  *string `json:"logset,omitempty"`
 
 	// For Uptime
+	// Widget is undocumented, subject to breaking API changes, and without customer support
 	Timeframes []*string           `json:"timeframes,omitempty"`
 	Rules      map[string]*Rule    `json:"rules,omitempty"`
 	Monitor    *ScreenboardMonitor `json:"monitor,omitempty"`
@@ -191,9 +194,9 @@ type Params struct {
 }
 
 type Rule struct {
-	Threshold *int    `json:"threshold,omitempty"`
-	Timeframe *string `json:"timeframe,omitempty"`
-	Color     *string `json:"color,omitempty"`
+	Threshold *json.Number `json:"threshold,omitempty"`
+	Timeframe *string      `json:"timeframe,omitempty"`
+	Color     *string      `json:"color,omitempty"`
 }
 
 type ScreenboardMonitor struct {
