@@ -1,4 +1,14 @@
-## 1.2.1 (Unreleased)
+## 1.3.0 (Unreleased)
+
+IMPROVEMENTS:
+
+* Add full support for Datadog screenboards ([#91](https://github.com/terraform-providers/terraform-provider-datadog/pull/91))
+
+BUGFIXES:
+
+* Do not compute `new_host_delay` ([#88](https://github.com/terraform-providers/terraform-provider-datadog/pull/88))
+* Remove buggy uptime widget ([#93](https://github.com/terraform-providers/terraform-provider-datadog/pull/93))
+
 ## 1.2.0 (August 27, 2018)
 
 BUG FIXES:
