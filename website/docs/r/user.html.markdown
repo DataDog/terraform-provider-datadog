@@ -28,7 +28,7 @@ The following arguments are supported:
 * `disabled` - (Optional) Whether the user is disabled
 * `email` - (Required) Email address for user
 * `handle` - (Required) The user handle, must be a valid email.
-* `is_admin` - (Optional) Whether the user is an administrator
+* `is_admin` - (Deprecated) (Optional) Whether the user is an administrator
 * `name` - (Required) Name for user
 * `role` - (Deprecated) Role description for user. **Warning**: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
 
