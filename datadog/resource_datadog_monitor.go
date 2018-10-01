@@ -388,7 +388,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	}
 
 	newHostDelay := d.Get("new_host_delay")
-	o.SetNewHostDelay(NewHostDelay.(int))
+	o.SetNewHostDelay(newHostDelay.(int))
 
 	if attr, ok := d.GetOk("evaluation_delay"); ok {
 		o.SetEvaluationDelay(attr.(int))
