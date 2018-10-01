@@ -1,4 +1,15 @@
 ## 1.4.0 (Unreleased)
+
+IMPROVEMENTS:
+
+* Pull changes from go-datadog-api v2.14.0 ([#99](https://github.com/terraform-providers/terraform-provider-datadog/pull/99))
+* Add `api_url` argument to the provider ([#101](https://github.com/terraform-providers/terraform-provider-datadog/pull/101))
+
+BUGFIXES:
+
+* Allow `new_host_delay` to be unset ([#100](https://github.com/terraform-providers/terraform-provider-datadog/issues/100))
+
+
 ## 1.3.0 (September 25, 2018)
 
 IMPROVEMENTS:
