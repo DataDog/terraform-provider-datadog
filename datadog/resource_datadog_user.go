@@ -88,7 +88,7 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 		if !strings.Contains(err.Error(), "API error 409 Conflict") {
 			return fmt.Errorf("error creating user: %s", err.Error())
 		}
-		log.Printf("[INFO] Updating existing Datadog user %q", u.Handle)
+		log.Printf("[INFO] Updating existing Datadog user %s", *u.Handle)
 	}
 
 	if err := client.UpdateUser(u); err != nil {
