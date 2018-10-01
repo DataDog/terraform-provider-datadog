@@ -7,6 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
+	datadog "github.com/zorkian/go-datadog-api"
 )
 
 func Provider() terraform.ResourceProvider {
@@ -21,6 +22,11 @@ func Provider() terraform.ResourceProvider {
 				Type:        schema.TypeString,
 				Required:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DATADOG_APP_KEY", nil),
+			},
+			"api_url": &schema.Schema{
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("DATADOG_HOST", nil),
 			},
 		},
 
@@ -38,24 +44,22 @@ func Provider() terraform.ResourceProvider {
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
-
-	config := Config{
-		APIKey: d.Get("api_key").(string),
-		APPKey: d.Get("app_key").(string),
+	client := datadog.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
+	if apiURL := d.Get("api_url").(string); apiURL != "" {
+		client.SetBaseUrl(apiURL)
 	}
-
-	log.Println("[INFO] Initializing Datadog client")
-	client := config.Client()
+	log.Println("[INFO] Datadog client successfully initialized, now validating...")
 
 	ok, err := client.Validate()
-
 	if err != nil {
+		log.Printf("[ERROR] Datadog Client validation error: %v", err)
+		return client, err
+	} else if !ok {
+		err := errors.New(`No valid credential sources found for Datadog Provider. Please see https://terraform.io/docs/providers/datadog/index.html for more information on providing credentials for the Datadog Provider`)
+		log.Printf("[ERROR] Datadog Client validation error: %v", err)
 		return client, err
 	}
-
-	if ok == false {
-		return client, errors.New(`No valid credential sources found for Datadog Provider. Please see https://terraform.io/docs/providers/datadog/index.html for more information on providing credentials for the Datadog Provider`)
-	}
+	log.Printf("[INFO] Datadog Client successfully validated.")
 
 	return client, nil
 }
