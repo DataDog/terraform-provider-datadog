@@ -89,6 +89,7 @@ Nested `graph` blocks have the following structure:
 * `group` - (Optional) List of groups for hostmaps (shown as 'group by' in the UI).
 * `include_no_metric_hosts` - (Optional) If set to true, will display hosts on hostmap that have no reported metrics.
 * `include_ungrouped_hosts` - (Optional) If set to true, will display hosts without groups on hostmaps.
+* `node_type` - (Optional) What nodes to display in a hostmap. Can be one of 'host' (default) or 'container'.
 * `scope` - (Optional) List of scopes for hostmaps (shown as 'filter by' in the UI).
 * `yaxis` - (Optional) Nested block describing modifications to the yaxis rendering. The structure of this block is described below.
 * `marker` - (Optional) Nested block describing lines / ranges added to graph for formatting. The structure of this block is described below. Multiple marker blocks are allowed within a graph block.
@@ -120,6 +121,8 @@ Nested `graph` `request` blocks have the following structure:
 ### Nested `graph` `style` block
 The nested `style` block is used specifically for styling `hostmap` graphs, and has the following structure:
 
+* `fill_max` - (Optional) Maximum value for the hostmap fill query.
+* `fill_min` - (Optional) Minimum value for the hostmap fill query.
 * `palette` - (Optional) Spectrum of colors to use when styling a hostmap. For example: "green_to_orange", "yellow_to_green", "YlOrRd", or "hostmap_blues". Default: "green_to_orange".
 * `palette_flip` - (Optional) Flip how the hostmap is rendered. For example, with the default palette, low values are represented as green, with high values as orange. If palette_flip is "true", then low values will be orange, and high values will be green.
 
