@@ -429,7 +429,7 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 		}
 
 		if precision, ok := t["precision"]; ok {
-			d.Definition.SetPrecision(precision.(string))
+			d.Definition.SetPrecision(json.Number(precision.(string)))
 		}
 
 		if v, ok := t["custom_unit"]; ok {
