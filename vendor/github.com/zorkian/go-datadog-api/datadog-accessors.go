@@ -21,7 +21,7 @@ func (a *Alert) GetCreator() int {
 	return *a.Creator
 }
 
-// GetOkCreator returns a tuple with the Creator field if it's non-nil, zero value otherwise
+// GetCreatorOk returns a tuple with the Creator field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (a *Alert) GetCreatorOk() (int, bool) {
 	if a == nil || a.Creator == nil {
@@ -52,7 +52,7 @@ func (a *Alert) GetId() int {
 	return *a.Id
 }
 
-// GetOkId returns a tuple with the Id field if it's non-nil, zero value otherwise
+// GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (a *Alert) GetIdOk() (int, bool) {
 	if a == nil || a.Id == nil {
@@ -83,7 +83,7 @@ func (a *Alert) GetMessage() string {
 	return *a.Message
 }
 
-// GetOkMessage returns a tuple with the Message field if it's non-nil, zero value otherwise
+// GetMessageOk returns a tuple with the Message field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (a *Alert) GetMessageOk() (string, bool) {
 	if a == nil || a.Message == nil {
@@ -114,7 +114,7 @@ func (a *Alert) GetName() string {
 	return *a.Name
 }
 
-// GetOkName returns a tuple with the Name field if it's non-nil, zero value otherwise
+// GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (a *Alert) GetNameOk() (string, bool) {
 	if a == nil || a.Name == nil {
@@ -145,7 +145,7 @@ func (a *Alert) GetNotifyNoData() bool {
 	return *a.NotifyNoData
 }
 
-// GetOkNotifyNoData returns a tuple with the NotifyNoData field if it's non-nil, zero value otherwise
+// GetNotifyNoDataOk returns a tuple with the NotifyNoData field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (a *Alert) GetNotifyNoDataOk() (bool, bool) {
 	if a == nil || a.NotifyNoData == nil {
@@ -176,7 +176,7 @@ func (a *Alert) GetQuery() string {
 	return *a.Query
 }
 
-// GetOkQuery returns a tuple with the Query field if it's non-nil, zero value otherwise
+// GetQueryOk returns a tuple with the Query field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (a *Alert) GetQueryOk() (string, bool) {
 	if a == nil || a.Query == nil {
@@ -207,7 +207,7 @@ func (a *Alert) GetSilenced() bool {
 	return *a.Silenced
 }
 
-// GetOkSilenced returns a tuple with the Silenced field if it's non-nil, zero value otherwise
+// GetSilencedOk returns a tuple with the Silenced field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (a *Alert) GetSilencedOk() (bool, bool) {
 	if a == nil || a.Silenced == nil {
@@ -238,7 +238,7 @@ func (a *Alert) GetState() string {
 	return *a.State
 }
 
-// GetOkState returns a tuple with the State field if it's non-nil, zero value otherwise
+// GetStateOk returns a tuple with the State field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (a *Alert) GetStateOk() (string, bool) {
 	if a == nil || a.State == nil {
@@ -269,7 +269,7 @@ func (c *ChannelSlackRequest) GetAccount() string {
 	return *c.Account
 }
 
-// GetOkAccount returns a tuple with the Account field if it's non-nil, zero value otherwise
+// GetAccountOk returns a tuple with the Account field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *ChannelSlackRequest) GetAccountOk() (string, bool) {
 	if c == nil || c.Account == nil {
@@ -300,7 +300,7 @@ func (c *ChannelSlackRequest) GetChannelName() string {
 	return *c.ChannelName
 }
 
-// GetOkChannelName returns a tuple with the ChannelName field if it's non-nil, zero value otherwise
+// GetChannelNameOk returns a tuple with the ChannelName field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *ChannelSlackRequest) GetChannelNameOk() (string, bool) {
 	if c == nil || c.ChannelName == nil {
@@ -331,7 +331,7 @@ func (c *ChannelSlackRequest) GetTransferAllUserComments() bool {
 	return *c.TransferAllUserComments
 }
 
-// GetOkTransferAllUserComments returns a tuple with the TransferAllUserComments field if it's non-nil, zero value otherwise
+// GetTransferAllUserCommentsOk returns a tuple with the TransferAllUserComments field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *ChannelSlackRequest) GetTransferAllUserCommentsOk() (bool, bool) {
 	if c == nil || c.TransferAllUserComments == nil {
@@ -362,7 +362,7 @@ func (c *Check) GetCheck() string {
 	return *c.Check
 }
 
-// GetOkCheck returns a tuple with the Check field if it's non-nil, zero value otherwise
+// GetCheckOk returns a tuple with the Check field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *Check) GetCheckOk() (string, bool) {
 	if c == nil || c.Check == nil {
@@ -393,7 +393,7 @@ func (c *Check) GetHostName() string {
 	return *c.HostName
 }
 
-// GetOkHostName returns a tuple with the HostName field if it's non-nil, zero value otherwise
+// GetHostNameOk returns a tuple with the HostName field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *Check) GetHostNameOk() (string, bool) {
 	if c == nil || c.HostName == nil {
@@ -424,7 +424,7 @@ func (c *Check) GetMessage() string {
 	return *c.Message
 }
 
-// GetOkMessage returns a tuple with the Message field if it's non-nil, zero value otherwise
+// GetMessageOk returns a tuple with the Message field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *Check) GetMessageOk() (string, bool) {
 	if c == nil || c.Message == nil {
@@ -455,7 +455,7 @@ func (c *Check) GetStatus() Status {
 	return *c.Status
 }
 
-// GetOkStatus returns a tuple with the Status field if it's non-nil, zero value otherwise
+// GetStatusOk returns a tuple with the Status field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *Check) GetStatusOk() (Status, bool) {
 	if c == nil || c.Status == nil {
@@ -486,7 +486,7 @@ func (c *Check) GetTimestamp() string {
 	return *c.Timestamp
 }
 
-// GetOkTimestamp returns a tuple with the Timestamp field if it's non-nil, zero value otherwise
+// GetTimestampOk returns a tuple with the Timestamp field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *Check) GetTimestampOk() (string, bool) {
 	if c == nil || c.Timestamp == nil {
@@ -517,7 +517,7 @@ func (c *Comment) GetHandle() string {
 	return *c.Handle
 }
 
-// GetOkHandle returns a tuple with the Handle field if it's non-nil, zero value otherwise
+// GetHandleOk returns a tuple with the Handle field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *Comment) GetHandleOk() (string, bool) {
 	if c == nil || c.Handle == nil {
@@ -548,7 +548,7 @@ func (c *Comment) GetId() int {
 	return *c.Id
 }
 
-// GetOkId returns a tuple with the Id field if it's non-nil, zero value otherwise
+// GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *Comment) GetIdOk() (int, bool) {
 	if c == nil || c.Id == nil {
@@ -579,7 +579,7 @@ func (c *Comment) GetMessage() string {
 	return *c.Message
 }
 
-// GetOkMessage returns a tuple with the Message field if it's non-nil, zero value otherwise
+// GetMessageOk returns a tuple with the Message field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *Comment) GetMessageOk() (string, bool) {
 	if c == nil || c.Message == nil {
@@ -610,7 +610,7 @@ func (c *Comment) GetRelatedId() int {
 	return *c.RelatedId
 }
 
-// GetOkRelatedId returns a tuple with the RelatedId field if it's non-nil, zero value otherwise
+// GetRelatedIdOk returns a tuple with the RelatedId field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *Comment) GetRelatedIdOk() (int, bool) {
 	if c == nil || c.RelatedId == nil {
@@ -641,7 +641,7 @@ func (c *Comment) GetResource() string {
 	return *c.Resource
 }
 
-// GetOkResource returns a tuple with the Resource field if it's non-nil, zero value otherwise
+// GetResourceOk returns a tuple with the Resource field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *Comment) GetResourceOk() (string, bool) {
 	if c == nil || c.Resource == nil {
@@ -672,7 +672,7 @@ func (c *Comment) GetUrl() string {
 	return *c.Url
 }
 
-// GetOkUrl returns a tuple with the Url field if it's non-nil, zero value otherwise
+// GetUrlOk returns a tuple with the Url field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *Comment) GetUrlOk() (string, bool) {
 	if c == nil || c.Url == nil {
@@ -703,7 +703,7 @@ func (c *ConditionalFormat) GetColor() string {
 	return *c.Color
 }
 
-// GetOkColor returns a tuple with the Color field if it's non-nil, zero value otherwise
+// GetColorOk returns a tuple with the Color field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *ConditionalFormat) GetColorOk() (string, bool) {
 	if c == nil || c.Color == nil {
@@ -734,7 +734,7 @@ func (c *ConditionalFormat) GetComparator() string {
 	return *c.Comparator
 }
 
-// GetOkComparator returns a tuple with the Comparator field if it's non-nil, zero value otherwise
+// GetComparatorOk returns a tuple with the Comparator field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *ConditionalFormat) GetComparatorOk() (string, bool) {
 	if c == nil || c.Comparator == nil {
@@ -765,7 +765,7 @@ func (c *ConditionalFormat) GetImageURL() string {
 	return *c.ImageURL
 }
 
-// GetOkImageURL returns a tuple with the ImageURL field if it's non-nil, zero value otherwise
+// GetImageURLOk returns a tuple with the ImageURL field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *ConditionalFormat) GetImageURLOk() (string, bool) {
 	if c == nil || c.ImageURL == nil {
@@ -796,7 +796,7 @@ func (c *ConditionalFormat) GetInvert() bool {
 	return *c.Invert
 }
 
-// GetOkInvert returns a tuple with the Invert field if it's non-nil, zero value otherwise
+// GetInvertOk returns a tuple with the Invert field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *ConditionalFormat) GetInvertOk() (bool, bool) {
 	if c == nil || c.Invert == nil {
@@ -827,7 +827,7 @@ func (c *ConditionalFormat) GetPalette() string {
 	return *c.Palette
 }
 
-// GetOkPalette returns a tuple with the Palette field if it's non-nil, zero value otherwise
+// GetPaletteOk returns a tuple with the Palette field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *ConditionalFormat) GetPaletteOk() (string, bool) {
 	if c == nil || c.Palette == nil {
@@ -858,7 +858,7 @@ func (c *ConditionalFormat) GetValue() string {
 	return *c.Value
 }
 
-// GetOkValue returns a tuple with the Value field if it's non-nil, zero value otherwise
+// GetValueOk returns a tuple with the Value field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *ConditionalFormat) GetValueOk() (string, bool) {
 	if c == nil || c.Value == nil {
@@ -881,6 +881,285 @@ func (c *ConditionalFormat) SetValue(v string) {
 	c.Value = &v
 }
 
+// GetAccessRole returns the AccessRole field if non-nil, zero value otherwise.
+func (c *CreatedBy) GetAccessRole() string {
+	if c == nil || c.AccessRole == nil {
+		return ""
+	}
+	return *c.AccessRole
+}
+
+// GetAccessRoleOk returns a tuple with the AccessRole field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (c *CreatedBy) GetAccessRoleOk() (string, bool) {
+	if c == nil || c.AccessRole == nil {
+		return "", false
+	}
+	return *c.AccessRole, true
+}
+
+// HasAccessRole returns a boolean if a field has been set.
+func (c *CreatedBy) HasAccessRole() bool {
+	if c != nil && c.AccessRole != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAccessRole allocates a new c.AccessRole and returns the pointer to it.
+func (c *CreatedBy) SetAccessRole(v string) {
+	c.AccessRole = &v
+}
+
+// GetDisabled returns the Disabled field if non-nil, zero value otherwise.
+func (c *CreatedBy) GetDisabled() bool {
+	if c == nil || c.Disabled == nil {
+		return false
+	}
+	return *c.Disabled
+}
+
+// GetDisabledOk returns a tuple with the Disabled field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (c *CreatedBy) GetDisabledOk() (bool, bool) {
+	if c == nil || c.Disabled == nil {
+		return false, false
+	}
+	return *c.Disabled, true
+}
+
+// HasDisabled returns a boolean if a field has been set.
+func (c *CreatedBy) HasDisabled() bool {
+	if c != nil && c.Disabled != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetDisabled allocates a new c.Disabled and returns the pointer to it.
+func (c *CreatedBy) SetDisabled(v bool) {
+	c.Disabled = &v
+}
+
+// GetEmail returns the Email field if non-nil, zero value otherwise.
+func (c *CreatedBy) GetEmail() string {
+	if c == nil || c.Email == nil {
+		return ""
+	}
+	return *c.Email
+}
+
+// GetEmailOk returns a tuple with the Email field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (c *CreatedBy) GetEmailOk() (string, bool) {
+	if c == nil || c.Email == nil {
+		return "", false
+	}
+	return *c.Email, true
+}
+
+// HasEmail returns a boolean if a field has been set.
+func (c *CreatedBy) HasEmail() bool {
+	if c != nil && c.Email != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetEmail allocates a new c.Email and returns the pointer to it.
+func (c *CreatedBy) SetEmail(v string) {
+	c.Email = &v
+}
+
+// GetHandle returns the Handle field if non-nil, zero value otherwise.
+func (c *CreatedBy) GetHandle() string {
+	if c == nil || c.Handle == nil {
+		return ""
+	}
+	return *c.Handle
+}
+
+// GetHandleOk returns a tuple with the Handle field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (c *CreatedBy) GetHandleOk() (string, bool) {
+	if c == nil || c.Handle == nil {
+		return "", false
+	}
+	return *c.Handle, true
+}
+
+// HasHandle returns a boolean if a field has been set.
+func (c *CreatedBy) HasHandle() bool {
+	if c != nil && c.Handle != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetHandle allocates a new c.Handle and returns the pointer to it.
+func (c *CreatedBy) SetHandle(v string) {
+	c.Handle = &v
+}
+
+// GetIcon returns the Icon field if non-nil, zero value otherwise.
+func (c *CreatedBy) GetIcon() string {
+	if c == nil || c.Icon == nil {
+		return ""
+	}
+	return *c.Icon
+}
+
+// GetIconOk returns a tuple with the Icon field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (c *CreatedBy) GetIconOk() (string, bool) {
+	if c == nil || c.Icon == nil {
+		return "", false
+	}
+	return *c.Icon, true
+}
+
+// HasIcon returns a boolean if a field has been set.
+func (c *CreatedBy) HasIcon() bool {
+	if c != nil && c.Icon != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetIcon allocates a new c.Icon and returns the pointer to it.
+func (c *CreatedBy) SetIcon(v string) {
+	c.Icon = &v
+}
+
+// GetIsAdmin returns the IsAdmin field if non-nil, zero value otherwise.
+func (c *CreatedBy) GetIsAdmin() bool {
+	if c == nil || c.IsAdmin == nil {
+		return false
+	}
+	return *c.IsAdmin
+}
+
+// GetIsAdminOk returns a tuple with the IsAdmin field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (c *CreatedBy) GetIsAdminOk() (bool, bool) {
+	if c == nil || c.IsAdmin == nil {
+		return false, false
+	}
+	return *c.IsAdmin, true
+}
+
+// HasIsAdmin returns a boolean if a field has been set.
+func (c *CreatedBy) HasIsAdmin() bool {
+	if c != nil && c.IsAdmin != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetIsAdmin allocates a new c.IsAdmin and returns the pointer to it.
+func (c *CreatedBy) SetIsAdmin(v bool) {
+	c.IsAdmin = &v
+}
+
+// GetName returns the Name field if non-nil, zero value otherwise.
+func (c *CreatedBy) GetName() string {
+	if c == nil || c.Name == nil {
+		return ""
+	}
+	return *c.Name
+}
+
+// GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (c *CreatedBy) GetNameOk() (string, bool) {
+	if c == nil || c.Name == nil {
+		return "", false
+	}
+	return *c.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (c *CreatedBy) HasName() bool {
+	if c != nil && c.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetName allocates a new c.Name and returns the pointer to it.
+func (c *CreatedBy) SetName(v string) {
+	c.Name = &v
+}
+
+// GetRole returns the Role field if non-nil, zero value otherwise.
+func (c *CreatedBy) GetRole() string {
+	if c == nil || c.Role == nil {
+		return ""
+	}
+	return *c.Role
+}
+
+// GetRoleOk returns a tuple with the Role field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (c *CreatedBy) GetRoleOk() (string, bool) {
+	if c == nil || c.Role == nil {
+		return "", false
+	}
+	return *c.Role, true
+}
+
+// HasRole returns a boolean if a field has been set.
+func (c *CreatedBy) HasRole() bool {
+	if c != nil && c.Role != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRole allocates a new c.Role and returns the pointer to it.
+func (c *CreatedBy) SetRole(v string) {
+	c.Role = &v
+}
+
+// GetVerified returns the Verified field if non-nil, zero value otherwise.
+func (c *CreatedBy) GetVerified() bool {
+	if c == nil || c.Verified == nil {
+		return false
+	}
+	return *c.Verified
+}
+
+// GetVerifiedOk returns a tuple with the Verified field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (c *CreatedBy) GetVerifiedOk() (bool, bool) {
+	if c == nil || c.Verified == nil {
+		return false, false
+	}
+	return *c.Verified, true
+}
+
+// HasVerified returns a boolean if a field has been set.
+func (c *CreatedBy) HasVerified() bool {
+	if c != nil && c.Verified != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetVerified allocates a new c.Verified and returns the pointer to it.
+func (c *CreatedBy) SetVerified(v bool) {
+	c.Verified = &v
+}
+
 // GetEmail returns the Email field if non-nil, zero value otherwise.
 func (c *Creator) GetEmail() string {
 	if c == nil || c.Email == nil {
@@ -889,7 +1168,7 @@ func (c *Creator) GetEmail() string {
 	return *c.Email
 }
 
-// GetOkEmail returns a tuple with the Email field if it's non-nil, zero value otherwise
+// GetEmailOk returns a tuple with the Email field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *Creator) GetEmailOk() (string, bool) {
 	if c == nil || c.Email == nil {
@@ -920,7 +1199,7 @@ func (c *Creator) GetHandle() string {
 	return *c.Handle
 }
 
-// GetOkHandle returns a tuple with the Handle field if it's non-nil, zero value otherwise
+// GetHandleOk returns a tuple with the Handle field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *Creator) GetHandleOk() (string, bool) {
 	if c == nil || c.Handle == nil {
@@ -951,7 +1230,7 @@ func (c *Creator) GetId() int {
 	return *c.Id
 }
 
-// GetOkId returns a tuple with the Id field if it's non-nil, zero value otherwise
+// GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *Creator) GetIdOk() (int, bool) {
 	if c == nil || c.Id == nil {
@@ -982,7 +1261,7 @@ func (c *Creator) GetName() string {
 	return *c.Name
 }
 
-// GetOkName returns a tuple with the Name field if it's non-nil, zero value otherwise
+// GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (c *Creator) GetNameOk() (string, bool) {
 	if c == nil || c.Name == nil {
@@ -1013,7 +1292,7 @@ func (d *Dashboard) GetDescription() string {
 	return *d.Description
 }
 
-// GetOkDescription returns a tuple with the Description field if it's non-nil, zero value otherwise
+// GetDescriptionOk returns a tuple with the Description field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *Dashboard) GetDescriptionOk() (string, bool) {
 	if d == nil || d.Description == nil {
@@ -1044,7 +1323,7 @@ func (d *Dashboard) GetId() int {
 	return *d.Id
 }
 
-// GetOkId returns a tuple with the Id field if it's non-nil, zero value otherwise
+// GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *Dashboard) GetIdOk() (int, bool) {
 	if d == nil || d.Id == nil {
@@ -1075,7 +1354,7 @@ func (d *Dashboard) GetReadOnly() bool {
 	return *d.ReadOnly
 }
 
-// GetOkReadOnly returns a tuple with the ReadOnly field if it's non-nil, zero value otherwise
+// GetReadOnlyOk returns a tuple with the ReadOnly field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *Dashboard) GetReadOnlyOk() (bool, bool) {
 	if d == nil || d.ReadOnly == nil {
@@ -1106,7 +1385,7 @@ func (d *Dashboard) GetTitle() string {
 	return *d.Title
 }
 
-// GetOkTitle returns a tuple with the Title field if it's non-nil, zero value otherwise
+// GetTitleOk returns a tuple with the Title field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *Dashboard) GetTitleOk() (string, bool) {
 	if d == nil || d.Title == nil {
@@ -1137,7 +1416,7 @@ func (d *DashboardConditionalFormat) GetComparator() string {
 	return *d.Comparator
 }
 
-// GetOkComparator returns a tuple with the Comparator field if it's non-nil, zero value otherwise
+// GetComparatorOk returns a tuple with the Comparator field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardConditionalFormat) GetComparatorOk() (string, bool) {
 	if d == nil || d.Comparator == nil {
@@ -1168,7 +1447,7 @@ func (d *DashboardConditionalFormat) GetCustomBgColor() string {
 	return *d.CustomBgColor
 }
 
-// GetOkCustomBgColor returns a tuple with the CustomBgColor field if it's non-nil, zero value otherwise
+// GetCustomBgColorOk returns a tuple with the CustomBgColor field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardConditionalFormat) GetCustomBgColorOk() (string, bool) {
 	if d == nil || d.CustomBgColor == nil {
@@ -1199,7 +1478,7 @@ func (d *DashboardConditionalFormat) GetCustomFgColor() string {
 	return *d.CustomFgColor
 }
 
-// GetOkCustomFgColor returns a tuple with the CustomFgColor field if it's non-nil, zero value otherwise
+// GetCustomFgColorOk returns a tuple with the CustomFgColor field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardConditionalFormat) GetCustomFgColorOk() (string, bool) {
 	if d == nil || d.CustomFgColor == nil {
@@ -1230,7 +1509,7 @@ func (d *DashboardConditionalFormat) GetCustomImageUrl() string {
 	return *d.CustomImageUrl
 }
 
-// GetOkCustomImageUrl returns a tuple with the CustomImageUrl field if it's non-nil, zero value otherwise
+// GetCustomImageUrlOk returns a tuple with the CustomImageUrl field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardConditionalFormat) GetCustomImageUrlOk() (string, bool) {
 	if d == nil || d.CustomImageUrl == nil {
@@ -1261,7 +1540,7 @@ func (d *DashboardConditionalFormat) GetInverted() bool {
 	return *d.Inverted
 }
 
-// GetOkInverted returns a tuple with the Inverted field if it's non-nil, zero value otherwise
+// GetInvertedOk returns a tuple with the Inverted field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardConditionalFormat) GetInvertedOk() (bool, bool) {
 	if d == nil || d.Inverted == nil {
@@ -1292,7 +1571,7 @@ func (d *DashboardConditionalFormat) GetPalette() string {
 	return *d.Palette
 }
 
-// GetOkPalette returns a tuple with the Palette field if it's non-nil, zero value otherwise
+// GetPaletteOk returns a tuple with the Palette field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardConditionalFormat) GetPaletteOk() (string, bool) {
 	if d == nil || d.Palette == nil {
@@ -1323,7 +1602,7 @@ func (d *DashboardConditionalFormat) GetValue() json.Number {
 	return *d.Value
 }
 
-// GetOkValue returns a tuple with the Value field if it's non-nil, zero value otherwise
+// GetValueOk returns a tuple with the Value field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardConditionalFormat) GetValueOk() (json.Number, bool) {
 	if d == nil || d.Value == nil {
@@ -1354,7 +1633,7 @@ func (d *DashboardList) GetDashboardCount() int {
 	return *d.DashboardCount
 }
 
-// GetOkDashboardCount returns a tuple with the DashboardCount field if it's non-nil, zero value otherwise
+// GetDashboardCountOk returns a tuple with the DashboardCount field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardList) GetDashboardCountOk() (int, bool) {
 	if d == nil || d.DashboardCount == nil {
@@ -1385,7 +1664,7 @@ func (d *DashboardList) GetId() int {
 	return *d.Id
 }
 
-// GetOkId returns a tuple with the Id field if it's non-nil, zero value otherwise
+// GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardList) GetIdOk() (int, bool) {
 	if d == nil || d.Id == nil {
@@ -1416,7 +1695,7 @@ func (d *DashboardList) GetName() string {
 	return *d.Name
 }
 
-// GetOkName returns a tuple with the Name field if it's non-nil, zero value otherwise
+// GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardList) GetNameOk() (string, bool) {
 	if d == nil || d.Name == nil {
@@ -1447,7 +1726,7 @@ func (d *DashboardListItem) GetId() int {
 	return *d.Id
 }
 
-// GetOkId returns a tuple with the Id field if it's non-nil, zero value otherwise
+// GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardListItem) GetIdOk() (int, bool) {
 	if d == nil || d.Id == nil {
@@ -1478,7 +1757,7 @@ func (d *DashboardListItem) GetType() string {
 	return *d.Type
 }
 
-// GetOkType returns a tuple with the Type field if it's non-nil, zero value otherwise
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardListItem) GetTypeOk() (string, bool) {
 	if d == nil || d.Type == nil {
@@ -1501,6 +1780,68 @@ func (d *DashboardListItem) SetType(v string) {
 	d.Type = &v
 }
 
+// GetCreated returns the Created field if non-nil, zero value otherwise.
+func (d *DashboardLite) GetCreated() string {
+	if d == nil || d.Created == nil {
+		return ""
+	}
+	return *d.Created
+}
+
+// GetCreatedOk returns a tuple with the Created field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *DashboardLite) GetCreatedOk() (string, bool) {
+	if d == nil || d.Created == nil {
+		return "", false
+	}
+	return *d.Created, true
+}
+
+// HasCreated returns a boolean if a field has been set.
+func (d *DashboardLite) HasCreated() bool {
+	if d != nil && d.Created != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCreated allocates a new d.Created and returns the pointer to it.
+func (d *DashboardLite) SetCreated(v string) {
+	d.Created = &v
+}
+
+// GetCreatedBy returns the CreatedBy field if non-nil, zero value otherwise.
+func (d *DashboardLite) GetCreatedBy() CreatedBy {
+	if d == nil || d.CreatedBy == nil {
+		return CreatedBy{}
+	}
+	return *d.CreatedBy
+}
+
+// GetCreatedByOk returns a tuple with the CreatedBy field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *DashboardLite) GetCreatedByOk() (CreatedBy, bool) {
+	if d == nil || d.CreatedBy == nil {
+		return CreatedBy{}, false
+	}
+	return *d.CreatedBy, true
+}
+
+// HasCreatedBy returns a boolean if a field has been set.
+func (d *DashboardLite) HasCreatedBy() bool {
+	if d != nil && d.CreatedBy != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCreatedBy allocates a new d.CreatedBy and returns the pointer to it.
+func (d *DashboardLite) SetCreatedBy(v CreatedBy) {
+	d.CreatedBy = &v
+}
+
 // GetDescription returns the Description field if non-nil, zero value otherwise.
 func (d *DashboardLite) GetDescription() string {
 	if d == nil || d.Description == nil {
@@ -1509,7 +1850,7 @@ func (d *DashboardLite) GetDescription() string {
 	return *d.Description
 }
 
-// GetOkDescription returns a tuple with the Description field if it's non-nil, zero value otherwise
+// GetDescriptionOk returns a tuple with the Description field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardLite) GetDescriptionOk() (string, bool) {
 	if d == nil || d.Description == nil {
@@ -1540,7 +1881,7 @@ func (d *DashboardLite) GetId() int {
 	return *d.Id
 }
 
-// GetOkId returns a tuple with the Id field if it's non-nil, zero value otherwise
+// GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardLite) GetIdOk() (int, bool) {
 	if d == nil || d.Id == nil {
@@ -1563,6 +1904,68 @@ func (d *DashboardLite) SetId(v int) {
 	d.Id = &v
 }
 
+// GetModified returns the Modified field if non-nil, zero value otherwise.
+func (d *DashboardLite) GetModified() string {
+	if d == nil || d.Modified == nil {
+		return ""
+	}
+	return *d.Modified
+}
+
+// GetModifiedOk returns a tuple with the Modified field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *DashboardLite) GetModifiedOk() (string, bool) {
+	if d == nil || d.Modified == nil {
+		return "", false
+	}
+	return *d.Modified, true
+}
+
+// HasModified returns a boolean if a field has been set.
+func (d *DashboardLite) HasModified() bool {
+	if d != nil && d.Modified != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetModified allocates a new d.Modified and returns the pointer to it.
+func (d *DashboardLite) SetModified(v string) {
+	d.Modified = &v
+}
+
+// GetReadOnly returns the ReadOnly field if non-nil, zero value otherwise.
+func (d *DashboardLite) GetReadOnly() bool {
+	if d == nil || d.ReadOnly == nil {
+		return false
+	}
+	return *d.ReadOnly
+}
+
+// GetReadOnlyOk returns a tuple with the ReadOnly field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *DashboardLite) GetReadOnlyOk() (bool, bool) {
+	if d == nil || d.ReadOnly == nil {
+		return false, false
+	}
+	return *d.ReadOnly, true
+}
+
+// HasReadOnly returns a boolean if a field has been set.
+func (d *DashboardLite) HasReadOnly() bool {
+	if d != nil && d.ReadOnly != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetReadOnly allocates a new d.ReadOnly and returns the pointer to it.
+func (d *DashboardLite) SetReadOnly(v bool) {
+	d.ReadOnly = &v
+}
+
 // GetResource returns the Resource field if non-nil, zero value otherwise.
 func (d *DashboardLite) GetResource() string {
 	if d == nil || d.Resource == nil {
@@ -1571,7 +1974,7 @@ func (d *DashboardLite) GetResource() string {
 	return *d.Resource
 }
 
-// GetOkResource returns a tuple with the Resource field if it's non-nil, zero value otherwise
+// GetResourceOk returns a tuple with the Resource field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardLite) GetResourceOk() (string, bool) {
 	if d == nil || d.Resource == nil {
@@ -1602,7 +2005,7 @@ func (d *DashboardLite) GetTitle() string {
 	return *d.Title
 }
 
-// GetOkTitle returns a tuple with the Title field if it's non-nil, zero value otherwise
+// GetTitleOk returns a tuple with the Title field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *DashboardLite) GetTitleOk() (string, bool) {
 	if d == nil || d.Title == nil {
@@ -1633,7 +2036,7 @@ func (d *Downtime) GetActive() bool {
 	return *d.Active
 }
 
-// GetOkActive returns a tuple with the Active field if it's non-nil, zero value otherwise
+// GetActiveOk returns a tuple with the Active field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *Downtime) GetActiveOk() (bool, bool) {
 	if d == nil || d.Active == nil {
@@ -1664,7 +2067,7 @@ func (d *Downtime) GetCanceled() int {
 	return *d.Canceled
 }
 
-// GetOkCanceled returns a tuple with the Canceled field if it's non-nil, zero value otherwise
+// GetCanceledOk returns a tuple with the Canceled field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *Downtime) GetCanceledOk() (int, bool) {
 	if d == nil || d.Canceled == nil {
@@ -1695,7 +2098,7 @@ func (d *Downtime) GetDisabled() bool {
 	return *d.Disabled
 }
 
-// GetOkDisabled returns a tuple with the Disabled field if it's non-nil, zero value otherwise
+// GetDisabledOk returns a tuple with the Disabled field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *Downtime) GetDisabledOk() (bool, bool) {
 	if d == nil || d.Disabled == nil {
@@ -1726,7 +2129,7 @@ func (d *Downtime) GetEnd() int {
 	return *d.End
 }
 
-// GetOkEnd returns a tuple with the End field if it's non-nil, zero value otherwise
+// GetEndOk returns a tuple with the End field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *Downtime) GetEndOk() (int, bool) {
 	if d == nil || d.End == nil {
@@ -1757,7 +2160,7 @@ func (d *Downtime) GetId() int {
 	return *d.Id
 }
 
-// GetOkId returns a tuple with the Id field if it's non-nil, zero value otherwise
+// GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *Downtime) GetIdOk() (int, bool) {
 	if d == nil || d.Id == nil {
@@ -1788,7 +2191,7 @@ func (d *Downtime) GetMessage() string {
 	return *d.Message
 }
 
-// GetOkMessage returns a tuple with the Message field if it's non-nil, zero value otherwise
+// GetMessageOk returns a tuple with the Message field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *Downtime) GetMessageOk() (string, bool) {
 	if d == nil || d.Message == nil {
@@ -1819,7 +2222,7 @@ func (d *Downtime) GetMonitorId() int {
 	return *d.MonitorId
 }
 
-// GetOkMonitorId returns a tuple with the MonitorId field if it's non-nil, zero value otherwise
+// GetMonitorIdOk returns a tuple with the MonitorId field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *Downtime) GetMonitorIdOk() (int, bool) {
 	if d == nil || d.MonitorId == nil {
@@ -1850,7 +2253,7 @@ func (d *Downtime) GetRecurrence() Recurrence {
 	return *d.Recurrence
 }
 
-// GetOkRecurrence returns a tuple with the Recurrence field if it's non-nil, zero value otherwise
+// GetRecurrenceOk returns a tuple with the Recurrence field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *Downtime) GetRecurrenceOk() (Recurrence, bool) {
 	if d == nil || d.Recurrence == nil {
@@ -1881,7 +2284,7 @@ func (d *Downtime) GetStart() int {
 	return *d.Start
 }
 
-// GetOkStart returns a tuple with the Start field if it's non-nil, zero value otherwise
+// GetStartOk returns a tuple with the Start field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (d *Downtime) GetStartOk() (int, bool) {
 	if d == nil || d.Start == nil {
@@ -1912,7 +2315,7 @@ func (e *Event) GetAggregation() string {
 	return *e.Aggregation
 }
 
-// GetOkAggregation returns a tuple with the Aggregation field if it's non-nil, zero value otherwise
+// GetAggregationOk returns a tuple with the Aggregation field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (e *Event) GetAggregationOk() (string, bool) {
 	if e == nil || e.Aggregation == nil {
@@ -1943,7 +2346,7 @@ func (e *Event) GetAlertType() string {
 	return *e.AlertType
 }
 
-// GetOkAlertType returns a tuple with the AlertType field if it's non-nil, zero value otherwise
+// GetAlertTypeOk returns a tuple with the AlertType field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (e *Event) GetAlertTypeOk() (string, bool) {
 	if e == nil || e.AlertType == nil {
@@ -1974,7 +2377,7 @@ func (e *Event) GetEventType() string {
 	return *e.EventType
 }
 
-// GetOkEventType returns a tuple with the EventType field if it's non-nil, zero value otherwise
+// GetEventTypeOk returns a tuple with the EventType field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (e *Event) GetEventTypeOk() (string, bool) {
 	if e == nil || e.EventType == nil {
@@ -2005,7 +2408,7 @@ func (e *Event) GetHost() string {
 	return *e.Host
 }
 
-// GetOkHost returns a tuple with the Host field if it's non-nil, zero value otherwise
+// GetHostOk returns a tuple with the Host field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (e *Event) GetHostOk() (string, bool) {
 	if e == nil || e.Host == nil {
@@ -2036,7 +2439,7 @@ func (e *Event) GetId() int {
 	return *e.Id
 }
 
-// GetOkId returns a tuple with the Id field if it's non-nil, zero value otherwise
+// GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (e *Event) GetIdOk() (int, bool) {
 	if e == nil || e.Id == nil {
@@ -2067,7 +2470,7 @@ func (e *Event) GetPriority() string {
 	return *e.Priority
 }
 
-// GetOkPriority returns a tuple with the Priority field if it's non-nil, zero value otherwise
+// GetPriorityOk returns a tuple with the Priority field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (e *Event) GetPriorityOk() (string, bool) {
 	if e == nil || e.Priority == nil {
@@ -2098,7 +2501,7 @@ func (e *Event) GetResource() string {
 	return *e.Resource
 }
 
-// GetOkResource returns a tuple with the Resource field if it's non-nil, zero value otherwise
+// GetResourceOk returns a tuple with the Resource field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (e *Event) GetResourceOk() (string, bool) {
 	if e == nil || e.Resource == nil {
@@ -2129,7 +2532,7 @@ func (e *Event) GetSourceType() string {
 	return *e.SourceType
 }
 
-// GetOkSourceType returns a tuple with the SourceType field if it's non-nil, zero value otherwise
+// GetSourceTypeOk returns a tuple with the SourceType field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (e *Event) GetSourceTypeOk() (string, bool) {
 	if e == nil || e.SourceType == nil {
@@ -2160,7 +2563,7 @@ func (e *Event) GetText() string {
 	return *e.Text
 }
 
-// GetOkText returns a tuple with the Text field if it's non-nil, zero value otherwise
+// GetTextOk returns a tuple with the Text field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (e *Event) GetTextOk() (string, bool) {
 	if e == nil || e.Text == nil {
@@ -2191,7 +2594,7 @@ func (e *Event) GetTime() int {
 	return *e.Time
 }
 
-// GetOkTime returns a tuple with the Time field if it's non-nil, zero value otherwise
+// GetTimeOk returns a tuple with the Time field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (e *Event) GetTimeOk() (int, bool) {
 	if e == nil || e.Time == nil {
@@ -2222,7 +2625,7 @@ func (e *Event) GetTitle() string {
 	return *e.Title
 }
 
-// GetOkTitle returns a tuple with the Title field if it's non-nil, zero value otherwise
+// GetTitleOk returns a tuple with the Title field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (e *Event) GetTitleOk() (string, bool) {
 	if e == nil || e.Title == nil {
@@ -2253,7 +2656,7 @@ func (e *Event) GetUrl() string {
 	return *e.Url
 }
 
-// GetOkUrl returns a tuple with the Url field if it's non-nil, zero value otherwise
+// GetUrlOk returns a tuple with the Url field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (e *Event) GetUrlOk() (string, bool) {
 	if e == nil || e.Url == nil {
@@ -2284,7 +2687,7 @@ func (g *Graph) GetDefinition() GraphDefinition {
 	return *g.Definition
 }
 
-// GetOkDefinition returns a tuple with the Definition field if it's non-nil, zero value otherwise
+// GetDefinitionOk returns a tuple with the Definition field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *Graph) GetDefinitionOk() (GraphDefinition, bool) {
 	if g == nil || g.Definition == nil {
@@ -2315,7 +2718,7 @@ func (g *Graph) GetTitle() string {
 	return *g.Title
 }
 
-// GetOkTitle returns a tuple with the Title field if it's non-nil, zero value otherwise
+// GetTitleOk returns a tuple with the Title field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *Graph) GetTitleOk() (string, bool) {
 	if g == nil || g.Title == nil {
@@ -2346,7 +2749,7 @@ func (g *GraphDefinition) GetAutoscale() bool {
 	return *g.Autoscale
 }
 
-// GetOkAutoscale returns a tuple with the Autoscale field if it's non-nil, zero value otherwise
+// GetAutoscaleOk returns a tuple with the Autoscale field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinition) GetAutoscaleOk() (bool, bool) {
 	if g == nil || g.Autoscale == nil {
@@ -2377,7 +2780,7 @@ func (g *GraphDefinition) GetCustomUnit() string {
 	return *g.CustomUnit
 }
 
-// GetOkCustomUnit returns a tuple with the CustomUnit field if it's non-nil, zero value otherwise
+// GetCustomUnitOk returns a tuple with the CustomUnit field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinition) GetCustomUnitOk() (string, bool) {
 	if g == nil || g.CustomUnit == nil {
@@ -2408,7 +2811,7 @@ func (g *GraphDefinition) GetIncludeNoMetricHosts() bool {
 	return *g.IncludeNoMetricHosts
 }
 
-// GetOkIncludeNoMetricHosts returns a tuple with the IncludeNoMetricHosts field if it's non-nil, zero value otherwise
+// GetIncludeNoMetricHostsOk returns a tuple with the IncludeNoMetricHosts field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinition) GetIncludeNoMetricHostsOk() (bool, bool) {
 	if g == nil || g.IncludeNoMetricHosts == nil {
@@ -2439,7 +2842,7 @@ func (g *GraphDefinition) GetIncludeUngroupedHosts() bool {
 	return *g.IncludeUngroupedHosts
 }
 
-// GetOkIncludeUngroupedHosts returns a tuple with the IncludeUngroupedHosts field if it's non-nil, zero value otherwise
+// GetIncludeUngroupedHostsOk returns a tuple with the IncludeUngroupedHosts field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinition) GetIncludeUngroupedHostsOk() (bool, bool) {
 	if g == nil || g.IncludeUngroupedHosts == nil {
@@ -2462,17 +2865,48 @@ func (g *GraphDefinition) SetIncludeUngroupedHosts(v bool) {
 	g.IncludeUngroupedHosts = &v
 }
 
+// GetNodeType returns the NodeType field if non-nil, zero value otherwise.
+func (g *GraphDefinition) GetNodeType() string {
+	if g == nil || g.NodeType == nil {
+		return ""
+	}
+	return *g.NodeType
+}
+
+// GetNodeTypeOk returns a tuple with the NodeType field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (g *GraphDefinition) GetNodeTypeOk() (string, bool) {
+	if g == nil || g.NodeType == nil {
+		return "", false
+	}
+	return *g.NodeType, true
+}
+
+// HasNodeType returns a boolean if a field has been set.
+func (g *GraphDefinition) HasNodeType() bool {
+	if g != nil && g.NodeType != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetNodeType allocates a new g.NodeType and returns the pointer to it.
+func (g *GraphDefinition) SetNodeType(v string) {
+	g.NodeType = &v
+}
+
 // GetPrecision returns the Precision field if non-nil, zero value otherwise.
-func (g *GraphDefinition) GetPrecision() string {
+func (g *GraphDefinition) GetPrecision() json.Number {
 	if g == nil || g.Precision == nil {
 		return ""
 	}
 	return *g.Precision
 }
 
-// GetOkPrecision returns a tuple with the Precision field if it's non-nil, zero value otherwise
+// GetPrecisionOk returns a tuple with the Precision field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
-func (g *GraphDefinition) GetPrecisionOk() (string, bool) {
+func (g *GraphDefinition) GetPrecisionOk() (json.Number, bool) {
 	if g == nil || g.Precision == nil {
 		return "", false
 	}
@@ -2489,7 +2923,7 @@ func (g *GraphDefinition) HasPrecision() bool {
 }
 
 // SetPrecision allocates a new g.Precision and returns the pointer to it.
-func (g *GraphDefinition) SetPrecision(v string) {
+func (g *GraphDefinition) SetPrecision(v json.Number) {
 	g.Precision = &v
 }
 
@@ -2501,7 +2935,7 @@ func (g *GraphDefinition) GetStyle() Style {
 	return *g.Style
 }
 
-// GetOkStyle returns a tuple with the Style field if it's non-nil, zero value otherwise
+// GetStyleOk returns a tuple with the Style field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinition) GetStyleOk() (Style, bool) {
 	if g == nil || g.Style == nil {
@@ -2532,7 +2966,7 @@ func (g *GraphDefinition) GetTextAlign() string {
 	return *g.TextAlign
 }
 
-// GetOkTextAlign returns a tuple with the TextAlign field if it's non-nil, zero value otherwise
+// GetTextAlignOk returns a tuple with the TextAlign field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinition) GetTextAlignOk() (string, bool) {
 	if g == nil || g.TextAlign == nil {
@@ -2563,7 +2997,7 @@ func (g *GraphDefinition) GetViz() string {
 	return *g.Viz
 }
 
-// GetOkViz returns a tuple with the Viz field if it's non-nil, zero value otherwise
+// GetVizOk returns a tuple with the Viz field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinition) GetVizOk() (string, bool) {
 	if g == nil || g.Viz == nil {
@@ -2594,7 +3028,7 @@ func (g *GraphDefinitionMarker) GetLabel() string {
 	return *g.Label
 }
 
-// GetOkLabel returns a tuple with the Label field if it's non-nil, zero value otherwise
+// GetLabelOk returns a tuple with the Label field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionMarker) GetLabelOk() (string, bool) {
 	if g == nil || g.Label == nil {
@@ -2625,7 +3059,7 @@ func (g *GraphDefinitionMarker) GetMax() json.Number {
 	return *g.Max
 }
 
-// GetOkMax returns a tuple with the Max field if it's non-nil, zero value otherwise
+// GetMaxOk returns a tuple with the Max field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionMarker) GetMaxOk() (json.Number, bool) {
 	if g == nil || g.Max == nil {
@@ -2656,7 +3090,7 @@ func (g *GraphDefinitionMarker) GetMin() json.Number {
 	return *g.Min
 }
 
-// GetOkMin returns a tuple with the Min field if it's non-nil, zero value otherwise
+// GetMinOk returns a tuple with the Min field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionMarker) GetMinOk() (json.Number, bool) {
 	if g == nil || g.Min == nil {
@@ -2687,7 +3121,7 @@ func (g *GraphDefinitionMarker) GetType() string {
 	return *g.Type
 }
 
-// GetOkType returns a tuple with the Type field if it's non-nil, zero value otherwise
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionMarker) GetTypeOk() (string, bool) {
 	if g == nil || g.Type == nil {
@@ -2718,7 +3152,7 @@ func (g *GraphDefinitionMarker) GetVal() json.Number {
 	return *g.Val
 }
 
-// GetOkVal returns a tuple with the Val field if it's non-nil, zero value otherwise
+// GetValOk returns a tuple with the Val field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionMarker) GetValOk() (json.Number, bool) {
 	if g == nil || g.Val == nil {
@@ -2749,7 +3183,7 @@ func (g *GraphDefinitionMarker) GetValue() string {
 	return *g.Value
 }
 
-// GetOkValue returns a tuple with the Value field if it's non-nil, zero value otherwise
+// GetValueOk returns a tuple with the Value field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionMarker) GetValueOk() (string, bool) {
 	if g == nil || g.Value == nil {
@@ -2780,7 +3214,7 @@ func (g *GraphDefinitionRequest) GetAggregator() string {
 	return *g.Aggregator
 }
 
-// GetOkAggregator returns a tuple with the Aggregator field if it's non-nil, zero value otherwise
+// GetAggregatorOk returns a tuple with the Aggregator field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionRequest) GetAggregatorOk() (string, bool) {
 	if g == nil || g.Aggregator == nil {
@@ -2811,7 +3245,7 @@ func (g *GraphDefinitionRequest) GetChangeType() string {
 	return *g.ChangeType
 }
 
-// GetOkChangeType returns a tuple with the ChangeType field if it's non-nil, zero value otherwise
+// GetChangeTypeOk returns a tuple with the ChangeType field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionRequest) GetChangeTypeOk() (string, bool) {
 	if g == nil || g.ChangeType == nil {
@@ -2842,7 +3276,7 @@ func (g *GraphDefinitionRequest) GetCompareTo() string {
 	return *g.CompareTo
 }
 
-// GetOkCompareTo returns a tuple with the CompareTo field if it's non-nil, zero value otherwise
+// GetCompareToOk returns a tuple with the CompareTo field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionRequest) GetCompareToOk() (string, bool) {
 	if g == nil || g.CompareTo == nil {
@@ -2873,7 +3307,7 @@ func (g *GraphDefinitionRequest) GetExtraCol() string {
 	return *g.ExtraCol
 }
 
-// GetOkExtraCol returns a tuple with the ExtraCol field if it's non-nil, zero value otherwise
+// GetExtraColOk returns a tuple with the ExtraCol field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionRequest) GetExtraColOk() (string, bool) {
 	if g == nil || g.ExtraCol == nil {
@@ -2904,7 +3338,7 @@ func (g *GraphDefinitionRequest) GetIncreaseGood() bool {
 	return *g.IncreaseGood
 }
 
-// GetOkIncreaseGood returns a tuple with the IncreaseGood field if it's non-nil, zero value otherwise
+// GetIncreaseGoodOk returns a tuple with the IncreaseGood field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionRequest) GetIncreaseGoodOk() (bool, bool) {
 	if g == nil || g.IncreaseGood == nil {
@@ -2935,7 +3369,7 @@ func (g *GraphDefinitionRequest) GetOrderBy() string {
 	return *g.OrderBy
 }
 
-// GetOkOrderBy returns a tuple with the OrderBy field if it's non-nil, zero value otherwise
+// GetOrderByOk returns a tuple with the OrderBy field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionRequest) GetOrderByOk() (string, bool) {
 	if g == nil || g.OrderBy == nil {
@@ -2966,7 +3400,7 @@ func (g *GraphDefinitionRequest) GetOrderDirection() string {
 	return *g.OrderDirection
 }
 
-// GetOkOrderDirection returns a tuple with the OrderDirection field if it's non-nil, zero value otherwise
+// GetOrderDirectionOk returns a tuple with the OrderDirection field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionRequest) GetOrderDirectionOk() (string, bool) {
 	if g == nil || g.OrderDirection == nil {
@@ -2997,7 +3431,7 @@ func (g *GraphDefinitionRequest) GetQuery() string {
 	return *g.Query
 }
 
-// GetOkQuery returns a tuple with the Query field if it's non-nil, zero value otherwise
+// GetQueryOk returns a tuple with the Query field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionRequest) GetQueryOk() (string, bool) {
 	if g == nil || g.Query == nil {
@@ -3028,7 +3462,7 @@ func (g *GraphDefinitionRequest) GetStacked() bool {
 	return *g.Stacked
 }
 
-// GetOkStacked returns a tuple with the Stacked field if it's non-nil, zero value otherwise
+// GetStackedOk returns a tuple with the Stacked field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionRequest) GetStackedOk() (bool, bool) {
 	if g == nil || g.Stacked == nil {
@@ -3059,7 +3493,7 @@ func (g *GraphDefinitionRequest) GetStyle() GraphDefinitionRequestStyle {
 	return *g.Style
 }
 
-// GetOkStyle returns a tuple with the Style field if it's non-nil, zero value otherwise
+// GetStyleOk returns a tuple with the Style field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionRequest) GetStyleOk() (GraphDefinitionRequestStyle, bool) {
 	if g == nil || g.Style == nil {
@@ -3090,7 +3524,7 @@ func (g *GraphDefinitionRequest) GetType() string {
 	return *g.Type
 }
 
-// GetOkType returns a tuple with the Type field if it's non-nil, zero value otherwise
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionRequest) GetTypeOk() (string, bool) {
 	if g == nil || g.Type == nil {
@@ -3121,7 +3555,7 @@ func (g *GraphDefinitionRequestStyle) GetPalette() string {
 	return *g.Palette
 }
 
-// GetOkPalette returns a tuple with the Palette field if it's non-nil, zero value otherwise
+// GetPaletteOk returns a tuple with the Palette field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionRequestStyle) GetPaletteOk() (string, bool) {
 	if g == nil || g.Palette == nil {
@@ -3152,7 +3586,7 @@ func (g *GraphDefinitionRequestStyle) GetType() string {
 	return *g.Type
 }
 
-// GetOkType returns a tuple with the Type field if it's non-nil, zero value otherwise
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionRequestStyle) GetTypeOk() (string, bool) {
 	if g == nil || g.Type == nil {
@@ -3183,7 +3617,7 @@ func (g *GraphDefinitionRequestStyle) GetWidth() string {
 	return *g.Width
 }
 
-// GetOkWidth returns a tuple with the Width field if it's non-nil, zero value otherwise
+// GetWidthOk returns a tuple with the Width field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphDefinitionRequestStyle) GetWidthOk() (string, bool) {
 	if g == nil || g.Width == nil {
@@ -3214,7 +3648,7 @@ func (g *GraphEvent) GetQuery() string {
 	return *g.Query
 }
 
-// GetOkQuery returns a tuple with the Query field if it's non-nil, zero value otherwise
+// GetQueryOk returns a tuple with the Query field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (g *GraphEvent) GetQueryOk() (string, bool) {
 	if g == nil || g.Query == nil {
@@ -3237,6 +3671,223 @@ func (g *GraphEvent) SetQuery(v string) {
 	g.Query = &v
 }
 
+// GetLastNoDataTs returns the LastNoDataTs field if non-nil, zero value otherwise.
+func (g *GroupData) GetLastNoDataTs() int {
+	if g == nil || g.LastNoDataTs == nil {
+		return 0
+	}
+	return *g.LastNoDataTs
+}
+
+// GetLastNoDataTsOk returns a tuple with the LastNoDataTs field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (g *GroupData) GetLastNoDataTsOk() (int, bool) {
+	if g == nil || g.LastNoDataTs == nil {
+		return 0, false
+	}
+	return *g.LastNoDataTs, true
+}
+
+// HasLastNoDataTs returns a boolean if a field has been set.
+func (g *GroupData) HasLastNoDataTs() bool {
+	if g != nil && g.LastNoDataTs != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetLastNoDataTs allocates a new g.LastNoDataTs and returns the pointer to it.
+func (g *GroupData) SetLastNoDataTs(v int) {
+	g.LastNoDataTs = &v
+}
+
+// GetLastNotifiedTs returns the LastNotifiedTs field if non-nil, zero value otherwise.
+func (g *GroupData) GetLastNotifiedTs() int {
+	if g == nil || g.LastNotifiedTs == nil {
+		return 0
+	}
+	return *g.LastNotifiedTs
+}
+
+// GetLastNotifiedTsOk returns a tuple with the LastNotifiedTs field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (g *GroupData) GetLastNotifiedTsOk() (int, bool) {
+	if g == nil || g.LastNotifiedTs == nil {
+		return 0, false
+	}
+	return *g.LastNotifiedTs, true
+}
+
+// HasLastNotifiedTs returns a boolean if a field has been set.
+func (g *GroupData) HasLastNotifiedTs() bool {
+	if g != nil && g.LastNotifiedTs != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetLastNotifiedTs allocates a new g.LastNotifiedTs and returns the pointer to it.
+func (g *GroupData) SetLastNotifiedTs(v int) {
+	g.LastNotifiedTs = &v
+}
+
+// GetLastResolvedTs returns the LastResolvedTs field if non-nil, zero value otherwise.
+func (g *GroupData) GetLastResolvedTs() int {
+	if g == nil || g.LastResolvedTs == nil {
+		return 0
+	}
+	return *g.LastResolvedTs
+}
+
+// GetLastResolvedTsOk returns a tuple with the LastResolvedTs field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (g *GroupData) GetLastResolvedTsOk() (int, bool) {
+	if g == nil || g.LastResolvedTs == nil {
+		return 0, false
+	}
+	return *g.LastResolvedTs, true
+}
+
+// HasLastResolvedTs returns a boolean if a field has been set.
+func (g *GroupData) HasLastResolvedTs() bool {
+	if g != nil && g.LastResolvedTs != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetLastResolvedTs allocates a new g.LastResolvedTs and returns the pointer to it.
+func (g *GroupData) SetLastResolvedTs(v int) {
+	g.LastResolvedTs = &v
+}
+
+// GetLastTriggeredTs returns the LastTriggeredTs field if non-nil, zero value otherwise.
+func (g *GroupData) GetLastTriggeredTs() int {
+	if g == nil || g.LastTriggeredTs == nil {
+		return 0
+	}
+	return *g.LastTriggeredTs
+}
+
+// GetLastTriggeredTsOk returns a tuple with the LastTriggeredTs field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (g *GroupData) GetLastTriggeredTsOk() (int, bool) {
+	if g == nil || g.LastTriggeredTs == nil {
+		return 0, false
+	}
+	return *g.LastTriggeredTs, true
+}
+
+// HasLastTriggeredTs returns a boolean if a field has been set.
+func (g *GroupData) HasLastTriggeredTs() bool {
+	if g != nil && g.LastTriggeredTs != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetLastTriggeredTs allocates a new g.LastTriggeredTs and returns the pointer to it.
+func (g *GroupData) SetLastTriggeredTs(v int) {
+	g.LastTriggeredTs = &v
+}
+
+// GetName returns the Name field if non-nil, zero value otherwise.
+func (g *GroupData) GetName() string {
+	if g == nil || g.Name == nil {
+		return ""
+	}
+	return *g.Name
+}
+
+// GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (g *GroupData) GetNameOk() (string, bool) {
+	if g == nil || g.Name == nil {
+		return "", false
+	}
+	return *g.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (g *GroupData) HasName() bool {
+	if g != nil && g.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetName allocates a new g.Name and returns the pointer to it.
+func (g *GroupData) SetName(v string) {
+	g.Name = &v
+}
+
+// GetStatus returns the Status field if non-nil, zero value otherwise.
+func (g *GroupData) GetStatus() string {
+	if g == nil || g.Status == nil {
+		return ""
+	}
+	return *g.Status
+}
+
+// GetStatusOk returns a tuple with the Status field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (g *GroupData) GetStatusOk() (string, bool) {
+	if g == nil || g.Status == nil {
+		return "", false
+	}
+	return *g.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (g *GroupData) HasStatus() bool {
+	if g != nil && g.Status != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus allocates a new g.Status and returns the pointer to it.
+func (g *GroupData) SetStatus(v string) {
+	g.Status = &v
+}
+
+// GetTriggeringValue returns the TriggeringValue field if non-nil, zero value otherwise.
+func (g *GroupData) GetTriggeringValue() TriggeringValue {
+	if g == nil || g.TriggeringValue == nil {
+		return TriggeringValue{}
+	}
+	return *g.TriggeringValue
+}
+
+// GetTriggeringValueOk returns a tuple with the TriggeringValue field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (g *GroupData) GetTriggeringValueOk() (TriggeringValue, bool) {
+	if g == nil || g.TriggeringValue == nil {
+		return TriggeringValue{}, false
+	}
+	return *g.TriggeringValue, true
+}
+
+// HasTriggeringValue returns a boolean if a field has been set.
+func (g *GroupData) HasTriggeringValue() bool {
+	if g != nil && g.TriggeringValue != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTriggeringValue allocates a new g.TriggeringValue and returns the pointer to it.
+func (g *GroupData) SetTriggeringValue(v TriggeringValue) {
+	g.TriggeringValue = &v
+}
+
 // GetEndTime returns the EndTime field if non-nil, zero value otherwise.
 func (h *HostActionMute) GetEndTime() string {
 	if h == nil || h.EndTime == nil {
@@ -3245,7 +3896,7 @@ func (h *HostActionMute) GetEndTime() string {
 	return *h.EndTime
 }
 
-// GetOkEndTime returns a tuple with the EndTime field if it's non-nil, zero value otherwise
+// GetEndTimeOk returns a tuple with the EndTime field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (h *HostActionMute) GetEndTimeOk() (string, bool) {
 	if h == nil || h.EndTime == nil {
@@ -3276,7 +3927,7 @@ func (h *HostActionMute) GetMessage() string {
 	return *h.Message
 }
 
-// GetOkMessage returns a tuple with the Message field if it's non-nil, zero value otherwise
+// GetMessageOk returns a tuple with the Message field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (h *HostActionMute) GetMessageOk() (string, bool) {
 	if h == nil || h.Message == nil {
@@ -3307,7 +3958,7 @@ func (h *HostActionMute) GetOverride() bool {
 	return *h.Override
 }
 
-// GetOkOverride returns a tuple with the Override field if it's non-nil, zero value otherwise
+// GetOverrideOk returns a tuple with the Override field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (h *HostActionMute) GetOverrideOk() (bool, bool) {
 	if h == nil || h.Override == nil {
@@ -3338,7 +3989,7 @@ func (i *IntegrationAWSAccount) GetAccountID() string {
 	return *i.AccountID
 }
 
-// GetOkAccountID returns a tuple with the AccountID field if it's non-nil, zero value otherwise
+// GetAccountIDOk returns a tuple with the AccountID field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (i *IntegrationAWSAccount) GetAccountIDOk() (string, bool) {
 	if i == nil || i.AccountID == nil {
@@ -3369,7 +4020,7 @@ func (i *IntegrationAWSAccount) GetRoleName() string {
 	return *i.RoleName
 }
 
-// GetOkRoleName returns a tuple with the RoleName field if it's non-nil, zero value otherwise
+// GetRoleNameOk returns a tuple with the RoleName field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (i *IntegrationAWSAccount) GetRoleNameOk() (string, bool) {
 	if i == nil || i.RoleName == nil {
@@ -3400,7 +4051,7 @@ func (i *IntegrationAWSAccountDeleteRequest) GetAccountID() string {
 	return *i.AccountID
 }
 
-// GetOkAccountID returns a tuple with the AccountID field if it's non-nil, zero value otherwise
+// GetAccountIDOk returns a tuple with the AccountID field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (i *IntegrationAWSAccountDeleteRequest) GetAccountIDOk() (string, bool) {
 	if i == nil || i.AccountID == nil {
@@ -3431,7 +4082,7 @@ func (i *IntegrationAWSAccountDeleteRequest) GetRoleName() string {
 	return *i.RoleName
 }
 
-// GetOkRoleName returns a tuple with the RoleName field if it's non-nil, zero value otherwise
+// GetRoleNameOk returns a tuple with the RoleName field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (i *IntegrationAWSAccountDeleteRequest) GetRoleNameOk() (string, bool) {
 	if i == nil || i.RoleName == nil {
@@ -3454,6 +4105,595 @@ func (i *IntegrationAWSAccountDeleteRequest) SetRoleName(v string) {
 	i.RoleName = &v
 }
 
+// GetClientEmail returns the ClientEmail field if non-nil, zero value otherwise.
+func (i *IntegrationGCP) GetClientEmail() string {
+	if i == nil || i.ClientEmail == nil {
+		return ""
+	}
+	return *i.ClientEmail
+}
+
+// GetClientEmailOk returns a tuple with the ClientEmail field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCP) GetClientEmailOk() (string, bool) {
+	if i == nil || i.ClientEmail == nil {
+		return "", false
+	}
+	return *i.ClientEmail, true
+}
+
+// HasClientEmail returns a boolean if a field has been set.
+func (i *IntegrationGCP) HasClientEmail() bool {
+	if i != nil && i.ClientEmail != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetClientEmail allocates a new i.ClientEmail and returns the pointer to it.
+func (i *IntegrationGCP) SetClientEmail(v string) {
+	i.ClientEmail = &v
+}
+
+// GetHostFilters returns the HostFilters field if non-nil, zero value otherwise.
+func (i *IntegrationGCP) GetHostFilters() string {
+	if i == nil || i.HostFilters == nil {
+		return ""
+	}
+	return *i.HostFilters
+}
+
+// GetHostFiltersOk returns a tuple with the HostFilters field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCP) GetHostFiltersOk() (string, bool) {
+	if i == nil || i.HostFilters == nil {
+		return "", false
+	}
+	return *i.HostFilters, true
+}
+
+// HasHostFilters returns a boolean if a field has been set.
+func (i *IntegrationGCP) HasHostFilters() bool {
+	if i != nil && i.HostFilters != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetHostFilters allocates a new i.HostFilters and returns the pointer to it.
+func (i *IntegrationGCP) SetHostFilters(v string) {
+	i.HostFilters = &v
+}
+
+// GetProjectID returns the ProjectID field if non-nil, zero value otherwise.
+func (i *IntegrationGCP) GetProjectID() string {
+	if i == nil || i.ProjectID == nil {
+		return ""
+	}
+	return *i.ProjectID
+}
+
+// GetProjectIDOk returns a tuple with the ProjectID field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCP) GetProjectIDOk() (string, bool) {
+	if i == nil || i.ProjectID == nil {
+		return "", false
+	}
+	return *i.ProjectID, true
+}
+
+// HasProjectID returns a boolean if a field has been set.
+func (i *IntegrationGCP) HasProjectID() bool {
+	if i != nil && i.ProjectID != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetProjectID allocates a new i.ProjectID and returns the pointer to it.
+func (i *IntegrationGCP) SetProjectID(v string) {
+	i.ProjectID = &v
+}
+
+// GetAuthProviderX509CertURL returns the AuthProviderX509CertURL field if non-nil, zero value otherwise.
+func (i *IntegrationGCPCreateRequest) GetAuthProviderX509CertURL() string {
+	if i == nil || i.AuthProviderX509CertURL == nil {
+		return ""
+	}
+	return *i.AuthProviderX509CertURL
+}
+
+// GetAuthProviderX509CertURLOk returns a tuple with the AuthProviderX509CertURL field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPCreateRequest) GetAuthProviderX509CertURLOk() (string, bool) {
+	if i == nil || i.AuthProviderX509CertURL == nil {
+		return "", false
+	}
+	return *i.AuthProviderX509CertURL, true
+}
+
+// HasAuthProviderX509CertURL returns a boolean if a field has been set.
+func (i *IntegrationGCPCreateRequest) HasAuthProviderX509CertURL() bool {
+	if i != nil && i.AuthProviderX509CertURL != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAuthProviderX509CertURL allocates a new i.AuthProviderX509CertURL and returns the pointer to it.
+func (i *IntegrationGCPCreateRequest) SetAuthProviderX509CertURL(v string) {
+	i.AuthProviderX509CertURL = &v
+}
+
+// GetAuthURI returns the AuthURI field if non-nil, zero value otherwise.
+func (i *IntegrationGCPCreateRequest) GetAuthURI() string {
+	if i == nil || i.AuthURI == nil {
+		return ""
+	}
+	return *i.AuthURI
+}
+
+// GetAuthURIOk returns a tuple with the AuthURI field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPCreateRequest) GetAuthURIOk() (string, bool) {
+	if i == nil || i.AuthURI == nil {
+		return "", false
+	}
+	return *i.AuthURI, true
+}
+
+// HasAuthURI returns a boolean if a field has been set.
+func (i *IntegrationGCPCreateRequest) HasAuthURI() bool {
+	if i != nil && i.AuthURI != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAuthURI allocates a new i.AuthURI and returns the pointer to it.
+func (i *IntegrationGCPCreateRequest) SetAuthURI(v string) {
+	i.AuthURI = &v
+}
+
+// GetClientEmail returns the ClientEmail field if non-nil, zero value otherwise.
+func (i *IntegrationGCPCreateRequest) GetClientEmail() string {
+	if i == nil || i.ClientEmail == nil {
+		return ""
+	}
+	return *i.ClientEmail
+}
+
+// GetClientEmailOk returns a tuple with the ClientEmail field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPCreateRequest) GetClientEmailOk() (string, bool) {
+	if i == nil || i.ClientEmail == nil {
+		return "", false
+	}
+	return *i.ClientEmail, true
+}
+
+// HasClientEmail returns a boolean if a field has been set.
+func (i *IntegrationGCPCreateRequest) HasClientEmail() bool {
+	if i != nil && i.ClientEmail != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetClientEmail allocates a new i.ClientEmail and returns the pointer to it.
+func (i *IntegrationGCPCreateRequest) SetClientEmail(v string) {
+	i.ClientEmail = &v
+}
+
+// GetClientID returns the ClientID field if non-nil, zero value otherwise.
+func (i *IntegrationGCPCreateRequest) GetClientID() string {
+	if i == nil || i.ClientID == nil {
+		return ""
+	}
+	return *i.ClientID
+}
+
+// GetClientIDOk returns a tuple with the ClientID field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPCreateRequest) GetClientIDOk() (string, bool) {
+	if i == nil || i.ClientID == nil {
+		return "", false
+	}
+	return *i.ClientID, true
+}
+
+// HasClientID returns a boolean if a field has been set.
+func (i *IntegrationGCPCreateRequest) HasClientID() bool {
+	if i != nil && i.ClientID != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetClientID allocates a new i.ClientID and returns the pointer to it.
+func (i *IntegrationGCPCreateRequest) SetClientID(v string) {
+	i.ClientID = &v
+}
+
+// GetClientX509CertURL returns the ClientX509CertURL field if non-nil, zero value otherwise.
+func (i *IntegrationGCPCreateRequest) GetClientX509CertURL() string {
+	if i == nil || i.ClientX509CertURL == nil {
+		return ""
+	}
+	return *i.ClientX509CertURL
+}
+
+// GetClientX509CertURLOk returns a tuple with the ClientX509CertURL field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPCreateRequest) GetClientX509CertURLOk() (string, bool) {
+	if i == nil || i.ClientX509CertURL == nil {
+		return "", false
+	}
+	return *i.ClientX509CertURL, true
+}
+
+// HasClientX509CertURL returns a boolean if a field has been set.
+func (i *IntegrationGCPCreateRequest) HasClientX509CertURL() bool {
+	if i != nil && i.ClientX509CertURL != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetClientX509CertURL allocates a new i.ClientX509CertURL and returns the pointer to it.
+func (i *IntegrationGCPCreateRequest) SetClientX509CertURL(v string) {
+	i.ClientX509CertURL = &v
+}
+
+// GetHostFilters returns the HostFilters field if non-nil, zero value otherwise.
+func (i *IntegrationGCPCreateRequest) GetHostFilters() string {
+	if i == nil || i.HostFilters == nil {
+		return ""
+	}
+	return *i.HostFilters
+}
+
+// GetHostFiltersOk returns a tuple with the HostFilters field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPCreateRequest) GetHostFiltersOk() (string, bool) {
+	if i == nil || i.HostFilters == nil {
+		return "", false
+	}
+	return *i.HostFilters, true
+}
+
+// HasHostFilters returns a boolean if a field has been set.
+func (i *IntegrationGCPCreateRequest) HasHostFilters() bool {
+	if i != nil && i.HostFilters != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetHostFilters allocates a new i.HostFilters and returns the pointer to it.
+func (i *IntegrationGCPCreateRequest) SetHostFilters(v string) {
+	i.HostFilters = &v
+}
+
+// GetPrivateKey returns the PrivateKey field if non-nil, zero value otherwise.
+func (i *IntegrationGCPCreateRequest) GetPrivateKey() string {
+	if i == nil || i.PrivateKey == nil {
+		return ""
+	}
+	return *i.PrivateKey
+}
+
+// GetPrivateKeyOk returns a tuple with the PrivateKey field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPCreateRequest) GetPrivateKeyOk() (string, bool) {
+	if i == nil || i.PrivateKey == nil {
+		return "", false
+	}
+	return *i.PrivateKey, true
+}
+
+// HasPrivateKey returns a boolean if a field has been set.
+func (i *IntegrationGCPCreateRequest) HasPrivateKey() bool {
+	if i != nil && i.PrivateKey != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetPrivateKey allocates a new i.PrivateKey and returns the pointer to it.
+func (i *IntegrationGCPCreateRequest) SetPrivateKey(v string) {
+	i.PrivateKey = &v
+}
+
+// GetPrivateKeyID returns the PrivateKeyID field if non-nil, zero value otherwise.
+func (i *IntegrationGCPCreateRequest) GetPrivateKeyID() string {
+	if i == nil || i.PrivateKeyID == nil {
+		return ""
+	}
+	return *i.PrivateKeyID
+}
+
+// GetPrivateKeyIDOk returns a tuple with the PrivateKeyID field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPCreateRequest) GetPrivateKeyIDOk() (string, bool) {
+	if i == nil || i.PrivateKeyID == nil {
+		return "", false
+	}
+	return *i.PrivateKeyID, true
+}
+
+// HasPrivateKeyID returns a boolean if a field has been set.
+func (i *IntegrationGCPCreateRequest) HasPrivateKeyID() bool {
+	if i != nil && i.PrivateKeyID != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetPrivateKeyID allocates a new i.PrivateKeyID and returns the pointer to it.
+func (i *IntegrationGCPCreateRequest) SetPrivateKeyID(v string) {
+	i.PrivateKeyID = &v
+}
+
+// GetProjectID returns the ProjectID field if non-nil, zero value otherwise.
+func (i *IntegrationGCPCreateRequest) GetProjectID() string {
+	if i == nil || i.ProjectID == nil {
+		return ""
+	}
+	return *i.ProjectID
+}
+
+// GetProjectIDOk returns a tuple with the ProjectID field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPCreateRequest) GetProjectIDOk() (string, bool) {
+	if i == nil || i.ProjectID == nil {
+		return "", false
+	}
+	return *i.ProjectID, true
+}
+
+// HasProjectID returns a boolean if a field has been set.
+func (i *IntegrationGCPCreateRequest) HasProjectID() bool {
+	if i != nil && i.ProjectID != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetProjectID allocates a new i.ProjectID and returns the pointer to it.
+func (i *IntegrationGCPCreateRequest) SetProjectID(v string) {
+	i.ProjectID = &v
+}
+
+// GetTokenURI returns the TokenURI field if non-nil, zero value otherwise.
+func (i *IntegrationGCPCreateRequest) GetTokenURI() string {
+	if i == nil || i.TokenURI == nil {
+		return ""
+	}
+	return *i.TokenURI
+}
+
+// GetTokenURIOk returns a tuple with the TokenURI field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPCreateRequest) GetTokenURIOk() (string, bool) {
+	if i == nil || i.TokenURI == nil {
+		return "", false
+	}
+	return *i.TokenURI, true
+}
+
+// HasTokenURI returns a boolean if a field has been set.
+func (i *IntegrationGCPCreateRequest) HasTokenURI() bool {
+	if i != nil && i.TokenURI != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTokenURI allocates a new i.TokenURI and returns the pointer to it.
+func (i *IntegrationGCPCreateRequest) SetTokenURI(v string) {
+	i.TokenURI = &v
+}
+
+// GetType returns the Type field if non-nil, zero value otherwise.
+func (i *IntegrationGCPCreateRequest) GetType() string {
+	if i == nil || i.Type == nil {
+		return ""
+	}
+	return *i.Type
+}
+
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPCreateRequest) GetTypeOk() (string, bool) {
+	if i == nil || i.Type == nil {
+		return "", false
+	}
+	return *i.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (i *IntegrationGCPCreateRequest) HasType() bool {
+	if i != nil && i.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetType allocates a new i.Type and returns the pointer to it.
+func (i *IntegrationGCPCreateRequest) SetType(v string) {
+	i.Type = &v
+}
+
+// GetClientEmail returns the ClientEmail field if non-nil, zero value otherwise.
+func (i *IntegrationGCPDeleteRequest) GetClientEmail() string {
+	if i == nil || i.ClientEmail == nil {
+		return ""
+	}
+	return *i.ClientEmail
+}
+
+// GetClientEmailOk returns a tuple with the ClientEmail field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPDeleteRequest) GetClientEmailOk() (string, bool) {
+	if i == nil || i.ClientEmail == nil {
+		return "", false
+	}
+	return *i.ClientEmail, true
+}
+
+// HasClientEmail returns a boolean if a field has been set.
+func (i *IntegrationGCPDeleteRequest) HasClientEmail() bool {
+	if i != nil && i.ClientEmail != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetClientEmail allocates a new i.ClientEmail and returns the pointer to it.
+func (i *IntegrationGCPDeleteRequest) SetClientEmail(v string) {
+	i.ClientEmail = &v
+}
+
+// GetProjectID returns the ProjectID field if non-nil, zero value otherwise.
+func (i *IntegrationGCPDeleteRequest) GetProjectID() string {
+	if i == nil || i.ProjectID == nil {
+		return ""
+	}
+	return *i.ProjectID
+}
+
+// GetProjectIDOk returns a tuple with the ProjectID field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPDeleteRequest) GetProjectIDOk() (string, bool) {
+	if i == nil || i.ProjectID == nil {
+		return "", false
+	}
+	return *i.ProjectID, true
+}
+
+// HasProjectID returns a boolean if a field has been set.
+func (i *IntegrationGCPDeleteRequest) HasProjectID() bool {
+	if i != nil && i.ProjectID != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetProjectID allocates a new i.ProjectID and returns the pointer to it.
+func (i *IntegrationGCPDeleteRequest) SetProjectID(v string) {
+	i.ProjectID = &v
+}
+
+// GetClientEmail returns the ClientEmail field if non-nil, zero value otherwise.
+func (i *IntegrationGCPUpdateRequest) GetClientEmail() string {
+	if i == nil || i.ClientEmail == nil {
+		return ""
+	}
+	return *i.ClientEmail
+}
+
+// GetClientEmailOk returns a tuple with the ClientEmail field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPUpdateRequest) GetClientEmailOk() (string, bool) {
+	if i == nil || i.ClientEmail == nil {
+		return "", false
+	}
+	return *i.ClientEmail, true
+}
+
+// HasClientEmail returns a boolean if a field has been set.
+func (i *IntegrationGCPUpdateRequest) HasClientEmail() bool {
+	if i != nil && i.ClientEmail != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetClientEmail allocates a new i.ClientEmail and returns the pointer to it.
+func (i *IntegrationGCPUpdateRequest) SetClientEmail(v string) {
+	i.ClientEmail = &v
+}
+
+// GetHostFilters returns the HostFilters field if non-nil, zero value otherwise.
+func (i *IntegrationGCPUpdateRequest) GetHostFilters() string {
+	if i == nil || i.HostFilters == nil {
+		return ""
+	}
+	return *i.HostFilters
+}
+
+// GetHostFiltersOk returns a tuple with the HostFilters field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPUpdateRequest) GetHostFiltersOk() (string, bool) {
+	if i == nil || i.HostFilters == nil {
+		return "", false
+	}
+	return *i.HostFilters, true
+}
+
+// HasHostFilters returns a boolean if a field has been set.
+func (i *IntegrationGCPUpdateRequest) HasHostFilters() bool {
+	if i != nil && i.HostFilters != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetHostFilters allocates a new i.HostFilters and returns the pointer to it.
+func (i *IntegrationGCPUpdateRequest) SetHostFilters(v string) {
+	i.HostFilters = &v
+}
+
+// GetProjectID returns the ProjectID field if non-nil, zero value otherwise.
+func (i *IntegrationGCPUpdateRequest) GetProjectID() string {
+	if i == nil || i.ProjectID == nil {
+		return ""
+	}
+	return *i.ProjectID
+}
+
+// GetProjectIDOk returns a tuple with the ProjectID field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPUpdateRequest) GetProjectIDOk() (string, bool) {
+	if i == nil || i.ProjectID == nil {
+		return "", false
+	}
+	return *i.ProjectID, true
+}
+
+// HasProjectID returns a boolean if a field has been set.
+func (i *IntegrationGCPUpdateRequest) HasProjectID() bool {
+	if i != nil && i.ProjectID != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetProjectID allocates a new i.ProjectID and returns the pointer to it.
+func (i *IntegrationGCPUpdateRequest) SetProjectID(v string) {
+	i.ProjectID = &v
+}
+
 // GetAPIToken returns the APIToken field if non-nil, zero value otherwise.
 func (i *integrationPD) GetAPIToken() string {
 	if i == nil || i.APIToken == nil {
@@ -3462,7 +4702,7 @@ func (i *integrationPD) GetAPIToken() string {
 	return *i.APIToken
 }
 
-// GetOkAPIToken returns a tuple with the APIToken field if it's non-nil, zero value otherwise
+// GetAPITokenOk returns a tuple with the APIToken field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (i *integrationPD) GetAPITokenOk() (string, bool) {
 	if i == nil || i.APIToken == nil {
@@ -3493,7 +4733,7 @@ func (i *integrationPD) GetSubdomain() string {
 	return *i.Subdomain
 }
 
-// GetOkSubdomain returns a tuple with the Subdomain field if it's non-nil, zero value otherwise
+// GetSubdomainOk returns a tuple with the Subdomain field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (i *integrationPD) GetSubdomainOk() (string, bool) {
 	if i == nil || i.Subdomain == nil {
@@ -3524,7 +4764,7 @@ func (i *IntegrationPDRequest) GetAPIToken() string {
 	return *i.APIToken
 }
 
-// GetOkAPIToken returns a tuple with the APIToken field if it's non-nil, zero value otherwise
+// GetAPITokenOk returns a tuple with the APIToken field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (i *IntegrationPDRequest) GetAPITokenOk() (string, bool) {
 	if i == nil || i.APIToken == nil {
@@ -3555,7 +4795,7 @@ func (i *IntegrationPDRequest) GetRunCheck() bool {
 	return *i.RunCheck
 }
 
-// GetOkRunCheck returns a tuple with the RunCheck field if it's non-nil, zero value otherwise
+// GetRunCheckOk returns a tuple with the RunCheck field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (i *IntegrationPDRequest) GetRunCheckOk() (bool, bool) {
 	if i == nil || i.RunCheck == nil {
@@ -3586,7 +4826,7 @@ func (i *IntegrationPDRequest) GetSubdomain() string {
 	return *i.Subdomain
 }
 
-// GetOkSubdomain returns a tuple with the Subdomain field if it's non-nil, zero value otherwise
+// GetSubdomainOk returns a tuple with the Subdomain field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (i *IntegrationPDRequest) GetSubdomainOk() (string, bool) {
 	if i == nil || i.Subdomain == nil {
@@ -3617,7 +4857,7 @@ func (i *IntegrationSlackRequest) GetRunCheck() bool {
 	return *i.RunCheck
 }
 
-// GetOkRunCheck returns a tuple with the RunCheck field if it's non-nil, zero value otherwise
+// GetRunCheckOk returns a tuple with the RunCheck field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (i *IntegrationSlackRequest) GetRunCheckOk() (bool, bool) {
 	if i == nil || i.RunCheck == nil {
@@ -3648,7 +4888,7 @@ func (m *Metric) GetHost() string {
 	return *m.Host
 }
 
-// GetOkHost returns a tuple with the Host field if it's non-nil, zero value otherwise
+// GetHostOk returns a tuple with the Host field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *Metric) GetHostOk() (string, bool) {
 	if m == nil || m.Host == nil {
@@ -3679,7 +4919,7 @@ func (m *Metric) GetMetric() string {
 	return *m.Metric
 }
 
-// GetOkMetric returns a tuple with the Metric field if it's non-nil, zero value otherwise
+// GetMetricOk returns a tuple with the Metric field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *Metric) GetMetricOk() (string, bool) {
 	if m == nil || m.Metric == nil {
@@ -3710,7 +4950,7 @@ func (m *Metric) GetType() string {
 	return *m.Type
 }
 
-// GetOkType returns a tuple with the Type field if it's non-nil, zero value otherwise
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *Metric) GetTypeOk() (string, bool) {
 	if m == nil || m.Type == nil {
@@ -3741,7 +4981,7 @@ func (m *Metric) GetUnit() string {
 	return *m.Unit
 }
 
-// GetOkUnit returns a tuple with the Unit field if it's non-nil, zero value otherwise
+// GetUnitOk returns a tuple with the Unit field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *Metric) GetUnitOk() (string, bool) {
 	if m == nil || m.Unit == nil {
@@ -3772,7 +5012,7 @@ func (m *MetricMetadata) GetDescription() string {
 	return *m.Description
 }
 
-// GetOkDescription returns a tuple with the Description field if it's non-nil, zero value otherwise
+// GetDescriptionOk returns a tuple with the Description field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *MetricMetadata) GetDescriptionOk() (string, bool) {
 	if m == nil || m.Description == nil {
@@ -3803,7 +5043,7 @@ func (m *MetricMetadata) GetPerUnit() string {
 	return *m.PerUnit
 }
 
-// GetOkPerUnit returns a tuple with the PerUnit field if it's non-nil, zero value otherwise
+// GetPerUnitOk returns a tuple with the PerUnit field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *MetricMetadata) GetPerUnitOk() (string, bool) {
 	if m == nil || m.PerUnit == nil {
@@ -3834,7 +5074,7 @@ func (m *MetricMetadata) GetShortName() string {
 	return *m.ShortName
 }
 
-// GetOkShortName returns a tuple with the ShortName field if it's non-nil, zero value otherwise
+// GetShortNameOk returns a tuple with the ShortName field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *MetricMetadata) GetShortNameOk() (string, bool) {
 	if m == nil || m.ShortName == nil {
@@ -3865,7 +5105,7 @@ func (m *MetricMetadata) GetStatsdInterval() int {
 	return *m.StatsdInterval
 }
 
-// GetOkStatsdInterval returns a tuple with the StatsdInterval field if it's non-nil, zero value otherwise
+// GetStatsdIntervalOk returns a tuple with the StatsdInterval field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *MetricMetadata) GetStatsdIntervalOk() (int, bool) {
 	if m == nil || m.StatsdInterval == nil {
@@ -3896,7 +5136,7 @@ func (m *MetricMetadata) GetType() string {
 	return *m.Type
 }
 
-// GetOkType returns a tuple with the Type field if it's non-nil, zero value otherwise
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *MetricMetadata) GetTypeOk() (string, bool) {
 	if m == nil || m.Type == nil {
@@ -3927,7 +5167,7 @@ func (m *MetricMetadata) GetUnit() string {
 	return *m.Unit
 }
 
-// GetOkUnit returns a tuple with the Unit field if it's non-nil, zero value otherwise
+// GetUnitOk returns a tuple with the Unit field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *MetricMetadata) GetUnitOk() (string, bool) {
 	if m == nil || m.Unit == nil {
@@ -3958,7 +5198,7 @@ func (m *Monitor) GetCreator() Creator {
 	return *m.Creator
 }
 
-// GetOkCreator returns a tuple with the Creator field if it's non-nil, zero value otherwise
+// GetCreatorOk returns a tuple with the Creator field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *Monitor) GetCreatorOk() (Creator, bool) {
 	if m == nil || m.Creator == nil {
@@ -3989,7 +5229,7 @@ func (m *Monitor) GetId() int {
 	return *m.Id
 }
 
-// GetOkId returns a tuple with the Id field if it's non-nil, zero value otherwise
+// GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *Monitor) GetIdOk() (int, bool) {
 	if m == nil || m.Id == nil {
@@ -4020,7 +5260,7 @@ func (m *Monitor) GetMessage() string {
 	return *m.Message
 }
 
-// GetOkMessage returns a tuple with the Message field if it's non-nil, zero value otherwise
+// GetMessageOk returns a tuple with the Message field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *Monitor) GetMessageOk() (string, bool) {
 	if m == nil || m.Message == nil {
@@ -4051,7 +5291,7 @@ func (m *Monitor) GetName() string {
 	return *m.Name
 }
 
-// GetOkName returns a tuple with the Name field if it's non-nil, zero value otherwise
+// GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *Monitor) GetNameOk() (string, bool) {
 	if m == nil || m.Name == nil {
@@ -4082,7 +5322,7 @@ func (m *Monitor) GetOptions() Options {
 	return *m.Options
 }
 
-// GetOkOptions returns a tuple with the Options field if it's non-nil, zero value otherwise
+// GetOptionsOk returns a tuple with the Options field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *Monitor) GetOptionsOk() (Options, bool) {
 	if m == nil || m.Options == nil {
@@ -4113,7 +5353,7 @@ func (m *Monitor) GetOverallState() string {
 	return *m.OverallState
 }
 
-// GetOkOverallState returns a tuple with the OverallState field if it's non-nil, zero value otherwise
+// GetOverallStateOk returns a tuple with the OverallState field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *Monitor) GetOverallStateOk() (string, bool) {
 	if m == nil || m.OverallState == nil {
@@ -4136,6 +5376,37 @@ func (m *Monitor) SetOverallState(v string) {
 	m.OverallState = &v
 }
 
+// GetOverallStateModified returns the OverallStateModified field if non-nil, zero value otherwise.
+func (m *Monitor) GetOverallStateModified() string {
+	if m == nil || m.OverallStateModified == nil {
+		return ""
+	}
+	return *m.OverallStateModified
+}
+
+// GetOverallStateModifiedOk returns a tuple with the OverallStateModified field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (m *Monitor) GetOverallStateModifiedOk() (string, bool) {
+	if m == nil || m.OverallStateModified == nil {
+		return "", false
+	}
+	return *m.OverallStateModified, true
+}
+
+// HasOverallStateModified returns a boolean if a field has been set.
+func (m *Monitor) HasOverallStateModified() bool {
+	if m != nil && m.OverallStateModified != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetOverallStateModified allocates a new m.OverallStateModified and returns the pointer to it.
+func (m *Monitor) SetOverallStateModified(v string) {
+	m.OverallStateModified = &v
+}
+
 // GetQuery returns the Query field if non-nil, zero value otherwise.
 func (m *Monitor) GetQuery() string {
 	if m == nil || m.Query == nil {
@@ -4144,7 +5415,7 @@ func (m *Monitor) GetQuery() string {
 	return *m.Query
 }
 
-// GetOkQuery returns a tuple with the Query field if it's non-nil, zero value otherwise
+// GetQueryOk returns a tuple with the Query field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *Monitor) GetQueryOk() (string, bool) {
 	if m == nil || m.Query == nil {
@@ -4175,7 +5446,7 @@ func (m *Monitor) GetType() string {
 	return *m.Type
 }
 
-// GetOkType returns a tuple with the Type field if it's non-nil, zero value otherwise
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (m *Monitor) GetTypeOk() (string, bool) {
 	if m == nil || m.Type == nil {
@@ -4206,7 +5477,7 @@ func (o *Options) GetEscalationMessage() string {
 	return *o.EscalationMessage
 }
 
-// GetOkEscalationMessage returns a tuple with the EscalationMessage field if it's non-nil, zero value otherwise
+// GetEscalationMessageOk returns a tuple with the EscalationMessage field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (o *Options) GetEscalationMessageOk() (string, bool) {
 	if o == nil || o.EscalationMessage == nil {
@@ -4237,7 +5508,7 @@ func (o *Options) GetEvaluationDelay() int {
 	return *o.EvaluationDelay
 }
 
-// GetOkEvaluationDelay returns a tuple with the EvaluationDelay field if it's non-nil, zero value otherwise
+// GetEvaluationDelayOk returns a tuple with the EvaluationDelay field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (o *Options) GetEvaluationDelayOk() (int, bool) {
 	if o == nil || o.EvaluationDelay == nil {
@@ -4268,7 +5539,7 @@ func (o *Options) GetIncludeTags() bool {
 	return *o.IncludeTags
 }
 
-// GetOkIncludeTags returns a tuple with the IncludeTags field if it's non-nil, zero value otherwise
+// GetIncludeTagsOk returns a tuple with the IncludeTags field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (o *Options) GetIncludeTagsOk() (bool, bool) {
 	if o == nil || o.IncludeTags == nil {
@@ -4299,7 +5570,7 @@ func (o *Options) GetLocked() bool {
 	return *o.Locked
 }
 
-// GetOkLocked returns a tuple with the Locked field if it's non-nil, zero value otherwise
+// GetLockedOk returns a tuple with the Locked field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (o *Options) GetLockedOk() (bool, bool) {
 	if o == nil || o.Locked == nil {
@@ -4330,7 +5601,7 @@ func (o *Options) GetNewHostDelay() int {
 	return *o.NewHostDelay
 }
 
-// GetOkNewHostDelay returns a tuple with the NewHostDelay field if it's non-nil, zero value otherwise
+// GetNewHostDelayOk returns a tuple with the NewHostDelay field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (o *Options) GetNewHostDelayOk() (int, bool) {
 	if o == nil || o.NewHostDelay == nil {
@@ -4361,7 +5632,7 @@ func (o *Options) GetNotifyAudit() bool {
 	return *o.NotifyAudit
 }
 
-// GetOkNotifyAudit returns a tuple with the NotifyAudit field if it's non-nil, zero value otherwise
+// GetNotifyAuditOk returns a tuple with the NotifyAudit field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (o *Options) GetNotifyAuditOk() (bool, bool) {
 	if o == nil || o.NotifyAudit == nil {
@@ -4392,7 +5663,7 @@ func (o *Options) GetNotifyNoData() bool {
 	return *o.NotifyNoData
 }
 
-// GetOkNotifyNoData returns a tuple with the NotifyNoData field if it's non-nil, zero value otherwise
+// GetNotifyNoDataOk returns a tuple with the NotifyNoData field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (o *Options) GetNotifyNoDataOk() (bool, bool) {
 	if o == nil || o.NotifyNoData == nil {
@@ -4423,7 +5694,7 @@ func (o *Options) GetRenotifyInterval() int {
 	return *o.RenotifyInterval
 }
 
-// GetOkRenotifyInterval returns a tuple with the RenotifyInterval field if it's non-nil, zero value otherwise
+// GetRenotifyIntervalOk returns a tuple with the RenotifyInterval field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (o *Options) GetRenotifyIntervalOk() (int, bool) {
 	if o == nil || o.RenotifyInterval == nil {
@@ -4454,7 +5725,7 @@ func (o *Options) GetRequireFullWindow() bool {
 	return *o.RequireFullWindow
 }
 
-// GetOkRequireFullWindow returns a tuple with the RequireFullWindow field if it's non-nil, zero value otherwise
+// GetRequireFullWindowOk returns a tuple with the RequireFullWindow field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (o *Options) GetRequireFullWindowOk() (bool, bool) {
 	if o == nil || o.RequireFullWindow == nil {
@@ -4485,7 +5756,7 @@ func (o *Options) GetThresholds() ThresholdCount {
 	return *o.Thresholds
 }
 
-// GetOkThresholds returns a tuple with the Thresholds field if it's non-nil, zero value otherwise
+// GetThresholdsOk returns a tuple with the Thresholds field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (o *Options) GetThresholdsOk() (ThresholdCount, bool) {
 	if o == nil || o.Thresholds == nil {
@@ -4516,7 +5787,7 @@ func (o *Options) GetTimeoutH() int {
 	return *o.TimeoutH
 }
 
-// GetOkTimeoutH returns a tuple with the TimeoutH field if it's non-nil, zero value otherwise
+// GetTimeoutHOk returns a tuple with the TimeoutH field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (o *Options) GetTimeoutHOk() (int, bool) {
 	if o == nil || o.TimeoutH == nil {
@@ -4547,7 +5818,7 @@ func (p *Params) GetCount() string {
 	return *p.Count
 }
 
-// GetOkCount returns a tuple with the Count field if it's non-nil, zero value otherwise
+// GetCountOk returns a tuple with the Count field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (p *Params) GetCountOk() (string, bool) {
 	if p == nil || p.Count == nil {
@@ -4578,7 +5849,7 @@ func (p *Params) GetSort() string {
 	return *p.Sort
 }
 
-// GetOkSort returns a tuple with the Sort field if it's non-nil, zero value otherwise
+// GetSortOk returns a tuple with the Sort field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (p *Params) GetSortOk() (string, bool) {
 	if p == nil || p.Sort == nil {
@@ -4609,7 +5880,7 @@ func (p *Params) GetStart() string {
 	return *p.Start
 }
 
-// GetOkStart returns a tuple with the Start field if it's non-nil, zero value otherwise
+// GetStartOk returns a tuple with the Start field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (p *Params) GetStartOk() (string, bool) {
 	if p == nil || p.Start == nil {
@@ -4640,7 +5911,7 @@ func (p *Params) GetText() string {
 	return *p.Text
 }
 
-// GetOkText returns a tuple with the Text field if it's non-nil, zero value otherwise
+// GetTextOk returns a tuple with the Text field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (p *Params) GetTextOk() (string, bool) {
 	if p == nil || p.Text == nil {
@@ -4671,7 +5942,7 @@ func (r *Recurrence) GetPeriod() int {
 	return *r.Period
 }
 
-// GetOkPeriod returns a tuple with the Period field if it's non-nil, zero value otherwise
+// GetPeriodOk returns a tuple with the Period field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (r *Recurrence) GetPeriodOk() (int, bool) {
 	if r == nil || r.Period == nil {
@@ -4702,7 +5973,7 @@ func (r *Recurrence) GetType() string {
 	return *r.Type
 }
 
-// GetOkType returns a tuple with the Type field if it's non-nil, zero value otherwise
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (r *Recurrence) GetTypeOk() (string, bool) {
 	if r == nil || r.Type == nil {
@@ -4733,7 +6004,7 @@ func (r *Recurrence) GetUntilDate() int {
 	return *r.UntilDate
 }
 
-// GetOkUntilDate returns a tuple with the UntilDate field if it's non-nil, zero value otherwise
+// GetUntilDateOk returns a tuple with the UntilDate field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (r *Recurrence) GetUntilDateOk() (int, bool) {
 	if r == nil || r.UntilDate == nil {
@@ -4764,7 +6035,7 @@ func (r *Recurrence) GetUntilOccurrences() int {
 	return *r.UntilOccurrences
 }
 
-// GetOkUntilOccurrences returns a tuple with the UntilOccurrences field if it's non-nil, zero value otherwise
+// GetUntilOccurrencesOk returns a tuple with the UntilOccurrences field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (r *Recurrence) GetUntilOccurrencesOk() (int, bool) {
 	if r == nil || r.UntilOccurrences == nil {
@@ -4795,7 +6066,7 @@ func (r *reqComment) GetComment() Comment {
 	return *r.Comment
 }
 
-// GetOkComment returns a tuple with the Comment field if it's non-nil, zero value otherwise
+// GetCommentOk returns a tuple with the Comment field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (r *reqComment) GetCommentOk() (Comment, bool) {
 	if r == nil || r.Comment == nil {
@@ -4826,7 +6097,7 @@ func (r *reqGetDashboard) GetDashboard() Dashboard {
 	return *r.Dashboard
 }
 
-// GetOkDashboard returns a tuple with the Dashboard field if it's non-nil, zero value otherwise
+// GetDashboardOk returns a tuple with the Dashboard field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (r *reqGetDashboard) GetDashboardOk() (Dashboard, bool) {
 	if r == nil || r.Dashboard == nil {
@@ -4857,7 +6128,7 @@ func (r *reqGetDashboard) GetResource() string {
 	return *r.Resource
 }
 
-// GetOkResource returns a tuple with the Resource field if it's non-nil, zero value otherwise
+// GetResourceOk returns a tuple with the Resource field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (r *reqGetDashboard) GetResourceOk() (string, bool) {
 	if r == nil || r.Resource == nil {
@@ -4888,7 +6159,7 @@ func (r *reqGetDashboard) GetUrl() string {
 	return *r.Url
 }
 
-// GetOkUrl returns a tuple with the Url field if it's non-nil, zero value otherwise
+// GetUrlOk returns a tuple with the Url field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (r *reqGetDashboard) GetUrlOk() (string, bool) {
 	if r == nil || r.Url == nil {
@@ -4919,7 +6190,7 @@ func (r *reqGetEvent) GetEvent() Event {
 	return *r.Event
 }
 
-// GetOkEvent returns a tuple with the Event field if it's non-nil, zero value otherwise
+// GetEventOk returns a tuple with the Event field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (r *reqGetEvent) GetEventOk() (Event, bool) {
 	if r == nil || r.Event == nil {
@@ -4950,7 +6221,7 @@ func (r *reqGetTags) GetTags() TagMap {
 	return *r.Tags
 }
 
-// GetOkTags returns a tuple with the Tags field if it's non-nil, zero value otherwise
+// GetTagsOk returns a tuple with the Tags field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (r *reqGetTags) GetTagsOk() (TagMap, bool) {
 	if r == nil || r.Tags == nil {
@@ -4981,7 +6252,7 @@ func (r *Rule) GetColor() string {
 	return *r.Color
 }
 
-// GetOkColor returns a tuple with the Color field if it's non-nil, zero value otherwise
+// GetColorOk returns a tuple with the Color field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (r *Rule) GetColorOk() (string, bool) {
 	if r == nil || r.Color == nil {
@@ -5012,7 +6283,7 @@ func (r *Rule) GetThreshold() json.Number {
 	return *r.Threshold
 }
 
-// GetOkThreshold returns a tuple with the Threshold field if it's non-nil, zero value otherwise
+// GetThresholdOk returns a tuple with the Threshold field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (r *Rule) GetThresholdOk() (json.Number, bool) {
 	if r == nil || r.Threshold == nil {
@@ -5043,7 +6314,7 @@ func (r *Rule) GetTimeframe() string {
 	return *r.Timeframe
 }
 
-// GetOkTimeframe returns a tuple with the Timeframe field if it's non-nil, zero value otherwise
+// GetTimeframeOk returns a tuple with the Timeframe field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (r *Rule) GetTimeframeOk() (string, bool) {
 	if r == nil || r.Timeframe == nil {
@@ -5074,7 +6345,7 @@ func (s *Screenboard) GetHeight() string {
 	return *s.Height
 }
 
-// GetOkHeight returns a tuple with the Height field if it's non-nil, zero value otherwise
+// GetHeightOk returns a tuple with the Height field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Screenboard) GetHeightOk() (string, bool) {
 	if s == nil || s.Height == nil {
@@ -5105,7 +6376,7 @@ func (s *Screenboard) GetId() int {
 	return *s.Id
 }
 
-// GetOkId returns a tuple with the Id field if it's non-nil, zero value otherwise
+// GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Screenboard) GetIdOk() (int, bool) {
 	if s == nil || s.Id == nil {
@@ -5136,7 +6407,7 @@ func (s *Screenboard) GetReadOnly() bool {
 	return *s.ReadOnly
 }
 
-// GetOkReadOnly returns a tuple with the ReadOnly field if it's non-nil, zero value otherwise
+// GetReadOnlyOk returns a tuple with the ReadOnly field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Screenboard) GetReadOnlyOk() (bool, bool) {
 	if s == nil || s.ReadOnly == nil {
@@ -5167,7 +6438,7 @@ func (s *Screenboard) GetShared() bool {
 	return *s.Shared
 }
 
-// GetOkShared returns a tuple with the Shared field if it's non-nil, zero value otherwise
+// GetSharedOk returns a tuple with the Shared field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Screenboard) GetSharedOk() (bool, bool) {
 	if s == nil || s.Shared == nil {
@@ -5198,7 +6469,7 @@ func (s *Screenboard) GetTitle() string {
 	return *s.Title
 }
 
-// GetOkTitle returns a tuple with the Title field if it's non-nil, zero value otherwise
+// GetTitleOk returns a tuple with the Title field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Screenboard) GetTitleOk() (string, bool) {
 	if s == nil || s.Title == nil {
@@ -5229,7 +6500,7 @@ func (s *Screenboard) GetWidth() string {
 	return *s.Width
 }
 
-// GetOkWidth returns a tuple with the Width field if it's non-nil, zero value otherwise
+// GetWidthOk returns a tuple with the Width field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Screenboard) GetWidthOk() (string, bool) {
 	if s == nil || s.Width == nil {
@@ -5260,7 +6531,7 @@ func (s *ScreenboardLite) GetId() int {
 	return *s.Id
 }
 
-// GetOkId returns a tuple with the Id field if it's non-nil, zero value otherwise
+// GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *ScreenboardLite) GetIdOk() (int, bool) {
 	if s == nil || s.Id == nil {
@@ -5291,7 +6562,7 @@ func (s *ScreenboardLite) GetResource() string {
 	return *s.Resource
 }
 
-// GetOkResource returns a tuple with the Resource field if it's non-nil, zero value otherwise
+// GetResourceOk returns a tuple with the Resource field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *ScreenboardLite) GetResourceOk() (string, bool) {
 	if s == nil || s.Resource == nil {
@@ -5322,7 +6593,7 @@ func (s *ScreenboardLite) GetTitle() string {
 	return *s.Title
 }
 
-// GetOkTitle returns a tuple with the Title field if it's non-nil, zero value otherwise
+// GetTitleOk returns a tuple with the Title field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *ScreenboardLite) GetTitleOk() (string, bool) {
 	if s == nil || s.Title == nil {
@@ -5353,7 +6624,7 @@ func (s *ScreenboardMonitor) GetId() int {
 	return *s.Id
 }
 
-// GetOkId returns a tuple with the Id field if it's non-nil, zero value otherwise
+// GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *ScreenboardMonitor) GetIdOk() (int, bool) {
 	if s == nil || s.Id == nil {
@@ -5384,7 +6655,7 @@ func (s *Series) GetAggr() string {
 	return *s.Aggr
 }
 
-// GetOkAggr returns a tuple with the Aggr field if it's non-nil, zero value otherwise
+// GetAggrOk returns a tuple with the Aggr field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Series) GetAggrOk() (string, bool) {
 	if s == nil || s.Aggr == nil {
@@ -5415,7 +6686,7 @@ func (s *Series) GetDisplayName() string {
 	return *s.DisplayName
 }
 
-// GetOkDisplayName returns a tuple with the DisplayName field if it's non-nil, zero value otherwise
+// GetDisplayNameOk returns a tuple with the DisplayName field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Series) GetDisplayNameOk() (string, bool) {
 	if s == nil || s.DisplayName == nil {
@@ -5446,7 +6717,7 @@ func (s *Series) GetEnd() float64 {
 	return *s.End
 }
 
-// GetOkEnd returns a tuple with the End field if it's non-nil, zero value otherwise
+// GetEndOk returns a tuple with the End field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Series) GetEndOk() (float64, bool) {
 	if s == nil || s.End == nil {
@@ -5477,7 +6748,7 @@ func (s *Series) GetExpression() string {
 	return *s.Expression
 }
 
-// GetOkExpression returns a tuple with the Expression field if it's non-nil, zero value otherwise
+// GetExpressionOk returns a tuple with the Expression field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Series) GetExpressionOk() (string, bool) {
 	if s == nil || s.Expression == nil {
@@ -5508,7 +6779,7 @@ func (s *Series) GetInterval() int {
 	return *s.Interval
 }
 
-// GetOkInterval returns a tuple with the Interval field if it's non-nil, zero value otherwise
+// GetIntervalOk returns a tuple with the Interval field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Series) GetIntervalOk() (int, bool) {
 	if s == nil || s.Interval == nil {
@@ -5539,7 +6810,7 @@ func (s *Series) GetLength() int {
 	return *s.Length
 }
 
-// GetOkLength returns a tuple with the Length field if it's non-nil, zero value otherwise
+// GetLengthOk returns a tuple with the Length field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Series) GetLengthOk() (int, bool) {
 	if s == nil || s.Length == nil {
@@ -5570,7 +6841,7 @@ func (s *Series) GetMetric() string {
 	return *s.Metric
 }
 
-// GetOkMetric returns a tuple with the Metric field if it's non-nil, zero value otherwise
+// GetMetricOk returns a tuple with the Metric field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Series) GetMetricOk() (string, bool) {
 	if s == nil || s.Metric == nil {
@@ -5601,7 +6872,7 @@ func (s *Series) GetScope() string {
 	return *s.Scope
 }
 
-// GetOkScope returns a tuple with the Scope field if it's non-nil, zero value otherwise
+// GetScopeOk returns a tuple with the Scope field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Series) GetScopeOk() (string, bool) {
 	if s == nil || s.Scope == nil {
@@ -5632,7 +6903,7 @@ func (s *Series) GetStart() float64 {
 	return *s.Start
 }
 
-// GetOkStart returns a tuple with the Start field if it's non-nil, zero value otherwise
+// GetStartOk returns a tuple with the Start field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Series) GetStartOk() (float64, bool) {
 	if s == nil || s.Start == nil {
@@ -5663,7 +6934,7 @@ func (s *Series) GetUnits() UnitPair {
 	return *s.Units
 }
 
-// GetOkUnits returns a tuple with the Units field if it's non-nil, zero value otherwise
+// GetUnitsOk returns a tuple with the Units field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Series) GetUnitsOk() (UnitPair, bool) {
 	if s == nil || s.Units == nil {
@@ -5694,7 +6965,7 @@ func (s *ServiceHookSlackRequest) GetAccount() string {
 	return *s.Account
 }
 
-// GetOkAccount returns a tuple with the Account field if it's non-nil, zero value otherwise
+// GetAccountOk returns a tuple with the Account field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *ServiceHookSlackRequest) GetAccountOk() (string, bool) {
 	if s == nil || s.Account == nil {
@@ -5725,7 +6996,7 @@ func (s *ServiceHookSlackRequest) GetUrl() string {
 	return *s.Url
 }
 
-// GetOkUrl returns a tuple with the Url field if it's non-nil, zero value otherwise
+// GetUrlOk returns a tuple with the Url field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *ServiceHookSlackRequest) GetUrlOk() (string, bool) {
 	if s == nil || s.Url == nil {
@@ -5756,7 +7027,7 @@ func (s *servicePD) GetServiceKey() string {
 	return *s.ServiceKey
 }
 
-// GetOkServiceKey returns a tuple with the ServiceKey field if it's non-nil, zero value otherwise
+// GetServiceKeyOk returns a tuple with the ServiceKey field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *servicePD) GetServiceKeyOk() (string, bool) {
 	if s == nil || s.ServiceKey == nil {
@@ -5787,7 +7058,7 @@ func (s *servicePD) GetServiceName() string {
 	return *s.ServiceName
 }
 
-// GetOkServiceName returns a tuple with the ServiceName field if it's non-nil, zero value otherwise
+// GetServiceNameOk returns a tuple with the ServiceName field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *servicePD) GetServiceNameOk() (string, bool) {
 	if s == nil || s.ServiceName == nil {
@@ -5818,7 +7089,7 @@ func (s *ServicePDRequest) GetServiceKey() string {
 	return *s.ServiceKey
 }
 
-// GetOkServiceKey returns a tuple with the ServiceKey field if it's non-nil, zero value otherwise
+// GetServiceKeyOk returns a tuple with the ServiceKey field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *ServicePDRequest) GetServiceKeyOk() (string, bool) {
 	if s == nil || s.ServiceKey == nil {
@@ -5849,7 +7120,7 @@ func (s *ServicePDRequest) GetServiceName() string {
 	return *s.ServiceName
 }
 
-// GetOkServiceName returns a tuple with the ServiceName field if it's non-nil, zero value otherwise
+// GetServiceNameOk returns a tuple with the ServiceName field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *ServicePDRequest) GetServiceNameOk() (string, bool) {
 	if s == nil || s.ServiceName == nil {
@@ -5872,6 +7143,68 @@ func (s *ServicePDRequest) SetServiceName(v string) {
 	s.ServiceName = &v
 }
 
+// GetFillMax returns the FillMax field if non-nil, zero value otherwise.
+func (s *Style) GetFillMax() json.Number {
+	if s == nil || s.FillMax == nil {
+		return ""
+	}
+	return *s.FillMax
+}
+
+// GetFillMaxOk returns a tuple with the FillMax field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *Style) GetFillMaxOk() (json.Number, bool) {
+	if s == nil || s.FillMax == nil {
+		return "", false
+	}
+	return *s.FillMax, true
+}
+
+// HasFillMax returns a boolean if a field has been set.
+func (s *Style) HasFillMax() bool {
+	if s != nil && s.FillMax != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetFillMax allocates a new s.FillMax and returns the pointer to it.
+func (s *Style) SetFillMax(v json.Number) {
+	s.FillMax = &v
+}
+
+// GetFillMin returns the FillMin field if non-nil, zero value otherwise.
+func (s *Style) GetFillMin() json.Number {
+	if s == nil || s.FillMin == nil {
+		return ""
+	}
+	return *s.FillMin
+}
+
+// GetFillMinOk returns a tuple with the FillMin field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *Style) GetFillMinOk() (json.Number, bool) {
+	if s == nil || s.FillMin == nil {
+		return "", false
+	}
+	return *s.FillMin, true
+}
+
+// HasFillMin returns a boolean if a field has been set.
+func (s *Style) HasFillMin() bool {
+	if s != nil && s.FillMin != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetFillMin allocates a new s.FillMin and returns the pointer to it.
+func (s *Style) SetFillMin(v json.Number) {
+	s.FillMin = &v
+}
+
 // GetPalette returns the Palette field if non-nil, zero value otherwise.
 func (s *Style) GetPalette() string {
 	if s == nil || s.Palette == nil {
@@ -5880,7 +7213,7 @@ func (s *Style) GetPalette() string {
 	return *s.Palette
 }
 
-// GetOkPalette returns a tuple with the Palette field if it's non-nil, zero value otherwise
+// GetPaletteOk returns a tuple with the Palette field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Style) GetPaletteOk() (string, bool) {
 	if s == nil || s.Palette == nil {
@@ -5911,7 +7244,7 @@ func (s *Style) GetPaletteFlip() bool {
 	return *s.PaletteFlip
 }
 
-// GetOkPaletteFlip returns a tuple with the PaletteFlip field if it's non-nil, zero value otherwise
+// GetPaletteFlipOk returns a tuple with the PaletteFlip field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (s *Style) GetPaletteFlipOk() (bool, bool) {
 	if s == nil || s.PaletteFlip == nil {
@@ -5942,7 +7275,7 @@ func (t *TemplateVariable) GetDefault() string {
 	return *t.Default
 }
 
-// GetOkDefault returns a tuple with the Default field if it's non-nil, zero value otherwise
+// GetDefaultOk returns a tuple with the Default field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TemplateVariable) GetDefaultOk() (string, bool) {
 	if t == nil || t.Default == nil {
@@ -5973,7 +7306,7 @@ func (t *TemplateVariable) GetName() string {
 	return *t.Name
 }
 
-// GetOkName returns a tuple with the Name field if it's non-nil, zero value otherwise
+// GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TemplateVariable) GetNameOk() (string, bool) {
 	if t == nil || t.Name == nil {
@@ -6004,7 +7337,7 @@ func (t *TemplateVariable) GetPrefix() string {
 	return *t.Prefix
 }
 
-// GetOkPrefix returns a tuple with the Prefix field if it's non-nil, zero value otherwise
+// GetPrefixOk returns a tuple with the Prefix field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TemplateVariable) GetPrefixOk() (string, bool) {
 	if t == nil || t.Prefix == nil {
@@ -6035,7 +7368,7 @@ func (t *ThresholdCount) GetCritical() json.Number {
 	return *t.Critical
 }
 
-// GetOkCritical returns a tuple with the Critical field if it's non-nil, zero value otherwise
+// GetCriticalOk returns a tuple with the Critical field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *ThresholdCount) GetCriticalOk() (json.Number, bool) {
 	if t == nil || t.Critical == nil {
@@ -6066,7 +7399,7 @@ func (t *ThresholdCount) GetCriticalRecovery() json.Number {
 	return *t.CriticalRecovery
 }
 
-// GetOkCriticalRecovery returns a tuple with the CriticalRecovery field if it's non-nil, zero value otherwise
+// GetCriticalRecoveryOk returns a tuple with the CriticalRecovery field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *ThresholdCount) GetCriticalRecoveryOk() (json.Number, bool) {
 	if t == nil || t.CriticalRecovery == nil {
@@ -6128,7 +7461,7 @@ func (t *ThresholdCount) GetUnknown() json.Number {
 	return *t.Unknown
 }
 
-// GetOkUnknown returns a tuple with the Unknown field if it's non-nil, zero value otherwise
+// GetUnknownOk returns a tuple with the Unknown field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *ThresholdCount) GetUnknownOk() (json.Number, bool) {
 	if t == nil || t.Unknown == nil {
@@ -6159,7 +7492,7 @@ func (t *ThresholdCount) GetWarning() json.Number {
 	return *t.Warning
 }
 
-// GetOkWarning returns a tuple with the Warning field if it's non-nil, zero value otherwise
+// GetWarningOk returns a tuple with the Warning field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *ThresholdCount) GetWarningOk() (json.Number, bool) {
 	if t == nil || t.Warning == nil {
@@ -6190,7 +7523,7 @@ func (t *ThresholdCount) GetWarningRecovery() json.Number {
 	return *t.WarningRecovery
 }
 
-// GetOkWarningRecovery returns a tuple with the WarningRecovery field if it's non-nil, zero value otherwise
+// GetWarningRecoveryOk returns a tuple with the WarningRecovery field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *ThresholdCount) GetWarningRecoveryOk() (json.Number, bool) {
 	if t == nil || t.WarningRecovery == nil {
@@ -6221,7 +7554,7 @@ func (t *TileDef) GetAutoscale() bool {
 	return *t.Autoscale
 }
 
-// GetOkAutoscale returns a tuple with the Autoscale field if it's non-nil, zero value otherwise
+// GetAutoscaleOk returns a tuple with the Autoscale field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDef) GetAutoscaleOk() (bool, bool) {
 	if t == nil || t.Autoscale == nil {
@@ -6252,7 +7585,7 @@ func (t *TileDef) GetCustomUnit() string {
 	return *t.CustomUnit
 }
 
-// GetOkCustomUnit returns a tuple with the CustomUnit field if it's non-nil, zero value otherwise
+// GetCustomUnitOk returns a tuple with the CustomUnit field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDef) GetCustomUnitOk() (string, bool) {
 	if t == nil || t.CustomUnit == nil {
@@ -6283,7 +7616,7 @@ func (t *TileDef) GetNodeType() string {
 	return *t.NodeType
 }
 
-// GetOkNodeType returns a tuple with the NodeType field if it's non-nil, zero value otherwise
+// GetNodeTypeOk returns a tuple with the NodeType field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDef) GetNodeTypeOk() (string, bool) {
 	if t == nil || t.NodeType == nil {
@@ -6314,7 +7647,7 @@ func (t *TileDef) GetNoGroupHosts() bool {
 	return *t.NoGroupHosts
 }
 
-// GetOkNoGroupHosts returns a tuple with the NoGroupHosts field if it's non-nil, zero value otherwise
+// GetNoGroupHostsOk returns a tuple with the NoGroupHosts field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDef) GetNoGroupHostsOk() (bool, bool) {
 	if t == nil || t.NoGroupHosts == nil {
@@ -6345,7 +7678,7 @@ func (t *TileDef) GetNoMetricHosts() bool {
 	return *t.NoMetricHosts
 }
 
-// GetOkNoMetricHosts returns a tuple with the NoMetricHosts field if it's non-nil, zero value otherwise
+// GetNoMetricHostsOk returns a tuple with the NoMetricHosts field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDef) GetNoMetricHostsOk() (bool, bool) {
 	if t == nil || t.NoMetricHosts == nil {
@@ -6369,16 +7702,16 @@ func (t *TileDef) SetNoMetricHosts(v bool) {
 }
 
 // GetPrecision returns the Precision field if non-nil, zero value otherwise.
-func (t *TileDef) GetPrecision() string {
+func (t *TileDef) GetPrecision() json.Number {
 	if t == nil || t.Precision == nil {
 		return ""
 	}
 	return *t.Precision
 }
 
-// GetOkPrecision returns a tuple with the Precision field if it's non-nil, zero value otherwise
+// GetPrecisionOk returns a tuple with the Precision field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
-func (t *TileDef) GetPrecisionOk() (string, bool) {
+func (t *TileDef) GetPrecisionOk() (json.Number, bool) {
 	if t == nil || t.Precision == nil {
 		return "", false
 	}
@@ -6395,7 +7728,7 @@ func (t *TileDef) HasPrecision() bool {
 }
 
 // SetPrecision allocates a new t.Precision and returns the pointer to it.
-func (t *TileDef) SetPrecision(v string) {
+func (t *TileDef) SetPrecision(v json.Number) {
 	t.Precision = &v
 }
 
@@ -6407,7 +7740,7 @@ func (t *TileDef) GetStyle() TileDefStyle {
 	return *t.Style
 }
 
-// GetOkStyle returns a tuple with the Style field if it's non-nil, zero value otherwise
+// GetStyleOk returns a tuple with the Style field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDef) GetStyleOk() (TileDefStyle, bool) {
 	if t == nil || t.Style == nil {
@@ -6438,7 +7771,7 @@ func (t *TileDef) GetTextAlign() string {
 	return *t.TextAlign
 }
 
-// GetOkTextAlign returns a tuple with the TextAlign field if it's non-nil, zero value otherwise
+// GetTextAlignOk returns a tuple with the TextAlign field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDef) GetTextAlignOk() (string, bool) {
 	if t == nil || t.TextAlign == nil {
@@ -6469,7 +7802,7 @@ func (t *TileDef) GetViz() string {
 	return *t.Viz
 }
 
-// GetOkViz returns a tuple with the Viz field if it's non-nil, zero value otherwise
+// GetVizOk returns a tuple with the Viz field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDef) GetVizOk() (string, bool) {
 	if t == nil || t.Viz == nil {
@@ -6500,7 +7833,7 @@ func (t *TileDefEvent) GetQuery() string {
 	return *t.Query
 }
 
-// GetOkQuery returns a tuple with the Query field if it's non-nil, zero value otherwise
+// GetQueryOk returns a tuple with the Query field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefEvent) GetQueryOk() (string, bool) {
 	if t == nil || t.Query == nil {
@@ -6531,7 +7864,7 @@ func (t *TileDefMarker) GetLabel() string {
 	return *t.Label
 }
 
-// GetOkLabel returns a tuple with the Label field if it's non-nil, zero value otherwise
+// GetLabelOk returns a tuple with the Label field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefMarker) GetLabelOk() (string, bool) {
 	if t == nil || t.Label == nil {
@@ -6562,7 +7895,7 @@ func (t *TileDefMarker) GetType() string {
 	return *t.Type
 }
 
-// GetOkType returns a tuple with the Type field if it's non-nil, zero value otherwise
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefMarker) GetTypeOk() (string, bool) {
 	if t == nil || t.Type == nil {
@@ -6593,7 +7926,7 @@ func (t *TileDefMarker) GetValue() string {
 	return *t.Value
 }
 
-// GetOkValue returns a tuple with the Value field if it's non-nil, zero value otherwise
+// GetValueOk returns a tuple with the Value field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefMarker) GetValueOk() (string, bool) {
 	if t == nil || t.Value == nil {
@@ -6624,7 +7957,7 @@ func (t *TileDefRequest) GetAggregator() string {
 	return *t.Aggregator
 }
 
-// GetOkAggregator returns a tuple with the Aggregator field if it's non-nil, zero value otherwise
+// GetAggregatorOk returns a tuple with the Aggregator field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequest) GetAggregatorOk() (string, bool) {
 	if t == nil || t.Aggregator == nil {
@@ -6655,7 +7988,7 @@ func (t *TileDefRequest) GetChangeType() string {
 	return *t.ChangeType
 }
 
-// GetOkChangeType returns a tuple with the ChangeType field if it's non-nil, zero value otherwise
+// GetChangeTypeOk returns a tuple with the ChangeType field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequest) GetChangeTypeOk() (string, bool) {
 	if t == nil || t.ChangeType == nil {
@@ -6686,7 +8019,7 @@ func (t *TileDefRequest) GetCompareTo() string {
 	return *t.CompareTo
 }
 
-// GetOkCompareTo returns a tuple with the CompareTo field if it's non-nil, zero value otherwise
+// GetCompareToOk returns a tuple with the CompareTo field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequest) GetCompareToOk() (string, bool) {
 	if t == nil || t.CompareTo == nil {
@@ -6717,7 +8050,7 @@ func (t *TileDefRequest) GetExtraCol() string {
 	return *t.ExtraCol
 }
 
-// GetOkExtraCol returns a tuple with the ExtraCol field if it's non-nil, zero value otherwise
+// GetExtraColOk returns a tuple with the ExtraCol field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequest) GetExtraColOk() (string, bool) {
 	if t == nil || t.ExtraCol == nil {
@@ -6748,7 +8081,7 @@ func (t *TileDefRequest) GetIncreaseGood() bool {
 	return *t.IncreaseGood
 }
 
-// GetOkIncreaseGood returns a tuple with the IncreaseGood field if it's non-nil, zero value otherwise
+// GetIncreaseGoodOk returns a tuple with the IncreaseGood field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequest) GetIncreaseGoodOk() (bool, bool) {
 	if t == nil || t.IncreaseGood == nil {
@@ -6779,7 +8112,7 @@ func (t *TileDefRequest) GetLimit() int {
 	return *t.Limit
 }
 
-// GetOkLimit returns a tuple with the Limit field if it's non-nil, zero value otherwise
+// GetLimitOk returns a tuple with the Limit field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequest) GetLimitOk() (int, bool) {
 	if t == nil || t.Limit == nil {
@@ -6810,7 +8143,7 @@ func (t *TileDefRequest) GetMetric() string {
 	return *t.Metric
 }
 
-// GetOkMetric returns a tuple with the Metric field if it's non-nil, zero value otherwise
+// GetMetricOk returns a tuple with the Metric field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequest) GetMetricOk() (string, bool) {
 	if t == nil || t.Metric == nil {
@@ -6841,7 +8174,7 @@ func (t *TileDefRequest) GetOrderBy() string {
 	return *t.OrderBy
 }
 
-// GetOkOrderBy returns a tuple with the OrderBy field if it's non-nil, zero value otherwise
+// GetOrderByOk returns a tuple with the OrderBy field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequest) GetOrderByOk() (string, bool) {
 	if t == nil || t.OrderBy == nil {
@@ -6872,7 +8205,7 @@ func (t *TileDefRequest) GetOrderDir() string {
 	return *t.OrderDir
 }
 
-// GetOkOrderDir returns a tuple with the OrderDir field if it's non-nil, zero value otherwise
+// GetOrderDirOk returns a tuple with the OrderDir field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequest) GetOrderDirOk() (string, bool) {
 	if t == nil || t.OrderDir == nil {
@@ -6903,7 +8236,7 @@ func (t *TileDefRequest) GetQuery() string {
 	return *t.Query
 }
 
-// GetOkQuery returns a tuple with the Query field if it's non-nil, zero value otherwise
+// GetQueryOk returns a tuple with the Query field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequest) GetQueryOk() (string, bool) {
 	if t == nil || t.Query == nil {
@@ -6934,7 +8267,7 @@ func (t *TileDefRequest) GetQueryType() string {
 	return *t.QueryType
 }
 
-// GetOkQueryType returns a tuple with the QueryType field if it's non-nil, zero value otherwise
+// GetQueryTypeOk returns a tuple with the QueryType field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequest) GetQueryTypeOk() (string, bool) {
 	if t == nil || t.QueryType == nil {
@@ -6965,7 +8298,7 @@ func (t *TileDefRequest) GetStyle() TileDefRequestStyle {
 	return *t.Style
 }
 
-// GetOkStyle returns a tuple with the Style field if it's non-nil, zero value otherwise
+// GetStyleOk returns a tuple with the Style field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequest) GetStyleOk() (TileDefRequestStyle, bool) {
 	if t == nil || t.Style == nil {
@@ -6996,7 +8329,7 @@ func (t *TileDefRequest) GetTextFilter() string {
 	return *t.TextFilter
 }
 
-// GetOkTextFilter returns a tuple with the TextFilter field if it's non-nil, zero value otherwise
+// GetTextFilterOk returns a tuple with the TextFilter field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequest) GetTextFilterOk() (string, bool) {
 	if t == nil || t.TextFilter == nil {
@@ -7027,7 +8360,7 @@ func (t *TileDefRequest) GetType() string {
 	return *t.Type
 }
 
-// GetOkType returns a tuple with the Type field if it's non-nil, zero value otherwise
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequest) GetTypeOk() (string, bool) {
 	if t == nil || t.Type == nil {
@@ -7058,7 +8391,7 @@ func (t *TileDefRequestStyle) GetPalette() string {
 	return *t.Palette
 }
 
-// GetOkPalette returns a tuple with the Palette field if it's non-nil, zero value otherwise
+// GetPaletteOk returns a tuple with the Palette field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequestStyle) GetPaletteOk() (string, bool) {
 	if t == nil || t.Palette == nil {
@@ -7089,7 +8422,7 @@ func (t *TileDefRequestStyle) GetType() string {
 	return *t.Type
 }
 
-// GetOkType returns a tuple with the Type field if it's non-nil, zero value otherwise
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequestStyle) GetTypeOk() (string, bool) {
 	if t == nil || t.Type == nil {
@@ -7120,7 +8453,7 @@ func (t *TileDefRequestStyle) GetWidth() string {
 	return *t.Width
 }
 
-// GetOkWidth returns a tuple with the Width field if it's non-nil, zero value otherwise
+// GetWidthOk returns a tuple with the Width field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefRequestStyle) GetWidthOk() (string, bool) {
 	if t == nil || t.Width == nil {
@@ -7151,7 +8484,7 @@ func (t *TileDefStyle) GetFillMax() string {
 	return *t.FillMax
 }
 
-// GetOkFillMax returns a tuple with the FillMax field if it's non-nil, zero value otherwise
+// GetFillMaxOk returns a tuple with the FillMax field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefStyle) GetFillMaxOk() (string, bool) {
 	if t == nil || t.FillMax == nil {
@@ -7182,7 +8515,7 @@ func (t *TileDefStyle) GetFillMin() string {
 	return *t.FillMin
 }
 
-// GetOkFillMin returns a tuple with the FillMin field if it's non-nil, zero value otherwise
+// GetFillMinOk returns a tuple with the FillMin field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefStyle) GetFillMinOk() (string, bool) {
 	if t == nil || t.FillMin == nil {
@@ -7213,7 +8546,7 @@ func (t *TileDefStyle) GetPalette() string {
 	return *t.Palette
 }
 
-// GetOkPalette returns a tuple with the Palette field if it's non-nil, zero value otherwise
+// GetPaletteOk returns a tuple with the Palette field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefStyle) GetPaletteOk() (string, bool) {
 	if t == nil || t.Palette == nil {
@@ -7244,7 +8577,7 @@ func (t *TileDefStyle) GetPaletteFlip() string {
 	return *t.PaletteFlip
 }
 
-// GetOkPaletteFlip returns a tuple with the PaletteFlip field if it's non-nil, zero value otherwise
+// GetPaletteFlipOk returns a tuple with the PaletteFlip field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *TileDefStyle) GetPaletteFlipOk() (string, bool) {
 	if t == nil || t.PaletteFlip == nil {
@@ -7275,7 +8608,7 @@ func (t *Time) GetLiveSpan() string {
 	return *t.LiveSpan
 }
 
-// GetOkLiveSpan returns a tuple with the LiveSpan field if it's non-nil, zero value otherwise
+// GetLiveSpanOk returns a tuple with the LiveSpan field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (t *Time) GetLiveSpanOk() (string, bool) {
 	if t == nil || t.LiveSpan == nil {
@@ -7298,6 +8631,99 @@ func (t *Time) SetLiveSpan(v string) {
 	t.LiveSpan = &v
 }
 
+// GetFromTs returns the FromTs field if non-nil, zero value otherwise.
+func (t *TriggeringValue) GetFromTs() int {
+	if t == nil || t.FromTs == nil {
+		return 0
+	}
+	return *t.FromTs
+}
+
+// GetFromTsOk returns a tuple with the FromTs field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (t *TriggeringValue) GetFromTsOk() (int, bool) {
+	if t == nil || t.FromTs == nil {
+		return 0, false
+	}
+	return *t.FromTs, true
+}
+
+// HasFromTs returns a boolean if a field has been set.
+func (t *TriggeringValue) HasFromTs() bool {
+	if t != nil && t.FromTs != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetFromTs allocates a new t.FromTs and returns the pointer to it.
+func (t *TriggeringValue) SetFromTs(v int) {
+	t.FromTs = &v
+}
+
+// GetToTs returns the ToTs field if non-nil, zero value otherwise.
+func (t *TriggeringValue) GetToTs() int {
+	if t == nil || t.ToTs == nil {
+		return 0
+	}
+	return *t.ToTs
+}
+
+// GetToTsOk returns a tuple with the ToTs field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (t *TriggeringValue) GetToTsOk() (int, bool) {
+	if t == nil || t.ToTs == nil {
+		return 0, false
+	}
+	return *t.ToTs, true
+}
+
+// HasToTs returns a boolean if a field has been set.
+func (t *TriggeringValue) HasToTs() bool {
+	if t != nil && t.ToTs != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetToTs allocates a new t.ToTs and returns the pointer to it.
+func (t *TriggeringValue) SetToTs(v int) {
+	t.ToTs = &v
+}
+
+// GetValue returns the Value field if non-nil, zero value otherwise.
+func (t *TriggeringValue) GetValue() int {
+	if t == nil || t.Value == nil {
+		return 0
+	}
+	return *t.Value
+}
+
+// GetValueOk returns a tuple with the Value field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (t *TriggeringValue) GetValueOk() (int, bool) {
+	if t == nil || t.Value == nil {
+		return 0, false
+	}
+	return *t.Value, true
+}
+
+// HasValue returns a boolean if a field has been set.
+func (t *TriggeringValue) HasValue() bool {
+	if t != nil && t.Value != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetValue allocates a new t.Value and returns the pointer to it.
+func (t *TriggeringValue) SetValue(v int) {
+	t.Value = &v
+}
+
 // GetAccessRole returns the AccessRole field if non-nil, zero value otherwise.
 func (u *User) GetAccessRole() string {
 	if u == nil || u.AccessRole == nil {
@@ -7306,7 +8732,7 @@ func (u *User) GetAccessRole() string {
 	return *u.AccessRole
 }
 
-// GetOkAccessRole returns a tuple with the AccessRole field if it's non-nil, zero value otherwise
+// GetAccessRoleOk returns a tuple with the AccessRole field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (u *User) GetAccessRoleOk() (string, bool) {
 	if u == nil || u.AccessRole == nil {
@@ -7337,7 +8763,7 @@ func (u *User) GetDisabled() bool {
 	return *u.Disabled
 }
 
-// GetOkDisabled returns a tuple with the Disabled field if it's non-nil, zero value otherwise
+// GetDisabledOk returns a tuple with the Disabled field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (u *User) GetDisabledOk() (bool, bool) {
 	if u == nil || u.Disabled == nil {
@@ -7368,7 +8794,7 @@ func (u *User) GetEmail() string {
 	return *u.Email
 }
 
-// GetOkEmail returns a tuple with the Email field if it's non-nil, zero value otherwise
+// GetEmailOk returns a tuple with the Email field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (u *User) GetEmailOk() (string, bool) {
 	if u == nil || u.Email == nil {
@@ -7399,7 +8825,7 @@ func (u *User) GetHandle() string {
 	return *u.Handle
 }
 
-// GetOkHandle returns a tuple with the Handle field if it's non-nil, zero value otherwise
+// GetHandleOk returns a tuple with the Handle field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (u *User) GetHandleOk() (string, bool) {
 	if u == nil || u.Handle == nil {
@@ -7430,7 +8856,7 @@ func (u *User) GetIsAdmin() bool {
 	return *u.IsAdmin
 }
 
-// GetOkIsAdmin returns a tuple with the IsAdmin field if it's non-nil, zero value otherwise
+// GetIsAdminOk returns a tuple with the IsAdmin field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (u *User) GetIsAdminOk() (bool, bool) {
 	if u == nil || u.IsAdmin == nil {
@@ -7461,7 +8887,7 @@ func (u *User) GetName() string {
 	return *u.Name
 }
 
-// GetOkName returns a tuple with the Name field if it's non-nil, zero value otherwise
+// GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (u *User) GetNameOk() (string, bool) {
 	if u == nil || u.Name == nil {
@@ -7492,7 +8918,7 @@ func (u *User) GetRole() string {
 	return *u.Role
 }
 
-// GetOkRole returns a tuple with the Role field if it's non-nil, zero value otherwise
+// GetRoleOk returns a tuple with the Role field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (u *User) GetRoleOk() (string, bool) {
 	if u == nil || u.Role == nil {
@@ -7523,7 +8949,7 @@ func (u *User) GetVerified() bool {
 	return *u.Verified
 }
 
-// GetOkVerified returns a tuple with the Verified field if it's non-nil, zero value otherwise
+// GetVerifiedOk returns a tuple with the Verified field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (u *User) GetVerifiedOk() (bool, bool) {
 	if u == nil || u.Verified == nil {
@@ -7554,7 +8980,7 @@ func (w *Widget) GetAlertID() int {
 	return *w.AlertID
 }
 
-// GetOkAlertID returns a tuple with the AlertID field if it's non-nil, zero value otherwise
+// GetAlertIDOk returns a tuple with the AlertID field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetAlertIDOk() (int, bool) {
 	if w == nil || w.AlertID == nil {
@@ -7585,7 +9011,7 @@ func (w *Widget) GetAutoRefresh() bool {
 	return *w.AutoRefresh
 }
 
-// GetOkAutoRefresh returns a tuple with the AutoRefresh field if it's non-nil, zero value otherwise
+// GetAutoRefreshOk returns a tuple with the AutoRefresh field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetAutoRefreshOk() (bool, bool) {
 	if w == nil || w.AutoRefresh == nil {
@@ -7616,7 +9042,7 @@ func (w *Widget) GetBgcolor() string {
 	return *w.Bgcolor
 }
 
-// GetOkBgcolor returns a tuple with the Bgcolor field if it's non-nil, zero value otherwise
+// GetBgcolorOk returns a tuple with the Bgcolor field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetBgcolorOk() (string, bool) {
 	if w == nil || w.Bgcolor == nil {
@@ -7647,7 +9073,7 @@ func (w *Widget) GetCheck() string {
 	return *w.Check
 }
 
-// GetOkCheck returns a tuple with the Check field if it's non-nil, zero value otherwise
+// GetCheckOk returns a tuple with the Check field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetCheckOk() (string, bool) {
 	if w == nil || w.Check == nil {
@@ -7678,7 +9104,7 @@ func (w *Widget) GetColor() string {
 	return *w.Color
 }
 
-// GetOkColor returns a tuple with the Color field if it's non-nil, zero value otherwise
+// GetColorOk returns a tuple with the Color field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetColorOk() (string, bool) {
 	if w == nil || w.Color == nil {
@@ -7709,7 +9135,7 @@ func (w *Widget) GetColorPreference() string {
 	return *w.ColorPreference
 }
 
-// GetOkColorPreference returns a tuple with the ColorPreference field if it's non-nil, zero value otherwise
+// GetColorPreferenceOk returns a tuple with the ColorPreference field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetColorPreferenceOk() (string, bool) {
 	if w == nil || w.ColorPreference == nil {
@@ -7740,7 +9166,7 @@ func (w *Widget) GetColumns() string {
 	return *w.Columns
 }
 
-// GetOkColumns returns a tuple with the Columns field if it's non-nil, zero value otherwise
+// GetColumnsOk returns a tuple with the Columns field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetColumnsOk() (string, bool) {
 	if w == nil || w.Columns == nil {
@@ -7771,7 +9197,7 @@ func (w *Widget) GetDisplayFormat() string {
 	return *w.DisplayFormat
 }
 
-// GetOkDisplayFormat returns a tuple with the DisplayFormat field if it's non-nil, zero value otherwise
+// GetDisplayFormatOk returns a tuple with the DisplayFormat field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetDisplayFormatOk() (string, bool) {
 	if w == nil || w.DisplayFormat == nil {
@@ -7802,7 +9228,7 @@ func (w *Widget) GetEnv() string {
 	return *w.Env
 }
 
-// GetOkEnv returns a tuple with the Env field if it's non-nil, zero value otherwise
+// GetEnvOk returns a tuple with the Env field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetEnvOk() (string, bool) {
 	if w == nil || w.Env == nil {
@@ -7833,7 +9259,7 @@ func (w *Widget) GetEventSize() string {
 	return *w.EventSize
 }
 
-// GetOkEventSize returns a tuple with the EventSize field if it's non-nil, zero value otherwise
+// GetEventSizeOk returns a tuple with the EventSize field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetEventSizeOk() (string, bool) {
 	if w == nil || w.EventSize == nil {
@@ -7864,7 +9290,7 @@ func (w *Widget) GetFontSize() string {
 	return *w.FontSize
 }
 
-// GetOkFontSize returns a tuple with the FontSize field if it's non-nil, zero value otherwise
+// GetFontSizeOk returns a tuple with the FontSize field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetFontSizeOk() (string, bool) {
 	if w == nil || w.FontSize == nil {
@@ -7895,7 +9321,7 @@ func (w *Widget) GetGroup() string {
 	return *w.Group
 }
 
-// GetOkGroup returns a tuple with the Group field if it's non-nil, zero value otherwise
+// GetGroupOk returns a tuple with the Group field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetGroupOk() (string, bool) {
 	if w == nil || w.Group == nil {
@@ -7926,7 +9352,7 @@ func (w *Widget) GetGrouping() string {
 	return *w.Grouping
 }
 
-// GetOkGrouping returns a tuple with the Grouping field if it's non-nil, zero value otherwise
+// GetGroupingOk returns a tuple with the Grouping field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetGroupingOk() (string, bool) {
 	if w == nil || w.Grouping == nil {
@@ -7957,7 +9383,7 @@ func (w *Widget) GetHeight() int {
 	return *w.Height
 }
 
-// GetOkHeight returns a tuple with the Height field if it's non-nil, zero value otherwise
+// GetHeightOk returns a tuple with the Height field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetHeightOk() (int, bool) {
 	if w == nil || w.Height == nil {
@@ -7988,7 +9414,7 @@ func (w *Widget) GetHideZeroCounts() bool {
 	return *w.HideZeroCounts
 }
 
-// GetOkHideZeroCounts returns a tuple with the HideZeroCounts field if it's non-nil, zero value otherwise
+// GetHideZeroCountsOk returns a tuple with the HideZeroCounts field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetHideZeroCountsOk() (bool, bool) {
 	if w == nil || w.HideZeroCounts == nil {
@@ -8019,7 +9445,7 @@ func (w *Widget) GetHTML() string {
 	return *w.HTML
 }
 
-// GetOkHTML returns a tuple with the HTML field if it's non-nil, zero value otherwise
+// GetHTMLOk returns a tuple with the HTML field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetHTMLOk() (string, bool) {
 	if w == nil || w.HTML == nil {
@@ -8050,7 +9476,7 @@ func (w *Widget) GetLayoutVersion() string {
 	return *w.LayoutVersion
 }
 
-// GetOkLayoutVersion returns a tuple with the LayoutVersion field if it's non-nil, zero value otherwise
+// GetLayoutVersionOk returns a tuple with the LayoutVersion field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetLayoutVersionOk() (string, bool) {
 	if w == nil || w.LayoutVersion == nil {
@@ -8081,7 +9507,7 @@ func (w *Widget) GetLegend() bool {
 	return *w.Legend
 }
 
-// GetOkLegend returns a tuple with the Legend field if it's non-nil, zero value otherwise
+// GetLegendOk returns a tuple with the Legend field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetLegendOk() (bool, bool) {
 	if w == nil || w.Legend == nil {
@@ -8112,7 +9538,7 @@ func (w *Widget) GetLegendSize() string {
 	return *w.LegendSize
 }
 
-// GetOkLegendSize returns a tuple with the LegendSize field if it's non-nil, zero value otherwise
+// GetLegendSizeOk returns a tuple with the LegendSize field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetLegendSizeOk() (string, bool) {
 	if w == nil || w.LegendSize == nil {
@@ -8143,7 +9569,7 @@ func (w *Widget) GetLogset() string {
 	return *w.Logset
 }
 
-// GetOkLogset returns a tuple with the Logset field if it's non-nil, zero value otherwise
+// GetLogsetOk returns a tuple with the Logset field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetLogsetOk() (string, bool) {
 	if w == nil || w.Logset == nil {
@@ -8174,7 +9600,7 @@ func (w *Widget) GetManageStatusShowTitle() bool {
 	return *w.ManageStatusShowTitle
 }
 
-// GetOkManageStatusShowTitle returns a tuple with the ManageStatusShowTitle field if it's non-nil, zero value otherwise
+// GetManageStatusShowTitleOk returns a tuple with the ManageStatusShowTitle field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetManageStatusShowTitleOk() (bool, bool) {
 	if w == nil || w.ManageStatusShowTitle == nil {
@@ -8205,7 +9631,7 @@ func (w *Widget) GetManageStatusTitleAlign() string {
 	return *w.ManageStatusTitleAlign
 }
 
-// GetOkManageStatusTitleAlign returns a tuple with the ManageStatusTitleAlign field if it's non-nil, zero value otherwise
+// GetManageStatusTitleAlignOk returns a tuple with the ManageStatusTitleAlign field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetManageStatusTitleAlignOk() (string, bool) {
 	if w == nil || w.ManageStatusTitleAlign == nil {
@@ -8236,7 +9662,7 @@ func (w *Widget) GetManageStatusTitleSize() string {
 	return *w.ManageStatusTitleSize
 }
 
-// GetOkManageStatusTitleSize returns a tuple with the ManageStatusTitleSize field if it's non-nil, zero value otherwise
+// GetManageStatusTitleSizeOk returns a tuple with the ManageStatusTitleSize field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetManageStatusTitleSizeOk() (string, bool) {
 	if w == nil || w.ManageStatusTitleSize == nil {
@@ -8267,7 +9693,7 @@ func (w *Widget) GetManageStatusTitleText() string {
 	return *w.ManageStatusTitleText
 }
 
-// GetOkManageStatusTitleText returns a tuple with the ManageStatusTitleText field if it's non-nil, zero value otherwise
+// GetManageStatusTitleTextOk returns a tuple with the ManageStatusTitleText field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetManageStatusTitleTextOk() (string, bool) {
 	if w == nil || w.ManageStatusTitleText == nil {
@@ -8298,7 +9724,7 @@ func (w *Widget) GetMargin() string {
 	return *w.Margin
 }
 
-// GetOkMargin returns a tuple with the Margin field if it's non-nil, zero value otherwise
+// GetMarginOk returns a tuple with the Margin field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetMarginOk() (string, bool) {
 	if w == nil || w.Margin == nil {
@@ -8329,7 +9755,7 @@ func (w *Widget) GetMonitor() ScreenboardMonitor {
 	return *w.Monitor
 }
 
-// GetOkMonitor returns a tuple with the Monitor field if it's non-nil, zero value otherwise
+// GetMonitorOk returns a tuple with the Monitor field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetMonitorOk() (ScreenboardMonitor, bool) {
 	if w == nil || w.Monitor == nil {
@@ -8360,7 +9786,7 @@ func (w *Widget) GetMustShowBreakdown() bool {
 	return *w.MustShowBreakdown
 }
 
-// GetOkMustShowBreakdown returns a tuple with the MustShowBreakdown field if it's non-nil, zero value otherwise
+// GetMustShowBreakdownOk returns a tuple with the MustShowBreakdown field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetMustShowBreakdownOk() (bool, bool) {
 	if w == nil || w.MustShowBreakdown == nil {
@@ -8391,7 +9817,7 @@ func (w *Widget) GetMustShowDistribution() bool {
 	return *w.MustShowDistribution
 }
 
-// GetOkMustShowDistribution returns a tuple with the MustShowDistribution field if it's non-nil, zero value otherwise
+// GetMustShowDistributionOk returns a tuple with the MustShowDistribution field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetMustShowDistributionOk() (bool, bool) {
 	if w == nil || w.MustShowDistribution == nil {
@@ -8422,7 +9848,7 @@ func (w *Widget) GetMustShowErrors() bool {
 	return *w.MustShowErrors
 }
 
-// GetOkMustShowErrors returns a tuple with the MustShowErrors field if it's non-nil, zero value otherwise
+// GetMustShowErrorsOk returns a tuple with the MustShowErrors field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetMustShowErrorsOk() (bool, bool) {
 	if w == nil || w.MustShowErrors == nil {
@@ -8453,7 +9879,7 @@ func (w *Widget) GetMustShowHits() bool {
 	return *w.MustShowHits
 }
 
-// GetOkMustShowHits returns a tuple with the MustShowHits field if it's non-nil, zero value otherwise
+// GetMustShowHitsOk returns a tuple with the MustShowHits field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetMustShowHitsOk() (bool, bool) {
 	if w == nil || w.MustShowHits == nil {
@@ -8484,7 +9910,7 @@ func (w *Widget) GetMustShowLatency() bool {
 	return *w.MustShowLatency
 }
 
-// GetOkMustShowLatency returns a tuple with the MustShowLatency field if it's non-nil, zero value otherwise
+// GetMustShowLatencyOk returns a tuple with the MustShowLatency field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetMustShowLatencyOk() (bool, bool) {
 	if w == nil || w.MustShowLatency == nil {
@@ -8515,7 +9941,7 @@ func (w *Widget) GetMustShowResourceList() bool {
 	return *w.MustShowResourceList
 }
 
-// GetOkMustShowResourceList returns a tuple with the MustShowResourceList field if it's non-nil, zero value otherwise
+// GetMustShowResourceListOk returns a tuple with the MustShowResourceList field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetMustShowResourceListOk() (bool, bool) {
 	if w == nil || w.MustShowResourceList == nil {
@@ -8546,7 +9972,7 @@ func (w *Widget) GetParams() Params {
 	return *w.Params
 }
 
-// GetOkParams returns a tuple with the Params field if it's non-nil, zero value otherwise
+// GetParamsOk returns a tuple with the Params field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetParamsOk() (Params, bool) {
 	if w == nil || w.Params == nil {
@@ -8577,7 +10003,7 @@ func (w *Widget) GetPrecision() string {
 	return *w.Precision
 }
 
-// GetOkPrecision returns a tuple with the Precision field if it's non-nil, zero value otherwise
+// GetPrecisionOk returns a tuple with the Precision field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetPrecisionOk() (string, bool) {
 	if w == nil || w.Precision == nil {
@@ -8608,7 +10034,7 @@ func (w *Widget) GetQuery() string {
 	return *w.Query
 }
 
-// GetOkQuery returns a tuple with the Query field if it's non-nil, zero value otherwise
+// GetQueryOk returns a tuple with the Query field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetQueryOk() (string, bool) {
 	if w == nil || w.Query == nil {
@@ -8639,7 +10065,7 @@ func (w *Widget) GetServiceName() string {
 	return *w.ServiceName
 }
 
-// GetOkServiceName returns a tuple with the ServiceName field if it's non-nil, zero value otherwise
+// GetServiceNameOk returns a tuple with the ServiceName field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetServiceNameOk() (string, bool) {
 	if w == nil || w.ServiceName == nil {
@@ -8670,7 +10096,7 @@ func (w *Widget) GetServiceService() string {
 	return *w.ServiceService
 }
 
-// GetOkServiceService returns a tuple with the ServiceService field if it's non-nil, zero value otherwise
+// GetServiceServiceOk returns a tuple with the ServiceService field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetServiceServiceOk() (string, bool) {
 	if w == nil || w.ServiceService == nil {
@@ -8701,7 +10127,7 @@ func (w *Widget) GetSizeVersion() string {
 	return *w.SizeVersion
 }
 
-// GetOkSizeVersion returns a tuple with the SizeVersion field if it's non-nil, zero value otherwise
+// GetSizeVersionOk returns a tuple with the SizeVersion field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetSizeVersionOk() (string, bool) {
 	if w == nil || w.SizeVersion == nil {
@@ -8732,7 +10158,7 @@ func (w *Widget) GetSizing() string {
 	return *w.Sizing
 }
 
-// GetOkSizing returns a tuple with the Sizing field if it's non-nil, zero value otherwise
+// GetSizingOk returns a tuple with the Sizing field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetSizingOk() (string, bool) {
 	if w == nil || w.Sizing == nil {
@@ -8763,7 +10189,7 @@ func (w *Widget) GetText() string {
 	return *w.Text
 }
 
-// GetOkText returns a tuple with the Text field if it's non-nil, zero value otherwise
+// GetTextOk returns a tuple with the Text field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetTextOk() (string, bool) {
 	if w == nil || w.Text == nil {
@@ -8794,7 +10220,7 @@ func (w *Widget) GetTextAlign() string {
 	return *w.TextAlign
 }
 
-// GetOkTextAlign returns a tuple with the TextAlign field if it's non-nil, zero value otherwise
+// GetTextAlignOk returns a tuple with the TextAlign field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetTextAlignOk() (string, bool) {
 	if w == nil || w.TextAlign == nil {
@@ -8825,7 +10251,7 @@ func (w *Widget) GetTextSize() string {
 	return *w.TextSize
 }
 
-// GetOkTextSize returns a tuple with the TextSize field if it's non-nil, zero value otherwise
+// GetTextSizeOk returns a tuple with the TextSize field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetTextSizeOk() (string, bool) {
 	if w == nil || w.TextSize == nil {
@@ -8856,7 +10282,7 @@ func (w *Widget) GetTick() bool {
 	return *w.Tick
 }
 
-// GetOkTick returns a tuple with the Tick field if it's non-nil, zero value otherwise
+// GetTickOk returns a tuple with the Tick field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetTickOk() (bool, bool) {
 	if w == nil || w.Tick == nil {
@@ -8887,7 +10313,7 @@ func (w *Widget) GetTickEdge() string {
 	return *w.TickEdge
 }
 
-// GetOkTickEdge returns a tuple with the TickEdge field if it's non-nil, zero value otherwise
+// GetTickEdgeOk returns a tuple with the TickEdge field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetTickEdgeOk() (string, bool) {
 	if w == nil || w.TickEdge == nil {
@@ -8918,7 +10344,7 @@ func (w *Widget) GetTickPos() string {
 	return *w.TickPos
 }
 
-// GetOkTickPos returns a tuple with the TickPos field if it's non-nil, zero value otherwise
+// GetTickPosOk returns a tuple with the TickPos field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetTickPosOk() (string, bool) {
 	if w == nil || w.TickPos == nil {
@@ -8949,7 +10375,7 @@ func (w *Widget) GetTileDef() TileDef {
 	return *w.TileDef
 }
 
-// GetOkTileDef returns a tuple with the TileDef field if it's non-nil, zero value otherwise
+// GetTileDefOk returns a tuple with the TileDef field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetTileDefOk() (TileDef, bool) {
 	if w == nil || w.TileDef == nil {
@@ -8980,7 +10406,7 @@ func (w *Widget) GetTime() Time {
 	return *w.Time
 }
 
-// GetOkTime returns a tuple with the Time field if it's non-nil, zero value otherwise
+// GetTimeOk returns a tuple with the Time field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetTimeOk() (Time, bool) {
 	if w == nil || w.Time == nil {
@@ -9011,7 +10437,7 @@ func (w *Widget) GetTitle() bool {
 	return *w.Title
 }
 
-// GetOkTitle returns a tuple with the Title field if it's non-nil, zero value otherwise
+// GetTitleOk returns a tuple with the Title field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetTitleOk() (bool, bool) {
 	if w == nil || w.Title == nil {
@@ -9042,7 +10468,7 @@ func (w *Widget) GetTitleAlign() string {
 	return *w.TitleAlign
 }
 
-// GetOkTitleAlign returns a tuple with the TitleAlign field if it's non-nil, zero value otherwise
+// GetTitleAlignOk returns a tuple with the TitleAlign field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetTitleAlignOk() (string, bool) {
 	if w == nil || w.TitleAlign == nil {
@@ -9073,7 +10499,7 @@ func (w *Widget) GetTitleSize() int {
 	return *w.TitleSize
 }
 
-// GetOkTitleSize returns a tuple with the TitleSize field if it's non-nil, zero value otherwise
+// GetTitleSizeOk returns a tuple with the TitleSize field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetTitleSizeOk() (int, bool) {
 	if w == nil || w.TitleSize == nil {
@@ -9104,7 +10530,7 @@ func (w *Widget) GetTitleText() string {
 	return *w.TitleText
 }
 
-// GetOkTitleText returns a tuple with the TitleText field if it's non-nil, zero value otherwise
+// GetTitleTextOk returns a tuple with the TitleText field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetTitleTextOk() (string, bool) {
 	if w == nil || w.TitleText == nil {
@@ -9135,7 +10561,7 @@ func (w *Widget) GetType() string {
 	return *w.Type
 }
 
-// GetOkType returns a tuple with the Type field if it's non-nil, zero value otherwise
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetTypeOk() (string, bool) {
 	if w == nil || w.Type == nil {
@@ -9166,7 +10592,7 @@ func (w *Widget) GetUnit() string {
 	return *w.Unit
 }
 
-// GetOkUnit returns a tuple with the Unit field if it's non-nil, zero value otherwise
+// GetUnitOk returns a tuple with the Unit field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetUnitOk() (string, bool) {
 	if w == nil || w.Unit == nil {
@@ -9197,7 +10623,7 @@ func (w *Widget) GetURL() string {
 	return *w.URL
 }
 
-// GetOkURL returns a tuple with the URL field if it's non-nil, zero value otherwise
+// GetURLOk returns a tuple with the URL field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetURLOk() (string, bool) {
 	if w == nil || w.URL == nil {
@@ -9228,7 +10654,7 @@ func (w *Widget) GetVizType() string {
 	return *w.VizType
 }
 
-// GetOkVizType returns a tuple with the VizType field if it's non-nil, zero value otherwise
+// GetVizTypeOk returns a tuple with the VizType field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetVizTypeOk() (string, bool) {
 	if w == nil || w.VizType == nil {
@@ -9259,7 +10685,7 @@ func (w *Widget) GetWidth() int {
 	return *w.Width
 }
 
-// GetOkWidth returns a tuple with the Width field if it's non-nil, zero value otherwise
+// GetWidthOk returns a tuple with the Width field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetWidthOk() (int, bool) {
 	if w == nil || w.Width == nil {
@@ -9290,7 +10716,7 @@ func (w *Widget) GetX() int {
 	return *w.X
 }
 
-// GetOkX returns a tuple with the X field if it's non-nil, zero value otherwise
+// GetXOk returns a tuple with the X field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetXOk() (int, bool) {
 	if w == nil || w.X == nil {
@@ -9321,7 +10747,7 @@ func (w *Widget) GetY() int {
 	return *w.Y
 }
 
-// GetOkY returns a tuple with the Y field if it's non-nil, zero value otherwise
+// GetYOk returns a tuple with the Y field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (w *Widget) GetYOk() (int, bool) {
 	if w == nil || w.Y == nil {
@@ -9352,7 +10778,7 @@ func (y *Yaxis) GetMax() float64 {
 	return *y.Max
 }
 
-// GetOkMax returns a tuple with the Max field if it's non-nil, zero value otherwise
+// GetMaxOk returns a tuple with the Max field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (y *Yaxis) GetMaxOk() (float64, bool) {
 	if y == nil || y.Max == nil {
@@ -9383,7 +10809,7 @@ func (y *Yaxis) GetMin() float64 {
 	return *y.Min
 }
 
-// GetOkMin returns a tuple with the Min field if it's non-nil, zero value otherwise
+// GetMinOk returns a tuple with the Min field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (y *Yaxis) GetMinOk() (float64, bool) {
 	if y == nil || y.Min == nil {
@@ -9414,7 +10840,7 @@ func (y *Yaxis) GetScale() string {
 	return *y.Scale
 }
 
-// GetOkScale returns a tuple with the Scale field if it's non-nil, zero value otherwise
+// GetScaleOk returns a tuple with the Scale field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
 func (y *Yaxis) GetScaleOk() (string, bool) {
 	if y == nil || y.Scale == nil {

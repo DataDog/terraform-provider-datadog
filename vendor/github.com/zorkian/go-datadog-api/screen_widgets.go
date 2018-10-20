@@ -9,7 +9,7 @@ type TileDef struct {
 	Viz        *string          `json:"viz,omitempty"`
 	CustomUnit *string          `json:"custom_unit,omitempty"`
 	Autoscale  *bool            `json:"autoscale,omitempty"`
-	Precision  *string          `json:"precision,omitempty"`
+	Precision  *json.Number     `json:"precision,omitempty"`
 	TextAlign  *string          `json:"text_align,omitempty"`
 
 	// For hostmap
