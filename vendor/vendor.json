@@ -313,6 +313,12 @@
 			"revisionTime": "2018-10-25T22:50:59Z"
 		},
 		{
+			"checksumSHA1": "sdB74932PWVQL2px7dw94xZUw/o=",
+			"path": "github.com/gorilla/websocket",
+			"revision": "483fb8d7c32fcb4b5636cd293a92e3935932e2f4",
+			"revisionTime": "2018-10-30T14:45:53Z"
+		},
+		{
 			"checksumSHA1": "cdOCt0Yb+hdErz8NAQqayxPmRsY=",
 			"path": "github.com/hashicorp/errwrap",
 			"revision": "7554cd9344cec97297fa6649b055a8c98c2a1e55"
@@ -812,6 +818,12 @@
 			"revisionTime": "2018-03-08T00:51:04Z"
 		},
 		{
+			"checksumSHA1": "DTy0iJ2w5C+FDsN9EnzfhNmvS+o=",
+			"path": "github.com/pkg/errors",
+			"revision": "059132a15dd08d6704c67711dae0cf35ab991756",
+			"revisionTime": "2018-10-23T23:59:46Z"
+		},
+		{
 			"checksumSHA1": "pNwE5HGPxSrn/VVnzhOeCwRdHMg=",
 			"path": "github.com/posener/complete",
 			"revision": "3ef9b31a6a0613ae832e7ecf208374027c3b2343",
@@ -842,8 +854,10 @@
 			"revisionTime": "2017-04-07T04:09:43Z"
 		},
 		{
+			"checksumSHA1": "HaWkK5qs6scz0y5pm+R13bEDBOI=",
 			"path": "github.com/rancher/go-rancher/client",
-			"revision": ""
+			"revision": "608ac0685d94a80911500c93dd1db279ddad678f",
+			"revisionTime": "2018-07-17T09:48:35Z"
 		},
 		{
 			"checksumSHA1": "zmC8/3V4ls53DJlNTKDZwPSC/dA=",
