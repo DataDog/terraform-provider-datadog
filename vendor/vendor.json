@@ -602,6 +602,22 @@
 			"versionExact": "v0.11.10"
 		},
 		{
+			"checksumSHA1": "Fzbv+N7hFXOtrR6E7ZcHT3jEE9s=",
+			"path": "github.com/hashicorp/terraform/helper/structure",
+			"revision": "17850e9a55d33c43d7c31fd6ac122ba97a51d899",
+			"revisionTime": "2018-10-23T14:58:10Z",
+			"version": "v0.11.10",
+			"versionExact": "v0.11.10"
+		},
+		{
+			"checksumSHA1": "nEC56vB6M60BJtGPe+N9rziHqLg=",
+			"path": "github.com/hashicorp/terraform/helper/validation",
+			"revision": "17850e9a55d33c43d7c31fd6ac122ba97a51d899",
+			"revisionTime": "2018-10-23T14:58:10Z",
+			"version": "v0.11.10",
+			"versionExact": "v0.11.10"
+		},
+		{
 			"checksumSHA1": "kD1ayilNruf2cES1LDfNZjYRscQ=",
 			"path": "github.com/hashicorp/terraform/httpclient",
 			"revision": "17850e9a55d33c43d7c31fd6ac122ba97a51d899",
@@ -824,6 +840,10 @@
 			"path": "github.com/rancher/go-rancher",
 			"revision": "ec24b7f12fca9f78fbfcd62a0ea8bce14ade8792",
 			"revisionTime": "2017-04-07T04:09:43Z"
+		},
+		{
+			"path": "github.com/rancher/go-rancher/client",
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "zmC8/3V4ls53DJlNTKDZwPSC/dA=",
