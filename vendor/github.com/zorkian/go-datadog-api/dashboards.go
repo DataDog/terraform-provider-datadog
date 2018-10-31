@@ -105,8 +105,10 @@ func (y *Yaxis) UnmarshalJSON(data []byte) error {
 }
 
 type Style struct {
-	Palette     *string `json:"palette,omitempty"`
-	PaletteFlip *bool   `json:"paletteFlip,omitempty"`
+	Palette     *string      `json:"palette,omitempty"`
+	PaletteFlip *bool        `json:"paletteFlip,omitempty"`
+	FillMin     *json.Number `json:"fillMin,omitempty"`
+	FillMax     *json.Number `json:"fillMax,omitempty"`
 }
 
 type GraphDefinition struct {
@@ -119,18 +121,18 @@ type GraphDefinition struct {
 	Yaxis Yaxis `json:"yaxis,omitempty"`
 
 	// For query value type graphs
-	Autoscale  *bool   `json:"autoscale,omitempty"`
-	TextAlign  *string `json:"text_align,omitempty"`
-	Precision  *string `json:"precision,omitempty"`
-	CustomUnit *string `json:"custom_unit,omitempty"`
+	Autoscale  *bool        `json:"autoscale,omitempty"`
+	TextAlign  *string      `json:"text_align,omitempty"`
+	Precision  *json.Number `json:"precision,omitempty"`
+	CustomUnit *string      `json:"custom_unit,omitempty"`
 
-	// For hostname type graphs
-	Style *Style `json:"Style,omitempty"`
-
+	// For hostmaps
+	Style                 *Style   `json:"style,omitempty"`
 	Groups                []string `json:"group,omitempty"`
 	IncludeNoMetricHosts  *bool    `json:"noMetricHosts,omitempty"`
 	Scopes                []string `json:"scope,omitempty"`
 	IncludeUngroupedHosts *bool    `json:"noGroupHosts,omitempty"`
+	NodeType              *string  `json:"nodeType,omitempty"`
 }
 
 // Graph represents a graph that might exist on a dashboard.
@@ -160,10 +162,27 @@ type Dashboard struct {
 // DashboardLite represents a user created dashboard. This is the mini
 // struct when we load the summaries.
 type DashboardLite struct {
-	Id          *int    `json:"id,string,omitempty"` // TODO: Remove ',string'.
-	Resource    *string `json:"resource,omitempty"`
-	Description *string `json:"description,omitempty"`
-	Title       *string `json:"title,omitempty"`
+	Id          *int       `json:"id,string,omitempty"` // TODO: Remove ',string'.
+	Resource    *string    `json:"resource,omitempty"`
+	Description *string    `json:"description,omitempty"`
+	Title       *string    `json:"title,omitempty"`
+	ReadOnly    *bool      `json:"read_only,omitempty"`
+	Created     *string    `json:"created,omitempty"`
+	Modified    *string    `json:"modified,omitempty"`
+	CreatedBy   *CreatedBy `json:"created_by,omitempty"`
+}
+
+// CreatedBy represents a field from DashboardLite.
+type CreatedBy struct {
+	Disabled   *bool   `json:"disabled,omitempty"`
+	Handle     *string `json:"handle,omitempty"`
+	Name       *string `json:"name,omitempty"`
+	IsAdmin    *bool   `json:"is_admin,omitempty"`
+	Role       *string `json:"role,omitempty"`
+	AccessRole *string `json:"access_role,omitempty"`
+	Verified   *bool   `json:"verified,omitempty"`
+	Email      *string `json:"email,omitempty"`
+	Icon       *string `json:"icon,omitempty"`
 }
 
 // reqGetDashboards from /api/v1/dash
