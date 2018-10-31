@@ -94,7 +94,7 @@ The following arguments are supported:
 * `new_host_delay` (Optional) Time (in seconds) to allow a host to boot and
     applications to fully start before starting the evaluation of monitor
     results. Should be a non negative integer. Defaults to 300.
-* `evaluation_delay` (Optional) Time (in seconds) to delay evaluation, as a non-negative integer.
+* `evaluation_delay` (Optional, only applies to metric alert) Time (in seconds) to delay evaluation, as a non-negative integer.
     For example, if the value is set to 300 (5min), the timeframe is set to last_5m and the time is 7:00,
     the monitor will evaluate data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled
     metrics to ensure the monitor will always have data during evaluation.
