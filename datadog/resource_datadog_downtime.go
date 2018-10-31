@@ -40,8 +40,8 @@ func resourceDatadogDowntime() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-					_, endDatePresent := d.GetOk("start_date")
-					return endDatePresent
+					_, startDatePresent := d.GetOk("start_date")
+					return startDatePresent
 				},
 			},
 			"start_date": {

@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 	"testing"
@@ -328,11 +329,46 @@ func TestAccDatadogDowntimeDates(t *testing.T) {
 	})
 }
 
+func TestAccDatadogDowntimeDatesConflict(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Steps: []resource.TestStep{
+			resource.TestStep{
+				Config:      testAccCheckDatadogDowntimeConfigDatesConflict,
+				ExpectError: regexp.MustCompile("\"start_date\": conflicts with start"),
+			},
+			resource.TestStep{
+				Config:      testAccCheckDatadogDowntimeConfigDatesConflict,
+				ExpectError: regexp.MustCompile("\"end_date\": conflicts with end"),
+			},
+		},
+	})
+}
+
 const testAccCheckDatadogDowntimeConfigDates = `
 resource "datadog_downtime" "foo" {
   scope = ["*"]
   start_date = "2099-10-31T11:11:00+01:00"
   end_date = "2099-10-31T21:00:00+01:00"
+
+  recurrence {
+    type   = "days"
+    period = 1
+  }
+
+  message = "Example Datadog downtime message."
+}
+`
+
+const testAccCheckDatadogDowntimeConfigDatesConflict = `
+resource "datadog_downtime" "foo" {
+  scope = ["*"]
+  start_date = "2099-10-31T11:11:00+01:00"
+  start = 1735707600
+  end_date = "2099-10-31T11:11:00+01:00"
+  end = 1735707600
 
   recurrence {
     type   = "days"
