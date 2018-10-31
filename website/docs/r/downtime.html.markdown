@@ -23,6 +23,12 @@ resource "datadog_downtime" "foo" {
     type   = "days"
     period = 1
   }
+
+  # Datadog API will reject dates in the past so let's ignore `start` and `end`
+  # arguments during lifecycle
+  lifecycle {
+    ignore_changes = ["start", "end"]
+  }
 }
 ```
 
@@ -34,7 +40,9 @@ The following arguments are supported:
 * `active` - (Optional) A flag indicating if the downtime is active now.
 * `disabled` - (Optional) A flag indicating if the downtime was disabled.
 * `start` - (Optional) POSIX timestamp to start the downtime.
+* `start_date` - (Optional) String representing date and time to start the downtime in RFC3339 format.
 * `end` - (Optional) POSIX timestamp to end the downtime.
+* `end_date` - (Optional) String representing date and time to end the downtime in RFC3339 format.
 * `recurrence` - (Optional) A dictionary to configure the downtime to be recurring.
     * `type` - days, weeks, months, or years
     * `period` - How often to repeat as an integer. For example to repeat every 3 days, select a type of days and a period of 3.

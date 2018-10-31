@@ -300,6 +300,49 @@ func testAccCheckDatadogDowntimeExists(n string) resource.TestCheckFunc {
 	}
 }
 
+func TestAccDatadogDowntimeDates(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Steps: []resource.TestStep{
+			resource.TestStep{
+				Config: testAccCheckDatadogDowntimeConfigDates,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "scope.0", "*"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "start_date", "2099-10-31T11:11:00+01:00"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "end_date", "2099-10-31T21:00:00+01:00"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "recurrence.0.type", "days"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "recurrence.0.period", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+				),
+			},
+		},
+	})
+}
+
+const testAccCheckDatadogDowntimeConfigDates = `
+resource "datadog_downtime" "foo" {
+  scope = ["*"]
+  start_date = "2099-10-31T11:11:00+01:00"
+  end_date = "2099-10-31T21:00:00+01:00"
+
+  recurrence {
+    type   = "days"
+    period = 1
+  }
+
+  message = "Example Datadog downtime message."
+}
+`
+
 const testAccCheckDatadogDowntimeConfig = `
 resource "datadog_downtime" "foo" {
   scope = ["*"]
