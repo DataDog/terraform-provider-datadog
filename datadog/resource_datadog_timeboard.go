@@ -209,6 +209,11 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Optional:    true,
 					Description: "Include ungrouped hosts in hostmap graphs",
 				},
+				"node_type": &schema.Schema{
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Type of nodes to show in hostmap graphs (either 'host' or 'container').",
+				},
 			},
 		},
 	}
@@ -449,8 +454,16 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 				pf, _ := strconv.ParseBool(v.(string))
 				gs.SetPaletteFlip(pf)
 			}
-			d.Definition.SetStyle(gs)
 
+			if v, ok := s["fill_min"]; ok {
+				gs.SetFillMin(json.Number(v.(string)))
+			}
+
+			if v, ok := s["fill_max"]; ok {
+				gs.SetFillMax(json.Number(v.(string)))
+			}
+
+			d.Definition.SetStyle(gs)
 		}
 
 		if v, ok := t["group"]; ok {
@@ -472,6 +485,11 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 		if v, ok := t["include_ungrouped_hosts"]; ok {
 			d.Definition.SetIncludeUngroupedHosts(v.(bool))
 		}
+
+		if v, ok := t["node_type"]; ok {
+			d.Definition.SetNodeType(v.(string))
+		}
+
 		v := t["marker"].([]interface{})
 		appendMarkers(d, &v)
 
@@ -665,6 +683,12 @@ func buildTerraformGraph(datadog_graph datadog.Graph) map[string]interface{} {
 		if v, ok := v.GetPaletteFlipOk(); ok {
 			style["palette_flip"] = strconv.FormatBool(v)
 		}
+		if v, ok := v.GetFillMinOk(); ok {
+			style["fill_min"] = string(v)
+		}
+		if v, ok := v.GetFillMaxOk(); ok {
+			style["fill_max"] = string(v)
+		}
 		graph["style"] = style
 	}
 	if definition.Groups != nil {
@@ -678,6 +702,9 @@ func buildTerraformGraph(datadog_graph datadog.Graph) map[string]interface{} {
 	}
 	if v, ok := definition.GetIncludeUngroupedHostsOk(); ok {
 		graph["include_ungrouped_hosts"] = v
+	}
+	if v, ok := definition.GetNodeTypeOk(); ok {
+		graph["node_type"] = v
 	}
 
 	requests := []map[string]interface{}{}
