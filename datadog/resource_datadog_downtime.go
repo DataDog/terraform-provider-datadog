@@ -5,9 +5,11 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/zorkian/go-datadog-api"
+	"github.com/hashicorp/terraform/helper/validation"
+	datadog "github.com/zorkian/go-datadog-api"
 )
 
 func resourceDatadogDowntime() *schema.Resource {
@@ -25,14 +27,42 @@ func resourceDatadogDowntime() *schema.Resource {
 			"active": {
 				Type:     schema.TypeBool,
 				Optional: true,
+				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+					_, recurrencePresent := d.GetOk("recurrence")
+					return recurrencePresent
+				},
 			},
 			"disabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
+			"start": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+					_, startDatePresent := d.GetOk("start_date")
+					return startDatePresent
+				},
+			},
+			"start_date": {
+				Type:          schema.TypeString,
+				ValidateFunc:  validation.ValidateRFC3339TimeString,
+				ConflictsWith: []string{"start"},
+				Optional:      true,
+			},
 			"end": {
 				Type:     schema.TypeInt,
 				Optional: true,
+				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+					_, endDatePresent := d.GetOk("end_date")
+					return endDatePresent
+				},
+			},
+			"end_date": {
+				Type:          schema.TypeString,
+				ValidateFunc:  validation.ValidateRFC3339TimeString,
+				ConflictsWith: []string{"end"},
+				Optional:      true,
 			},
 			"message": {
 				Type:     schema.TypeString,
@@ -82,10 +112,6 @@ func resourceDatadogDowntime() *schema.Resource {
 				Required: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			"start": {
-				Type:     schema.TypeInt,
-				Optional: true,
-			},
 			"monitor_id": {
 				Type:     schema.TypeInt,
 				Optional: true,
@@ -105,6 +131,10 @@ func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
 	}
 	if attr, ok := d.GetOk("end"); ok {
 		dt.SetEnd(attr.(int))
+	} else if attr, ok := d.GetOk("end_date"); ok {
+		if t, err := time.Parse(time.RFC3339, attr.(string)); err == nil {
+			dt.SetEnd(int(t.Unix()))
+		}
 	}
 	if attr, ok := d.GetOk("message"); ok {
 		dt.SetMessage(strings.TrimSpace(attr.(string)))
@@ -144,6 +174,10 @@ func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
 	dt.Scope = scope
 	if attr, ok := d.GetOk("start"); ok {
 		dt.SetStart(attr.(int))
+	} else if attr, ok := d.GetOk("start_date"); ok {
+		if t, err := time.Parse(time.RFC3339, attr.(string)); err == nil {
+			dt.SetStart(int(t.Unix()))
+		}
 	}
 
 	return &dt
@@ -249,66 +283,14 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
 
-	var dt datadog.Downtime
-
+	dt := buildDowntimeStruct(d)
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err
 	}
-
 	dt.SetId(id)
-	if attr, ok := d.GetOk("active"); ok {
-		dt.SetActive(attr.(bool))
-	}
-	if attr, ok := d.GetOk("disabled"); ok {
-		dt.SetDisabled(attr.(bool))
-	}
-	if attr, ok := d.GetOk("end"); ok {
-		dt.SetEnd(attr.(int))
-	}
-	if attr, ok := d.GetOk("message"); ok {
-		dt.SetMessage(attr.(string))
-	}
-	if attr, ok := d.GetOk("monitor_id"); ok {
-		dt.SetMonitorId(attr.(int))
-	}
 
-	if _, ok := d.GetOk("recurrence"); ok {
-		var recurrence datadog.Recurrence
-
-		if attr, ok := d.GetOk("recurrence.0.period"); ok {
-			recurrence.SetPeriod(attr.(int))
-		}
-		if attr, ok := d.GetOk("recurrence.0.type"); ok {
-			recurrence.SetType(attr.(string))
-		}
-		if attr, ok := d.GetOk("recurrence.0.until_date"); ok {
-			recurrence.SetUntilDate(attr.(int))
-		}
-		if attr, ok := d.GetOk("recurrence.0.until_occurrences"); ok {
-			recurrence.SetUntilOccurrences(attr.(int))
-		}
-		if attr, ok := d.GetOk("recurrence.0.week_days"); ok {
-			weekDays := make([]string, 0, len(attr.([]interface{})))
-			for _, weekDay := range attr.([]interface{}) {
-				weekDays = append(weekDays, weekDay.(string))
-			}
-			recurrence.WeekDays = weekDays
-		}
-
-		dt.SetRecurrence(recurrence)
-	}
-
-	scope := make([]string, 0)
-	for _, v := range d.Get("scope").([]interface{}) {
-		scope = append(scope, v.(string))
-	}
-	dt.Scope = scope
-	if attr, ok := d.GetOk("start"); ok {
-		dt.SetStart(attr.(int))
-	}
-
-	if err = client.UpdateDowntime(&dt); err != nil {
+	if err = client.UpdateDowntime(dt); err != nil {
 		return fmt.Errorf("error updating downtime: %s", err.Error())
 	}
 
