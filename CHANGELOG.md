@@ -1,4 +1,13 @@
 ## 1.5.0 (Unreleased)
+
+IMPROVEMENTS:
+
+* Add Google Cloud Platform integration ([#108](https://github.com/terraform-providers/terraform-provider-datadog/pull/108))
+* Add new hostmap widget options: `node type`, `fill_min` and `fill_max`. ([#106](https://github.com/terraform-providers/terraform-provider-datadog/pull/106))
+* Use dates to set downtime interval, improve docs. ([#113](https://github.com/terraform-providers/terraform-provider-datadog/pull/113))
+* Bump Terraform provider SDK to latest. ([#110](https://github.com/terraform-providers/terraform-provider-datadog/pull/110))
+* Better document `evaluation_delay` option. ([#112](https://github.com/terraform-providers/terraform-provider-datadog/pull/112))
+
 ## 1.4.0 (October 02, 2018)
 
 IMPROVEMENTS:
