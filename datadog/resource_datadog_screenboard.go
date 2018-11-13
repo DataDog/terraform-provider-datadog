@@ -175,7 +175,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Default:  true,
 				},
 				"precision": &schema.Schema{
-					Type:     schema.TypeString,
+					Type:     schema.TypeFloat,
 					Optional: true,
 				},
 				"text_align": &schema.Schema{
@@ -317,7 +317,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Optional: true,
 				},
 				"precision": &schema.Schema{
-					Type:     schema.TypeString,
+					Type:     schema.TypeFloat,
 					Optional: true,
 				},
 				"tags": &schema.Schema{
@@ -547,12 +547,12 @@ func resourceDatadogScreenboard() *schema.Resource {
 				Description: "Name of the screenboard",
 			},
 			"height": &schema.Schema{
-				Type:        schema.TypeString,
+				Type:        schema.TypeInt,
 				Optional:    true,
 				Description: "Height of the screenboard",
 			},
 			"width": &schema.Schema{
-				Type:        schema.TypeString,
+				Type:        schema.TypeInt,
 				Optional:    true,
 				Description: "Width of the screenboard",
 			},
@@ -956,8 +956,8 @@ func buildScreenboard(d *schema.ResourceData) (*datadog.Screenboard, error) {
 	return &datadog.Screenboard{
 		Id:                datadog.Int(id),
 		Title:             datadog.String(d.Get("title").(string)),
-		Height:            datadog.String(d.Get("height").(string)),
-		Width:             datadog.String(d.Get("width").(string)),
+		Height:            datadog.Int(d.Get("height").(int)),
+		Width:             datadog.Int(d.Get("width").(int)),
 		Shared:            datadog.Bool(d.Get("shared").(bool)),
 		ReadOnly:          datadog.Bool(d.Get("read_only").(bool)),
 		Widgets:           buildWidgets(&terraformWidgets),
