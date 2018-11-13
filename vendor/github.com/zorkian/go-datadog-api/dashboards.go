@@ -52,11 +52,13 @@ type GraphEvent struct {
 }
 
 type Yaxis struct {
-	Min     *float64 `json:"min,omitempty"`
-	AutoMin bool     `json:"-"`
-	Max     *float64 `json:"max,omitempty"`
-	AutoMax bool     `json:"-"`
-	Scale   *string  `json:"scale,omitempty"`
+	Min          *float64 `json:"min,omitempty"`
+	AutoMin      bool     `json:"-"`
+	Max          *float64 `json:"max,omitempty"`
+	AutoMax      bool     `json:"-"`
+	Scale        *string  `json:"scale,omitempty"`
+	IncludeZero  *bool    `json:"includeZero,omitempty"`
+	IncludeUnits *bool    `json:"units,omitempty"`
 }
 
 // UnmarshalJSON is a Custom Unmarshal for Yaxis.Min/Yaxis.Max. If the datadog API
