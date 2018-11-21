@@ -956,8 +956,8 @@ func buildScreenboard(d *schema.ResourceData) (*datadog.Screenboard, error) {
 	return &datadog.Screenboard{
 		Id:                datadog.Int(id),
 		Title:             datadog.String(d.Get("title").(string)),
-		Height:            datadog.String(d.Get("height").(string)),
-		Width:             datadog.String(d.Get("width").(string)),
+		Height:            datadog.Int(d.Get("height").(int)),
+		Width:             datadog.Int(d.Get("width").(int)),
 		Shared:            datadog.Bool(d.Get("shared").(bool)),
 		ReadOnly:          datadog.Bool(d.Get("read_only").(bool)),
 		Widgets:           buildWidgets(&terraformWidgets),

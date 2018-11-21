@@ -423,6 +423,13 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 			if v, ok := yaxis["scale"]; ok {
 				d.Definition.Yaxis.SetScale(v.(string))
 			}
+			if v, ok := t["include_zero"]; ok {
+				d.Definition.Yaxis.SetIncludeZero(v.(bool))
+			}
+
+			if v, ok := t["include_units"]; ok {
+				d.Definition.Yaxis.SetIncludeUnits(v.(bool))
+			}
 		}
 
 		if v, ok := t["autoscale"]; ok {
@@ -658,6 +665,14 @@ func buildTerraformGraph(datadog_graph datadog.Graph) map[string]interface{} {
 
 	if v, ok := definition.Yaxis.GetScaleOk(); ok {
 		yaxis["scale"] = v
+	}
+
+	if v, ok := definition.Yaxis.GetIncludeZeroOk(); ok {
+		yaxis["include_zero"] = strconv.FormatBool(v)
+	}
+
+	if v, ok := definition.Yaxis.GetIncludeUnitsOk(); ok {
+		yaxis["include_unis"] = strconv.FormatBool(v)
 	}
 
 	graph["yaxis"] = yaxis
