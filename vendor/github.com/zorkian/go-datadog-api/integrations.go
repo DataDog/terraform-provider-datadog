@@ -162,16 +162,6 @@ func (client *Client) CreateIntegrationAWS(awsAccount *IntegrationAWSAccount) (*
 	return &out, nil
 }
 
-// Update API call is not verified yet
-func (client *Client) UpdateIntegrationAWS(awsAccount *IntegrationAWSAccount) (*IntegrationAWSAccountCreateResponse, error) {
-	var out IntegrationAWSAccountCreateResponse
-	if err := client.doJsonRequest("PUT", "/v1/integration/aws", awsAccount, &out); err != nil {
-		return nil, err
-	}
-
-	return &out, nil
-}
-
 // GetIntegrationAWS gets all the AWS Accounts in the AWS Integrations from Datadog.
 func (client *Client) GetIntegrationAWS() (*[]IntegrationAWSAccount, error) {
 	var response IntegrationAWSAccountGetResponse

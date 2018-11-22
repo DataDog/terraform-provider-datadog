@@ -33,21 +33,25 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 			"role_name": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true, // waits for update API call support
 			},
 			"filter_tags": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
+				ForceNew: true, // waits for update API call support
 			},
 			"host_tags": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
+				ForceNew: true, // waits for update API call support
 			},
 			"account_specific_namespace_rules": {
 				Type:     schema.TypeMap,
 				Optional: true,
 				Elem:     schema.TypeBool,
+				ForceNew: true, // waits for update API call support
 			},
 			"external_id": {
 				Type:     schema.TypeString,
@@ -155,13 +159,27 @@ func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{})
 }
 
 func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{}) error {
+	// Unfortunately the PUT operation for updating the AWS configuration is not available at the moment.
+	// However this feature is one we have in our backlog. I don't know if it's scheduled for delivery short-term,
+	// however I will follow-up after reviewing with product management.
+	// ©
+
+	// UpdateIntegrationAWS function:
+	// func (client *Client) UpdateIntegrationAWS(awsAccount *IntegrationAWSAccount) (*IntegrationAWSAccountCreateResponse, error) {
+	// 	var out IntegrationAWSAccountCreateResponse
+	// 	if err := client.doJsonRequest("PUT", "/v1/integration/aws", awsAccount, &out); err != nil {
+	// 		return nil, err
+	// 	}
+	// 	return &out, nil
+	// }
+
 	client := meta.(*datadog.Client)
 
 	accountID, roleName := accountAndRoleFromID(d.Id())
 
 	iaws := resourceDatadogIntegrationAwsPrepareCreateRequest(d, accountID, roleName)
 
-	_, err := client.UpdateIntegrationAWS(&iaws)
+	_, err := client.CreateIntegrationAWS(&iaws)
 	if err != nil {
 		return fmt.Errorf("error updating a Amazon Web Services integration: %s", err.Error())
 	}
