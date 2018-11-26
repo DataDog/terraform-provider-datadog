@@ -10,8 +10,8 @@ func TestAccountAndRoleFromID(t *testing.T) {
 		accountID string
 		roleName  string
 	}{
-		"basic":       {"1234_qwe", "1234", "qwe"},
-		"underscores": {"1234_qwe_rty_asd", "1234", "qwe_rty_asd"},
+		"basic":       {"1234:qwe", "1234", "qwe"},
+		"underscores": {"1234:qwe_rty_asd", "1234", "qwe_rty_asd"},
 	}
 	for name, tc := range cases {
 		accountID, roleName := accountAndRoleFromID(tc.id)

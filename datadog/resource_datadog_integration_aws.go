@@ -10,7 +10,7 @@ import (
 )
 
 func accountAndRoleFromID(id string) (string, string) {
-	result := strings.SplitN(id, "_", 2)
+	result := strings.SplitN(id, ":", 2)
 	return result[0], result[1]
 }
 
@@ -129,7 +129,7 @@ func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{
 		return fmt.Errorf("error creating a Amazon Web Services integration: %s", err.Error())
 	}
 
-	d.SetId(fmt.Sprintf("%s_%s", accountID, roleName))
+	d.SetId(fmt.Sprintf("%s:%s", accountID, roleName))
 	d.Set("external_id", response.ExternalID)
 
 	return resourceDatadogIntegrationAwsRead(d, meta)
