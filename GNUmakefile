@@ -2,11 +2,19 @@ TEST?=$$(go list ./... |grep -v 'vendor')
 GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 WEBSITE_REPO=github.com/hashicorp/terraform-website
 PKG_NAME=datadog
+DIR=~/.terraform.d/plugins
 
 default: build
 
 build: fmtcheck
 	go install
+
+install: fmtcheck
+	mkdir -vp $(DIR)
+	go build -o $(DIR)/terraform-provider-datadog
+
+uninstall:
+	@rm -vf $(DIR)/terraform-provider-datadog
 
 test: fmtcheck
 	go test -i $(TEST) || exit 1
