@@ -3,6 +3,7 @@ package datadog
 import (
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -207,5 +208,6 @@ func resourceDatadogIntegrationAwsImport(d *schema.ResourceData, meta interface{
 	if err := resourceDatadogIntegrationAwsRead(d, meta); err != nil {
 		return nil, err
 	}
+	d.Set("external_id", os.Getenv("EXTERNAL_ID"))
 	return []*schema.ResourceData{d}, nil
 }

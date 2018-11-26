@@ -57,7 +57,6 @@ The following attributes are exported:
 Amazon Web Services integrations can be imported using their account ID and role name, e.g.
 
 ```
-$ terraform import datadog_integration_aws.test ${account_id}_${role_name}
+$ EXTERNAL_ID=${external_id} terraform import datadog_integration_aws.test ${account_id}_${role_name}
 ```
 
-Note that imported resource will miss `external_id` attribute.
