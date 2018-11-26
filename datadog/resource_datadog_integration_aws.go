@@ -2,7 +2,6 @@ package datadog
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -118,21 +117,20 @@ func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, a
 }
 
 func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{}) error {
-	log.Printf("[WARN] debugging logger")
 	client := meta.(*datadog.Client)
 
 	accountID := d.Get("account_id").(string)
 	roleName := d.Get("role_name").(string)
 
 	iaws := resourceDatadogIntegrationAwsPrepareCreateRequest(d, accountID, roleName)
-	responce, err := client.CreateIntegrationAWS(&iaws)
+	response, err := client.CreateIntegrationAWS(&iaws)
 
 	if err != nil {
 		return fmt.Errorf("error creating a Amazon Web Services integration: %s", err.Error())
 	}
 
 	d.SetId(fmt.Sprintf("%s_%s", accountID, roleName))
-	d.Set("external_id", responce.ExternalID)
+	d.Set("external_id", response.ExternalID)
 
 	return resourceDatadogIntegrationAwsRead(d, meta)
 }
