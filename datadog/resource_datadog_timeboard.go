@@ -182,6 +182,23 @@ func resourceDatadogTimeboard() *schema.Resource {
 				"style": &schema.Schema{
 					Type:     schema.TypeMap,
 					Optional: true,
+					// `palette_flip` is bool but Terraform treats it as a string
+					// as part of the `style` map so we suppress the diff when
+					// value in the state and value from the api are the same
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						var oldBool, newBool bool
+						var err error
+
+						if oldBool, err = strconv.ParseBool(old); err != nil {
+							return false
+						}
+
+						if newBool, err = strconv.ParseBool(new); err != nil {
+							return false
+						}
+
+						return oldBool == newBool
+					},
 				},
 				"group": &schema.Schema{
 					Type:        schema.TypeList,
