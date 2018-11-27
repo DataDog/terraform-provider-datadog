@@ -9,9 +9,12 @@ import (
 	"github.com/zorkian/go-datadog-api"
 )
 
-func accountAndRoleFromID(id string) (string, string) {
+func accountAndRoleFromID(id string) (string, string, error) {
 	result := strings.SplitN(id, ":", 2)
-	return result[0], result[1]
+	if len(result) != 2 {
+		return "", "", fmt.Errorf("error extracting account ID and Role name from an Amazon Web Services integration id: %s", id)
+	}
+	return result[0], result[1], nil
 }
 
 func resourceDatadogIntegrationAws() *schema.Resource {
@@ -70,7 +73,10 @@ func resourceDatadogIntegrationAwsExists(d *schema.ResourceData, meta interface{
 	if err != nil {
 		return false, err
 	}
-	accountID, roleName := accountAndRoleFromID(d.Id())
+	accountID, roleName, err := accountAndRoleFromID(d.Id())
+	if err != nil {
+		return false, err
+	}
 	for _, integration := range *integrations {
 		if integration.GetAccountID() == accountID && integration.GetRoleName() == roleName {
 			return true, nil
@@ -138,7 +144,11 @@ func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{
 func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
 
-	accountID, roleName := accountAndRoleFromID(d.Id())
+	accountID, roleName, err := accountAndRoleFromID(d.Id())
+
+	if err != nil {
+		return err
+	}
 
 	integrations, err := client.GetIntegrationAWS()
 	if err != nil {
@@ -174,11 +184,14 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 
 	client := meta.(*datadog.Client)
 
-	accountID, roleName := accountAndRoleFromID(d.Id())
+	accountID, roleName, err := accountAndRoleFromID(d.Id())
+	if err != nil {
+		return err
+	}
 
 	iaws := resourceDatadogIntegrationAwsPrepareCreateRequest(d, accountID, roleName)
 
-	_, err := client.CreateIntegrationAWS(&iaws)
+	_, err = client.CreateIntegrationAWS(&iaws)
 	if err != nil {
 		return fmt.Errorf("error updating a Amazon Web Services integration: %s", err.Error())
 	}
@@ -188,7 +201,10 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 
 func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
-	accountID, roleName := accountAndRoleFromID(d.Id())
+	accountID, roleName, err := accountAndRoleFromID(d.Id())
+	if err != nil {
+		return err
+	}
 
 	if err := client.DeleteIntegrationAWS(
 		&datadog.IntegrationAWSAccountDeleteRequest{
