@@ -21,6 +21,19 @@ resource "datadog_timeboard" "acceptance_test" {
     viz = "toplist"
     request {
       q = "top(avg:docker.cpu.system{*} by {container_name}, 10, 'mean', 'desc')"
+		}
+		style {
+      palette_flip = false
+    }
+  }
+  graph {
+    title = "Top System CPU by Docker container, flipped"
+    viz = "toplist"
+    request {
+      q = "top(avg:docker.cpu.system{*} by {container_name}, 10, 'mean', 'desc')"
+		}
+		style {
+      palette_flip = true
     }
   }
 }
@@ -127,6 +140,8 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.title", "Top System CPU by Docker container"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.viz", "toplist"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.0.q", "top(avg:docker.cpu.system{*} by {container_name}, 10, 'mean', 'desc')"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.style.palette_flip", "0"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.1.style.palette_flip", "1"),
 		),
 	}
 
