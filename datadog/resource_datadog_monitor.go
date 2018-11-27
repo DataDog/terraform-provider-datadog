@@ -408,6 +408,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	if attr, ok := d.GetOk("escalation_message"); ok {
 		o.SetEscalationMessage(attr.(string))
 	}
+	silenced := false
 	if attr, ok := d.GetOk("silenced"); ok {
 		// TODO: this is not very defensive, test if we can fail non int input
 		s := make(map[string]int)
@@ -415,6 +416,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 			s[k] = v.(int)
 		}
 		o.Silenced = s
+		silenced = true
 	}
 	if attr, ok := d.GetOk("locked"); ok {
 		o.SetLocked(attr.(bool))
@@ -426,7 +428,19 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		return fmt.Errorf("error updating monitor: %s", err.Error())
 	}
 
-	return resourceDatadogMonitorRead(d, meta)
+	var retval error
+	if retval = resourceDatadogMonitorRead(d, meta); retval != nil {
+		return retval
+	}
+
+	if _, ok := d.GetOk("silenced"); ok && !silenced {
+		// This means the monitor must be manually unmuted since the API
+		// wouldn't do it automatically when `silenced` is just missing
+		retval = client.UnmuteMonitor(*m.Id)
+		d.Set("silenced", nil)
+	}
+
+	return retval
 }
 
 func resourceDatadogMonitorDelete(d *schema.ResourceData, meta interface{}) error {
