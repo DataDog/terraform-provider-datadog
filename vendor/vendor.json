@@ -932,12 +932,10 @@
 			"revisionTime": "2018-10-17T23:26:04Z"
 		},
 		{
-			"checksumSHA1": "789joLgasdUcxF6qQy8Pn+IfGhw=",
+			"checksumSHA1": "R+mXTTMaw8ucB7pQDD0p+X13dK8=",
 			"path": "github.com/zorkian/go-datadog-api",
-			"revision": "f3f6d2f4859047aae0cac1ce3d16689608480fd9",
-			"revisionTime": "2018-11-12T21:37:59Z",
-			"version": "v2.18.0",
-			"versionExact": "v2.18.0"
+			"revision": "1df5bda80d16ccfa8e99c543dbeb731665acbfca",
+			"revisionTime": "2018-11-27T19:12:41Z"
 		},
 		{
 			"checksumSHA1": "vE43s37+4CJ2CDU6TlOUOYE0K9c=",

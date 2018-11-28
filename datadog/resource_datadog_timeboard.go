@@ -158,6 +158,23 @@ func resourceDatadogTimeboard() *schema.Resource {
 				"yaxis": &schema.Schema{
 					Type:     schema.TypeMap,
 					Optional: true,
+					// `include_zero` and `include_units` are bool but Terraform treats them as strings
+					// as part of the `yaxis` map so we suppress the diff when
+					// value in the state and value from the api are the same
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						var oldBool, newBool bool
+						var err error
+
+						if oldBool, err = strconv.ParseBool(old); err != nil {
+							return false
+						}
+
+						if newBool, err = strconv.ParseBool(new); err != nil {
+							return false
+						}
+
+						return oldBool == newBool
+					},
 				},
 				"autoscale": &schema.Schema{
 					Type:        schema.TypeBool,
@@ -440,12 +457,14 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 			if v, ok := yaxis["scale"]; ok {
 				d.Definition.Yaxis.SetScale(v.(string))
 			}
-			if v, ok := t["include_zero"]; ok {
-				d.Definition.Yaxis.SetIncludeZero(v.(bool))
+			if v, ok := yaxis["include_zero"]; ok {
+				b, _ := strconv.ParseBool(v.(string))
+				d.Definition.Yaxis.SetIncludeZero(b)
 			}
 
-			if v, ok := t["include_units"]; ok {
-				d.Definition.Yaxis.SetIncludeUnits(v.(bool))
+			if v, ok := yaxis["include_units"]; ok {
+				b, _ := strconv.ParseBool(v.(string))
+				d.Definition.Yaxis.SetIncludeUnits(b)
 			}
 		}
 
@@ -460,7 +479,7 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 		if precision, ok := t["precision"]; ok {
 			val := precision.(string)
 			if val != "" {
-				d.Definition.SetPrecision(json.Number(val))
+				d.Definition.SetPrecision(datadog.PrecisionT(val))
 			}
 		}
 
@@ -692,7 +711,7 @@ func buildTerraformGraph(datadogGraph datadog.Graph) map[string]interface{} {
 	}
 
 	if v, ok := definition.Yaxis.GetIncludeUnitsOk(); ok {
-		yaxis["include_unis"] = strconv.FormatBool(v)
+		yaxis["include_units"] = strconv.FormatBool(v)
 	}
 
 	graph["yaxis"] = yaxis

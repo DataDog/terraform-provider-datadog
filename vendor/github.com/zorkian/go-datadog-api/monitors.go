@@ -61,6 +61,7 @@ type Options struct {
 	IncludeTags       *bool             `json:"include_tags,omitempty"`
 	RequireFullWindow *bool             `json:"require_full_window,omitempty"`
 	Locked            *bool             `json:"locked,omitempty"`
+	EnableLogsSample  *bool             `json:"enable_logs_sample,omitempty"`
 }
 
 type TriggeringValue struct {
