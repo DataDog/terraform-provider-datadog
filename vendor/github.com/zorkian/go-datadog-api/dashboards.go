@@ -123,10 +123,10 @@ type GraphDefinition struct {
 	Yaxis Yaxis `json:"yaxis,omitempty"`
 
 	// For query value type graphs
-	Autoscale  *bool        `json:"autoscale,omitempty"`
-	TextAlign  *string      `json:"text_align,omitempty"`
-	Precision  *json.Number `json:"precision,omitempty"`
-	CustomUnit *string      `json:"custom_unit,omitempty"`
+	Autoscale  *bool       `json:"autoscale,omitempty"`
+	TextAlign  *string     `json:"text_align,omitempty"`
+	Precision  *PrecisionT `json:"precision,omitempty"`
+	CustomUnit *string     `json:"custom_unit,omitempty"`
 
 	// For hostmaps
 	Style                 *Style   `json:"style,omitempty"`

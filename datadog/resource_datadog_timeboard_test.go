@@ -132,7 +132,7 @@ resource "datadog_timeboard" "acceptance_test" {
 
 func TestAccDatadogTimeboard_update(t *testing.T) {
 
-	step1 := resource.TestStep{
+	step0 := resource.TestStep{
 		Config: config1,
 		Check: resource.ComposeTestCheckFunc(
 			checkExists,
@@ -147,7 +147,7 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 		),
 	}
 
-	step2 := resource.TestStep{
+	step1 := resource.TestStep{
 		Config: config2,
 		Check: resource.ComposeTestCheckFunc(
 			checkExists,
@@ -171,7 +171,7 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 		),
 	}
 
-	step3 := resource.TestStep{
+	step2 := resource.TestStep{
 		Config: config3,
 		Check: resource.ComposeTestCheckFunc(
 			checkExists,
@@ -211,7 +211,7 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
 		CheckDestroy: checkDestroy,
-		Steps:        []resource.TestStep{step1, step2, step3},
+		Steps:        []resource.TestStep{step0, step1, step2},
 	})
 }
 

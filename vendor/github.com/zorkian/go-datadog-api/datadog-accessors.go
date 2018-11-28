@@ -2897,7 +2897,7 @@ func (g *GraphDefinition) SetNodeType(v string) {
 }
 
 // GetPrecision returns the Precision field if non-nil, zero value otherwise.
-func (g *GraphDefinition) GetPrecision() json.Number {
+func (g *GraphDefinition) GetPrecision() PrecisionT {
 	if g == nil || g.Precision == nil {
 		return ""
 	}
@@ -2906,7 +2906,7 @@ func (g *GraphDefinition) GetPrecision() json.Number {
 
 // GetPrecisionOk returns a tuple with the Precision field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
-func (g *GraphDefinition) GetPrecisionOk() (json.Number, bool) {
+func (g *GraphDefinition) GetPrecisionOk() (PrecisionT, bool) {
 	if g == nil || g.Precision == nil {
 		return "", false
 	}
@@ -2923,7 +2923,7 @@ func (g *GraphDefinition) HasPrecision() bool {
 }
 
 // SetPrecision allocates a new g.Precision and returns the pointer to it.
-func (g *GraphDefinition) SetPrecision(v json.Number) {
+func (g *GraphDefinition) SetPrecision(v PrecisionT) {
 	g.Precision = &v
 }
 
@@ -5469,6 +5469,37 @@ func (m *Monitor) SetType(v string) {
 	m.Type = &v
 }
 
+// GetEnableLogsSample returns the EnableLogsSample field if non-nil, zero value otherwise.
+func (o *Options) GetEnableLogsSample() bool {
+	if o == nil || o.EnableLogsSample == nil {
+		return false
+	}
+	return *o.EnableLogsSample
+}
+
+// GetEnableLogsSampleOk returns a tuple with the EnableLogsSample field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (o *Options) GetEnableLogsSampleOk() (bool, bool) {
+	if o == nil || o.EnableLogsSample == nil {
+		return false, false
+	}
+	return *o.EnableLogsSample, true
+}
+
+// HasEnableLogsSample returns a boolean if a field has been set.
+func (o *Options) HasEnableLogsSample() bool {
+	if o != nil && o.EnableLogsSample != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableLogsSample allocates a new o.EnableLogsSample and returns the pointer to it.
+func (o *Options) SetEnableLogsSample(v bool) {
+	o.EnableLogsSample = &v
+}
+
 // GetEscalationMessage returns the EscalationMessage field if non-nil, zero value otherwise.
 func (o *Options) GetEscalationMessage() string {
 	if o == nil || o.EscalationMessage == nil {
@@ -7795,7 +7826,7 @@ func (t *TileDef) SetNoMetricHosts(v bool) {
 }
 
 // GetPrecision returns the Precision field if non-nil, zero value otherwise.
-func (t *TileDef) GetPrecision() json.Number {
+func (t *TileDef) GetPrecision() PrecisionT {
 	if t == nil || t.Precision == nil {
 		return ""
 	}
@@ -7804,7 +7835,7 @@ func (t *TileDef) GetPrecision() json.Number {
 
 // GetPrecisionOk returns a tuple with the Precision field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
-func (t *TileDef) GetPrecisionOk() (json.Number, bool) {
+func (t *TileDef) GetPrecisionOk() (PrecisionT, bool) {
 	if t == nil || t.Precision == nil {
 		return "", false
 	}
@@ -7821,7 +7852,7 @@ func (t *TileDef) HasPrecision() bool {
 }
 
 // SetPrecision allocates a new t.Precision and returns the pointer to it.
-func (t *TileDef) SetPrecision(v json.Number) {
+func (t *TileDef) SetPrecision(v PrecisionT) {
 	t.Precision = &v
 }
 
@@ -10089,7 +10120,7 @@ func (w *Widget) SetParams(v Params) {
 }
 
 // GetPrecision returns the Precision field if non-nil, zero value otherwise.
-func (w *Widget) GetPrecision() string {
+func (w *Widget) GetPrecision() PrecisionT {
 	if w == nil || w.Precision == nil {
 		return ""
 	}
@@ -10098,7 +10129,7 @@ func (w *Widget) GetPrecision() string {
 
 // GetPrecisionOk returns a tuple with the Precision field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
-func (w *Widget) GetPrecisionOk() (string, bool) {
+func (w *Widget) GetPrecisionOk() (PrecisionT, bool) {
 	if w == nil || w.Precision == nil {
 		return "", false
 	}
@@ -10115,7 +10146,7 @@ func (w *Widget) HasPrecision() bool {
 }
 
 // SetPrecision allocates a new w.Precision and returns the pointer to it.
-func (w *Widget) SetPrecision(v string) {
+func (w *Widget) SetPrecision(v PrecisionT) {
 	w.Precision = &v
 }
 
