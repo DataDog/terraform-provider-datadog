@@ -1,4 +1,9 @@
 ## 1.6.0 (Unreleased)
+
+IMPROVEMENTS
+
+* Pull changes from go-datadog-api v2.18.0 ([#121](https://github.com/terraform-providers/terraform-provider-datadog/pull/121))
+
 ## 1.5.0 (November 06, 2018)
 
 IMPROVEMENTS:

@@ -97,6 +97,8 @@ resource "datadog_timeboard" "acceptance_test" {
     yaxis {
       max = "50"
       scale = "sqrt"
+			include_zero = true
+			include_units = true
     }
   }
   graph {
@@ -184,6 +186,8 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.marker.0.value", "y > 100"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.yaxis.max", "50"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.yaxis.scale", "sqrt"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.yaxis.include_units", "true"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.yaxis.include_zero", "true"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.1.title", "ELB Requests"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.1.viz", "query_value"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.1.request.0.q", "sum:aws.elb.request_count{*}.as_count()"),
