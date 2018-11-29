@@ -32,7 +32,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Optional: true,
 					Default:  "line",
 				},
-				"aggregator": {
+				"aggregator": &schema.Schema{
 					Type:         schema.TypeString,
 					Optional:     true,
 					ValidateFunc: validateAggregatorMethod,
@@ -845,20 +845,4 @@ func resourceDatadogTimeboardExists(d *schema.ResourceData, meta interface{}) (b
 		return false, err
 	}
 	return true, nil
-}
-
-func validateAggregatorMethod(v interface{}, k string) (ws []string, errors []error) {
-	value := v.(string)
-	validMethods := map[string]struct{}{
-		"avg":  {},
-		"max":  {},
-		"min":  {},
-		"sum":  {},
-		"last": {},
-	}
-	if _, ok := validMethods[value]; !ok {
-		errors = append(errors, fmt.Errorf(
-			`%q contains an invalid method %q. Valid methods are either "avg", "max", "min", "sum", or "last"`, k, value))
-	}
-	return
 }

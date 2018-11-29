@@ -122,8 +122,9 @@ func resourceDatadogScreenboard() *schema.Resource {
 				},
 				"conditional_format": tileDefRequestConditionalFormat,
 				"aggregator": &schema.Schema{
-					Type:     schema.TypeString,
-					Optional: true,
+					Type:         schema.TypeString,
+					Optional:     true,
+					ValidateFunc: validateAggregatorMethod,
 				},
 				"compare_to": &schema.Schema{
 					Type:     schema.TypeString,
