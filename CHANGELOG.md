@@ -1,8 +1,16 @@
 ## 1.6.0 (Unreleased)
 
-IMPROVEMENTS
+BUGFIXES:
 
-* Pull changes from go-datadog-api v2.18.0 ([#121](https://github.com/terraform-providers/terraform-provider-datadog/pull/121))
+* the graph.style.palette_flip field is a boolean but only works if it's passed as a string. ([#29](https://github.com/terraform-providers/terraform-provider-datadog/issues/29))
+* datadog_monitor - Removal of 'silenced' resource argument has no practical effect. ([#41](https://github.com/terraform-providers/terraform-provider-datadog/issues/41))
+* datadog_screenboard - widget swapping `x` and `y` parameters. ([#119](https://github.com/terraform-providers/terraform-provider-datadog/issues/119))
+* datadog_screenboard - panic: interface conversion: interface {} is string, not float64. ([#117](https://github.com/terraform-providers/terraform-provider-datadog/issues/117))
+
+IMPROVEMENTS:
+
+* Feature Request: AWS Integration. ([#76](https://github.com/terraform-providers/terraform-provider-datadog/issues/76))
+* Bump datadog api to v2.18.0 and add support for include units and zero. ([#121](https://github.com/terraform-providers/terraform-provider-datadog/pull/121))
 
 ## 1.5.0 (November 06, 2018)
 
