@@ -15,20 +15,22 @@ const config = `
 resource "datadog_screenboard" "acceptance_test" {
 	title = "Acceptance Test Screenboard"
 	read_only = true
+	width = "640"
+	height = 480
 
 	template_variable {
 		name    = "varname 1"
 		prefix  = "pod_name"
 		default = "*"
-	  }
-	
-	  template_variable {
+	}
+
+	template_variable {
 		name    = "varname 2"
 		prefix  = "service_name"
 		default = "autoscaling"
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type       = "free_text"
 		x          = 5
 		y          = 5
@@ -36,9 +38,9 @@ resource "datadog_screenboard" "acceptance_test" {
 		text_align = "right"
 		font_size  = "36"
 		color      = "#ffc0cb"
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type        = "timeseries"
 		x           = 25
 		y           = 5
@@ -47,38 +49,38 @@ resource "datadog_screenboard" "acceptance_test" {
 		title_align = "right"
 		legend      = true
 		legend_size = 16
-	
+
 		time {
-		  live_span = "1d"
+			live_span = "1d"
 		}
-	
+
 		tile_def {
-		  viz = "timeseries"
-	
-		  request {
-			q    = "avg:system.cpu.user{*}"
-			type = "line"
-	
-			style {
-			  palette = "purple"
-			  type    = "dashed"
-			  width   = "thin"
+			viz = "timeseries"
+
+			request {
+				q    = "avg:system.cpu.user{*}"
+				type = "line"
+
+				style {
+					palette = "purple"
+					type    = "dashed"
+					width   = "thin"
+				}
 			}
-		  }
-	
-		  marker {
-			label = "test marker"
-			type  = "error dashed"
-			value = "y < 6"
-		  }
-	
-		  event {
-			q = "test event"
-		  }
+
+			marker {
+				label = "test marker"
+				type  = "error dashed"
+				value = "y < 6"
+			}
+
+			event {
+				q = "test event"
+			}
 		}
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type        = "query_value"
 		x           = 45
 		y           = 25
@@ -87,122 +89,122 @@ resource "datadog_screenboard" "acceptance_test" {
 		title_align = "center"
 		legend      = true
 		legend_size = 16
-	
+
 		tile_def {
-		  viz = "query_value"
-	
-		  request {
-			q    = "avg:system.cpu.user{*}"
-			type = "line"
-	
-			style {
-			  palette = "purple"
-			  type    = "dashed"
-			  width   = "thin"
+			viz = "query_value"
+
+			request {
+				q    = "avg:system.cpu.user{*}"
+				type = "line"
+
+				style {
+					palette = "purple"
+					type    = "dashed"
+					width   = "thin"
+				}
+
+				conditional_format {
+					comparator = ">"
+					value      = "1"
+					palette    = "white_on_red"
+				}
+
+				conditional_format {
+					comparator = ">="
+					value      = "2"
+					palette    = "white_on_yellow"
+				}
+
+				aggregator = "max"
 			}
-	
-			conditional_format {
-			  comparator = ">"
-			  value      = "1"
-			  palette    = "white_on_red"
-			}
-	
-			conditional_format {
-			  comparator = ">="
-			  value      = "2"
-			  palette    = "white_on_yellow"
-			}
-	
-			aggregator = "max"
-		  }
-	
-		  custom_unit = "%"
-		  autoscale   = false
-		  precision   = "6"
-		  text_align  = "right"
+
+			custom_unit = "%"
+			autoscale   = false
+			precision   = "6"
+			text_align  = "right"
 		}
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type        = "toplist"
 		x           = 65
 		y           = 5
 		title       = "toplist title terraform"
 		legend      = true
 		legend_size = "auto"
-	
+
 		time {
-		  live_span = "1d"
+			live_span = "1d"
 		}
-	
+
 		tile_def {
-		  viz = "toplist"
-	
-		  request {
-			q = "top(avg:system.load.1{*} by {host}, 10, 'mean', 'desc')"
-	
-			style {
-			  palette = "purple"
-			  type    = "dashed"
-			  width   = "thin"
+			viz = "toplist"
+
+			request {
+				q = "top(avg:system.load.1{*} by {host}, 10, 'mean', 'desc')"
+
+				style {
+					palette = "purple"
+					type    = "dashed"
+					width   = "thin"
+				}
+
+				conditional_format {
+					comparator = ">"
+					value      = "4"
+					palette    = "white_on_green"
+				}
 			}
-	
-			conditional_format {
-			  comparator = ">"
-			  value      = "4"
-			  palette    = "white_on_green"
-			}
-		  }
 		}
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type  = "change"
 		x     = 85
 		y     = 5
 		title = "change title terraform"
-	
+
 		tile_def {
-		  viz = "change"
-	
-		  request {
-			q             = "min:system.load.1{*} by {host}"
-			compare_to    = "week_before"
-			change_type   = "relative"
-			order_by      = "present"
-			order_dir     = "asc"
-			extra_col     = ""
-			increase_good = false
-		  }
+			viz = "change"
+
+			request {
+				q             = "min:system.load.1{*} by {host}"
+				compare_to    = "week_before"
+				change_type   = "relative"
+				order_by      = "present"
+				order_dir     = "asc"
+				extra_col     = ""
+				increase_good = false
+			}
 		}
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type  = "event_timeline"
 		x     = 105
 		y     = 5
 		title = "event_timeline title terraform"
 		query = "status:error"
-	
+
 		time {
-		  live_span = "1d"
+			live_span = "1d"
 		}
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type       = "event_stream"
 		x          = 115
 		y          = 5
 		title      = "event_stream title terraform"
 		query      = "*"
 		event_size = "l"
-	
+
 		time {
-		  live_span = "4h"
+			live_span = "4h"
 		}
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type   = "image"
 		x      = 145
 		y      = 5
@@ -210,9 +212,9 @@ resource "datadog_screenboard" "acceptance_test" {
 		sizing = "fit"
 		margin = "large"
 		url    = "https://datadog-prod.imgix.net/img/dd_logo_70x75.png"
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type       = "note"
 		x          = 165
 		y          = 5
@@ -223,22 +225,22 @@ resource "datadog_screenboard" "acceptance_test" {
 		tick_edge  = "bottom"
 		tick_pos   = "50%"
 		html       = "<b>test note</b>"
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type     = "alert_graph"
 		x        = 185
 		y        = 5
 		title    = "alert graph title terraform"
 		alert_id = "123456"
 		viz_type = "toplist"
-	
+
 		time {
-		  live_span = "15m"
+			live_span = "15m"
 		}
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type       = "alert_value"
 		x          = 205
 		y          = 5
@@ -248,16 +250,16 @@ resource "datadog_screenboard" "acceptance_test" {
 		text_align = "right"
 		precision  = "*"
 		unit       = "b"
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type = "iframe"
 		x    = 225
 		y    = 5
 		url  = "https://www.datadoghq.org"
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type        = "check_status"
 		x           = 245
 		y           = 5
@@ -267,13 +269,13 @@ resource "datadog_screenboard" "acceptance_test" {
 		check       = "aws.ecs.agent_connected"
 		tags        = ["*"]
 		group       = "cluster:test"
-	
+
 		time {
-		  live_span = "30m"
+			live_span = "30m"
 		}
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type                    = "trace_service"
 		x                       = 265
 		y                       = 5
@@ -288,41 +290,41 @@ resource "datadog_screenboard" "acceptance_test" {
 		must_show_breakdown     = true
 		must_show_distribution  = true
 		must_show_resource_list = true
-	
+
 		time {
-		  live_span = "30m"
+			live_span = "30m"
 		}
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type  = "hostmap"
 		x     = 285
 		y     = 5
 		query = "avg:system.load.1{*} by {host}"
-	
+
 		tile_def {
-		  viz             = "hostmap"
-		  node_type       = "container"
-		  scope           = ["datacenter:test"]
-		  group           = ["pod_name"]
-		  no_group_hosts  = false
-		  no_metric_hosts = false
-	
-		  request {
-			q    = "max:process.stat.container.io.wbps{datacenter:test} by {host}"
-			type = "fill"
-		  }
-	
-		  style {
-			palette      = "hostmap_blues"
-			palette_flip = true
-			fill_min     = 20
-			fill_max     = 300
-		  }
+			viz             = "hostmap"
+			node_type       = "container"
+			scope           = ["datacenter:test"]
+			group           = ["pod_name"]
+			no_group_hosts  = false
+			no_metric_hosts = false
+
+			request {
+				q    = "max:process.stat.container.io.wbps{datacenter:test} by {host}"
+				type = "fill"
+			}
+
+			style {
+				palette      = "hostmap_blues"
+				palette_flip = true
+				fill_min     = 20
+				fill_max     = 300
+			}
 		}
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type                      = "manage_status"
 		x                         = 305
 		y                         = 5
@@ -333,49 +335,49 @@ resource "datadog_screenboard" "acceptance_test" {
 		manage_status_title_text  = "test title"
 		manage_status_title_size  = "20"
 		manage_status_title_align = "right"
-	
+
 		params {
-		  sort  = "status,asc"
-		  text  = "status:alert"
-		  count = 50
-		  start = 0
+			sort  = "status,asc"
+			text  = "status:alert"
+			count = 50
+			start = 0
 		}
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type    = "log_stream"
 		x       = 325
 		y       = 5
 		query   = "source:kubernetes"
 		columns = "[\"column1\",\"column2\",\"column3\"]"
 		logset  = "1234"
-	
+
 		time {
-		  live_span = "1h"
+			live_span = "1h"
 		}
-	  }
-	
-	  widget {
+	}
+
+	widget {
 		type = "process"
 		x    = 365
 		y    = 5
-	
+
 		tile_def {
-		  viz = "process"
-	
-		  request {
-			query_type  = "process"
-			metric      = "process.stat.cpu.total_pct"
-			text_filter = ""
-			tag_filters = []
-			limit       = 200
-	
-			style = {
-			  palette = "dog_classic_area"
+			viz = "process"
+
+			request {
+				query_type  = "process"
+				metric      = "process.stat.cpu.total_pct"
+				text_filter = ""
+				tag_filters = []
+				limit       = 200
+
+				style = {
+					palette = "dog_classic_area"
+				}
 			}
-		  }
 		}
-	  }
+	}
 }
 `
 
@@ -385,6 +387,8 @@ func TestAccDatadogScreenboard_update(t *testing.T) {
 		Config: config,
 		Check: resource.ComposeTestCheckFunc(
 			checkScreenboardExists,
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "width", "640"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "height", "480"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "template_variable.#", "2"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "template_variable.0.default", "*"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "template_variable.0.name", "varname 1"),

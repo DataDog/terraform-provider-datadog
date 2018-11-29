@@ -603,6 +603,23 @@ func setJSONNumberFromDict(dict map[string]interface{}, key string, field **json
 	}
 }
 
+// For setPrecisionTFromDict, dict[key] is expected to be a int or a string like "100%" or "*"
+func setPrecisionTFromDict(dict map[string]interface{}, key string, field **datadog.PrecisionT) {
+	iface, ok := dict[key]
+	if !ok {
+		return
+	}
+
+	switch value := iface.(type) {
+	case int:
+		f := datadog.PrecisionT(strconv.FormatInt(int64(value), 10))
+		*field = &f
+	case string:
+		f := datadog.PrecisionT(value)
+		*field = &f
+	}
+}
+
 func setStringListFromDict(dict map[string]interface{}, key string, field *[]*string) {
 	if v, ok := dict[key].([]interface{}); ok {
 		*field = []*string{}
@@ -622,6 +639,8 @@ func setFromDict(dict map[string]interface{}, key string, field interface{}) {
 		setBoolFromDict(dict, key, field.(**bool))
 	case **json.Number:
 		setJSONNumberFromDict(dict, key, field.(**json.Number))
+	case **datadog.PrecisionT:
+		setPrecisionTFromDict(dict, key, field.(**datadog.PrecisionT))
 	case *[]*string:
 		setStringListFromDict(dict, key, field.(*[]*string))
 	default:
@@ -953,16 +972,25 @@ func buildScreenboard(d *schema.ResourceData) (*datadog.Screenboard, error) {
 	}
 	terraformWidgets := d.Get("widget").([]interface{})
 	terraformTemplateVariables := d.Get("template_variable").([]interface{})
-	return &datadog.Screenboard{
+
+	screenboard := &datadog.Screenboard{
 		Id:                datadog.Int(id),
 		Title:             datadog.String(d.Get("title").(string)),
-		Height:            datadog.Int(d.Get("height").(int)),
-		Width:             datadog.Int(d.Get("width").(int)),
 		Shared:            datadog.Bool(d.Get("shared").(bool)),
 		ReadOnly:          datadog.Bool(d.Get("read_only").(bool)),
 		Widgets:           buildWidgets(&terraformWidgets),
 		TemplateVariables: *buildTemplateVariables(&terraformTemplateVariables),
-	}, nil
+	}
+
+	if width, err := strconv.ParseInt(d.Get("width").(string), 10, 64); err == nil {
+		screenboard.Width = datadog.Int(int(width))
+	}
+
+	if height, err := strconv.ParseInt(d.Get("height").(string), 10, 64); err == nil {
+		screenboard.Height = datadog.Int(int(height))
+	}
+
+	return screenboard, nil
 }
 
 func resourceDatadogScreenboardCreate(d *schema.ResourceData, meta interface{}) error {
@@ -1010,6 +1038,12 @@ func setJSONNumberToDict(dict map[string]interface{}, key string, field *json.Nu
 	}
 }
 
+func setPrecisionTToDict(dict map[string]interface{}, key string, field *datadog.PrecisionT) {
+	if field != nil {
+		dict[key] = *field
+	}
+}
+
 func setStringListToDict(dict map[string]interface{}, key string, field []*string) {
 	if len(field) != 0 {
 		s := make([]interface{}, len(field))
@@ -1030,6 +1064,8 @@ func setToDict(dict map[string]interface{}, key string, field interface{}) {
 		setIntToDict(dict, key, field.(*int))
 	case *json.Number:
 		setJSONNumberToDict(dict, key, field.(*json.Number))
+	case *datadog.PrecisionT:
+		setPrecisionTToDict(dict, key, field.(*datadog.PrecisionT))
 	case []*string:
 		setStringListToDict(dict, key, field.([]*string))
 	default:
@@ -1340,10 +1376,10 @@ func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) er
 	if err := d.Set("title", screenboard.GetTitle()); err != nil {
 		return err
 	}
-	if err := d.Set("height", screenboard.GetHeight()); err != nil {
+	if err := d.Set("height", strconv.Itoa(screenboard.GetHeight())); err != nil {
 		return err
 	}
-	if err := d.Set("width", screenboard.GetWidth()); err != nil {
+	if err := d.Set("width", strconv.Itoa(screenboard.GetWidth())); err != nil {
 		return err
 	}
 	if err := d.Set("shared", screenboard.GetShared()); err != nil {
