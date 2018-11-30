@@ -1,4 +1,4 @@
-## 1.6.0 (Unreleased)
+## 1.6.0 (November 30, 2018)
 
 BUGFIXES:
 
