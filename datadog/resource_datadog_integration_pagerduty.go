@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform/helper/schema"
-	datadog "gopkg.in/zorkian/go-datadog-api.v2"
+	"github.com/zorkian/go-datadog-api"
 )
 
 func resourceDatadogIntegrationPagerduty() *schema.Resource {

@@ -7,7 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-	datadog "gopkg.in/zorkian/go-datadog-api.v2"
+	datadog "github.com/zorkian/go-datadog-api"
 )
 
 // We're not testing for schedules because Datadog actively verifies it with Pagerduty
