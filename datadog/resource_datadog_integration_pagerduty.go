@@ -29,8 +29,9 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 							Required: true,
 						},
 						"service_key": &schema.Schema{
-							Type:     schema.TypeString,
-							Required: true,
+							Type:      schema.TypeString,
+							Required:  true,
+							Sensitive: true,
 						},
 					},
 				},
@@ -45,8 +46,9 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"api_token": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:      schema.TypeString,
+				Optional:  true,
+				Sensitive: true,
 			},
 		},
 	}
