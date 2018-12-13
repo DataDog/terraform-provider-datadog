@@ -16,7 +16,7 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDatadogUserDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogUserConfigRequired,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogUserExists("datadog_user.foo"),
@@ -30,7 +30,7 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 						"datadog_user.foo", "verified", "false"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogUserConfigUpdated,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogUserExists("datadog_user.foo"),
