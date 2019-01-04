@@ -186,6 +186,8 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "include_tags", "true"),
 					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "enable_logs_sample", "true"),
+					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
@@ -235,6 +237,8 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "timeout_h", "70"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "include_tags", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "enable_logs_sample", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "silenced.*", "0"),
 					resource.TestCheckResourceAttr(
@@ -310,6 +314,8 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "include_tags", "true"),
 					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "enable_logs_sample", "true"),
+					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
@@ -359,6 +365,8 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 						"datadog_monitor.foo", "timeout_h", "70"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "include_tags", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "enable_logs_sample", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "silenced.*", "0"),
 					resource.TestCheckResourceAttr(
@@ -510,6 +518,7 @@ resource "datadog_monitor" "foo" {
   new_host_delay = 600
   evaluation_delay = 700
   include_tags = true
+  enable_logs_sample = true
   require_full_window = true
   locked = false
   tags = ["foo:bar", "baz"]
@@ -530,6 +539,7 @@ resource "datadog_monitor" "foo" {
   notify_audit = false
   timeout_h = 60
   include_tags = true
+  enable_logs_sample = true
   require_full_window = true
   locked = false
   tags = ["foo:bar", "bar:baz"]
@@ -559,6 +569,7 @@ resource "datadog_monitor" "foo" {
   new_host_delay = 600
   evaluation_delay = 700
   include_tags = true
+  enable_logs_sample = true
   require_full_window = true
   locked = false
   tags = ["foo:bar", "baz"]
@@ -587,6 +598,7 @@ resource "datadog_monitor" "foo" {
   notify_audit        = false
   timeout_h           = 60
   include_tags        = true
+  enable_logs_sample  = true
   require_full_window = true
   locked              = false
 
@@ -616,6 +628,7 @@ resource "datadog_monitor" "foo" {
   notify_audit        = false
   timeout_h           = 60
   include_tags        = true
+  enable_logs_sample  = true
   require_full_window = true
   locked              = false
 
@@ -649,6 +662,7 @@ resource "datadog_monitor" "foo" {
   notify_audit = true
   timeout_h = 70
   include_tags = false
+  enable_logs_sample = false
   require_full_window = false
   locked = true
   silenced {
@@ -684,6 +698,7 @@ resource "datadog_monitor" "foo" {
   notify_audit = true
   timeout_h = 70
   include_tags = false
+  enable_logs_sample = false
   require_full_window = false
   locked = true
   silenced {
@@ -739,6 +754,7 @@ EOF
   notify_audit = false
   timeout_h = 60
   include_tags = true
+  enable_logs_sample = true
 }
 `
 

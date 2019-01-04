@@ -145,6 +145,11 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"enable_logs_sample": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"tags": {
 				Type:     schema.TypeList,
 				Optional: true,
@@ -182,6 +187,7 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 		NotifyNoData:      datadog.Bool(d.Get("notify_no_data").(bool)),
 		RequireFullWindow: datadog.Bool(d.Get("require_full_window").(bool)),
 		IncludeTags:       datadog.Bool(d.Get("include_tags").(bool)),
+		EnableLogsSample:  datadog.Bool(d.Get("enable_logs_sample").(bool)),
 	}
 	if attr, ok := d.GetOk("silenced"); ok {
 		s := make(map[string]int)
@@ -323,6 +329,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("escalation_message", m.Options.GetEscalationMessage())
 	d.Set("silenced", m.Options.Silenced)
 	d.Set("include_tags", m.Options.GetIncludeTags())
+	d.Set("enable_logs_sample", m.Options.GetEnableLogsSample())
 	d.Set("tags", tags)
 	d.Set("require_full_window", m.Options.GetRequireFullWindow()) // TODO Is this one of those options that we neeed to check?
 	d.Set("locked", m.Options.GetLocked())
@@ -363,6 +370,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		NotifyNoData:      datadog.Bool(d.Get("notify_no_data").(bool)),
 		RequireFullWindow: datadog.Bool(d.Get("require_full_window").(bool)),
 		IncludeTags:       datadog.Bool(d.Get("include_tags").(bool)),
+		EnableLogsSample:  datadog.Bool(d.Get("enable_logs_sample").(bool)),
 	}
 	if attr, ok := d.GetOk("thresholds"); ok {
 		thresholds := attr.(map[string]interface{})
