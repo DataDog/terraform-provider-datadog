@@ -109,6 +109,9 @@ The following arguments are supported:
     from a triggered state. Defaults to false.
 * `include_tags` (Optional) A boolean indicating whether notifications from this monitor will automatically insert its
     triggering tags into the title. Defaults to true.
+* `enable_logs_sample` (Optional) A boolean indicating whether notifications from this monitor will automatically 
+    add up to 10 samples of logs that triggered the monitor in the notification message. This is available for `Log` monitor 
+    `type` and for `Slack` and `email` notifications. Defaults to false.
 * `require_full_window` (Optional) A boolean indicating whether this monitor needs a full window of data before it's evaluated.
     We highly recommend you set this to False for sparse metrics, otherwise some evaluations will be skipped.
     Default: True for "on average", "at all times" and "in total" aggregation. False otherwise.
