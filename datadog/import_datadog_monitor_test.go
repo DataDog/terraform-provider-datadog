@@ -14,10 +14,10 @@ func TestDatadogMonitor_import(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogMonitorConfigImported,
 			},
-			resource.TestStep{
+			{
 				ResourceName:      resourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
@@ -34,10 +34,10 @@ func TestDatadogMonitor_import_no_recovery(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogMonitorConfigImportedNoRecovery,
 			},
-			resource.TestStep{
+			{
 				ResourceName:      resourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
