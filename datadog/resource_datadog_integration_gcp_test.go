@@ -35,7 +35,7 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: checkIntegrationGCPDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogIntegrationGCPConfig,
 				Check: resource.ComposeTestCheckFunc(
 					checkIntegrationGCPExists,
@@ -59,7 +59,7 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 						"host_filters", "foo:bar,buzz:lightyear"),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogIntegrationGCPEmptyHostFiltersConfig,
 				Check: resource.ComposeTestCheckFunc(
 					checkIntegrationGCPExists,
