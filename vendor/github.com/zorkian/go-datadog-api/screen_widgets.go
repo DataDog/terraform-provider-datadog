@@ -96,10 +96,10 @@ type TileDefRequestStyle struct {
 }
 
 type TileDefStyle struct {
-	Palette     *string `json:"palette,omitempty"`
-	PaletteFlip *string `json:"paletteFlip,omitempty"`
-	FillMin     *string `json:"fillMin,omitempty"`
-	FillMax     *string `json:"fillMax,omitempty"`
+	Palette     *string      `json:"palette,omitempty"`
+	PaletteFlip *string      `json:"paletteFlip,omitempty"`
+	FillMin     *json.Number `json:"fillMin,omitempty"`
+	FillMax     *json.Number `json:"fillMax,omitempty"`
 }
 
 type Time struct {

@@ -4,7 +4,7 @@
  *
  * Please see the included LICENSE file for licensing information.
  *
- * Copyright 2018 by authors and contributors.
+ * Copyright 2019 by authors and contributors.
 */
 
 package datadog
@@ -8601,7 +8601,7 @@ func (t *TileDefRequestStyle) SetWidth(v string) {
 }
 
 // GetFillMax returns the FillMax field if non-nil, zero value otherwise.
-func (t *TileDefStyle) GetFillMax() string {
+func (t *TileDefStyle) GetFillMax() json.Number {
 	if t == nil || t.FillMax == nil {
 		return ""
 	}
@@ -8610,7 +8610,7 @@ func (t *TileDefStyle) GetFillMax() string {
 
 // GetFillMaxOk returns a tuple with the FillMax field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
-func (t *TileDefStyle) GetFillMaxOk() (string, bool) {
+func (t *TileDefStyle) GetFillMaxOk() (json.Number, bool) {
 	if t == nil || t.FillMax == nil {
 		return "", false
 	}
@@ -8627,12 +8627,12 @@ func (t *TileDefStyle) HasFillMax() bool {
 }
 
 // SetFillMax allocates a new t.FillMax and returns the pointer to it.
-func (t *TileDefStyle) SetFillMax(v string) {
+func (t *TileDefStyle) SetFillMax(v json.Number) {
 	t.FillMax = &v
 }
 
 // GetFillMin returns the FillMin field if non-nil, zero value otherwise.
-func (t *TileDefStyle) GetFillMin() string {
+func (t *TileDefStyle) GetFillMin() json.Number {
 	if t == nil || t.FillMin == nil {
 		return ""
 	}
@@ -8641,7 +8641,7 @@ func (t *TileDefStyle) GetFillMin() string {
 
 // GetFillMinOk returns a tuple with the FillMin field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
-func (t *TileDefStyle) GetFillMinOk() (string, bool) {
+func (t *TileDefStyle) GetFillMinOk() (json.Number, bool) {
 	if t == nil || t.FillMin == nil {
 		return "", false
 	}
@@ -8658,7 +8658,7 @@ func (t *TileDefStyle) HasFillMin() bool {
 }
 
 // SetFillMin allocates a new t.FillMin and returns the pointer to it.
-func (t *TileDefStyle) SetFillMin(v string) {
+func (t *TileDefStyle) SetFillMin(v json.Number) {
 	t.FillMin = &v
 }
 
