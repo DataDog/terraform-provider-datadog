@@ -598,7 +598,15 @@ func setBoolFromDict(dict map[string]interface{}, key string, field **bool) {
 // For setJSONNumberFromDict, dict[key] is expected to be a float64
 func setJSONNumberFromDict(dict map[string]interface{}, key string, field **json.Number) {
 	if v, ok := dict[key]; ok {
-		f := json.Number(strconv.FormatFloat(v.(float64), 'e', -1, 64))
+		// style fields can be numbers or strings so we need to handle both types
+		var number string
+
+		if val, ok := v.(float64); ok {
+			number = strconv.FormatFloat(val, 'e', -1, 64)
+		} else {
+			number = v.(string)
+		}
+		f := json.Number(number)
 		*field = &f
 	}
 }
@@ -1029,7 +1037,13 @@ func setIntToDict(dict map[string]interface{}, key string, field *int) {
 }
 
 func setJSONNumberToDict(dict map[string]interface{}, key string, field *json.Number) {
-	if field != nil {
+	if field == nil {
+		return
+	}
+	// for fill_min and fill_max, we do not convert to float
+	if key == "fill_min" || key == "fill_max" {
+		dict[key] = *field
+	} else {
 		v, err := (*field).Float64()
 		if err != nil {
 			panic(fmt.Sprintf("setJSONNumberToDict(): %v is not convertible to float", *field))
