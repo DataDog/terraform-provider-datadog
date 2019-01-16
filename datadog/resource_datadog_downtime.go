@@ -172,12 +172,12 @@ func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
 		scope = append(scope, s.(string))
 	}
 	dt.Scope = scope
-	if attr, ok := d.GetOk("start"); ok {
-		dt.SetStart(attr.(int))
-	} else if attr, ok := d.GetOk("start_date"); ok {
+	if attr, ok := d.GetOk("start_date"); ok {
 		if t, err := time.Parse(time.RFC3339, attr.(string)); err == nil {
 			dt.SetStart(int(t.Unix()))
 		}
+	} else if attr, ok := d.GetOk("start"); ok {
+		dt.SetStart(attr.(int))
 	}
 
 	return &dt
