@@ -19,7 +19,7 @@ func TestAccDatadogDowntime_Basic(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogDowntimeConfig,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
@@ -52,7 +52,7 @@ func TestAccDatadogDowntime_BasicWithMonitor(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: config,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
@@ -68,7 +68,7 @@ func TestAccDatadogDowntime_BasicMultiScope(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogDowntimeConfigMultiScope,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
@@ -98,7 +98,7 @@ func TestAccDatadogDowntime_BasicNoRecurrence(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogDowntimeConfigNoRecurrence,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
@@ -122,7 +122,7 @@ func TestAccDatadogDowntime_BasicUntilDateRecurrence(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogDowntimeConfigUntilDateRecurrence,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
@@ -152,7 +152,7 @@ func TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogDowntimeConfigUntilOccurrencesRecurrence,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
@@ -182,7 +182,7 @@ func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogDowntimeConfigWeekDaysRecurrence,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
@@ -214,7 +214,7 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogDowntimeConfig,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
@@ -232,7 +232,7 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
 				),
 			},
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogDowntimeConfigUpdated,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
@@ -260,7 +260,7 @@ func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogDowntimeConfigWhitespace,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
@@ -307,7 +307,7 @@ func TestAccDatadogDowntimeDates(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogDowntimeConfigDates,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
@@ -335,11 +335,11 @@ func TestAccDatadogDowntimeDatesConflict(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config:      testAccCheckDatadogDowntimeConfigDatesConflict,
 				ExpectError: regexp.MustCompile("\"start_date\": conflicts with start"),
 			},
-			resource.TestStep{
+			{
 				Config:      testAccCheckDatadogDowntimeConfigDatesConflict,
 				ExpectError: regexp.MustCompile("\"end_date\": conflicts with end"),
 			},

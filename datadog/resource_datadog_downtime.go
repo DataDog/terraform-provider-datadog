@@ -129,13 +129,14 @@ func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
 	if attr, ok := d.GetOk("disabled"); ok {
 		dt.SetDisabled(attr.(bool))
 	}
-	if attr, ok := d.GetOk("end"); ok {
-		dt.SetEnd(attr.(int))
-	} else if attr, ok := d.GetOk("end_date"); ok {
+	if attr, ok := d.GetOk("end_date"); ok {
 		if t, err := time.Parse(time.RFC3339, attr.(string)); err == nil {
 			dt.SetEnd(int(t.Unix()))
 		}
+	} else if attr, ok := d.GetOk("end"); ok {
+		dt.SetEnd(attr.(int))
 	}
+
 	if attr, ok := d.GetOk("message"); ok {
 		dt.SetMessage(strings.TrimSpace(attr.(string)))
 	}
@@ -172,12 +173,12 @@ func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
 		scope = append(scope, s.(string))
 	}
 	dt.Scope = scope
-	if attr, ok := d.GetOk("start"); ok {
-		dt.SetStart(attr.(int))
-	} else if attr, ok := d.GetOk("start_date"); ok {
+	if attr, ok := d.GetOk("start_date"); ok {
 		if t, err := time.Parse(time.RFC3339, attr.(string)); err == nil {
 			dt.SetStart(int(t.Unix()))
 		}
+	} else if attr, ok := d.GetOk("start"); ok {
+		dt.SetStart(attr.(int))
 	}
 
 	return &dt

@@ -18,16 +18,16 @@ func resourceDatadogTimeboard() *schema.Resource {
 		Required: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"q": &schema.Schema{
+				"q": {
 					Type:     schema.TypeString,
 					Required: true,
 				},
-				"stacked": &schema.Schema{
+				"stacked": {
 					Type:     schema.TypeBool,
 					Optional: true,
 					Default:  false,
 				},
-				"type": &schema.Schema{
+				"type": {
 					Type:     schema.TypeString,
 					Optional: true,
 					Default:  "line",
@@ -37,37 +37,37 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Optional:     true,
 					ValidateFunc: validateAggregatorMethod,
 				},
-				"style": &schema.Schema{
+				"style": {
 					Type:     schema.TypeMap,
 					Optional: true,
 				},
-				"conditional_format": &schema.Schema{
+				"conditional_format": {
 					Type:        schema.TypeList,
 					Optional:    true,
 					Description: "A list of conditional formatting rules.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
-							"palette": &schema.Schema{
+							"palette": {
 								Type:        schema.TypeString,
 								Optional:    true,
 								Description: "The palette to use if this condition is met.",
 							},
-							"comparator": &schema.Schema{
+							"comparator": {
 								Type:        schema.TypeString,
 								Required:    true,
 								Description: "Comparator (<, >, etc)",
 							},
-							"custom_bg_color": &schema.Schema{
+							"custom_bg_color": {
 								Type:        schema.TypeString,
 								Optional:    true,
 								Description: "Custom background color (e.g., #205081)",
 							},
-							"value": &schema.Schema{
+							"value": {
 								Type:        schema.TypeString,
 								Optional:    true,
 								Description: "Value that is threshold for conditional format",
 							},
-							"custom_fg_color": &schema.Schema{
+							"custom_fg_color": {
 								Type:        schema.TypeString,
 								Optional:    true,
 								Description: "Custom foreground color (e.g., #59afe1)",
@@ -75,32 +75,32 @@ func resourceDatadogTimeboard() *schema.Resource {
 						},
 					},
 				},
-				"change_type": &schema.Schema{
+				"change_type": {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "Type of change for change graphs.",
 				},
-				"order_direction": &schema.Schema{
+				"order_direction": {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "Sort change graph in ascending or descending order.",
 				},
-				"compare_to": &schema.Schema{
+				"compare_to": {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "The time period to compare change against in change graphs.",
 				},
-				"increase_good": &schema.Schema{
+				"increase_good": {
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Description: "Decides whether to represent increases as good or bad in change graphs.",
 				},
-				"order_by": &schema.Schema{
+				"order_by": {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "The field a change graph will be ordered by.",
 				},
-				"extra_col": &schema.Schema{
+				"extra_col": {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "If set to 'present', this will include the present values in change graphs.",
@@ -114,15 +114,15 @@ func resourceDatadogTimeboard() *schema.Resource {
 		Optional: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"type": &schema.Schema{
+				"type": {
 					Type:     schema.TypeString,
 					Required: true,
 				},
-				"value": &schema.Schema{
+				"value": {
 					Type:     schema.TypeString,
 					Required: true,
 				},
-				"label": &schema.Schema{
+				"label": {
 					Type:     schema.TypeString,
 					Optional: true,
 				},
@@ -136,12 +136,12 @@ func resourceDatadogTimeboard() *schema.Resource {
 		Description: "A list of graph definitions.",
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"title": &schema.Schema{
+				"title": {
 					Type:        schema.TypeString,
 					Required:    true,
 					Description: "The name of the graph.",
 				},
-				"events": &schema.Schema{
+				"events": {
 					Type:        schema.TypeList,
 					Optional:    true,
 					Description: "Filter for events to be overlayed on the graph.",
@@ -149,13 +149,13 @@ func resourceDatadogTimeboard() *schema.Resource {
 						Type: schema.TypeString,
 					},
 				},
-				"viz": &schema.Schema{
+				"viz": {
 					Type:     schema.TypeString,
 					Required: true,
 				},
 				"request": request,
 				"marker":  marker,
-				"yaxis": &schema.Schema{
+				"yaxis": {
 					Type:     schema.TypeMap,
 					Optional: true,
 					// `include_zero` and `include_units` are bool but Terraform treats them as strings
@@ -176,27 +176,27 @@ func resourceDatadogTimeboard() *schema.Resource {
 						return oldBool == newBool
 					},
 				},
-				"autoscale": &schema.Schema{
+				"autoscale": {
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Description: "Automatically scale graphs",
 				},
-				"text_align": &schema.Schema{
+				"text_align": {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "How to align text",
 				},
-				"precision": &schema.Schema{
+				"precision": {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "How many digits to show",
 				},
-				"custom_unit": &schema.Schema{
+				"custom_unit": {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "Use a custom unit (like 'users')",
 				},
-				"style": &schema.Schema{
+				"style": {
 					Type:     schema.TypeMap,
 					Optional: true,
 					// `palette_flip` is bool but Terraform treats it as a string
@@ -217,7 +217,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 						return oldBool == newBool
 					},
 				},
-				"group": &schema.Schema{
+				"group": {
 					Type:        schema.TypeList,
 					Optional:    true,
 					Description: "A list of groupings for hostmap type graphs.",
@@ -225,12 +225,12 @@ func resourceDatadogTimeboard() *schema.Resource {
 						Type: schema.TypeString,
 					},
 				},
-				"include_no_metric_hosts": &schema.Schema{
+				"include_no_metric_hosts": {
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Description: "Include hosts without metrics in hostmap graphs",
 				},
-				"scope": &schema.Schema{
+				"scope": {
 					Type:        schema.TypeList,
 					Optional:    true,
 					Description: "A list of scope filters for hostmap type graphs.",
@@ -238,12 +238,12 @@ func resourceDatadogTimeboard() *schema.Resource {
 						Type: schema.TypeString,
 					},
 				},
-				"include_ungrouped_hosts": &schema.Schema{
+				"include_ungrouped_hosts": {
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Description: "Include ungrouped hosts in hostmap graphs",
 				},
-				"node_type": &schema.Schema{
+				"node_type": {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "Type of nodes to show in hostmap graphs (either 'host' or 'container').",
@@ -258,17 +258,17 @@ func resourceDatadogTimeboard() *schema.Resource {
 		Description: "A list of template variables for using Dashboard templating.",
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"name": &schema.Schema{
+				"name": {
 					Type:        schema.TypeString,
 					Required:    true,
 					Description: "The name of the variable.",
 				},
-				"prefix": &schema.Schema{
+				"prefix": {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "The tag prefix associated with the variable. Only tags with this prefix will appear in the variable dropdown.",
 				},
-				"default": &schema.Schema{
+				"default": {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "The default value for the template variable on dashboard load.",
@@ -288,17 +288,17 @@ func resourceDatadogTimeboard() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			"title": &schema.Schema{
+			"title": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The name of the dashboard.",
 			},
-			"description": &schema.Schema{
+			"description": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "A description of the dashboard's content.",
 			},
-			"read_only": &schema.Schema{
+			"read_only": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
