@@ -468,6 +468,46 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 	})
 }
 
+func TestAccDatadogMonitor_Log(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorConfigLogAlert,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", "name for monitor foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "log alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "query", "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") > 100"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notify_no_data", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_interval", "60"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.ok", "0.0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.warning", "1.0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.critical", "2.0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.critical_recovery", "1.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "enable_logs_sample", "true"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogMonitorDestroy(s *terraform.State) error {
 	client := testAccProvider.Meta().(*datadog.Client)
 
@@ -739,6 +779,36 @@ EOF
   notify_audit = false
   timeout_h = 60
   include_tags = true
+}
+`
+
+const testAccCheckDatadogMonitorConfigLogAlert = `
+resource "datadog_monitor" "foo" {
+  name = "name for monitor foo"
+  type = "log alert"
+  message = "some message Notify: @hipchat-channel"
+  escalation_message = "the situation has escalated @pagerduty"
+
+  query = "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") > 2"
+
+  thresholds {
+	warning = "1.0"
+	critical = "2.0"
+	warning_recovery = "0.5"
+	critical_recovery = "1.5"
+  }
+
+  renotify_interval = 60
+
+  notify_audit = false
+  timeout_h = 60
+  new_host_delay = 600
+  evaluation_delay = 700
+  include_tags = true
+  require_full_window = true
+  locked = false
+  tags = ["foo:bar", "baz"]
+	enable_logs_sample = true
 }
 `
 

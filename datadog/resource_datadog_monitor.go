@@ -150,6 +150,11 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
+			"enable_logs_sample": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 		},
 	}
 }
@@ -225,6 +230,10 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 		Name:    datadog.String(d.Get("name").(string)),
 		Message: datadog.String(d.Get("message").(string)),
 		Options: &o,
+	}
+
+	if attr, ok := d.GetOk("enable_logs_sample"); ok && m.GetType() == "log alert" {
+		o.SetEnableLogsSample(attr.(bool))
 	}
 
 	if attr, ok := d.GetOk("tags"); ok {
@@ -327,6 +336,10 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("require_full_window", m.Options.GetRequireFullWindow()) // TODO Is this one of those options that we neeed to check?
 	d.Set("locked", m.Options.GetLocked())
 
+	if m.GetType() == "log alert" {
+		d.Set("enable_logs_sample", m.Options.GetEnableLogsSample())
+	}
+
 	return nil
 }
 
@@ -420,6 +433,9 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	}
 	if attr, ok := d.GetOk("locked"); ok {
 		o.SetLocked(attr.(bool))
+	}
+	if attr, ok := d.GetOk("enable_logs_sample"); ok && m.GetType() == "log alert" {
+		o.SetEnableLogsSample(attr.(bool))
 	}
 
 	m.Options = &o
