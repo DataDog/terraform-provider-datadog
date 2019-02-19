@@ -15,11 +15,11 @@ Provides a Datadog metric_metadata resource. This can be used to manage a metric
 ```hcl
 # Manage a Datadog metric's metadata
 resource "datadog_metric_metadata" "request_time" {
-  metric = "request.time"
-  short_name = "Request time"
+  metric      = "request.time"
+  short_name  = "Request time"
   description = "99th percentile request time in millseconds"
-  type = "gauge"
-  unit = "millisecond"
+  type        = "gauge"
+  unit        = "millisecond"
 }
 ```
 
