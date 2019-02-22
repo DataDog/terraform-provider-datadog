@@ -499,7 +499,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 				"monitor": {
 					Type:     schema.TypeMap,
 					Optional: true,
-					Elem:     &schema.Schema{Type: schema.TypeInt},
+					Elem:     &schema.Schema{Type: schema.TypeString},
 				},
 			},
 		},
