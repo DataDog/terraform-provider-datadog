@@ -1,4 +1,22 @@
 ## 1.7.0 (Unreleased)
+
+BUGFIXES:
+
+* Bump go api client to 2.19.0 to fix TileDefStyle.fillMax type errors.  ([143](https://github.com/terraform-providers/terraform-provider-datadog/pull/143))([144](https://github.com/terraform-providers/terraform-provider-datadog/pull/144))
+* Fix the usage of `start_date` and `end_data` only being read on the first apply. ([145](https://github.com/terraform-providers/terraform-provider-datadog/pull/145))
+
+IMPROVEMENTS:
+
+* Upgrade to Go 1.11. ([141](https://github.com/terraform-providers/terraform-provider-datadog/pull/141/files))
+* Add AWS Integration resource to the docs. ([146](https://github.com/terraform-providers/terraform-provider-datadog/pull/146))
+
+
+FEATURES:
+
+* **New Resource:** `datadog_integration_pagerduty` ([135](https://github.com/terraform-providers/terraform-provider-datadog/pull/135))
+
+
+
 ## 1.6.0 (November 30, 2018)
 
 BUGFIXES:
