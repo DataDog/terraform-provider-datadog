@@ -1,4 +1,4 @@
-## 1.7.0 (Unreleased)
+## 1.7.0 (March 05, 2019)
 
 BUGFIXES:
 
