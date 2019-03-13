@@ -1,4 +1,9 @@
 ## 1.7.1 (Unreleased)
+
+INTERNAL:
+
+* provider: Enable request/response logging in `>=DEBUG` mode [GH-153]
+
 ## 1.7.0 (March 05, 2019)
 
 BUGFIXES:
