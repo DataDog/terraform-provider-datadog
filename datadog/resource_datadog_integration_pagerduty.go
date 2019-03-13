@@ -18,17 +18,17 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			"services": &schema.Schema{
+			"services": {
 				Type:        schema.TypeList,
 				Required:    true,
 				Description: "A list of service names and service keys.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"service_name": &schema.Schema{
+						"service_name": {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"service_key": &schema.Schema{
+						"service_key": {
 							Type:      schema.TypeString,
 							Required:  true,
 							Sensitive: true,

@@ -14,10 +14,10 @@ func TestDatadogIntegrationPagerduty_import(t *testing.T) {
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy,
 		Steps: []resource.TestStep{
-			resource.TestStep{
+			{
 				Config: testAccCheckDatadogIntegrationPagerdutyConfigImported,
 			},
-			resource.TestStep{
+			{
 				ResourceName:      resourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
