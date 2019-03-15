@@ -67,7 +67,7 @@ func resourceDatadogIntegrationPagerdutyServiceCreate(d *schema.ResourceData, me
 	pdReq.Services = []datadog.ServicePDRequest{pdServiceReq}
 
 	if err := client.CreateIntegrationPD(pdReq); err != nil {
-		return fmt.Errorf("failed to create pagerduty service mapping using Datadog API: %s", err.Error())
+		return fmt.Errorf("failed to create PagerDuty service mapping using Datadog API: %s", err.Error())
 	}
 
 	d.SetId(serviceName)
