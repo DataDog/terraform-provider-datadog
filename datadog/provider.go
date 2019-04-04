@@ -37,6 +37,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_monitor":               resourceDatadogMonitor(),
 			"datadog_timeboard":             resourceDatadogTimeboard(),
 			"datadog_screenboard":           resourceDatadogScreenboard(),
+			"datadog_dashboard":             resourceDatadogDashboard(),
 			"datadog_user":                  resourceDatadogUser(),
 			"datadog_integration_gcp":       resourceDatadogIntegrationGcp(),
 			"datadog_integration_aws":       resourceDatadogIntegrationAws(),
