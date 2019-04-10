@@ -127,6 +127,17 @@ The following arguments are supported:
           "role:db" = 1412798116
         }
 
+    Note: due to [HCL limitations](https://github.com/hashicorp/terraform/issues/2042), it is impossible to use interpolations in keys.
+    For example, the following will result in muting the scope `role:${var:role}` (no interpolation is done):
+
+        silenced {
+            "role:${var:role}" = 0
+        }
+
+    To workaround this, you can use the [map function](https://www.terraform.io/docs/configuration/functions/map.html) of HCL:
+
+        silenced = ${map("role:${var:role}", 0)}
+
 ## Attributes Reference
 
 The following attributes are exported:
