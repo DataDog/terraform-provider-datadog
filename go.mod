@@ -5,6 +5,7 @@ require (
 	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/cenkalti/backoff v0.0.0-20161020194410-b02f2bbce11d // indirect
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
+	github.com/hashicorp/go-cleanhttp v0.5.0
 	github.com/hashicorp/go-getter v0.0.0-20180809191950-4bda8fa99001 // indirect
 	github.com/hashicorp/go-hclog v0.0.0-20181001195459-61d530d6c27f // indirect
 	github.com/hashicorp/go-plugin v0.0.0-20181004024435-314501b665e0 // indirect
@@ -23,3 +24,5 @@ require (
 	golang.org/x/net v0.0.0-20181023162649-9b4f9f5ad519 // indirect
 	google.golang.org/genproto v0.0.0-20181016170114-94acd270e44e // indirect
 )
+
+replace github.com/zorkian/go-datadog-api => github.com/DataDog/go-datadog-api v0.0.0-20190409155204-5497235f061d
