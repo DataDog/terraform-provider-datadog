@@ -98,7 +98,7 @@ func resourceDatadogIntegrationPagerdutyServiceRead(d *schema.ResourceData, meta
 		}
 	}
 
-	return fmt.Errorf("failed to loacate serivce with name: %s", serviceName)
+	return fmt.Errorf("failed to locate service with name: %s", serviceName)
 }
 
 func resourceDatadogIntegrationPagerdutyServiceDelete(d *schema.ResourceData, meta interface{}) error {
