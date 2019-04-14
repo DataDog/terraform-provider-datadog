@@ -142,9 +142,6 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 	// the resource is assumed to not be created, and no state is saved.
 	d.SetId(createdSyntheticsTest.GetPublicId())
 
-	// Call resume/pause webservice, because it is a dedicated endpoint apart from classical CRUD operations
-	updateSyntheticsTestLiveness(d, client)
-
 	// Return the read function to ensure the state is reflected in the terraform.state file
 	return resourceDatadogSyntheticsTestRead(d, meta)
 }
@@ -174,9 +171,6 @@ func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{
 		// If the Update callback returns with or without an error, the full state is saved.
 		return err
 	}
-
-	// Call resume/pause webservice, because it is a dedicated endpoint apart from classical CRUD operations
-	updateSyntheticsTestLiveness(d, client)
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
 	return resourceDatadogSyntheticsTestRead(d, meta)
@@ -288,12 +282,18 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 		options.DeviceIds = deviceIds
 	}
 
+	status := "live"
+	if d.Get("paused").(bool) == true {
+		status = "paused"
+	}
+
 	syntheticsTest := datadog.SyntheticsTest{
 		Name:    datadog.String(d.Get("name").(string)),
 		Type:    datadog.String(d.Get("type").(string)),
 		Config:  &config,
 		Options: &options,
 		Message: datadog.String(d.Get("message").(string)),
+		Status:  datadog.String(status),
 	}
 
 	if attr, ok := d.GetOk("locations"); ok {
@@ -358,18 +358,6 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("message", syntheticsTest.GetMessage())
 	d.Set("tags", syntheticsTest.Tags)
 	d.Set("paused", *syntheticsTest.Status == "paused")
-}
-
-func updateSyntheticsTestLiveness(d *schema.ResourceData, client *datadog.Client) {
-	paused, ok := d.GetOk("paused")
-	if !ok {
-		return
-	}
-	if paused.(bool) {
-		client.PauseSyntheticsTest(d.Id())
-	} else {
-		client.ResumeSyntheticsTest(d.Id())
-	}
 }
 
 func newLocalMap(actualMap map[string]interface{}) map[string]string {
