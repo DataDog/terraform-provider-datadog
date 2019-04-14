@@ -111,9 +111,9 @@ func syntheticsTestOptions() *schema.Schema {
 		Optional: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"tick_every": {
-					Type:     schema.TypeInt,
-					Required: true,
+				"follow_redirects": {
+					Type:     schema.TypeBool,
+					Optional: true,
 				},
 				"min_failure_duration": {
 					Type:     schema.TypeInt,
@@ -122,6 +122,10 @@ func syntheticsTestOptions() *schema.Schema {
 				"min_location_failed": {
 					Type:     schema.TypeInt,
 					Optional: true,
+				},
+				"tick_every": {
+					Type:     schema.TypeInt,
+					Required: true,
 				},
 			},
 		},
