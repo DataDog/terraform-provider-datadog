@@ -272,7 +272,7 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 	}
 	if attr, ok := d.GetOk("options.min_location_failed"); ok {
 		minLocationFailed, _ := strconv.Atoi(attr.(string))
-		options.SetMinFailureDuration(minLocationFailed)
+		options.SetMinLocationFailed(minLocationFailed)
 	}
 	if attr, ok := d.GetOk("device_ids"); ok {
 		deviceIds := []string{}
