@@ -267,7 +267,7 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 		options.SetTickEvery(tickEvery)
 	}
 	if attr, ok := d.GetOk("options.follow_redirects"); ok {
-		followRedirects, _ := attr.(bool)
+		followRedirects := attr.(string) == "1"
 		options.SetFollowRedirects(followRedirects)
 	}
 	if attr, ok := d.GetOk("options.min_failure_duration"); ok {
