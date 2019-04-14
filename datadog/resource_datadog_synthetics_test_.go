@@ -283,7 +283,7 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 	if attr, ok := d.GetOk("device_ids"); ok {
 		deviceIds := []string{}
 		for _, s := range attr.([]interface{}) {
-			deviceIds := append(deviceIds, s.(string))
+			deviceIds = append(deviceIds, s.(string))
 		}
 		options.DeviceIds = deviceIds
 	}
