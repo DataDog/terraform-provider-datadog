@@ -85,7 +85,7 @@ func syntheticsTestRequest() *schema.Schema {
 			Schema: map[string]*schema.Schema{
 				"method": {
 					Type:     schema.TypeString,
-					Required: true,
+					Optional: true,
 				},
 				"url": {
 					Type:     schema.TypeString,
@@ -98,7 +98,7 @@ func syntheticsTestRequest() *schema.Schema {
 				"timeout": {
 					Type:     schema.TypeInt,
 					Optional: true,
-					Default:  0,
+					Default:  60,
 				},
 			},
 		},
@@ -323,24 +323,32 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("type", syntheticsTest.GetType())
 
 	actualRequest := syntheticsTest.GetConfig().Request
-	localRequest := newLocalMap(map[string]interface{}{
-		"method":  actualRequest.GetMethod(),
-		"url":     actualRequest.GetUrl(),
-		"body":    actualRequest.GetBody(),
-		"timeout": actualRequest.GetTimeout(),
-	})
+	localRequest := make(map[string]string)
+	localRequest["url"] = actualRequest.GetUrl()
+	if actualRequest.HasBody() {
+		localRequest["body"] = actualRequest.GetBody()
+	}
+	if actualRequest.HasMethod() {
+		localRequest["method"] = actualRequest.GetMethod()
+	}
+	if actualRequest.HasTimeout() {
+		localRequest["timeout"] = convertToString(actualRequest.GetTimeout())
+	}
 	d.Set("request", localRequest)
 	d.Set("request_headers", actualRequest.Headers)
 
 	actualAssertions := syntheticsTest.GetConfig().Assertions
 	localAssertions := []map[string]string{}
 	for _, assertion := range actualAssertions {
-		localAssertion := newLocalMap(map[string]interface{}{
-			"type":     assertion.GetType(),
-			"property": assertion.GetProperty(),
-			"operator": assertion.GetOperator(),
-			"target":   assertion.Target,
-		})
+		localAssertion := make(map[string]string)
+		localAssertion["type"] = assertion.GetType()
+		localAssertion["operator"] = assertion.GetOperator()
+		if assertion.HasProperty() {
+			localAssertion["property"] = assertion.GetProperty()
+		}
+		if target := assertion.Target; target != nil {
+			localAssertion["target"] = convertToString(target)
+		}
 		localAssertions = append(localAssertions, localAssertion)
 	}
 	d.Set("assertions", localAssertions)
@@ -350,12 +358,18 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("locations", syntheticsTest.Locations)
 
 	actualOptions := syntheticsTest.GetOptions()
-	localOptions := newLocalMap(map[string]interface{}{
-		"tick_every":           actualOptions.GetTickEvery(),
-		"follow_redirects":     actualOptions.GetFollowRedirects(),
-		"min_failure_duration": actualOptions.GetMinFailureDuration(),
-		"min_location_failed":  actualOptions.GetMinLocationFailed(),
-	})
+	localOptions := make(map[string]string)
+	localOptions["tick_every"] = strconv.Itoa(actualOptions.GetTickEvery())
+	if actualOptions.HasFollowRedirects() {
+		localOptions["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
+	}
+	if actualOptions.HasMinFailureDuration() {
+		localOptions["min_failure_duration"] = convertToString(actualOptions.GetMinFailureDuration())
+	}
+	if actualOptions.HasMinLocationFailed() {
+		localOptions["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
+	}
+
 	d.Set("options", localOptions)
 
 	d.Set("name", syntheticsTest.GetName())
@@ -364,33 +378,25 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("paused", *syntheticsTest.Status == "paused")
 }
 
-func newLocalMap(actualMap map[string]interface{}) map[string]string {
-	localMap := make(map[string]string)
-	for k, i := range actualMap {
-		var valStr string
-		switch v := i.(type) {
-		case bool:
-			if v {
-				valStr = "1"
-			} else {
-				valStr = "0"
-			}
-		case int:
-			valStr = strconv.Itoa(v)
-		case float64:
-			valStr = strconv.FormatFloat(v, 'f', -1, 64)
-		case string:
-			valStr = v
-		default:
-			// TODO: manage target for JSON body assertions
-			valStrr, err := json.Marshal(v)
-			if err == nil {
-				valStr = string(valStrr)
-			}
+func convertToString(i interface{}) string {
+	switch v := i.(type) {
+	case bool:
+		if v {
+			return "1"
 		}
-		if valStr != "" {
-			localMap[k] = valStr
+		return "0"
+	case int:
+		return strconv.Itoa(v)
+	case float64:
+		return strconv.FormatFloat(v, 'f', -1, 64)
+	case string:
+		return v
+	default:
+		// TODO: manage target for JSON body assertions
+		valStrr, err := json.Marshal(v)
+		if err == nil {
+			return string(valStrr)
 		}
+		return ""
 	}
-	return localMap
 }
