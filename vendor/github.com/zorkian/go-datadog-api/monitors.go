@@ -140,7 +140,7 @@ func (client *Client) GetMonitor(id int) (*Monitor, error) {
 	return &out, nil
 }
 
-// GetMonitor retrieves monitors by name
+// GetMonitorsByName retrieves monitors by name
 func (self *Client) GetMonitorsByName(name string) ([]Monitor, error) {
 	var out reqMonitors
 	query, err := url.ParseQuery(fmt.Sprintf("name=%v", name))
@@ -155,7 +155,7 @@ func (self *Client) GetMonitorsByName(name string) ([]Monitor, error) {
 	return out.Monitors, nil
 }
 
-// GetMonitor retrieves monitors by a slice of tags
+// GetMonitorsByTags retrieves monitors by a slice of tags
 func (self *Client) GetMonitorsByTags(tags []string) ([]Monitor, error) {
 	var out reqMonitors
 	query, err := url.ParseQuery(fmt.Sprintf("monitor_tags=%v", strings.Join(tags, ",")))
