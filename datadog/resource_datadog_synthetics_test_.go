@@ -66,7 +66,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			},
 			"tags": {
 				Type:     schema.TypeList,
-				Optional: true,
+				Required: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"paused": {
@@ -309,13 +309,13 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 		syntheticsTest.Locations = locations
 	}
 
+	tags := []string{}
 	if attr, ok := d.GetOk("tags"); ok {
-		tags := []string{}
 		for _, s := range attr.([]interface{}) {
 			tags = append(tags, s.(string))
 		}
-		syntheticsTest.Tags = tags
 	}
+	syntheticsTest.Tags = tags
 
 	return &syntheticsTest
 }
