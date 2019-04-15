@@ -39,7 +39,7 @@ resource "datadog_synthetics_test" "foo" {
   message = "Notify @pagerduty"
   tags = ["foo:bar", "foo", "env:test"]
 
-  paused = false
+  status = "paused"
 }
 ```
 
@@ -51,8 +51,9 @@ The following arguments are supported:
 * `name` - (Required) Name of Datadog synthetics test
 * `message` - (Required) A message to include with notifications for this synthetics test.
     Email notifications can be sent to specific users by using the same '@username' notation as events.
+* `tags` - (Required) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI.
 * `request` - (Required)
-    * `method` - (Required) DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT
+    * `method` - (Required) DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT (noop if type=browser)
     * `url` - (Required) Any url
     * `timeout` - (Optional) Any value between 0 and 3600
 * `request_headers` - (Optional) Header name and value map
@@ -68,8 +69,7 @@ The following arguments are supported:
     * `min_location_failed` - (Optional) Threshold below which a synthetics test is allowed to fail before sending notifications
 * `locations` - (Required) Please refer to Datadog documentation for available locations (e.g. "aws:eu-central-1")
 * `device_ids` - (Optional) "laptop_large", "tablet" or "mobile_small" (only available if type=browser)
-* `tags` - (Optional) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI.
-* `paused` - (Optional) Default is false if type=api and true if type=browser
+* `status` - (Optional) "live", "paused" (default is "live" if type=api and "paused" if type=browser)
 
 ## Attributes Reference
 
