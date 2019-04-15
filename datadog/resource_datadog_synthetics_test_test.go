@@ -137,6 +137,10 @@ var createSyntheticsAPITestStep = resource.TestStep{
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "options.tick_every", "60"),
 		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.foo", "options.min_failure_duration", "0"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
+		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "name", "name for synthetics test foo"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "message", "Notify @datadog.user"),
@@ -232,6 +236,10 @@ var updateSyntheticsAPITestStep = resource.TestStep{
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "options.tick_every", "900"),
 		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.foo", "options.min_failure_duration", "10"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
+		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "name", "updated name"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "message", "Notify @pagerduty"),
@@ -317,6 +325,10 @@ var createSyntheticsBrowserTestStep = resource.TestStep{
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.bar", "options.tick_every", "900"),
 		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "options.min_failure_duration", "0"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
+		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.bar", "name", "name for synthetics browser test bar"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
@@ -393,7 +405,11 @@ var updateSyntheticsBrowserTestStep = resource.TestStep{
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.tick_every", "300"),
+			"datadog_synthetics_test.bar", "options.tick_every", "1800"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "options.min_failure_duration", "10"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.bar", "name", "updated name for synthetics browser test bar"),
 		resource.TestCheckResourceAttr(
@@ -425,7 +441,7 @@ resource "datadog_synthetics_test" "bar" {
 	device_ids = [ "laptop_large", "tablet" ]
   locations = [ "aws:eu-central-1" ]
   options {
-		tick_every = 300
+		tick_every = 1800
 		min_failure_duration = 10
 		min_location_failed = 1
   }
