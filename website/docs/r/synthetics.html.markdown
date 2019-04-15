@@ -13,7 +13,7 @@ Provides a Datadog synthetics test resource. This can be used to create and mana
 ## Example Usage
 
 ```hcl
-# Create a new Datadog synthetics test on https://www.example.org
+# Create a new Datadog Synthetics API test on https://www.example.org
 resource "datadog_synthetics_test" "foo" {
   type = "api"
   request {
@@ -35,9 +35,32 @@ resource "datadog_synthetics_test" "foo" {
   options {
     tick_every = 900
   }
-  name = "updated name"
+  name = "An API test on example.org"
   message = "Notify @pagerduty"
   tags = ["foo:bar", "foo", "env:test"]
+
+  status = "live"
+}
+
+# Create a new Datadog Synthetics Browser test starting on https://www.example.org
+resource "datadog_synthetics_test" "bar" {
+  type = "browser"
+
+  request {
+    method = "GET"
+    url    = "https://app.datadoghq.com"
+  }
+
+  device_ids = ["laptop_large"]
+  locations  = ["aws:eu-central-1"]
+
+  options {
+    tick_every = 3600
+  }
+
+  name = "A Browser test on example.org"
+  message = "Notify @qa"
+  tags    = []
 
   status = "paused"
 }
