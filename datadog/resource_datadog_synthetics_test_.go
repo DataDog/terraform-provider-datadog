@@ -85,7 +85,7 @@ func syntheticsTestRequest() *schema.Schema {
 			Schema: map[string]*schema.Schema{
 				"method": {
 					Type:     schema.TypeString,
-					Optional: true,
+					Required: true,
 				},
 				"url": {
 					Type:     schema.TypeString,
