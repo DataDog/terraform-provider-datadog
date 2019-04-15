@@ -158,6 +158,7 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 		if strings.Contains(err.Error(), "404 Not Found") {
 			// Delete the resource from the local state since it doesn't exist anymore in the actual state
 			d.SetId("")
+			return nil
 		}
 		return err
 	}
