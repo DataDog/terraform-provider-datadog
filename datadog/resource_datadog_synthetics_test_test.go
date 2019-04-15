@@ -192,20 +192,20 @@ resource "datadog_synthetics_test" "foo" {
 		  operator = "doesNotContain"
 		  target = "terraform"
 		}
-  ]
+	]
 
-  locations = [ "aws:eu-central-1" ]
-  options {
+	locations = [ "aws:eu-central-1" ]
+	options {
 		tick_every = 60
 		min_failure_duration = 0
 		min_location_failed = 1
-  }
+	}
 
-  name = "name for synthetics test foo"
-  message = "Notify @datadog.user"
-  tags = ["foo:bar", "baz"]
+	name = "name for synthetics test foo"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
 
-  status = "paused"
+	status = "paused"
 }
 `
 
@@ -261,16 +261,16 @@ resource "datadog_synthetics_test" "foo" {
 	type = "api"
 
 	request {
-	  method = "GET"
+		method = "GET"
 		url = "https://docs.datadoghq.com"
 		timeout = 60
 	}
 
 	assertions = [
-	  {
-	    type = "statusCode"
-	    operator = "isNot"
-	    target = "500"
+		{
+			type = "statusCode"
+			operator = "isNot"
+			target = "500"
 		}
 	]
 
