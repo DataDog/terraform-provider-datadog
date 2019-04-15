@@ -178,19 +178,19 @@ resource "datadog_synthetics_test" "foo" {
 			target = "application/json"
 		},
 		{
-		  type = "statusCode"
-		  operator = "is"
-		  target = "200"
+			type = "statusCode"
+			operator = "is"
+			target = "200"
 		},
 		{
-		  type = "responseTime"
-		  operator = "lessThan"
+			type = "responseTime"
+			operator = "lessThan"
 			target = "2000"
 		},
 		{
-		  type = "body"
-		  operator = "doesNotContain"
-		  target = "terraform"
+			type = "body"
+			operator = "doesNotContain"
+			target = "terraform"
 		}
 	]
 
