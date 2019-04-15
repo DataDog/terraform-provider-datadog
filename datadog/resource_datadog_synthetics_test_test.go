@@ -157,10 +157,10 @@ var createSyntheticsAPITestStep = resource.TestStep{
 
 const createSyntheticsAPITestConfig = `
 resource "datadog_synthetics_test" "foo" {
-  type = "api"
+	type = "api"
 
-  request {
-	  method = "GET"
+	request {
+		method = "GET"
 		url = "https://www.datadoghq.com"
 		body = "this is a body"
 		timeout = 30
@@ -170,27 +170,27 @@ resource "datadog_synthetics_test" "foo" {
 		"X-Datadog-Trace-ID" = "1234566789"
 	}
 
-  assertions = [
-    {
+	assertions = [
+		{
 			type = "header"
 			property = "content-type"
-      operator = "contains"
+			operator = "contains"
 			target = "application/json"
 		},
-    {
-      type = "statusCode"
-      operator = "is"
-      target = "200"
-  	},
-    {
-      type = "responseTime"
-      operator = "lessThan"
+		{
+		  type = "statusCode"
+		  operator = "is"
+		  target = "200"
+		},
+		{
+		  type = "responseTime"
+		  operator = "lessThan"
 			target = "2000"
 		},
-    {
-      type = "body"
-      operator = "doesNotContain"
-      target = "terraform"
+		{
+		  type = "body"
+		  operator = "doesNotContain"
+		  target = "terraform"
 		}
   ]
 
@@ -258,33 +258,33 @@ var updateSyntheticsAPITestStep = resource.TestStep{
 
 const updateSyntheticsAPITestConfig = `
 resource "datadog_synthetics_test" "foo" {
-  type = "api"
+	type = "api"
 
-  request {
+	request {
 	  method = "GET"
 		url = "https://docs.datadoghq.com"
 		timeout = 60
-  }
+	}
 
-  assertions = [
-    {
-      type = "statusCode"
-      operator = "isNot"
-      target = "500"
-  	}
-  ]
+	assertions = [
+	  {
+	    type = "statusCode"
+	    operator = "isNot"
+	    target = "500"
+		}
+	]
 
-  locations = [ "aws:eu-central-1" ]
+	locations = [ "aws:eu-central-1" ]
 
-  options {
+	options {
 		tick_every = 900
 		min_failure_duration = 10
-		min_location_failed = 1 
-  }
+		min_location_failed = 1
+	}
 
-  name = "updated name"
-  message = "Notify @pagerduty"
-  tags = ["foo:bar", "foo", "env:test"]
+	name = "updated name"
+	message = "Notify @pagerduty"
+	tags = ["foo:bar", "foo", "env:test"]
 
 	status = "live"
 }
@@ -343,10 +343,10 @@ var createSyntheticsBrowserTestStep = resource.TestStep{
 
 const createSyntheticsBrowserTestConfig = `
 resource "datadog_synthetics_test" "bar" {
-  type = "browser"
+	type = "browser"
 
-  request {
-	  method = "GET"
+	request {
+		method = "GET"
 		url = "https://www.datadoghq.com"
 		body = "this is a body"
 		timeout = 30
@@ -357,15 +357,15 @@ resource "datadog_synthetics_test" "bar" {
 	}
 
 	device_ids = [ "laptop_large", "mobile_small" ]
-  locations = [ "aws:eu-central-1" ]
-  options {
+	locations = [ "aws:eu-central-1" ]
+	options {
 		tick_every = 900
 		min_failure_duration = 0
 		min_location_failed = 1
-  }
+	}
 
-  name = "name for synthetics browser test bar"
-  message = "Notify @datadog.user"
+	name = "name for synthetics browser test bar"
+	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
@@ -425,10 +425,9 @@ var updateSyntheticsBrowserTestStep = resource.TestStep{
 
 const updateSyntheticsBrowserTestConfig = `
 resource "datadog_synthetics_test" "bar" {
-  type = "browser"
-
-  request {
-	  method = "PUT"
+	type = "browser"
+	request {
+		method = "PUT"
 		url = "https://docs.datadoghq.com"
 		body = "this is an updated body"
 		timeout = 60
@@ -437,19 +436,16 @@ resource "datadog_synthetics_test" "bar" {
 		"Accept" = "application/xml"
 		"X-Datadog-Trace-ID" = "987654321"
 	}
-
 	device_ids = [ "laptop_large", "tablet" ]
-  locations = [ "aws:eu-central-1" ]
-  options {
+	locations = [ "aws:eu-central-1" ]
+	options {
 		tick_every = 1800
 		min_failure_duration = 10
 		min_location_failed = 1
-  }
-
-  name = "updated name for synthetics browser test bar"
-  message = "Notify @pagerduty"
+	}
+	name = "updated name for synthetics browser test bar"
+	message = "Notify @pagerduty"
 	tags = ["foo:bar", "buz"]
-
 	status = "live"
 }
 `
