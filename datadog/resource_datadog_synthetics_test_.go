@@ -69,9 +69,9 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Required: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			"paused": {
-				Type:     schema.TypeBool,
-				Optional: true,
+			"status": {
+				Type:     schema.TypeString,
+				Required: true,
 			},
 		},
 	}
@@ -287,18 +287,13 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 		options.DeviceIds = deviceIds
 	}
 
-	status := "live"
-	if d.Get("paused").(bool) == true {
-		status = "paused"
-	}
-
 	syntheticsTest := datadog.SyntheticsTest{
 		Name:    datadog.String(d.Get("name").(string)),
 		Type:    datadog.String(d.Get("type").(string)),
 		Config:  &config,
 		Options: &options,
 		Message: datadog.String(d.Get("message").(string)),
-		Status:  datadog.String(status),
+		Status:  datadog.String(d.Get("status").(string)),
 	}
 
 	if attr, ok := d.GetOk("locations"); ok {
@@ -383,8 +378,8 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 
 	d.Set("name", syntheticsTest.GetName())
 	d.Set("message", syntheticsTest.GetMessage())
+	d.Set("status", syntheticsTest.GetStatus())
 	d.Set("tags", syntheticsTest.Tags)
-	d.Set("paused", *syntheticsTest.Status == "paused")
 }
 
 func convertToString(i interface{}) string {
