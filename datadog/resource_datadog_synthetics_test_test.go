@@ -119,11 +119,9 @@ var createSyntheticsAPITestStep = resource.TestStep{
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "assertions.3.target", "terraform"),
 		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "locations.#", "2"),
+			"datadog_synthetics_test.foo", "locations.#", "1"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "locations.1", "aws:ap-northeast-1"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "options.tick_every", "60"),
 		resource.TestCheckResourceAttr(
@@ -137,7 +135,7 @@ var createSyntheticsAPITestStep = resource.TestStep{
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "tags.1", "baz"),
 		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "paused", "true"),
+			"datadog_synthetics_test.foo", "status", "paused"),
 	),
 }
 
@@ -180,18 +178,18 @@ resource "datadog_synthetics_test" "foo" {
 		}
   ]
 
-  locations = [ "aws:eu-central-1", "aws:ap-northeast-1" ]
+  locations = [ "aws:eu-central-1" ]
   options {
 		tick_every = 60
 		min_failure_duration = 0
-		min_location_failed = 0
+		min_location_failed = 1
   }
 
   name = "name for synthetics test foo"
   message = "Notify @datadog.user"
   tags = ["foo:bar", "baz"]
 
-  paused = true
+  status = "paused"
 }
 `
 
@@ -234,7 +232,7 @@ var updateSyntheticsAPITestStep = resource.TestStep{
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "tags.2", "env:test"),
 		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "paused", "true"),
+			"datadog_synthetics_test.foo", "status", "live"),
 	),
 }
 
@@ -260,15 +258,15 @@ resource "datadog_synthetics_test" "foo" {
 
   options {
 		tick_every = 900
-		min_failure_duration = 0
-		min_location_failed = 0
+		min_failure_duration = 10
+		min_location_failed = 1 
   }
 
   name = "updated name"
   message = "Notify @pagerduty"
   tags = ["foo:bar", "foo", "env:test"]
 
-  paused = true
+	status = "live"
 }
 `
 
@@ -293,19 +291,17 @@ var createSyntheticsBrowserTestStep = resource.TestStep{
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.bar", "request_headers.X-Datadog-Trace-ID", "123456789"),
 		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "devices.#", "2"),
+			"datadog_synthetics_test.bar", "device_ids.#", "2"),
 		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "devices.0", "laptop_large"),
+			"datadog_synthetics_test.bar", "device_ids.0", "laptop_large"),
 		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "devices.1", "mobile_small"),
+			"datadog_synthetics_test.bar", "device_ids.1", "mobile_small"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.bar", "assertions.#", "0"),
 		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "locations.#", "2"),
+			"datadog_synthetics_test.bar", "locations.#", "1"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "locations.1", "aws:ap-northeast-1"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.bar", "options.tick_every", "900"),
 		resource.TestCheckResourceAttr(
@@ -336,19 +332,19 @@ resource "datadog_synthetics_test" "bar" {
 		"X-Datadog-Trace-ID" = "123456789"
 	}
 
-	devices = [ "laptop_large", "mobile_small" ]
-  locations = [ "aws:eu-central-1", "aws:ap-northeast-1" ]
+	device_ids = [ "laptop_large", "mobile_small" ]
+  locations = [ "aws:eu-central-1" ]
   options {
 		tick_every = 900
 		min_failure_duration = 0
-		min_location_failed = 0
+		min_location_failed = 1
   }
 
   name = "name for synthetics browser test bar"
   message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
 
-	paused = true
+	status = "paused"
 }
 `
 
