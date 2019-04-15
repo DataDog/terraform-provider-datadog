@@ -1,8 +1,8 @@
-## 1.8.0 (Unreleased)
+## 1.8.0 (April 15, 2019)
 
 INTERNAL:
 
-* provider: Enable request/response logging in `>=DEBUG` mode [GH-153]
+* provider: Enable request/response logging in `>=DEBUG` mode ([#153](https://github.com/terraform-providers/terraform-provider-datadog/issues/153))
 
 IMPROVEMENTS:
 
