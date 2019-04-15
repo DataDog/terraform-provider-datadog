@@ -324,7 +324,6 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 
 	actualRequest := syntheticsTest.GetConfig().Request
 	localRequest := make(map[string]string)
-	localRequest["url"] = actualRequest.GetUrl()
 	if actualRequest.HasBody() {
 		localRequest["body"] = actualRequest.GetBody()
 	}
@@ -334,6 +333,9 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	if actualRequest.HasTimeout() {
 		localRequest["timeout"] = convertToString(actualRequest.GetTimeout())
 	}
+	if actualRequest.HasUrl() {
+		localRequest["url"] = actualRequest.GetUrl()
+	}
 	d.Set("request", localRequest)
 	d.Set("request_headers", actualRequest.Headers)
 
@@ -341,13 +343,17 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	localAssertions := []map[string]string{}
 	for _, assertion := range actualAssertions {
 		localAssertion := make(map[string]string)
-		localAssertion["type"] = assertion.GetType()
-		localAssertion["operator"] = assertion.GetOperator()
+		if assertion.HasOperator() {
+			localAssertion["operator"] = assertion.GetOperator()
+		}
 		if assertion.HasProperty() {
 			localAssertion["property"] = assertion.GetProperty()
 		}
 		if target := assertion.Target; target != nil {
 			localAssertion["target"] = convertToString(target)
+		}
+		if assertion.HasType() {
+			localAssertion["type"] = assertion.GetType()
 		}
 		localAssertions = append(localAssertions, localAssertion)
 	}
@@ -359,7 +365,6 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 
 	actualOptions := syntheticsTest.GetOptions()
 	localOptions := make(map[string]string)
-	localOptions["tick_every"] = strconv.Itoa(actualOptions.GetTickEvery())
 	if actualOptions.HasFollowRedirects() {
 		localOptions["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
 	}
@@ -368,6 +373,9 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 	if actualOptions.HasMinLocationFailed() {
 		localOptions["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
+	}
+	if actualOptions.HasTickEvery() {
+		localOptions["tick_every"] = convertToString(actualOptions.GetTickEvery())
 	}
 
 	d.Set("options", localOptions)
