@@ -80,6 +80,18 @@ func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed,
+		Steps: []resource.TestStep{
+			createSyntheticsBrowserTestStep,
+			updateSyntheticsBrowserTestStep,
+		},
+	})
+}
+
 var createSyntheticsAPITestStep = resource.TestStep{
 	Config: createSyntheticsAPITestConfig,
 	Check: resource.ComposeTestCheckFunc(
@@ -345,6 +357,84 @@ resource "datadog_synthetics_test" "bar" {
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
+}
+`
+
+var updateSyntheticsBrowserTestStep = resource.TestStep{
+	Config: updateSyntheticsBrowserTestConfig,
+	Check: resource.ComposeTestCheckFunc(
+		testSyntheticsTestExists(),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "type", "browser"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "request.method", "PUT"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "request.url", "https://docs.datadoghq.com"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "request.body", "this is an updated body"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "request.timeout", "60"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "request_headers.%", "2"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "request_headers.Accept", "application/xml"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "request_headers.X-Datadog-Trace-ID", "987654321"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "device_ids.#", "2"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "device_ids.0", "laptop_large"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "device_ids.1", "tablet"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "assertions.#", "0"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "locations.#", "1"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "options.tick_every", "300"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "name", "updated name for synthetics browser test bar"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "message", "Notify @pagerduty"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "tags.#", "2"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.bar", "tags.1", "buz"),
+	),
+}
+
+const updateSyntheticsBrowserTestConfig = `
+resource "datadog_synthetics_test" "bar" {
+  type = "browser"
+
+  request {
+	  method = "PUT"
+		url = "https://docs.datadoghq.com"
+		body = "this is an updated body"
+		timeout = 60
+	}
+	request_headers {
+		"Accept" = "application/xml"
+		"X-Datadog-Trace-ID" = "987654321"
+	}
+
+	device_ids = [ "laptop_large", "tablet" ]
+  locations = [ "aws:eu-central-1" ]
+  options {
+		tick_every = 300
+		min_failure_duration = 10
+		min_location_failed = 1
+  }
+
+  name = "updated name for synthetics browser test bar"
+  message = "Notify @pagerduty"
+	tags = ["foo:bar", "buz"]
+
+	status = "live"
 }
 `
 
