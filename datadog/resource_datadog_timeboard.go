@@ -190,6 +190,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "How many digits to show",
+					Default:     "2",
 				},
 				"custom_unit": {
 					Type:        schema.TypeString,
