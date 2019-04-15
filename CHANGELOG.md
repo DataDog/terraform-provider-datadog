@@ -1,4 +1,4 @@
-## 1.7.1 (Unreleased)
+## 1.8.0 (Unreleased)
 
 INTERNAL:
 
