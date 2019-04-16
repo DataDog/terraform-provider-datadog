@@ -1,8 +1,14 @@
-## 1.7.1 (Unreleased)
+## 1.8.1 (Unreleased)
+## 1.8.0 (April 15, 2019)
 
 INTERNAL:
 
-* provider: Enable request/response logging in `>=DEBUG` mode [GH-153]
+* provider: Enable request/response logging in `>=DEBUG` mode ([#153](https://github.com/terraform-providers/terraform-provider-datadog/issues/153))
+
+IMPROVEMENTS:
+
+* Add Synthetics API and Browser tests support + update go-datadog-api to latest. ([169](https://github.com/terraform-providers/terraform-provider-datadog/pull/169))
+
 
 ## 1.7.0 (March 05, 2019)
 

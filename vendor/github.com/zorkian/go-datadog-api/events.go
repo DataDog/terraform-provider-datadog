@@ -60,7 +60,7 @@ func (client *Client) GetEvent(id int) (*Event, error) {
 	return out.Event, nil
 }
 
-// QueryEvents returns a slice of events from the query stream.
+// GetEvents returns a slice of events from the query stream.
 func (client *Client) GetEvents(start, end int,
 	priority, sources, tags string) ([]Event, error) {
 	// Since this is a GET request, we need to build a query string.
