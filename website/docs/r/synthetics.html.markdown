@@ -78,7 +78,8 @@ The following arguments are supported:
 - `request` - (Required)
   - `method` - (Required) DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT (noop if type=browser)
   - `url` - (Required) Any url
-  - `timeout` - (Optional) For typ=api, any value between 0 and 60. No-op for type=browser
+  - `timeout` - (Optional) For type=api, any value between 0 and 60 (Default = 60). No-op for type=browser
+  - `body` - (Optional) Request body
 - `request_headers` - (Optional) Header name and value map
 - `assertions` - (Required) Array of 1 to 10 items, only some combinations of type/operator are valid (please refer to Datadog documentation)
   - `type` - (Required) body, header, responseTime, statusCode
