@@ -8,7 +8,11 @@
 
 package datadog
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"errors"
+	"strconv"
+)
 
 // Bool is a helper routine that allocates a new bool value
 // to store v and returns a pointer to it.
@@ -78,4 +82,19 @@ func GetPrecision(v *PrecisionT) (PrecisionT, bool) {
 	}
 
 	return PrecisionT(""), false
+}
+
+// GetStringId is a helper routine that allows screenboards and timeboards to be retrieved
+// by either the legacy numerical format or the new string format.
+// It returns the id as is if it is a string, converts it to a string if it is an integer.
+// It return an error if the type is neither string or an integer
+func GetStringId(id interface{}) (string, error) {
+	switch v := id.(type) {
+	case int:
+		return strconv.Itoa(v), nil
+	case string:
+		return v, nil
+	default:
+		return "", errors.New("unsupported id type")
+	}
 }
