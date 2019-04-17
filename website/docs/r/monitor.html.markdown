@@ -108,6 +108,7 @@ The following arguments are supported:
 * `timeout_h` (Optional) The number of hours of the monitor not reporting data before it will automatically resolve
     from a triggered state. Defaults to false.
 * `include_tags` (Optional) A boolean indicating whether notifications from this monitor will automatically insert its
+* `enable_logs_sample` (Optional) A boolean indicating whether or not to include a list of log values which triggered the alert. Defaults to false. This is only used by log monitors.
     triggering tags into the title. Defaults to true.
 * `require_full_window` (Optional) A boolean indicating whether this monitor needs a full window of data before it's evaluated.
     We highly recommend you set this to False for sparse metrics, otherwise some evaluations will be skipped.
