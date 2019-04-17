@@ -25,10 +25,11 @@ resource "datadog_user" "foo" {
 
 The following arguments are supported:
 
+* `access_role` - (Optional) Role description for user. Can be `st` (standard user), `adm` (admin user) or `ro` (read-only user).  Default is `st`.
 * `disabled` - (Optional) Whether the user is disabled
 * `email` - (Required) Email address for user
 * `handle` - (Required) The user handle, must be a valid email.
-* `is_admin` - (Deprecated) (Optional) Whether the user is an administrator
+* `is_admin` - (Deprecated) (Optional) Whether the user is an administrator. **Warning**: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
 * `name` - (Required) Name for user
 * `role` - (Deprecated) Role description for user. **Warning**: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
 
