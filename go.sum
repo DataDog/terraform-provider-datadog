@@ -9,6 +9,14 @@ github.com/Azure/go-ntlmssp v0.0.0-20170803034930-c92175d54006/go.mod h1:chxPXzS
 github.com/ChrisTrenkamp/goxpath v0.0.0-20170625215350-4fe035839290 h1:K9I21XUHNbYD3GNMmJBN0UKJCpdP+glftwNZ7Bo8kqY=
 github.com/ChrisTrenkamp/goxpath v0.0.0-20170625215350-4fe035839290/go.mod h1:nuWgzSkT5PnyOd+272uUmV0dnAnAn42Mk7PiQC5VzN4=
 github.com/DHowett/go-plist v0.0.0-20180609054337-500bd5b9081b/go.mod h1:5paT5ZDrOm8eAJPem2Bd+q3FTi3Gxm/U4tb2tH8YIUQ=
+github.com/DataDog/go-datadog-api v0.0.0-20190402145118-e4672b7066ac h1:2lpq/xj2C5pKzMPDRSLaakf7BomK3InPfcq42S/vAf4=
+github.com/DataDog/go-datadog-api v0.0.0-20190402145118-e4672b7066ac/go.mod h1:M39kErhCx5HcdIQ1FA2NHJSWPA6qvUGkJ/Bhz6MAOa4=
+github.com/DataDog/go-datadog-api v0.0.0-20190403100613-64d00d08241a h1:xutdLApqBruGT3dYCw+18pDWiYXRaHZxf94SaOB97Vc=
+github.com/DataDog/go-datadog-api v0.0.0-20190403100613-64d00d08241a/go.mod h1:M39kErhCx5HcdIQ1FA2NHJSWPA6qvUGkJ/Bhz6MAOa4=
+github.com/DataDog/go-datadog-api v0.0.0-20190409090430-627e185509df h1:hUKMb79rABpaespgHpSekKoALS47XPID/Ni6fRfmivo=
+github.com/DataDog/go-datadog-api v0.0.0-20190409090430-627e185509df/go.mod h1:M39kErhCx5HcdIQ1FA2NHJSWPA6qvUGkJ/Bhz6MAOa4=
+github.com/DataDog/go-datadog-api v0.0.0-20190409155204-5497235f061d h1:qWou04uTL243M06V6n7CB4LadBxNPGhv/TREJa9OVik=
+github.com/DataDog/go-datadog-api v0.0.0-20190409155204-5497235f061d/go.mod h1:M39kErhCx5HcdIQ1FA2NHJSWPA6qvUGkJ/Bhz6MAOa4=
 github.com/Unknwon/com v0.0.0-20151008135407-28b053d5a292 h1:tuQ7w+my8a8mkwN7x2TSd7OzTjkZ7rAeSyH4xncuAMI=
 github.com/Unknwon/com v0.0.0-20151008135407-28b053d5a292/go.mod h1:KYCjqMOeHpNuTOiFQU6WEcTG7poCJrUs0YgyHNtn1no=
 github.com/abdullin/seq v0.0.0-20160510034733-d5467c17e7af/go.mod h1:5Jv4cbFiHJMsVxt52+i0Ha45fjshj6wxYr1r19tB9bw=
@@ -138,7 +146,6 @@ github.com/hashicorp/go-slug v0.2.0/go.mod h1:+zDycQOzGqOqMW7Kn2fp9vz/NtqpMLQlgb
 github.com/hashicorp/go-sockaddr v1.0.0/go.mod h1:7Xibr9yA9JjQq1JpNB2Vw7kxv8xerXegt+ozgdvDeDU=
 github.com/hashicorp/go-tfe v0.3.10 h1:6uPnPHNPxXDe3k/Vt6fovygYTaWJ8f/7zdHc++f7NJU=
 github.com/hashicorp/go-tfe v0.3.10/go.mod h1:LHLchj07PCYgQqcyE5Sz+g4zrMNW+nALKbiSNTZedEs=
-github.com/hashicorp/go-tfe v0.3.11/go.mod h1:LHLchj07PCYgQqcyE5Sz+g4zrMNW+nALKbiSNTZedEs=
 github.com/hashicorp/go-uuid v1.0.0 h1:RS8zrF7PhGwyNPOtxSClXXj9HA8feRnJzgnI1RJCSnM=
 github.com/hashicorp/go-uuid v1.0.0/go.mod h1:6SBZvOh/SIDV7/2o3Jml5SYk/TvGqwFJ/bN7x4byOro=
 github.com/hashicorp/go-version v1.0.0 h1:21MVWPKDphxa7ineQQTrCU5brh7OuVVAzGOCnnCPtE8=
@@ -158,8 +165,6 @@ github.com/hashicorp/serf v0.8.2-0.20171022020050-c20a0b1b1ea9 h1:SYvpFFTluyu7KQ
 github.com/hashicorp/serf v0.8.2-0.20171022020050-c20a0b1b1ea9/go.mod h1:h/Ru6tmZazX7WO/GDmwdpS975F019L4t5ng5IgwbNrE=
 github.com/hashicorp/terraform v0.11.12-beta1.0.20190227065421-fc531f54a878 h1:BEtsPcwrOE8gFSU/SPbY9mdr1CHsKAvEeZqh2PWNVqo=
 github.com/hashicorp/terraform v0.11.12-beta1.0.20190227065421-fc531f54a878/go.mod h1:pR/Ri/puIH6hcylTZLaCDDS/16fCkjGr+/VGfHdb9zk=
-github.com/hashicorp/terraform v0.11.13 h1:1Ka1IPqYNCu3yIZUW1OAnZjQaacNnnZne2AEmWRCm0o=
-github.com/hashicorp/terraform v0.11.13/go.mod h1:aSdr9xVNED8nCdH3naa31VNUaWo63itXzRBe4f1q5HM=
 github.com/hashicorp/vault v0.0.0-20161029210149-9a60bf2a50e4 h1:SGDekHLK2IRoVS7Fb4olLyWvc2VmwKgyFC05j6X3NII=
 github.com/hashicorp/vault v0.0.0-20161029210149-9a60bf2a50e4/go.mod h1:KfSyffbKxoVyspOdlaGVjIuwLobi07qD1bAbosPMpP0=
 github.com/hashicorp/yamux v0.0.0-20160720233140-d1caa6c97c9f/go.mod h1:+NfK9FKeTrX5uv1uIXGdwYDTeHna2qgaIlx54MXqjAM=
@@ -296,8 +301,8 @@ github.com/zclconf/go-cty v0.0.0-20180302160414-49fa5e03c418/go.mod h1:LnDKxj8gN
 github.com/zclconf/go-cty v0.0.0-20180815031001-58bb2bc0302a/go.mod h1:xnAOWiHeOqg2nWS62VtQ7pbOu17FtxJNW8RLEih+O3s=
 github.com/zclconf/go-cty v0.0.0-20181017232614-01c5aba823a6 h1:Y9SzKuDy2J5QLFPmFk7/ZIzbu4/FrQK9Zwv4vjivNiM=
 github.com/zclconf/go-cty v0.0.0-20181017232614-01c5aba823a6/go.mod h1:xnAOWiHeOqg2nWS62VtQ7pbOu17FtxJNW8RLEih+O3s=
-github.com/zorkian/go-datadog-api v2.19.0+incompatible h1:G17NtfeHwrsQ2degevkwiVEirZENSOjbGOjLLT/kwa4=
-github.com/zorkian/go-datadog-api v2.19.0+incompatible/go.mod h1:PkXwHX9CUQa/FpB9ZwAD45N1uhCW4MT/Wj7m36PbKss=
+github.com/zorkian/go-datadog-api v2.19.1-0.20190415084127-efa96fedb363+incompatible h1:uQBFFHBO8CiSo/Gp4E7vzE6cj2TTtZ/SuGO4nDyCY3g=
+github.com/zorkian/go-datadog-api v2.19.1-0.20190415084127-efa96fedb363+incompatible/go.mod h1:PkXwHX9CUQa/FpB9ZwAD45N1uhCW4MT/Wj7m36PbKss=
 github.com/zorkian/go-datadog-api v2.20.0+incompatible h1:zfITezz+b9lZuYghMXTdAXBdJe7HRAyU72kKnx876k8=
 github.com/zorkian/go-datadog-api v2.20.0+incompatible/go.mod h1:PkXwHX9CUQa/FpB9ZwAD45N1uhCW4MT/Wj7m36PbKss=
 golang.org/x/crypto v0.0.0-20180211211603-9de5f2eaf759/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
