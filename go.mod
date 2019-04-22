@@ -23,4 +23,5 @@ require (
 	github.com/zorkian/go-datadog-api v2.20.0+incompatible
 	golang.org/x/net v0.0.0-20181023162649-9b4f9f5ad519 // indirect
 	google.golang.org/genproto v0.0.0-20181016170114-94acd270e44e // indirect
+	gopkg.in/zorkian/go-datadog-api.v2 v2.20.0 // indirect
 )
