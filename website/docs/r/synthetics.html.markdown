@@ -10,7 +10,7 @@ description: |-
 
 Provides a Datadog synthetics test resource. This can be used to create and manage Datadog synthetics test.
 
-## Example Usage
+## Example Usage (Synthetics API test)
 
 ```hcl
 # Create a new Datadog Synthetics API test on https://www.example.org
@@ -41,7 +41,13 @@ resource "datadog_synthetics_test" "foo" {
 
   status = "live"
 }
+```
 
+## Example Usage (Synthetics Browser test)
+
+Support for Synthetics Browser test is limited (see [below](#synthetics-browser-test))
+
+```hcl
 # Create a new Datadog Synthetics Browser test starting on https://www.example.org
 resource "datadog_synthetics_test" "bar" {
   type = "browser"
@@ -83,15 +89,15 @@ The following arguments are supported:
 - `request_headers` - (Optional) Header name and value map
 - `assertions` - (Required) Array of 1 to 10 items, only some combinations of type/operator are valid (please refer to Datadog documentation)
   - `type` - (Required) body, header, responseTime, statusCode
-  - `operator` - (Required) "contains", "doesNotContain", "is", "isNot", "matches", "doesNotMatch", "validates"
-  - `target` - (Required) Expected string
-  - `property` - (Optional)
+  - `operator` - (Required) Please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation) as operator depend on assertion type
+  - `target` - (Required) Expected value, please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation) as target depend on assertion type
+  - `property` - (Optional) if assertion type is "header", this is a the header name
 - `options` - (Required)
   - `tick_every` - (Required) 900, 1800, 3600, 21600, 43200, 86400, 604800 plus 60 if type=api or 300 if type=browser
   - `follow_redirects` - (Optional) true or false
   - `min_failure_duration` - (Optional) Grace period during which a synthetics test is allowed to fail before sending notifications
   - `min_location_failed` - (Optional) Threshold below which a synthetics test is allowed to fail before sending notifications
-- `locations` - (Required) Please refer to Datadog documentation for available locations (e.g. "aws:eu-central-1")
+- `locations` - (Required) Please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#request) for available locations (e.g. "aws:eu-central-1")
 - `device_ids` - (Optional) "laptop_large", "tablet" or "mobile_small" (only available if type=browser)
 - `status` - (Required) "live", "paused"
 
@@ -108,3 +114,11 @@ Synthetics tests can be imported using their public string ID, e.g.
 ```
 $ terraform import datadog_synthetics_test.fizz abc-123-xyz
 ```
+
+## Synthetics Browser test
+
+Support for Synthetics Browser test is limited to creating shallow Synthetics Browser test (cf. [example usage below](#example-usage-synthetics-browser-test-))
+
+You cannot create/edit/delete steps or assertions via Terraform unless you use [Datadog WebUI](https://app.datadoghq.com/synthetics/list) in conjunction with Terraform.
+
+We are considering adding support for Synthetics Browser test steps and assertions in the future but can't share any release date on that matter.
