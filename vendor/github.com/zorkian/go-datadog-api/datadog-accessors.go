@@ -7333,6 +7333,7 @@ func (h *HostActionMute) SetOverride(v bool) {
 // GetNodeType returns the NodeType field if non-nil, zero value otherwise.
 func (h *HostmapDefinition) GetNodeType() string {
 	if h == nil || h.NodeType == nil {
+
 		return ""
 	}
 	return *h.NodeType
@@ -8760,6 +8761,7 @@ func (i *IntegrationGCPUpdateRequest) SetClientEmail(v string) {
 func (i *IntegrationGCPUpdateRequest) GetHostFilters() string {
 	if i == nil || i.HostFilters == nil {
 		return ""
+
 	}
 	return *i.HostFilters
 }

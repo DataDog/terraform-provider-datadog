@@ -108,6 +108,7 @@ The following arguments are supported:
 * `timeout_h` (Optional) The number of hours of the monitor not reporting data before it will automatically resolve
     from a triggered state. Defaults to false.
 * `include_tags` (Optional) A boolean indicating whether notifications from this monitor will automatically insert its
+* `enable_logs_sample` (Optional) A boolean indicating whether or not to include a list of log values which triggered the alert. Defaults to false. This is only used by log monitors.
     triggering tags into the title. Defaults to true.
 * `require_full_window` (Optional) A boolean indicating whether this monitor needs a full window of data before it's evaluated.
     We highly recommend you set this to False for sparse metrics, otherwise some evaluations will be skipped.
@@ -126,6 +127,17 @@ The following arguments are supported:
         silenced {
           "role:db" = 1412798116
         }
+
+    Note: due to [HCL limitations](https://github.com/hashicorp/terraform/issues/2042), it is impossible to use interpolations in keys.
+    For example, the following will result in muting the scope `role:${var:role}` (no interpolation is done):
+
+        silenced {
+            "role:${var:role}" = 0
+        }
+
+    To workaround this, you can use the [map function](https://www.terraform.io/docs/configuration/functions/map.html) of HCL:
+
+        silenced = ${map("role:${var:role}", 0)}
 
 ## Attributes Reference
 
