@@ -16,6 +16,7 @@ import (
 // struct when we load a screenboard in detail.
 type Screenboard struct {
 	Id                *int               `json:"id,omitempty"`
+	NewId             *string            `json:"new_id,omitempty"`
 	Title             *string            `json:"board_title,omitempty"`
 	Height            *int               `json:"height,omitempty"`
 	Width             *int               `json:"width,omitempty"`
@@ -39,9 +40,14 @@ type reqGetScreenboards struct {
 }
 
 // GetScreenboard returns a single screenboard created on this account.
-func (client *Client) GetScreenboard(id int) (*Screenboard, error) {
+func (client *Client) GetScreenboard(id interface{}) (*Screenboard, error) {
+	stringId, err := GetStringId(id)
+	if err != nil {
+		return nil, err
+	}
+
 	out := &Screenboard{}
-	if err := client.doJsonRequest("GET", fmt.Sprintf("/v1/screen/%d", id), nil, out); err != nil {
+	if err := client.doJsonRequest("GET", fmt.Sprintf("/v1/screen/%s", stringId), nil, out); err != nil {
 		return nil, err
 	}
 	return out, nil
