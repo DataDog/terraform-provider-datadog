@@ -16,6 +16,32 @@ import (
 	"strings"
 )
 
+type Period struct {
+	Seconds *json.Number `json:"seconds,omitempty"`
+	Text    *string      `json:"text,omitempty"`
+	Value   *string      `json:"value,omitempty"`
+	Name    *string      `json:"name,omitempty"`
+	Unit    *string      `json:"unit,omitempty"`
+}
+
+type LogSet struct {
+	ID   *json.Number `json:"id,omitempty"`
+	Name *string      `json:"name,omitempty"`
+}
+
+type TimeRange struct {
+	To   *json.Number `json:"to,omitempty"`
+	From *json.Number `json:"from,omitempty"`
+	Live *bool        `json:"live,omitempty"`
+}
+
+type QueryConfig struct {
+	LogSet        *LogSet    `json:"logset,omitempty"`
+	TimeRange     *TimeRange `json:"timeRange,omitempty"`
+	QueryString   *string    `json:"queryString,omitempty"`
+	QueryIsFailed *bool      `json:"queryIsFailed,omitempty"`
+}
+
 type ThresholdCount struct {
 	Ok               *json.Number `json:"ok,omitempty"`
 	Critical         *json.Number `json:"critical,omitempty"`
@@ -23,6 +49,8 @@ type ThresholdCount struct {
 	Unknown          *json.Number `json:"unknown,omitempty"`
 	CriticalRecovery *json.Number `json:"critical_recovery,omitempty"`
 	WarningRecovery  *json.Number `json:"warning_recovery,omitempty"`
+	Period           *Period      `json:"period,omitenmpty"`
+	TimeAggregator   *string      `json:"timeAggregator,omitempty"`
 }
 
 type ThresholdWindows struct {
@@ -62,6 +90,7 @@ type Options struct {
 	RequireFullWindow *bool             `json:"require_full_window,omitempty"`
 	Locked            *bool             `json:"locked,omitempty"`
 	EnableLogsSample  *bool             `json:"enable_logs_sample,omitempty"`
+	QueryConfig       *QueryConfig      `json:"queryConfig,omitempty"`
 }
 
 type TriggeringValue struct {

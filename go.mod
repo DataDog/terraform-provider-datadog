@@ -11,7 +11,7 @@ require (
 	github.com/hashicorp/go-plugin v0.0.0-20181004024435-314501b665e0 // indirect
 	github.com/hashicorp/go-safetemp v1.0.0 // indirect
 	github.com/hashicorp/hcl2 v0.0.0-20181001210626-3e4b7e0eb20e // indirect
-	github.com/hashicorp/terraform v0.11.12-beta1.0.20190227065421-fc531f54a878
+	github.com/hashicorp/terraform v0.11.13
 	github.com/kr/pretty v0.1.0
 	github.com/mattn/go-colorable v0.1.0 // indirect
 	github.com/mitchellh/cli v1.0.0 // indirect
@@ -20,7 +20,7 @@ require (
 	github.com/posener/complete v1.2.1 // indirect
 	github.com/smartystreets/goconvey v0.0.0-20190222223459-a17d461953aa // indirect
 	github.com/zclconf/go-cty v0.0.0-20181017232614-01c5aba823a6 // indirect
-	github.com/zorkian/go-datadog-api v2.19.1-0.20190415084127-efa96fedb363+incompatible
+  github.com/zorkian/go-datadog-api v2.20.0+incompatible
 	golang.org/x/net v0.0.0-20181023162649-9b4f9f5ad519 // indirect
 	google.golang.org/genproto v0.0.0-20181016170114-94acd270e44e // indirect
 )

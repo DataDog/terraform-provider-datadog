@@ -101,7 +101,7 @@ github.com/hashicorp/hil/parser
 github.com/hashicorp/hil/scanner
 # github.com/hashicorp/logutils v0.0.0-20150609070431-0dc08b1671f3
 github.com/hashicorp/logutils
-# github.com/hashicorp/terraform v0.11.12-beta1.0.20190227065421-fc531f54a878
+# github.com/hashicorp/terraform v0.11.13
 github.com/hashicorp/terraform/plugin
 github.com/hashicorp/terraform/helper/logging
 github.com/hashicorp/terraform/helper/schema
@@ -177,7 +177,7 @@ github.com/zclconf/go-cty/cty/function/stdlib
 github.com/zclconf/go-cty/cty/set
 github.com/zclconf/go-cty/cty/gocty
 github.com/zclconf/go-cty/cty/json
-# github.com/zorkian/go-datadog-api v2.19.1-0.20190415084127-efa96fedb363+incompatible
+# github.com/zorkian/go-datadog-api v2.20.0+incompatible
 github.com/zorkian/go-datadog-api
 # golang.org/x/crypto v0.0.0-20180816225734-aabede6cba87
 golang.org/x/crypto/openpgp

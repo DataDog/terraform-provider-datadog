@@ -154,6 +154,7 @@ type TemplateVariable struct {
 // struct when we load a dashboard in detail.
 type Dashboard struct {
 	Id                *int               `json:"id,omitempty"`
+	NewId             *string            `json:"new_id,omitempty"`
 	Description       *string            `json:"description,omitempty"`
 	Title             *string            `json:"title,omitempty"`
 	Graphs            []Graph            `json:"graphs,omitempty"`
@@ -210,9 +211,15 @@ type DashboardConditionalFormat struct {
 }
 
 // GetDashboard returns a single dashboard created on this account.
-func (client *Client) GetDashboard(id int) (*Dashboard, error) {
+func (client *Client) GetDashboard(id interface{}) (*Dashboard, error) {
+
+	stringId, err := GetStringId(id)
+	if err != nil {
+		return nil, err
+	}
+
 	var out reqGetDashboard
-	if err := client.doJsonRequest("GET", fmt.Sprintf("/v1/dash/%d", id), nil, &out); err != nil {
+	if err := client.doJsonRequest("GET", fmt.Sprintf("/v1/dash/%s", stringId), nil, &out); err != nil {
 		return nil, err
 	}
 	return out.Dashboard, nil
