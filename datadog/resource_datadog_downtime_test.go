@@ -62,6 +62,27 @@ func TestAccDatadogDowntime_BasicWithMonitor(t *testing.T) {
 	})
 }
 
+func TestAccDatadogDowntime_BasicWithMonitorTags(t *testing.T) {
+	start := time.Now().Local().Add(time.Hour * time.Duration(3))
+	end := start.Add(time.Hour * time.Duration(1))
+
+	config := testAccCheckDatadogDowntimeConfigWithMonitorTags(start.Unix(), end.Unix())
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogDowntime_BasicMultiScope(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -422,6 +443,39 @@ resource "datadog_downtime" "foo" {
 
   message = "Example Datadog downtime message."
   monitor_id = "${datadog_monitor.downtime_monitor.id}"
+}
+`, end, start, end)
+}
+
+func testAccCheckDatadogDowntimeConfigWithMonitorTags(start int64, end int64) string {
+	//When scheduling downtime, Datadog switches the silenced property of monitor to the "end" property of downtime.
+	//If that is omitted, the plan doesn't become empty after removing the downtime.
+	return fmt.Sprintf(`
+resource "datadog_monitor" "downtime_monitor" {
+  name = "name for monitor foo"
+  type = "metric alert"
+  message = "some message Notify: @hipchat-channel"
+  escalation_message = "the situation has escalated @pagerduty"
+  tags = ["app:webserver"]
+
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+  thresholds {
+		warning = "1.0"
+		critical = "2.0"
+	}
+	silenced {
+		"*" = %d
+	}
+}
+
+resource "datadog_downtime" "foo" {
+  scope = ["*"]
+  start = %d
+  end   = %d
+
+  message = "Example Datadog downtime message."
+	monitor_tags = ["app:webserver"]
 }
 `, end, start, end)
 }
