@@ -1,4 +1,12 @@
-## 1.8.1 (Unreleased)
+## 1.9.0 (Unreleased)
+
+IMPROVEMENTS:
+
+* `datadog_downtime`:  Add `monitor_tags` getting and setting [GH-167]
+* `datadog_monitor`: Add support for `enable_logs` in log monitors [GH-151]
+* Support importing dashboards using the new string ID [GH-184]
+* Various documentation fixes and improvements [GH-152, GH-171, GH-176, GH-178, GH-180, GH-183]
+
 ## 1.8.0 (April 15, 2019)
 
 INTERNAL:
