@@ -11,6 +11,8 @@ import (
 	"github.com/zorkian/go-datadog-api"
 )
 
+const logAlertMonitorType = "log alert"
+
 func resourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceDatadogMonitorCreate,
@@ -150,10 +152,12 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
+			// since this is only useful for "log alert" type, we don't set a default value
+			// if we did set it, it would be used for all types; we have to handle this manually
+			// throughout the code
 			"enable_logs_sample": {
 				Type:     schema.TypeBool,
 				Optional: true,
-				Default:  false,
 			},
 		},
 	}
@@ -232,8 +236,12 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 		Options: &o,
 	}
 
-	if attr, ok := d.GetOk("enable_logs_sample"); ok && m.GetType() == "log alert" {
-		o.SetEnableLogsSample(attr.(bool))
+	if m.GetType() == logAlertMonitorType {
+		if attr, ok := d.GetOk("enable_logs_sample"); ok {
+			o.SetEnableLogsSample(attr.(bool))
+		} else {
+			o.SetEnableLogsSample(false)
+		}
 	}
 
 	if attr, ok := d.GetOk("tags"); ok {
@@ -336,7 +344,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("require_full_window", m.Options.GetRequireFullWindow()) // TODO Is this one of those options that we neeed to check?
 	d.Set("locked", m.Options.GetLocked())
 
-	if m.GetType() == "log alert" {
+	if m.GetType() == logAlertMonitorType {
 		d.Set("enable_logs_sample", m.Options.GetEnableLogsSample())
 	}
 
@@ -434,8 +442,13 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	if attr, ok := d.GetOk("locked"); ok {
 		o.SetLocked(attr.(bool))
 	}
-	if attr, ok := d.GetOk("enable_logs_sample"); ok && m.GetType() == "log alert" {
-		o.SetEnableLogsSample(attr.(bool))
+	// can't use m.GetType here, since it's not filled for purposes of updating
+	if d.Get("type") == logAlertMonitorType {
+		if attr, ok := d.GetOk("enable_logs_sample"); ok {
+			o.SetEnableLogsSample(attr.(bool))
+		} else {
+			o.SetEnableLogsSample(false)
+		}
 	}
 
 	m.Options = &o

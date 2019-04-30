@@ -20,7 +20,7 @@ require (
 	github.com/posener/complete v1.2.1 // indirect
 	github.com/smartystreets/goconvey v0.0.0-20190222223459-a17d461953aa // indirect
 	github.com/zclconf/go-cty v0.0.0-20181017232614-01c5aba823a6 // indirect
-	github.com/zorkian/go-datadog-api v2.20.0+incompatible
+	github.com/zorkian/go-datadog-api v2.20.1-0.20190430091414-fcf4c3b6edfd+incompatible
 	golang.org/x/net v0.0.0-20181023162649-9b4f9f5ad519 // indirect
 	google.golang.org/genproto v0.0.0-20181016170114-94acd270e44e // indirect
 )
