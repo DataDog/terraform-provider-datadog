@@ -44,6 +44,7 @@ func resourceDatadogUser() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 				Required: false,
+				Default:  "st",
 			},
 			"name": {
 				Type:     schema.TypeString,

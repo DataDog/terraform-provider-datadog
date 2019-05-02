@@ -49,7 +49,7 @@ type ThresholdCount struct {
 	Unknown          *json.Number `json:"unknown,omitempty"`
 	CriticalRecovery *json.Number `json:"critical_recovery,omitempty"`
 	WarningRecovery  *json.Number `json:"warning_recovery,omitempty"`
-	Period           *Period      `json:"period,omitenmpty"`
+	Period           *Period      `json:"period,omitempty"`
 	TimeAggregator   *string      `json:"timeAggregator,omitempty"`
 }
 

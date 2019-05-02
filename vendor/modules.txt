@@ -177,7 +177,7 @@ github.com/zclconf/go-cty/cty/function/stdlib
 github.com/zclconf/go-cty/cty/set
 github.com/zclconf/go-cty/cty/gocty
 github.com/zclconf/go-cty/cty/json
-# github.com/zorkian/go-datadog-api v2.20.0+incompatible
+# github.com/zorkian/go-datadog-api v2.20.1-0.20190430091414-fcf4c3b6edfd+incompatible
 github.com/zorkian/go-datadog-api
 # golang.org/x/crypto v0.0.0-20180816225734-aabede6cba87
 golang.org/x/crypto/openpgp
