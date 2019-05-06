@@ -97,6 +97,22 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 				DiffSuppressFunc: suppressDataDogFloatIntDiff,
 			},
+			"threshold_windows": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"recovery_window": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"trigger_window": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+					},
+				},
+			},
 			"notify_no_data": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -186,8 +202,19 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 		thresholds.SetCriticalRecovery(json.Number(r.(string)))
 	}
 
+	var threshold_windows datadog.ThresholdWindows
+
+	if r, ok := d.GetOk("threshold_windows.recovery_window"); ok {
+		threshold_windows.SetRecoveryWindow(r.(string))
+	}
+
+	if r, ok := d.GetOk("threshold_windows.trigger_window"); ok {
+		threshold_windows.SetTriggerWindow(r.(string))
+	}
+
 	o := datadog.Options{
 		Thresholds:        &thresholds,
+		ThresholdWindows:  &threshold_windows,
 		NotifyNoData:      datadog.Bool(d.Get("notify_no_data").(bool)),
 		RequireFullWindow: datadog.Bool(d.Get("require_full_window").(bool)),
 		IncludeTags:       datadog.Bool(d.Get("include_tags").(bool)),
@@ -318,6 +345,16 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 		}
 	}
 
+	thresholdWindows := make(map[string]string)
+	for k, v := range map[string]string{
+		"recovery_window": m.Options.ThresholdWindows.GetRecoveryWindow(),
+		"trigger_window":  m.Options.ThresholdWindows.GetTriggerWindow(),
+	} {
+		if v != "" {
+			thresholdWindows[k] = v
+		}
+	}
+
 	tags := []string{}
 	for _, s := range m.Tags {
 		tags = append(tags, s)
@@ -329,6 +366,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("query", m.GetQuery())
 	d.Set("type", m.GetType())
 	d.Set("thresholds", thresholds)
+	d.Set("threshold_windows", thresholdWindows)
 
 	d.Set("new_host_delay", m.Options.GetNewHostDelay())
 	d.Set("evaluation_delay", m.Options.GetEvaluationDelay())
@@ -405,6 +443,17 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		}
 		if thresholds["critical_recovery"] != nil {
 			o.Thresholds.SetCriticalRecovery(json.Number(thresholds["critical_recovery"].(string)))
+		}
+	}
+
+	if attr, ok := d.GetOk("threshold_windows"); ok {
+		thresholdWindows := attr.(map[string]interface{})
+		o.ThresholdWindows = &datadog.ThresholdWindows{}
+		if thresholdWindows["recovery_window"] != nil {
+			o.ThresholdWindows.SetRecoveryWindow(thresholdWindows["recovery_window"].(string))
+		}
+		if thresholdWindows["trigger_window"] != nil {
+			o.ThresholdWindows.SetTriggerWindow(thresholdWindows["trigger_window"].(string))
 		}
 	}
 
