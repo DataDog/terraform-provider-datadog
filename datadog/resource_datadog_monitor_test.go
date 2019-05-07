@@ -506,6 +506,55 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 	})
 }
 
+func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorConfigThresholdWindows,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", "name for monitor foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "query alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "query",
+						"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 3, direction='above', alert_window='last_5m', interval=20, count_default_zero='true') >= 1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notify_no_data", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_interval", "60"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.ok", "0.0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.warning", "0.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.warning_recovery", "0.25"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.critical", "1.0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "thresholds.critical_recovery", "0.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notify_audit", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "timeout_h", "60"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "include_tags", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "threshold_windows.recovery_window", "last_5m"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "threshold_windows.trigger_window", "last_5m"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogMonitorDestroy(s *terraform.State) error {
 	client := testAccProvider.Meta().(*datadog.Client)
 
@@ -807,6 +856,35 @@ resource "datadog_monitor" "foo" {
   locked = false
   tags = ["foo:bar", "baz"]
 	enable_logs_sample = true
+}
+`
+
+const testAccCheckDatadogMonitorConfigThresholdWindows = `
+resource "datadog_monitor" "foo" {
+	name = "name for monitor foo"
+	type = "query alert"
+	message = "some message Notify: @hipchat-channel"
+	escalation_message = "the situation has escalated @pagerduty"
+	query = "avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 3, direction='above', alert_window='last_5m', interval=20, count_default_zero='true') >= 1"
+	thresholds {
+	  ok = "0.0"
+	  warning = "0.5"
+	  warning_recovery = "0.25"
+	  critical = "1.0"
+	  critical_recovery = "0.5"
+	}
+
+	notify_no_data = false
+	renotify_interval = 60
+
+	notify_audit = false
+	timeout_h = 60
+	include_tags = true
+
+	threshold_windows {
+		recovery_window = "last_5m"
+		trigger_window = "last_5m"
+	}
 }
 `
 
