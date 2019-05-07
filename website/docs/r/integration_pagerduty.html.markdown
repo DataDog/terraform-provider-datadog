@@ -12,6 +12,8 @@ Provides a Datadog - PagerDuty resource. This can be used to create and manage D
 
 ## Example Usage
 
+With Terraform < 0.12.0 (terraform-provider-datadog < 1.9.0):
+
 ```
 # Create a new Datadog - PagerDuty integration
 resource "datadog_integration_pagerduty" "pd" {
@@ -25,6 +27,33 @@ resource "datadog_integration_pagerduty" "pd" {
       service_key = "54321098765432109876"
     }
   ]
+  schedules = [
+    "https://ddog.pagerduty.com/schedules/X123VF",
+    "https://ddog.pagerduty.com/schedules/X321XX"
+    ]
+  subdomain = "ddog"
+  api_token = "38457822378273432587234242874"
+}
+```
+
+With Terraform >= 0.12.0 (terraform-provider-datadog >= 1.9.0):
+
+```
+locals {
+  pd_services {
+    testing_foo = "9876543210123456789"
+    testing_bar = "54321098765432109876"
+  }
+}
+# Create a new Datadog - PagerDuty integration
+resource "datadog_integration_pagerduty" "pd" {
+  dynamic "services" {
+    for_each = local.pd_services
+    content {
+      service_name = services.key
+      service_key = services.value
+    }
+  }
   schedules = [
     "https://ddog.pagerduty.com/schedules/X123VF",
     "https://ddog.pagerduty.com/schedules/X321XX"

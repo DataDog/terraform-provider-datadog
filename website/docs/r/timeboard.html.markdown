@@ -41,7 +41,7 @@ resource "datadog_timeboard" "redis" {
     request {
       q = "avg:redis.mem.rss{$host}"
 
-      style {
+      style = {
         palette = "warm"
       }
     }

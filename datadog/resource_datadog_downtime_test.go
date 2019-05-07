@@ -450,11 +450,11 @@ resource "datadog_monitor" "downtime_monitor" {
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
 
-  thresholds {
+  thresholds = {
 		warning = "1.0"
 		critical = "2.0"
 	}
-	silenced {
+	silenced = {
 		"*" = %d
 	}
 }
@@ -484,11 +484,11 @@ resource "datadog_monitor" "downtime_monitor" {
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
 
-  thresholds {
+  thresholds = {
 		warning = "1.0"
 		critical = "2.0"
 	}
-	silenced {
+	silenced = {
 		"*" = %d
 	}
 }

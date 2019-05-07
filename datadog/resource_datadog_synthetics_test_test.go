@@ -159,15 +159,15 @@ const createSyntheticsAPITestConfig = `
 resource "datadog_synthetics_test" "foo" {
 	type = "api"
 
-	request {
+	request = {
 		method = "GET"
 		url = "https://www.datadoghq.com"
 		body = "this is a body"
 		timeout = 30
 	}
-	request_headers {
-		"Accept" = "application/json"
-		"X-Datadog-Trace-ID" = "1234566789"
+	request_headers = {
+		Accept = "application/json"
+		X-Datadog-Trace-ID = "1234566789"
 	}
 
 	assertions = [
@@ -195,7 +195,7 @@ resource "datadog_synthetics_test" "foo" {
 	]
 
 	locations = [ "aws:eu-central-1" ]
-	options {
+	options = {
 		tick_every = 60
 		min_failure_duration = 0
 		min_location_failed = 1
@@ -260,7 +260,7 @@ const updateSyntheticsAPITestConfig = `
 resource "datadog_synthetics_test" "foo" {
 	type = "api"
 
-	request {
+	request = {
 		method = "GET"
 		url = "https://docs.datadoghq.com"
 		timeout = 60
@@ -276,7 +276,7 @@ resource "datadog_synthetics_test" "foo" {
 
 	locations = [ "aws:eu-central-1" ]
 
-	options {
+	options = {
 		tick_every = 900
 		min_failure_duration = 10
 		min_location_failed = 1
@@ -345,20 +345,20 @@ const createSyntheticsBrowserTestConfig = `
 resource "datadog_synthetics_test" "bar" {
 	type = "browser"
 
-	request {
+	request = {
 		method = "GET"
 		url = "https://www.datadoghq.com"
 		body = "this is a body"
 		timeout = 30
 	}
-	request_headers {
-		"Accept" = "application/json"
-		"X-Datadog-Trace-ID" = "123456789"
+	request_headers = {
+		Accept = "application/json"
+		X-Datadog-Trace-ID = "123456789"
 	}
 
 	device_ids = [ "laptop_large", "mobile_small" ]
 	locations = [ "aws:eu-central-1" ]
-	options {
+	options = {
 		tick_every = 900
 		min_failure_duration = 0
 		min_location_failed = 1
@@ -426,19 +426,19 @@ var updateSyntheticsBrowserTestStep = resource.TestStep{
 const updateSyntheticsBrowserTestConfig = `
 resource "datadog_synthetics_test" "bar" {
 	type = "browser"
-	request {
+	request = {
 		method = "PUT"
 		url = "https://docs.datadoghq.com"
 		body = "this is an updated body"
 		timeout = 60
 	}
-	request_headers {
-		"Accept" = "application/xml"
-		"X-Datadog-Trace-ID" = "987654321"
+	request_headers = {
+		Accept = "application/xml"
+		X-Datadog-Trace-ID = "987654321"
 	}
 	device_ids = [ "laptop_large", "tablet" ]
 	locations = [ "aws:eu-central-1" ]
-	options {
+	options = {
 		tick_every = 1800
 		min_failure_duration = 10
 		min_location_failed = 1

@@ -27,19 +27,21 @@ func TestDatadogIntegrationPagerduty_import(t *testing.T) {
 }
 
 const testAccCheckDatadogIntegrationPagerdutyConfigImported = `
-resource "datadog_integration_pagerduty" "pd" {
-  services 
-	{
-		service_name = "test_service",
-		service_key  = "*****"
+locals {
+	pd_services = {
+		test_service = "*****"
+		test_service_2 = "*****"
 	}
+}
 
-  services
-	{
-		service_name = "test_service_2",
-		service_key  = "*****",
+resource "datadog_integration_pagerduty" "pd" {
+  dynamic "services" {
+		for_each = local.pd_services
+		content {
+			service_name = services.key
+			service_key = services.value
+		}
 	}
-  
   subdomain = "testdomain"
   api_token = "*****"
 }

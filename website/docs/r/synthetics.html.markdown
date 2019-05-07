@@ -16,13 +16,13 @@ Provides a Datadog synthetics test resource. This can be used to create and mana
 # Create a new Datadog Synthetics API test on https://www.example.org
 resource "datadog_synthetics_test" "foo" {
   type = "api"
-  request {
+  request = {
     method = "GET"
     url = "https://www.example.org"
   }
-  request_headers {
-    "Content-Type" = "application/json"
-    "Authentication" = "Token: 1234566789"
+  request_headers = {
+    Content-Type = "application/json"
+    Authentication = "Token: 1234566789"
   }
   assertions = [
     {
@@ -32,7 +32,7 @@ resource "datadog_synthetics_test" "foo" {
     }
   ]
   locations = [ "aws:eu-central-1" ]
-  options {
+  options = {
     tick_every = 900
   }
   name = "An API test on example.org"
@@ -52,7 +52,7 @@ Support for Synthetics Browser test is limited (see [below](#synthetics-browser-
 resource "datadog_synthetics_test" "bar" {
   type = "browser"
 
-  request {
+  request = {
     method = "GET"
     url    = "https://app.datadoghq.com"
   }
@@ -60,7 +60,7 @@ resource "datadog_synthetics_test" "bar" {
   device_ids = ["laptop_large"]
   locations  = ["aws:eu-central-1"]
 
-  options {
+  options = {
     tick_every = 3600
   }
 
