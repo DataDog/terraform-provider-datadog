@@ -98,11 +98,10 @@ func testAccCheckDatadogIntegrationPagerdutyDestroy(s *terraform.State) error {
 
 const testAccCheckDatadogIntegrationPagerdutyConfig = `
  resource "datadog_integration_pagerduty" "foo" {
-   services
-     {
-         service_name = "test_service",
-         service_key  = "*****",
-     }
+   services {
+        service_name = "test_service"
+        service_key  = "*****"
+    }
 
    subdomain = "testdomain"
    api_token = "*****"
@@ -110,20 +109,22 @@ const testAccCheckDatadogIntegrationPagerdutyConfig = `
  `
 
 const testAccCheckDatadogIntegrationPagerdutyConfig_TwoServices = `
- resource "datadog_integration_pagerduty" "foo" {
-   services
-     {
-         service_name = "test_service",
-         service_key  = "*****",
-     }
-
-   services
-     {
-		service_name = "test_service_2",
-		service_key  = "*****",
+ locals {
+	 pd_services = {
+		 test_service = "*****"
+		 test_service_2 = "*****"
 	 }
+ }
+ resource "datadog_integration_pagerduty" "foo" {
+  dynamic "services" {
+		for_each = local.pd_services
+		content {
+			service_name = services.key
+			service_key = services.value
+		}
+	}
 
    subdomain = "testdomain"
    api_token = "*****"
- }
+}
 `

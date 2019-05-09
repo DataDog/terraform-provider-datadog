@@ -583,7 +583,7 @@ resource "datadog_monitor" "foo" {
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
 
-  thresholds {
+  thresholds = {
 	warning = "1.0"
 	critical = "2.0"
 	warning_recovery = "0.5"
@@ -632,7 +632,7 @@ resource "datadog_monitor" "foo" {
 
   query = "\"custom.check\".over(\"environment:foo\").last(2).count_by_status()"
 
-  thresholds {
+  thresholds = {
 	warning = 1
 	critical = 1
 	unknown = 1
@@ -661,7 +661,7 @@ resource "datadog_monitor" "foo" {
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
 
-  thresholds {
+  thresholds = {
 	warning           = 1
 	warning_recovery  = 0
 	critical          = 2
@@ -690,7 +690,7 @@ resource "datadog_monitor" "foo" {
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 3"
 
-  thresholds {
+  thresholds = {
 	warning           = 1
 	warning_recovery  = 0.5
 	critical          = 3.0
@@ -715,11 +715,11 @@ resource "datadog_monitor" "foo" {
   name = "name for monitor bar"
   type = "query alert"
   message = "a different message Notify: @hipchat-channel"
-  escalation_message = "the situation has escalated @pagerduty"
+  escalation_message = "the situation has escalated! @pagerduty"
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} > 3"
 
-  thresholds {
+  thresholds = {
 	ok                = "0.0"
 	warning           = "1.0"
 	warning_recovery  = "0.5"
@@ -732,13 +732,12 @@ resource "datadog_monitor" "foo" {
   evaluation_delay = 800
   no_data_timeframe = 20
   renotify_interval = 40
-  escalation_message = "the situation has escalated! @pagerduty"
   notify_audit = true
   timeout_h = 70
   include_tags = false
   require_full_window = false
   locked = true
-  silenced {
+  silenced = {
 	"*" = 0
   }
   tags = ["baz:qux", "quux"]
@@ -750,11 +749,11 @@ resource "datadog_monitor" "foo" {
   name = "name for monitor bar"
   type = "query alert"
   message = "a different message Notify: @hipchat-channel"
-  escalation_message = "the situation has escalated @pagerduty"
+  escalation_message = "the situation has escalated! @pagerduty"
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} > 3"
 
-  thresholds {
+  thresholds = {
 	ok                = "0.0"
 	warning           = "1.0"
 	warning_recovery  = "0.5"
@@ -767,13 +766,12 @@ resource "datadog_monitor" "foo" {
   evaluation_delay = 800
   no_data_timeframe = 20
   renotify_interval = 40
-  escalation_message = "the situation has escalated! @pagerduty"
   notify_audit = true
   timeout_h = 70
   include_tags = false
   require_full_window = false
   locked = true
-  silenced {
+  silenced = {
 	"*" = 0
   }
 }
@@ -812,7 +810,7 @@ EOF
   query = <<EOF
 avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2
 EOF
-  thresholds {
+  thresholds = {
 	ok = "0.0"
 	warning = "1.0"
 	warning_recovery = "0.5"
@@ -838,7 +836,7 @@ resource "datadog_monitor" "foo" {
 
   query = "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") > 2"
 
-  thresholds {
+  thresholds = {
 	warning = "1.0"
 	critical = "2.0"
 	warning_recovery = "0.5"
@@ -866,7 +864,7 @@ resource "datadog_monitor" "foo" {
 	message = "some message Notify: @hipchat-channel"
 	escalation_message = "the situation has escalated @pagerduty"
 	query = "avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 3, direction='above', alert_window='last_5m', interval=20, count_default_zero='true') >= 1"
-	thresholds {
+	thresholds = {
 	  ok = "0.0"
 	  warning = "0.5"
 	  warning_recovery = "0.25"
@@ -881,7 +879,7 @@ resource "datadog_monitor" "foo" {
 	timeout_h = 60
 	include_tags = true
 
-	threshold_windows {
+	threshold_windows = {
 		recovery_window = "last_5m"
 		trigger_window = "last_5m"
 	}

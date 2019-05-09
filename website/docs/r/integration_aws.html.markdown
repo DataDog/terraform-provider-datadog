@@ -22,8 +22,8 @@ resource "datadog_integration_aws" "sandbox" {
     filter_tags = ["key:value"]
     host_tags = ["key:value", "key2:value2"]
     account_specific_namespace_rules = {
-        "auto_scaling" = false
-        "opsworks" = false
+        auto_scaling = false
+        opsworks = false
     }
 }
 ```

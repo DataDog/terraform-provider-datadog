@@ -22,7 +22,7 @@ resource "datadog_timeboard" "acceptance_test" {
     request {
       q = "top(avg:docker.cpu.system{*} by {container_name}, 10, 'mean', 'desc')"
 		}
-		style {
+		style = {
       palette_flip = false
     }
   }
@@ -32,7 +32,7 @@ resource "datadog_timeboard" "acceptance_test" {
     request {
       q = "top(avg:docker.cpu.system{*} by {container_name}, 10, 'mean', 'desc')"
 		}
-		style {
+		style = {
       palette_flip = true
     }
   }
@@ -64,7 +64,7 @@ resource "datadog_timeboard" "acceptance_test" {
     request {
       q = "avg:redis.mem.rss{$host}"
       type = "bars"
-      style {
+      style = {
         palette = "warm"
       }
       aggregator = "max"
@@ -94,7 +94,7 @@ resource "datadog_timeboard" "acceptance_test" {
       type = "error solid"
       value = "y > 100"
     }
-    yaxis {
+    yaxis = {
       max = "50"
       scale = "sqrt"
 			include_zero = true
@@ -142,8 +142,8 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.title", "Top System CPU by Docker container"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.viz", "toplist"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.0.q", "top(avg:docker.cpu.system{*} by {container_name}, 10, 'mean', 'desc')"),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.style.palette_flip", "0"),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.1.style.palette_flip", "1"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.style.palette_flip", "false"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.1.style.palette_flip", "true"),
 		),
 	}
 

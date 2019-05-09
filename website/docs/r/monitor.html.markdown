@@ -22,7 +22,7 @@ resource "datadog_monitor" "foo" {
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4"
 
-  thresholds {
+  thresholds = {
     ok                = 0
     warning           = 2
     warning_recovery  = 1
@@ -37,7 +37,7 @@ resource "datadog_monitor" "foo" {
   timeout_h    = 60
   include_tags = true
 
-  silenced {
+  silenced = {
     "*" = 0
   }
 
@@ -68,7 +68,7 @@ The following arguments are supported:
     A dictionary of thresholds by threshold type. Currently we have four threshold types for metric alerts: critical, critical recovery, warning, and warning recovery. Critical is defined in the query, but can also be specified in this option. Warning and recovery thresholds can only be specified using the thresholds option.
     Example usage:
         ```
-        thresholds {
+        thresholds = {
             critical          = 90
             critical_recovery = 85
             warning           = 80
@@ -81,7 +81,7 @@ The following arguments are supported:
     A dictionary of thresholds by status. Because service checks can have multiple thresholds, we don't define them directly in the query.
     Default values:
         ```
-        thresholds {
+        thresholds = {
             ok       = 1
             critical = 1
             warning  = 1
@@ -121,20 +121,20 @@ The following arguments are supported:
 * `silenced` (Optional) Each scope will be muted until the given POSIX timestamp or forever if the value is 0.
     To mute the alert completely:
 
-        silenced {
+        silenced = {
           "*" =  0
         }
 
     To mute role:db for a short time:
 
-        silenced {
+        silenced = {
           "role:db" = 1412798116
         }
 
     Note: due to [HCL limitations](https://github.com/hashicorp/terraform/issues/2042), it is impossible to use interpolations in keys.
     For example, the following will result in muting the scope `role:${var:role}` (no interpolation is done):
 
-        silenced {
+        silenced = {
             "role:${var:role}" = 0
         }
 
