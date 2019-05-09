@@ -178,12 +178,12 @@ func resourceDatadogMonitor() *schema.Resource {
 			},
 			"query_config": {
 				Type:     schema.TypeMap,
-				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"query_string": {
 							Type:     schema.TypeString,
-							Optional: true,
+							Computed: true,
 						},
 					},
 				},
