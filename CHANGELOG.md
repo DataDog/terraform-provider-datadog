@@ -8,6 +8,10 @@ IMPROVEMENTS:
 * Support importing dashboards using the new string ID [GH-184]
 * Various documentation fixes and improvements [GH-152, GH-171, GH-176, GH-178, GH-180, GH-183]
 
+NOTES:
+
+* This release includes Terraform SDK upgrade to 0.12.0-beta2. The provider is backwards compatible with Terraform v0.11.X, there should be no significant changes in behavior. Please report any issues to either [Terraform issue tracker](https://github.com/hashicorp/terraform/issues) or to [Terraform Datadog Provider issue tracker](https://github.com/terraform-providers/terraform-provider-datadog/issues) [GH-194]
+
 ## 1.8.0 (April 15, 2019)
 
 INTERNAL:
