@@ -11,10 +11,9 @@ require (
 	github.com/hashicorp/atlas-go v0.0.0-20161107204910-1792bd8de119 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.0
 	github.com/hashicorp/go-immutable-radix v1.0.0 // indirect
-	github.com/hashicorp/go-msgpack v0.5.3 // indirect
 	github.com/hashicorp/go-sockaddr v1.0.0 // indirect
 	github.com/hashicorp/serf v0.8.2-0.20171022020050-c20a0b1b1ea9 // indirect
-	github.com/hashicorp/terraform v0.12.0-beta2
+	github.com/hashicorp/terraform v0.12.0-rc1
 	github.com/jen20/awspolicyequivalence v0.0.0-20170831201602-3d48364a137a // indirect
 	github.com/kr/pretty v0.1.0
 	github.com/masterzen/azure-sdk-for-go v0.0.0-20161014135628-ee4f0065d00c // indirect
@@ -29,4 +28,7 @@ require (
 	github.com/terraform-providers/terraform-provider-template v1.0.0 // indirect
 	github.com/terraform-providers/terraform-provider-tls v1.2.0 // indirect
 	github.com/zorkian/go-datadog-api v2.20.1-0.20190430091414-fcf4c3b6edfd+incompatible
+	gopkg.in/vmihailenco/msgpack.v2 v2.9.1 // indirect
+	labix.org/v2/mgo v0.0.0-20140701140051-000000000287 // indirect
+	launchpad.net/gocheck v0.0.0-20140225173054-000000000087 // indirect
 )
