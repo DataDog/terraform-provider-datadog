@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -175,6 +176,18 @@ func resourceDatadogMonitor() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
+			"query_config": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"query_string": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -264,6 +277,13 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 	}
 
 	if m.GetType() == logAlertMonitorType {
+		matchStrs := regexp.MustCompile(`logs\("(.*?)"\)`).FindStringSubmatch(d.Get("query").(string))
+		if len(matchStrs) > 1 {
+			queryString := matchStrs[1]
+			o.SetQueryConfig(datadog.QueryConfig{
+				QueryString: datadog.String(queryString),
+			})
+		}
 		if attr, ok := d.GetOk("enable_logs_sample"); ok {
 			o.SetEnableLogsSample(attr.(bool))
 		} else {
@@ -384,6 +404,15 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 
 	if m.GetType() == logAlertMonitorType {
 		d.Set("enable_logs_sample", m.Options.GetEnableLogsSample())
+		queryConfig := make(map[string]string)
+		for k, v := range map[string]string{
+			"query_string": m.Options.QueryConfig.GetQueryString(),
+		} {
+			if v != "" {
+				queryConfig[k] = v
+			}
+		}
+		d.Set("query_config", queryConfig)
 	}
 
 	return nil
@@ -493,6 +522,13 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	}
 	// can't use m.GetType here, since it's not filled for purposes of updating
 	if d.Get("type") == logAlertMonitorType {
+		matchStrs := regexp.MustCompile(`logs\("(.*?)"\)`).FindStringSubmatch(d.Get("query").(string))
+		if len(matchStrs) > 1 {
+			queryString := matchStrs[1]
+			o.SetQueryConfig(datadog.QueryConfig{
+				QueryString: datadog.String(queryString),
+			})
+		}
 		if attr, ok := d.GetOk("enable_logs_sample"); ok {
 			o.SetEnableLogsSample(attr.(bool))
 		} else {
