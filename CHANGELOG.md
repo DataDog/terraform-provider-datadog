@@ -10,7 +10,7 @@ IMPROVEMENTS:
 
 NOTES:
 
-* This release includes Terraform SDK upgrade to 0.12.0-beta2. The provider is backwards compatible with Terraform v0.11.X, there should be no significant changes in behavior. Please report any issues to either [Terraform issue tracker](https://github.com/hashicorp/terraform/issues) or to [Terraform Datadog Provider issue tracker](https://github.com/terraform-providers/terraform-provider-datadog/issues) [GH-194]
+* This release includes Terraform SDK upgrade to 0.12.0-rc1. The provider is backwards compatible with Terraform v0.11.X, there should be no significant changes in behavior. Please report any issues to either [Terraform issue tracker](https://github.com/hashicorp/terraform/issues) or to [Terraform Datadog Provider issue tracker](https://github.com/terraform-providers/terraform-provider-datadog/issues) [GH-194, GH-198]
 
 ## 1.8.0 (April 15, 2019)
 
