@@ -55,7 +55,7 @@ The following arguments are supported:
     * `event alert`
     * `query alert`
     * `composite`
-    * `log alert`    
+    * `log alert`
 * `name` - (Required) Name of Datadog monitor
 * `query` - (Required) The monitor query to notify on. Note this is not the same query you see in the UI and
     the syntax is different depending on the monitor `type`, please see the [API Reference](https://docs.datadoghq.com/api/?lang=python#create-a-monitor) for details. **Warning:** `terraform plan` won't perform any validation of the query contents.
@@ -107,7 +107,7 @@ The following arguments are supported:
     Defaults to false.
 * `timeout_h` (Optional) The number of hours of the monitor not reporting data before it will automatically resolve
     from a triggered state. Defaults to false.
-* `include_tags` (Optional) A boolean indicating whether notifications from this monitor will automatically insert its
+* `include_tags` (Optional) A boolean indicating whether notifications from this monitor automatically inserts its triggering tags into the title. Defaults to true.
 * `enable_logs_sample` (Optional) A boolean indicating whether or not to include a list of log values which triggered the alert. Defaults to false. This is only used by log monitors.
     triggering tags into the title. Defaults to true.
 * `require_full_window` (Optional) A boolean indicating whether this monitor needs a full window of data before it's evaluated.
