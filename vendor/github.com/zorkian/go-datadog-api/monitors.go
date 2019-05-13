@@ -137,6 +137,18 @@ type Creator struct {
 	Name   *string `json:"name,omitempty"`
 }
 
+// MuteMonitorScope specifies which scope to mute and when to end the mute
+type MuteMonitorScope struct {
+	Scope *string `json:"scope,omitempty"`
+	End   *int    `json:"end,omitempty"`
+}
+
+// UnmuteMonitorScopes specifies which scope(s) to unmute
+type UnmuteMonitorScopes struct {
+	Scope     *string `json:"scope,omitempty"`
+	AllScopes *bool   `json:"all_scopes,omitempty"`
+}
+
 // reqMonitors receives a slice of all monitors
 type reqMonitors struct {
 	Monitors []Monitor `json:"monitors,omitempty"`
@@ -229,7 +241,17 @@ func (client *Client) MuteMonitor(id int) error {
 	return client.doJsonRequest("POST", fmt.Sprintf("/v1/monitor/%d/mute", id), nil, nil)
 }
 
+// MuteMonitorScope turns off monitoring notifications for a monitor for a given scope
+func (client *Client) MuteMonitorScope(id int, muteMonitorScope *MuteMonitorScope) error {
+	return client.doJsonRequest("POST", fmt.Sprintf("/v1/monitor/%d/mute", id), muteMonitorScope, nil)
+}
+
 // UnmuteMonitor turns on monitoring notifications for a monitor
 func (client *Client) UnmuteMonitor(id int) error {
 	return client.doJsonRequest("POST", fmt.Sprintf("/v1/monitor/%d/unmute", id), nil, nil)
+}
+
+// UnmuteMonitorScopes is similar to UnmuteMonitor, but provides finer-grained control to unmuting
+func (client *Client) UnmuteMonitorScopes(id int, unmuteMonitorScopes *UnmuteMonitorScopes) error {
+	return client.doJsonRequest("POST", fmt.Sprintf("/v1/monitor/%d/unmute", id), unmuteMonitorScopes, nil)
 }

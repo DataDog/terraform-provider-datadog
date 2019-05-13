@@ -10213,6 +10213,68 @@ func (m *Monitor) SetType(v string) {
 	m.Type = &v
 }
 
+// GetEnd returns the End field if non-nil, zero value otherwise.
+func (m *MuteMonitorScope) GetEnd() int {
+	if m == nil || m.End == nil {
+		return 0
+	}
+	return *m.End
+}
+
+// GetEndOk returns a tuple with the End field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (m *MuteMonitorScope) GetEndOk() (int, bool) {
+	if m == nil || m.End == nil {
+		return 0, false
+	}
+	return *m.End, true
+}
+
+// HasEnd returns a boolean if a field has been set.
+func (m *MuteMonitorScope) HasEnd() bool {
+	if m != nil && m.End != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetEnd allocates a new m.End and returns the pointer to it.
+func (m *MuteMonitorScope) SetEnd(v int) {
+	m.End = &v
+}
+
+// GetScope returns the Scope field if non-nil, zero value otherwise.
+func (m *MuteMonitorScope) GetScope() string {
+	if m == nil || m.Scope == nil {
+		return ""
+	}
+	return *m.Scope
+}
+
+// GetScopeOk returns a tuple with the Scope field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (m *MuteMonitorScope) GetScopeOk() (string, bool) {
+	if m == nil || m.Scope == nil {
+		return "", false
+	}
+	return *m.Scope, true
+}
+
+// HasScope returns a boolean if a field has been set.
+func (m *MuteMonitorScope) HasScope() bool {
+	if m != nil && m.Scope != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetScope allocates a new m.Scope and returns the pointer to it.
+func (m *MuteMonitorScope) SetScope(v string) {
+	m.Scope = &v
+}
+
 // GetBackgroundColor returns the BackgroundColor field if non-nil, zero value otherwise.
 func (n *NoteDefinition) GetBackgroundColor() string {
 	if n == nil || n.BackgroundColor == nil {
@@ -17899,6 +17961,68 @@ func (t *TriggeringValue) HasValue() bool {
 // SetValue allocates a new t.Value and returns the pointer to it.
 func (t *TriggeringValue) SetValue(v int) {
 	t.Value = &v
+}
+
+// GetAllScopes returns the AllScopes field if non-nil, zero value otherwise.
+func (u *UnmuteMonitorScopes) GetAllScopes() bool {
+	if u == nil || u.AllScopes == nil {
+		return false
+	}
+	return *u.AllScopes
+}
+
+// GetAllScopesOk returns a tuple with the AllScopes field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (u *UnmuteMonitorScopes) GetAllScopesOk() (bool, bool) {
+	if u == nil || u.AllScopes == nil {
+		return false, false
+	}
+	return *u.AllScopes, true
+}
+
+// HasAllScopes returns a boolean if a field has been set.
+func (u *UnmuteMonitorScopes) HasAllScopes() bool {
+	if u != nil && u.AllScopes != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAllScopes allocates a new u.AllScopes and returns the pointer to it.
+func (u *UnmuteMonitorScopes) SetAllScopes(v bool) {
+	u.AllScopes = &v
+}
+
+// GetScope returns the Scope field if non-nil, zero value otherwise.
+func (u *UnmuteMonitorScopes) GetScope() string {
+	if u == nil || u.Scope == nil {
+		return ""
+	}
+	return *u.Scope
+}
+
+// GetScopeOk returns a tuple with the Scope field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (u *UnmuteMonitorScopes) GetScopeOk() (string, bool) {
+	if u == nil || u.Scope == nil {
+		return "", false
+	}
+	return *u.Scope, true
+}
+
+// HasScope returns a boolean if a field has been set.
+func (u *UnmuteMonitorScopes) HasScope() bool {
+	if u != nil && u.Scope != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetScope allocates a new u.Scope and returns the pointer to it.
+func (u *UnmuteMonitorScopes) SetScope(v string) {
+	u.Scope = &v
 }
 
 // GetAccessRole returns the AccessRole field if non-nil, zero value otherwise.

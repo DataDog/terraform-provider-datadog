@@ -555,6 +555,34 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 	})
 }
 
+func TestAccDatadogMonitor_MuteUnmuteSpecificScopes(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorConfigMuteSpecificScopes,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "silenced.%", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "silenced.host:myserver", "0"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorConfigUnmuteSpecificScopes,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_monitor.foo", "silenced"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogMonitorDestroy(s *terraform.State) error {
 	client := testAccProvider.Meta().(*datadog.Client)
 
@@ -883,6 +911,38 @@ resource "datadog_monitor" "foo" {
 		recovery_window = "last_5m"
 		trigger_window = "last_5m"
 	}
+}
+`
+
+const testAccCheckDatadogMonitorConfigMuteSpecificScopes = `
+resource "datadog_monitor" "foo" {
+    name = "foo"
+    type = "metric alert"
+    message = "test"
+
+    query = "avg(last_5m):max:system.load.1{*} by {host} > 100"
+
+    thresholds = {
+        critical = 100
+    }
+
+    silenced = {
+      "host:myserver" = 0
+    }
+}
+`
+
+const testAccCheckDatadogMonitorConfigUnmuteSpecificScopes = `
+resource "datadog_monitor" "foo" {
+    name = "foo"
+    type = "metric alert"
+    message = "test"
+
+    query = "avg(last_5m):max:system.load.1{*} by {host} > 100"
+
+    thresholds = {
+        critical = 100
+    }
 }
 `
 

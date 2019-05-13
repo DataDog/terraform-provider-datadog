@@ -526,6 +526,8 @@ github.com/zorkian/go-datadog-api v2.20.0+incompatible h1:zfITezz+b9lZuYghMXTdAX
 github.com/zorkian/go-datadog-api v2.20.0+incompatible/go.mod h1:PkXwHX9CUQa/FpB9ZwAD45N1uhCW4MT/Wj7m36PbKss=
 github.com/zorkian/go-datadog-api v2.20.1-0.20190430091414-fcf4c3b6edfd+incompatible h1:nBa/g0we0spNByi38CWZNBn7sCs+vfPrWPQKzPSbnVo=
 github.com/zorkian/go-datadog-api v2.20.1-0.20190430091414-fcf4c3b6edfd+incompatible/go.mod h1:PkXwHX9CUQa/FpB9ZwAD45N1uhCW4MT/Wj7m36PbKss=
+github.com/zorkian/go-datadog-api v2.20.1-0.20190513084440-9d8b2d52bc3d+incompatible h1:aPFEeTnGh8pTfVwnb9EJhKJulkdYN9ObEe7e/eSG3UE=
+github.com/zorkian/go-datadog-api v2.20.1-0.20190513084440-9d8b2d52bc3d+incompatible/go.mod h1:PkXwHX9CUQa/FpB9ZwAD45N1uhCW4MT/Wj7m36PbKss=
 go.opencensus.io v0.18.0 h1:Mk5rgZcggtbvtAun5aJzAtjKKN/t0R3jJPlWILlv938=
 go.opencensus.io v0.18.0/go.mod h1:vKdFvxhtzZ9onBp9VKHK8z/sRpBMnKAsufL7wlDrCOA=
 go.uber.org/atomic v1.3.2/go.mod h1:gD2HeocX3+yG+ygLZcrzQJaqmWj9AIm7n08wl/qW/PE=

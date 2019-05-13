@@ -142,6 +142,25 @@ The following arguments are supported:
 
         silenced = ${map("role:${var:role}", 0)}
 
+## Silencing by Hand and by Downtimes
+
+There are two ways how to silence a single monitor:
+
+* Mute it by hand
+* Create a Downtime
+
+Both of these actions add a new value to the `silenced` map. This can be problematic if the `silenced` attribute doesn't contain them in your Terraform, as they would be removed on next `terraform apply` invocation. In order to prevent that from happening, you can add following to your monitor:
+
+```
+lifecycle {
+  ignore_changes = ["silenced"]
+}
+```
+
+The above will make sure that any changes to the `silenced` attribute are ignored.
+
+This issue doesn't apply to multi-monitor downtimes (those that don't contain `monitor_id`), as these don't influence contents of the `silenced` attribute.
+
 ## Attributes Reference
 
 The following attributes are exported:
