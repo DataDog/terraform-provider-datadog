@@ -514,8 +514,8 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	if _, ok := d.GetOk("silenced"); ok && !silenced {
 		// This means the monitor must be manually unmuted since the API
 		// wouldn't do it automatically when `silenced` is just missing
-		retval = client.UnmuteMonitor(*m.Id)
-		d.Set("silenced", nil)
+		retval = client.UnmuteMonitorScopes(*m.Id, &datadog.UnmuteMonitorScopes{AllScopes: datadog.Bool(true)})
+		d.Set("silenced", map[string]int{})
 	}
 
 	return retval
