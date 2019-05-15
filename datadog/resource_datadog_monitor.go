@@ -277,11 +277,9 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 	}
 
 	if m.GetType() == logAlertMonitorType {
-		matchStrs := regexp.MustCompile(`logs\("(.*?)"\)`).FindStringSubmatch(d.Get("query").(string))
-		if len(matchStrs) > 1 {
-			queryString := matchStrs[1]
+		if queryString, ok := getQueryStringFromLogQuery(d.Get("query").(string)); ok {
 			o.SetQueryConfig(datadog.QueryConfig{
-				QueryString: datadog.String(queryString),
+				QueryString: datadog.String(queryString.(string)),
 			})
 		}
 		if attr, ok := d.GetOk("enable_logs_sample"); ok {
@@ -522,11 +520,9 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	}
 	// can't use m.GetType here, since it's not filled for purposes of updating
 	if d.Get("type") == logAlertMonitorType {
-		matchStrs := regexp.MustCompile(`logs\("(.*?)"\)`).FindStringSubmatch(d.Get("query").(string))
-		if len(matchStrs) > 1 {
-			queryString := matchStrs[1]
+		if queryString, ok := getQueryStringFromLogQuery(d.Get("query").(string)); ok {
 			o.SetQueryConfig(datadog.QueryConfig{
-				QueryString: datadog.String(queryString),
+				QueryString: datadog.String(queryString.(string)),
 			})
 		}
 		if attr, ok := d.GetOk("enable_logs_sample"); ok {
@@ -600,4 +596,13 @@ func suppressDataDogFloatIntDiff(k, old, new string, d *schema.ResourceData) boo
 		return true
 	}
 	return false
+}
+
+func getQueryStringFromLogQuery(query string) (interface{}, bool) {
+	matchLogQueryStrs := regexp.MustCompile(`logs\("(.*?)"\)`).FindStringSubmatch(query)
+	matched := (len(matchLogQueryStrs) > 1)
+	if !matched {
+		return nil, false
+	}
+	return matchLogQueryStrs[1], true
 }
