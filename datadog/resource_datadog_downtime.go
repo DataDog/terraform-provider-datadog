@@ -31,7 +31,7 @@ func resourceDatadogDowntime() *schema.Resource {
 					_, recurrencePresent := d.GetOk("recurrence")
 					return recurrencePresent
 				},
-				Description: "when true indicates this downtime is being actively applied",
+				Description: "When true indicates this downtime is being actively applied",
 			},
 			"disabled": {
 				Type:        schema.TypeBool,
@@ -135,10 +135,9 @@ func resourceDatadogDowntime() *schema.Resource {
 			"monitor_tags": {
 				Type:          schema.TypeList,
 				Optional:      true,
-				Description:   "A list of monitor tags, i.e. tags that are applied directly to monitors to which the downtime applies.",
+				Description:   "A list of monitor tags (up to 25), i.e. tags that are applied directly to monitors to which the downtime applies",
 				ConflictsWith: []string{"monitor_id"},
 				Elem:          &schema.Schema{Type: schema.TypeString},
-				ValidateFunc:  validateDatadogDowntimeMonitorTags,
 			},
 		},
 	}
@@ -395,26 +394,6 @@ func validateDatadogDowntimeTimezone(v interface{}, k string) (ws []string, erro
 				"%q contains an invalid timezone parameter: %q, Valid parameters are IANA Time Zone names",
 				k, value))
 		}
-	}
-	return
-}
-
-func validateDatadogDowntimeMonitorTags(v interface{}, k string) (ws []string, errors []error) {
-	value, ok := v.([]string)
-
-	if !ok {
-		errors = append(errors, fmt.Errorf(
-			"%q is an invalid monitor_tags parameter, expected a list of strings: %q", k, v))
-		return
-	}
-
-	if len(value) == 0 {
-		return
-	}
-
-	if len(value) > 25 {
-		errors = append(errors, fmt.Errorf(
-			"%q contains more than 25 monitor tags for the monitor_tags parameter: %q", k, v))
 	}
 	return
 }
