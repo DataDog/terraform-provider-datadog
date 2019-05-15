@@ -31,10 +31,12 @@ func resourceDatadogDowntime() *schema.Resource {
 					_, recurrencePresent := d.GetOk("recurrence")
 					return recurrencePresent
 				},
+				Description: "when true indicates this downtime is being actively applied",
 			},
 			"disabled": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "When true indicates this downtime is not being applied",
 			},
 			"start": {
 				Type:     schema.TypeInt,
@@ -43,6 +45,7 @@ func resourceDatadogDowntime() *schema.Resource {
 					_, startDatePresent := d.GetOk("start_date")
 					return startDatePresent
 				},
+				Description: "Specify when this downtime should start",
 			},
 			"start_date": {
 				Type:          schema.TypeString,
@@ -57,6 +60,7 @@ func resourceDatadogDowntime() *schema.Resource {
 					_, endDatePresent := d.GetOk("end_date")
 					return endDatePresent
 				},
+				Description: "Optionally specify an end date when this downtime should expire",
 			},
 			"end_date": {
 				Type:          schema.TypeString,
@@ -64,17 +68,26 @@ func resourceDatadogDowntime() *schema.Resource {
 				ConflictsWith: []string{"end"},
 				Optional:      true,
 			},
+			"timezone": {
+				Type:         schema.TypeString,
+				Default:      "UTC",
+				Optional:     true,
+				Description:  "The timezone for the downtime, default UTC",
+				ValidateFunc: validateDatadogDowntimeTimezone,
+			},
 			"message": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "An optional message to provide when creating the downtime, can include notification handles",
 				StateFunc: func(val interface{}) string {
 					return strings.TrimSpace(val.(string))
 				},
 			},
 			"recurrence": {
-				Type:     schema.TypeList,
-				Optional: true,
-				MaxItems: 1,
+				Type:        schema.TypeList,
+				Optional:    true,
+				MaxItems:    1,
+				Description: "Optional recurring schedule for this downtime",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"period": {
@@ -108,18 +121,24 @@ func resourceDatadogDowntime() *schema.Resource {
 				},
 			},
 			"scope": {
-				Type:     schema.TypeList,
-				Required: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Type:        schema.TypeList,
+				Required:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Description: "specify the group scope to which this downtime applies. For everything use '*'",
 			},
 			"monitor_id": {
-				Type:     schema.TypeInt,
-				Optional: true,
+				Type:          schema.TypeInt,
+				Optional:      true,
+				ConflictsWith: []string{"monitor_tags"},
+				Description:   "When specified, this downtime will only apply to this monitor",
 			},
 			"monitor_tags": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Type:          schema.TypeList,
+				Optional:      true,
+				Description:   "A list of monitor tags, i.e. tags that are applied directly to monitors to which the downtime applies.",
+				ConflictsWith: []string{"monitor_id"},
+				Elem:          &schema.Schema{Type: schema.TypeString},
+				ValidateFunc:  validateDatadogDowntimeMonitorTags,
 			},
 		},
 	}
@@ -189,6 +208,9 @@ func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
 		}
 	} else if attr, ok := d.GetOk("start"); ok {
 		dt.SetStart(attr.(int))
+	}
+	if attr, ok := d.GetOk("timezone"); ok {
+		dt.SetTimezone(attr.(string))
 	}
 
 	return &dt
@@ -305,6 +327,8 @@ func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) err
 	if err = client.UpdateDowntime(dt); err != nil {
 		return fmt.Errorf("error updating downtime: %s", err.Error())
 	}
+	// handle the case when a downtime is replaced
+	d.SetId(strconv.Itoa(dt.GetId()))
 
 	return resourceDatadogDowntimeRead(d, meta)
 }
@@ -351,6 +375,46 @@ func validateDatadogDowntimeRecurrenceWeekDays(v interface{}, k string) (ws []st
 	default:
 		errors = append(errors, fmt.Errorf(
 			"%q contains an invalid recurrence week day parameter %q. Valid parameters are Mon, Tue, Wed, Thu, Fri, Sat, or Sun", k, value))
+	}
+	return
+}
+
+func validateDatadogDowntimeTimezone(v interface{}, k string) (ws []string, errors []error) {
+	value := v.(string)
+	switch strings.ToLower(value) {
+	case "utc", "":
+		break
+	case "local", "localtime":
+		// get current zone from machine
+		zone, _ := time.Now().Local().Zone()
+		return validateDatadogDowntimeRecurrenceType(zone, k)
+	default:
+		_, err := time.LoadLocation(value)
+		if err != nil {
+			errors = append(errors, fmt.Errorf(
+				"%q contains an invalid timezone parameter: %q, Valid parameters are IANA Time Zone names",
+				k, value))
+		}
+	}
+	return
+}
+
+func validateDatadogDowntimeMonitorTags(v interface{}, k string) (ws []string, errors []error) {
+	value, ok := v.([]string)
+
+	if !ok {
+		errors = append(errors, fmt.Errorf(
+			"%q is an invalid monitor_tags parameter, expected a list of strings: %q", k, v))
+		return
+	}
+
+	if len(value) == 0 {
+		return
+	}
+
+	if len(value) > 25 {
+		errors = append(errors, fmt.Errorf(
+			"%q contains more than 25 monitor tags for the monitor_tags parameter: %q", k, v))
 	}
 	return
 }
