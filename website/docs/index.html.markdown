@@ -40,4 +40,4 @@ The following arguments are supported:
 
 * `api_key` - (Required) Datadog API key. This can also be set via the `DATADOG_API_KEY` environment variable.
 * `app_key` - (Required) Datadog APP key. This can also be set via the `DATADOG_APP_KEY` environment variable.
-* `api_url` - (Optional) The API Url. This can be also be set via the `DATADOG_HOST` environment variable.
+* `api_url` - (Optional) The API Url. This can be also be set via the `DATADOG_HOST` environment variable. Note that this URL must not end with the `/api/` path. For example, `https://api.datadoghq.com/` is a correct value, while `https://api.datadoghq.com/api/` is not.
