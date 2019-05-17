@@ -332,7 +332,7 @@ func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) erro
 
 	d.SetId(strconv.Itoa(m.GetId()))
 
-	return nil
+	return resourceDatadogMonitorRead(d, meta)
 }
 
 func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error {
@@ -400,6 +400,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("require_full_window", m.Options.GetRequireFullWindow()) // TODO Is this one of those options that we neeed to check?
 	d.Set("locked", m.Options.GetLocked())
 
+	d.Set("query_config", map[string]string{})
 	if m.GetType() == logAlertMonitorType {
 		d.Set("enable_logs_sample", m.Options.GetEnableLogsSample())
 		queryConfig := make(map[string]string)
