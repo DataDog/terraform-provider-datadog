@@ -493,11 +493,7 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
-					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical", "2.0"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical_recovery", "1.5"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "enable_logs_sample", "true"),
 				),
@@ -867,8 +863,6 @@ resource "datadog_monitor" "foo" {
   thresholds = {
 	warning = "1.0"
 	critical = "2.0"
-	warning_recovery = "0.5"
-	critical_recovery = "1.5"
   }
 
   renotify_interval = 60
