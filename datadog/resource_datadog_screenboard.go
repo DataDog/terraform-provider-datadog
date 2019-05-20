@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -153,6 +154,11 @@ func resourceDatadogScreenboard() *schema.Resource {
 				"increase_good": {
 					Type:     schema.TypeBool,
 					Optional: true,
+				},
+				"metadata_json": {
+					Type:         schema.TypeString,
+					Optional:     true,
+					ValidateFunc: validateMetadataJSON,
 				},
 			},
 		},
@@ -582,6 +588,25 @@ func resourceDatadogScreenboard() *schema.Resource {
 // # Convenience functions to safely pass info from Terraform to the Datadog API wrapper #
 // #######################################################################################
 
+func getMetadataFromJSON(jsonBytes []byte, unmarshalled interface{}) error {
+	decoder := json.NewDecoder(bytes.NewReader(jsonBytes))
+	// make sure we return errors on attributes that we don't expect in metadata
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(unmarshalled)
+	if err != nil {
+		return fmt.Errorf("Failed to unmarshal metadata_json: %s", err)
+	}
+	return nil
+}
+
+func validateMetadataJSON(v interface{}, k string) (ws []string, errors []error) {
+	err := getMetadataFromJSON([]byte(v.(string)), &map[string]datadog.TileDefMetadata{})
+	if err != nil {
+		errors = append(errors, fmt.Errorf("%q contains an invalid JSON: %s", k, err))
+	}
+	return
+}
+
 func setStringFromDict(dict map[string]interface{}, key string, field **string) {
 	if v, ok := dict[key]; ok && v != nil {
 		*field = datadog.String(v.(string))
@@ -642,6 +667,12 @@ func setStringListFromDict(dict map[string]interface{}, key string, field *[]*st
 	}
 }
 
+func setMetadataFromDict(dict map[string]interface{}, key string, field *map[string]datadog.TileDefMetadata) {
+	if v, ok := dict[key].(map[string]datadog.TileDefMetadata); ok {
+		*field = v
+	}
+}
+
 func setFromDict(dict map[string]interface{}, key string, field interface{}) {
 	switch field.(type) {
 	case **string:
@@ -654,6 +685,8 @@ func setFromDict(dict map[string]interface{}, key string, field interface{}) {
 		setJSONNumberFromDict(dict, key, field.(**json.Number))
 	case **datadog.PrecisionT:
 		setPrecisionTFromDict(dict, key, field.(**datadog.PrecisionT))
+	case *map[string]datadog.TileDefMetadata:
+		setMetadataFromDict(dict, key, field.(*map[string]datadog.TileDefMetadata))
 	case *[]*string:
 		setStringListFromDict(dict, key, field.(*[]*string))
 	default:
@@ -717,6 +750,9 @@ func buildTileDefRequests(source interface{}) []datadog.TileDefRequest {
 	r := []datadog.TileDefRequest{}
 	for _, request := range requests {
 		requestMap := request.(map[string]interface{})
+		metadata := map[string]datadog.TileDefMetadata{}
+		getMetadataFromJSON([]byte(requestMap["metadata_json"].(string)), &metadata)
+		requestMap["metadata"] = metadata
 		d := datadog.TileDefRequest{}
 		batchSetFromDict(batch{
 			dict: requestMap,
@@ -735,6 +771,7 @@ func buildTileDefRequests(source interface{}) []datadog.TileDefRequest {
 				{"extra_col", &d.ExtraCol},
 				{"increase_good", &d.IncreaseGood},
 				{"tag_filters", &d.TagFilters},
+				{"metadata", &d.Metadata},
 			}})
 
 		// request.style
@@ -1017,7 +1054,8 @@ func resourceDatadogScreenboardCreate(d *schema.ResourceData, meta interface{}) 
 		return fmt.Errorf("Failed to create screenboard using Datadog API: %s", err.Error())
 	}
 	d.SetId(strconv.Itoa(screenboard.GetId()))
-	return nil
+
+	return resourceDatadogScreenboardRead(d, meta)
 }
 
 // #######################################################################################
@@ -1156,6 +1194,10 @@ func buildTFTileDefRequests(d []datadog.TileDefRequest) []interface{} {
 				{"increase_good", ddRequest.IncreaseGood},
 				{"tag_filters", ddRequest.TagFilters},
 			}})
+		if ddRequest.Metadata != nil {
+			res, _ := json.Marshal(ddRequest.Metadata)
+			tfRequest["metadata_json"] = string(res)
+		}
 
 		// request.style
 		if ddRequest.Style != nil {

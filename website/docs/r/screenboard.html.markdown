@@ -66,6 +66,14 @@ resource "datadog_screenboard" "acceptance_test" {
           type    = "dashed"
           width   = "thin"
         }
+
+        # NOTE: this will only work with TF >= 0.12; see metadata_json
+        # documentation below for example on usage with TF < 0.12
+        metadata_json = jsonencode({
+          "avg:system.cpu.user{*}": {
+            "alias": "CPU Usage"
+          }
+        })
       }
 
       marker {
@@ -547,6 +555,30 @@ Nested `widget` `tile_def` `request` blocks have the following structure:
 - `increase_good` - (Optional, only for widgets of type "change") Boolean indicating whether an increase in the value is good (thus displayed in green) or not (thus displayed in red).
 - `style` - (Optional, only for widgets of type "timeseries", "query_value", "toplist", "process") describing how to display the widget. The structure of this block is described below. At most one such block should be present in a given request block.
 - `conditional_format` - (Optional) Nested block to customize the style if certain conditions are met. Currently only applies to `Query Value` and `Top List` type graphs.
+* `metadata_json` - (Optional) A JSON blob (preferrably created using [jsonencode](https://www.terraform.io/docs/configuration/functions/jsonencode.html)) representing mapping of query expressions to alias names. For example, this is how you define `metadata_json` with Terraform >= 0.12:
+  ```
+  metadata_json = jsonencode({
+    "avg:redis.info.latency_ms{$host}": {
+      "alias": "Redis latency"
+    }
+  })
+  ```
+  And here's how you define `metadata_json` with Terraform < 0.12:
+  ```
+  variable "my_metadata" {
+    default = {
+      "avg:redis.info.latency_ms{$host}" = {
+        "alias": "Redis latency"
+      }
+    }
+  }
+
+  resource "datadog_screenboard" "SomeScreenboard" {
+    ...
+    "metadata_json": "${jsonencode(var.my_metadata)}"
+  }
+  ```
+  Note that this has to be a JSON blob because of [limitations](https://github.com/hashicorp/terraform/issues/6215) of Terraform's handling complex nested structures.
 
 ### Nested `widget` `tile_def` `request` `style` block
 
