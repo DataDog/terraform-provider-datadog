@@ -41,6 +41,13 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Type:     schema.TypeMap,
 					Optional: true,
 				},
+				"metadata_json": {
+					Type:     schema.TypeString,
+					Optional: true,
+					// NOTE: this is using functions from resource_datadog_screenboard
+					// since the metadata attribute is the same for both of these boards
+					ValidateFunc: validateMetadataJSON,
+				},
 				"conditional_format": {
 					Type:        schema.TypeList,
 					Optional:    true,
@@ -404,6 +411,10 @@ func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{
 			_v := v.([]interface{})
 			appendConditionalFormats(&d, &_v)
 		}
+		if v, ok := t["metadata_json"]; ok {
+			d.Metadata = map[string]datadog.GraphDefinitionMetadata{}
+			getMetadataFromJSON([]byte(v.(string)), &d.Metadata)
+		}
 
 		datadogGraph.Definition.Requests = append(datadogGraph.Definition.Requests, d)
 	}
@@ -579,7 +590,7 @@ func resourceDatadogTimeboardCreate(d *schema.ResourceData, meta interface{}) er
 		return fmt.Errorf("Failed to create timeboard using Datadog API: %s", err.Error())
 	}
 	d.SetId(strconv.Itoa(timeboard.GetId()))
-	return nil
+	return resourceDatadogTimeboardRead(d, meta)
 }
 
 func resourceDatadogTimeboardUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -653,6 +664,10 @@ func appendTerraformGraphRequests(datadogRequests []datadog.GraphDefinitionReque
 		}
 		if v, ok := datadogRequest.GetExtraColOk(); ok {
 			request["extra_col"] = v
+		}
+		if datadogRequest.Metadata != nil {
+			res, _ := json.Marshal(datadogRequest.Metadata)
+			request["metadata_json"] = string(res)
 		}
 
 		*requests = append(*requests, request)
