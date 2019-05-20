@@ -55,7 +55,7 @@ The following arguments are supported:
     * `event alert`
     * `query alert`
     * `composite`
-    * `log alert`    
+    * `log alert`
 * `name` - (Required) Name of Datadog monitor
 * `query` - (Required) The monitor query to notify on. Note this is not the same query you see in the UI and
     the syntax is different depending on the monitor `type`, please see the [API Reference](https://docs.datadoghq.com/api/?lang=python#create-a-monitor) for details. **Warning:** `terraform plan` won't perform any validation of the query contents.
@@ -100,7 +100,7 @@ The following arguments are supported:
     metrics to ensure the monitor will always have data during evaluation.
 * `no_data_timeframe` (Optional) The number of minutes before a monitor will notify when data stops reporting. Must be at
     least 2x the monitor timeframe for metric alerts or 2 minutes for service checks. Default: 2x timeframe for
-    metric alerts, 2 minutes for service checks.
+    metric alerts, 2 minutes for service checks. Defaults to 10 minutes.
 * `renotify_interval` (Optional) The number of minutes after the last notification before a monitor will re-notify
     on the current status. It will only re-notify if it's not resolved.
 * `notify_audit` (Optional) A boolean indicating whether tagged users will be notified on changes to this monitor.

@@ -132,6 +132,7 @@ func resourceDatadogMonitor() *schema.Resource {
 			"no_data_timeframe": {
 				Type:     schema.TypeInt,
 				Optional: true,
+				Default:  10,
 			},
 			"renotify_interval": {
 				Type:     schema.TypeInt,
