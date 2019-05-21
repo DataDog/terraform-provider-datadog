@@ -49,7 +49,7 @@ resource "datadog_monitor" "foo" {
 
 The following arguments are supported:
 
-* `type` - (Required) The type of the monitor, chosen from:
+* `type` - (Required) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation](https://docs.datadoghq.com/api/?lang=python#create-a-monitor) page. Available options to choose from are:
     * `metric alert`
     * `service check`
     * `event alert`
