@@ -74,6 +74,11 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Optional:    true,
 					Description: "Value that is threshold for conditional format",
 				},
+				"custom_bg_color": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Custom  background color (e.g., #205081)",
+				},
 				"invert": {
 					Type:     schema.TypeBool,
 					Optional: true,
@@ -694,6 +699,7 @@ func buildTileDefRequestsConditionalFormats(source interface{}) []datadog.Condit
 				{"palette", &d.Palette},
 				{"color", &d.Color},
 				{"value", &d.Value},
+				{"custom_bg_color", &d.CustomBgColor},
 				{"invert", &d.Invert},
 			}})
 
@@ -1114,6 +1120,7 @@ func buildTFTileDefRequestConditionalFormats(d []datadog.ConditionalFormat) []in
 				{"palette", ddConditionalFormat.Palette},
 				{"color", ddConditionalFormat.Color},
 				{"value", ddConditionalFormat.Value},
+				{"custom_bg_color", ddConditionalFormat.CustomBgColor},
 				{"invert", ddConditionalFormat.Invert},
 			}})
 		r[i] = tfConditionalFormat
