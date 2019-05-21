@@ -104,15 +104,17 @@ resource "datadog_screenboard" "acceptance_test" {
 				}
 
 				conditional_format {
-					comparator = ">"
-					value      = "1"
-					palette    = "white_on_red"
+					comparator      = ">"
+					value           = "1"
+					custom_bg_color = "#205081"
+					palette         = "white_on_red"
 				}
 
 				conditional_format {
-					comparator = ">="
-					value      = "2"
-					palette    = "white_on_yellow"
+					comparator      = ">="
+					value           = "2"
+					custom_bg_color = "#205081"
+					palette         = "white_on_yellow"
 				}
 
 				aggregator = "max"
@@ -1188,11 +1190,13 @@ func TestAccDatadogScreenboard_update(t *testing.T) {
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.2.tile_def.0.request.0.conditional_format.0.invert", "false"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.2.tile_def.0.request.0.conditional_format.0.palette", "white_on_red"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.2.tile_def.0.request.0.conditional_format.0.value", "1"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.2.tile_def.0.request.0.conditional_format.0.custom_bg_color", "#205081"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.2.tile_def.0.request.0.conditional_format.1.color", ""),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.2.tile_def.0.request.0.conditional_format.1.comparator", ">="),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.2.tile_def.0.request.0.conditional_format.1.invert", "false"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.2.tile_def.0.request.0.conditional_format.1.palette", "white_on_yellow"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.2.tile_def.0.request.0.conditional_format.1.value", "2"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.2.tile_def.0.request.0.conditional_format.1.custom_bg_color", "#205081"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.2.tile_def.0.request.0.extra_col", ""),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.2.tile_def.0.request.0.increase_good", "false"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.2.tile_def.0.request.0.limit", "0"),
