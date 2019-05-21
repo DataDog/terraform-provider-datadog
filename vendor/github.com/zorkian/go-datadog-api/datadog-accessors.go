@@ -2711,6 +2711,37 @@ func (c *ConditionalFormat) SetComparator(v string) {
 	c.Comparator = &v
 }
 
+// GetCustomBgColor returns the CustomBgColor field if non-nil, zero value otherwise.
+func (c *ConditionalFormat) GetCustomBgColor() string {
+	if c == nil || c.CustomBgColor == nil {
+		return ""
+	}
+	return *c.CustomBgColor
+}
+
+// GetCustomBgColorOk returns a tuple with the CustomBgColor field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (c *ConditionalFormat) GetCustomBgColorOk() (string, bool) {
+	if c == nil || c.CustomBgColor == nil {
+		return "", false
+	}
+	return *c.CustomBgColor, true
+}
+
+// HasCustomBgColor returns a boolean if a field has been set.
+func (c *ConditionalFormat) HasCustomBgColor() bool {
+	if c != nil && c.CustomBgColor != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomBgColor allocates a new c.CustomBgColor and returns the pointer to it.
+func (c *ConditionalFormat) SetCustomBgColor(v string) {
+	c.CustomBgColor = &v
+}
+
 // GetImageURL returns the ImageURL field if non-nil, zero value otherwise.
 func (c *ConditionalFormat) GetImageURL() string {
 	if c == nil || c.ImageURL == nil {
@@ -4385,6 +4416,37 @@ func (d *Downtime) SetCanceled(v int) {
 	d.Canceled = &v
 }
 
+// GetCreatorID returns the CreatorID field if non-nil, zero value otherwise.
+func (d *Downtime) GetCreatorID() int {
+	if d == nil || d.CreatorID == nil {
+		return 0
+	}
+	return *d.CreatorID
+}
+
+// GetCreatorIDOk returns a tuple with the CreatorID field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *Downtime) GetCreatorIDOk() (int, bool) {
+	if d == nil || d.CreatorID == nil {
+		return 0, false
+	}
+	return *d.CreatorID, true
+}
+
+// HasCreatorID returns a boolean if a field has been set.
+func (d *Downtime) HasCreatorID() bool {
+	if d != nil && d.CreatorID != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCreatorID allocates a new d.CreatorID and returns the pointer to it.
+func (d *Downtime) SetCreatorID(v int) {
+	d.CreatorID = &v
+}
+
 // GetDisabled returns the Disabled field if non-nil, zero value otherwise.
 func (d *Downtime) GetDisabled() bool {
 	if d == nil || d.Disabled == nil {
@@ -4662,6 +4724,68 @@ func (d *Downtime) HasTimezone() bool {
 // SetTimezone allocates a new d.Timezone and returns the pointer to it.
 func (d *Downtime) SetTimezone(v string) {
 	d.Timezone = &v
+}
+
+// GetType returns the Type field if non-nil, zero value otherwise.
+func (d *Downtime) GetType() int {
+	if d == nil || d.Type == nil {
+		return 0
+	}
+	return *d.Type
+}
+
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *Downtime) GetTypeOk() (int, bool) {
+	if d == nil || d.Type == nil {
+		return 0, false
+	}
+	return *d.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (d *Downtime) HasType() bool {
+	if d != nil && d.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetType allocates a new d.Type and returns the pointer to it.
+func (d *Downtime) SetType(v int) {
+	d.Type = &v
+}
+
+// GetUpdaterID returns the UpdaterID field if non-nil, zero value otherwise.
+func (d *Downtime) GetUpdaterID() int {
+	if d == nil || d.UpdaterID == nil {
+		return 0
+	}
+	return *d.UpdaterID
+}
+
+// GetUpdaterIDOk returns a tuple with the UpdaterID field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *Downtime) GetUpdaterIDOk() (int, bool) {
+	if d == nil || d.UpdaterID == nil {
+		return 0, false
+	}
+	return *d.UpdaterID, true
+}
+
+// HasUpdaterID returns a boolean if a field has been set.
+func (d *Downtime) HasUpdaterID() bool {
+	if d != nil && d.UpdaterID != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetUpdaterID allocates a new d.UpdaterID and returns the pointer to it.
+func (d *Downtime) SetUpdaterID(v int) {
+	d.UpdaterID = &v
 }
 
 // GetAggregation returns the Aggregation field if non-nil, zero value otherwise.
@@ -15729,6 +15853,37 @@ func (t *TileDefMarker) HasValue() bool {
 // SetValue allocates a new t.Value and returns the pointer to it.
 func (t *TileDefMarker) SetValue(v string) {
 	t.Value = &v
+}
+
+// GetAlias returns the Alias field if non-nil, zero value otherwise.
+func (t *TileDefMetadata) GetAlias() string {
+	if t == nil || t.Alias == nil {
+		return ""
+	}
+	return *t.Alias
+}
+
+// GetAliasOk returns a tuple with the Alias field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (t *TileDefMetadata) GetAliasOk() (string, bool) {
+	if t == nil || t.Alias == nil {
+		return "", false
+	}
+	return *t.Alias, true
+}
+
+// HasAlias returns a boolean if a field has been set.
+func (t *TileDefMetadata) HasAlias() bool {
+	if t != nil && t.Alias != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAlias allocates a new t.Alias and returns the pointer to it.
+func (t *TileDefMetadata) SetAlias(v string) {
+	t.Alias = &v
 }
 
 // GetAggregator returns the Aggregator field if non-nil, zero value otherwise.

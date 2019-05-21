@@ -30,13 +30,16 @@ type GraphDefinitionRequest struct {
 	Style              *GraphDefinitionRequestStyle `json:"style,omitempty"`
 
 	// For change type graphs
-	ChangeType     *string `json:"change_type,omitempty"`
-	OrderDirection *string `json:"order_dir,omitempty"`
-	CompareTo      *string `json:"compare_to,omitempty"`
-	IncreaseGood   *bool   `json:"increase_good,omitempty"`
-	OrderBy        *string `json:"order_by,omitempty"`
-	ExtraCol       *string `json:"extra_col,omitempty"`
+	ChangeType     *string                            `json:"change_type,omitempty"`
+	OrderDirection *string                            `json:"order_dir,omitempty"`
+	CompareTo      *string                            `json:"compare_to,omitempty"`
+	IncreaseGood   *bool                              `json:"increase_good,omitempty"`
+	OrderBy        *string                            `json:"order_by,omitempty"`
+	ExtraCol       *string                            `json:"extra_col,omitempty"`
+	Metadata       map[string]GraphDefinitionMetadata `json:"metadata,omitempty"`
 }
+
+type GraphDefinitionMetadata TileDefMetadata
 
 type GraphDefinitionMarker struct {
 	Type  *string      `json:"type,omitempty"`
