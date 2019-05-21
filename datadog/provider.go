@@ -35,6 +35,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_downtime":              resourceDatadogDowntime(),
 			"datadog_metric_metadata":       resourceDatadogMetricMetadata(),
 			"datadog_monitor":               resourceDatadogMonitor(),
+			"datadog_synthetics_test":       resourceDatadogSyntheticsTest(),
 			"datadog_timeboard":             resourceDatadogTimeboard(),
 			"datadog_screenboard":           resourceDatadogScreenboard(),
 			"datadog_user":                  resourceDatadogUser(),

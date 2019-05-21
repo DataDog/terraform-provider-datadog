@@ -74,6 +74,11 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Optional:    true,
 					Description: "Value that is threshold for conditional format",
 				},
+				"custom_bg_color": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Custom  background color (e.g., #205081)",
+				},
 				"invert": {
 					Type:     schema.TypeBool,
 					Optional: true,
@@ -499,7 +504,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 				"monitor": {
 					Type:     schema.TypeMap,
 					Optional: true,
-					Elem:     &schema.Schema{Type: schema.TypeInt},
+					Elem:     &schema.Schema{Type: schema.TypeString},
 				},
 			},
 		},
@@ -694,6 +699,7 @@ func buildTileDefRequestsConditionalFormats(source interface{}) []datadog.Condit
 				{"palette", &d.Palette},
 				{"color", &d.Color},
 				{"value", &d.Value},
+				{"custom_bg_color", &d.CustomBgColor},
 				{"invert", &d.Invert},
 			}})
 
@@ -1114,6 +1120,7 @@ func buildTFTileDefRequestConditionalFormats(d []datadog.ConditionalFormat) []in
 				{"palette", ddConditionalFormat.Palette},
 				{"color", ddConditionalFormat.Color},
 				{"value", ddConditionalFormat.Value},
+				{"custom_bg_color", ddConditionalFormat.CustomBgColor},
 				{"invert", ddConditionalFormat.Invert},
 			}})
 		r[i] = tfConditionalFormat
@@ -1378,10 +1385,7 @@ func buildTFWidget(dw datadog.Widget) map[string]interface{} {
 }
 
 func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) error {
-	id, err := strconv.Atoi(d.Id())
-	if err != nil {
-		return err
-	}
+	id := d.Id()
 	screenboard, err := meta.(*datadog.Client).GetScreenboard(id)
 	if err != nil {
 		return err
@@ -1429,6 +1433,9 @@ func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) er
 	if err := d.Set("template_variable", templateVariables); err != nil {
 		return err
 	}
+	// Ensure the ID saved in the state is always the legacy ID returned from the API
+	// and not the ID passed to the import statement which could be in the new ID format
+	d.SetId(strconv.Itoa(screenboard.GetId()))
 
 	return nil
 }

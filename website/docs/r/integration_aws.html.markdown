@@ -22,8 +22,8 @@ resource "datadog_integration_aws" "sandbox" {
     filter_tags = ["key:value"]
     host_tags = ["key:value", "key2:value2"]
     account_specific_namespace_rules = {
-        "auto_scaling" = false
-        "opsworks" = false
+        auto_scaling = false
+        opsworks = false
     }
 }
 ```
@@ -40,8 +40,8 @@ The following arguments are supported:
   
   e.x. `env:production,instance-type:c1.*,!region:us-east-1`
 
-* `host_tags` - (Optinal) Array of tags (in the form key:value) to add to all hosts and metrics reporting through this integration.
-* `account_specific_namespace_rules` - (Optinal) Enables or disables metric collection for specific AWS namespaces for this AWS account only. A list of namespaces can be found at the [available namespace rules API endpoint](https://api.datadoghq.com/api/v1/integration/aws/available_namespace_rules).
+* `host_tags` - (Optional) Array of tags (in the form key:value) to add to all hosts and metrics reporting through this integration.
+* `account_specific_namespace_rules` - (Optional) Enables or disables metric collection for specific AWS namespaces for this AWS account only. A list of namespaces can be found at the [available namespace rules API endpoint](https://api.datadoghq.com/api/v1/integration/aws/available_namespace_rules).
 
 ### See also
 * [Datadog API Reference > Integrations > AWS](https://docs.datadoghq.com/api/?lang=bash#aws)

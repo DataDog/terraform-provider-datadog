@@ -4,12 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"regexp"
 	"strconv"
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/zorkian/go-datadog-api"
 )
+
+const logAlertMonitorType = "log alert"
 
 func resourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
@@ -95,6 +98,22 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 				DiffSuppressFunc: suppressDataDogFloatIntDiff,
 			},
+			"threshold_windows": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"recovery_window": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"trigger_window": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+					},
+				},
+			},
 			"notify_no_data": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -150,6 +169,25 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
+			// since this is only useful for "log alert" type, we don't set a default value
+			// if we did set it, it would be used for all types; we have to handle this manually
+			// throughout the code
+			"enable_logs_sample": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
+			"query_config": {
+				Type:     schema.TypeMap,
+				Computed: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"query_string": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -177,8 +215,19 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 		thresholds.SetCriticalRecovery(json.Number(r.(string)))
 	}
 
+	var threshold_windows datadog.ThresholdWindows
+
+	if r, ok := d.GetOk("threshold_windows.recovery_window"); ok {
+		threshold_windows.SetRecoveryWindow(r.(string))
+	}
+
+	if r, ok := d.GetOk("threshold_windows.trigger_window"); ok {
+		threshold_windows.SetTriggerWindow(r.(string))
+	}
+
 	o := datadog.Options{
 		Thresholds:        &thresholds,
+		ThresholdWindows:  &threshold_windows,
 		NotifyNoData:      datadog.Bool(d.Get("notify_no_data").(bool)),
 		RequireFullWindow: datadog.Bool(d.Get("require_full_window").(bool)),
 		IncludeTags:       datadog.Bool(d.Get("include_tags").(bool)),
@@ -227,6 +276,19 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 		Options: &o,
 	}
 
+	if m.GetType() == logAlertMonitorType {
+		if queryString, ok := getQueryStringFromLogQuery(d.Get("query").(string)); ok {
+			o.SetQueryConfig(datadog.QueryConfig{
+				QueryString: datadog.String(queryString.(string)),
+			})
+		}
+		if attr, ok := d.GetOk("enable_logs_sample"); ok {
+			o.SetEnableLogsSample(attr.(bool))
+		} else {
+			o.SetEnableLogsSample(false)
+		}
+	}
+
 	if attr, ok := d.GetOk("tags"); ok {
 		tags := []string{}
 		for _, s := range attr.([]interface{}) {
@@ -270,7 +332,7 @@ func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) erro
 
 	d.SetId(strconv.Itoa(m.GetId()))
 
-	return nil
+	return resourceDatadogMonitorRead(d, meta)
 }
 
 func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error {
@@ -301,6 +363,16 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 		}
 	}
 
+	thresholdWindows := make(map[string]string)
+	for k, v := range map[string]string{
+		"recovery_window": m.Options.ThresholdWindows.GetRecoveryWindow(),
+		"trigger_window":  m.Options.ThresholdWindows.GetTriggerWindow(),
+	} {
+		if v != "" {
+			thresholdWindows[k] = v
+		}
+	}
+
 	tags := []string{}
 	for _, s := range m.Tags {
 		tags = append(tags, s)
@@ -312,6 +384,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("query", m.GetQuery())
 	d.Set("type", m.GetType())
 	d.Set("thresholds", thresholds)
+	d.Set("threshold_windows", thresholdWindows)
 
 	d.Set("new_host_delay", m.Options.GetNewHostDelay())
 	d.Set("evaluation_delay", m.Options.GetEvaluationDelay())
@@ -326,6 +399,20 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("tags", tags)
 	d.Set("require_full_window", m.Options.GetRequireFullWindow()) // TODO Is this one of those options that we neeed to check?
 	d.Set("locked", m.Options.GetLocked())
+
+	d.Set("query_config", map[string]string{})
+	if m.GetType() == logAlertMonitorType {
+		d.Set("enable_logs_sample", m.Options.GetEnableLogsSample())
+		queryConfig := make(map[string]string)
+		for k, v := range map[string]string{
+			"query_string": m.Options.QueryConfig.GetQueryString(),
+		} {
+			if v != "" {
+				queryConfig[k] = v
+			}
+		}
+		d.Set("query_config", queryConfig)
+	}
 
 	return nil
 }
@@ -387,6 +474,17 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		}
 	}
 
+	if attr, ok := d.GetOk("threshold_windows"); ok {
+		thresholdWindows := attr.(map[string]interface{})
+		o.ThresholdWindows = &datadog.ThresholdWindows{}
+		if thresholdWindows["recovery_window"] != nil {
+			o.ThresholdWindows.SetRecoveryWindow(thresholdWindows["recovery_window"].(string))
+		}
+		if thresholdWindows["trigger_window"] != nil {
+			o.ThresholdWindows.SetTriggerWindow(thresholdWindows["trigger_window"].(string))
+		}
+	}
+
 	newHostDelay := d.Get("new_host_delay")
 	o.SetNewHostDelay(newHostDelay.(int))
 
@@ -421,6 +519,19 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	if attr, ok := d.GetOk("locked"); ok {
 		o.SetLocked(attr.(bool))
 	}
+	// can't use m.GetType here, since it's not filled for purposes of updating
+	if d.Get("type") == logAlertMonitorType {
+		if queryString, ok := getQueryStringFromLogQuery(d.Get("query").(string)); ok {
+			o.SetQueryConfig(datadog.QueryConfig{
+				QueryString: datadog.String(queryString.(string)),
+			})
+		}
+		if attr, ok := d.GetOk("enable_logs_sample"); ok {
+			o.SetEnableLogsSample(attr.(bool))
+		} else {
+			o.SetEnableLogsSample(false)
+		}
+	}
 
 	m.Options = &o
 
@@ -436,8 +547,8 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	if _, ok := d.GetOk("silenced"); ok && !silenced {
 		// This means the monitor must be manually unmuted since the API
 		// wouldn't do it automatically when `silenced` is just missing
-		retval = client.UnmuteMonitor(*m.Id)
-		d.Set("silenced", nil)
+		retval = client.UnmuteMonitorScopes(*m.Id, &datadog.UnmuteMonitorScopes{AllScopes: datadog.Bool(true)})
+		d.Set("silenced", map[string]int{})
 	}
 
 	return retval
@@ -486,4 +597,13 @@ func suppressDataDogFloatIntDiff(k, old, new string, d *schema.ResourceData) boo
 		return true
 	}
 	return false
+}
+
+func getQueryStringFromLogQuery(query string) (interface{}, bool) {
+	matchLogQueryStrs := regexp.MustCompile(`logs\("(.*?)"\)`).FindStringSubmatch(query)
+	matched := (len(matchLogQueryStrs) > 1)
+	if !matched {
+		return nil, false
+	}
+	return matchLogQueryStrs[1], true
 }

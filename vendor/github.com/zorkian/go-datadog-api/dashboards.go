@@ -30,13 +30,16 @@ type GraphDefinitionRequest struct {
 	Style              *GraphDefinitionRequestStyle `json:"style,omitempty"`
 
 	// For change type graphs
-	ChangeType     *string `json:"change_type,omitempty"`
-	OrderDirection *string `json:"order_dir,omitempty"`
-	CompareTo      *string `json:"compare_to,omitempty"`
-	IncreaseGood   *bool   `json:"increase_good,omitempty"`
-	OrderBy        *string `json:"order_by,omitempty"`
-	ExtraCol       *string `json:"extra_col,omitempty"`
+	ChangeType     *string                            `json:"change_type,omitempty"`
+	OrderDirection *string                            `json:"order_dir,omitempty"`
+	CompareTo      *string                            `json:"compare_to,omitempty"`
+	IncreaseGood   *bool                              `json:"increase_good,omitempty"`
+	OrderBy        *string                            `json:"order_by,omitempty"`
+	ExtraCol       *string                            `json:"extra_col,omitempty"`
+	Metadata       map[string]GraphDefinitionMetadata `json:"metadata,omitempty"`
 }
+
+type GraphDefinitionMetadata TileDefMetadata
 
 type GraphDefinitionMarker struct {
 	Type  *string      `json:"type,omitempty"`
@@ -154,6 +157,7 @@ type TemplateVariable struct {
 // struct when we load a dashboard in detail.
 type Dashboard struct {
 	Id                *int               `json:"id,omitempty"`
+	NewId             *string            `json:"new_id,omitempty"`
 	Description       *string            `json:"description,omitempty"`
 	Title             *string            `json:"title,omitempty"`
 	Graphs            []Graph            `json:"graphs,omitempty"`
@@ -210,9 +214,15 @@ type DashboardConditionalFormat struct {
 }
 
 // GetDashboard returns a single dashboard created on this account.
-func (client *Client) GetDashboard(id int) (*Dashboard, error) {
+func (client *Client) GetDashboard(id interface{}) (*Dashboard, error) {
+
+	stringId, err := GetStringId(id)
+	if err != nil {
+		return nil, err
+	}
+
 	var out reqGetDashboard
-	if err := client.doJsonRequest("GET", fmt.Sprintf("/v1/dash/%d", id), nil, &out); err != nil {
+	if err := client.doJsonRequest("GET", fmt.Sprintf("/v1/dash/%s", stringId), nil, &out); err != nil {
 		return nil, err
 	}
 	return out.Dashboard, nil

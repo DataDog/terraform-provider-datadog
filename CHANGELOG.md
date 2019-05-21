@@ -1,8 +1,28 @@
-## 1.7.1 (Unreleased)
+## 1.10.0 (Unreleased)
+## 1.9.0 (May 09, 2019)
+
+IMPROVEMENTS:
+
+* `datadog_downtime`:  Add `monitor_tags` getting and setting ([#167](https://github.com/terraform-providers/terraform-provider-datadog/issues/167))
+* `datadog_monitor`: Add support for `enable_logs` in log monitors ([#151](https://github.com/terraform-providers/terraform-provider-datadog/issues/151))
+* `datadog_monitor`: Add suport for `threshold_windows` attribute ([#131](https://github.com/terraform-providers/terraform-provider-datadog/issues/131))
+* Support importing dashboards using the new string ID ([#184](https://github.com/terraform-providers/terraform-provider-datadog/issues/184))
+* Various documentation fixes and improvements ([#152](https://github.com/terraform-providers/terraform-provider-datadog/issues/152), [#171](https://github.com/terraform-providers/terraform-provider-datadog/issues/171), [#176](https://github.com/terraform-providers/terraform-provider-datadog/issues/176), [#178](https://github.com/terraform-providers/terraform-provider-datadog/issues/178), [#180](https://github.com/terraform-providers/terraform-provider-datadog/issues/180), [#183](https://github.com/terraform-providers/terraform-provider-datadog/issues/183))
+
+NOTES:
+
+* This release includes Terraform SDK upgrade to 0.12.0-rc1. The provider is backwards compatible with Terraform v0.11.X, there should be no significant changes in behavior. Please report any issues to either [Terraform issue tracker](https://github.com/hashicorp/terraform/issues) or to [Terraform Datadog Provider issue tracker](https://github.com/terraform-providers/terraform-provider-datadog/issues) ([#194](https://github.com/terraform-providers/terraform-provider-datadog/issues/194), [#198](https://github.com/terraform-providers/terraform-provider-datadog/issues/198))
+
+## 1.8.0 (April 15, 2019)
 
 INTERNAL:
 
-* provider: Enable request/response logging in `>=DEBUG` mode [GH-153]
+* provider: Enable request/response logging in `>=DEBUG` mode ([#153](https://github.com/terraform-providers/terraform-provider-datadog/issues/153))
+
+IMPROVEMENTS:
+
+* Add Synthetics API and Browser tests support + update go-datadog-api to latest. ([169](https://github.com/terraform-providers/terraform-provider-datadog/pull/169))
+
 
 ## 1.7.0 (March 05, 2019)
 

@@ -33,5 +33,6 @@ resource "datadog_downtime" "foo" {
   end   = 1735765200
 
   message = "Example Datadog downtime message."
+  monitor_tags = ["*"]
 }
 `

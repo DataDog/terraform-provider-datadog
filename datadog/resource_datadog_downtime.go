@@ -116,6 +116,11 @@ func resourceDatadogDowntime() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
+			"monitor_tags": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
 		},
 	}
 }
@@ -173,6 +178,11 @@ func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
 		scope = append(scope, s.(string))
 	}
 	dt.Scope = scope
+	tags := []string{}
+	for _, mt := range d.Get("monitor_tags").([]interface{}) {
+		tags = append(tags, mt.(string))
+	}
+	dt.MonitorTags = tags
 	if attr, ok := d.GetOk("start_date"); ok {
 		if t, err := time.Parse(time.RFC3339, attr.(string)); err == nil {
 			dt.SetStart(int(t.Unix()))
@@ -276,6 +286,7 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 		d.Set("recurrence", recurrenceList)
 	}
 	d.Set("scope", dt.Scope)
+	d.Set("monitor_tags", dt.MonitorTags)
 	d.Set("start", dt.GetStart())
 
 	return nil

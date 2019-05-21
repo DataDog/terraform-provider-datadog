@@ -769,10 +769,7 @@ func buildTerraformGraph(datadogGraph datadog.Graph) map[string]interface{} {
 }
 
 func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) error {
-	id, err := strconv.Atoi(d.Id())
-	if err != nil {
-		return err
-	}
+	id := d.Id()
 	timeboard, err := meta.(*datadog.Client).GetDashboard(id)
 	if err != nil {
 		return err
@@ -811,6 +808,9 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 	if err := d.Set("template_variable", templateVariables); err != nil {
 		return err
 	}
+	// Ensure the ID saved in the state is always the legacy ID returned from the API
+	// and not the ID passed to the import statement which could be in the new ID format
+	d.SetId(strconv.Itoa(timeboard.GetId()))
 
 	return nil
 }

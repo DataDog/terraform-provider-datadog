@@ -50,7 +50,7 @@ resource "datadog_screenboard" "acceptance_test" {
     legend      = true
     legend_size = 16
 
-    time {
+    time = {
       live_span = "1d"
     }
 
@@ -61,7 +61,7 @@ resource "datadog_screenboard" "acceptance_test" {
         q    = "avg:system.cpu.user{*}"
         type = "line"
 
-        style {
+        style = {
           palette = "purple"
           type    = "dashed"
           width   = "thin"
@@ -97,7 +97,7 @@ resource "datadog_screenboard" "acceptance_test" {
         q    = "avg:system.cpu.user{*}"
         type = "line"
 
-        style {
+        style = {
           palette = "purple"
           type    = "dashed"
           width   = "thin"
@@ -133,7 +133,7 @@ resource "datadog_screenboard" "acceptance_test" {
     legend      = true
     legend_size = "auto"
 
-    time {
+    time = {
       live_span = "1d"
     }
 
@@ -143,7 +143,7 @@ resource "datadog_screenboard" "acceptance_test" {
       request {
         q = "top(avg:system.load.1{*} by {host}, 10, 'mean', 'desc')"
 
-        style {
+        style = {
           palette = "purple"
           type    = "dashed"
           width   = "thin"
@@ -186,7 +186,7 @@ resource "datadog_screenboard" "acceptance_test" {
     title = "event_timeline title terraform"
     query = "status:error"
 
-    time {
+    time = {
       live_span = "1d"
     }
   }
@@ -199,7 +199,7 @@ resource "datadog_screenboard" "acceptance_test" {
     query      = "*"
     event_size = "l"
 
-    time {
+    time = {
       live_span = "4h"
     }
   }
@@ -235,7 +235,7 @@ resource "datadog_screenboard" "acceptance_test" {
     alert_id = "123456"
     viz_type = "toplist"
 
-    time {
+    time = {
       live_span = "15m"
     }
   }
@@ -270,7 +270,7 @@ resource "datadog_screenboard" "acceptance_test" {
     tags        = ["*"]
     group       = "cluster:test"
 
-    time {
+    time = {
       live_span = "30m"
     }
   }
@@ -291,7 +291,7 @@ resource "datadog_screenboard" "acceptance_test" {
     must_show_distribution  = true
     must_show_resource_list = true
 
-    time {
+    time = {
       live_span = "30m"
     }
   }
@@ -315,7 +315,7 @@ resource "datadog_screenboard" "acceptance_test" {
         type = "fill"
       }
 
-      style {
+      style = {
         palette      = "hostmap_blues"
         palette_flip = true
         fill_min     = 20
@@ -336,7 +336,7 @@ resource "datadog_screenboard" "acceptance_test" {
     manage_status_title_size  = "20"
     manage_status_title_align = "right"
 
-    params {
+    params = {
       sort  = "status,asc"
       text  = "status:alert"
       count = 50
@@ -352,7 +352,7 @@ resource "datadog_screenboard" "acceptance_test" {
     columns = "[\"column1\",\"column2\",\"column3\"]"
     logset  = "1234"
 
-    time {
+    time = {
       live_span = "1h"
     }
   }

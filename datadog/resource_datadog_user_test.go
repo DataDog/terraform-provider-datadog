@@ -36,8 +36,9 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 					testAccCheckDatadogUserExists("datadog_user.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "disabled", "true"),
+					// NOTE: it's not possible ATM to update email of another user
 					resource.TestCheckResourceAttr(
-						"datadog_user.foo", "email", "updated@example.com"),
+						"datadog_user.foo", "email", "test@example.com"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "handle", "test@example.com"),
 					resource.TestCheckResourceAttr(
@@ -46,6 +47,8 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 						"datadog_user.foo", "name", "Updated User"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "verified", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "access_role", "adm"),
 				),
 			},
 		},
@@ -73,19 +76,21 @@ func testAccCheckDatadogUserExists(n string) resource.TestCheckFunc {
 
 const testAccCheckDatadogUserConfigRequired = `
 resource "datadog_user" "foo" {
-  email  = "test@example.com"
-  handle = "test@example.com"
-  name   = "Test User"
+  email     = "test@example.com"
+  handle    = "test@example.com"
+  name      = "Test User"
 }
 `
 
 const testAccCheckDatadogUserConfigUpdated = `
 resource "datadog_user" "foo" {
-  disabled = true
-  email    = "updated@example.com"
-  handle   = "test@example.com"
-  is_admin = true
-  name     = "Updated User"
+  disabled    = true
+  // NOTE: it's not possible ATM to update email of another user
+  email       = "test@example.com"
+  handle      = "test@example.com"
+  is_admin    = true
+  access_role = "adm"
+  name        = "Updated User"
 }
 `
 

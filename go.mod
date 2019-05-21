@@ -1,25 +1,34 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
-	github.com/armon/go-radix v1.0.0 // indirect
-	github.com/blang/semver v3.5.1+incompatible // indirect
+	github.com/DHowett/go-plist v0.0.0-20180609054337-500bd5b9081b // indirect
+	github.com/beevik/etree v0.0.0-20171015221209-af219c0c7ea1 // indirect
 	github.com/cenkalti/backoff v0.0.0-20161020194410-b02f2bbce11d // indirect
-	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
-	github.com/hashicorp/go-getter v0.0.0-20180809191950-4bda8fa99001 // indirect
-	github.com/hashicorp/go-hclog v0.0.0-20181001195459-61d530d6c27f // indirect
-	github.com/hashicorp/go-plugin v0.0.0-20181004024435-314501b665e0 // indirect
-	github.com/hashicorp/go-safetemp v1.0.0 // indirect
-	github.com/hashicorp/hcl2 v0.0.0-20181001210626-3e4b7e0eb20e // indirect
-	github.com/hashicorp/terraform v0.11.12-beta1.0.20190227065421-fc531f54a878
+	github.com/chzyer/logex v1.1.11-0.20160617073814-96a4d311aa9b // indirect
+	github.com/coreos/bbolt v1.3.1-coreos.1 // indirect
+	github.com/go-ini/ini v1.25.4 // indirect
+	github.com/gopherjs/gopherjs v0.0.0-20181103185306-d547d1d9531e // indirect
+	github.com/hashicorp/atlas-go v0.0.0-20161107204910-1792bd8de119 // indirect
+	github.com/hashicorp/go-cleanhttp v0.5.0
+	github.com/hashicorp/go-immutable-radix v1.0.0 // indirect
+	github.com/hashicorp/go-sockaddr v1.0.0 // indirect
+	github.com/hashicorp/serf v0.8.2-0.20171022020050-c20a0b1b1ea9 // indirect
+	github.com/hashicorp/terraform v0.12.0-rc1
+	github.com/jen20/awspolicyequivalence v0.0.0-20170831201602-3d48364a137a // indirect
 	github.com/kr/pretty v0.1.0
-	github.com/mattn/go-colorable v0.1.0 // indirect
-	github.com/mitchellh/cli v1.0.0 // indirect
-	github.com/mitchellh/go-testing-interface v1.0.0 // indirect
-	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
-	github.com/posener/complete v1.2.1 // indirect
+	github.com/masterzen/azure-sdk-for-go v0.0.0-20161014135628-ee4f0065d00c // indirect
+	github.com/miekg/dns v1.0.14 // indirect
+	github.com/prometheus/common v0.0.0-20181126121408-4724e9255275 // indirect
+	github.com/prometheus/procfs v0.0.0-20181204211112-1dc9a6cbc91a // indirect
+	github.com/ryanuber/columnize v0.0.0-20161220214920-0fbbb3f0e3fb // indirect
+	github.com/satori/uuid v0.0.0-20160927100844-b061729afc07 // indirect
+	github.com/smartystreets/assertions v0.0.0-20190116191733-b6c0e53d7304 // indirect
 	github.com/smartystreets/goconvey v0.0.0-20190222223459-a17d461953aa // indirect
-	github.com/zclconf/go-cty v0.0.0-20181017232614-01c5aba823a6 // indirect
-	github.com/zorkian/go-datadog-api v2.19.0+incompatible
-	golang.org/x/net v0.0.0-20181023162649-9b4f9f5ad519 // indirect
-	google.golang.org/genproto v0.0.0-20181016170114-94acd270e44e // indirect
+	github.com/terraform-providers/terraform-provider-aws v1.29.0 // indirect
+	github.com/terraform-providers/terraform-provider-template v1.0.0 // indirect
+	github.com/terraform-providers/terraform-provider-tls v1.2.0 // indirect
+	github.com/zorkian/go-datadog-api v2.20.1-0.20190521074352-d479e1923790+incompatible
+	gopkg.in/vmihailenco/msgpack.v2 v2.9.1 // indirect
+	labix.org/v2/mgo v0.0.0-20140701140051-000000000287 // indirect
+	launchpad.net/gocheck v0.0.0-20140225173054-000000000087 // indirect
 )
