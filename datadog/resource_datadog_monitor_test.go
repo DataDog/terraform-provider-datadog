@@ -49,10 +49,11 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
+					// Tags are sorted
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "foo:bar"),
+						"datadog_monitor.foo", "tags.0", "baz"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "baz"),
+						"datadog_monitor.foo", "tags.1", "foo:bar"),
 				),
 			},
 		},
@@ -97,10 +98,11 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
+					// Tags are sorted
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "foo:bar"),
+						"datadog_monitor.foo", "tags.0", "baz"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "baz"),
+						"datadog_monitor.foo", "tags.1", "foo:bar"),
 				),
 			},
 		},
@@ -133,10 +135,11 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
+					// Tags are sorted
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "foo:bar"),
+						"datadog_monitor.foo", "tags.0", "bar:baz"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "bar:baz"),
+						"datadog_monitor.foo", "tags.1", "foo:bar"),
 				),
 			},
 		},
@@ -189,10 +192,11 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
+					// Tags are sorted
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "foo:bar"),
+						"datadog_monitor.foo", "tags.0", "baz"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "baz"),
+						"datadog_monitor.foo", "tags.1", "foo:bar"),
 				),
 			},
 			{
@@ -241,6 +245,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "true"),
+					// Tags are sorted
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.0", "baz:qux"),
 					resource.TestCheckResourceAttr(
@@ -313,10 +318,11 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
+					// Tags are sorted
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "foo:bar"),
+						"datadog_monitor.foo", "tags.0", "baz"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "baz"),
+						"datadog_monitor.foo", "tags.1", "foo:bar"),
 				),
 			},
 			{
