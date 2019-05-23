@@ -26,6 +26,14 @@ resource "datadog_timeboard" "redis" {
     request {
       q    = "avg:redis.info.latency_ms{$host}"
       type = "bars"
+
+      # NOTE: this will only work with TF >= 0.12; see metadata_json
+      # documentation below for example on usage with TF < 0.12
+      metadata_json = jsonencode({
+        "avg:redis.info.latency_ms{$host}": {
+          "alias": "Redis latency"
+        }
+      })
     }
   }
 
@@ -117,6 +125,30 @@ Nested `graph` `request` blocks have the following structure:
 * `type` - (Optional) Choose how to draw the graph. For example: "line", "bars" or "area". Default: "line".
 * `style` - (Optional) Nested block to customize the graph style.
 * `conditional_format` - (Optional) Nested block to customize the graph style if certain conditions are met. Currently only applies to `Query Value` and `Top List` type graphs.
+* `metadata_json` - (Optional) A JSON blob (preferrably created using [jsonencode](https://www.terraform.io/docs/configuration/functions/jsonencode.html)) representing mapping of query expressions to alias names. For example, this is how you define `metadata_json` with Terraform >= 0.12:
+  ```
+  metadata_json = jsonencode({
+    "avg:redis.info.latency_ms{$host}": {
+      "alias": "Redis latency"
+    }
+  })
+  ```
+  And here's how you define `metadata_json` with Terraform < 0.12:
+  ```
+  variable "my_metadata" {
+    default = {
+      "avg:redis.info.latency_ms{$host}" = {
+        "alias": "Redis latency"
+      }
+    }
+  }
+
+  resource "datadog_timeboard" "SomeTimeboard" {
+    ...
+    "metadata_json": "${jsonencode(var.my_metadata)}"
+  }
+  ```
+  Note that this has to be a JSON blob because of [limitations](https://github.com/hashicorp/terraform/issues/6215) of Terraform's handling complex nested structures.
 
 ### Nested `graph` `style` block
 The nested `style` block is used specifically for styling `hostmap` graphs, and has the following structure:
