@@ -125,7 +125,7 @@ Nested `graph` `request` blocks have the following structure:
 * `type` - (Optional) Choose how to draw the graph. For example: "line", "bars" or "area". Default: "line".
 * `style` - (Optional) Nested block to customize the graph style.
 * `conditional_format` - (Optional) Nested block to customize the graph style if certain conditions are met. Currently only applies to `Query Value` and `Top List` type graphs.
-* `metadata_json` - (Optional) A JSON blob (preferrably created using [jsonencode](https://www.terraform.io/docs/configuration/functions/jsonencode.html)) representing mapping of query expressions to alias names. For example, this is how you define `metadata_json` with Terraform >= 0.12:
+* `metadata_json` - (Optional) A JSON blob (preferrably created using [jsonencode](https://www.terraform.io/docs/configuration/functions/jsonencode.html)) representing mapping of query expressions to alias names. Note that the query expressions in `metadata_json` will be ignored if they're not present in the query. For example, this is how you define `metadata_json` with Terraform >= 0.12:
   ```
   metadata_json = jsonencode({
     "avg:redis.info.latency_ms{$host}": {
@@ -145,10 +145,10 @@ Nested `graph` `request` blocks have the following structure:
 
   resource "datadog_timeboard" "SomeTimeboard" {
     ...
-    "metadata_json": "${jsonencode(var.my_metadata)}"
+        metadata_json = "${jsonencode(var.my_metadata)}"
   }
   ```
-  Note that this has to be a JSON blob because of [limitations](https://github.com/hashicorp/terraform/issues/6215) of Terraform's handling complex nested structures.
+  Note that this has to be a JSON blob because of [limitations](https://github.com/hashicorp/terraform/issues/6215) of Terraform's handling complex nested structures. This is also why the key is called `metadata_json` even though it sets `metadata` attribute on the API call.
 
 ### Nested `graph` `style` block
 The nested `style` block is used specifically for styling `hostmap` graphs, and has the following structure:

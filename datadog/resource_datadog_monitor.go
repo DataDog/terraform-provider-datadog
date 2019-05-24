@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -132,6 +133,7 @@ func resourceDatadogMonitor() *schema.Resource {
 			"no_data_timeframe": {
 				Type:     schema.TypeInt,
 				Optional: true,
+				Default:  10,
 			},
 			"renotify_interval": {
 				Type:     schema.TypeInt,
@@ -294,6 +296,7 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 		for _, s := range attr.([]interface{}) {
 			tags = append(tags, s.(string))
 		}
+		sort.Strings(tags)
 		m.Tags = tags
 	}
 
@@ -377,6 +380,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	for _, s := range m.Tags {
 		tags = append(tags, s)
 	}
+	sort.Strings(tags)
 
 	log.Printf("[DEBUG] monitor: %v", m)
 	d.Set("name", m.GetName())
@@ -443,6 +447,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		for _, v := range attr.([]interface{}) {
 			s = append(s, v.(string))
 		}
+		sort.Strings(s)
 		m.Tags = s
 	}
 
