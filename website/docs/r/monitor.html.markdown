@@ -100,7 +100,7 @@ The following arguments are supported:
     metrics to ensure the monitor will always have data during evaluation.
 * `no_data_timeframe` (Optional) The number of minutes before a monitor will notify when data stops reporting. Must be at
     least 2x the monitor timeframe for metric alerts or 2 minutes for service checks. Default: 2x timeframe for
-    metric alerts, 2 minutes for service checks.
+    metric alerts, 2 minutes for service checks. Defaults to 10 minutes.
 * `renotify_interval` (Optional) The number of minutes after the last notification before a monitor will re-notify
     on the current status. It will only re-notify if it's not resolved.
 * `notify_audit` (Optional) A boolean indicating whether tagged users will be notified on changes to this monitor.
