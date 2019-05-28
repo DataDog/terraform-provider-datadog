@@ -6,6 +6,9 @@ description: |-
   Provides examples for the different types of Datadog monitors. This list isn't exhaustive but serves as a reference for some examples.
 ---
 
+## MOnitor Examples
+This page lists examples of how to create different Datadog monitor types within Terraform. This list is non exhaustive and will be updated over time to provide more examples.
+
 ## Watchdog Monitors
 
 ```
