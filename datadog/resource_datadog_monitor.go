@@ -431,6 +431,17 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 		d.Set("query_config", queryConfig)
 	}
 
+	// Update the state with the contents of the API + whats in the config
+	// The API won't return scopes for timestamps that are in the past/-1
+	// The API response should take precedence if it exists
+	silenced := m.Options.Silenced
+	for k, v := range d.Get("silenced").(map[string]interface{}) {
+		if _, ok := silenced[k]; !ok {
+			silenced[k] = v.(int)
+		}
+	}
+	d.Set("silenced", silenced)
+
 	return nil
 }
 
