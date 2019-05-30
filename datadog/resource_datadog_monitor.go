@@ -157,9 +157,10 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional: true,
 			},
 			"silenced": {
-				Type:     schema.TypeMap,
-				Optional: true,
-				Elem:     schema.TypeInt,
+				Type:       schema.TypeMap,
+				Optional:   true,
+				Elem:       schema.TypeInt,
+				Deprecated: "use Downtime Resource instead",
 			},
 			"include_tags": {
 				Type:     schema.TypeBool,
@@ -323,6 +324,19 @@ func resourceDatadogMonitorExists(d *schema.ResourceData, meta interface{}) (b b
 	return true, nil
 }
 
+func getUnmutedScopes(d *schema.ResourceData) []string {
+	var unmuteScopes []string
+	if attr, ok := d.GetOk("silenced"); ok {
+		for k, v := range attr.(map[string]interface{}) {
+			if v.(int) == -1 {
+				unmuteScopes = append(unmuteScopes, k)
+			}
+		}
+		log.Printf("[DEBUG] Unmute Scopes are: %v", unmuteScopes)
+	}
+	return unmuteScopes
+}
+
 func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) error {
 
 	client := meta.(*datadog.Client)
@@ -398,7 +412,6 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("notify_audit", m.Options.GetNotifyAudit())
 	d.Set("timeout_h", m.Options.GetTimeoutH())
 	d.Set("escalation_message", m.Options.GetEscalationMessage())
-	d.Set("silenced", m.Options.Silenced)
 	d.Set("include_tags", m.Options.GetIncludeTags())
 	d.Set("tags", tags)
 	d.Set("require_full_window", m.Options.GetRequireFullWindow()) // TODO Is this one of those options that we neeed to check?
@@ -511,6 +524,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	if attr, ok := d.GetOk("escalation_message"); ok {
 		o.SetEscalationMessage(attr.(string))
 	}
+
 	silenced := false
 	if attr, ok := d.GetOk("silenced"); ok {
 		// TODO: this is not very defensive, test if we can fail non int input
@@ -545,15 +559,23 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	}
 
 	var retval error
-	if retval = resourceDatadogMonitorRead(d, meta); retval != nil {
-		return retval
-	}
 
+	// if the silenced section was removed from the config, we unmute it via the API
+	// The API mointor wouldn't automatically unmute if the config is just missing
 	if _, ok := d.GetOk("silenced"); ok && !silenced {
-		// This means the monitor must be manually unmuted since the API
-		// wouldn't do it automatically when `silenced` is just missing
 		retval = client.UnmuteMonitorScopes(*m.Id, &datadog.UnmuteMonitorScopes{AllScopes: datadog.Bool(true)})
 		d.Set("silenced", map[string]int{})
+	}
+
+	// Similarly, if the silenced attribute is -1, lets unmute those scopes
+	unmutedScopes := getUnmutedScopes(d)
+	if len(unmutedScopes) != 0 {
+		str := strings.Join(unmutedScopes, ",")
+		retval = client.UnmuteMonitorScopes(*m.Id, &datadog.UnmuteMonitorScopes{Scope: &str})
+	}
+
+	if retval = resourceDatadogMonitorRead(d, meta); retval != nil {
+		return retval
 	}
 
 	return retval

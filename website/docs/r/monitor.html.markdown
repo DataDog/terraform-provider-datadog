@@ -118,7 +118,8 @@ The following arguments are supported:
 * `threshold_windows` (Optional) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. Can only be used for anomaly monitors.
   * `recovery_window` describes how long an anomalous metric must be normal before the alert recovers.
   * `trigger_window`  describes how long a metric must be anomalous before an alert triggers.
-* `silenced` (Optional) Each scope will be muted until the given POSIX timestamp or forever if the value is 0.
+* `silenced` (Optional) Each scope will be muted until the given POSIX timestamp or forever if the value is 0. **Deprecated** The `silenced` parameter is being deprecated in favor of the downtime resource. This will be removed in the next major version of the Terraform Provider.
+
     To mute the alert completely:
 
         silenced = {
