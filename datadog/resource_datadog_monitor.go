@@ -581,8 +581,9 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	// Similarly, if the silenced attribute is -1, lets unmute those scopes
 	unmutedScopes := getUnmutedScopes(d)
 	if len(unmutedScopes) != 0 {
-		str := strings.Join(unmutedScopes, ",")
-		retval = client.UnmuteMonitorScopes(*m.Id, &datadog.UnmuteMonitorScopes{Scope: &str})
+		for _, scope := range unmutedScopes {
+			client.UnmuteMonitorScopes(*m.Id, &datadog.UnmuteMonitorScopes{Scope: &scope})
+		}
 	}
 
 	if retval = resourceDatadogMonitorRead(d, meta); retval != nil {
