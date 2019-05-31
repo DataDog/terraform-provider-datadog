@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/zorkian/go-datadog-api"
@@ -431,11 +432,18 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 		d.Set("query_config", queryConfig)
 	}
 
-	// Update the state with the contents of the API + whats in the config
-	// The API won't return scopes for timestamps that are in the past/-1
-	// The API response should take precedence if it exists
 	silenced := m.Options.Silenced
-	for k, v := range d.Get("silenced").(map[string]interface{}) {
+	// First go through and remove all the old timestamps from the
+	// config so they aren't saved in the state
+	configSilenced := d.Get("silenced").(map[string]interface{})
+	for k, v := range configSilenced {
+		if v.(int) < int(time.Now().Unix()) && v.(int) != -1 && v.(int) != 0 {
+			delete(configSilenced, k)
+		}
+	}
+	// Then go and see if theres any scope in the config that is also in the
+	// API response and let the response take precedence
+	for k, v := range configSilenced {
 		if _, ok := silenced[k]; !ok {
 			silenced[k] = v.(int)
 		}
@@ -572,7 +580,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	var retval error
 
 	// if the silenced section was removed from the config, we unmute it via the API
-	// The API mointor wouldn't automatically unmute if the config is just missing
+	// The API wouldn't automatically unmute the monitor if the config is just missing
 	if _, ok := d.GetOk("silenced"); ok && !silenced {
 		retval = client.UnmuteMonitorScopes(*m.Id, &datadog.UnmuteMonitorScopes{AllScopes: datadog.Bool(true)})
 		d.Set("silenced", map[string]int{})
