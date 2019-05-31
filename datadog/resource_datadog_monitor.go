@@ -432,23 +432,23 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 		d.Set("query_config", queryConfig)
 	}
 
-	silenced := m.Options.Silenced
-	// First go through and remove all the old timestamps from the
-	// config so they aren't saved in the state
+	// The Datadog API doesn't return old timestamps or support a special value for unmuting scopes
+	// So we provide this functionality by saving values to the state
+	//If the user specified scope timestamp is -1 and its not in the API response, save it to the state
+	//If the user specified scope timestamp is in the past and its not our 0 value, remove it from the state (it won't be returned via the API)
+	//If the user specified value isn't in the API response and its not an above special case, remove it from the state so we re mute it.
+	apiSilenced := m.Options.Silenced
 	configSilenced := d.Get("silenced").(map[string]interface{})
-	for k, v := range configSilenced {
-		if v.(int) < int(time.Now().Unix()) && v.(int) != -1 && v.(int) != 0 {
+	for k, configuredVal := range configSilenced {
+		if _, ok := apiSilenced[k]; !ok && configuredVal.(int) == -1 {
+			configSilenced[k] = configuredVal
+		} else if configuredVal.(int) < int(time.Now().Unix()) && configuredVal.(int) != 0 {
+			delete(configSilenced, k)
+		} else if _, ok := apiSilenced[k]; !ok {
 			delete(configSilenced, k)
 		}
 	}
-	// Then go and see if theres any scope in the config that is also in the
-	// API response and let the response take precedence
-	for k, v := range configSilenced {
-		if _, ok := silenced[k]; !ok {
-			silenced[k] = v.(int)
-		}
-	}
-	d.Set("silenced", silenced)
+	d.Set("silenced", configSilenced)
 
 	return nil
 }
