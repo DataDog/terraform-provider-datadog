@@ -585,6 +585,27 @@ func TestAccDatadogMonitor_MuteUnmuteSpecificScopes(t *testing.T) {
 	})
 }
 
+func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorComposeWithSyntheticsTest,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", "foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_synthetics_test.foo", "name", "foo"),
+					resource.TestCheckResourceAttrSet(
+						"datadog_monitor.bar", "query"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogMonitorDestroy(s *terraform.State) error {
 	client := testAccProvider.Meta().(*datadog.Client)
 
@@ -943,6 +964,60 @@ resource "datadog_monitor" "foo" {
     thresholds = {
         critical = 100
     }
+}
+`
+
+const testAccCheckDatadogMonitorComposeWithSyntheticsTest = `
+resource "datadog_monitor" "foo" {
+  name = "foo"
+  type = "metric alert"
+  message = "test"
+
+  query = "avg(last_5m):max:system.load.1{*} by {host} > 100"
+
+  thresholds = {
+      critical = 100
+  }
+}
+
+resource "datadog_synthetics_test" "foo" {
+	type = "api"
+
+	request = {
+		method = "GET"
+		url = "https://docs.datadoghq.com"
+		timeout = 60
+	}
+
+	assertions = [
+		{
+			type = "statusCode"
+			operator = "isNot"
+			target = "500"
+		}
+	]
+
+	locations = [ "aws:eu-central-1" ]
+
+	options = {
+		tick_every = 900
+		min_failure_duration = 10
+		min_location_failed = 1
+	}
+
+	name = "foo"
+	message = "Notify @pagerduty"
+	tags = ["foo:bar", "foo", "env:test"]
+
+	status = "live"
+}
+
+resource "datadog_monitor" "bar" {
+  name = "composite monitor"
+  type = "composite"
+  message = "test"
+
+	query = "${datadog_monitor.foo.id} || ${datadog_synthetics_test.foo.monitor_id}"
 }
 `
 
