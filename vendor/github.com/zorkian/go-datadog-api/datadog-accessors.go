@@ -14739,6 +14739,37 @@ func (s *SyntheticsTest) SetModifiedBy(v SyntheticsUser) {
 	s.ModifiedBy = &v
 }
 
+// GetMonitorId returns the MonitorId field if non-nil, zero value otherwise.
+func (s *SyntheticsTest) GetMonitorId() int {
+	if s == nil || s.MonitorId == nil {
+		return 0
+	}
+	return *s.MonitorId
+}
+
+// GetMonitorIdOk returns a tuple with the MonitorId field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *SyntheticsTest) GetMonitorIdOk() (int, bool) {
+	if s == nil || s.MonitorId == nil {
+		return 0, false
+	}
+	return *s.MonitorId, true
+}
+
+// HasMonitorId returns a boolean if a field has been set.
+func (s *SyntheticsTest) HasMonitorId() bool {
+	if s != nil && s.MonitorId != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMonitorId allocates a new s.MonitorId and returns the pointer to it.
+func (s *SyntheticsTest) SetMonitorId(v int) {
+	s.MonitorId = &v
+}
+
 // GetMonitorStatus returns the MonitorStatus field if non-nil, zero value otherwise.
 func (s *SyntheticsTest) GetMonitorStatus() string {
 	if s == nil || s.MonitorStatus == nil {

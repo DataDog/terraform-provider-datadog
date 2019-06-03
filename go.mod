@@ -7,3 +7,5 @@ require (
 	github.com/kr/pretty v0.1.0
 	github.com/zorkian/go-datadog-api v2.20.1-0.20190521074352-d479e1923790+incompatible
 )
+
+replace github.com/zorkian/go-datadog-api => github.com/DataDog/go-datadog-api v0.0.0-20190529090230-16add2864293
