@@ -443,7 +443,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 		if _, ok := apiSilenced[k]; !ok && configuredVal.(int) == -1 {
 			configSilenced[k] = configuredVal
 		} else if configuredVal.(int) < int(time.Now().Unix()) && configuredVal.(int) != 0 {
-			delete(configSilenced, k)
+			// delete(configSilenced, k)
 		} else if _, ok := apiSilenced[k]; !ok {
 			delete(configSilenced, k)
 		}
@@ -578,6 +578,9 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	}
 
 	var retval error
+	if retval = resourceDatadogMonitorRead(d, meta); retval != nil {
+		return retval
+	}
 
 	// if the silenced section was removed from the config, we unmute it via the API
 	// The API wouldn't automatically unmute the monitor if the config is just missing
@@ -594,11 +597,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		}
 	}
 
-	if retval = resourceDatadogMonitorRead(d, meta); retval != nil {
-		return retval
-	}
-
-	return retval
+	return resourceDatadogMonitorRead(d, meta)
 }
 
 func resourceDatadogMonitorDelete(d *schema.ResourceData, meta interface{}) error {
