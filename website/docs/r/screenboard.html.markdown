@@ -458,7 +458,7 @@ Nested `widget` blocks have the following structure:
 - `manage_status_title_text` - (Optional, only for widgets of type "manage_status") The title of the widget.
 - `manage_status_title_size` - (Optional, only for widgets of type "manage_status") The size of the widget's title.
 - `manage_status_title_align` - (Optional, only for widgets of type "manage_status") The alignment of the widget's title. One of "left", "center", or "right".
-- `columns` - (Optional, only for widgets of type "log_stream") Stringified list of columns to use. Example: `"[\"column1\",\"column2\",\"column3\"]"`
+- `columns` - (Optional, only for widgets of type "log_stream") Stringified list of columns to use. Example: `"[\"column1\",\"column2\",\"column3\"]"` Note: when creating a column on a facet from an attribute (i.e. one with `@`), prefix the attribute name with `log_` instead of `@`. For example `@http.status_code` would become `log_http.status_code` in your terraform config.
 - `logset` - (Optional, only for widgets of type "log_stream") ID of the logset to use.
 - `time` - (Optional, only for widgets of type "timeseries", "toplist", "event_timeline", "event_stream", "alert_graph", "check_status", "trace_service", "log_stream") Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. At most one such block should be present in a given widget.
 - `tile_def` - (Optional, only for widgets of type "timeseries", "query_value", "hostmap", "change", "toplist", "process") Nested block describing the content to display in the widget. The structure of this block is described below. At most one such block should be present in a given widget.
