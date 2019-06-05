@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -178,18 +177,6 @@ func resourceDatadogMonitor() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"query_config": {
-				Type:     schema.TypeMap,
-				Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"query_string": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-					},
-				},
-			},
 		},
 	}
 }
@@ -279,11 +266,6 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 	}
 
 	if m.GetType() == logAlertMonitorType {
-		if queryString, ok := getQueryStringFromLogQuery(d.Get("query").(string)); ok {
-			o.SetQueryConfig(datadog.QueryConfig{
-				QueryString: datadog.String(queryString.(string)),
-			})
-		}
 		if attr, ok := d.GetOk("enable_logs_sample"); ok {
 			o.SetEnableLogsSample(attr.(bool))
 		} else {
@@ -404,18 +386,8 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("require_full_window", m.Options.GetRequireFullWindow()) // TODO Is this one of those options that we neeed to check?
 	d.Set("locked", m.Options.GetLocked())
 
-	d.Set("query_config", map[string]string{})
 	if m.GetType() == logAlertMonitorType {
 		d.Set("enable_logs_sample", m.Options.GetEnableLogsSample())
-		queryConfig := make(map[string]string)
-		for k, v := range map[string]string{
-			"query_string": m.Options.QueryConfig.GetQueryString(),
-		} {
-			if v != "" {
-				queryConfig[k] = v
-			}
-		}
-		d.Set("query_config", queryConfig)
 	}
 
 	return nil
@@ -526,11 +498,6 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	}
 	// can't use m.GetType here, since it's not filled for purposes of updating
 	if d.Get("type") == logAlertMonitorType {
-		if queryString, ok := getQueryStringFromLogQuery(d.Get("query").(string)); ok {
-			o.SetQueryConfig(datadog.QueryConfig{
-				QueryString: datadog.String(queryString.(string)),
-			})
-		}
 		if attr, ok := d.GetOk("enable_logs_sample"); ok {
 			o.SetEnableLogsSample(attr.(bool))
 		} else {
@@ -602,13 +569,4 @@ func suppressDataDogFloatIntDiff(k, old, new string, d *schema.ResourceData) boo
 		return true
 	}
 	return false
-}
-
-func getQueryStringFromLogQuery(query string) (interface{}, bool) {
-	matchLogQueryStrs := regexp.MustCompile(`logs\("(.*?)"\)`).FindStringSubmatch(query)
-	matched := (len(matchLogQueryStrs) > 1)
-	if !matched {
-		return nil, false
-	}
-	return matchLogQueryStrs[1], true
 }
