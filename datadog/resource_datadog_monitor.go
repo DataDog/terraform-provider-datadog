@@ -434,21 +434,29 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 
 	// The Datadog API doesn't return old timestamps or support a special value for unmuting scopes
 	// So we provide this functionality by saving values to the state
-	//If the user specified scope timestamp is -1 and its not in the API response, save it to the state
-	//If the user specified scope timestamp is in the past and its not our 0 value, remove it from the state (it won't be returned via the API)
-	//If the user specified value isn't in the API response and its not an above special case, remove it from the state so we re mute it.
 	apiSilenced := m.Options.Silenced
 	configSilenced := d.Get("silenced").(map[string]interface{})
-	for k, configuredVal := range configSilenced {
-		if _, ok := apiSilenced[k]; !ok && configuredVal.(int) == -1 {
-			configSilenced[k] = configuredVal
-		} else if configuredVal.(int) < int(time.Now().Unix()) && configuredVal.(int) != 0 {
-			// delete(configSilenced, k)
-		} else if _, ok := apiSilenced[k]; !ok {
-			delete(configSilenced, k)
+	unmutedScopes := getUnmutedScopes(d)
+
+	// If the scope is in the API response but not in the config
+	// we need to unmute the scope since there was drift
+	for k := range apiSilenced {
+		if _, ok := configSilenced[k]; !ok {
+			unmutedScopes = append(unmutedScopes, k)
 		}
 	}
-	d.Set("silenced", configSilenced)
+	for _, scope := range unmutedScopes {
+		apiSilenced[scope] = -1
+	}
+
+	// Ignore any timestamps in the past that aren't -1 or 0
+	for k, v := range configSilenced {
+		if v.(int) < int(time.Now().Unix()) && v.(int) != 0 && v.(int) != -1 {
+			// sync the state with whats in the config so its ignored
+			apiSilenced[k] = v.(int)
+		}
+	}
+	d.Set("silenced", apiSilenced)
 
 	return nil
 }
