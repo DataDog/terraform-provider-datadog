@@ -1,9 +1,4 @@
 ## 1.10.0 (Unreleased)
-
-IMPROVEMENTS:
-
-* Support Synthetics tests in composite monitors
-
 ## 1.9.0 (May 09, 2019)
 
 IMPROVEMENTS:

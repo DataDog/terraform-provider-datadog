@@ -365,6 +365,8 @@ github.com/zclconf/go-cty v0.0.0-20190516203816-4fecf87372ec h1:MSeYjmyjucsFbecM
 github.com/zclconf/go-cty v0.0.0-20190516203816-4fecf87372ec/go.mod h1:xnAOWiHeOqg2nWS62VtQ7pbOu17FtxJNW8RLEih+O3s=
 github.com/zorkian/go-datadog-api v2.20.1-0.20190521074352-d479e1923790+incompatible h1:jNXocK/Zh6e6QRF+4Eqt4d+01M1i4E7OlOMmz5uU0VU=
 github.com/zorkian/go-datadog-api v2.20.1-0.20190521074352-d479e1923790+incompatible/go.mod h1:PkXwHX9CUQa/FpB9ZwAD45N1uhCW4MT/Wj7m36PbKss=
+github.com/zorkian/go-datadog-api v2.20.1-0.20190603153832-e55ea7fe7831+incompatible h1:fd28pEQilBq2gBNrZM4rs7cXWLWS+QWurCo5V9GCTxo=
+github.com/zorkian/go-datadog-api v2.20.1-0.20190603153832-e55ea7fe7831+incompatible/go.mod h1:PkXwHX9CUQa/FpB9ZwAD45N1uhCW4MT/Wj7m36PbKss=
 go.opencensus.io v0.18.0 h1:Mk5rgZcggtbvtAun5aJzAtjKKN/t0R3jJPlWILlv938=
 go.opencensus.io v0.18.0/go.mod h1:vKdFvxhtzZ9onBp9VKHK8z/sRpBMnKAsufL7wlDrCOA=
 go.uber.org/atomic v1.3.2/go.mod h1:gD2HeocX3+yG+ygLZcrzQJaqmWj9AIm7n08wl/qW/PE=
