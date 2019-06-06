@@ -8,6 +8,7 @@ import (
 // SyntheticsTest represents a synthetics test, either api or browser
 type SyntheticsTest struct {
 	PublicId      *string            `json:"public_id,omitempty"`
+	MonitorId     *int               `json:"monitor_id,omitempty"`
 	Name          *string            `json:"name,omitempty"`
 	Type          *string            `json:"type,omitempty"`
 	Tags          []string           `json:"tags"`

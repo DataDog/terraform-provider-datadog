@@ -152,6 +152,8 @@ var createSyntheticsAPITestStep = resource.TestStep{
 			"datadog_synthetics_test.foo", "tags.1", "baz"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "status", "paused"),
+		resource.TestCheckResourceAttrSet(
+			"datadog_synthetics_test.foo", "monitor_id"),
 	),
 }
 
@@ -253,6 +255,8 @@ var updateSyntheticsAPITestStep = resource.TestStep{
 			"datadog_synthetics_test.foo", "tags.2", "env:test"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "status", "live"),
+		resource.TestCheckResourceAttrSet(
+			"datadog_synthetics_test.foo", "monitor_id"),
 	),
 }
 
@@ -338,6 +342,8 @@ var createSyntheticsBrowserTestStep = resource.TestStep{
 			"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.bar", "tags.1", "baz"),
+		resource.TestCheckResourceAttrSet(
+			"datadog_synthetics_test.bar", "monitor_id"),
 	),
 }
 
@@ -420,6 +426,8 @@ var updateSyntheticsBrowserTestStep = resource.TestStep{
 			"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.bar", "tags.1", "buz"),
+		resource.TestCheckResourceAttrSet(
+			"datadog_synthetics_test.bar", "monitor_id"),
 	),
 }
 

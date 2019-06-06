@@ -174,3 +174,19 @@ Monitors can be imported using their numeric ID, e.g.
 ```
 $ terraform import datadog_monitor.bytes_received_localhost 2081
 ```
+
+## Composite Monitors
+
+You can compose monitors of all types in order to define more specific alert conditions (see the [doc](https://docs.datadoghq.com/monitors/monitor_types/composite/)).
+You just need to reuse the ID of your `datadog_monitor` resources.
+You can also compose any monitor with a `datadog_synthetics_test` by passing the computed `monitor_id` attribute in the query.
+
+```tf
+resource "datadog_monitor" "bar" {
+  name = "Composite Monitor"
+  type = "composite"
+  message = "This is a message"
+
+	query = "${datadog_monitor.foo.id} || ${datadog_synthetics_test.foo.monitor_id}"
+}
+```
