@@ -197,6 +197,14 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "How many digits to show",
+					// Suppress the diff shown if the graph is going to be set to a default of 2 iff its not set by the config
+					// Since this precision attribute is only valid for certain graph types, we aren't setting a global default
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						if old == "2" && new == "" {
+							return true
+						}
+						return false
+					},
 				},
 				"custom_unit": {
 					Type:        schema.TypeString,
@@ -826,7 +834,6 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 	// Ensure the ID saved in the state is always the legacy ID returned from the API
 	// and not the ID passed to the import statement which could be in the new ID format
 	d.SetId(strconv.Itoa(timeboard.GetId()))
-
 	return nil
 }
 
