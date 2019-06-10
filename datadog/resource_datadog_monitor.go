@@ -436,17 +436,11 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	// So we provide this functionality by saving values to the state
 	apiSilenced := m.Options.Silenced
 	configSilenced := d.Get("silenced").(map[string]interface{})
-	unmutedScopes := getUnmutedScopes(d)
 
-	// If the scope is in the API response but not in the config
-	// we need to unmute the scope since there was drift
-	for k := range apiSilenced {
-		if _, ok := configSilenced[k]; !ok {
-			unmutedScopes = append(unmutedScopes, k)
+	for _, scope := range getUnmutedScopes(d) {
+		if _, ok := apiSilenced[scope]; !ok {
+			apiSilenced[scope] = -1
 		}
-	}
-	for _, scope := range unmutedScopes {
-		apiSilenced[scope] = -1
 	}
 
 	// Ignore any timestamps in the past that aren't -1 or 0
@@ -553,11 +547,13 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	}
 
 	silenced := false
+	configuredSilenced := map[string]int{}
 	if attr, ok := d.GetOk("silenced"); ok {
 		// TODO: this is not very defensive, test if we can fail non int input
 		s := make(map[string]int)
 		for k, v := range attr.(map[string]interface{}) {
 			s[k] = v.(int)
+			configuredSilenced[k] = v.(int)
 		}
 		o.Silenced = s
 		silenced = true
@@ -592,13 +588,22 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 
 	// if the silenced section was removed from the config, we unmute it via the API
 	// The API wouldn't automatically unmute the monitor if the config is just missing
-	if _, ok := d.GetOk("silenced"); ok && !silenced {
+	// else we check what other silenced scopes were added from API response in the
+	// "read" above and add them to "unmutedScopes" to be explicitly unmuted (because
+	// they're "drift")
+	unmutedScopes := getUnmutedScopes(d)
+	if newSilenced, ok := d.GetOk("silenced"); ok && !silenced {
 		retval = client.UnmuteMonitorScopes(*m.Id, &datadog.UnmuteMonitorScopes{AllScopes: datadog.Bool(true)})
 		d.Set("silenced", map[string]int{})
+	} else {
+		for scope := range newSilenced.(map[string]interface{}) {
+			if _, ok := configuredSilenced[scope]; !ok {
+				unmutedScopes = append(unmutedScopes, scope)
+			}
+		}
 	}
 
 	// Similarly, if the silenced attribute is -1, lets unmute those scopes
-	unmutedScopes := getUnmutedScopes(d)
 	if len(unmutedScopes) != 0 {
 		for _, scope := range unmutedScopes {
 			client.UnmuteMonitorScopes(*m.Id, &datadog.UnmuteMonitorScopes{Scope: &scope})
