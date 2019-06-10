@@ -604,6 +604,154 @@ func testAccCheckDatadogMonitorExists(n string) resource.TestCheckFunc {
 	}
 }
 
+func TestAccDatadogMonitor_UpdateRemoveSilence(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorSilenceZero,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", "name for monitor foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "query alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "silenced.*", "0"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorSilenceUnmute,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", "name for monitor foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "query alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "silenced.*", "-1"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogMonitor_UpdateSameSilence(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorSilenceZero,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", "name for monitor foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "query alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "silenced.*", "0"),
+				),
+			},
+			{
+				Config:             testAccCheckDatadogMonitorSilenceZero,
+				ExpectNonEmptyPlan: false,
+			},
+		},
+	})
+}
+
+func TestAccDatadogMonitor_UpdatePastTimestamp(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorSilenceZero,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", "name for monitor foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "query alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "silenced.*", "0"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorSilencePastTimestamp,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "silenced.*", "1559759717",
+					),
+				),
+			},
+			{
+				Config:             testAccCheckDatadogMonitorSilencePastTimestamp,
+				ExpectNonEmptyPlan: false,
+			},
+		},
+	})
+}
+
+const testAccCheckDatadogMonitorSilenceZero = `
+resource "datadog_monitor" "foo" {
+	name = "name for monitor foo"
+	type = "query alert"
+	message = "some message Notify: @hipchat-channel"
+
+	query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+	silenced = {
+    "*" = 0
+  }
+}
+`
+
+const testAccCheckDatadogMonitorSilenceUnmute = `
+resource "datadog_monitor" "foo" {
+	name = "name for monitor foo"
+	type = "query alert"
+	message = "some message Notify: @hipchat-channel"
+
+	query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+	silenced = {
+    "*" = -1
+  }
+}
+`
+
+const testAccCheckDatadogMonitorSilencePastTimestamp = `
+resource "datadog_monitor" "foo" {
+	name = "name for monitor foo"
+	type = "query alert"
+	message = "some message Notify: @hipchat-channel"
+
+	query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+	silenced = {
+    "*" = 1559759717
+  }
+}
+`
+
 const testAccCheckDatadogMonitorConfig = `
 resource "datadog_monitor" "foo" {
   name = "name for monitor foo"
