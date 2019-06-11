@@ -111,6 +111,13 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "If set to 'present', this will include the present values in change graphs.",
+					ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+						stringVal := val.(string)
+						if stringVal != "" && stringVal != "present" {
+							errs = append(errs, fmt.Errorf("'%s' value must be empty or 'present', got: '%s'", key, stringVal))
+						}
+						return
+					},
 				},
 			},
 		},
@@ -364,7 +371,7 @@ func buildTemplateVariables(terraformTemplateVariables *[]interface{}) *[]datado
 	return &datadogTemplateVariables
 }
 
-func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{}) {
+func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{}) error {
 	for _, _t := range *terraformRequests {
 		t := _t.(map[string]interface{})
 		log.Printf("[DataDog] request: %v", pretty.Sprint(t))
@@ -409,7 +416,12 @@ func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{
 			d.SetOrderBy(v.(string))
 		}
 		if v, ok := t["extra_col"]; ok {
-			d.SetExtraCol(v.(string))
+			// additional validation: `extra_col` may only be used for `change` viz
+			if viz := datadogGraph.Definition.GetViz(); viz == "change" {
+				d.SetExtraCol(v.(string))
+			} else if v != nil && v != "" {
+				return fmt.Errorf("'extra_col' attribute may only be used for 'change' viz, not '%s'", viz)
+			}
 		}
 		if v, ok := t["order_direction"]; ok {
 			d.SetOrderDirection(v.(string))
@@ -426,6 +438,8 @@ func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{
 
 		datadogGraph.Definition.Requests = append(datadogGraph.Definition.Requests, d)
 	}
+
+	return nil
 }
 
 func appendEvents(datadogGraph *datadog.Graph, terraformEvents *[]interface{}) {
@@ -450,7 +464,7 @@ func appendMarkers(datadogGraph *datadog.Graph, terraformMarkers *[]interface{})
 	}
 }
 
-func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
+func buildGraphs(terraformGraphs *[]interface{}) (*[]datadog.Graph, error) {
 	datadogGraphs := make([]datadog.Graph, len(*terraformGraphs))
 	for i, _t := range *terraformGraphs {
 		t := _t.(map[string]interface{})
@@ -562,9 +576,12 @@ func buildGraphs(terraformGraphs *[]interface{}) *[]datadog.Graph {
 		appendEvents(d, &v)
 
 		v = t["request"].([]interface{})
-		appendRequests(d, &v)
+		err := appendRequests(d, &v)
+		if err != nil {
+			return nil, err
+		}
 	}
-	return &datadogGraphs
+	return &datadogGraphs, nil
 }
 
 func buildTimeboard(d *schema.ResourceData) (*datadog.Dashboard, error) {
@@ -578,12 +595,16 @@ func buildTimeboard(d *schema.ResourceData) (*datadog.Dashboard, error) {
 	}
 	terraformGraphs := d.Get("graph").([]interface{})
 	terraformTemplateVariables := d.Get("template_variable").([]interface{})
+	graphs, err := buildGraphs(&terraformGraphs)
+	if err != nil {
+		return nil, err
+	}
 	return &datadog.Dashboard{
 		Id:                datadog.Int(id),
 		Title:             datadog.String(d.Get("title").(string)),
 		Description:       datadog.String(d.Get("description").(string)),
 		ReadOnly:          datadog.Bool(d.Get("read_only").(bool)),
-		Graphs:            *buildGraphs(&terraformGraphs),
+		Graphs:            *graphs,
 		TemplateVariables: *buildTemplateVariables(&terraformTemplateVariables),
 	}, nil
 }
