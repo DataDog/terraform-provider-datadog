@@ -604,7 +604,7 @@ func testAccCheckDatadogMonitorExists(n string) resource.TestCheckFunc {
 	}
 }
 
-func TestAccDatadogMonitor_UpdateRemoveSilence(t *testing.T) {
+func TestAccDatadogMonitor_SilencedRemove(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
@@ -642,7 +642,7 @@ func TestAccDatadogMonitor_UpdateRemoveSilence(t *testing.T) {
 	})
 }
 
-func TestAccDatadogMonitor_UpdateSameSilence(t *testing.T) {
+func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
@@ -672,7 +672,7 @@ func TestAccDatadogMonitor_UpdateSameSilence(t *testing.T) {
 	})
 }
 
-func TestAccDatadogMonitor_UpdatePastTimestamp(t *testing.T) {
+func TestAccDatadogMonitor_SilencedUpdatePastTimestamp(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
