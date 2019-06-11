@@ -125,6 +125,7 @@ Nested `graph` `request` blocks have the following structure:
 * `type` - (Optional) Choose how to draw the graph. For example: "line", "bars" or "area". Default: "line".
 * `style` - (Optional) Nested block to customize the graph style.
 * `conditional_format` - (Optional) Nested block to customize the graph style if certain conditions are met. Currently only applies to `Query Value` and `Top List` type graphs.
+* `extra_col` - (Optional, only for graphs of visualization "change") If set to "present", displays current value. Can be left empty otherwise.
 * `metadata_json` - (Optional) A JSON blob (preferrably created using [jsonencode](https://www.terraform.io/docs/configuration/functions/jsonencode.html)) representing mapping of query expressions to alias names. Note that the query expressions in `metadata_json` will be ignored if they're not present in the query. For example, this is how you define `metadata_json` with Terraform >= 0.12:
   ```
   metadata_json = jsonencode({
