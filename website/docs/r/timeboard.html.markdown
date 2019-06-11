@@ -197,3 +197,56 @@ Timeboards can be imported using their numeric ID, e.g.
 ```
 $ terraform import datadog_timeboard.my_service_timeboard 2081
 ```
+
+## Dynamic Timeboards
+
+Since Terraform 0.12, it's possible to create timeboard graphs dynamically based on contents of a list/map variable. This can be achieved by using the [dynamic blocks](https://www.terraform.io/docs/configuration/expressions.html#dynamic-blocks) feature. For example:
+
+```
+variable "my_list" {
+  default = ["First", "Second", "Third"]
+}
+
+variable "my_map" {
+  default = {
+    "First" = "value1"
+    "Second" = "value2"
+  }
+}
+
+# Create a timeboard with "First", "Second" and "Third" timeseries graphs
+resource "datadog_timeboard" "my_timeboard" {
+  title       = "My Timeboard"
+  description = "My Description"
+  read_only   = true
+
+  dynamic "graph" {
+    for_each = var.my_list
+    content {
+      title = "${graph.value}"
+      viz = "timeseries"
+      request {
+        q = "anomalies(sum:mycount{adapter:${graph.value}}.as_count().rollup(sum, 3600), 'robust', 4, direction='below')"
+      }
+    }
+  }
+}
+
+# Create a timeboard with "First" and "Second" timeseries graphs, use map keys as titles and map values as adapter names
+resource "datadog_timeboard" "my_timeboard_map" {
+  title       = "My Timeboard From Map"
+  description = "My Description"
+  read_only   = true
+
+  dynamic "graph" {
+    for_each = var.my_map
+    content {
+      title = "${graph.key}"
+      viz = "timeseries"
+      request {
+        q = "anomalies(sum:mycount{adapter:${graph.value}}.as_count().rollup(sum, 3600), 'robust', 4, direction='below')"
+      }
+    }
+  }
+}
+```
