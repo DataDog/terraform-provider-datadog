@@ -7,6 +7,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/zorkian/go-datadog-api"
@@ -156,9 +157,10 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional: true,
 			},
 			"silenced": {
-				Type:     schema.TypeMap,
-				Optional: true,
-				Elem:     schema.TypeInt,
+				Type:       schema.TypeMap,
+				Optional:   true,
+				Elem:       schema.TypeInt,
+				Deprecated: "use Downtime Resource instead",
 			},
 			"include_tags": {
 				Type:     schema.TypeBool,
@@ -305,6 +307,19 @@ func resourceDatadogMonitorExists(d *schema.ResourceData, meta interface{}) (b b
 	return true, nil
 }
 
+func getUnmutedScopes(d *schema.ResourceData) []string {
+	var unmuteScopes []string
+	if attr, ok := d.GetOk("silenced"); ok {
+		for k, v := range attr.(map[string]interface{}) {
+			if v.(int) == -1 {
+				unmuteScopes = append(unmuteScopes, k)
+			}
+		}
+		log.Printf("[DEBUG] Unmute Scopes are: %v", unmuteScopes)
+	}
+	return unmuteScopes
+}
+
 func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) error {
 
 	client := meta.(*datadog.Client)
@@ -380,7 +395,6 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("notify_audit", m.Options.GetNotifyAudit())
 	d.Set("timeout_h", m.Options.GetTimeoutH())
 	d.Set("escalation_message", m.Options.GetEscalationMessage())
-	d.Set("silenced", m.Options.Silenced)
 	d.Set("include_tags", m.Options.GetIncludeTags())
 	d.Set("tags", tags)
 	d.Set("require_full_window", m.Options.GetRequireFullWindow()) // TODO Is this one of those options that we neeed to check?
@@ -389,6 +403,26 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	if m.GetType() == logAlertMonitorType {
 		d.Set("enable_logs_sample", m.Options.GetEnableLogsSample())
 	}
+
+	// The Datadog API doesn't return old timestamps or support a special value for unmuting scopes
+	// So we provide this functionality by saving values to the state
+	apiSilenced := m.Options.Silenced
+	configSilenced := d.Get("silenced").(map[string]interface{})
+
+	for _, scope := range getUnmutedScopes(d) {
+		if _, ok := apiSilenced[scope]; !ok {
+			apiSilenced[scope] = -1
+		}
+	}
+
+	// Ignore any timestamps in the past that aren't -1 or 0
+	for k, v := range configSilenced {
+		if v.(int) < int(time.Now().Unix()) && v.(int) != 0 && v.(int) != -1 {
+			// sync the state with whats in the config so its ignored
+			apiSilenced[k] = v.(int)
+		}
+	}
+	d.Set("silenced", apiSilenced)
 
 	return nil
 }
@@ -483,12 +517,15 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	if attr, ok := d.GetOk("escalation_message"); ok {
 		o.SetEscalationMessage(attr.(string))
 	}
+
 	silenced := false
+	configuredSilenced := map[string]int{}
 	if attr, ok := d.GetOk("silenced"); ok {
 		// TODO: this is not very defensive, test if we can fail non int input
 		s := make(map[string]int)
 		for k, v := range attr.(map[string]interface{}) {
 			s[k] = v.(int)
+			configuredSilenced[k] = v.(int)
 		}
 		o.Silenced = s
 		silenced = true
@@ -516,14 +553,31 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		return retval
 	}
 
-	if _, ok := d.GetOk("silenced"); ok && !silenced {
-		// This means the monitor must be manually unmuted since the API
-		// wouldn't do it automatically when `silenced` is just missing
+	// if the silenced section was removed from the config, we unmute it via the API
+	// The API wouldn't automatically unmute the monitor if the config is just missing
+	// else we check what other silenced scopes were added from API response in the
+	// "read" above and add them to "unmutedScopes" to be explicitly unmuted (because
+	// they're "drift")
+	unmutedScopes := getUnmutedScopes(d)
+	if newSilenced, ok := d.GetOk("silenced"); ok && !silenced {
 		retval = client.UnmuteMonitorScopes(*m.Id, &datadog.UnmuteMonitorScopes{AllScopes: datadog.Bool(true)})
 		d.Set("silenced", map[string]int{})
+	} else {
+		for scope := range newSilenced.(map[string]interface{}) {
+			if _, ok := configuredSilenced[scope]; !ok {
+				unmutedScopes = append(unmutedScopes, scope)
+			}
+		}
 	}
 
-	return retval
+	// Similarly, if the silenced attribute is -1, lets unmute those scopes
+	if len(unmutedScopes) != 0 {
+		for _, scope := range unmutedScopes {
+			client.UnmuteMonitorScopes(*m.Id, &datadog.UnmuteMonitorScopes{Scope: &scope})
+		}
+	}
+
+	return resourceDatadogMonitorRead(d, meta)
 }
 
 func resourceDatadogMonitorDelete(d *schema.ResourceData, meta interface{}) error {
