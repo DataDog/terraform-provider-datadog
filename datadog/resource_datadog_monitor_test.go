@@ -49,11 +49,16 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
-					// Tags are sorted
+					// Tags are a TypeSet => use a weird way to access members by their hash
+					// TF TypeSet is internally represented as a map that maps computed hashes
+					// to actual values. Since the hashes are always the same for one value,
+					// this is the way to get them.
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "baz"),
+						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "foo:bar"),
+						"datadog_monitor.foo", "tags.2644851163", "baz"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.1750285118", "foo:bar"),
 				),
 			},
 		},
@@ -98,11 +103,13 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
-					// Tags are sorted
+					// Tags are a TypeSet => use a weird way to access members by their hash
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "baz"),
+						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "foo:bar"),
+						"datadog_monitor.foo", "tags.2644851163", "baz"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.1750285118", "foo:bar"),
 				),
 			},
 		},
@@ -135,11 +142,13 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
-					// Tags are sorted
+					// Tags are a TypeSet => use a weird way to access members by their hash
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "bar:baz"),
+						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "foo:bar"),
+						"datadog_monitor.foo", "tags.3417822676", "bar:baz"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.1750285118", "foo:bar"),
 				),
 			},
 		},
@@ -192,11 +201,13 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
-					// Tags are sorted
+					// Tags are a TypeSet => use a weird way to access members by their hash
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "baz"),
+						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "foo:bar"),
+						"datadog_monitor.foo", "tags.2644851163", "baz"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.1750285118", "foo:bar"),
 				),
 			},
 			{
@@ -245,11 +256,13 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "true"),
-					// Tags are sorted
+					// Tags are a TypeSet => use a weird way to access members by their hash
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "baz:qux"),
+						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "quux"),
+						"datadog_monitor.foo", "tags.1280427750", "baz:qux"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.1520885421", "quux"),
 				),
 			},
 			{
@@ -318,11 +331,13 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
-					// Tags are sorted
+					// Tags are a TypeSet => use a weird way to access members by their hash
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "baz"),
+						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "foo:bar"),
+						"datadog_monitor.foo", "tags.2644851163", "baz"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.1750285118", "foo:bar"),
 				),
 			},
 			{
@@ -372,9 +387,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "true"),
 					resource.TestCheckNoResourceAttr(
-						"datadog_monitor.foo", "tags.0"),
-					resource.TestCheckNoResourceAttr(
-						"datadog_monitor.foo", "tags.1"),
+						"datadog_monitor.foo", "tags.#"),
 				),
 			},
 			{
@@ -446,13 +459,13 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1"),
+						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning_recovery", "0"),
+						"datadog_monitor.foo", "thresholds.warning_recovery", "0.0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "2"),
+						"datadog_monitor.foo", "thresholds.critical", "2.0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical_recovery", "1"),
+						"datadog_monitor.foo", "thresholds.critical_recovery", "1.0"),
 				),
 			},
 

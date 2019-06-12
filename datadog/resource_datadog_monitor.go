@@ -55,14 +55,6 @@ func resourceDatadogMonitor() *schema.Resource {
 			"type": {
 				Type:     schema.TypeString,
 				Required: true,
-				// Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
-				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-					if oldVal == "query alert" && newVal == "metric alert" {
-						log.Printf("[DEBUG] Monitor '%s' got a '%s' response for an expected '%s' type. Suppressing change.", d.Get("name"), newVal, oldVal)
-						return true
-					}
-					return newVal == oldVal
-				},
 			},
 
 			// Options
@@ -168,7 +160,10 @@ func resourceDatadogMonitor() *schema.Resource {
 				Default:  true,
 			},
 			"tags": {
-				Type:     schema.TypeList,
+				// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
+				// we order them explicitly in the read/create/update methods of this resource and using
+				// TypeSet makes Terraform ignore differences in order when creating a plan
+				Type:     schema.TypeSet,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
@@ -277,7 +272,7 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 
 	if attr, ok := d.GetOk("tags"); ok {
 		tags := []string{}
-		for _, s := range attr.([]interface{}) {
+		for _, s := range attr.(*schema.Set).List() {
 			tags = append(tags, s.(string))
 		}
 		sort.Strings(tags)
@@ -383,7 +378,20 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("name", m.GetName())
 	d.Set("message", m.GetMessage())
 	d.Set("query", m.GetQuery())
-	d.Set("type", m.GetType())
+	if typ, ok := m.GetTypeOk(); ok {
+		if d.Get("type").(string) == "metric alert" && typ == "query alert" {
+			/* Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
+			*
+			* If current type of monitor is "metric alert" and the API is returning "query alert",
+			* we want to keep "metric alert". We previously had this as DiffSuppressFunc on "type".
+			* After adding a call to "resourceDatadogMonitorRead" in create/update methods, this
+			* started creating the monitor as "query alert". To make sure that the behaviour stays
+			* the same, we added this code (which made DiffSuppressFunc useless, so we removed it).
+			 */
+		} else {
+			d.Set("type", typ)
+		}
+	}
 	d.Set("thresholds", thresholds)
 	d.Set("threshold_windows", thresholdWindows)
 
@@ -450,7 +458,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 
 	if attr, ok := d.GetOk("tags"); ok {
 		s := make([]string, 0)
-		for _, v := range attr.([]interface{}) {
+		for _, v := range attr.(*schema.Set).List() {
 			s = append(s, v.(string))
 		}
 		sort.Strings(s)

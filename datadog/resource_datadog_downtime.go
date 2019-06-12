@@ -280,6 +280,10 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 		return err
 	}
 
+	if err := d.Set("timezone", dt.GetTimezone()); err != nil {
+		return err
+	}
+
 	if r, ok := dt.GetRecurrenceOk(); ok {
 		recurrence := make(map[string]interface{})
 		recurrenceList := make([]map[string]interface{}, 0, 1)
