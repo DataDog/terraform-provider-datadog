@@ -31,6 +31,7 @@ resource "datadog_downtime" "foo" {
   scope = ["host:X", "host:Y"]
   start = 1735707600
   end   = 1735765200
+  timezone = "UTC"
 
   message = "Example Datadog downtime message."
   monitor_tags = ["*"]
