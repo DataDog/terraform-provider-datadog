@@ -18,10 +18,16 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
+			"individual_services": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 			"services": {
-				Type:        schema.TypeList,
-				Required:    true,
-				Description: "A list of service names and service keys.",
+				ConflictsWith: []string{"individual_services"},
+				Deprecated:    "set \"individual_services\" to true and use datadog_pagerduty_integration_service_object",
+				Type:          schema.TypeList,
+				Optional:      true,
+				Description:   "A list of service names and service keys.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"service_name": {
@@ -66,14 +72,21 @@ func buildIntegrationPagerduty(d *schema.ResourceData) (*datadog.IntegrationPDRe
 	pd.Schedules = schedules
 
 	services := []datadog.ServicePDRequest{}
-	for _, sInterface := range d.Get("services").([]interface{}) {
-		s := sInterface.(map[string]interface{})
+	if value, ok := d.GetOk("individual_services"); ok && value.(bool) {
+		services = nil
+	} else {
+		configServices, ok := d.GetOk("services")
+		if ok {
+			for _, sInterface := range configServices.([]interface{}) {
+				s := sInterface.(map[string]interface{})
 
-		service := datadog.ServicePDRequest{}
-		service.SetServiceName(s["service_name"].(string))
-		service.SetServiceKey(s["service_key"].(string))
+				service := datadog.ServicePDRequest{}
+				service.SetServiceName(s["service_name"].(string))
+				service.SetServiceKey(s["service_key"].(string))
 
-		services = append(services, service)
+				services = append(services, service)
+			}
+		}
 	}
 	pd.Services = services
 
@@ -111,11 +124,15 @@ func resourceDatadogIntegrationPagerdutyRead(d *schema.ResourceData, meta interf
 	}
 
 	services := []map[string]string{}
-	for _, service := range pd.Services {
-		services = append(services, map[string]string{
-			"service_name": service.GetServiceName(),
-			"service_key":  service.GetServiceKey(),
-		})
+	if value, ok := d.GetOk("individual_services"); ok && value.(bool) {
+		services = nil
+	} else {
+		for _, service := range pd.Services {
+			services = append(services, map[string]string{
+				"service_name": service.GetServiceName(),
+				"service_key":  service.GetServiceKey(),
+			})
+		}
 	}
 
 	d.Set("services", services)
