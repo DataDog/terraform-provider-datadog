@@ -55,6 +55,7 @@ func resourceDatadogMonitor() *schema.Resource {
 			"type": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 
 			// Options
