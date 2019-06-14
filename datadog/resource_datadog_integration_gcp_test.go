@@ -2,7 +2,6 @@ package datadog
 
 import (
 	"fmt"
-	"log"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/resource"
@@ -89,10 +88,8 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 }
 
 func checkIntegrationGCPExists(s *terraform.State) error {
-	log.Println("Checking GCP Int exists")
 	client := testAccProvider.Meta().(*datadog.Client)
 	integrations, err := client.ListIntegrationGCP()
-	log.Printf("These integrations exist %v", integrations)
 	if err != nil {
 		return err
 	}
