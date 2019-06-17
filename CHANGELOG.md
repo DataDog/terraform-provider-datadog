@@ -1,4 +1,43 @@
-## 1.10.0 (Unreleased)
+## 2.0.0 (Unreleased)
+
+NOTES:
+* `datadog_monitor`: The silence attribute is beginning its deprecation process, please use `datadog_downtime` instead ([#221](https://github.com/terraform-providers/terraform-provider-datadog/issues/221))
+
+IMPROVEMENTS:
+* `datadog_monitor`: Use ForceNew when changing the Monitor type ([#236](https://github.com/terraform-providers/terraform-provider-datadog/issues/236))
+* Update the vendored go client to `v2.21.0`. ([#230](https://github.com/terraform-providers/terraform-provider-datadog/issues/230))
+* `datadog_synthetics_test`: Support syntetics monitors in composite monitors. ([#222](https://github.com/terraform-providers/terraform-provider-datadog/issues/222))
+* `datadog_downtime`: Add validation to tags, add timezone parameter, improve downtime id handling, add descriptions to fields. ([#204](https://github.com/terraform-providers/terraform-provider-datadog/issues/204))
+* `datadog_screenboard`: Add support for metadata alias in graphs. ([#215](https://github.com/terraform-providers/terraform-provider-datadog/issues/215))
+* `datadog_monitor`: Add default to `no data` timeframe of 10 minutes. ([#212](https://github.com/terraform-providers/terraform-provider-datadog/issues/212))
+* `datadog_screenboard`: Add `custom_bg_color` to graph config. ([#189](https://github.com/terraform-providers/terraform-provider-datadog/issues/189)) Thanks [milanvdm](https://github.com/milanvdm)
+
+BUGFIXES:
+* `datadog_timebaord`: Fix the `extra_col` from having a non empty plan when there are no changes. ([#231](https://github.com/terraform-providers/terraform-provider-datadog/issues/231))
+* `datadog_timebaord`: Fix the `precision` from having a non empty plan when there are no changes. ([#228](https://github.com/terraform-providers/terraform-provider-datadog/issues/228))
+* `datadog_monitor`: Fix the sorting of monitor tags that could lead to a non empty diff. ([#214](https://github.com/terraform-providers/terraform-provider-datadog/issues/214))
+* `datadog_monitor`: Properly save `query_config` as to avoid to an improper non empty diff. ([#209](https://github.com/terraform-providers/terraform-provider-datadog/issues/209))
+* `datadog_screenboard`: Change monitor schema to be of type String instead of Int. ([#154](https://github.com/terraform-providers/terraform-provider-datadog/issues/154)) Thanks [mnaboka](https://github.com/mnaboka)
+
+
+INTERNAL:
+* `datadog_monitor`: Start deprecating the silence attribute, support `-1` to unmute a scope, and get fix spruious diffs. ([#221](https://github.com/terraform-providers/terraform-provider-datadog/issues/221))
+* Fix up the GCP and User acceptance tests ([#238](https://github.com/terraform-providers/terraform-provider-datadog/issues/238))
+* Fix up the `datadog_downtime` and `datadog_monitor` acceptance tests. ([#234](https://github.com/terraform-providers/terraform-provider-datadog/issues/234))
+* Cleanup go mod. ([#227](https://github.com/terraform-providers/terraform-provider-datadog/issues/227))
+* More cleanup on go mod and upgrades to TF 0.12.0 ([#219](https://github.com/terraform-providers/terraform-provider-datadog/issues/219)) Thanks [jmcarp](https://github.com/jmcarp)
+* Fix up some `datadog_monitor` acceptance tests. ([#210](https://github.com/terraform-providers/terraform-provider-datadog/issues/210))
+
+DOCS:
+* `datadog_monitor`: Add an example of an anomaly monitor ([#239](https://github.com/terraform-providers/terraform-provider-datadog/issues/239))
+* `datadog_monitor`: Clarify the units being used for `tick_every` and `min_failure_duration`. ([#233](https://github.com/terraform-providers/terraform-provider-datadog/issues/233)) Thanks [pratikmallya](https://github.com/pratikmallya)
+* `datadog_timebaord`: Add example on constructing dynamic timebaords. **NOTE** only supported with Terraform >= 0.12 ([#232](https://github.com/terraform-providers/terraform-provider-datadog/issues/232))
+* `datadog_monitor`: Add example section for monitors configurations. ([#220](https://github.com/terraform-providers/terraform-provider-datadog/issues/220))
+* `datadog_monitor`: Add link to the mapping of monitor types. ([#213](https://github.com/terraform-providers/terraform-provider-datadog/issues/213))
+* `datadog_monitor`: Add clarify about API path not ending in `/api`. ([#207](https://github.com/terraform-providers/terraform-provider-datadog/issues/207))
+* `datadog_downtime`: Document downtime monitor tags. ([#203](https://github.com/terraform-providers/terraform-provider-datadog/issues/203))
+
+
 ## 1.9.0 (May 09, 2019)
 
 IMPROVEMENTS:
