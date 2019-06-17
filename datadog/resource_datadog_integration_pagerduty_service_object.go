@@ -15,7 +15,8 @@ func resourceDatadogIntegrationPagerdutySO() *schema.Resource {
 		Read:   resourceDatadogIntegrationPagerdutySORead,
 		Update: resourceDatadogIntegrationPagerdutySOUpdate,
 		Delete: resourceDatadogIntegrationPagerdutySODelete,
-		// TODO: importer
+		// since the API never returns service_key, it's impossible to meaningfully import resources
+		Importer: nil,
 
 		Schema: map[string]*schema.Schema{
 			"service_name": {
