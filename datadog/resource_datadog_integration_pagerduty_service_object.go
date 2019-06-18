@@ -2,12 +2,17 @@ package datadog
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/zorkian/go-datadog-api"
 )
 
 const maskedSecret = "*****"
+
+// creating/modifying/deleting multiple service objects in parallel on one account is unsupported
+// by the API right now; therefore we use the mutex to only operate on one at a time
+var integrationPdSOMutex = sync.Mutex{}
 
 func resourceDatadogIntegrationPagerdutySO() *schema.Resource {
 	return &schema.Resource{
@@ -47,6 +52,8 @@ func buildIntegrationPagerdutySO(d *schema.ResourceData) *datadog.ServicePDReque
 
 func resourceDatadogIntegrationPagerdutySOCreate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
+	integrationPdSOMutex.Lock()
+	defer integrationPdSOMutex.Unlock()
 
 	so := buildIntegrationPagerdutySO(d)
 
@@ -79,6 +86,8 @@ func resourceDatadogIntegrationPagerdutySORead(d *schema.ResourceData, meta inte
 
 func resourceDatadogIntegrationPagerdutySOUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
+	integrationPdSOMutex.Lock()
+	defer integrationPdSOMutex.Unlock()
 
 	so := buildIntegrationPagerdutySO(d)
 
@@ -92,6 +101,8 @@ func resourceDatadogIntegrationPagerdutySOUpdate(d *schema.ResourceData, meta in
 
 func resourceDatadogIntegrationPagerdutySODelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
+	integrationPdSOMutex.Lock()
+	defer integrationPdSOMutex.Unlock()
 
 	if err := client.DeleteIntegrationPDService(d.Id()); err != nil {
 		return fmt.Errorf("Error while deleting Pagerduty integration service object: %v", err)
