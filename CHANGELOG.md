@@ -1,4 +1,25 @@
-## 1.10.0 (Unreleased)
+## 2.0.0 (Unreleased)
+
+NOTES:
+* `datadog_monitor`: The silence attribute is beginning its deprecation process, please use `datadog_downtime` instead [GH-221]
+
+IMPROVEMENTS:
+* `datadog_monitor`: Use ForceNew when changing the Monitor type [GH-236]
+* `datadog_monitor`: Add default to `no data` timeframe of 10 minutes. [GH-212]
+* `datadog_synthetics_test`: Support synthetics monitors in composite monitors. [GH-222]
+* `datadog_downtime`: Add validation to tags, add timezone parameter, improve downtime id handling, add descriptions to fields. [GH-204]
+* `datadog_screenboard`: Add support for metadata alias in graphs. [GH-215]
+* `datadog_screenboard`: Add `custom_bg_color` to graph config. [GH-189] Thanks [@milanvdm](https://github.com/milanvdm)
+* Update the vendored go client to `v2.21.0`. [GH-230]
+
+BUGFIXES:
+* `datadog_timeboard`: Fix the `extra_col` from having a non empty plan when there are no changes. [GH-231]
+* `datadog_timeboard`: Fix the `precision` from having a non empty plan when there are no changes. [GH-228]
+* `datadog_monitor`: Fix the sorting of monitor tags that could lead to a non empty diff. [GH-214]
+* `datadog_monitor`: Properly save `query_config` as to avoid to an improper non empty diff. [GH-209]
+* `datadog_monitor`: Fix and clarify documentation on unmuting monitor scopes. [GH-202]
+* `datadog_screenboard`: Change monitor schema to be of type String instead of Int. [GH-154] Thanks [@mnaboka](https://github.com/mnaboka)
+
 ## 1.9.0 (May 09, 2019)
 
 IMPROVEMENTS:
