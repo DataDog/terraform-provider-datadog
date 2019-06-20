@@ -1,4 +1,8 @@
 ## 2.0.1 (Unreleased)
+
+BUGFIXES:
+* `datadog_monitor`: Don't force the destruction and recreation of a monitor when the type changes between `metric alert` and `query alert`. [GH-242]
+
 ## 2.0.0 (June 18, 2019)
 
 NOTES:
