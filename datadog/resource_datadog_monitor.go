@@ -380,8 +380,8 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("message", m.GetMessage())
 	d.Set("query", m.GetQuery())
 	if typ, ok := m.GetTypeOk(); ok {
-		if d.Get("type").(string) == "metric alert" && typ == "query alert" ||
-			d.Get("type").(string) == "query alert" && typ == "metric alert" {
+		if (d.Get("type").(string) == "metric alert" && typ == "query alert") ||
+			(d.Get("type").(string) == "query alert" && typ == "metric alert") {
 			/* Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
 			*                     and https://github.com/terraform-providers/terraform-provider-datadog/issues/241
 			* If current type of monitor is "metric alert" and the API is returning "query alert",
