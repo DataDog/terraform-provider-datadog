@@ -2,10 +2,15 @@ package datadog
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/zorkian/go-datadog-api"
 )
+
+// creating/modifying/deleting PD integration and its service objects in parallel on one account
+// is unsupported by the API right now; therefore we use the mutex to only operate on one at a time
+var integrationPdMutex = sync.Mutex{}
 
 func resourceDatadogIntegrationPagerduty() *schema.Resource {
 	return &schema.Resource{
@@ -95,6 +100,8 @@ func buildIntegrationPagerduty(d *schema.ResourceData) (*datadog.IntegrationPDRe
 
 func resourceDatadogIntegrationPagerdutyCreate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
+	integrationPdMutex.Lock()
+	defer integrationPdMutex.Unlock()
 
 	pd, err := buildIntegrationPagerduty(d)
 	if err != nil {
@@ -145,6 +152,8 @@ func resourceDatadogIntegrationPagerdutyRead(d *schema.ResourceData, meta interf
 
 func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
+	integrationPdMutex.Lock()
+	defer integrationPdMutex.Unlock()
 
 	pd, err := buildIntegrationPagerduty(d)
 	if err != nil {
@@ -155,11 +164,28 @@ func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta inte
 		return fmt.Errorf("Failed to create integration pagerduty using Datadog API: %s", err.Error())
 	}
 
+	// if there are none currently configured services, we actually
+	// have to remove them explicitly, otherwise the underlying API client
+	// would not send the "services" key at all and they wouldn't get deleted
+	currentServices := d.Get("services").([]interface{})
+	if len(currentServices) == 0 {
+		pd, err := client.GetIntegrationPD()
+		if err != nil {
+			return err
+		}
+		for _, service := range pd.Services {
+			if err := client.DeleteIntegrationPDService(*service.ServiceName); err != nil {
+				return fmt.Errorf("Error while deleting Pagerduty integration service object: %v", err)
+			}
+		}
+	}
 	return resourceDatadogIntegrationPagerdutyRead(d, meta)
 }
 
 func resourceDatadogIntegrationPagerdutyDelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
+	integrationPdMutex.Lock()
+	defer integrationPdMutex.Unlock()
 
 	if err := client.DeleteIntegrationPD(); err != nil {
 		return fmt.Errorf("Error while deleting integration: %v", err)

@@ -95,6 +95,65 @@ resource "datadog_integration_pagerduty" "pd" {
 }
 ```
 
+### Migrating from Inline Services to Individual Resources
+
+Migrating from usage of inline services to individual resources is very simple. The following example shows how to convert an existing inline services configuration to configuration using individual resources. Doing analogous change and running `terraform apply` is all that's necessary to migrate.
+
+```
+# Before
+
+locals {
+  pd_services = {
+    testing_foo = "9876543210123456789"
+    testing_bar = "54321098765432109876"
+  }
+}
+# Create a new Datadog - PagerDuty integration
+resource "datadog_integration_pagerduty" "pd" {
+  dynamic "services" {
+    for_each = local.pd_services
+    content {
+      service_name = services.key
+      service_key = services.value
+    }
+  }
+  schedules = [
+    "https://ddog.pagerduty.com/schedules/X123VF",
+    "https://ddog.pagerduty.com/schedules/X321XX"
+    ]
+  subdomain = "ddog"
+  api_token = "38457822378273432587234242874"
+}
+```
+
+```
+# After
+
+resource "datadog_integration_pagerduty" "pd" {
+  # `individual_services` was added
+  # `services` was removed
+  individual_services = true
+  schedules = [
+    "https://ddog.pagerduty.com/schedules/X123VF",
+    "https://ddog.pagerduty.com/schedules/X321XX"
+    ]
+  subdomain = "ddog"
+  api_token = "38457822378273432587234242874"
+}
+
+resource "datadog_integration_pagerduty_service_object" "testing_foo" {
+  depends_on = ["datadog_integration_pagerduty.pd"]
+  service_name = "testing_foo"
+  service_key  = "9876543210123456789"
+}
+
+resource "datadog_integration_pagerduty_service_object" "testing_bar" {
+  depends_on = ["datadog_integration_pagerduty.pd"]
+  service_name = "testing_bar"
+  service_key  = "54321098765432109876"
+}
+```
+
 ## Argument Reference
 
 The following arguments are supported:
