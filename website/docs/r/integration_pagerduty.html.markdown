@@ -12,7 +12,7 @@ Provides a Datadog - PagerDuty resource. This can be used to create and manage D
 
 ## Example Usage
 
-*Note:* In the past, service objects under the `services` key were specified inside the `datadog_integration_pagerduty` resource. This was incompatible with multi-configuration-file setups, where users wanted to have individual service objects controlled from different Terraform configuration files. The recommended approach now is specifying service objects as individual resources using [datadog_integration_pagerduty_service_object](/docs/providers/datadog/r/integration_pagerduty_service_object.html) and adding `individual_services = true` to the `datadog_integration_pagerduty` object.
+*Note:* Until terraform-provider-datadog version 2.1.0, service objects under the `services` key were specified inside the `datadog_integration_pagerduty` resource. This was incompatible with multi-configuration-file setups, where users wanted to have individual service objects controlled from different Terraform configuration files. The recommended approach now is specifying service objects as individual resources using [datadog_integration_pagerduty_service_object](/docs/providers/datadog/r/integration_pagerduty_service_object.html) and adding `individual_services = true` to the `datadog_integration_pagerduty` object.
 
 ### Services as Individual Resources
 
@@ -72,7 +72,7 @@ With Terraform >= 0.12.0 (terraform-provider-datadog >= 1.9.0):
 
 ```
 locals {
-  pd_services {
+  pd_services = {
     testing_foo = "9876543210123456789"
     testing_bar = "54321098765432109876"
   }
