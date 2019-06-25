@@ -56,6 +56,15 @@ func resourceDatadogMonitor() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
+				// Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
+				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+					if (oldVal == "query alert" && newVal == "metric alert") ||
+						(oldVal == "metric alert" && newVal == "query alert") {
+						log.Printf("[DEBUG] Monitor '%s' got a '%s' response for an expected '%s' type. Suppressing change.", d.Get("name"), newVal, oldVal)
+						return true
+					}
+					return newVal == oldVal
+				},
 			},
 
 			// Options
@@ -375,27 +384,12 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	}
 	sort.Strings(tags)
 
-	log.Printf("[DEBUG] monitor: %v", m)
+	log.Printf("[DEBUG] monitor: %+v", m)
 	d.Set("name", m.GetName())
 	d.Set("message", m.GetMessage())
 	d.Set("query", m.GetQuery())
-	if typ, ok := m.GetTypeOk(); ok {
-		if (d.Get("type").(string) == "metric alert" && typ == "query alert") ||
-			(d.Get("type").(string) == "query alert" && typ == "metric alert") {
-			/* Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
-			*                     and https://github.com/terraform-providers/terraform-provider-datadog/issues/241
-			* If current type of monitor is "metric alert" and the API is returning "query alert",
-			* we want to keep "metric alert". We previously had this as DiffSuppressFunc on "type".
-			* After adding a call to "resourceDatadogMonitorRead" in create/update methods, this
-			* started creating the monitor as "query alert". The same applies for the reverse, when the
-			* current type of monitor is "query alert" and the API is returning "metric alert"
-			* To make sure that the behaviour stays
-			* the same, we added this code (which made DiffSuppressFunc useless, so we removed it).
-			 */
-		} else {
-			d.Set("type", typ)
-		}
-	}
+	d.Set("type", m.GetType())
+
 	d.Set("thresholds", thresholds)
 	d.Set("threshold_windows", thresholdWindows)
 
