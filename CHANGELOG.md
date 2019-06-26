@@ -1,7 +1,7 @@
-## 2.0.2 (Unreleased)
+## 2.0.2 (June 26, 2019)
 
 BUGFIXES:
-* `datadog_monitor`: DiffSuppress the difference between `metric alert` and `query alert` no matter what is in the current state and prevent the force recreation of monitors due to this change. [GH-247]
+* `datadog_monitor`: DiffSuppress the difference between `metric alert` and `query alert` no matter what is in the current state and prevent the force recreation of monitors due to this change. ([#247](https://github.com/terraform-providers/terraform-provider-datadog/issues/247))
 
 ## 2.0.1 (June 21, 2019)
 
