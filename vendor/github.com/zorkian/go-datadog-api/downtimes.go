@@ -41,7 +41,7 @@ type Downtime struct {
 	MonitorId   *int        `json:"monitor_id,omitempty"`
 	MonitorTags []string    `json:"monitor_tags,omitempty"`
 	ParentId    *int        `json:"parent_id,omitempty"`
-	Timezone    *string     `jsonm:"timezone,omitempty"`
+	Timezone    *string     `json:"timezone,omitempty"`
 	Recurrence  *Recurrence `json:"recurrence,omitempty"`
 	Scope       []string    `json:"scope,omitempty"`
 	Start       *int        `json:"start,omitempty"`

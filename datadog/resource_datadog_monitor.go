@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"regexp"
+	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/zorkian/go-datadog-api"
@@ -54,9 +55,11 @@ func resourceDatadogMonitor() *schema.Resource {
 			"type": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 				// Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-					if oldVal == "query alert" && newVal == "metric alert" {
+					if (oldVal == "query alert" && newVal == "metric alert") ||
+						(oldVal == "metric alert" && newVal == "query alert") {
 						log.Printf("[DEBUG] Monitor '%s' got a '%s' response for an expected '%s' type. Suppressing change.", d.Get("name"), newVal, oldVal)
 						return true
 					}
@@ -132,6 +135,7 @@ func resourceDatadogMonitor() *schema.Resource {
 			"no_data_timeframe": {
 				Type:     schema.TypeInt,
 				Optional: true,
+				Default:  10,
 			},
 			"renotify_interval": {
 				Type:     schema.TypeInt,
@@ -155,9 +159,10 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional: true,
 			},
 			"silenced": {
-				Type:     schema.TypeMap,
-				Optional: true,
-				Elem:     schema.TypeInt,
+				Type:       schema.TypeMap,
+				Optional:   true,
+				Elem:       schema.TypeInt,
+				Deprecated: "use Downtime Resource instead",
 			},
 			"include_tags": {
 				Type:     schema.TypeBool,
@@ -165,7 +170,10 @@ func resourceDatadogMonitor() *schema.Resource {
 				Default:  true,
 			},
 			"tags": {
-				Type:     schema.TypeList,
+				// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
+				// we order them explicitly in the read/create/update methods of this resource and using
+				// TypeSet makes Terraform ignore differences in order when creating a plan
+				Type:     schema.TypeSet,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
@@ -175,18 +183,6 @@ func resourceDatadogMonitor() *schema.Resource {
 			"enable_logs_sample": {
 				Type:     schema.TypeBool,
 				Optional: true,
-			},
-			"query_config": {
-				Type:     schema.TypeMap,
-				Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"query_string": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-					},
-				},
 			},
 		},
 	}
@@ -277,11 +273,6 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 	}
 
 	if m.GetType() == logAlertMonitorType {
-		if queryString, ok := getQueryStringFromLogQuery(d.Get("query").(string)); ok {
-			o.SetQueryConfig(datadog.QueryConfig{
-				QueryString: datadog.String(queryString.(string)),
-			})
-		}
 		if attr, ok := d.GetOk("enable_logs_sample"); ok {
 			o.SetEnableLogsSample(attr.(bool))
 		} else {
@@ -291,9 +282,10 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 
 	if attr, ok := d.GetOk("tags"); ok {
 		tags := []string{}
-		for _, s := range attr.([]interface{}) {
+		for _, s := range attr.(*schema.Set).List() {
 			tags = append(tags, s.(string))
 		}
+		sort.Strings(tags)
 		m.Tags = tags
 	}
 
@@ -318,6 +310,19 @@ func resourceDatadogMonitorExists(d *schema.ResourceData, meta interface{}) (b b
 	}
 
 	return true, nil
+}
+
+func getUnmutedScopes(d *schema.ResourceData) []string {
+	var unmuteScopes []string
+	if attr, ok := d.GetOk("silenced"); ok {
+		for k, v := range attr.(map[string]interface{}) {
+			if v.(int) == -1 {
+				unmuteScopes = append(unmuteScopes, k)
+			}
+		}
+		log.Printf("[DEBUG] Unmute Scopes are: %v", unmuteScopes)
+	}
+	return unmuteScopes
 }
 
 func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) error {
@@ -377,12 +382,14 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	for _, s := range m.Tags {
 		tags = append(tags, s)
 	}
+	sort.Strings(tags)
 
-	log.Printf("[DEBUG] monitor: %v", m)
+	log.Printf("[DEBUG] monitor: %+v", m)
 	d.Set("name", m.GetName())
 	d.Set("message", m.GetMessage())
 	d.Set("query", m.GetQuery())
 	d.Set("type", m.GetType())
+
 	d.Set("thresholds", thresholds)
 	d.Set("threshold_windows", thresholdWindows)
 
@@ -394,25 +401,34 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("notify_audit", m.Options.GetNotifyAudit())
 	d.Set("timeout_h", m.Options.GetTimeoutH())
 	d.Set("escalation_message", m.Options.GetEscalationMessage())
-	d.Set("silenced", m.Options.Silenced)
 	d.Set("include_tags", m.Options.GetIncludeTags())
 	d.Set("tags", tags)
 	d.Set("require_full_window", m.Options.GetRequireFullWindow()) // TODO Is this one of those options that we neeed to check?
 	d.Set("locked", m.Options.GetLocked())
 
-	d.Set("query_config", map[string]string{})
 	if m.GetType() == logAlertMonitorType {
 		d.Set("enable_logs_sample", m.Options.GetEnableLogsSample())
-		queryConfig := make(map[string]string)
-		for k, v := range map[string]string{
-			"query_string": m.Options.QueryConfig.GetQueryString(),
-		} {
-			if v != "" {
-				queryConfig[k] = v
-			}
-		}
-		d.Set("query_config", queryConfig)
 	}
+
+	// The Datadog API doesn't return old timestamps or support a special value for unmuting scopes
+	// So we provide this functionality by saving values to the state
+	apiSilenced := m.Options.Silenced
+	configSilenced := d.Get("silenced").(map[string]interface{})
+
+	for _, scope := range getUnmutedScopes(d) {
+		if _, ok := apiSilenced[scope]; !ok {
+			apiSilenced[scope] = -1
+		}
+	}
+
+	// Ignore any timestamps in the past that aren't -1 or 0
+	for k, v := range configSilenced {
+		if v.(int) < int(time.Now().Unix()) && v.(int) != 0 && v.(int) != -1 {
+			// sync the state with whats in the config so its ignored
+			apiSilenced[k] = v.(int)
+		}
+	}
+	d.Set("silenced", apiSilenced)
 
 	return nil
 }
@@ -440,9 +456,10 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 
 	if attr, ok := d.GetOk("tags"); ok {
 		s := make([]string, 0)
-		for _, v := range attr.([]interface{}) {
+		for _, v := range attr.(*schema.Set).List() {
 			s = append(s, v.(string))
 		}
+		sort.Strings(s)
 		m.Tags = s
 	}
 
@@ -506,12 +523,15 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	if attr, ok := d.GetOk("escalation_message"); ok {
 		o.SetEscalationMessage(attr.(string))
 	}
+
 	silenced := false
+	configuredSilenced := map[string]int{}
 	if attr, ok := d.GetOk("silenced"); ok {
 		// TODO: this is not very defensive, test if we can fail non int input
 		s := make(map[string]int)
 		for k, v := range attr.(map[string]interface{}) {
 			s[k] = v.(int)
+			configuredSilenced[k] = v.(int)
 		}
 		o.Silenced = s
 		silenced = true
@@ -521,11 +541,6 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	}
 	// can't use m.GetType here, since it's not filled for purposes of updating
 	if d.Get("type") == logAlertMonitorType {
-		if queryString, ok := getQueryStringFromLogQuery(d.Get("query").(string)); ok {
-			o.SetQueryConfig(datadog.QueryConfig{
-				QueryString: datadog.String(queryString.(string)),
-			})
-		}
 		if attr, ok := d.GetOk("enable_logs_sample"); ok {
 			o.SetEnableLogsSample(attr.(bool))
 		} else {
@@ -544,14 +559,31 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		return retval
 	}
 
-	if _, ok := d.GetOk("silenced"); ok && !silenced {
-		// This means the monitor must be manually unmuted since the API
-		// wouldn't do it automatically when `silenced` is just missing
+	// if the silenced section was removed from the config, we unmute it via the API
+	// The API wouldn't automatically unmute the monitor if the config is just missing
+	// else we check what other silenced scopes were added from API response in the
+	// "read" above and add them to "unmutedScopes" to be explicitly unmuted (because
+	// they're "drift")
+	unmutedScopes := getUnmutedScopes(d)
+	if newSilenced, ok := d.GetOk("silenced"); ok && !silenced {
 		retval = client.UnmuteMonitorScopes(*m.Id, &datadog.UnmuteMonitorScopes{AllScopes: datadog.Bool(true)})
 		d.Set("silenced", map[string]int{})
+	} else {
+		for scope := range newSilenced.(map[string]interface{}) {
+			if _, ok := configuredSilenced[scope]; !ok {
+				unmutedScopes = append(unmutedScopes, scope)
+			}
+		}
 	}
 
-	return retval
+	// Similarly, if the silenced attribute is -1, lets unmute those scopes
+	if len(unmutedScopes) != 0 {
+		for _, scope := range unmutedScopes {
+			client.UnmuteMonitorScopes(*m.Id, &datadog.UnmuteMonitorScopes{Scope: &scope})
+		}
+	}
+
+	return resourceDatadogMonitorRead(d, meta)
 }
 
 func resourceDatadogMonitorDelete(d *schema.ResourceData, meta interface{}) error {
@@ -597,13 +629,4 @@ func suppressDataDogFloatIntDiff(k, old, new string, d *schema.ResourceData) boo
 		return true
 	}
 	return false
-}
-
-func getQueryStringFromLogQuery(query string) (interface{}, bool) {
-	matchLogQueryStrs := regexp.MustCompile(`logs\("(.*?)"\)`).FindStringSubmatch(query)
-	matched := (len(matchLogQueryStrs) > 1)
-	if !matched {
-		return nil, false
-	}
-	return matchLogQueryStrs[1], true
 }

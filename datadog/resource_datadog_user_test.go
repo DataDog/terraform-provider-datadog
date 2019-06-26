@@ -21,9 +21,9 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogUserExists("datadog_user.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_user.foo", "email", "test@example.com"),
+						"datadog_user.foo", "email", "tftestuser@example.com"),
 					resource.TestCheckResourceAttr(
-						"datadog_user.foo", "handle", "test@example.com"),
+						"datadog_user.foo", "handle", "tftestuser@example.com"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr(
@@ -38,9 +38,9 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 						"datadog_user.foo", "disabled", "true"),
 					// NOTE: it's not possible ATM to update email of another user
 					resource.TestCheckResourceAttr(
-						"datadog_user.foo", "email", "test@example.com"),
+						"datadog_user.foo", "email", "tftestuser@example.com"),
 					resource.TestCheckResourceAttr(
-						"datadog_user.foo", "handle", "test@example.com"),
+						"datadog_user.foo", "handle", "tftestuser@example.com"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "is_admin", "true"),
 					resource.TestCheckResourceAttr(
@@ -76,8 +76,8 @@ func testAccCheckDatadogUserExists(n string) resource.TestCheckFunc {
 
 const testAccCheckDatadogUserConfigRequired = `
 resource "datadog_user" "foo" {
-  email     = "test@example.com"
-  handle    = "test@example.com"
+  email     = "tftestuser@example.com"
+  handle    = "tftestuser@example.com"
   name      = "Test User"
 }
 `
@@ -86,8 +86,8 @@ const testAccCheckDatadogUserConfigUpdated = `
 resource "datadog_user" "foo" {
   disabled    = true
   // NOTE: it's not possible ATM to update email of another user
-  email       = "test@example.com"
-  handle      = "test@example.com"
+  email       = "tftestuser@example.com"
+  handle      = "tftestuser@example.com"
   is_admin    = true
   access_role = "adm"
   name        = "Updated User"

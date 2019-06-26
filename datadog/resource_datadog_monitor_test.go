@@ -49,10 +49,16 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
+					// Tags are a TypeSet => use a weird way to access members by their hash
+					// TF TypeSet is internally represented as a map that maps computed hashes
+					// to actual values. Since the hashes are always the same for one value,
+					// this is the way to get them.
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "foo:bar"),
+						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "baz"),
+						"datadog_monitor.foo", "tags.2644851163", "baz"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.1750285118", "foo:bar"),
 				),
 			},
 		},
@@ -97,10 +103,13 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
+					// Tags are a TypeSet => use a weird way to access members by their hash
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "foo:bar"),
+						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "baz"),
+						"datadog_monitor.foo", "tags.2644851163", "baz"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.1750285118", "foo:bar"),
 				),
 			},
 		},
@@ -133,10 +142,13 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
+					// Tags are a TypeSet => use a weird way to access members by their hash
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "foo:bar"),
+						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "bar:baz"),
+						"datadog_monitor.foo", "tags.3417822676", "bar:baz"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.1750285118", "foo:bar"),
 				),
 			},
 		},
@@ -189,10 +201,13 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
+					// Tags are a TypeSet => use a weird way to access members by their hash
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "foo:bar"),
+						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "baz"),
+						"datadog_monitor.foo", "tags.2644851163", "baz"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.1750285118", "foo:bar"),
 				),
 			},
 			{
@@ -241,10 +256,13 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "true"),
+					// Tags are a TypeSet => use a weird way to access members by their hash
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "baz:qux"),
+						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "quux"),
+						"datadog_monitor.foo", "tags.1280427750", "baz:qux"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.1520885421", "quux"),
 				),
 			},
 			{
@@ -313,10 +331,13 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
+					// Tags are a TypeSet => use a weird way to access members by their hash
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "foo:bar"),
+						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "baz"),
+						"datadog_monitor.foo", "tags.2644851163", "baz"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.1750285118", "foo:bar"),
 				),
 			},
 			{
@@ -366,9 +387,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "true"),
 					resource.TestCheckNoResourceAttr(
-						"datadog_monitor.foo", "tags.0"),
-					resource.TestCheckNoResourceAttr(
-						"datadog_monitor.foo", "tags.1"),
+						"datadog_monitor.foo", "tags.#"),
 				),
 			},
 			{
@@ -440,13 +459,13 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1"),
+						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning_recovery", "0"),
+						"datadog_monitor.foo", "thresholds.warning_recovery", "0.0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "2"),
+						"datadog_monitor.foo", "thresholds.critical", "2.0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical_recovery", "1"),
+						"datadog_monitor.foo", "thresholds.critical_recovery", "1.0"),
 				),
 			},
 
@@ -579,6 +598,27 @@ func TestAccDatadogMonitor_MuteUnmuteSpecificScopes(t *testing.T) {
 	})
 }
 
+func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorComposeWithSyntheticsTest,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", "foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_synthetics_test.foo", "name", "foo"),
+					resource.TestCheckResourceAttrSet(
+						"datadog_monitor.bar", "query"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogMonitorDestroy(s *terraform.State) error {
 	client := testAccProvider.Meta().(*datadog.Client)
 
@@ -597,6 +637,154 @@ func testAccCheckDatadogMonitorExists(n string) resource.TestCheckFunc {
 		return nil
 	}
 }
+
+func TestAccDatadogMonitor_SilencedRemove(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorSilenceZero,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", "name for monitor foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "query alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "silenced.*", "0"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorSilenceUnmute,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", "name for monitor foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "query alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "silenced.*", "-1"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorSilenceZero,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", "name for monitor foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "query alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "silenced.*", "0"),
+				),
+			},
+			{
+				Config:             testAccCheckDatadogMonitorSilenceZero,
+				ExpectNonEmptyPlan: false,
+			},
+		},
+	})
+}
+
+func TestAccDatadogMonitor_SilencedUpdatePastTimestamp(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorSilenceZero,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", "name for monitor foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "query alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "silenced.*", "0"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorSilencePastTimestamp,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "silenced.*", "1559759717",
+					),
+				),
+			},
+			{
+				Config:             testAccCheckDatadogMonitorSilencePastTimestamp,
+				ExpectNonEmptyPlan: false,
+			},
+		},
+	})
+}
+
+const testAccCheckDatadogMonitorSilenceZero = `
+resource "datadog_monitor" "foo" {
+	name = "name for monitor foo"
+	type = "query alert"
+	message = "some message Notify: @hipchat-channel"
+
+	query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+	silenced = {
+    "*" = 0
+  }
+}
+`
+
+const testAccCheckDatadogMonitorSilenceUnmute = `
+resource "datadog_monitor" "foo" {
+	name = "name for monitor foo"
+	type = "query alert"
+	message = "some message Notify: @hipchat-channel"
+
+	query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+	silenced = {
+    "*" = -1
+  }
+}
+`
+
+const testAccCheckDatadogMonitorSilencePastTimestamp = `
+resource "datadog_monitor" "foo" {
+	name = "name for monitor foo"
+	type = "query alert"
+	message = "some message Notify: @hipchat-channel"
+
+	query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+	silenced = {
+    "*" = 1559759717
+  }
+}
+`
 
 const testAccCheckDatadogMonitorConfig = `
 resource "datadog_monitor" "foo" {
@@ -937,6 +1125,60 @@ resource "datadog_monitor" "foo" {
     thresholds = {
         critical = 100
     }
+}
+`
+
+const testAccCheckDatadogMonitorComposeWithSyntheticsTest = `
+resource "datadog_monitor" "foo" {
+  name = "foo"
+  type = "metric alert"
+  message = "test"
+
+  query = "avg(last_5m):max:system.load.1{*} by {host} > 100"
+
+  thresholds = {
+      critical = 100
+  }
+}
+
+resource "datadog_synthetics_test" "foo" {
+	type = "api"
+
+	request = {
+		method = "GET"
+		url = "https://docs.datadoghq.com"
+		timeout = 60
+	}
+
+	assertions = [
+		{
+			type = "statusCode"
+			operator = "isNot"
+			target = "500"
+		}
+	]
+
+	locations = [ "aws:eu-central-1" ]
+
+	options = {
+		tick_every = 900
+		min_failure_duration = 10
+		min_location_failed = 1
+	}
+
+	name = "foo"
+	message = "Notify @pagerduty"
+	tags = ["foo:bar", "foo", "env:test"]
+
+	status = "live"
+}
+
+resource "datadog_monitor" "bar" {
+  name = "composite monitor"
+  type = "composite"
+  message = "test"
+
+	query = "${datadog_monitor.foo.id} || ${datadog_synthetics_test.foo.monitor_id}"
 }
 `
 

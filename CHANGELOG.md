@@ -1,4 +1,36 @@
-## 1.10.0 (Unreleased)
+## 2.1.0 (Unreleased)
+## 2.0.2 (June 26, 2019)
+
+BUGFIXES:
+* `datadog_monitor`: DiffSuppress the difference between `metric alert` and `query alert` no matter what is in the current state and prevent the force recreation of monitors due to this change. ([#247](https://github.com/terraform-providers/terraform-provider-datadog/issues/247))
+
+## 2.0.1 (June 21, 2019)
+
+BUGFIXES:
+* `datadog_monitor`: Don't force the destruction and recreation of a monitor when the type changes between `metric alert` and `query alert`. ([#242](https://github.com/terraform-providers/terraform-provider-datadog/issues/242))
+
+## 2.0.0 (June 18, 2019)
+
+NOTES:
+* `datadog_monitor`: The silence attribute is beginning its deprecation process, please use `datadog_downtime` instead ([#221](https://github.com/terraform-providers/terraform-provider-datadog/issues/221))
+
+IMPROVEMENTS:
+* `datadog_monitor`: Use ForceNew when changing the Monitor type ([#236](https://github.com/terraform-providers/terraform-provider-datadog/issues/236))
+* `datadog_monitor`: Add default to `no data` timeframe of 10 minutes. ([#212](https://github.com/terraform-providers/terraform-provider-datadog/issues/212))
+* `datadog_synthetics_test`: Support synthetics monitors in composite monitors. ([#222](https://github.com/terraform-providers/terraform-provider-datadog/issues/222))
+* `datadog_downtime`: Add validation to tags, add timezone parameter, improve downtime id handling, add descriptions to fields. ([#204](https://github.com/terraform-providers/terraform-provider-datadog/issues/204))
+* `datadog_screenboard`: Add support for metadata alias in graphs. ([#215](https://github.com/terraform-providers/terraform-provider-datadog/issues/215))
+* `datadog_screenboard`: Add `custom_bg_color` to graph config. [[#189](https://github.com/terraform-providers/terraform-provider-datadog/issues/189)] Thanks [@milanvdm](https://github.com/milanvdm)
+* Update the vendored go client to `v2.21.0`. ([#230](https://github.com/terraform-providers/terraform-provider-datadog/issues/230))
+
+BUGFIXES:
+* `datadog_timeboard`: Fix the `extra_col` from having a non empty plan when there are no changes. ([#231](https://github.com/terraform-providers/terraform-provider-datadog/issues/231))
+* `datadog_timeboard`: Fix the `precision` from having a non empty plan when there are no changes. ([#228](https://github.com/terraform-providers/terraform-provider-datadog/issues/228))
+* `datadog_monitor`: Fix the sorting of monitor tags that could lead to a non empty diff. ([#214](https://github.com/terraform-providers/terraform-provider-datadog/issues/214))
+* `datadog_monitor`: Properly save `query_config` as to avoid to an improper non empty diff. ([#209](https://github.com/terraform-providers/terraform-provider-datadog/issues/209))
+* `datadog_monitor`: Fix and clarify documentation on unmuting monitor scopes. ([#202](https://github.com/terraform-providers/terraform-provider-datadog/issues/202))
+* `datadog_screenboard`: Change monitor schema to be of type String instead of Int. [[#154](https://github.com/terraform-providers/terraform-provider-datadog/issues/154)] Thanks [@mnaboka](https://github.com/mnaboka)
+
 ## 1.9.0 (May 09, 2019)
 
 IMPROVEMENTS:

@@ -73,6 +73,10 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"monitor_id": {
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
 		},
 	}
 }
@@ -380,6 +384,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("message", syntheticsTest.GetMessage())
 	d.Set("status", syntheticsTest.GetStatus())
 	d.Set("tags", syntheticsTest.Tags)
+	d.Set("monitor_id", syntheticsTest.MonitorId)
 }
 
 func convertToString(i interface{}) string {

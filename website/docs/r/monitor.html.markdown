@@ -49,7 +49,7 @@ resource "datadog_monitor" "foo" {
 
 The following arguments are supported:
 
-* `type` - (Required) The type of the monitor, chosen from:
+* `type` - (Required) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation](https://docs.datadoghq.com/api/?lang=python#create-a-monitor) page. Available options to choose from are:
     * `metric alert`
     * `service check`
     * `event alert`
@@ -100,7 +100,7 @@ The following arguments are supported:
     metrics to ensure the monitor will always have data during evaluation.
 * `no_data_timeframe` (Optional) The number of minutes before a monitor will notify when data stops reporting. Must be at
     least 2x the monitor timeframe for metric alerts or 2 minutes for service checks. Default: 2x timeframe for
-    metric alerts, 2 minutes for service checks.
+    metric alerts, 2 minutes for service checks. Defaults to 10 minutes.
 * `renotify_interval` (Optional) The number of minutes after the last notification before a monitor will re-notify
     on the current status. It will only re-notify if it's not resolved.
 * `notify_audit` (Optional) A boolean indicating whether tagged users will be notified on changes to this monitor.
@@ -118,7 +118,8 @@ The following arguments are supported:
 * `threshold_windows` (Optional) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. Can only be used for anomaly monitors.
   * `recovery_window` describes how long an anomalous metric must be normal before the alert recovers.
   * `trigger_window`  describes how long a metric must be anomalous before an alert triggers.
-* `silenced` (Optional) Each scope will be muted until the given POSIX timestamp or forever if the value is 0.
+* `silenced` (Optional) Each scope will be muted until the given POSIX timestamp or forever if the value is 0. Use `-1` if you want to unmute the scope. **Deprecated** The `silenced` parameter is being deprecated in favor of the downtime resource. This will be removed in the next major version of the Terraform Provider.
+
     To mute the alert completely:
 
         silenced = {
@@ -173,4 +174,20 @@ Monitors can be imported using their numeric ID, e.g.
 
 ```
 $ terraform import datadog_monitor.bytes_received_localhost 2081
+```
+
+## Composite Monitors
+
+You can compose monitors of all types in order to define more specific alert conditions (see the [doc](https://docs.datadoghq.com/monitors/monitor_types/composite/)).
+You just need to reuse the ID of your `datadog_monitor` resources.
+You can also compose any monitor with a `datadog_synthetics_test` by passing the computed `monitor_id` attribute in the query.
+
+```tf
+resource "datadog_monitor" "bar" {
+  name = "Composite Monitor"
+  type = "composite"
+  message = "This is a message"
+
+	query = "${datadog_monitor.foo.id} || ${datadog_synthetics_test.foo.monitor_id}"
+}
 ```

@@ -48,6 +48,11 @@ resource "datadog_timeboard" "acceptance_test" {
     viz = "timeseries"
     request {
       q = "avg:redis.info.latency_ms{$host}"
+      metadata_json = jsonencode({
+        "avg:redis.info.latency_ms{$host}": {
+          "alias": "Redis latency"
+        }
+      })
     }
   }
   graph {
@@ -156,6 +161,8 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.title", "Redis latency (ms)"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.viz", "timeseries"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.0.q", "avg:redis.info.latency_ms{$host}"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.0.metadata_json",
+				"{\"avg:redis.info.latency_ms{$host}\":{\"alias\":\"Redis latency\"}}"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.1.title", "Redis memory usage"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.1.viz", "timeseries"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.1.request.0.q", "avg:redis.mem.used{$host} - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}"),

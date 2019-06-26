@@ -66,6 +66,12 @@ resource "datadog_screenboard" "acceptance_test" {
 					type    = "dashed"
 					width   = "thin"
 				}
+
+				metadata_json = jsonencode({
+					"avg:system.cpu.user{*}" = {
+						"alias" = "Avg CPU user"
+					}
+				})
 			}
 
 			marker {
@@ -530,6 +536,8 @@ func TestAccDatadogScreenboard_update(t *testing.T) {
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.0.extra_col", ""),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.0.increase_good", "false"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.0.limit", "0"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.0.metadata_json",
+				"{\"avg:system.cpu.user{*}\":{\"alias\":\"Avg CPU user\"}}"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.0.metric", ""),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.0.order_by", ""),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.0.order_dir", ""),
