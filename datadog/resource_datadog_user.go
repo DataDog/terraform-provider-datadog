@@ -36,8 +36,8 @@ func resourceDatadogUser() *schema.Resource {
 			},
 			"is_admin": {
 				Type:       schema.TypeBool,
+				Computed:   true,
 				Optional:   true,
-				Default:    false,
 				Deprecated: "This parameter will be replaced by `access_role` and will be removed from the next Major version",
 			},
 			"access_role": {
@@ -118,10 +118,10 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 	d.Set("disabled", u.GetDisabled())
 	d.Set("email", u.GetEmail())
 	d.Set("handle", u.GetHandle())
-	d.Set("is_admin", u.GetIsAdmin())
 	d.Set("name", u.GetName())
 	d.Set("verified", u.GetVerified())
 	d.Set("access_role", u.GetAccessRole())
+	d.Set("is_admin", u.GetIsAdmin())
 	return nil
 }
 
