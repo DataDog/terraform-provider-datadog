@@ -16,7 +16,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
   description   = "Created using the Datadog provider in Terraform"
   layout_type   = "ordered"
   is_read_only  = true
-
 	widget {
 		alert_graph_definition {
 			alert_id = "895605"
@@ -326,13 +325,11 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			}
 		}
 	}
-
 	template_variable {
 		name   = "var_1"
 		prefix = "host"
 		default = "aws"
 	}
-
 	template_variable {
 		name   = "var_2"
 		prefix = "service_name"
@@ -363,121 +360,121 @@ resource "datadog_dashboard" "free_dashboard" {
 			y = 5
 		}
   	}
-widget {
-    event_timeline_definition {
-		query = "*"
-		title = "Widget Title"
-		title_size = 16
-		title_align = "left"
-		time = {
-			live_span = "1h"
+	widget {
+		event_timeline_definition {
+			query = "*"
+			title = "Widget Title"
+			title_size = 16
+			title_align = "left"
+			time = {
+				live_span = "1h"
+			}
 		}
-    }
-    layout = {
-		height = 9
-		width = 65
-		x = 42
-		y = 73
-    }
-}
-widget {
-    free_text_definition {
-		text = "free text content"
-		color = "#d00"
-		font_size = "88"
-		text_align = "left"
-    }
-    layout = {
-		height = 20
-		width = 30
-		x = 42
-		y = 5
-    }
-}
-widget {
-    iframe_definition {
-        url = "http://google.com"
-    }
-    layout = {
-		height = 46
-		width = 39
-		x = 111
-		y = 8
-    }
-}
-widget {
-    image_definition {
-		url = "https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"
-		sizing = "fit"
-		margin = "small"
-    }
-    layout = {
-		height = 20
-		width = 30
-		x = 77
-		y = 7
-    }
-}
-widget {
-    log_stream_definition {
-		logset = "19"
-		query = "error"
-		columns = ["core_host", "core_service", "tag_source"]
-    }
-    layout = {
-		height = 36
-		width = 32
-		x = 5
-		y = 51
-    }
-}
-widget {
-    manage_status_definition {
-		color_preference = "text"
-		count = 50
-		display_format = "countsAndList"
-		hide_zero_counts = true
-		query = "type:metric"
-		sort = "status,asc"
-		start = 0
-		title = "Widget Title"
-		title_size = 16
-		title_align = "left"
-    }
-    layout = {
-		height = 40
-		width = 30
-		x = 112
-		y = 55
-    }
-}
-widget {
-    trace_service_definition {
-		display_format = "three_column"
-		env = "datad0g.com"
-		service = "alerting-cassandra"
-		show_breakdown = true
-		show_distribution = true
-		show_errors = true
-		show_hits = true
-		show_latency = false
-		show_resource_list = false
-		size_format = "large"
-		span_name = "cassandra.query"
-		title = "alerting-cassandra #env:datad0g.com"
-		title_align = "center"
-		title_size = "13"
-		time = {
-			live_span = "1h"
+		layout = {
+			height = 9
+			width = 65
+			x = 42
+			y = 73
 		}
-    }
-    layout = {
-		height = 38
-		width = 67
-		x = 40
-		y = 28
-    }
-}
+	}
+	widget {
+		free_text_definition {
+			text = "free text content"
+			color = "#d00"
+			font_size = "88"
+			text_align = "left"
+		}
+		layout = {
+			height = 20
+			width = 30
+			x = 42
+			y = 5
+		}
+	}
+	widget {
+		iframe_definition {
+			url = "http://google.com"
+		}
+		layout = {
+			height = 46
+			width = 39
+			x = 111
+			y = 8
+		}
+	}
+	widget {
+		image_definition {
+			url = "https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"
+			sizing = "fit"
+			margin = "small"
+		}
+		layout = {
+			height = 20
+			width = 30
+			x = 77
+			y = 7
+		}
+	}
+	widget {
+		log_stream_definition {
+			logset = "19"
+			query = "error"
+			columns = ["core_host", "core_service", "tag_source"]
+		}
+		layout = {
+			height = 36
+			width = 32
+			x = 5
+			y = 51
+		}
+	}
+	widget {
+		manage_status_definition {
+			color_preference = "text"
+			count = 50
+			display_format = "countsAndList"
+			hide_zero_counts = true
+			query = "type:metric"
+			sort = "status,asc"
+			start = 0
+			title = "Widget Title"
+			title_size = 16
+			title_align = "left"
+		}
+		layout = {
+			height = 40
+			width = 30
+			x = 112
+			y = 55
+		}
+	}
+	widget {
+		trace_service_definition {
+			display_format = "three_column"
+			env = "datad0g.com"
+			service = "alerting-cassandra"
+			show_breakdown = true
+			show_distribution = true
+			show_errors = true
+			show_hits = true
+			show_latency = false
+			show_resource_list = false
+			size_format = "large"
+			span_name = "cassandra.query"
+			title = "alerting-cassandra #env:datad0g.com"
+			title_align = "center"
+			title_size = "13"
+			time = {
+				live_span = "1h"
+			}
+		}
+		layout = {
+			height = 38
+			width = 67
+			x = 40
+			y = 28
+		}
+	}
 	template_variable {
 		name   = "var_1"
 		prefix = "host"
@@ -813,8 +810,6 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 }
 
 func TestAccDatadogDashboard_import(t *testing.T) {
-	resourceName := "datadog_dashboard.ordered_dashboard"
-
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
@@ -824,7 +819,12 @@ func TestAccDatadogDashboard_import(t *testing.T) {
 				Config: datadogDashboardConfig,
 			},
 			{
-				ResourceName:      resourceName,
+				ResourceName:      "datadog_dashboard.ordered_dashboard",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{
+				ResourceName:      "datadog_dashboard.free_dashboard",
 				ImportState:       true,
 				ImportStateVerify: true,
 			},

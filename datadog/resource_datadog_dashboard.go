@@ -78,7 +78,7 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 		return fmt.Errorf("Failed to create dashboard using Datadog API: %s", err.Error())
 	}
 	d.SetId(*dashboard.Id)
-	return nil
+	return resourceDatadogDashboardRead(d, meta)
 }
 
 func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) error {
