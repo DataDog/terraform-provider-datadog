@@ -55,7 +55,7 @@ github.com/bgentry/go-netrc/netrc
 github.com/bgentry/speakeasy
 # github.com/blang/semver v3.5.1+incompatible
 github.com/blang/semver
-# github.com/cenkalti/backoff v0.0.0-20161020194410-b02f2bbce11d
+# github.com/cenkalti/backoff v2.1.1+incompatible
 github.com/cenkalti/backoff
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
@@ -230,7 +230,7 @@ github.com/zclconf/go-cty/cty/gocty
 github.com/zclconf/go-cty/cty/set
 github.com/zclconf/go-cty/cty/function
 github.com/zclconf/go-cty/cty/function/stdlib
-# github.com/zorkian/go-datadog-api v2.21.0+incompatible
+# github.com/zorkian/go-datadog-api v2.21.1-0.20190614114659-c9f7769f06da+incompatible
 github.com/zorkian/go-datadog-api
 # go.opencensus.io v0.18.0
 go.opencensus.io/trace
