@@ -171,7 +171,7 @@ func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta inte
 	if len(currentServices) == 0 {
 		pd, err := client.GetIntegrationPD()
 		if err != nil {
-			return err
+			return fmt.Errorf("Error while deleting Pagerduty integration service object: %v", err)
 		}
 		for _, service := range pd.Services {
 			if err := client.DeleteIntegrationPDService(*service.ServiceName); err != nil {
