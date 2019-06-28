@@ -64,6 +64,52 @@ func TestAccDatadogIntegrationPagerduty_TwoServices(t *testing.T) {
 	})
 }
 
+func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogIntegrationPagerdutyConfigBeforeMigration,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogIntegrationPagerdutyExists("datadog_integration_pagerduty.pd"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_pagerduty.pd", "subdomain", "ddog"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_pagerduty.pd", "api_token", "*****"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_pagerduty.pd", "services.0.service_name", "testing_bar"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_pagerduty.pd", "services.0.service_key", "*****"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_pagerduty.pd", "services.1.service_name", "testing_foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_pagerduty.pd", "services.1.service_key", "*****"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogIntegrationPagerdutyConfigAfterMigration,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogIntegrationPagerdutyExists("datadog_integration_pagerduty.pd"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_pagerduty.pd", "subdomain", "ddog"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_pagerduty.pd", "api_token", "*****"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_pagerduty_service_object.testing_foo", "service_name", "testing_foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_pagerduty_service_object.testing_foo", "service_key", "9876543210123456789"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_pagerduty_service_object.testing_bar", "service_name", "testing_bar"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_pagerduty_service_object.testing_bar", "service_key", "54321098765432109876"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogIntegrationPagerdutyExists(n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		client := testAccProvider.Meta().(*datadog.Client)
@@ -128,3 +174,51 @@ const testAccCheckDatadogIntegrationPagerdutyConfig_TwoServices = `
    api_token = "*****"
 }
 `
+
+const testAccCheckDatadogIntegrationPagerdutyConfigBeforeMigration = `
+locals {
+  pd_services = {
+	  testing_foo = "*****"
+	  testing_bar = "*****"
+	}
+}
+
+# Create a new Datadog - PagerDuty integration
+resource "datadog_integration_pagerduty" "pd" {
+  dynamic "services" {
+	  for_each = local.pd_services
+	  content {
+		  service_name = services.key
+		  service_key = services.value
+	  }
+  }
+  schedules = [
+	  "https://ddog.pagerduty.com/schedules/X123VF",
+	  "https://ddog.pagerduty.com/schedules/X321XX"
+	]
+  subdomain = "ddog"
+  api_token = "*****"
+}`
+
+const testAccCheckDatadogIntegrationPagerdutyConfigAfterMigration = `
+resource "datadog_integration_pagerduty" "pd" {
+  individual_services = true
+  schedules = [
+	  "https://ddog.pagerduty.com/schedules/X123VF",
+	  "https://ddog.pagerduty.com/schedules/X321XX"
+	]
+  subdomain = "ddog"
+  api_token = "*****"
+}
+
+resource "datadog_integration_pagerduty_service_object" "testing_foo" {
+  depends_on = ["datadog_integration_pagerduty.pd"]
+  service_name = "testing_foo"
+  service_key  = "9876543210123456789"
+}
+
+resource "datadog_integration_pagerduty_service_object" "testing_bar" {
+  depends_on = ["datadog_integration_pagerduty.pd"]
+  service_name = "testing_bar"
+  service_key  = "54321098765432109876"
+}`
