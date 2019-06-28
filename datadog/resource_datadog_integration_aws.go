@@ -4,10 +4,13 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/zorkian/go-datadog-api"
 )
+
+var integrationAwsMutex = sync.Mutex{}
 
 func accountAndRoleFromID(id string) (string, string, error) {
 	result := strings.SplitN(id, ":", 2)
@@ -124,6 +127,8 @@ func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, a
 
 func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
+	integrationAwsMutex.Lock()
+	defer integrationAwsMutex.Unlock()
 
 	accountID := d.Get("account_id").(string)
 	roleName := d.Get("role_name").(string)
@@ -183,6 +188,8 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 	// }
 
 	client := meta.(*datadog.Client)
+	integrationAwsMutex.Lock()
+	defer integrationAwsMutex.Unlock()
 
 	accountID, roleName, err := accountAndRoleFromID(d.Id())
 	if err != nil {
@@ -201,6 +208,9 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 
 func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
+	integrationAwsMutex.Lock()
+	defer integrationAwsMutex.Unlock()
+
 	accountID, roleName, err := accountAndRoleFromID(d.Id())
 	if err != nil {
 		return err
