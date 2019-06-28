@@ -65,7 +65,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		log.Printf("[ERROR] Datadog Client validation error: %v", err)
 		return client, err
 	} else if !ok {
-		err := errors.New(`No valid credential sources found for Datadog Provider. Please see https://terraform.io/docs/providers/datadog/index.html for more information on providing credentials for the Datadog Provider`)
+		err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and see https://terraform.io/docs/providers/datadog/index.html for more information on providing credentials for the Datadog Provider`)
 		log.Printf("[ERROR] Datadog Client validation error: %v", err)
 		return client, err
 	}
