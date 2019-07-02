@@ -10,11 +10,7 @@ description: |-
 
 Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.
 
-**Note:** This resource uses the new [Dashboard API](https://docs.datadoghq.com/api/#dashboards) which adds new features like better validation and support for the [Group widget](https://docs.datadoghq.com/graphing/widgets/group/). Additionally, this resource unifies `datadog_timeboard` and `datadog_screenboard` resources to allow you to manage all of your dashboards using a single format. Documentation for old resources is available here:
-
-- [`datadog_timeboard`](timeboard.html)
-- [`datadog_screenboard`](screenboard.html)
-
+~> **Note:** This resource uses the new [Dashboard API](https://docs.datadoghq.com/api/#dashboards) which adds new features like better validation and support for the [Group widget](https://docs.datadoghq.com/graphing/widgets/group/). Additionally, this resource unifies [`datadog_timeboard`](timeboard.html) and [`datadog_screenboard`](screenboard.html) resources to allow you to manage all of your dashboards using a single format.
 
 
 ## Example Usage
@@ -169,18 +165,18 @@ resource "datadog_dashboard" "ordered_dashboard" {
   widget {
     query_value_definition {
       request {
-      q = "avg:system.load.1{env:staging} by {account}"
-      aggregator = "sum"
-      conditional_formats {
-        comparator = "<"
-        value = "2"
-        palette = "white_on_green"
-      }
-      conditional_formats {
-        comparator = ">"
-        value = "2.2"
-        palette = "white_on_red"
-      }
+        q = "avg:system.load.1{env:staging} by {account}"
+        aggregator = "sum"
+        conditional_formats {
+          comparator = "<"
+          value = "2"
+          palette = "white_on_green"
+        }
+        conditional_formats {
+          comparator = ">"
+          value = "2.2"
+          palette = "white_on_red"
+        }
       }
       autoscale = true
       custom_unit = "xx"
@@ -190,7 +186,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
       title_size = 16
       title_align = "left"
       time = {
-      live_span = "1h"
+        live_span = "1h"
       }
     }
   }
@@ -325,7 +321,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
           value = "2.2"
           palette = "white_on_red"
         }
-        }
+      }
       title = "Widget Title"
       title_size = 16
       title_align = "left"
@@ -343,9 +339,10 @@ resource "datadog_dashboard" "ordered_dashboard" {
       widget {
         note_definition {
           content = "cluster note widget"
-              background_color = "yellow"
+          background_color = "yellow"
         }
       }
+
       widget {
         alert_graph_definition {
           alert_id = "123"
@@ -362,166 +359,175 @@ resource "datadog_dashboard" "ordered_dashboard" {
   }
 
   template_variable {
-		name   = "var_1"
-		prefix = "host"
-		default = "aws"
-	}
-	template_variable {
-		name   = "var_2"
-		prefix = "service_name"
-		default = "autoscaling"
-	}
+    name   = "var_1"
+    prefix = "host"
+    default = "aws"
+  }
+  template_variable {
+    name   = "var_2"
+    prefix = "service_name"
+    default = "autoscaling"
+  }
 }
 
 # Create a new Datadog dashboard - Free layout
 resource "datadog_dashboard" "free_dashboard" {
-	title         = "Free Layout Dashboard"
-	description   = "Created using the Datadog provider in Terraform"
-	layout_type   = "free"
-	is_read_only  = false
-  	widget {
-		event_stream_definition {
-			query = "*"
-			event_size = "l"
-			title = "Widget Title"
-			title_size = 16
-			title_align = "left"
-			time = {
-				live_span = "1h"
-			}
-		}
-		layout = {
-			height = 43
-			width = 32
-			x = 5
-			y = 5
-		}
-  	}
-	widget {
-		event_timeline_definition {
-			query = "*"
-			title = "Widget Title"
-			title_size = 16
-			title_align = "left"
-			time = {
-				live_span = "1h"
-			}
-		}
-		layout = {
-			height = 9
-			width = 65
-			x = 42
-			y = 73
-		}
-	}
-	widget {
-		free_text_definition {
-			text = "free text content"
-			color = "#d00"
-			font_size = "88"
-			text_align = "left"
-		}
-		layout = {
-			height = 20
-			width = 30
-			x = 42
-			y = 5
-		}
-	}
-	widget {
-		iframe_definition {
-			url = "http://google.com"
-		}
-		layout = {
-			height = 46
-			width = 39
-			x = 111
-			y = 8
-		}
-	}
-	widget {
-		image_definition {
-			url = "https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"
-			sizing = "fit"
-			margin = "small"
-		}
-		layout = {
-			height = 20
-			width = 30
-			x = 77
-			y = 7
-		}
-	}
-	widget {
-		log_stream_definition {
-			logset = "19"
-			query = "error"
-			columns = ["core_host", "core_service", "tag_source"]
-		}
-		layout = {
-			height = 36
-			width = 32
-			x = 5
-			y = 51
-		}
-	}
-	widget {
-		manage_status_definition {
-			color_preference = "text"
-			count = 50
-			display_format = "countsAndList"
-			hide_zero_counts = true
-			query = "type:metric"
-			sort = "status,asc"
-			start = 0
-			title = "Widget Title"
-			title_size = 16
-			title_align = "left"
-		}
-		layout = {
-			height = 40
-			width = 30
-			x = 112
-			y = 55
-		}
-	}
-	widget {
-		trace_service_definition {
-			display_format = "three_column"
-			env = "datad0g.com"
-			service = "alerting-cassandra"
-			show_breakdown = true
-			show_distribution = true
-			show_errors = true
-			show_hits = true
-			show_latency = false
-			show_resource_list = false
-			size_format = "large"
-			span_name = "cassandra.query"
-			title = "alerting-cassandra #env:datad0g.com"
-			title_align = "center"
-			title_size = "13"
-			time = {
-				live_span = "1h"
-			}
-		}
-		layout = {
-			height = 38
-			width = 67
-			x = 40
-			y = 28
-		}
-	}
-	template_variable {
-		name   = "var_1"
-		prefix = "host"
-		default = "aws"
-	}
-	template_variable {
-		name   = "var_2"
-		prefix = "service_name"
-		default = "autoscaling"
-	}
+  title         = "Free Layout Dashboard"
+  description   = "Created using the Datadog provider in Terraform"
+  layout_type   = "free"
+  is_read_only  = false
+
+  widget {
+    event_stream_definition {
+      query = "*"
+      event_size = "l"
+      title = "Widget Title"
+      title_size = 16
+      title_align = "left"
+      time = {
+        live_span = "1h"
+      }
+    }
+    layout = {
+      height = 43
+      width = 32
+      x = 5
+      y = 5
+    }
+  }
+
+  widget {
+    event_timeline_definition {
+      query = "*"
+      title = "Widget Title"
+      title_size = 16
+      title_align = "left"
+      time = {
+        live_span = "1h"
+      }
+    }
+    layout = {
+      height = 9
+      width = 65
+      x = 42
+      y = 73
+    }
+  }
+
+  widget {
+    free_text_definition {
+      text = "free text content"
+      color = "#d00"
+      font_size = "88"
+      text_align = "left"
+    }
+    layout = {
+      height = 20
+      width = 30
+      x = 42
+      y = 5
+    }
+  }
+
+  widget {
+    iframe_definition {
+      url = "http://google.com"
+    }
+    layout = {
+      height = 46
+      width = 39
+      x = 111
+      y = 8
+    }
+  }
+
+  widget {
+    image_definition {
+      url = "https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"
+      sizing = "fit"
+      margin = "small"
+    }
+    layout = {
+      height = 20
+      width = 30
+      x = 77
+      y = 7
+    }
+  }
+
+  widget {
+    log_stream_definition {
+      logset = "19"
+      query = "error"
+      columns = ["core_host", "core_service", "tag_source"]
+    }
+    layout = {
+      height = 36
+      width = 32
+      x = 5
+      y = 51
+    }
+  }
+
+  widget {
+    manage_status_definition {
+      color_preference = "text"
+      count = 50
+      display_format = "countsAndList"
+      hide_zero_counts = true
+      query = "type:metric"
+      sort = "status,asc"
+      start = 0
+      title = "Widget Title"
+      title_size = 16
+      title_align = "left"
+    }
+    layout = {
+      height = 40
+      width = 30
+      x = 112
+      y = 55
+    }
+  }
+
+  widget {
+    trace_service_definition {
+      display_format = "three_column"
+      env = "datad0g.com"
+      service = "alerting-cassandra"
+      show_breakdown = true
+      show_distribution = true
+      show_errors = true
+      show_hits = true
+      show_latency = false
+      show_resource_list = false
+      size_format = "large"
+      span_name = "cassandra.query"
+      title = "alerting-cassandra #env:datad0g.com"
+      title_align = "center"
+      title_size = "13"
+      time = {
+        live_span = "1h"
+      }
+    }
+    layout = {
+      height = 38
+      width = 67
+      x = 40
+      y = 28
+    }
+  }
+
+  template_variable {
+    name   = "var_1"
+    prefix = "host"
+    default = "aws"
+  }
+  template_variable {
+    name   = "var_2"
+    prefix = "service_name"
+    default = "autoscaling"
+  }
 }
 ```
 
@@ -796,11 +802,11 @@ Nested `process_query` blocks have the following structure (Visit the [ Graph Pr
   - `limit` - (Required)
 
 
-### Nested `widget``marker` blocks
+### Nested `widget` `marker` blocks
 
 Only for widgets of type "timeseries".
 
-Nested `widget``marker` blocks have the following structure:
+Nested `widget` `marker` blocks have the following structure:
 
 - `type` - (Required) How the marker lines will look. Possible values are {"error", "warning", "info", "ok"} {"dashed", "solid", "bold"}. Example: "error dashed".
 - `value` - (Required) Mathematical expression describing the marker. Examples: `y > 1`, `-5 < y < 0`, `y = 19`.

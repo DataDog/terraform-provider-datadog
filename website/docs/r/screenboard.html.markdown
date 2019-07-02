@@ -8,7 +8,10 @@ description: |-
 
 # datadog_screenboard
 
-**Note:** This resource is outdated. Use the new [`datadog_dashboard`](dashboard.html) resource instead.
+Provides a Datadog screenboard resource. This can be used to create and manage Datadog screenboards.
+
+~> **Note:**This resource is outdated. Use the new [`datadog_dashboard`](dashboard.html) resource instead.
+
 
 ## Example Usage
 
