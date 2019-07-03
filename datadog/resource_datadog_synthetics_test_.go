@@ -273,6 +273,10 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 		options.SetTickEvery(tickEvery)
 	}
 	if attr, ok := d.GetOk("options.follow_redirects"); ok {
+		// TF nested schemas is limited to string values only
+		// follow_redirects being a boolean in Datadog json api
+		// we need a sane way to convert from boolean to string
+		// and from string to boolean
 		followRedirects := attr.(string) == "true"
 		options.SetFollowRedirects(followRedirects)
 	}
