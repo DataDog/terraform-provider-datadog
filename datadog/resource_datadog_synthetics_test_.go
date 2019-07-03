@@ -272,7 +272,7 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 		options.SetTickEvery(tickEvery)
 	}
 	if attr, ok := d.GetOk("options.follow_redirects"); ok {
-		followRedirects := attr.(string) == "1"
+		followRedirects := attr.(string) == "true"
 		options.SetFollowRedirects(followRedirects)
 	}
 	if attr, ok := d.GetOk("options.min_failure_duration"); ok {
@@ -391,9 +391,9 @@ func convertToString(i interface{}) string {
 	switch v := i.(type) {
 	case bool:
 		if v {
-			return "1"
+			return "true"
 		}
-		return "0"
+		return "false"
 	case int:
 		return strconv.Itoa(v)
 	case float64:
