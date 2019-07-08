@@ -6,13 +6,13 @@ description: |-
   Provides examples for the different types of Datadog monitors. This list isn't exhaustive but serves as a reference for some examples.
 ---
 
-## MOnitor Examples
+## Monitor Examples
 This page lists examples of how to create different Datadog monitor types within Terraform. This list is non exhaustive and will be updated over time to provide more examples.
 
 ## Watchdog Monitors
 
 ```
-resource "datadog_monitor" "Watchdog_Monitor" {
+resource "datadog_monitor" "watchdog_monitor" {
   name               = "Watchdog Monitor TF"
   type               = "event alert"
   message            = "Check out this Watchdog Service Monitor"
@@ -34,8 +34,8 @@ resource "datadog_monitor" "Watchdog_Monitor" {
 ## Anomaly Monitors
 
 ```
-resource "datadog_monitor" "cpu_anomolous" {
-  name = "Anomolous CPU usage"
+resource "datadog_monitor" "cpu_anomalous" {
+  name = "Anomalous CPU usage"
   type = "query alert"
   message = "CPU utilization is outside normal bounds"
   query = "avg(last_4h):anomalies(ewma_20(avg:system.cpu.system{env:prod,service:website}.as_rate()), 'robust', 3, direction='below', alert_window='last_30m', interval=60, count_default_zero='true', seasonality='weekly') >= 1"
