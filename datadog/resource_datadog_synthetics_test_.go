@@ -118,7 +118,6 @@ func syntheticsTestOptions() *schema.Schema {
 				"follow_redirects": {
 					Type:     schema.TypeBool,
 					Optional: true,
-					Default:  false,
 				},
 				"min_failure_duration": {
 					Type:     schema.TypeInt,
@@ -328,39 +327,39 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("type", syntheticsTest.GetType())
 
 	actualRequest := syntheticsTest.GetConfig().Request
-	localRequest := schema.ResourceData{}
+	localRequest := make(map[string]string)
 	if actualRequest.HasBody() {
-		localRequest.Set("body", actualRequest.GetBody())
+		localRequest["body"] = actualRequest.GetBody()
 	}
 	if actualRequest.HasMethod() {
-		localRequest.Set("method", actualRequest.GetMethod())
+		localRequest["method"] = actualRequest.GetMethod()
 	}
 	if actualRequest.HasTimeout() {
-		localRequest.Set("timeout", actualRequest.GetTimeout())
+		localRequest["timeout"] = convertToString(actualRequest.GetTimeout())
 	}
 	if actualRequest.HasUrl() {
-		localRequest.Set("url", actualRequest.GetUrl())
+		localRequest["url"] = actualRequest.GetUrl()
 	}
-	d.Set("request", &localRequest)
+	d.Set("request", localRequest)
 	d.Set("request_headers", actualRequest.Headers)
 
 	actualAssertions := syntheticsTest.GetConfig().Assertions
-	localAssertions := []*schema.ResourceData{}
+	localAssertions := []map[string]string{}
 	for _, assertion := range actualAssertions {
-		localAssertion := schema.ResourceData{}
+		localAssertion := make(map[string]string)
 		if assertion.HasOperator() {
-			localAssertion.Set("operator", assertion.GetOperator())
+			localAssertion["operator"] = assertion.GetOperator()
 		}
 		if assertion.HasProperty() {
-			localAssertion.Set("property", assertion.GetProperty())
+			localAssertion["property"] = assertion.GetProperty()
 		}
 		if target := assertion.Target; target != nil {
-			localAssertion.Set("target", target)
+			localAssertion["target"] = convertToString(target)
 		}
 		if assertion.HasType() {
-			localAssertion.Set("type", assertion.GetType())
+			localAssertion["type"] = assertion.GetType()
 		}
-		localAssertions = append(localAssertions, &localAssertion)
+		localAssertions = append(localAssertions, localAssertion)
 	}
 	d.Set("assertions", localAssertions)
 
@@ -369,25 +368,48 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("locations", syntheticsTest.Locations)
 
 	actualOptions := syntheticsTest.GetOptions()
-	localOptions := schema.ResourceData{}
+	localOptions := make(map[string]string)
 	if actualOptions.HasFollowRedirects() {
-		localOptions.Set("follow_redirects", actualOptions.GetFollowRedirects())
+		localOptions["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
 	}
 	if actualOptions.HasMinFailureDuration() {
-		localOptions.Set("min_failure_duration", actualOptions.GetMinFailureDuration())
+		localOptions["min_failure_duration"] = convertToString(actualOptions.GetMinFailureDuration())
 	}
 	if actualOptions.HasMinLocationFailed() {
-		localOptions.Set("min_location_failed", actualOptions.GetMinLocationFailed())
+		localOptions["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
 	}
 	if actualOptions.HasTickEvery() {
-		localOptions.Set("tick_every", actualOptions.GetTickEvery())
+		localOptions["tick_every"] = convertToString(actualOptions.GetTickEvery())
 	}
 
-	d.Set("options", &localOptions)
+	d.Set("options", localOptions)
 
 	d.Set("name", syntheticsTest.GetName())
 	d.Set("message", syntheticsTest.GetMessage())
 	d.Set("status", syntheticsTest.GetStatus())
 	d.Set("tags", syntheticsTest.Tags)
 	d.Set("monitor_id", syntheticsTest.MonitorId)
+}
+
+func convertToString(i interface{}) string {
+	switch v := i.(type) {
+	case bool:
+		if v {
+			return "true"
+		}
+		return "false"
+	case int:
+		return strconv.Itoa(v)
+	case float64:
+		return strconv.FormatFloat(v, 'f', -1, 64)
+	case string:
+		return v
+	default:
+		// TODO: manage target for JSON body assertions
+		valStrr, err := json.Marshal(v)
+		if err == nil {
+			return string(valStrr)
+		}
+		return ""
+	}
 }
