@@ -521,6 +521,25 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 	})
 }
 
+func TestAccDatadogMonitor_NoThresholdWindows(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorConfigNoThresholdWindows,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "name", "test bug 259"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "message", "test"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "type", "query alert"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -1064,6 +1083,29 @@ resource "datadog_monitor" "foo" {
   locked = false
   tags = ["foo:bar", "baz"]
 	enable_logs_sample = true
+}
+`
+
+const testAccCheckDatadogMonitorConfigNoThresholdWindows = `
+resource "datadog_monitor" "foo" {
+	name = "test bug 259"
+	type = "query alert"
+	message = "test"
+	query = "avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') >= 1"
+	thresholds = {
+	  ok = "0.0"
+	  warning = "0.5"
+	  warning_recovery = "0.25"
+	  critical = "1.0"
+	  critical_recovery = "0.5"
+	}
+
+	notify_no_data = false
+	renotify_interval = 60
+
+	notify_audit = false
+	timeout_h = 60
+	include_tags = true
 }
 `
 
