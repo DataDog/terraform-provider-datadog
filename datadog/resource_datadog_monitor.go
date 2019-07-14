@@ -223,10 +223,12 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 
 	o := datadog.Options{
 		Thresholds:        &thresholds,
-		ThresholdWindows:  &threshold_windows,
 		NotifyNoData:      datadog.Bool(d.Get("notify_no_data").(bool)),
 		RequireFullWindow: datadog.Bool(d.Get("require_full_window").(bool)),
 		IncludeTags:       datadog.Bool(d.Get("include_tags").(bool)),
+	}
+	if threshold_windows.HasRecoveryWindow() || threshold_windows.HasTriggerWindow() {
+		o.SetThresholdWindows(threshold_windows)
 	}
 	if attr, ok := d.GetOk("silenced"); ok {
 		s := make(map[string]int)
