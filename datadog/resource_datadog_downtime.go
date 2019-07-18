@@ -144,6 +144,11 @@ func resourceDatadogDowntime() *schema.Resource {
 }
 
 func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
+	// NOTE: for each of start/start_date/end/end_date, we only send the value when
+	// it has changed. This allows users to change other attributes (e.g. scopes/message/...)
+	// without having to update the timestamps/dates to be in the future.
+	// (This works thanks to the downtime API allowing not to send these values
+	// when they shouldn't be touched.)
 	var dt datadog.Downtime
 
 	if attr, ok := d.GetOk("active"); ok {
@@ -152,11 +157,11 @@ func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
 	if attr, ok := d.GetOk("disabled"); ok {
 		dt.SetDisabled(attr.(bool))
 	}
-	if attr, ok := d.GetOk("end_date"); ok {
+	if attr, ok := d.GetOk("end_date"); ok && d.HasChange("end_date") {
 		if t, err := time.Parse(time.RFC3339, attr.(string)); err == nil {
 			dt.SetEnd(int(t.Unix()))
 		}
-	} else if attr, ok := d.GetOk("end"); ok {
+	} else if attr, ok := d.GetOk("end"); ok && d.HasChange("end") {
 		dt.SetEnd(attr.(int))
 	}
 
@@ -201,11 +206,11 @@ func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
 		tags = append(tags, mt.(string))
 	}
 	dt.MonitorTags = tags
-	if attr, ok := d.GetOk("start_date"); ok {
+	if attr, ok := d.GetOk("start_date"); ok && d.HasChange("start_date") {
 		if t, err := time.Parse(time.RFC3339, attr.(string)); err == nil {
 			dt.SetStart(int(t.Unix()))
 		}
-	} else if attr, ok := d.GetOk("start"); ok {
+	} else if attr, ok := d.GetOk("start"); ok && d.HasChange("start") {
 		dt.SetStart(attr.(int))
 	}
 	if attr, ok := d.GetOk("timezone"); ok {
