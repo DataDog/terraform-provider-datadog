@@ -308,7 +308,8 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			widget {
 				note_definition {
 					content = "cluster note widget"
-      				background_color = "yellow"
+					background_color = "yellow"
+					font_size = "14"
 				}
 			}
 			widget {
@@ -687,6 +688,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					// Inner Note widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.0.note_definition.0.content", "cluster note widget"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.0.note_definition.0.background_color", "yellow"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.0.note_definition.0.font_size", "14"),
 					// Inner Alert Graph widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.1.alert_graph_definition.0.alert_id", "123"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.1.alert_graph_definition.0.viz_type", "toplist"),

@@ -340,6 +340,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
         note_definition {
           content = "cluster note widget"
           background_color = "yellow"
+          font_size = "14"
         }
       }
 
