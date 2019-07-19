@@ -3,6 +3,7 @@ package datadog
 import (
 	"fmt"
 	"log"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -133,9 +134,17 @@ func resourceDatadogDowntime() *schema.Resource {
 				Description:   "When specified, this downtime will only apply to this monitor",
 			},
 			"monitor_tags": {
-				Type:          schema.TypeList,
-				Optional:      true,
-				Description:   "A list of monitor tags (up to 25), i.e. tags that are applied directly to monitors to which the downtime applies",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "A list of monitor tags (up to 25), i.e. tags that are applied directly to monitors to which the downtime applies",
+				// MonitorTags conflicts with MonitorId and it also has a default of `["*"]`, which brings some problems:
+				// * We can't use DefaultFunc to default to ["*"], since that's incompatible with
+				//   ConflictsWith
+				// * Since this is a TypeList, DiffSuppressFunc can't really be written well for it
+				//   (it is called and expected to give result for each element, not for the whole
+				//    list, so there's no way to tell in each iteration whether the new config value
+				//    is an empty list).
+				// Therefore we handle the "default" manually in resourceDatadogDowntimeRead function
 				ConflictsWith: []string{"monitor_id"},
 				Elem:          &schema.Schema{Type: schema.TypeString},
 			},
@@ -316,7 +325,10 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 		d.Set("recurrence", recurrenceList)
 	}
 	d.Set("scope", dt.Scope)
-	d.Set("monitor_tags", dt.MonitorTags)
+	// See the comment for monitor_tags in the schema definition above
+	if !reflect.DeepEqual(dt.MonitorTags, []string{"*"}) {
+		d.Set("monitor_tags", dt.MonitorTags)
+	}
 	d.Set("start", dt.GetStart())
 
 	return nil
