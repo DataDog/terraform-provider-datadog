@@ -3,6 +3,7 @@ package datadog
 import (
 	"fmt"
 	"log"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -133,9 +134,17 @@ func resourceDatadogDowntime() *schema.Resource {
 				Description:   "When specified, this downtime will only apply to this monitor",
 			},
 			"monitor_tags": {
-				Type:          schema.TypeList,
-				Optional:      true,
-				Description:   "A list of monitor tags (up to 25), i.e. tags that are applied directly to monitors to which the downtime applies",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "A list of monitor tags (up to 25), i.e. tags that are applied directly to monitors to which the downtime applies",
+				// MonitorTags conflicts with MonitorId and it also has a default of `["*"]`, which brings some problems:
+				// * We can't use DefaultFunc to default to ["*"], since that's incompatible with
+				//   ConflictsWith
+				// * Since this is a TypeList, DiffSuppressFunc can't really be written well for it
+				//   (it is called and expected to give result for each element, not for the whole
+				//    list, so there's no way to tell in each iteration whether the new config value
+				//    is an empty list).
+				// Therefore we handle the "default" manually in resourceDatadogDowntimeRead function
 				ConflictsWith: []string{"monitor_id"},
 				Elem:          &schema.Schema{Type: schema.TypeString},
 			},
@@ -144,6 +153,11 @@ func resourceDatadogDowntime() *schema.Resource {
 }
 
 func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
+	// NOTE: for each of start/start_date/end/end_date, we only send the value when
+	// it has changed. This allows users to change other attributes (e.g. scopes/message/...)
+	// without having to update the timestamps/dates to be in the future.
+	// (This works thanks to the downtime API allowing not to send these values
+	// when they shouldn't be touched.)
 	var dt datadog.Downtime
 
 	if attr, ok := d.GetOk("active"); ok {
@@ -152,11 +166,11 @@ func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
 	if attr, ok := d.GetOk("disabled"); ok {
 		dt.SetDisabled(attr.(bool))
 	}
-	if attr, ok := d.GetOk("end_date"); ok {
+	if attr, ok := d.GetOk("end_date"); ok && d.HasChange("end_date") {
 		if t, err := time.Parse(time.RFC3339, attr.(string)); err == nil {
 			dt.SetEnd(int(t.Unix()))
 		}
-	} else if attr, ok := d.GetOk("end"); ok {
+	} else if attr, ok := d.GetOk("end"); ok && d.HasChange("end") {
 		dt.SetEnd(attr.(int))
 	}
 
@@ -201,11 +215,11 @@ func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
 		tags = append(tags, mt.(string))
 	}
 	dt.MonitorTags = tags
-	if attr, ok := d.GetOk("start_date"); ok {
+	if attr, ok := d.GetOk("start_date"); ok && d.HasChange("start_date") {
 		if t, err := time.Parse(time.RFC3339, attr.(string)); err == nil {
 			dt.SetStart(int(t.Unix()))
 		}
-	} else if attr, ok := d.GetOk("start"); ok {
+	} else if attr, ok := d.GetOk("start"); ok && d.HasChange("start") {
 		dt.SetStart(attr.(int))
 	}
 	if attr, ok := d.GetOk("timezone"); ok {
@@ -311,7 +325,10 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 		d.Set("recurrence", recurrenceList)
 	}
 	d.Set("scope", dt.Scope)
-	d.Set("monitor_tags", dt.MonitorTags)
+	// See the comment for monitor_tags in the schema definition above
+	if !reflect.DeepEqual(dt.MonitorTags, []string{"*"}) {
+		d.Set("monitor_tags", dt.MonitorTags)
+	}
 	d.Set("start", dt.GetStart())
 
 	return nil

@@ -465,8 +465,7 @@ resource "datadog_downtime" "foo" {
   end   = %d
 
   message = "Example Datadog downtime message."
-	monitor_id = "${datadog_monitor.downtime_monitor.id}"
-  monitor_tags = ["*"]
+  monitor_id = "${datadog_monitor.downtime_monitor.id}"
 }
 `, end, start, end)
 }
