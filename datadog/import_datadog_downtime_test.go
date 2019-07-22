@@ -34,6 +34,10 @@ resource "datadog_downtime" "foo" {
   timezone = "UTC"
 
   message = "Example Datadog downtime message."
-  monitor_tags = ["*"]
+  # NOTE: we now ignore monitor_tags on newly created monitors if the attribute
+  # value is equal to ["*"], since that's the default and working with TypeList
+  # defaults it problematic - see the comment for monitor_tags
+  # in resource_datadog_downtime.go
+  monitor_tags = ["foo:bar"]
 }
 `
