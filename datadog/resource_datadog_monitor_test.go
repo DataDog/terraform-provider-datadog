@@ -269,8 +269,9 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists("datadog_monitor.complex_metric_alert_example_monitor"),
+					// even though this is defined as a metric alert, the API will actually return query alert
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.complex_metric_alert_example_monitor", "type", "metric alert"),
+						"datadog_monitor.complex_metric_alert_example_monitor", "type", "query alert"),
 				),
 			},
 			{
@@ -394,8 +395,9 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists("datadog_monitor.complex_metric_alert_example_monitor"),
+					// even though this is defined as a metric alert, the API will actually return query alert
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.complex_metric_alert_example_monitor", "type", "metric alert"),
+						"datadog_monitor.complex_metric_alert_example_monitor", "type", "query alert"),
 				),
 			},
 			{
