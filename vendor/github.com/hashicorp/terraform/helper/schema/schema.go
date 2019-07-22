@@ -22,7 +22,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/hashicorp/terraform/config"
+	"github.com/hashicorp/terraform/config/hcl2shim"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/mitchellh/copystructure"
 	"github.com/mitchellh/mapstructure"
@@ -1365,10 +1365,12 @@ func (m schemaMap) validate(
 			"%q: this field cannot be set", k)}
 	}
 
-	if raw == config.UnknownVariableValue {
-		// If the value is unknown then we can't validate it yet.
-		// In particular, this avoids spurious type errors where downstream
-		// validation code sees UnknownVariableValue as being just a string.
+	// If the value is unknown then we can't validate it yet.
+	// In particular, this avoids spurious type errors where downstream
+	// validation code sees UnknownVariableValue as being just a string.
+	// The SDK has to allow the unknown value through initially, so that
+	// Required fields set via an interpolated value are accepted.
+	if !isWhollyKnown(raw) {
 		return nil, nil
 	}
 
@@ -1380,6 +1382,28 @@ func (m schemaMap) validate(
 	return m.validateType(k, raw, schema, c)
 }
 
+// isWhollyKnown returns false if the argument contains an UnknownVariableValue
+func isWhollyKnown(raw interface{}) bool {
+	switch raw := raw.(type) {
+	case string:
+		if raw == hcl2shim.UnknownVariableValue {
+			return false
+		}
+	case []interface{}:
+		for _, v := range raw {
+			if !isWhollyKnown(v) {
+				return false
+			}
+		}
+	case map[string]interface{}:
+		for _, v := range raw {
+			if !isWhollyKnown(v) {
+				return false
+			}
+		}
+	}
+	return true
+}
 func (m schemaMap) validateConflictingAttributes(
 	k string,
 	schema *Schema,
@@ -1391,7 +1415,7 @@ func (m schemaMap) validateConflictingAttributes(
 
 	for _, conflictingKey := range schema.ConflictsWith {
 		if raw, ok := c.Get(conflictingKey); ok {
-			if raw == config.UnknownVariableValue {
+			if raw == hcl2shim.UnknownVariableValue {
 				// An unknown value might become unset (null) once known, so
 				// we must defer validation until it's known.
 				continue
@@ -1411,7 +1435,7 @@ func (m schemaMap) validateList(
 	c *terraform.ResourceConfig) ([]string, []error) {
 	// first check if the list is wholly unknown
 	if s, ok := raw.(string); ok {
-		if s == config.UnknownVariableValue {
+		if s == hcl2shim.UnknownVariableValue {
 			return nil, nil
 		}
 	}
@@ -1489,7 +1513,7 @@ func (m schemaMap) validateMap(
 	c *terraform.ResourceConfig) ([]string, []error) {
 	// first check if the list is wholly unknown
 	if s, ok := raw.(string); ok {
-		if s == config.UnknownVariableValue {
+		if s == hcl2shim.UnknownVariableValue {
 			return nil, nil
 		}
 	}
