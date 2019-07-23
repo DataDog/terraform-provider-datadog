@@ -35,9 +35,10 @@ func resourceDatadogDashboard() *schema.Resource {
 				},
 			},
 			"layout_type": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The layout type of the dashboard, either 'free' or 'ordered'.",
+				Type:         schema.TypeString,
+				Required:     true,
+				Description:  "The layout type of the dashboard, either 'free' or 'ordered'.",
+				ValidateFunc: validateDashboardLayoutType,
 			},
 			"description": {
 				Type:        schema.TypeString,
@@ -815,9 +816,10 @@ func getGroupDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"layout_type": {
-			Type:        schema.TypeString,
-			Required:    true,
-			Description: "The layout type of the group, only 'ordered' for now.",
+			Type:         schema.TypeString,
+			Required:     true,
+			Description:  "The layout type of the group, only 'ordered' for now.",
+			ValidateFunc: validateGroupWidgetLayoutType,
 		},
 		"title": {
 			Type:        schema.TypeString,
@@ -3849,4 +3851,27 @@ func buildTerraformWidgetAxis(datadogWidgetAxis datadog.WidgetAxis) map[string]i
 		terraformWidgetAxis["include_zero"] = *datadogWidgetAxis.IncludeZero
 	}
 	return terraformWidgetAxis
+}
+
+func validateDashboardLayoutType(val interface{}, key string) (warns []string, errs []error) {
+	value := val.(string)
+	switch value {
+	case "free", "ordered":
+		break
+	default:
+		errs = append(errs, fmt.Errorf(
+			"%q contains an invalid value %q. Valid values are `free` or `ordered`", key, value))
+	}
+	return
+}
+func validateGroupWidgetLayoutType(val interface{}, key string) (warns []string, errs []error) {
+	value := val.(string)
+	switch value {
+	case "ordered":
+		break
+	default:
+		errs = append(errs, fmt.Errorf(
+			"%q contains an invalid value %q. Only `ordered` is a valid value", key, value))
+	}
+	return
 }
