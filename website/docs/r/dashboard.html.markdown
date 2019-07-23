@@ -27,8 +27,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
       alert_id = "895605"
       viz_type = "timeseries"
       title = "Widget Title"
-      title_size = 16
-      title_align = "left"
       time = {
         live_span = "1h"
       }
@@ -42,8 +40,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
       unit = "b"
       text_align = "center"
       title = "Widget Title"
-      title_size = 16
-      title_align = "left"
     }
   }
 
@@ -54,8 +50,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
       unit = "b"
       text_align = "center"
       title = "Widget Title"
-      title_size = 16
-      title_align = "left"
     }
   }
 
@@ -71,8 +65,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
         show_present = true
       }
       title = "Widget Title"
-      title_size = 16
-      title_align = "left"
       time = {
         live_span = "1h"
       }
@@ -85,8 +77,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
         q = "avg:system.load.1{env:staging} by {account}"
       }
       title = "Widget Title"
-      title_size = 16
-      title_align = "left"
       time = {
         live_span = "1h"
       }
@@ -100,8 +90,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
       group_by = ["account", "cluster"]
       tags = ["account:demo", "cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"]
       title = "Widget Title"
-      title_size = 16
-      title_align = "left"
       time = {
         live_span = "1h"
       }
@@ -120,8 +108,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
         scale = "sqrt"
       }
       title = "Widget Title"
-      title_size = 16
-      title_align = "left"
       time = {
         live_span = "1h"
       }
@@ -144,8 +130,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
       no_metric_hosts = true
       scope = ["region:us-east-1", "aws_account:727006795293"]
       title = "Widget Title"
-      title_size = 16
-      title_align = "left"
     }
   }
 
@@ -182,8 +166,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
       precision = "4"
       text_align = "right"
       title = "Widget Title"
-      title_size = 16
-      title_align = "left"
       time = {
         live_span = "1h"
       }
@@ -218,8 +200,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
         scale = "log"
       }
       title = "Widget Title"
-      title_size = 16
-      title_align = "left"
       time = {
         live_span = "1h"
       }
@@ -298,8 +278,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
         label = " x=8 "
       }
       title = "Widget Title"
-      title_size = 16
-      title_align = "left"
       time = {
         live_span = "1h"
       }
@@ -322,11 +300,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
         }
       }
       title = "Widget Title"
-      title_size = 16
-      title_align = "left"
-      time = {
-        live_span = "1h"
-      }
     }
   }
 
@@ -338,8 +311,12 @@ resource "datadog_dashboard" "ordered_dashboard" {
       widget {
         note_definition {
           content = "cluster note widget"
-          background_color = "yellow"
+          background_color = "pink"
           font_size = "14"
+          text_align = "center"
+          show_tick = true
+          tick_edge = "left"
+          tick_pos = "50%"
         }
       }
 
@@ -348,8 +325,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
           alert_id = "123"
           viz_type = "toplist"
           title = "Alert Graph"
-          title_size = "16"
-          title_align = "right"
           time = {
             live_span = "1h"
           }

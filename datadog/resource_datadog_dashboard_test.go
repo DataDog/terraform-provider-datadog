@@ -21,8 +21,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			alert_id = "895605"
 			viz_type = "timeseries"
 			title = "Widget Title"
-			title_size = 16
-			title_align = "left"
 			time = {
 				live_span = "1h"
 			}
@@ -35,8 +33,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			unit = "b"
 			text_align = "center"
 			title = "Widget Title"
-			title_size = 16
-			title_align = "left"
 		}
 	}
 	widget {
@@ -51,8 +47,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				show_present = true
 			}
 			title = "Widget Title"
-			title_size = 16
-			title_align = "left"
 			time = {
 				live_span = "1h"
 			}
@@ -64,8 +58,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				q = "avg:system.load.1{env:staging} by {account}"
 			}
 			title = "Widget Title"
-			title_size = 16
-			title_align = "left"
 			time = {
 				live_span = "1h"
 			}
@@ -78,8 +70,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			group_by = ["account", "cluster"]
 			tags = ["account:demo", "cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"]
 			title = "Widget Title"
-			title_size = 16
-			title_align = "left"
 			time = {
 				live_span = "1h"
 			}
@@ -97,8 +87,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				scale = "sqrt"
 			}
 			title = "Widget Title"
-			title_size = 16
-			title_align = "left"
 			time = {
 				live_span = "1h"
 			}
@@ -120,8 +108,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			no_metric_hosts = true
 			scope = ["region:us-east-1", "aws_account:727006795293"]
 			title = "Widget Title"
-			title_size = 16
-			title_align = "left"
 		}
 	}
 	widget {
@@ -156,8 +142,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
 		  precision = "4"
 		  text_align = "right"
 		  title = "Widget Title"
-		  title_size = 16
-		  title_align = "left"
 		  time = {
 			live_span = "1h"
 		  }
@@ -191,8 +175,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				scale = "log"
 			}
 			title = "Widget Title"
-			title_size = 16
-			title_align = "left"
 			time = {
 				live_span = "1h"
 			}
@@ -270,8 +252,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				label = " x=8 "
 			}
 			title = "Widget Title"
-			title_size = 16
-			title_align = "left"
 			time = {
 				live_span = "1h"
 			}
@@ -293,11 +273,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				}
 		  	}
 			title = "Widget Title"
-			title_size = 16
-			title_align = "left"
-			time = {
-				live_span = "1h"
-			}
 		}
 	}
 	widget {
@@ -309,7 +284,11 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				note_definition {
 					content = "cluster note widget"
 					background_color = "yellow"
-					font_size = "14"
+					font_size = "16"
+					text_align = "left"
+					show_tick = false
+					tick_edge = "left"
+					tick_pos = "50%"
 				}
 			}
 			widget {
@@ -317,8 +296,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
 					alert_id = "123"
 					viz_type = "toplist"
 					title = "Alert Graph"
-					title_size = "16"
-					title_align = "right"
 					time = {
 						live_span = "1h"
 					}
@@ -512,8 +489,6 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.0.alert_graph_definition.0.alert_id", "895605"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.0.alert_graph_definition.0.viz_type", "timeseries"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.0.alert_graph_definition.0.title", "Widget Title"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.0.alert_graph_definition.0.title_size", "16"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.0.alert_graph_definition.0.title_align", "left"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.0.alert_graph_definition.0.time.live_span", "1h"),
 					// Alert Value widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.1.alert_value_definition.0.alert_id", "895605"),
@@ -521,8 +496,6 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.1.alert_value_definition.0.unit", "b"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.1.alert_value_definition.0.text_align", "center"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.1.alert_value_definition.0.title", "Widget Title"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.1.alert_value_definition.0.title_size", "16"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.1.alert_value_definition.0.title_align", "left"),
 					// Change widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.2.change_definition.0.request.0.q", "avg:system.load.1{env:staging} by {account}"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.2.change_definition.0.request.0.change_type", "absolute"),
@@ -532,14 +505,10 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.2.change_definition.0.request.0.order_dir", "desc"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.2.change_definition.0.request.0.show_present", "true"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.2.change_definition.0.title", "Widget Title"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.2.change_definition.0.title_size", "16"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.2.change_definition.0.title_align", "left"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.2.change_definition.0.time.live_span", "1h"),
 					// Distribution widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.3.distribution_definition.0.request.0.q", "avg:system.load.1{env:staging} by {account}"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.3.distribution_definition.0.title", "Widget Title"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.3.distribution_definition.0.title_size", "16"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.3.distribution_definition.0.title_align", "left"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.3.distribution_definition.0.time.live_span", "1h"),
 					// Check Status widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.4.check_status_definition.0.check", "aws.ecs.agent_connected"),
@@ -551,8 +520,6 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.4.check_status_definition.0.tags.0", "account:demo"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.4.check_status_definition.0.tags.1", "cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.4.check_status_definition.0.title", "Widget Title"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.4.check_status_definition.0.title_size", "16"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.4.check_status_definition.0.title_align", "left"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.4.check_status_definition.0.time.live_span", "1h"),
 					// Heatmap widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.request.0.q", "avg:system.load.1{env:staging} by {account}"),
@@ -561,8 +528,6 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.yaxis.0.include_zero", "true"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.yaxis.0.scale", "sqrt"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.title", "Widget Title"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.title_size", "16"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.title_align", "left"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.time.live_span", "1h"),
 					// Hostmap widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.6.hostmap_definition.0.request.0.fill.0.q", "avg:system.load.1{*} by {host}"),
@@ -575,8 +540,6 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.6.hostmap_definition.0.scope.0", "region:us-east-1"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.6.hostmap_definition.0.scope.1", "aws_account:727006795293"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.6.hostmap_definition.0.title", "Widget Title"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.6.hostmap_definition.0.title_size", "16"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.6.hostmap_definition.0.title_align", "left"),
 					// Note widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.7.note_definition.0.content", "note text"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.7.note_definition.0.background_color", "pink"),
@@ -599,8 +562,6 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_value_definition.0.custom_unit", "xx"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_value_definition.0.precision", "4"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_value_definition.0.title", "Widget Title"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_value_definition.0.title_align", "left"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_value_definition.0.title_size", "16"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_value_definition.0.time.live_span", "1h"),
 					// Scatterplot widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.request.0.x.0.q", "avg:system.cpu.user{*} by {service, account}"),
@@ -621,8 +582,6 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.yaxis.0.min", "5"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.yaxis.0.scale", "log"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.title", "Widget Title"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.title_align", "left"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.title_size", "16"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.time.live_span", "1h"),
 					// Timeseries widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.0.q", "avg:system.cpu.user{app:general} by {env}"),
@@ -665,8 +624,6 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.marker.1.label", " x=8 "),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.marker.1.value", "10 < y < 999"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.title", "Widget Title"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.title_align", "left"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.title_size", "16"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.time.live_span", "1h"),
 					// Toplist widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.11.toplist_definition.0.request.0.q", "avg:system.cpu.user{app:general} by {env}"),
@@ -678,9 +635,6 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.11.toplist_definition.0.request.0.conditional_formats.1.value", "2.2"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.11.toplist_definition.0.request.0.conditional_formats.1.palette", "white_on_red"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.11.toplist_definition.0.title", "Widget Title"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.11.toplist_definition.0.title_align", "left"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.11.toplist_definition.0.title_size", "16"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.11.toplist_definition.0.time.live_span", "1h"),
 					// Group widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.layout_type", "ordered"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.title", "Group Widget"),
@@ -688,13 +642,15 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					// Inner Note widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.0.note_definition.0.content", "cluster note widget"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.0.note_definition.0.background_color", "yellow"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.0.note_definition.0.font_size", "14"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.0.note_definition.0.font_size", "16"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.0.note_definition.0.text_align", "left"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.0.note_definition.0.show_tick", "false"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.0.note_definition.0.tick_edge", "left"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.0.note_definition.0.tick_pos", "50%"),
 					// Inner Alert Graph widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.1.alert_graph_definition.0.alert_id", "123"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.1.alert_graph_definition.0.viz_type", "toplist"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.1.alert_graph_definition.0.title", "Alert Graph"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.1.alert_graph_definition.0.title_size", "16"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.1.alert_graph_definition.0.title_align", "right"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.1.alert_graph_definition.0.time.live_span", "1h"),
 					// Template Variables
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable.#", "2"),
