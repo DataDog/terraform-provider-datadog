@@ -13,10 +13,9 @@ Provides a Datadog dashboard resource. This can be used to create and manage Dat
 ~> **Note:** This resource uses the new [Dashboard API](https://docs.datadoghq.com/api/#dashboards) which adds new features like better validation and support for the [Group widget](https://docs.datadoghq.com/graphing/widgets/group/). Additionally, this resource unifies [`datadog_timeboard`](timeboard.html) and [`datadog_screenboard`](screenboard.html) resources to allow you to manage all of your dashboards using a single format.
 
 
-## Example Usage
+## Example Usage: Create a new Datadog dashboard - Ordered layout
 
 ```hcl
-# Create a new Datadog dashboard - Ordered layout
 resource "datadog_dashboard" "ordered_dashboard" {
   title         = "Ordered Layout Dashboard"
   description   = "Created using the Datadog provider in Terraform"
@@ -370,8 +369,10 @@ resource "datadog_dashboard" "ordered_dashboard" {
     default = "autoscaling"
   }
 }
+```
+## Example Usage: Create a new Datadog dashboard - Free layout
 
-# Create a new Datadog dashboard - Free layout
+```hcl
 resource "datadog_dashboard" "free_dashboard" {
   title         = "Free Layout Dashboard"
   description   = "Created using the Datadog provider in Terraform"
