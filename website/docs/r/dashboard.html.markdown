@@ -114,7 +114,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
       request {
         q = "avg:system.load.1{env:staging} by {account}"
       }
-      yaxis = {
+      yaxis {
         min = 1
         max = 2
         include_zero = true
@@ -204,14 +204,14 @@ resource "datadog_dashboard" "ordered_dashboard" {
         }
       }
       color_by_groups = ["account", "apm-role-group"]
-      xaxis = {
+      xaxis {
         include_zero = true
         label = "x"
         min = "1"
         max = "2000"
         scale = "pow"
       }
-      yaxis = {
+      yaxis {
         include_zero = false
         label = "y"
         min = "5"

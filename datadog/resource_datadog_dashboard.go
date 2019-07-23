@@ -1713,7 +1713,8 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"yaxis": {
-			Type:     schema.TypeMap,
+			Type:     schema.TypeList,
+			MaxItems: 1,
 			Optional: true,
 			Elem: &schema.Resource{
 				Schema: getWidgetAxisSchema(),
@@ -1747,8 +1748,10 @@ func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *
 	terraformRequests := terraformDefinition["request"].([]interface{})
 	datadogDefinition.Requests = *buildDatadogHeatmapRequests(&terraformRequests)
 	// Optional params
-	if v, ok := terraformDefinition["yaxis"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Yaxis = buildDatadogWidgetAxis(v)
+	if _axis, ok := terraformDefinition["yaxis"].([]interface{}); ok && len(_axis) > 0 {
+		if v, ok := _axis[0].(map[string]interface{}); ok && len(v) > 0 {
+			datadogDefinition.Yaxis = buildDatadogWidgetAxis(v)
+		}
 	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.Title = datadog.String(v)
@@ -1770,7 +1773,8 @@ func buildTerraformHeatmapDefinition(datadogDefinition datadog.HeatmapDefinition
 	terraformDefinition["request"] = buildTerraformHeatmapRequests(&datadogDefinition.Requests)
 	// Optional params
 	if datadogDefinition.Yaxis != nil {
-		terraformDefinition["yaxis"] = buildTerraformWidgetAxis(*datadogDefinition.Yaxis)
+		_axis := buildTerraformWidgetAxis(*datadogDefinition.Yaxis)
+		terraformDefinition["yaxis"] = []map[string]interface{}{_axis}
 	}
 	if datadogDefinition.Title != nil {
 		terraformDefinition["title"] = *datadogDefinition.Title
@@ -2669,14 +2673,16 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"xaxis": {
-			Type:     schema.TypeMap,
+			Type:     schema.TypeList,
+			MaxItems: 1,
 			Optional: true,
 			Elem: &schema.Resource{
 				Schema: getWidgetAxisSchema(),
 			},
 		},
 		"yaxis": {
-			Type:     schema.TypeMap,
+			Type:     schema.TypeList,
+			MaxItems: 1,
 			Optional: true,
 			Elem: &schema.Resource{
 				Schema: getWidgetAxisSchema(),
@@ -2728,11 +2734,15 @@ func buildDatadogScatterplotDefinition(terraformDefinition map[string]interface{
 	}
 
 	// Optional params
-	if v, ok := terraformDefinition["xaxis"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Xaxis = buildDatadogWidgetAxis(v)
+	if _axis, ok := terraformDefinition["xaxis"].([]interface{}); ok && len(_axis) > 0 {
+		if v, ok := _axis[0].(map[string]interface{}); ok && len(v) > 0 {
+			datadogDefinition.Xaxis = buildDatadogWidgetAxis(v)
+		}
 	}
-	if v, ok := terraformDefinition["yaxis"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Yaxis = buildDatadogWidgetAxis(v)
+	if _axis, ok := terraformDefinition["yaxis"].([]interface{}); ok && len(_axis) > 0 {
+		if v, ok := _axis[0].(map[string]interface{}); ok && len(v) > 0 {
+			datadogDefinition.Yaxis = buildDatadogWidgetAxis(v)
+		}
 	}
 	if terraformColorByGroups, ok := terraformDefinition["color_by_groups"].([]interface{}); ok && len(terraformColorByGroups) > 0 {
 		datadogColorByGroups := make([]string, len(terraformColorByGroups))
@@ -2771,11 +2781,14 @@ func buildTerraformScatterplotDefinition(datadogDefinition datadog.ScatterplotDe
 
 	// Optional params
 	if datadogDefinition.Xaxis != nil {
-		terraformDefinition["xaxis"] = buildTerraformWidgetAxis(*datadogDefinition.Xaxis)
+		_axis := buildTerraformWidgetAxis(*datadogDefinition.Xaxis)
+		terraformDefinition["xaxis"] = []map[string]interface{}{_axis}
 	}
 	if datadogDefinition.Yaxis != nil {
-		terraformDefinition["yaxis"] = buildTerraformWidgetAxis(*datadogDefinition.Yaxis)
+		_axis := buildTerraformWidgetAxis(*datadogDefinition.Yaxis)
+		terraformDefinition["yaxis"] = []map[string]interface{}{_axis}
 	}
+
 	if datadogDefinition.ColorByGroups != nil {
 		terraformColorByGroups := make([]string, len(datadogDefinition.ColorByGroups))
 		for i, datadogColorByGroup := range datadogDefinition.ColorByGroups {
@@ -3813,9 +3826,8 @@ func buildDatadogWidgetAxis(terraformWidgetAxis map[string]interface{}) *datadog
 	if v, ok := terraformWidgetAxis["max"].(string); ok && len(v) != 0 {
 		datadogWidgetAxis.SetMax(v)
 	}
-
-	if v, ok := terraformWidgetAxis["include_zero"].(string); ok {
-		datadogWidgetAxis.SetIncludeZero(convertStringToBool(v))
+	if v, ok := terraformWidgetAxis["include_zero"].(bool); ok {
+		datadogWidgetAxis.SetIncludeZero(v)
 	}
 	return datadogWidgetAxis
 }
@@ -3833,24 +3845,8 @@ func buildTerraformWidgetAxis(datadogWidgetAxis datadog.WidgetAxis) map[string]i
 	if datadogWidgetAxis.Max != nil {
 		terraformWidgetAxis["max"] = *datadogWidgetAxis.Max
 	}
-
 	if datadogWidgetAxis.IncludeZero != nil {
-		terraformWidgetAxis["include_zero"] = convertBoolToString(*datadogWidgetAxis.IncludeZero)
+		terraformWidgetAxis["include_zero"] = *datadogWidgetAxis.IncludeZero
 	}
 	return terraformWidgetAxis
-}
-
-func convertBoolToString(i bool) string {
-	if i {
-		return "true"
-	}
-	return "false"
-}
-func convertStringToBool(i string) bool {
-	switch i {
-	case "true", "1", "t", "True":
-		return true
-	default:
-		return false
-	}
 }

@@ -90,7 +90,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			request {
 				q = "avg:system.load.1{env:staging} by {account}"
 			}
-			yaxis = {
+			yaxis {
 				min = 1
 				max = 2
 				include_zero = true
@@ -176,14 +176,14 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				}
 			}
 			color_by_groups = ["account", "apm-role-group"]
-			xaxis = {
+			xaxis {
 				include_zero = true
 				label = "x"
 				min = "1"
 				max = "2000"
 				scale = "pow"
 			}
-			yaxis = {
+			yaxis {
 				include_zero = false
 				label = "y"
 				min = "5"
@@ -556,10 +556,10 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.4.check_status_definition.0.time.live_span", "1h"),
 					// Heatmap widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.request.0.q", "avg:system.load.1{env:staging} by {account}"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.yaxis.min", "1"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.yaxis.max", "2"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.yaxis.include_zero", "true"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.yaxis.scale", "sqrt"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.yaxis.0.min", "1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.yaxis.0.max", "2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.yaxis.0.include_zero", "true"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.yaxis.0.scale", "sqrt"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.title", "Widget Title"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.title_size", "16"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.title_align", "left"),
@@ -610,16 +610,16 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.color_by_groups.#", "2"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.color_by_groups.0", "account"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.color_by_groups.1", "apm-role-group"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.xaxis.include_zero", "true"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.xaxis.label", "x"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.xaxis.max", "2000"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.xaxis.min", "1"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.xaxis.scale", "pow"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.yaxis.include_zero", "false"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.yaxis.label", "y"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.yaxis.max", "2222"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.yaxis.min", "5"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.yaxis.scale", "log"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.xaxis.0.include_zero", "true"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.xaxis.0.label", "x"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.xaxis.0.max", "2000"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.xaxis.0.min", "1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.xaxis.0.scale", "pow"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.yaxis.0.include_zero", "false"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.yaxis.0.label", "y"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.yaxis.0.max", "2222"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.yaxis.0.min", "5"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.yaxis.0.scale", "log"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.title", "Widget Title"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.title_align", "left"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.title_size", "16"),
