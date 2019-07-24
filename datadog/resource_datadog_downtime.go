@@ -152,13 +152,75 @@ func resourceDatadogDowntime() *schema.Resource {
 	}
 }
 
-func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
+// getDowntimeBoundaryTimestamp returns an int timestamp for start/end and the name of the
+// attribute which it was extracted from (e.g. "end" or "end_date"). Arguments:
+// * `d` - current `*schema.ResourceData`
+// * `dateAttr` - name of the attribute in `d` which carries and RFC3339 date string, e.g. `end_date`
+// * `tsAttr` - name of the attribute in `d` which carries integer timestamp, e.g. `end`
+func getDowntimeBoundaryTimestamp(d *schema.ResourceData, dateAttr, tsAttr string) (ts int, tsFrom string) {
+	if attr, ok := d.GetOk(dateAttr); ok {
+		if t, err := time.Parse(time.RFC3339, attr.(string)); err == nil {
+			tsFrom = dateAttr
+			ts = int(t.Unix())
+		}
+	} else if attr, ok := d.GetOk(tsAttr); ok {
+		tsFrom = tsAttr
+		ts = attr.(int)
+	}
+	return ts, tsFrom
+}
+
+// downtimeBoundaryNeedsApply returns a boolean value signifying whether or not the boundary (start/end)
+// should be included in the API POST/PUT request. Arguments:
+// * `d` - current `*schema.ResourceData`
+// * `tsFrom` - name of the attribute in `d` from which `configTs` was extracted
+// * `apiTs` - current value (returned by API) of the boundary
+// * `configTs` - desired value (from TF configuration) of the boundary
+// * `updating` - `true` if this call is from Update method of the downtime resource, `false` if from Create
+func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, configTs int, updating bool) (apply bool) {
+	if tsFrom == "" {
+		// if the boundary was not specified in the config, don't apply it
+		return apply
+	}
+
+	if updating {
+		// when updating, we apply when
+		// * API-returned value is different than configured value
+		// * the config value has changed
+		if apiTs != configTs || d.HasChange(tsFrom) {
+			apply = true
+		}
+	} else {
+		// when creating, we always apply
+		apply = true
+	}
+
+	return apply
+}
+
+func buildDowntimeStruct(d *schema.ResourceData, client *datadog.Client, updating bool) (*datadog.Downtime, error) {
 	// NOTE: for each of start/start_date/end/end_date, we only send the value when
-	// it has changed. This allows users to change other attributes (e.g. scopes/message/...)
-	// without having to update the timestamps/dates to be in the future.
-	// (This works thanks to the downtime API allowing not to send these values
-	// when they shouldn't be touched.)
+	// it has changed or if the configured value is different than current value
+	// (IOW there's a resource drift). This allows users to change other attributes
+	// (e.g. scopes/message/...) without having to update the timestamps/dates to be
+	// in the future (this works thanks to the downtime API allowing not to send these
+	// values when they shouldn't be touched).
 	var dt datadog.Downtime
+	currentStart, currentEnd := 0, 0
+	if updating {
+		id, err := strconv.Atoi(d.Id())
+		if err != nil {
+			return nil, err
+		}
+
+		var currdt *datadog.Downtime
+		currdt, err = client.GetDowntime(id)
+		if err != nil {
+			return nil, err
+		}
+		currentStart = currdt.GetStart()
+		currentEnd = currdt.GetEnd()
+	}
 
 	if attr, ok := d.GetOk("active"); ok {
 		dt.SetActive(attr.(bool))
@@ -166,12 +228,9 @@ func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
 	if attr, ok := d.GetOk("disabled"); ok {
 		dt.SetDisabled(attr.(bool))
 	}
-	if attr, ok := d.GetOk("end_date"); ok && d.HasChange("end_date") {
-		if t, err := time.Parse(time.RFC3339, attr.(string)); err == nil {
-			dt.SetEnd(int(t.Unix()))
-		}
-	} else if attr, ok := d.GetOk("end"); ok && d.HasChange("end") {
-		dt.SetEnd(attr.(int))
+	endValue, endAttrName := getDowntimeBoundaryTimestamp(d, "end_date", "end")
+	if downtimeBoundaryNeedsApply(d, endAttrName, currentEnd, endValue, updating) {
+		dt.SetEnd(endValue)
 	}
 
 	if attr, ok := d.GetOk("message"); ok {
@@ -215,18 +274,17 @@ func buildDowntimeStruct(d *schema.ResourceData) *datadog.Downtime {
 		tags = append(tags, mt.(string))
 	}
 	dt.MonitorTags = tags
-	if attr, ok := d.GetOk("start_date"); ok && d.HasChange("start_date") {
-		if t, err := time.Parse(time.RFC3339, attr.(string)); err == nil {
-			dt.SetStart(int(t.Unix()))
-		}
-	} else if attr, ok := d.GetOk("start"); ok && d.HasChange("start") {
-		dt.SetStart(attr.(int))
+
+	startValue, startAttrName := getDowntimeBoundaryTimestamp(d, "start_date", "start")
+	if downtimeBoundaryNeedsApply(d, startAttrName, currentStart, startValue, updating) {
+		dt.SetStart(startValue)
 	}
+
 	if attr, ok := d.GetOk("timezone"); ok {
 		dt.SetTimezone(attr.(string))
 	}
 
-	return &dt
+	return &dt, nil
 }
 
 func resourceDatadogDowntimeExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
@@ -252,7 +310,10 @@ func resourceDatadogDowntimeExists(d *schema.ResourceData, meta interface{}) (b 
 func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
 
-	dts := buildDowntimeStruct(d)
+	dts, err := buildDowntimeStruct(d, client, false)
+	if err != nil {
+		return err
+	}
 	dt, err := client.CreateDowntime(dts)
 	if err != nil {
 		return fmt.Errorf("error updating downtime: %s", err.Error())
@@ -337,7 +398,10 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
 
-	dt := buildDowntimeStruct(d)
+	dt, err := buildDowntimeStruct(d, client, true)
+	if err != nil {
+		return err
+	}
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err
