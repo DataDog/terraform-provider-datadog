@@ -1,17 +1,17 @@
-## 2.1.0 (Unreleased)
+## 2.1.0 (July 24, 2019)
 
 FEATURES:
-* `datadog_dashboard`: New Resource combining screenboard and timeboard, allowing a single config to manage all of your Datadog Dashboards. [GH-249]
-* `datadog_integration_pagerduty_service_object`: New Resource that allows the configuration of individual pagerduty services for the Datadog Pagerduty Integration. [GH-237]
+* `datadog_dashboard`: New Resource combining screenboard and timeboard, allowing a single config to manage all of your Datadog Dashboards. ([#249](https://github.com/terraform-providers/terraform-provider-datadog/issues/249))
+* `datadog_integration_pagerduty_service_object`: New Resource that allows the configuration of individual pagerduty services for the Datadog Pagerduty Integration. ([#237](https://github.com/terraform-providers/terraform-provider-datadog/issues/237))
 
 IMPROVEMENTS:
-* `datadog_aws`: Add a mutex around all API operations for this resource. [GH-254]
-* `datadog_downtime`: General improvements around allowing the resource to be ran multiple times without sending any unchanged values for the start/end times. Also fixes non empty diff when monitor_tags isn't set. [GH-264] [GH-267]
-* `datadog_monitor`: Only add a threshold window if a recovery or trigger window is set. [GH-260] Thanks [@heldersepu](https://github.com/heldersepu)
-* `datadog_user`: Make `is_admin` computed to continue its deprecation path and avoid spurious diffs. [GH-251]
+* `datadog_aws`: Add a mutex around all API operations for this resource. ([#254](https://github.com/terraform-providers/terraform-provider-datadog/issues/254))
+* `datadog_downtime`: General improvements around allowing the resource to be ran multiple times without sending any unchanged values for the start/end times. Also fixes non empty diff when monitor_tags isn't set. ([#264](https://github.com/terraform-providers/terraform-provider-datadog/issues/264)] [[#267](https://github.com/terraform-providers/terraform-provider-datadog/issues/267))
+* `datadog_monitor`: Only add a threshold window if a recovery or trigger window is set. [[#260](https://github.com/terraform-providers/terraform-provider-datadog/issues/260)] Thanks [@heldersepu](https://github.com/heldersepu)
+* `datadog_user`: Make `is_admin` computed to continue its deprecation path and avoid spurious diffs. ([#251](https://github.com/terraform-providers/terraform-provider-datadog/issues/251))
 
 NOTES:
-* This release includes Terraform SDK upgrade to 0.12.5. [GH-265]
+* This release includes Terraform SDK upgrade to 0.12.5. ([#265](https://github.com/terraform-providers/terraform-provider-datadog/issues/265))
 
 ## 2.0.2 (June 26, 2019)
 
