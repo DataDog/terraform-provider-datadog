@@ -11,7 +11,6 @@ IMPROVEMENTS:
 * `datadog_user`: Make `is_admin` computed to continue its deprecation path and avoid spurious diffs. [GH-251]
 
 NOTES:
-
 * This release includes Terraform SDK upgrade to 0.12.5. [GH-265]
 
 ## 2.0.2 (June 26, 2019)
