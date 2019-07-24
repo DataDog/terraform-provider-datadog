@@ -152,18 +152,12 @@ func resourceDatadogDowntime() *schema.Resource {
 	}
 }
 
-// getDowntimeBoundaryTimestamp returns an int timestamp for start/end and whether or not
-// to apply this timestamp to the Downtime structure for POST/PUT request. Arguments:
+// getDowntimeBoundaryTimestamp returns an int timestamp for start/end and the name of the
+// attribute which it was extracted from (e.g. "end" or "end_date"). Arguments:
 // * `d` - current `*schema.ResourceData`
 // * `dateAttr` - name of the attribute in `d` which carries and RFC3339 date string, e.g. `end_date`
 // * `tsAttr` - name of the attribute in `d` which carries integer timestamp, e.g. `end`
-// * `current` - current value (returned by API) of the boundary
-// * `updating` - whether or not this call is from Update or Create method of the downtime resource
-func getDowntimeBoundaryTimestamp(d *schema.ResourceData, dateAttr, tsAttr string, current int, updating bool) (ts int, apply bool) {
-	tsFrom := ""
-	apply = false
-
-	// first, get the int value of the boundary
+func getDowntimeBoundaryTimestamp(d *schema.ResourceData, dateAttr, tsAttr string) (ts int, tsFrom string) {
 	if attr, ok := d.GetOk(dateAttr); ok {
 		if t, err := time.Parse(time.RFC3339, attr.(string)); err == nil {
 			tsFrom = dateAttr
@@ -173,13 +167,27 @@ func getDowntimeBoundaryTimestamp(d *schema.ResourceData, dateAttr, tsAttr strin
 		tsFrom = tsAttr
 		ts = attr.(int)
 	}
+	return ts, tsFrom
+}
 
-	// now decide whether we'll want to apply it or not
+// downtimeBoundaryNeedsApply returns a boolean value signifying whether or not the boundary (start/end)
+// should be included in the API POST/PUT request. Arguments:
+// * `d` - current `*schema.ResourceData`
+// * `tsFrom` - name of the attribute in `d` from which `configTs` was extracted
+// * `apiTs` - current value (returned by API) of the boundary
+// * `configTs` - desired value (from TF configuration) of the boundary
+// * `updating` - `true` if this call is from Update method of the downtime resource, `false` if from Create
+func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, configTs int, updating bool) (apply bool) {
+	if tsFrom == "" {
+		// if the boundary was not specified in the config, don't apply it
+		return apply
+	}
+
 	if updating {
 		// when updating, we apply when
 		// * API-returned value is different than configured value
 		// * the config value has changed
-		if current != ts || d.HasChange(tsFrom) {
+		if apiTs != configTs || d.HasChange(tsFrom) {
 			apply = true
 		}
 	} else {
@@ -187,7 +195,7 @@ func getDowntimeBoundaryTimestamp(d *schema.ResourceData, dateAttr, tsAttr strin
 		apply = true
 	}
 
-	return ts, apply
+	return apply
 }
 
 func buildDowntimeStruct(d *schema.ResourceData, client *datadog.Client, updating bool) (*datadog.Downtime, error) {
@@ -220,8 +228,8 @@ func buildDowntimeStruct(d *schema.ResourceData, client *datadog.Client, updatin
 	if attr, ok := d.GetOk("disabled"); ok {
 		dt.SetDisabled(attr.(bool))
 	}
-	endValue, endApply := getDowntimeBoundaryTimestamp(d, "end_date", "end", currentEnd, updating)
-	if endApply {
+	endValue, endAttrName := getDowntimeBoundaryTimestamp(d, "end_date", "end")
+	if downtimeBoundaryNeedsApply(d, endAttrName, currentEnd, endValue, updating) {
 		dt.SetEnd(endValue)
 	}
 
@@ -267,8 +275,8 @@ func buildDowntimeStruct(d *schema.ResourceData, client *datadog.Client, updatin
 	}
 	dt.MonitorTags = tags
 
-	startValue, startApply := getDowntimeBoundaryTimestamp(d, "start_date", "start", currentStart, updating)
-	if startApply {
+	startValue, startAttrName := getDowntimeBoundaryTimestamp(d, "start_date", "start")
+	if downtimeBoundaryNeedsApply(d, startAttrName, currentStart, startValue, updating) {
 		dt.SetStart(startValue)
 	}
 
