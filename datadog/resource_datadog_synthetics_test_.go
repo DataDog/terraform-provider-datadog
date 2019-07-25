@@ -116,7 +116,11 @@ func syntheticsTestOptions() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"follow_redirects": {
-					Type:     schema.TypeBool,
+					Type: schema.TypeBool,
+					DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+						m := map[string]bool{"1": true, "0": false, "true": true, "false": false}
+						return m[oldVal] == m[newVal]
+					},
 					Optional: true,
 				},
 				"min_failure_duration": {
