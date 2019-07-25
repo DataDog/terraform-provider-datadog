@@ -394,10 +394,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 func convertToString(i interface{}) string {
 	switch v := i.(type) {
 	case bool:
-		if v {
-			return "true"
-		}
-		return "false"
+		return strconv.FormatBool(v)
 	case int:
 		return strconv.Itoa(v)
 	case float64:
