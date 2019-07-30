@@ -10,7 +10,7 @@ description: |-
 
 Provides a Datadog screenboard resource. This can be used to create and manage Datadog screenboards.
 
-~> **Note:**This resource is outdated. Use the new [`datadog_dashboard`](dashboard.html) resource instead.
+~> **Note:** This resource is outdated. Use the new [`datadog_dashboard`](dashboard.html) resource instead.
 
 ## Example Usage
 
@@ -76,6 +76,64 @@ resource "datadog_screenboard" "acceptance_test" {
             "alias": "CPU Usage"
           }
         })
+      }
+
+      request {
+        log_query {
+          index = "mcnulty"
+          compute = {
+            aggregation = "count"
+            facet = "@duration"
+            interval = 5000
+          }
+          search = {
+            query = "status:info"
+          }
+          group_by {
+            facet = "host"
+            limit = 10
+            sort = {
+              aggregation = "avg"
+              order = "desc"
+              facet = "@duration"
+            }
+          }
+        }
+        display_type = "area"
+      }
+
+      request {
+        apm_query {
+          index = "apm-search"
+          compute = {
+            aggregation = "count"
+            facet = "@duration"
+            interval = 5000
+          }
+          search = {
+            query = "type:web"
+          }
+          group_by {
+            facet = "resource_name"
+            limit = 50
+            sort = {
+              aggregation = "avg"
+              order = "desc"
+              facet = "@string_query.interval"
+            }
+          }
+        }
+        display_type = "bars"
+      }
+
+      request {
+        process_query {
+          metric = "process.stat.cpu.total_pct"
+          search_by = "error"
+          filter_by = ["active"]
+          limit = 50
+        }
+        display_type = "area"
       }
 
       marker {
@@ -492,7 +550,7 @@ Only for widgets of type "timeseries", "query_value", "hostmap", "change", "topl
 Nested `widget` `tile_def` blocks have the following structure:
 
 - `viz` - (Required) Should be the same as the widget's type. One of "timeseries", "query_value", "hostmap", "change", "toplist", "process".
-- `request` - (Required) Nested block describing the request to use when displaying the widget. The structure of this block is described below. Multiple request blocks are allowed within a given tile_def block.
+- `request` - (Required) Nested block describing the request to use when displaying the widget. The structure of this block is described below. Multiple request blocks are allowed within a given tile_def block. Exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block.
 - `marker` - (Optional, only for widgets of type "timeseries") Nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple marker blocks are allowed within a given tile_def block.
 - `event` - (Optional, only for widgets of type "timeseries") Nested block describing the event overlays to use when displaying the widget. The structure of this block is described below. At most one such block should be present in a given tile_def block.
 - `custom_unit` - (Optional, only for widgets of type "query_value") The unit for the value displayed in the widget
@@ -541,7 +599,10 @@ Only for widgets of type "timeseries", "query_value", "toplist", "change", "host
 
 Nested `widget` `tile_def` `request` blocks have the following structure:
 
-- `q` - (Optional, only for widgets of type "timeseries", "query_value", "toplist", "change", "hostmap") The query of the request. Pro tip: Use the JSON tab inside the Datadog UI to help build you query strings.
+- `q` - (Optional) Only for widgets of type "timeseries", "query_value", "toplist", "change", "hostmap") The query of the request. Pro tip: Use the JSON tab inside the Datadog UI to help build you query strings.
+- `apm_query` - (Optional) The APM query to use in the widget. The structure of this block is described [below](screenboard.html#nested-widget-tile_def-request-apm_query-and-log_query-blocks).
+- `log_query` - (Optional) The log query to use in the widget. The structure of this block is described [below](screenboard.html#nested-widget-tile_def-request-apm_query-and-log_query-blocks).
+- `process_query` - (Optional) The process query to use in the widget. The structure of this block is described [below](screenboard.html#nested-widget-tile_def-request-process_query-blocks).
 - `type` - (Optional, only for widgets of type "timeseries", "query_value", "hostmap") Choose the type of representation to use for this query. For widgets of type "timeseries" and "query_value", use one of "line", "bars" or "area". For widgets of type "hostmap", use "fill" or "size".
 - `query_type` - (Optional, only for widgets of type "process") Use "process".
 - `metric` - (Optional, only for widgets of type "process") The metric you want to use for the widget.
@@ -557,7 +618,9 @@ Nested `widget` `tile_def` `request` blocks have the following structure:
 - `increase_good` - (Optional, only for widgets of type "change") Boolean indicating whether an increase in the value is good (thus displayed in green) or not (thus displayed in red).
 - `style` - (Optional, only for widgets of type "timeseries", "query_value", "toplist", "process") describing how to display the widget. The structure of this block is described below. At most one such block should be present in a given request block.
 - `conditional_format` - (Optional) Nested block to customize the style if certain conditions are met. Currently only applies to `Query Value` and `Top List` type graphs.
+
 * `metadata_json` - (Optional) A JSON blob (preferrably created using [jsonencode](https://www.terraform.io/docs/configuration/functions/jsonencode.html)) representing mapping of query expressions to alias names. Note that the query expressions in `metadata_json` will be ignored if they're not present in the query. For example, this is how you define `metadata_json` with Terraform >= 0.12:
+
   ```
   metadata_json = jsonencode({
     "avg:redis.info.latency_ms{$host}": {
@@ -565,7 +628,9 @@ Nested `widget` `tile_def` `request` blocks have the following structure:
     }
   })
   ```
+
   And here's how you define `metadata_json` with Terraform < 0.12:
+
   ```
   variable "my_metadata" {
     default = {
@@ -580,6 +645,7 @@ Nested `widget` `tile_def` `request` blocks have the following structure:
           metadata_json = "${jsonencode(var.my_metadata)}"
   }
   ```
+
   Note that this has to be a JSON blob because of [limitations](https://github.com/hashicorp/terraform/issues/6215) of Terraform's handling complex nested structures. This is also why the key is called `metadata_json` even though it sets `metadata` attribute on the API call.
 
 ### Nested `widget` `tile_def` `request` `style` block
@@ -591,6 +657,34 @@ The nested `style` blocks has the following structure:
 - `palette` - (Optional) Color of the line drawn. For widgets of type "timeseries", "query_value", "toplist", one of: "classic", "cool", "warm", "purple", "orange" or "gray". For widgets of type "process", one of: "dog_classic_area", "YlOrRd", "GnBu", "Reds", "Oranges", "Greens", "Blues", "Purples".
 - `width` - (Optional) Line width. Possible values: "thin", "normal", "thick". Default: "normal".
 - `type` - (Optional) Type of line drawn. Possible values: "dashed", "solid", "dotted". Default: "solid".
+
+### Nested `widget` `tile_def` `request` `apm_query` and `log_query` blocks
+
+Nested `apm_query` and `log_query` blocks have the following structure (Visit the [ Graph Primer](https://docs.datadoghq.com/graphing/) for more information about these values):
+
+- `index` - (Required)
+- `compute` - (Required). Exactly one nested block is required with the following structure:
+  - `aggregation` - (Required)
+  - `facet` - (Optional)
+  - `interval` - (Optional)
+- `search` - (Optional). One nested block is allowed with the following structure:
+  - `query` - (Optional)
+- `group_by` - (Optional). Multiple nested blocks are allowed with the following structure:
+  - `facet` - (Optional)
+  - `limit` - (Optional)
+  - `sort` - (Optional). One nested block is allowed with the following structure:
+    - `aggregation` - (Optional)
+    - `order` - (Optional)
+    - `facet` - (Optional)
+
+### Nested `widget` `tile_def` `request` `process_query` blocks
+
+Nested `process_query` blocks have the following structure (Visit the [ Graph Primer](https://docs.datadoghq.com/graphing/) for more information about these values):
+
+- `metric` - (Required)
+- `search_by` - (Required)
+- `filter_by` - (Required)
+- `limit` - (Required)
 
 ### Nested `widget` `tile_def` `request` `conditional_format` block
 
@@ -606,7 +700,7 @@ The nested `conditional_format` blocks has the following structure:
 
 Nested `template_variable` blocks have the following structure:
 
-- `name` - (Required) The variable name. Can be referenced as $name in `graph` `request` `q` query strings.
+- `name` - (Required) The variable name. Can be referenced as \$name in `graph` `request` `q` query strings.
 - `prefix` - (Optional) The tag group. Default: no tag group.
 - `default` - (Optional) The default tag. Default: "\*" (match all).
 

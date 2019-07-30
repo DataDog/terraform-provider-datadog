@@ -88,6 +88,115 @@ func resourceDatadogScreenboard() *schema.Resource {
 		},
 	}
 
+	tileDefApmOrLogQuery := &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		MaxItems: 1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"index": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"compute": &schema.Schema{
+					Type:     schema.TypeMap,
+					Required: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"aggregation": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"facet": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"interval": {
+								Type:     schema.TypeInt,
+								Optional: true,
+							},
+						},
+					},
+				},
+				"search": &schema.Schema{
+					Type:     schema.TypeMap,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"query": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+						},
+					},
+				},
+				"group_by": &schema.Schema{
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"facet": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"limit": {
+								Type:     schema.TypeInt,
+								Optional: true,
+							},
+							"sort": {
+								Type:     schema.TypeMap,
+								Optional: true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"aggregation": {
+											Type:     schema.TypeString,
+											Required: true,
+										},
+										"order": {
+											Type:     schema.TypeString,
+											Required: true,
+										},
+										"facet": {
+											Type:     schema.TypeString,
+											Optional: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	tileDefProcessQuery := &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		MaxItems: 1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"metric": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"search_by": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"filter_by": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem:     &schema.Schema{Type: schema.TypeString},
+				},
+				"limit": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+			},
+		},
+	}
+
 	tileDefRequest := &schema.Schema{
 		Type:     schema.TypeList,
 		Required: true,
@@ -97,6 +206,9 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Type:     schema.TypeString,
 					Optional: true,
 				},
+				"log_query":     tileDefApmOrLogQuery,
+				"apm_query":     tileDefApmOrLogQuery,
+				"process_query": tileDefProcessQuery,
 				"type": {
 					Type:     schema.TypeString,
 					Optional: true,
@@ -741,6 +853,92 @@ func buildTileDefRequestsConditionalFormats(source interface{}) []datadog.Condit
 	return r
 }
 
+func buildTileDefRequestsGroupBys(source interface{}) []datadog.TileDefApmOrLogQueryGroupBy {
+	groupBys, ok := source.([]interface{})
+	if !ok || len(groupBys) == 0 {
+		return nil
+	}
+
+	r := []datadog.TileDefApmOrLogQueryGroupBy{}
+	for _, groupBy := range groupBys {
+		groupByMap := groupBy.(map[string]interface{})
+		d := datadog.TileDefApmOrLogQueryGroupBy{}
+
+		batchSetFromDict(batch{
+			dict: groupByMap,
+			matches: []match{
+				{"facet", &d.Facet},
+				{"limit", &d.Limit},
+			}})
+		if groupBySort, ok := groupByMap["sort"].(map[string]interface{}); ok {
+			s := datadog.TileDefApmOrLogQueryGroupBySort{}
+			batchSetFromDict(batch{
+				dict: groupBySort,
+				matches: []match{
+					{"aggregation", &s.Aggregation},
+					{"order", &s.Order},
+					{"facet", &s.Facet},
+				}})
+			d.Sort = &s
+		}
+		r = append(r, d)
+	}
+	return r
+}
+
+func buildTileDefRequestsApmOrLogQuery(source interface{}) *datadog.TileDefApmOrLogQuery {
+	datadogQuery := source.(map[string]interface{})
+
+	// Index
+	d := datadog.TileDefApmOrLogQuery{
+		Index: datadog.String(datadogQuery["index"].(string)),
+	}
+
+	// Compute
+	terraformCompute := datadogQuery["compute"].(map[string]interface{})
+	datadogCompute := datadog.TileDefApmOrLogQueryCompute{
+		Aggregation: datadog.String(terraformCompute["aggregation"].(string)),
+	}
+	if v, ok := terraformCompute["facet"].(string); ok && len(v) != 0 {
+		datadogCompute.Facet = datadog.String(v)
+	}
+	if v, err := strconv.ParseInt(terraformCompute["interval"].(string), 10, 64); err == nil {
+		datadogCompute.Interval = datadog.Int(int(v))
+	}
+
+	d.Compute = &datadogCompute
+
+	// Search
+	if terraformSearch, ok := datadogQuery["search"].(map[string]interface{}); ok {
+		s := datadog.TileDefApmOrLogQuerySearch{
+			Query: datadog.String(terraformSearch["query"].(string)),
+		}
+		d.Search = &s
+	}
+	// GroupBy
+	d.GroupBy = buildTileDefRequestsGroupBys(datadogQuery["groupBy"])
+	return &d
+}
+func buildTileDefRequestsProcessQuery(source interface{}) *datadog.TileDefProcessQuery {
+	datadogQuery := source.(map[string]interface{})
+	d := datadog.TileDefProcessQuery{}
+	batchSetFromDict(batch{
+		dict: datadogQuery,
+		matches: []match{
+			{"metric", &d.Metric},
+			{"search_by", &d.SearchBy},
+			{"limit", &d.Limit},
+		}})
+	if filterBys, ok := datadogQuery["filter_by"].([]interface{}); ok && len(filterBys) != 0 {
+		datadogFilterbys := make([]string, len(filterBys))
+		for i, filtrBy := range filterBys {
+			datadogFilterbys[i] = filtrBy.(string)
+		}
+		d.FilterBy = datadogFilterbys
+	}
+	return &d
+}
+
 func buildTileDefRequests(source interface{}) []datadog.TileDefRequest {
 	requests, ok := source.([]interface{})
 	if !ok || len(requests) == 0 {
@@ -757,7 +955,6 @@ func buildTileDefRequests(source interface{}) []datadog.TileDefRequest {
 		batchSetFromDict(batch{
 			dict: requestMap,
 			matches: []match{
-				{"q", &d.Query},
 				{"type", &d.Type},
 				{"query_type", &d.QueryType},
 				{"metric", &d.Metric},
@@ -785,6 +982,19 @@ func buildTileDefRequests(source interface{}) []datadog.TileDefRequest {
 					{"width", &d.Style.Width},
 				},
 			})
+		}
+
+		if v, ok := requestMap["q"].(string); ok && len(v) != 0 {
+			d.Query = &v
+		} else if v, ok := requestMap["log_query"].([]interface{}); ok && len(v) > 0 {
+			logQuery := v[0].(map[string]interface{})
+			d.LogQuery = buildTileDefRequestsApmOrLogQuery(logQuery)
+		} else if v, ok := requestMap["apm_query"].([]interface{}); ok && len(v) > 0 {
+			apmQuery := v[0].(map[string]interface{})
+			d.ApmQuery = buildTileDefRequestsApmOrLogQuery(apmQuery)
+		} else if v, ok := requestMap["process_query"].([]interface{}); ok && len(v) > 0 {
+			processQuery := v[0].(map[string]interface{})
+			d.ProcessQuery = buildTileDefRequestsProcessQuery(processQuery)
 		}
 
 		// request.conditionalFormats
