@@ -111,16 +111,49 @@ func syntheticsTestRequest() *schema.Schema {
 
 func syntheticsTestOptions() *schema.Schema {
 	return &schema.Schema{
-		Type:     schema.TypeMap,
+		Type: schema.TypeMap,
+		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
+			if key == "options.follow_redirects" {
+				// TF nested schemas is limited to string values only
+				// follow_redirects being a boolean in Datadog json api
+				// we need a sane way to convert from boolean to string
+				// and from string to boolean
+				truthyValues := map[string]struct{}{"true": {}, "1": {}}
+				falsyValues := map[string]struct{}{"false": {}, "0": {}}
+				_, isTruthyOld := truthyValues[old]
+				_, isFalsyOld := falsyValues[old]
+				_, isTruthyNew := truthyValues[new]
+				_, isFalsyNew := falsyValues[new]
+				if !isTruthyOld && !isFalsyOld {
+					isFalsyOld = true
+				}
+				if !isTruthyNew && !isFalsyNew {
+					isFalsyNew = true
+				}
+				return (isTruthyNew && isTruthyOld) || (isFalsyNew && isFalsyOld)
+			}
+			return old == new
+		},
+		ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+			expectedValues := map[string]struct{}{"true": {}, "false": {}, "1": {}, "0": {}}
+			followRedirectsRaw, ok := val.(map[string]interface{})["follow_redirects"]
+			if ok {
+				followRedirectsStr := followRedirectsRaw.(string)
+				_, isExpected := expectedValues[followRedirectsStr]
+				if !isExpected {
+					errs = append(errs, fmt.Errorf("%q must be either true or false, got: %s", key, followRedirectsStr))
+				}
+				if followRedirectsStr == "1" || followRedirectsStr == "0" {
+					warns = append(warns, fmt.Sprintf("%q must be either true or false, got: %s (please change 1 => true, 0 => false)", key, followRedirectsStr))
+				}
+			}
+			return
+		},
 		Optional: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"follow_redirects": {
-					Type: schema.TypeBool,
-					DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-						m := map[string]bool{"1": true, "0": false, "true": true, "false": false}
-						return m[oldVal] == m[newVal]
-					},
+					Type:     schema.TypeBool,
 					Optional: true,
 				},
 				"min_failure_duration": {
@@ -276,12 +309,12 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 		options.SetTickEvery(tickEvery)
 	}
 	if attr, ok := d.GetOk("options.follow_redirects"); ok {
-		// TF nested schemas is limited to string values only
-		// follow_redirects being a boolean in Datadog json api
-		// we need a sane way to convert from boolean to string
-		// and from string to boolean
-		followRedirects := attr.(string) == "true"
-		options.SetFollowRedirects(followRedirects)
+		// follow_redirects is a string ("true" or "false") in TF state
+		// it used to be "1" and "0" but it does not play well with the API
+		// we support both for retro-compatibility
+		truthyValues := map[string]struct{}{"true": {}, "1": {}}
+		_, isTruthy := truthyValues[attr.(string)]
+		options.SetFollowRedirects(isTruthy)
 	}
 	if attr, ok := d.GetOk("options.min_failure_duration"); ok {
 		minFailureDuration, _ := strconv.Atoi(attr.(string))
