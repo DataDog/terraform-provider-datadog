@@ -366,7 +366,6 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 	syntheticsTest := datadog.SyntheticsTest{
 		Name:    datadog.String(d.Get("name").(string)),
 		Type:    datadog.String(d.Get("type").(string)),
-		Subtype: datadog.String(d.Get("subtype").(string)),
 		Config:  &config,
 		Options: &options,
 		Message: datadog.String(d.Get("message").(string)),
@@ -389,11 +388,23 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 	}
 	syntheticsTest.Tags = tags
 
+	if attr, ok := d.GetOk("subtype"); ok {
+		syntheticsTest.Subtype = datadog.String(attr.(string))
+	} else {
+		if *syntheticsTest.Type == "api" {
+			// we want to default to "http" subtype when type is "api"
+			syntheticsTest.Subtype = datadog.String("http")
+		}
+	}
+
 	return &syntheticsTest
 }
 
 func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *datadog.SyntheticsTest) {
 	d.Set("type", syntheticsTest.GetType())
+	if syntheticsTest.HasSubtype() {
+		d.Set("subtype", syntheticsTest.GetSubtype())
+	}
 
 	actualRequest := syntheticsTest.GetConfig().Request
 	localRequest := make(map[string]string)
