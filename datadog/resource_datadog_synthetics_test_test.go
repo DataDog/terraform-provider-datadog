@@ -140,7 +140,7 @@ var createSyntheticsAPITestStep = resource.TestStep{
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "type", "api"),
 		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "type", "http"),
+			"datadog_synthetics_test.foo", "subtype", "http"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "request.method", "GET"),
 		resource.TestCheckResourceAttr(
@@ -265,7 +265,7 @@ var updateSyntheticsAPITestStep = resource.TestStep{
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "type", "api"),
 		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "type", "http"),
+			"datadog_synthetics_test.foo", "subtype", "http"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "request.method", "GET"),
 		resource.TestCheckResourceAttr(
