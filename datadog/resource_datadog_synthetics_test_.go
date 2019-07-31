@@ -155,6 +155,16 @@ func syntheticsTestOptions() *schema.Schema {
 					errs = append(errs, fmt.Errorf("%q must be either true or false, got: %s", key, followRedirectsStr))
 				}
 			}
+			acceptSelfSignedRaw, ok := val.(map[string]interface{})["accept_self_signed"]
+			if ok {
+				acceptSelfSignedStr := acceptSelfSignedRaw.(string)
+				switch acceptSelfSignedStr {
+				case "true", "false":
+					break
+				default:
+					errs = append(errs, fmt.Errorf("%q.accept_self_signed must be either true or false, got: %s", key, acceptSelfSignedStr))
+				}
+			}
 			return
 		},
 		Optional: true,
