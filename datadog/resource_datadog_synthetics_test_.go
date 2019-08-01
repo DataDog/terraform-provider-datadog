@@ -118,33 +118,26 @@ func syntheticsTestOptions() *schema.Schema {
 				// follow_redirects being a boolean in Datadog json api
 				// we need a sane way to convert from boolean to string
 				// and from string to boolean
-				truthyValues := map[string]struct{}{"true": {}, "1": {}}
-				falsyValues := map[string]struct{}{"false": {}, "0": {}}
-				_, isTruthyOld := truthyValues[old]
-				_, isFalsyOld := falsyValues[old]
-				_, isTruthyNew := truthyValues[new]
-				_, isFalsyNew := falsyValues[new]
-				if !isTruthyOld && !isFalsyOld {
-					isFalsyOld = true
+				oldValue, err1 := strconv.ParseBool(old)
+				newValue, err2 := strconv.ParseBool(new)
+				if err1 != nil || err2 != nil {
+					return false
 				}
-				if !isTruthyNew && !isFalsyNew {
-					isFalsyNew = true
-				}
-				return (isTruthyNew && isTruthyOld) || (isFalsyNew && isFalsyOld)
+				return oldValue == newValue
 			}
 			return old == new
 		},
 		ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-			expectedValues := map[string]struct{}{"true": {}, "false": {}, "1": {}, "0": {}}
 			followRedirectsRaw, ok := val.(map[string]interface{})["follow_redirects"]
 			if ok {
 				followRedirectsStr := followRedirectsRaw.(string)
-				_, isExpected := expectedValues[followRedirectsStr]
-				if !isExpected {
-					errs = append(errs, fmt.Errorf("%q must be either true or false, got: %s", key, followRedirectsStr))
-				}
-				if followRedirectsStr == "1" || followRedirectsStr == "0" {
+				switch followRedirectsStr {
+				case "0", "1":
 					warns = append(warns, fmt.Sprintf("%q must be either true or false, got: %s (please change 1 => true, 0 => false)", key, followRedirectsStr))
+				case "true", "false":
+					break
+				default:
+					errs = append(errs, fmt.Errorf("%q must be either true or false, got: %s", key, followRedirectsStr))
 				}
 			}
 			return
@@ -312,9 +305,8 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 		// follow_redirects is a string ("true" or "false") in TF state
 		// it used to be "1" and "0" but it does not play well with the API
 		// we support both for retro-compatibility
-		truthyValues := map[string]struct{}{"true": {}, "1": {}}
-		_, isTruthy := truthyValues[attr.(string)]
-		options.SetFollowRedirects(isTruthy)
+		followRedirects, _ := strconv.ParseBool(attr.(string))
+		options.SetFollowRedirects(followRedirects)
 	}
 	if attr, ok := d.GetOk("options.min_failure_duration"); ok {
 		minFailureDuration, _ := strconv.Atoi(attr.(string))
