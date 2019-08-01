@@ -785,7 +785,7 @@ Only for widgets of type "timeseries".
 
 Nested `widget` `marker` blocks have the following structure:
 
-- `type` - (Required) How the marker lines will look. Possible values are {"error", "warning", "info", "ok"} {"dashed", "solid", "bold"}. Example: "error dashed".
+- `display_type` - (Required) How the marker lines will look. Possible values are {"error", "warning", "info", "ok"} {"dashed", "solid", "bold"}. Example: "error dashed".
 - `value` - (Required) Mathematical expression describing the marker. Examples: `y > 1`, `-5 < y < 0`, `y = 19`.
 - `label` - (Optional) A label for the line or range.
 
