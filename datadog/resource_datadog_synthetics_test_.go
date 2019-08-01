@@ -157,11 +157,11 @@ func syntheticsTestOptions() *schema.Schema {
 				followRedirectsStr := convertToString(followRedirectsRaw)
 				switch followRedirectsStr {
 				case "0", "1":
-					warns = append(warns, fmt.Sprintf("%q must be either true or false, got: %s (please change 1 => true, 0 => false)", key, followRedirectsStr))
+					warns = append(warns, fmt.Sprintf("%q.follow_redirects must be either true or false, got: %s (please change 1 => true, 0 => false)", key, followRedirectsStr))
 				case "true", "false":
 					break
 				default:
-					errs = append(errs, fmt.Errorf("%q must be either true or false, got: %s", key, followRedirectsStr))
+					errs = append(errs, fmt.Errorf("%q.follow_redirects must be either true or false, got: %s", key, followRedirectsStr))
 				}
 			}
 			acceptSelfSignedRaw, ok := val.(map[string]interface{})["accept_self_signed"]
