@@ -269,8 +269,9 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists("datadog_monitor.complex_metric_alert_example_monitor"),
+					// even though this is defined as a metric alert, the API will actually return query alert
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.complex_metric_alert_example_monitor", "type", "metric alert"),
+						"datadog_monitor.complex_metric_alert_example_monitor", "type", "query alert"),
 				),
 			},
 			{
@@ -394,8 +395,9 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists("datadog_monitor.complex_metric_alert_example_monitor"),
+					// even though this is defined as a metric alert, the API will actually return query alert
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.complex_metric_alert_example_monitor", "type", "metric alert"),
+						"datadog_monitor.complex_metric_alert_example_monitor", "type", "query alert"),
 				),
 			},
 			{
@@ -515,6 +517,25 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 						"datadog_monitor.foo", "thresholds.critical", "2.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "enable_logs_sample", "true"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogMonitor_NoThresholdWindows(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorConfigNoThresholdWindows,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "name", "test bug 259"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "message", "test"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "type", "query alert"),
 				),
 			},
 		},
@@ -1064,6 +1085,29 @@ resource "datadog_monitor" "foo" {
   locked = false
   tags = ["foo:bar", "baz"]
 	enable_logs_sample = true
+}
+`
+
+const testAccCheckDatadogMonitorConfigNoThresholdWindows = `
+resource "datadog_monitor" "foo" {
+	name = "test bug 259"
+	type = "query alert"
+	message = "test"
+	query = "avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') >= 1"
+	thresholds = {
+	  ok = "0.0"
+	  warning = "0.5"
+	  warning_recovery = "0.25"
+	  critical = "1.0"
+	  critical_recovery = "0.5"
+	}
+
+	notify_no_data = false
+	renotify_interval = 60
+
+	notify_audit = false
+	timeout_h = 60
+	include_tags = true
 }
 `
 

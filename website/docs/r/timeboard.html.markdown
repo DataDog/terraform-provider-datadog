@@ -10,6 +10,8 @@ description: |-
 
 Provides a Datadog timeboard resource. This can be used to create and manage Datadog timeboards.
 
+~> **Note:**This resource is outdated. Use the new [`datadog_dashboard`](dashboard.html) resource instead.
+
 ## Example Usage
 
 ```hcl
