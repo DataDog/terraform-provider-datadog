@@ -75,6 +75,9 @@ resource "datadog_dashboard" "ordered_dashboard" {
     distribution_definition {
       request {
         q = "avg:system.load.1{env:staging} by {account}"
+        style {
+          palette = "warm"
+        }
       }
       title = "Widget Title"
       time = {
@@ -100,6 +103,9 @@ resource "datadog_dashboard" "ordered_dashboard" {
     heatmap_definition {
       request {
         q = "avg:system.load.1{env:staging} by {account}"
+        style {
+          palette = "warm"
+        }
       }
       yaxis {
         min = 1
@@ -129,6 +135,12 @@ resource "datadog_dashboard" "ordered_dashboard" {
       no_group_hosts = true
       no_metric_hosts = true
       scope = ["region:us-east-1", "aws_account:727006795293"]
+      style {
+        palette = "yellow_to_green"
+        palette_flip = true
+        fill_min = "10"
+        fill_max = "20"
+      }
       title = "Widget Title"
     }
   }
@@ -211,6 +223,11 @@ resource "datadog_dashboard" "ordered_dashboard" {
       request {
         q= "avg:system.cpu.user{app:general} by {env}"
         display_type = "line"
+        style {
+          palette = "warm"
+          line_type = "dashed"
+          line_width = "thin"
+        }
       }
       request {
         log_query {
@@ -568,6 +585,8 @@ Nested `widget` blocks have the following structure:
   - `distribution_definition`: The definition for a Distribution widget. Exactly one nested block is allowed with the following structure:
       - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
           - `q`: (Required) The metric query to use in the widget.
+          - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
+              - `palette` - (Optional) Color palette to apply to the widget.
       - `title`: (Optional) The title of the widget.
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
       - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
@@ -593,6 +612,8 @@ Nested `widget` blocks have the following structure:
   - `heatmap_definition`: The definition for a Heatmap widget. Exactly one nested block is allowed with the following structure:
       - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
           - `q`: (Required) The metric query to use in the widget.
+          - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
+              - `palette` - (Optional) Color palette to apply to the widget.
       - `yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
       - `title`: (Optional) The title of the widget.
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
@@ -609,6 +630,11 @@ Nested `widget` blocks have the following structure:
       - `no_group_host` - (Optional) Boolean indicating whether to show ungrouped nodes.
       - `group` - (Optional) The list of tags to group nodes by.
       - `scope` - (Optional) The list of tags to filter nodes by.
+      - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
+              - `palette` - (Optional) Color palette to apply to the widget.
+              - `palette_flip` - (Optional) Boolean indicating whether to flip the palette tones.
+              - `fill_min` - (Optional) Min value to use to color the map.
+              - `fill_max` - (Optional) Max value to use to color the map.
       - `title`: (Optional) The title of the widget.
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
       - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
@@ -683,6 +709,10 @@ Nested `widget` blocks have the following structure:
             - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
             - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             - `display_type` - (Optional) Type of display to use for the request. Available values are: `area`, `bars`, or `line`.
+            - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
+              - `palette` - (Optional) Color palette to apply to the widget.
+              - `line_type` - (Optional) Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.
+              - `line_width` - (Optional) Width of line displayed. Available values are: `normal`, `thick`, or `thin`.
         - `marker` - (Optional) Nested block describing the marker to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widgetmarker-blocks). Multiple marker blocks are allowed within a given tile_def block.
         - `title`: (Optional) The title of the widget.
         - `title_size`: (Optional) The size of the widget's title. Default is 16.
