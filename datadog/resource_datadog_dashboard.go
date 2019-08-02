@@ -1308,11 +1308,11 @@ func buildTerraformDistributionDefinition(datadogDefinition datadog.Distribution
 func getDistributionRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":         getMetricQuerySchema(),
-		"apm_query": getApmOrLogQuerySchema(),
-		"log_query": getApmOrLogQuerySchema(),
-		// Settings specific to Distribution requests
+		"q":             getMetricQuerySchema(),
+		"apm_query":     getApmOrLogQuerySchema(),
+		"log_query":     getApmOrLogQuerySchema(),
 		"process_query": getProcessQuerySchema(),
+		// Settings specific to Distribution requests
 		"style": {
 			Type:     schema.TypeList,
 			MaxItems: 1,
