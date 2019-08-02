@@ -99,7 +99,7 @@ resource "datadog_screenboard" "acceptance_test" {
             }
           }
         }
-        display_type = "area"
+        type = "area"
       }
 
       request {
@@ -123,7 +123,7 @@ resource "datadog_screenboard" "acceptance_test" {
             }
           }
         }
-        display_type = "bars"
+        type = "bars"
       }
 
       request {
@@ -133,7 +133,7 @@ resource "datadog_screenboard" "acceptance_test" {
           filter_by = ["active"]
           limit = 50
         }
-        display_type = "area"
+        type = "area"
       }
 
       marker {
@@ -550,7 +550,7 @@ Only for widgets of type "timeseries", "query_value", "hostmap", "change", "topl
 Nested `widget` `tile_def` blocks have the following structure:
 
 - `viz` - (Required) Should be the same as the widget's type. One of "timeseries", "query_value", "hostmap", "change", "toplist", "process".
-- `request` - (Required) Nested block describing the request to use when displaying the widget. The structure of this block is described below. Multiple request blocks are allowed within a given tile_def block. Exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block.
+- `request` - (Required) Nested block describing the request to use when displaying the widget. The structure of this block is described below. Multiple request blocks are allowed within a given tile_def block.
 - `marker` - (Optional, only for widgets of type "timeseries") Nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple marker blocks are allowed within a given tile_def block.
 - `event` - (Optional, only for widgets of type "timeseries") Nested block describing the event overlays to use when displaying the widget. The structure of this block is described below. At most one such block should be present in a given tile_def block.
 - `custom_unit` - (Optional, only for widgets of type "query_value") The unit for the value displayed in the widget
@@ -596,8 +596,7 @@ Nested `widget` `tile_def` `event` blocks have the following structure:
 ### Nested `widget` `tile_def` `request` blocks
 
 Only for widgets of type "timeseries", "query_value", "toplist", "change", "hostmap", "process".
-
-Nested `widget` `tile_def` `request` blocks have the following structure:
+Nested `widget` `tile_def` `request` blocks have the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
 
 - `q` - (Optional) Only for widgets of type "timeseries", "query_value", "toplist", "change", "hostmap") The query of the request. Pro tip: Use the JSON tab inside the Datadog UI to help build you query strings.
 - `apm_query` - (Optional) The APM query to use in the widget. The structure of this block is described [below](screenboard.html#nested-widget-tile_def-request-apm_query-and-log_query-blocks).

@@ -506,7 +506,7 @@ func buildDatadogGraphApmOrLogQuery(terraformLogOrApmQuery map[string]interface{
 		}
 	}
 	// GroupBy
-	if terraformGroupBys, ok := terraformLogOrApmQuery["groupBy"].([]interface{}); ok && len(terraformGroupBys) > 0 {
+	if terraformGroupBys, ok := terraformLogOrApmQuery["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
 		datadogGroupBys := make([]datadog.GraphApmOrLogQueryGroupBy, len(terraformGroupBys))
 		for i, _groupBy := range terraformGroupBys {
 			groupBy := _groupBy.(map[string]interface{})

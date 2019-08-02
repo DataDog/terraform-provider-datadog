@@ -916,7 +916,7 @@ func buildTileDefRequestsApmOrLogQuery(source interface{}) *datadog.TileDefApmOr
 		d.Search = &s
 	}
 	// GroupBy
-	d.GroupBy = buildTileDefRequestsGroupBys(datadogQuery["groupBy"])
+	d.GroupBy = buildTileDefRequestsGroupBys(datadogQuery["group_by"])
 	return &d
 }
 func buildTileDefRequestsProcessQuery(source interface{}) *datadog.TileDefProcessQuery {

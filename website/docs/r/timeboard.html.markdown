@@ -59,7 +59,7 @@ resource "datadog_timeboard" "redis" {
             }
           }
         }
-        display_type = "area"
+        type = "area"
       }
 
       request {
@@ -83,7 +83,7 @@ resource "datadog_timeboard" "redis" {
             }
           }
         }
-        display_type = "bars"
+        type = "bars"
       }
 
       request {
@@ -93,7 +93,7 @@ resource "datadog_timeboard" "redis" {
           filter_by = ["active"]
           limit = 50
         }
-        display_type = "area"
+        type = "area"
       }
   }
 
@@ -147,7 +147,7 @@ Nested `graph` blocks have the following structure:
 
 - `title` - (Required) The name of the graph.
 - `viz` - (Required) The type of visualization to use for the graph. Valid choices are "change", "distribution", "heatmap", "hostmap", "query_value", timeseries", and "toplist".
-- `request` - Nested block describing a graph definition request (a metric query to plot on the graph). The structure of this block is described below. Multiple request blocks are allowed within a graph block. Exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block.
+- `request` - Nested block describing a graph definition request (a metric query to plot on the graph). The structure of this block is described below. Multiple request blocks are allowed within a graph block.
 - `events` - (Optional) A list of event filter strings. Note that, while supported by the Datadog API, the Datadog UI does not (currently) support multiple event filters very well, so use at your own risk.
 - `autoscale` - (Optional) Boolean that determines whether to autoscale graphs.
 - `precision` - (Optional) Number of digits displayed, use `*` for full precision.
@@ -178,7 +178,7 @@ Nested `graph` `marker` blocks have the following structure:
 
 ### Nested `graph` `request` blocks
 
-Nested `graph` `request` blocks have the following structure:
+Nested `graph` `request` blocks have the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
 
 - `q` - (Optional) The query of the request. Pro tip: Use the JSON tab inside the Datadog UI to help build you query strings.
 - `apm_query` - (Optional) The APM query to use in the widget. The structure of this block is described [below](timeboard.html#nested-graph-request-apm_query-and-log_query-blocks).
