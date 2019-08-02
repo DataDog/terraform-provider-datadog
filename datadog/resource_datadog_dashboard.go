@@ -3067,6 +3067,22 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 				},
 			},
 		},
+		"metadata": {
+			Type:     schema.TypeList,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"expression": {
+						Type:     schema.TypeString,
+						Optional: true,
+					},
+					"alias_name": {
+						Type:     schema.TypeString,
+						Optional: true,
+					},
+				},
+			},
+		},
 		"display_type": {
 			Type:     schema.TypeString,
 			Optional: true,
@@ -3096,6 +3112,23 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 				datadogTimeseriesRequest.Style = buildDatadogTimeseriesRequestStyle(v)
 			}
 		}
+		// Metadata
+		if terraformMetadataList, ok := terraformRequest["metadata"].([]interface{}); ok && len(terraformMetadataList) > 0 {
+			datadogMetadataList := make([]datadog.WidgetMetadata, len(terraformMetadataList))
+			for i, _metadata := range terraformMetadataList {
+				metadata := _metadata.(map[string]interface{})
+				// Expression
+				datadogMetadata := datadog.WidgetMetadata{
+					Expression: datadog.String(metadata["expression"].(string)),
+				}
+				// AliasName
+				if v, ok := metadata["alias_name"].(string); ok && len(v) != 0 {
+					datadogMetadata.AliasName = &v
+				}
+				datadogMetadataList[i] = datadogMetadata
+			}
+			datadogTimeseriesRequest.Metadata = datadogMetadataList
+		}
 		if v, ok := terraformRequest["display_type"].(string); ok && len(v) != 0 {
 			datadogTimeseriesRequest.DisplayType = datadog.String(v)
 		}
@@ -3122,6 +3155,23 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadog.Times
 		if datadogRequest.Style != nil {
 			_style := buildTerraformTimeseriesRequestStyle(*datadogRequest.Style)
 			terraformRequest["style"] = []map[string]interface{}{_style}
+		}
+		// Metadata
+		if datadogRequest.Metadata != nil {
+			terraformMetadataList := make([]map[string]interface{}, len(datadogRequest.Metadata))
+			for i, metadata := range datadogRequest.Metadata {
+				// Expression
+				terraformMetadata := map[string]interface{}{
+					"expression": *metadata.Expression,
+				}
+				// AliasName
+				if metadata.AliasName != nil {
+					terraformMetadata["alias_name"] = *metadata.AliasName
+				}
+
+				terraformMetadataList[i] = terraformMetadata
+			}
+			terraformRequest["metadata"] = &terraformMetadataList
 		}
 		if datadogRequest.DisplayType != nil {
 			terraformRequest["display_type"] = *datadogRequest.DisplayType

@@ -228,6 +228,10 @@ resource "datadog_dashboard" "ordered_dashboard" {
           line_type = "dashed"
           line_width = "thin"
         }
+        metadata {
+          expression = "avg:system.cpu.user{app:general} by {env}"
+          alias_name = "Alpha"
+        }
       }
       request {
         log_query {
@@ -713,6 +717,9 @@ Nested `widget` blocks have the following structure:
               - `palette` - (Optional) Color palette to apply to the widget.
               - `line_type` - (Optional) Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.
               - `line_width` - (Optional) Width of line displayed. Available values are: `normal`, `thick`, or `thin`.
+            - `metadata` - (Optional). Used to define expression aliases. Multiple nested blocks are allowed with the following structure:
+              - `expression` - (Required)
+              - `alias_name` - (Optional)
         - `marker` - (Optional) Nested block describing the marker to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widgetmarker-blocks). Multiple marker blocks are allowed within a given tile_def block.
         - `title`: (Optional) The title of the widget.
         - `title_size`: (Optional) The size of the widget's title. Default is 16.
