@@ -82,7 +82,7 @@ resource "datadog_screenboard" "acceptance_test" {
         log_query {
           index = "mcnulty"
           compute = {
-            aggregation = "count"
+            aggregation = "avg"
             facet = "@duration"
             interval = 5000
           }
@@ -106,7 +106,7 @@ resource "datadog_screenboard" "acceptance_test" {
         apm_query {
           index = "apm-search"
           compute = {
-            aggregation = "count"
+            aggregation = "avg"
             facet = "@duration"
             interval = 5000
           }

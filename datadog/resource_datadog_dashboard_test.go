@@ -211,7 +211,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				log_query {
 					index = "mcnulty"
 					compute = {
-						aggregation = "count"
+						aggregation = "avg"
 						facet = "@duration"
 						interval = 5000
 					}
@@ -234,7 +234,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				apm_query {
 					index = "apm-search"
 					compute = {
-						aggregation = "count"
+						aggregation = "avg"
 						facet = "@duration"
 						interval = 5000
 					}
@@ -619,7 +619,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.0.metadata.0.expression", "avg:system.cpu.user{app:general} by {env}"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.0.metadata.0.alias_name", "Alpha"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.1.log_query.0.index", "mcnulty"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.1.log_query.0.compute.aggregation", "count"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.1.log_query.0.compute.aggregation", "avg"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.1.log_query.0.compute.facet", "@duration"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.1.log_query.0.compute.interval", "5000"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.1.log_query.0.search.query", "status:info"),
@@ -631,7 +631,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.1.log_query.0.group_by.0.sort.order", "desc"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.1.display_type", "area"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.2.apm_query.0.index", "apm-search"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.2.apm_query.0.compute.aggregation", "count"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.2.apm_query.0.compute.aggregation", "avg"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.2.apm_query.0.compute.facet", "@duration"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.2.apm_query.0.compute.interval", "5000"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.2.apm_query.0.search.query", "type:web"),

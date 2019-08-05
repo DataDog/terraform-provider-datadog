@@ -137,6 +137,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 				"stacked": {
 					Type:     schema.TypeBool,
 					Optional: true,
+					Default:  false,
 				},
 				"type": {
 					Type:     schema.TypeString,
@@ -833,7 +834,7 @@ func resourceDatadogTimeboardUpdate(d *schema.ResourceData, meta interface{}) er
 	}
 	return resourceDatadogTimeboardRead(d, meta)
 }
-func buildTFProcessQuery(datadogQuery datadog.GraphProcessQuery) map[string]interface{} {
+func buildTFGraphProcessQuery(datadogQuery datadog.GraphProcessQuery) map[string]interface{} {
 	terraformQuery := map[string]interface{}{}
 	if datadogQuery.Metric != nil {
 		terraformQuery["metric"] = *datadogQuery.Metric
@@ -855,7 +856,7 @@ func buildTFProcessQuery(datadogQuery datadog.GraphProcessQuery) map[string]inte
 	return terraformQuery
 }
 
-func buildTFApmOrLogQuery(datadogQuery datadog.GraphApmOrLogQuery) map[string]interface{} {
+func buildTFGraphApmOrLogQuery(datadogQuery datadog.GraphApmOrLogQuery) map[string]interface{} {
 	terraformQuery := map[string]interface{}{}
 	// Index
 	terraformQuery["index"] = *datadogQuery.Index
@@ -913,13 +914,13 @@ func appendTerraformGraphRequests(datadogRequests []datadog.GraphDefinitionReque
 		if v, ok := datadogRequest.GetQueryOk(); ok {
 			request["q"] = v
 		} else if datadogRequest.ApmQuery != nil {
-			terraformQuery := buildTFApmOrLogQuery(*datadogRequest.ApmQuery)
+			terraformQuery := buildTFGraphApmOrLogQuery(*datadogRequest.ApmQuery)
 			request["apm_query"] = []map[string]interface{}{terraformQuery}
 		} else if datadogRequest.LogQuery != nil {
-			terraformQuery := buildTFApmOrLogQuery(*datadogRequest.LogQuery)
+			terraformQuery := buildTFGraphApmOrLogQuery(*datadogRequest.LogQuery)
 			request["log_query"] = []map[string]interface{}{terraformQuery}
 		} else if datadogRequest.ProcessQuery != nil {
-			terraformQuery := buildTFProcessQuery(*datadogRequest.ProcessQuery)
+			terraformQuery := buildTFGraphProcessQuery(*datadogRequest.ProcessQuery)
 			request["process_query"] = []map[string]interface{}{terraformQuery}
 		}
 		if v, ok := datadogRequest.GetStackedOk(); ok {

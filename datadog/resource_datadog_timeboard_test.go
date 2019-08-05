@@ -36,6 +36,7 @@ resource "datadog_timeboard" "acceptance_test" {
       palette_flip = true
     }
   }
+
 }
 `
 
@@ -135,6 +136,85 @@ resource "datadog_timeboard" "acceptance_test" {
 }
 `
 
+const config4 = `
+resource "datadog_timeboard" "acceptance_test" {
+  title = "Acceptance Test Timeboard"
+  description = "Created using the Datadog provider in Terraform"
+  graph {
+    title = "Widget with Multiple Queries"
+	viz = "timeseries"
+	request {
+		q    = "avg:system.cpu.user{*}"
+		type = "line"
+		style = {
+		palette = "purple"
+		type    = "dashed"
+		width   = "thin"
+		}
+		metadata_json = jsonencode({
+		"avg:system.cpu.user{*}" = {
+			"alias" = "Avg CPU user"
+		}
+		})
+	}
+	request {
+		log_query {
+		index = "mcnulty"
+		compute = {
+			aggregation = "avg"
+			facet = "@duration"
+			interval = 5000
+		}
+		search = {
+			query = "status:info"
+		}
+		group_by {
+			facet = "host"
+			limit = 10
+			sort = {
+			aggregation = "avg"
+			order = "desc"
+			}
+		}
+		}
+		type = "area"
+	}
+	request {
+		apm_query {
+		  index = "apm-search"
+		  compute = {
+			aggregation = "avg"
+			facet = "@duration"
+		    interval = 5000
+		  }
+		  search = {
+		    query = "type:web"
+		  }
+		  group_by {
+		    facet = "resource_name"
+		    limit = 50
+		    sort = {
+			  aggregation = "avg"
+			  order = "desc"
+			  facet = "@string_query.interval"
+		    }
+		  }
+		}
+		type = "bars"
+	}
+	request {
+		process_query {
+		  metric = "process.stat.cpu.total_pct"
+		  search_by = "error"
+		  filter_by = ["active"]
+		  limit = 50
+		}
+		type = "area"
+	}
+  }
+}
+`
+
 func TestAccDatadogTimeboard_update(t *testing.T) {
 
 	step0 := resource.TestStep{
@@ -214,11 +294,59 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 		),
 	}
 
+	step3 := resource.TestStep{
+		Config: config4,
+		Check: resource.ComposeTestCheckFunc(
+			checkExists,
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "title", "Acceptance Test Timeboard"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "description", "Created using the Datadog provider in Terraform"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.title", "Widget with Multiple Queries"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.viz", "timeseries"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.0.q", "avg:system.cpu.user{*}"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.0.type", "line"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.0.style.%", "3"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.0.style.palette", "purple"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.0.style.type", "dashed"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.0.style.width", "thin"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.0.metadata_json",
+				"{\"avg:system.cpu.user{*}\":{\"alias\":\"Avg CPU user\"}}"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.1.log_query.0.index", "mcnulty"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.1.log_query.0.compute.aggregation", "avg"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.1.log_query.0.compute.facet", "@duration"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.1.log_query.0.compute.interval", "5000"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.1.log_query.0.search.query", "status:info"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.1.log_query.0.group_by.#", "1"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.1.log_query.0.group_by.0.facet", "host"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.1.log_query.0.group_by.0.limit", "10"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.1.log_query.0.group_by.0.sort.aggregation", "avg"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.1.log_query.0.group_by.0.sort.facet", "@duration"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.1.log_query.0.group_by.0.sort.order", "desc"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.1.type", "area"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.2.apm_query.0.index", "apm-search"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.2.apm_query.0.compute.aggregation", "avg"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.2.apm_query.0.compute.facet", "@duration"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.2.apm_query.0.compute.interval", "5000"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.2.apm_query.0.search.query", "type:web"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.2.apm_query.0.group_by.#", "1"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.2.apm_query.0.group_by.0.facet", "resource_name"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.2.apm_query.0.group_by.0.limit", "50"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.2.apm_query.0.group_by.0.sort.aggregation", "avg"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.2.apm_query.0.group_by.0.sort.facet", "@string_query.interval"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.2.apm_query.0.group_by.0.sort.order", "desc"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.2.type", "bars"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.3.process_query.0.metric", "process.stat.cpu.total_pct"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.3.process_query.0.search_by", "error"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.3.process_query.0.filter_by.#", "1"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.3.process_query.0.filter_by.0", "active"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.3.process_query.0.limit", "50"),
+		),
+	}
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
 		CheckDestroy: checkDestroy,
-		Steps:        []resource.TestStep{step0, step1, step2},
+		Steps:        []resource.TestStep{step0, step1, step2, step3},
 	})
 }
 

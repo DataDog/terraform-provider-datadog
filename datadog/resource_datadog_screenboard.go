@@ -919,6 +919,7 @@ func buildTileDefRequestsApmOrLogQuery(source interface{}) *datadog.TileDefApmOr
 	d.GroupBy = buildTileDefRequestsGroupBys(datadogQuery["group_by"])
 	return &d
 }
+
 func buildTileDefRequestsProcessQuery(source interface{}) *datadog.TileDefProcessQuery {
 	datadogQuery := source.(map[string]interface{})
 	d := datadog.TileDefProcessQuery{}
@@ -1382,14 +1383,12 @@ func buildTFTileDefRequests(d []datadog.TileDefRequest) []interface{} {
 	if l == 0 {
 		return nil
 	}
-
 	r := make([]interface{}, l)
 	for i, ddRequest := range d {
 		tfRequest := map[string]interface{}{}
 		batchSetToDict(batch{
 			dict: tfRequest,
 			matches: []match{
-				{"q", ddRequest.Query},
 				{"type", ddRequest.Type},
 				{"query_type", ddRequest.QueryType},
 				{"metric", ddRequest.Metric},
@@ -1422,6 +1421,18 @@ func buildTFTileDefRequests(d []datadog.TileDefRequest) []interface{} {
 			tfRequest["style"] = tfStyle
 		}
 
+		if ddRequest.Query != nil {
+			tfRequest["q"] = *ddRequest.Query
+		} else if ddRequest.ApmQuery != nil {
+			terraformQuery := buildTFTileDefApmOrLogQuery(*ddRequest.ApmQuery)
+			tfRequest["apm_query"] = []map[string]interface{}{terraformQuery}
+		} else if ddRequest.LogQuery != nil {
+			terraformQuery := buildTFTileDefApmOrLogQuery(*ddRequest.LogQuery)
+			tfRequest["log_query"] = []map[string]interface{}{terraformQuery}
+		} else if ddRequest.ProcessQuery != nil {
+			terraformQuery := buildTFTileDefProcessQuery(*ddRequest.ProcessQuery)
+			tfRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		}
 		// request.conditionalFormats
 		tfRequest["conditional_format"] = buildTFTileDefRequestConditionalFormats(ddRequest.ConditionalFormats)
 
@@ -1429,6 +1440,80 @@ func buildTFTileDefRequests(d []datadog.TileDefRequest) []interface{} {
 	}
 
 	return r
+}
+
+func buildTFTileDefApmOrLogQuery(datadogQuery datadog.TileDefApmOrLogQuery) map[string]interface{} {
+	terraformQuery := map[string]interface{}{}
+	// Index
+	terraformQuery["index"] = *datadogQuery.Index
+	// Compute
+	terraformCompute := map[string]interface{}{
+		"aggregation": *datadogQuery.Compute.Aggregation,
+	}
+	if datadogQuery.Compute.Facet != nil {
+		terraformCompute["facet"] = *datadogQuery.Compute.Facet
+	}
+	if datadogQuery.Compute.Interval != nil {
+		terraformCompute["interval"] = strconv.FormatInt(int64(*datadogQuery.Compute.Interval), 10)
+	}
+	terraformQuery["compute"] = terraformCompute
+	// Search
+	if datadogQuery.Search != nil {
+		terraformQuery["search"] = map[string]interface{}{
+			"query": *datadogQuery.Search.Query,
+		}
+	}
+	// GroupBy
+	if datadogQuery.GroupBy != nil {
+		terraformGroupBys := make([]map[string]interface{}, len(datadogQuery.GroupBy))
+		for i, groupBy := range datadogQuery.GroupBy {
+			// Facet
+			terraformGroupBy := map[string]interface{}{
+				"facet": *groupBy.Facet,
+			}
+			// Limit
+			if groupBy.Limit != nil {
+				terraformGroupBy["limit"] = *groupBy.Limit
+			}
+			// Sort
+			if groupBy.Sort != nil {
+				sort := map[string]string{
+					"aggregation": *groupBy.Sort.Aggregation,
+					"order":       *groupBy.Sort.Order,
+				}
+				if groupBy.Sort.Facet != nil {
+					sort["facet"] = *groupBy.Sort.Facet
+				}
+				terraformGroupBy["sort"] = sort
+			}
+
+			terraformGroupBys[i] = terraformGroupBy
+		}
+		terraformQuery["group_by"] = &terraformGroupBys
+	}
+	return terraformQuery
+}
+
+func buildTFTileDefProcessQuery(datadogQuery datadog.TileDefProcessQuery) map[string]interface{} {
+	terraformQuery := map[string]interface{}{}
+	if datadogQuery.Metric != nil {
+		terraformQuery["metric"] = *datadogQuery.Metric
+	}
+	if datadogQuery.SearchBy != nil {
+		terraformQuery["search_by"] = *datadogQuery.SearchBy
+	}
+	if datadogQuery.FilterBy != nil {
+		terraformFilterBys := make([]string, len(datadogQuery.FilterBy))
+		for i, datadogFilterBy := range datadogQuery.FilterBy {
+			terraformFilterBys[i] = datadogFilterBy
+		}
+		terraformQuery["filter_by"] = terraformFilterBys
+	}
+	if datadogQuery.Limit != nil {
+		terraformQuery["limit"] = *datadogQuery.Limit
+	}
+
+	return terraformQuery
 }
 
 func buildTFTileDefEvents(d []datadog.TileDefEvent) []interface{} {

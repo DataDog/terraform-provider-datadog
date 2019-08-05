@@ -237,7 +237,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
         log_query {
           index = "mcnulty"
           compute = {
-            aggregation = "count"
+            aggregation = "avg"
             facet = "@duration"
             interval = 5000
           }
@@ -260,7 +260,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
         apm_query {
           index = "apm-search"
           compute = {
-            aggregation = "count"
+            aggregation = "avg"
             facet = "@duration"
             interval = 5000
           }

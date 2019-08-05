@@ -42,7 +42,7 @@ resource "datadog_timeboard" "redis" {
         log_query {
           index = "mcnulty"
           compute = {
-            aggregation = "count"
+            aggregation = "avg"
             facet = "@duration"
             interval = 5000
           }
@@ -66,7 +66,7 @@ resource "datadog_timeboard" "redis" {
         apm_query {
           index = "apm-search"
           compute = {
-            aggregation = "count"
+            aggregation = "avg"
             facet = "@duration"
             interval = 5000
           }
