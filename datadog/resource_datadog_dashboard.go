@@ -3074,7 +3074,7 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 				Schema: map[string]*schema.Schema{
 					"expression": {
 						Type:     schema.TypeString,
-						Optional: true,
+						Required: true,
 					},
 					"alias_name": {
 						Type:     schema.TypeString,
@@ -3123,7 +3123,7 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 				}
 				// AliasName
 				if v, ok := metadata["alias_name"].(string); ok && len(v) != 0 {
-					datadogMetadata.AliasName = &v
+					datadogMetadata.AliasName = datadog.String(v)
 				}
 				datadogMetadataList[i] = datadogMetadata
 			}
