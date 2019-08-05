@@ -56,6 +56,9 @@ resource "datadog_dashboard" "ordered_dashboard" {
 		distribution_definition {
 			request {
 				q = "avg:system.load.1{env:staging} by {account}"
+				style {
+					palette = "warm"
+				}
 			}
 			title = "Widget Title"
 			time = {
@@ -79,6 +82,9 @@ resource "datadog_dashboard" "ordered_dashboard" {
 		heatmap_definition {
 			request {
 				q = "avg:system.load.1{env:staging} by {account}"
+				style {
+					palette = "warm"
+				}
 			}
 			yaxis {
 				min = 1
@@ -107,6 +113,12 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			no_group_hosts = true
 			no_metric_hosts = true
 			scope = ["region:us-east-1", "aws_account:727006795293"]
+			style {
+				palette = "yellow_to_green"
+				palette_flip = true
+				fill_min = "10"
+				fill_max = "20"
+			}
 			title = "Widget Title"
 		}
 	}
@@ -185,6 +197,11 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			request {
 				q= "avg:system.cpu.user{app:general} by {env}"
 				display_type = "line"
+				style {
+					palette = "warm"
+					line_type = "dashed"
+					line_width = "thin"
+				}
 			}
 			request {
 				log_query {
@@ -508,6 +525,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.2.change_definition.0.time.live_span", "1h"),
 					// Distribution widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.3.distribution_definition.0.request.0.q", "avg:system.load.1{env:staging} by {account}"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.3.distribution_definition.0.request.0.style.0.palette", "warm"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.3.distribution_definition.0.title", "Widget Title"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.3.distribution_definition.0.time.live_span", "1h"),
 					// Check Status widget
@@ -523,6 +541,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.4.check_status_definition.0.time.live_span", "1h"),
 					// Heatmap widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.request.0.q", "avg:system.load.1{env:staging} by {account}"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.request.0.style.0.palette", "warm"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.yaxis.0.min", "1"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.yaxis.0.max", "2"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.5.heatmap_definition.0.yaxis.0.include_zero", "true"),
@@ -539,6 +558,10 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.6.hostmap_definition.0.scope.#", "2"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.6.hostmap_definition.0.scope.0", "region:us-east-1"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.6.hostmap_definition.0.scope.1", "aws_account:727006795293"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.6.hostmap_definition.0.style.0.palette", "yellow_to_green"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.6.hostmap_definition.0.style.0.palette_flip", "true"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.6.hostmap_definition.0.style.0.fill_min", "10"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.6.hostmap_definition.0.style.0.fill_max", "20"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.6.hostmap_definition.0.title", "Widget Title"),
 					// Note widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.7.note_definition.0.content", "note text"),
@@ -586,6 +609,9 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					// Timeseries widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.0.q", "avg:system.cpu.user{app:general} by {env}"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.0.display_type", "line"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.0.style.0.palette", "warm"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.0.style.0.line_type", "dashed"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.0.style.0.line_width", "thin"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.1.log_query.0.index", "mcnulty"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.1.log_query.0.compute.aggregation", "count"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.1.log_query.0.compute.facet", "@duration"),

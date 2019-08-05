@@ -1312,6 +1312,15 @@ func getDistributionRequestSchema() map[string]*schema.Schema {
 		"apm_query":     getApmOrLogQuerySchema(),
 		"log_query":     getApmOrLogQuerySchema(),
 		"process_query": getProcessQuerySchema(),
+		// Settings specific to Distribution requests
+		"style": {
+			Type:     schema.TypeList,
+			MaxItems: 1,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: getWidgetRequestStyle(),
+			},
+		},
 	}
 }
 func buildDatadogDistributionRequests(terraformRequests *[]interface{}) *[]datadog.DistributionRequest {
@@ -1331,6 +1340,11 @@ func buildDatadogDistributionRequests(terraformRequests *[]interface{}) *[]datad
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogDistributionRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		}
+		if _style, ok := terraformRequest["style"].([]interface{}); ok && len(_style) > 0 {
+			if v, ok := _style[0].(map[string]interface{}); ok && len(v) > 0 {
+				datadogDistributionRequest.Style = buildDatadogWidgetRequestStyle(v)
+			}
 		}
 
 		datadogRequests[i] = datadogDistributionRequest
@@ -1352,6 +1366,10 @@ func buildTerraformDistributionRequests(datadogDistributionRequests *[]datadog.D
 		} else if datadogRequest.ProcessQuery != nil {
 			terraformQuery := buildTerraformProcessQuery(*datadogRequest.ProcessQuery)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		}
+		if datadogRequest.Style != nil {
+			_style := buildTerraformWidgetRequestStyle(*datadogRequest.Style)
+			terraformRequest["style"] = []map[string]interface{}{_style}
 		}
 		terraformRequests[i] = terraformRequest
 	}
@@ -1800,6 +1818,15 @@ func getHeatmapRequestSchema() map[string]*schema.Schema {
 		"apm_query":     getApmOrLogQuerySchema(),
 		"log_query":     getApmOrLogQuerySchema(),
 		"process_query": getProcessQuerySchema(),
+		// Settings specific to Heatmap requests
+		"style": {
+			Type:     schema.TypeList,
+			MaxItems: 1,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: getWidgetRequestStyle(),
+			},
+		},
 	}
 }
 func buildDatadogHeatmapRequests(terraformRequests *[]interface{}) *[]datadog.HeatmapRequest {
@@ -1820,6 +1847,11 @@ func buildDatadogHeatmapRequests(terraformRequests *[]interface{}) *[]datadog.He
 			processQuery := v[0].(map[string]interface{})
 			datadogHeatmapRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
 		}
+		if _style, ok := terraformRequest["style"].([]interface{}); ok && len(_style) > 0 {
+			if v, ok := _style[0].(map[string]interface{}); ok && len(v) > 0 {
+				datadogHeatmapRequest.Style = buildDatadogWidgetRequestStyle(v)
+			}
+		}
 		datadogRequests[i] = datadogHeatmapRequest
 	}
 	return &datadogRequests
@@ -1839,6 +1871,10 @@ func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadog.HeatmapRequ
 		} else if datadogRequest.ProcessQuery != nil {
 			terraformQuery := buildTerraformProcessQuery(*datadogRequest.ProcessQuery)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		}
+		if datadogRequest.Style != nil {
+			_style := buildTerraformWidgetRequestStyle(*datadogRequest.Style)
+			terraformRequest["style"] = []map[string]interface{}{_style}
 		}
 		terraformRequests[i] = terraformRequest
 	}
@@ -1897,6 +1933,31 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 			Elem:     &schema.Schema{Type: schema.TypeString},
 		},
+		"style": {
+			Type:     schema.TypeList,
+			Optional: true,
+			MaxItems: 1,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"palette": {
+						Type:     schema.TypeString,
+						Optional: true,
+					},
+					"palette_flip": {
+						Type:     schema.TypeBool,
+						Optional: true,
+					},
+					"fill_min": {
+						Type:     schema.TypeString,
+						Optional: true,
+					},
+					"fill_max": {
+						Type:     schema.TypeString,
+						Optional: true,
+					},
+				},
+			},
+		},
 		"title": {
 			Type:     schema.TypeString,
 			Optional: true,
@@ -1954,6 +2015,11 @@ func buildDatadogHostmapDefinition(terraformDefinition map[string]interface{}) *
 		}
 		datadogDefinition.Scope = datadogScopes
 	}
+	if _style, ok := terraformDefinition["style"].([]interface{}); ok && len(_style) > 0 {
+		if v, ok := _style[0].(map[string]interface{}); ok && len(v) > 0 {
+			datadogDefinition.Style = buildDatadogHostmapRequestStyle(v)
+		}
+	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
 	}
@@ -2001,6 +2067,10 @@ func buildTerraformHostmapDefinition(datadogDefinition datadog.HostmapDefinition
 			terraformScopes[i] = datadogScope
 		}
 		terraformDefinition["scope"] = terraformScopes
+	}
+	if datadogDefinition.Style != nil {
+		_style := buildTerraformHostmapRequestStyle(*datadogDefinition.Style)
+		terraformDefinition["style"] = []map[string]interface{}{_style}
 	}
 	if datadogDefinition.Title != nil {
 		terraformDefinition["title"] = *datadogDefinition.Title
@@ -2976,6 +3046,27 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 		"log_query":     getApmOrLogQuerySchema(),
 		"process_query": getProcessQuerySchema(),
 		// Settings specific to Timeseries requests
+		"style": {
+			Type:     schema.TypeList,
+			Optional: true,
+			MaxItems: 1,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"palette": {
+						Type:     schema.TypeString,
+						Optional: true,
+					},
+					"line_type": {
+						Type:     schema.TypeString,
+						Optional: true,
+					},
+					"line_width": {
+						Type:     schema.TypeString,
+						Optional: true,
+					},
+				},
+			},
+		},
 		"display_type": {
 			Type:     schema.TypeString,
 			Optional: true,
@@ -3000,6 +3091,11 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 			processQuery := v[0].(map[string]interface{})
 			datadogTimeseriesRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
 		}
+		if _style, ok := terraformRequest["style"].([]interface{}); ok && len(_style) > 0 {
+			if v, ok := _style[0].(map[string]interface{}); ok && len(v) > 0 {
+				datadogTimeseriesRequest.Style = buildDatadogTimeseriesRequestStyle(v)
+			}
+		}
 		if v, ok := terraformRequest["display_type"].(string); ok && len(v) != 0 {
 			datadogTimeseriesRequest.DisplayType = datadog.String(v)
 		}
@@ -3022,6 +3118,10 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadog.Times
 		} else if datadogRequest.ProcessQuery != nil {
 			terraformQuery := buildTerraformProcessQuery(*datadogRequest.ProcessQuery)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		}
+		if datadogRequest.Style != nil {
+			_style := buildTerraformTimeseriesRequestStyle(*datadogRequest.Style)
+			terraformRequest["style"] = []map[string]interface{}{_style}
 		}
 		if datadogRequest.DisplayType != nil {
 			terraformRequest["display_type"] = *datadogRequest.DisplayType
@@ -3121,6 +3221,14 @@ func getToplistRequestSchema() map[string]*schema.Schema {
 				Schema: getWidgetConditionalFormatSchema(),
 			},
 		},
+		"style": {
+			Type:     schema.TypeList,
+			MaxItems: 1,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: getWidgetRequestStyle(),
+			},
+		},
 	}
 }
 func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadog.ToplistRequest {
@@ -3143,6 +3251,11 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadog.To
 		}
 		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
 			datadogToplistRequest.ConditionalFormats = *buildDatadogWidgetConditionalFormat(&v)
+		}
+		if _style, ok := terraformRequest["style"].([]interface{}); ok && len(_style) > 0 {
+			if v, ok := _style[0].(map[string]interface{}); ok && len(v) > 0 {
+				datadogToplistRequest.Style = buildDatadogWidgetRequestStyle(v)
+			}
 		}
 		datadogRequests[i] = datadogToplistRequest
 	}
@@ -3168,6 +3281,10 @@ func buildTerraformToplistRequests(datadogToplistRequests *[]datadog.ToplistRequ
 		if datadogRequest.ConditionalFormats != nil {
 			terraformConditionalFormats := buildTerraformWidgetConditionalFormat(&datadogRequest.ConditionalFormats)
 			terraformRequest["conditional_formats"] = terraformConditionalFormats
+		}
+		if datadogRequest.Style != nil {
+			_style := buildTerraformWidgetRequestStyle(*datadogRequest.Style)
+			terraformRequest["style"] = []map[string]interface{}{_style}
 		}
 		terraformRequests[i] = terraformRequest
 	}
@@ -3853,6 +3970,99 @@ func buildTerraformWidgetAxis(datadogWidgetAxis datadog.WidgetAxis) map[string]i
 	return terraformWidgetAxis
 }
 
+// Widget Style helpers
+
+func getWidgetRequestStyle() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"palette": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+	}
+}
+func buildDatadogWidgetRequestStyle(terraformStyle map[string]interface{}) *datadog.WidgetRequestStyle {
+	datadogStyle := &datadog.WidgetRequestStyle{}
+	if v, ok := terraformStyle["palette"].(string); ok && len(v) != 0 {
+		datadogStyle.SetPalette(v)
+	}
+
+	return datadogStyle
+}
+func buildTerraformWidgetRequestStyle(datadogStyle datadog.WidgetRequestStyle) map[string]interface{} {
+	terraformStyle := map[string]interface{}{}
+	if datadogStyle.Palette != nil {
+		terraformStyle["palette"] = *datadogStyle.Palette
+	}
+	return terraformStyle
+}
+
+// Timeseriest Style helpers
+
+func buildDatadogTimeseriesRequestStyle(terraformStyle map[string]interface{}) *datadog.TimeseriesRequestStyle {
+	datadogStyle := &datadog.TimeseriesRequestStyle{}
+	if v, ok := terraformStyle["palette"].(string); ok && len(v) != 0 {
+		datadogStyle.SetPalette(v)
+	}
+	if v, ok := terraformStyle["line_type"].(string); ok && len(v) != 0 {
+		datadogStyle.SetLineType(v)
+	}
+	if v, ok := terraformStyle["line_width"].(string); ok && len(v) != 0 {
+		datadogStyle.SetLineWidth(v)
+	}
+
+	return datadogStyle
+}
+func buildTerraformTimeseriesRequestStyle(datadogStyle datadog.TimeseriesRequestStyle) map[string]interface{} {
+	terraformStyle := map[string]interface{}{}
+	if datadogStyle.Palette != nil {
+		terraformStyle["palette"] = *datadogStyle.Palette
+	}
+	if datadogStyle.LineType != nil {
+		terraformStyle["line_type"] = *datadogStyle.LineType
+	}
+	if datadogStyle.LineWidth != nil {
+		terraformStyle["line_width"] = *datadogStyle.LineWidth
+	}
+	return terraformStyle
+}
+
+// Hostmap Style helpers
+
+func buildDatadogHostmapRequestStyle(terraformStyle map[string]interface{}) *datadog.HostmapStyle {
+	datadogStyle := &datadog.HostmapStyle{}
+	if v, ok := terraformStyle["palette"].(string); ok && len(v) != 0 {
+		datadogStyle.SetPalette(v)
+	}
+	if v, ok := terraformStyle["palette_flip"].(bool); ok {
+		datadogStyle.SetPaletteFlip(v)
+	}
+	if v, ok := terraformStyle["fill_min"].(string); ok && len(v) != 0 {
+		datadogStyle.SetFillMin(v)
+	}
+	if v, ok := terraformStyle["fill_max"].(string); ok && len(v) != 0 {
+		datadogStyle.SetFillMax(v)
+	}
+
+	return datadogStyle
+}
+func buildTerraformHostmapRequestStyle(datadogStyle datadog.HostmapStyle) map[string]interface{} {
+	terraformStyle := map[string]interface{}{}
+	if datadogStyle.Palette != nil {
+		terraformStyle["palette"] = *datadogStyle.Palette
+	}
+	if datadogStyle.PaletteFlip != nil {
+		terraformStyle["palette_flip"] = *datadogStyle.PaletteFlip
+	}
+	if datadogStyle.FillMin != nil {
+		terraformStyle["fill_min"] = *datadogStyle.FillMin
+	}
+	if datadogStyle.FillMax != nil {
+		terraformStyle["fill_max"] = *datadogStyle.FillMax
+	}
+	return terraformStyle
+}
+
+// Schema validation
 func validateDashboardLayoutType(val interface{}, key string) (warns []string, errs []error) {
 	value := val.(string)
 	switch value {
