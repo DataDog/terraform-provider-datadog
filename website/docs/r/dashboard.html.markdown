@@ -586,7 +586,7 @@ Nested `widget` blocks have the following structure:
       - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
           - `q`: (Required) The metric query to use in the widget.
           - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
-              - `palette` - (Optional) Color palette to apply to the widget.
+              - `palette` - (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
       - `title`: (Optional) The title of the widget.
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
       - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
@@ -613,7 +613,7 @@ Nested `widget` blocks have the following structure:
       - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
           - `q`: (Required) The metric query to use in the widget.
           - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
-              - `palette` - (Optional) Color palette to apply to the widget.
+              - `palette` - (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
       - `yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
       - `title`: (Optional) The title of the widget.
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
@@ -631,7 +631,7 @@ Nested `widget` blocks have the following structure:
       - `group` - (Optional) The list of tags to group nodes by.
       - `scope` - (Optional) The list of tags to filter nodes by.
       - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
-              - `palette` - (Optional) Color palette to apply to the widget.
+              - `palette` - (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
               - `palette_flip` - (Optional) Boolean indicating whether to flip the palette tones.
               - `fill_min` - (Optional) Min value to use to color the map.
               - `fill_max` - (Optional) Max value to use to color the map.
@@ -710,7 +710,7 @@ Nested `widget` blocks have the following structure:
             - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             - `display_type` - (Optional) Type of display to use for the request. Available values are: `area`, `bars`, or `line`.
             - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
-              - `palette` - (Optional) Color palette to apply to the widget.
+              - `palette` - (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
               - `line_type` - (Optional) Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.
               - `line_width` - (Optional) Width of line displayed. Available values are: `normal`, `thick`, or `thin`.
         - `marker` - (Optional) Nested block describing the marker to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widgetmarker-blocks). Multiple marker blocks are allowed within a given tile_def block.
