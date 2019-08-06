@@ -130,7 +130,7 @@ func syntheticsTestOptions() *schema.Schema {
 		ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
 			followRedirectsRaw, ok := val.(map[string]interface{})["follow_redirects"]
 			if ok {
-				followRedirectsStr := followRedirectsRaw.(string)
+				followRedirectsStr := convertToString(followRedirectsRaw)
 				switch followRedirectsStr {
 				case "0", "1":
 					warns = append(warns, fmt.Sprintf("%q must be either true or false, got: %s (please change 1 => true, 0 => false)", key, followRedirectsStr))
