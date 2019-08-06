@@ -166,7 +166,7 @@ func syntheticsTestOptions() *schema.Schema {
 			}
 			acceptSelfSignedRaw, ok := val.(map[string]interface{})["accept_self_signed"]
 			if ok {
-				acceptSelfSignedStr := acceptSelfSignedRaw.(string)
+				acceptSelfSignedStr := convertToString(acceptSelfSignedRaw)
 				switch acceptSelfSignedStr {
 				case "true", "false":
 					break
