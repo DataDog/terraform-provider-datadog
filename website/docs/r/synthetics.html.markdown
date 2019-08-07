@@ -125,7 +125,7 @@ The following arguments are supported:
   - `host` - (Required) host name
   - `port` - (Required) port number
   - `timeout` - (Optional) For type=api, any value between 0 and 60 (Default = 60)
-- `request` - (Required) if type=api and subtype=ssl
+- `request` - (Required) if type=browser
   - `method` - (Required) no-op, use GET
   - `url` - (Required) Any url
 - `request_headers` - (Optional) Header name and value map
