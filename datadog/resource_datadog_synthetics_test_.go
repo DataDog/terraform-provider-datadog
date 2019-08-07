@@ -35,11 +35,9 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 				DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
-					if key == "subtype" {
-						if d.Get("type") == "api" && old == "http" && new == "" {
-							// defaults to http if type is api for retro-compatibility
-							return true
-						}
+					if d.Get("type") == "api" && old == "http" && new == "" {
+						// defaults to http if type is api for retro-compatibility
+						return true
 					}
 					return old == new
 				},
