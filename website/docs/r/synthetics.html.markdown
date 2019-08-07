@@ -12,8 +12,9 @@ Provides a Datadog synthetics test resource. This can be used to create and mana
 
 ## Example Usage (Synthetics API test)
 
+Create a new Datadog Synthetics API/HTTP test on https://www.example.org
+
 ```hcl
-# Create a new Datadog Synthetics API test on https://www.example.org
 resource "datadog_synthetics_test" "foo" {
   type = "api"
   subtype = "http"
@@ -46,8 +47,9 @@ resource "datadog_synthetics_test" "foo" {
 
 ## Example Usage (Synthetics SSL test)
 
+Create a new Datadog Synthetics API/SSL test on example.org
+
 ```hcl
-# Create a new Datadog Synthetics API test on https://www.example.org
 resource "datadog_synthetics_test" "foo" {
   type = "api"
   subtype = "ssl"
