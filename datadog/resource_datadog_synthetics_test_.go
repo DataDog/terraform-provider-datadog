@@ -111,7 +111,37 @@ func syntheticsTestRequest() *schema.Schema {
 
 func syntheticsTestOptions() *schema.Schema {
 	return &schema.Schema{
-		Type:     schema.TypeMap,
+		Type: schema.TypeMap,
+		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
+			if key == "options.follow_redirects" {
+				// TF nested schemas is limited to string values only
+				// follow_redirects being a boolean in Datadog json api
+				// we need a sane way to convert from boolean to string
+				// and from string to boolean
+				oldValue, err1 := strconv.ParseBool(old)
+				newValue, err2 := strconv.ParseBool(new)
+				if err1 != nil || err2 != nil {
+					return false
+				}
+				return oldValue == newValue
+			}
+			return old == new
+		},
+		ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+			followRedirectsRaw, ok := val.(map[string]interface{})["follow_redirects"]
+			if ok {
+				followRedirectsStr := convertToString(followRedirectsRaw)
+				switch followRedirectsStr {
+				case "0", "1":
+					warns = append(warns, fmt.Sprintf("%q must be either true or false, got: %s (please change 1 => true, 0 => false)", key, followRedirectsStr))
+				case "true", "false":
+					break
+				default:
+					errs = append(errs, fmt.Errorf("%q must be either true or false, got: %s", key, followRedirectsStr))
+				}
+			}
+			return
+		},
 		Optional: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
@@ -272,7 +302,10 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 		options.SetTickEvery(tickEvery)
 	}
 	if attr, ok := d.GetOk("options.follow_redirects"); ok {
-		followRedirects := attr.(string) == "1"
+		// follow_redirects is a string ("true" or "false") in TF state
+		// it used to be "1" and "0" but it does not play well with the API
+		// we support both for retro-compatibility
+		followRedirects, _ := strconv.ParseBool(attr.(string))
 		options.SetFollowRedirects(followRedirects)
 	}
 	if attr, ok := d.GetOk("options.min_failure_duration"); ok {
@@ -390,10 +423,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 func convertToString(i interface{}) string {
 	switch v := i.(type) {
 	case bool:
-		if v {
-			return "1"
-		}
-		return "0"
+		return strconv.FormatBool(v)
 	case int:
 		return strconv.Itoa(v)
 	case float64:

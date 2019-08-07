@@ -137,6 +137,8 @@ var createSyntheticsAPITestStep = resource.TestStep{
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "options.tick_every", "60"),
 		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.foo", "options.follow_redirects", "true"),
+		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "options.min_failure_duration", "0"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
@@ -199,6 +201,7 @@ resource "datadog_synthetics_test" "foo" {
 	locations = [ "aws:eu-central-1" ]
 	options = {
 		tick_every = 60
+		follow_redirects = true
 		min_failure_duration = 0
 		min_location_failed = 1
 	}
@@ -237,6 +240,8 @@ var updateSyntheticsAPITestStep = resource.TestStep{
 			"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "options.tick_every", "900"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.foo", "options.follow_redirects", "false"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "options.min_failure_duration", "10"),
 		resource.TestCheckResourceAttr(
@@ -282,6 +287,7 @@ resource "datadog_synthetics_test" "foo" {
 
 	options = {
 		tick_every = 900
+		follow_redirects = false
 		min_failure_duration = 10
 		min_location_failed = 1
 	}
