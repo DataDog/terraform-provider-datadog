@@ -58,8 +58,8 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 						},
 						"target_display": {
 							Type:             schema.TypeString,
-							Required:         false,
-							DiffSuppressFunc: suppressDataDogFloatIntDiff,
+							Optional:         true,
+							DiffSuppressFunc: suppressDataDogSLODisplayValueDiff,
 						},
 						"warning": {
 							Type:             schema.TypeFloat,
@@ -68,8 +68,8 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 						},
 						"warning_display": {
 							Type:             schema.TypeString,
-							Required:         false,
-							DiffSuppressFunc: suppressDataDogFloatIntDiff,
+							Optional:         true,
+							DiffSuppressFunc: suppressDataDogSLODisplayValueDiff,
 						},
 					},
 				},
@@ -168,39 +168,40 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadog.ServiceLe
 		}
 	}
 
-	if attr, ok := d.GetOk("thresholds"); ok {
+	if _, ok := d.GetOk("thresholds"); ok {
+		numThresholds := d.Get("thresholds.#").(int)
 		sloThresholds := make(datadog.ServiceLevelObjectiveThresholds, 0)
-		for _, rawThreshold := range attr.([]interface{}) {
-			threshold := rawThreshold.(map[string]interface{})
+		for i := 0; i < numThresholds; i++ {
+			prefix := fmt.Sprintf("thresholds.%d.", i)
 			t := datadog.ServiceLevelObjectiveThreshold{}
-			if tf, ok := threshold["timeframe"]; ok {
+
+			if tf, ok := d.GetOk(prefix + "timeframe"); ok {
 				t.TimeFrame = datadog.String(tf.(string))
 			}
 
-			if targetValue, ok := threshold["target"]; ok {
+			if targetValue, ok := d.GetOk(prefix + "target"); ok {
 				if f, ok := floatOk(targetValue); ok {
 					t.Target = datadog.Float64(f)
 				}
 			}
 
-			if warningValue, ok := threshold["warning"]; ok {
+			if warningValue, ok := d.GetOk(prefix + "warning"); ok {
 				if f, ok := floatOk(warningValue); ok {
 					t.Warning = datadog.Float64(f)
 				}
 			}
 
-			if targetDisplayValue, ok := threshold["target_display"]; ok {
+			if targetDisplayValue, ok := d.GetOk(prefix + "target_display"); ok {
 				if s, ok := targetDisplayValue.(string); ok && strings.TrimSpace(s) != "" {
 					t.TargetDisplay = datadog.String(strings.TrimSpace(targetDisplayValue.(string)))
 				}
 			}
 
-			if warningDisplayValue, ok := threshold["warning_display"]; ok {
+			if warningDisplayValue, ok := d.GetOk(prefix + "warning_display"); ok {
 				if s, ok := warningDisplayValue.(string); ok && strings.TrimSpace(s) != "" {
 					t.WarningDisplay = datadog.String(strings.TrimSpace(warningDisplayValue.(string)))
 				}
 			}
-
 			sloThresholds = append(sloThresholds, &t)
 		}
 		sort.Sort(sloThresholds)
@@ -462,4 +463,22 @@ func resourceDatadogServiceLevelObjectiveImport(d *schema.ResourceData, meta int
 		return nil, err
 	}
 	return []*schema.ResourceData{d}, nil
+}
+
+// Ignore any diff that results from the mix of *_display string values from the
+// DataDog API.
+func suppressDataDogSLODisplayValueDiff(k, old, new string, d *schema.ResourceData) bool {
+	sloType := d.Get("type")
+	if sloType == datadog.ServiceLevelObjectiveTypeMonitor {
+		// always suppress monitor type, this is controlled via API.
+		return false
+	}
+
+	// metric type otherwise
+	if old == "" || new == "" {
+		// always suppress if not specified
+		return true
+	}
+
+	return suppressDataDogFloatIntDiff(k, old, new, d)
 }

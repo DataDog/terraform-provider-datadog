@@ -21,17 +21,16 @@ resource "datadog_service_level_objective" "foo" {
 	denominator = "sum:my.metric{*}.as_count()"
   }
 
-  thresholds = [
-	{
-		timeframe = "7d"
-		target = 99.5
-		warning = 99.8
-	},
-	{
-		timeframe = "30d"
-		target = 99 
-	}
-  ]
+  thresholds {
+	timeframe = "7d"
+	target = 99.5
+	warning = 99.8
+  }
+
+  thresholds {
+	timeframe = "30d"
+	target = 99 
+  }
 
   tags = ["foo:bar", "baz"]
 }
@@ -47,17 +46,16 @@ resource "datadog_service_level_objective" "foo" {
 	denominator = "sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()"
   }
 
-  thresholds = [
-	{
-		timeframe = "7d"
-		target = 99.5
-		warning = 99.8
-	},
-	{
-		timeframe = "30d"
-		target = 98 
-	}
-  ]
+  thresholds {
+	timeframe = "7d"
+	target = 99.5
+	warning = 99.8
+  }
+
+  thresholds {
+	timeframe = "30d"
+	target = 98 
+  }
 
   tags = ["foo:bar", "baz"]
 }

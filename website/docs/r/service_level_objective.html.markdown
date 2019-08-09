@@ -24,21 +24,21 @@ resource "datadog_service_level_objective" "foo" {
     denominator = "sum:my.custom.count.metric{*}.as_count()"
   }
 
-  thresholds = [
-    {
-      timeframe = "7d"
-      target = 99.9
-      warning = 99.99
-      target_display = "99.900"
-      warning_display = "99.990"      
-    },
-    {
-      timeframe = "30d"
-      target = 99.9
-      warning = 99.99
-      target_display = "99.900"
-      warning_display = "99.990"      
-    }
+  thresholds {
+    timeframe = "7d"
+    target = 99.9
+    warning = 99.99
+    target_display = "99.900"
+    warning_display = "99.990"      
+  }
+
+  thresholds {
+    timeframe = "30d"
+    target = 99.9
+    warning = 99.99
+    target_display = "99.900"
+    warning_display = "99.990"      
+  }
   ]
 
   tags = ["foo:bar", "baz"]
@@ -54,18 +54,17 @@ resource "datadog_service_level_objective" "bar" {
   description        = "My custom monitor SLO"
   monitor_ids = [1, 2, 3]
 
-  thresholds = [
-    {
-      timeframe = "7d"
-      target = 99.9
-      warning = 99.99      
-    },
-    {
-      timeframe = "30d"
-      target = 99.9
-      warning = 99.99      
-    }
-  ]
+  thresholds {
+    timeframe = "7d"
+    target = 99.9
+    warning = 99.99      
+  }
+
+  thresholds {
+    timeframe = "30d"
+    target = 99.9
+    warning = 99.99      
+  }
 
   tags = ["foo:bar", "baz"]
 }
