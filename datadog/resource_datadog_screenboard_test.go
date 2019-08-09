@@ -80,7 +80,7 @@ resource "datadog_screenboard" "acceptance_test" {
 					compute = {
 						aggregation = "avg"
 						facet = "@duration"
-						interval = 5000
+						interval = "5000"
 					}
 					search = {
 						query = "status:info"
@@ -104,7 +104,7 @@ resource "datadog_screenboard" "acceptance_test" {
 					compute = {
 						aggregation = "avg"
 						facet = "@duration"
-						interval = 5000
+						interval = "5000"
 					}
 					search = {
 						query = "type:web"
