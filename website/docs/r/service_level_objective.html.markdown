@@ -90,6 +90,8 @@ The following arguments are supported:
     * `target_display` - (Optional) the string version to specify additional digits in the case of `99` but want 3 digits like `99.000` to display.
     * `warning` - (Optional) the objective's warning value `[0,100]`. This must be `> target` value.
     * `warning_display` - (Optional) the string version to specify additional digits in the case of `99` but want 3 digits like `99.000` to display.
+
+The following options are specific to the `type` of service level objective:
 * `metric` type SLOs:
     * `query` - (Required) The metric query configuration to use for the SLI. This is a dictionary and requires both the `numerator` and `denominator` fields which should be `count` metrics using the `sum` aggregator.
         * `numerator` - (Required) the sum of all the `good` events
