@@ -3789,8 +3789,10 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadog.W
 	if v, ok := terraformCompute["facet"].(string); ok && len(v) != 0 {
 		datadogCompute.Facet = datadog.String(v)
 	}
-	if v, err := strconv.ParseInt(terraformCompute["interval"].(string), 10, 64); err == nil {
-		datadogCompute.Interval = datadog.Int(int(v))
+	if interval, ok := terraformCompute["interval"].(string); ok && len(interval) != 0 {
+		if v, err := strconv.ParseInt(interval, 10, 64); err == nil {
+			datadogCompute.Interval = datadog.Int(int(v))
+		}
 	}
 	datadogQuery.Compute = &datadogCompute
 	// Search
@@ -3818,7 +3820,7 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadog.W
 					Aggregation: datadog.String(sort["aggregation"].(string)),
 					Order:       datadog.String(sort["order"].(string)),
 				}
-				if len(sort["facet"].(string)) > 0 {
+				if facet, ok := sort["facet"].(string); ok && len(facet) > 0 {
 					datadogGroupBy.Sort.Facet = datadog.String(sort["facet"].(string))
 				}
 			}
