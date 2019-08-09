@@ -802,8 +802,8 @@ Nested `apm_query` and `log_query` blocks have the following structure (Visit th
     - `facet` - (Optional)
     - `limit` - (Optional)
     - `sort` - (Optional). One nested block is allowed with the following structure:
-      - `aggregation` - (Optional)
-      - `order` - (Optional)
+      - `aggregation` - (Required)
+      - `order` - (Required)
       - `facet` - (Optional)
 
 
