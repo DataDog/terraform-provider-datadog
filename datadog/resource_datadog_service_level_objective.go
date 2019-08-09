@@ -2,8 +2,8 @@ package datadog
 
 import (
 	"fmt"
-	"log"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -85,7 +85,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 			"query": {
 				Type:          schema.TypeMap,
 				Optional:      true,
-				ConflictsWith: []string{"monitor_ids", "monitor_search"},
+				ConflictsWith: []string{"monitor_ids", "monitor_search", "groups"},
 				Description:   "The metric query of good / total events",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -148,9 +148,12 @@ func ValidateServiceLevelObjectiveTypeString(v interface{}, k string) (ws []stri
 func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadog.ServiceLevelObjective {
 
 	slo := datadog.ServiceLevelObjective{
-		Type:        datadog.String(d.Get("type").(string)),
-		Name:        datadog.String(d.Get("name").(string)),
-		Description: datadog.String(d.Get("description").(string)),
+		Type: datadog.String(d.Get("type").(string)),
+		Name: datadog.String(d.Get("name").(string)),
+	}
+
+	if attr, ok := d.GetOk("description"); ok {
+		slo.Description = datadog.String(attr.(string))
 	}
 
 	if attr, ok := d.GetOk("tags"); ok {
@@ -175,19 +178,27 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadog.ServiceLe
 			}
 
 			if targetValue, ok := threshold["target"]; ok {
-				t.Target = datadog.Float64(targetValue.(float64))
+				if f, ok := floatOk(targetValue); ok {
+					t.Target = datadog.Float64(f)
+				}
 			}
 
 			if warningValue, ok := threshold["warning"]; ok {
-				t.Warning = datadog.Float64(warningValue.(float64))
+				if f, ok := floatOk(warningValue); ok {
+					t.Warning = datadog.Float64(f)
+				}
 			}
 
 			if targetDisplayValue, ok := threshold["target_display"]; ok {
-				t.TargetDisplay = datadog.String(targetDisplayValue.(string))
+				if s, ok := targetDisplayValue.(string); ok && strings.TrimSpace(s) != "" {
+					t.TargetDisplay = datadog.String(strings.TrimSpace(targetDisplayValue.(string)))
+				}
 			}
 
 			if warningDisplayValue, ok := threshold["warning_display"]; ok {
-				t.WarningDisplay = datadog.String(warningDisplayValue.(string))
+				if s, ok := warningDisplayValue.(string); ok && strings.TrimSpace(s) != "" {
+					t.WarningDisplay = datadog.String(strings.TrimSpace(warningDisplayValue.(string)))
+				}
 			}
 
 			sloThresholds = append(sloThresholds, &t)
@@ -233,6 +244,28 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadog.ServiceLe
 	}
 
 	return &slo
+}
+
+func floatOk(val interface{}) (float64, bool) {
+	switch val.(type) {
+	case float64:
+		return val.(float64), true
+	case *float64:
+		return *(val.(*float64)), true
+	case string:
+		f, err := strconv.ParseFloat(val.(string), 64)
+		if err == nil {
+			return f, true
+		}
+	case *string:
+		f, err := strconv.ParseFloat(*(val.(*string)), 64)
+		if err == nil {
+			return f, true
+		}
+	default:
+		return 0, false
+	}
+	return 0, false
 }
 
 func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta interface{}) error {
@@ -296,7 +329,6 @@ func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta inter
 	}
 	sort.Strings(tags)
 
-	log.Printf("[DEBUG] service level objective: %+v", slo)
 	d.Set("name", slo.GetName())
 	d.Set("description", slo.GetDescription())
 	d.Set("type", slo.GetType())

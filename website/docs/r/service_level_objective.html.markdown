@@ -16,7 +16,7 @@ Provides a Datadog service level objective resource. This can be used to create 
 ```hcl
 # Create a new Datadog service level objective
 resource "datadog_service_level_objective" "foo" {
-  name               = "Name for SLO foo"
+  name               = "Example Metric SLO"
   type               = "metric"
   description        = "My custom metric SLO"
   query = {
@@ -48,8 +48,8 @@ resource "datadog_service_level_objective" "foo" {
 ### Monitor-Based SLO
 ```hcl
 # Create a new Datadog service level objective
-resource "datadog_service_level_objective" "foo" {
-  name               = "Name for SLO foo"
+resource "datadog_service_level_objective" "bar" {
+  name               = "Example Monitor SLO"
   type               = "monitor"
   description        = "My custom monitor SLO"
   monitor_ids = [1, 2, 3]
@@ -90,21 +90,6 @@ The following arguments are supported:
     * `target_display` - (Optional) the string version to specify additional digits in the case of `99` but want 3 digits like `99.000` to display.
     * `warning` - (Optional) the objective's warning value `[0,100]`. This must be `> target` value.
     * `warning_display` - (Optional) the string version to specify additional digits in the case of `99` but want 3 digits like `99.000` to display.
-    * Example Usage:
-```hcl
-thresholds = [
-    {
-        timeframe = "7d"
-        target    = 99.9
-        warning   = 99.95 
-    },
-    {
-        timeframe = "30d"
-        target    = 99.9
-        warning   = 99.95 
-    }
-]
-```
 * `metric` type SLOs:
     * `query` - (Required) The metric query configuration to use for the SLI. This is a dictionary and requires both the `numerator` and `denominator` fields which should be `count` metrics using the `sum` aggregator.
         * `numerator` - (Required) the sum of all the `good` events
@@ -133,5 +118,5 @@ The following attributes are exported:
 Service Level Objectives can be imported using their string ID, e.g.
 
 ```
-$ terraform import datadog_service_level_objective.bytes_received_localhost "foo"
+$ terraform import datadog_service_level_objective.12345678901234567890123456789012 "baz"
 ```
