@@ -112,7 +112,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 								Optional: true,
 							},
 							"interval": {
-								Type:     schema.TypeInt,
+								Type:     schema.TypeString,
 								Optional: true,
 							},
 						},
@@ -902,8 +902,8 @@ func buildTileDefRequestsApmOrLogQuery(source interface{}) *datadog.TileDefApmOr
 	if v, ok := terraformCompute["facet"].(string); ok && len(v) != 0 {
 		datadogCompute.Facet = datadog.String(v)
 	}
-	if v, err := strconv.ParseInt(terraformCompute["interval"].(string), 10, 64); err == nil {
-		datadogCompute.Interval = datadog.Int(int(v))
+	if v, ok := terraformCompute["interval"].(string); ok && len(v) != 0 {
+		datadogCompute.Interval = datadog.String(v)
 	}
 
 	d.Compute = &datadogCompute
@@ -1454,7 +1454,7 @@ func buildTFTileDefApmOrLogQuery(datadogQuery datadog.TileDefApmOrLogQuery) map[
 		terraformCompute["facet"] = *datadogQuery.Compute.Facet
 	}
 	if datadogQuery.Compute.Interval != nil {
-		terraformCompute["interval"] = strconv.FormatInt(int64(*datadogQuery.Compute.Interval), 10)
+		terraformCompute["interval"] = *datadogQuery.Compute.Interval
 	}
 	terraformQuery["compute"] = terraformCompute
 	// Search

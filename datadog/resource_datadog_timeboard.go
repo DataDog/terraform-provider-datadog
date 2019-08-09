@@ -525,7 +525,7 @@ func buildDatadogGraphApmOrLogQuery(terraformLogOrApmQuery map[string]interface{
 					Aggregation: datadog.String(sort["aggregation"].(string)),
 					Order:       datadog.String(sort["order"].(string)),
 				}
-				if len(sort["facet"].(string)) > 0 {
+				if facet, ok := sort["facet"].(string); ok && len(facet) != 0 {
 					datadogGroupBy.Sort.Facet = datadog.String(sort["facet"].(string))
 				}
 			}
