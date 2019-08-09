@@ -24,12 +24,12 @@ resource "datadog_service_level_objective" "foo" {
   thresholds = [
 	{
 		timeframe = "7d"
-		slo = 99.5
+		target = 99.5
 		warning = 99.8
 	},
 	{
 		timeframe = "30d"
-		slo = 99 
+		target = 99 
 	}
   ]
 
@@ -50,12 +50,12 @@ resource "datadog_service_level_objective" "foo" {
   thresholds = [
 	{
 		timeframe = "7d"
-		slo = 99.5
+		target = 99.5
 		warning = 99.8
 	},
 	{
 		timeframe = "30d"
-		slo = 98 
+		target = 98 
 	}
   ]
 
@@ -91,13 +91,13 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.0.timeframe", "7d"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "thresholds.0.slo", "99.5"),
+						"datadog_service_level_objective.foo", "thresholds.0.target", "99.5"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.0.warning", "99.8"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.1.timeframe", "30d"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "thresholds.1.slo", "99"),
+						"datadog_service_level_objective.foo", "thresholds.1.target", "99"),
 					// Tags are a TypeSet => use a weird way to access members by their hash
 					// TF TypeSet is internally represented as a map that maps computed hashes
 					// to actual values. Since the hashes are always the same for one value,
@@ -130,13 +130,13 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.0.timeframe", "7d"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "thresholds.0.slo", "99.5"),
+						"datadog_service_level_objective.foo", "thresholds.0.target", "99.5"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.0.warning", "99.8"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.1.timeframe", "30d"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "thresholds.1.slo", "98"),
+						"datadog_service_level_objective.foo", "thresholds.1.target", "98"),
 					// Tags are a TypeSet => use a weird way to access members by their hash
 					// TF TypeSet is internally represented as a map that maps computed hashes
 					// to actual values. Since the hashes are always the same for one value,
