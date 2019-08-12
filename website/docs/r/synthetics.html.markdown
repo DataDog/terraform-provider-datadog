@@ -15,7 +15,7 @@ Provides a Datadog synthetics test resource. This can be used to create and mana
 Create a new Datadog Synthetics API/HTTP test on https://www.example.org
 
 ```hcl
-resource "datadog_synthetics_test" "foo" {
+resource "datadog_synthetics_test" "test_api" {
   type = "api"
   subtype = "http"
   request = {
@@ -50,7 +50,7 @@ resource "datadog_synthetics_test" "foo" {
 Create a new Datadog Synthetics API/SSL test on example.org
 
 ```hcl
-resource "datadog_synthetics_test" "foo" {
+resource "datadog_synthetics_test" "test_ssl" {
   type = "api"
   subtype = "ssl"
   request = {
@@ -83,7 +83,7 @@ Support for Synthetics Browser test is limited (see [below](#synthetics-browser-
 
 ```hcl
 # Create a new Datadog Synthetics Browser test starting on https://www.example.org
-resource "datadog_synthetics_test" "bar" {
+resource "datadog_synthetics_test" "test_browser" {
   type = "browser"
 
   request = {
