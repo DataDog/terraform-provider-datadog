@@ -135,9 +135,9 @@ func syntheticsTestOptions() *schema.Schema {
 	return &schema.Schema{
 		Type: schema.TypeMap,
 		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
-			if key == "options.follow_redirects" {
+			if key == "options.follow_redirects" || key == "options.accept_self_signed" {
 				// TF nested schemas is limited to string values only
-				// follow_redirects being a boolean in Datadog json api
+				// follow_redirects and accept_self_signed being booleans in Datadog json api
 				// we need a sane way to convert from boolean to string
 				// and from string to boolean
 				oldValue, err1 := strconv.ParseBool(old)
@@ -360,7 +360,10 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 		options.SetMinLocationFailed(minLocationFailed)
 	}
 	if attr, ok := d.GetOk("options.accept_self_signed"); ok {
-		options.SetAcceptSelfSigned(attr.(string) == "true")
+		// for some reason, attr is equal to "1" or "0" in TF 0.11
+		// so ParseBool is required for retro-compatibility
+		acceptSelfSigned, _ := strconv.ParseBool(attr.(string))
+		options.SetAcceptSelfSigned(acceptSelfSigned)
 	}
 	if attr, ok := d.GetOk("device_ids"); ok {
 		deviceIds := []string{}
