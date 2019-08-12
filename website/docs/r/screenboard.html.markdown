@@ -502,8 +502,8 @@ Nested `widget` `tile_def` blocks have the following structure:
 - `node_type` - (Optional, only for widgets of type "hostmap") The type of node used. Either "host" or "container".
 - `scope` - (Optional, only for widgets of type "hostmap") The list of tags to filter nodes by.
 - `group` - (Optional, only for widgets of type "hostmap") The list of tags to group nodes by.
-- `no_group_host` - (Optional, only for widgets of type "hostmap") Boolean indicating whether to show ungrouped nodes.
-- `no_metric_host` - (Optional, only for widgets of type "hostmap") Boolean indicating whether to show nodes with no metrics.
+- `no_group_hosts` - (Optional, only for widgets of type "hostmap") Boolean indicating whether to show ungrouped nodes.
+- `no_metric_hosts` - (Optional, only for widgets of type "hostmap") Boolean indicating whether to show nodes with no metrics.
 - `style` - (Optional, only for widgets of type "hostmap") Nested block describing how to display the widget. The structure of this block is described below. At most one such block should be present in a given tile_def block.
 
 ### Nested `widget` `tile_def` `style` blocks

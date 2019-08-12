@@ -630,8 +630,8 @@ Nested `widget` blocks have the following structure:
           - `size`: (Optional) The query used to size the map. Exactly one nested block is allowed with the following structure:
               - `q`: (Required) The metric query to use in the widget.
       - `node_type` - (Optional) The type of node used. Either "host" or "container".
-      - `no_metric_host` - (Optional) Boolean indicating whether to show nodes with no metrics.
-      - `no_group_host` - (Optional) Boolean indicating whether to show ungrouped nodes.
+      - `no_metric_hosts` - (Optional) Boolean indicating whether to show nodes with no metrics.
+      - `no_group_hosts` - (Optional) Boolean indicating whether to show ungrouped nodes.
       - `group` - (Optional) The list of tags to group nodes by.
       - `scope` - (Optional) The list of tags to filter nodes by.
       - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
