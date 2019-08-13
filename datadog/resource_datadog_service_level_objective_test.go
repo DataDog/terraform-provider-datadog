@@ -16,7 +16,7 @@ resource "datadog_service_level_objective" "foo" {
   name = "name for metric SLO foo"
   type = "metric"
   description = "some description about foo SLO"
-  query = {
+  query {
 	numerator = "sum:my.metric{type:good}.as_count()"
 	denominator = "sum:my.metric{*}.as_count()"
   }
@@ -41,7 +41,7 @@ resource "datadog_service_level_objective" "foo" {
   name = "updated name for metric SLO foo"
   type = "metric"
   description = "some updated description about foo SLO"
-  query = {
+  query {
 	numerator = "sum:my.metric{type:good}.as_count()"
 	denominator = "sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()"
   }
@@ -80,9 +80,9 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "type", "metric"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "query.numerator", "sum:my.metric{type:good}.as_count()"),
+						"datadog_service_level_objective.foo", "query.0.numerator", "sum:my.metric{type:good}.as_count()"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "query.denominator", "sum:my.metric{*}.as_count()"),
+						"datadog_service_level_objective.foo", "query.0.denominator", "sum:my.metric{*}.as_count()"),
 					// Thresholds are a TypeList, that are sorted by timeframe alphabetically.
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.#", "2"),
@@ -119,9 +119,9 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "type", "metric"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "query.numerator", "sum:my.metric{type:good}.as_count()"),
+						"datadog_service_level_objective.foo", "query.0.numerator", "sum:my.metric{type:good}.as_count()"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "query.denominator", "sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()"),
+						"datadog_service_level_objective.foo", "query.0.denominator", "sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()"),
 					// Thresholds are a TypeList, that are sorted by timeframe alphabetically.
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.#", "2"),

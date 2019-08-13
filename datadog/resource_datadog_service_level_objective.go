@@ -83,7 +83,9 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 
 			// Metric-Based SLO
 			"query": {
-				Type:          schema.TypeMap,
+				// we use TypeList here because of https://github.com/hashicorp/terraform/issues/6215/
+				Type:          schema.TypeList,
+				MaxItems:      1,
 				Optional:      true,
 				ConflictsWith: []string{"monitor_ids", "monitor_search", "groups"},
 				Description:   "The metric query of good / total events",
@@ -238,9 +240,11 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadog.ServiceLe
 		}
 	default:
 		// query type
-		slo.Query = &datadog.ServiceLevelObjectiveMetricQuery{
-			Numerator:   datadog.String(d.Get("query.numerator").(string)),
-			Denominator: datadog.String(d.Get("query.denominator").(string)),
+		if _, ok := d.GetOk("query.0"); ok {
+			slo.Query = &datadog.ServiceLevelObjectiveMetricQuery{
+				Numerator:   datadog.String(d.Get("query.0.numerator").(string)),
+				Denominator: datadog.String(d.Get("query.0.denominator").(string)),
+			}
 		}
 	}
 
@@ -353,7 +357,7 @@ func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta inter
 		q := slo.GetQuery()
 		query["numerator"] = q.GetNumerator()
 		query["denominator"] = q.GetDenominator()
-		d.Set("query", query)
+		d.Set("query", []map[string]interface{}{query})
 	}
 
 	return nil
@@ -402,11 +406,12 @@ func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta int
 	default:
 		// metric type
 		if attr, ok := d.GetOk("query"); ok {
-			query := attr.(map[string]interface{})
-			slo.SetQuery(datadog.ServiceLevelObjectiveMetricQuery{
-				Numerator:   datadog.String(query["numerator"].(string)),
-				Denominator: datadog.String(query["denominator"].(string)),
-			})
+			if query, ok := attr.([]map[string]interface{}); ok && len(query) == 1 {
+				slo.SetQuery(datadog.ServiceLevelObjectiveMetricQuery{
+					Numerator:   datadog.String(query[0]["numerator"].(string)),
+					Denominator: datadog.String(query[0]["denominator"].(string)),
+				})
+			}
 		}
 	}
 
