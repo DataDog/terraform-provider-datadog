@@ -97,7 +97,6 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 							StateFunc: func(val interface{}) string {
 								return strings.TrimSpace(val.(string))
 							},
-							ValidateFunc: validQueryOption,
 						},
 						"denominator": {
 							Type:     schema.TypeString,
@@ -105,7 +104,6 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 							StateFunc: func(val interface{}) string {
 								return strings.TrimSpace(val.(string))
 							},
-							ValidateFunc: validQueryOption,
 						},
 					},
 				},
@@ -488,14 +486,4 @@ func suppressDataDogSLODisplayValueDiff(k, old, new string, d *schema.ResourceDa
 	}
 
 	return suppressDataDogFloatIntDiff(k, old, new, d)
-}
-
-// validQueryOption validates that the `query` parameter is naively valid.
-func validQueryOption(v interface{}, k string) (ws []string, errors []error) {
-	strVal := strings.TrimSpace(v.(string))
-	if strVal == "" {
-		errors = append(errors, fmt.Errorf("empty `query.%s` specified for SLO", k))
-		return
-	}
-	return
 }
