@@ -236,7 +236,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
       request {
         log_query {
           index = "mcnulty"
-          compute = {
+          compute {
             aggregation = "count"
             facet = "@duration"
             interval = 5000
@@ -247,7 +247,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
           group_by {
             facet = "host"
             limit = 10
-            sort = {
+            sort {
               aggregation = "avg"
               order = "desc"
               facet = "@duration"
@@ -259,7 +259,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
       request {
         apm_query {
           index = "apm-search"
-          compute = {
+          compute {
             aggregation = "count"
             facet = "@duration"
             interval = 5000
@@ -270,7 +270,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
           group_by {
             facet = "resource_name"
             limit = 50
-            sort = {
+            sort {
               aggregation = "avg"
               order = "desc"
               facet = "@string_query.interval"
