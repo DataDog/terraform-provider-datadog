@@ -19,7 +19,7 @@ resource "datadog_service_level_objective" "foo" {
   name               = "Example Metric SLO"
   type               = "metric"
   description        = "My custom metric SLO"
-  query = {
+  query {
     numerator = "sum:my.custom.count.metric{type:good_events}.as_count()"
     denominator = "sum:my.custom.count.metric{*}.as_count()"
   }
@@ -97,7 +97,7 @@ The following options are specific to the `type` of service level objective:
         * `denominator` - (Required) the sum of the `total` events
         * Example Usage:
 ```hcl
-query = {
+query {
     numerator   = "sum:my.custom.count.metric{type:good}.as_count()"
     denominator = "sum:my.custom.count.metric{*}.as_count()" 
 }

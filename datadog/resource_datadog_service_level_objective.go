@@ -426,7 +426,20 @@ func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta int
 
 	if attr, ok := d.GetOk("thresholds"); ok {
 		sloThresholds := make(datadog.ServiceLevelObjectiveThresholds, 0)
-		thresholds := attr.([]map[string]interface{})
+		thresholds := make([]map[string]interface{}, 0)
+		switch attr.(type) {
+		case []interface{}:
+			raw := attr.([]interface{})
+			for _, a := range raw {
+				if a, ok := a.(map[string]interface{}); ok {
+					thresholds = append(thresholds, a)
+				}
+			}
+		case []map[string]interface{}:
+			thresholds = attr.([]map[string]interface{})
+		default:
+			// ignore
+		}
 		for _, threshold := range thresholds {
 			t := datadog.ServiceLevelObjectiveThreshold{
 				TimeFrame: datadog.String(threshold["timeframe"].(string)),
@@ -476,7 +489,7 @@ func suppressDataDogSLODisplayValueDiff(k, old, new string, d *schema.ResourceDa
 	sloType := d.Get("type")
 	if sloType == datadog.ServiceLevelObjectiveTypeMonitor {
 		// always suppress monitor type, this is controlled via API.
-		return false
+		return true
 	}
 
 	// metric type otherwise
