@@ -406,6 +406,20 @@ func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta int
 	default:
 		// metric type
 		if attr, ok := d.GetOk("query"); ok {
+			queries := make([]map[string]interface{}, 0)
+			switch attr.(type) {
+			case []interface{}:
+				raw := attr.([]interface{})
+				for _, rawQuery := range raw {
+					if query, ok := rawQuery.(map[string]interface{}); ok {
+						queries = append(queries, query)
+					}
+				}
+			case []map[string]interface{}:
+				queries = attr.([]map[string]interface{})
+			default:
+				// ignore
+			}
 			if query, ok := attr.([]map[string]interface{}); ok && len(query) == 1 {
 				slo.SetQuery(datadog.ServiceLevelObjectiveMetricQuery{
 					Numerator:   datadog.String(query[0]["numerator"].(string)),
@@ -430,9 +444,9 @@ func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta int
 		switch attr.(type) {
 		case []interface{}:
 			raw := attr.([]interface{})
-			for _, a := range raw {
-				if a, ok := a.(map[string]interface{}); ok {
-					thresholds = append(thresholds, a)
+			for _, rawThreshold := range raw {
+				if threshold, ok := rawThreshold.(map[string]interface{}); ok {
+					thresholds = append(thresholds, threshold)
 				}
 			}
 		case []map[string]interface{}:
