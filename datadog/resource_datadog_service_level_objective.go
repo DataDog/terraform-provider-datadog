@@ -420,7 +420,8 @@ func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta int
 			default:
 				// ignore
 			}
-			if query, ok := attr.([]map[string]interface{}); ok && len(query) == 1 {
+			if query, ok := attr.([]map[string]interface{}); ok && len(query) >= 1 {
+				// only use the first defined query
 				slo.SetQuery(datadog.ServiceLevelObjectiveMetricQuery{
 					Numerator:   datadog.String(query[0]["numerator"].(string)),
 					Denominator: datadog.String(query[0]["denominator"].(string)),
