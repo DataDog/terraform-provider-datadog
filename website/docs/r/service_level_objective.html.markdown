@@ -39,7 +39,6 @@ resource "datadog_service_level_objective" "foo" {
     target_display = "99.900"
     warning_display = "99.990"      
   }
-  ]
 
   tags = ["foo:bar", "baz"]
 }
