@@ -23,7 +23,7 @@ func resourceDatadogDashboardList() *schema.Resource {
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "The name of the Dashboard List",
+				Description: "The name of the Dashboard ListV2",
 			},
 			"dash_item": {
 				Type:        schema.TypeSet,
@@ -52,21 +52,21 @@ func resourceDatadogDashboardList() *schema.Resource {
 }
 
 func resourceDatadogDashboardListCreate(d *schema.ResourceData, meta interface{}) error {
-	dashboardList, err := buildDatadogDashboardList(d)
+	dashboardListV2, err := buildDatadogDashboardList(d)
 	if err != nil {
 		fmt.Printf("Error building the dashboard list %s", err.Error())
 	}
-	dashboardList, err = meta.(*datadog.Client).CreateDashboardList(dashboardList)
+	dashboardListV2, err = meta.(*datadog.Client).CreateDashboardList(dashboardListV2)
 	if err != nil {
 		return fmt.Errorf("Failed to create dashboard list using Datadog API: %s", err.Error())
 	}
-	id := dashboardList.GetId()
+	id := dashboardListV2.GetId()
 	d.SetId(strconv.Itoa(id))
 
 	// Add all the dash list items into the List
 	if len(d.Get("dash_item").(*schema.Set).List()) > 0 {
-		dashboardListItems, _ := buildDatadogDashboardListItems(d)
-		_, err := meta.(*datadog.Client).UpdateDashboardListItems(id, dashboardListItems)
+		dashboardListV2Items, _ := buildDatadogDashboardListV2Items(d)
+		_, err := meta.(*datadog.Client).UpdateDashboardListV2Items(id, dashboardListV2Items)
 		if err != nil {
 			return err
 		}
@@ -78,7 +78,7 @@ func resourceDatadogDashboardListCreate(d *schema.ResourceData, meta interface{}
 func resourceDatadogDashboardListUpdate(d *schema.ResourceData, meta interface{}) error {
 	id, err := strconv.Atoi(d.Id())
 
-	// Make any necessary updates to the Overall Dashboard List Object
+	// Make any necessary updates to the Overall Dashboard ListV2 Object
 	dashList, err := buildDatadogDashboardList(d)
 	dashList.SetId(id)
 	dashList.SetName(d.Get("name").(string))
@@ -88,17 +88,17 @@ func resourceDatadogDashboardListUpdate(d *schema.ResourceData, meta interface{}
 	}
 
 	// Delete all elements from the dash list and add back only the ones in the config
-	completeDashList, err := meta.(*datadog.Client).GetDashboardListItems(id)
+	completeDashListV2, err := meta.(*datadog.Client).GetDashboardListV2Items(id)
 	if err != nil {
 		return err
 	}
-	completeDashList, err = meta.(*datadog.Client).DeleteDashboardListItems(id, completeDashList)
+	completeDashListV2, err = meta.(*datadog.Client).DeleteDashboardListV2Items(id, completeDashListV2)
 	if err != nil {
 		return err
 	}
 	if len(d.Get("dash_item").(*schema.Set).List()) > 0 {
-		dashboardListItems, _ := buildDatadogDashboardListItems(d)
-		_, err := meta.(*datadog.Client).UpdateDashboardListItems(id, dashboardListItems)
+		dashboardListV2Items, _ := buildDatadogDashboardListV2Items(d)
+		_, err := meta.(*datadog.Client).UpdateDashboardListV2Items(id, dashboardListV2Items)
 		if err != nil {
 			return err
 		}
@@ -111,33 +111,26 @@ func resourceDatadogDashboardListRead(d *schema.ResourceData, meta interface{}) 
 	id, err := strconv.Atoi(d.Id())
 
 	//Read the overall Dashboard List object
-	dashList, err := meta.(*datadog.Client).GetDashboardList(id)
+	dashListV2, err := meta.(*datadog.Client).GetDashboardList(id)
 	if err != nil {
 		return err
 	}
 	d.SetId(strconv.Itoa(id))
-	d.Set("name", dashList.GetName())
+	d.Set("name", dashListV2.GetName())
 
-	// Read all the dashboard list elements
-	completeItemList, err := meta.(*datadog.Client).GetDashboardListItems(id)
+	// Read and set all the dashboard list elements
+	completeItemListV2, err := meta.(*datadog.Client).GetDashboardListV2Items(id)
 	if err != nil {
 		return err
 	}
-	dashItemList := make([]map[string]interface{}, 0, 1)
-	for _, item := range completeItemList {
-		dashItem := make(map[string]interface{})
-		dashItem["type"] = item.GetType()
-		dashItem["dash_id"] = item.GetId()
-		dashItemList = append(dashItemList, dashItem)
-	}
-	d.Set("dash_item", dashItemList)
+	dashItemListV2, err := buildTerraformDashboardListv2Items(d, completeItemListV2)
+	d.Set("dash_item", dashItemListV2)
 	return err
 }
 
 func resourceDatadogDashboardListDelete(d *schema.ResourceData, meta interface{}) error {
 	id, _ := strconv.Atoi(d.Id())
-
-	// Deleting the overall List will also take care of deleting its sub elements
+	// Deleting the overall ListV2 will also take care of deleting its sub elements
 	// Deletion of individual dash items happens in the Update method
 	err := meta.(*datadog.Client).DeleteDashboardList(id)
 	if err != nil {
@@ -148,8 +141,7 @@ func resourceDatadogDashboardListDelete(d *schema.ResourceData, meta interface{}
 
 func resourceDatadogDashboardListExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	id, _ := strconv.Atoi(d.Id())
-
-	// Only check existence of the overall Dash List, not its sub items
+	// Only check existence of the overall Dash ListV2, not its sub items
 	if _, err := meta.(*datadog.Client).GetDashboardList(id); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
@@ -167,19 +159,30 @@ func resourceDatadogDashboardListImport(d *schema.ResourceData, meta interface{}
 }
 
 func buildDatadogDashboardList(d *schema.ResourceData) (*datadog.DashboardList, error) {
-	var dashboardList datadog.DashboardList
-	dashboardList.SetName(d.Get("name").(string))
-	return &dashboardList, nil
+	var dashboardListV2 datadog.DashboardList
+	dashboardListV2.SetName(d.Get("name").(string))
+	return &dashboardListV2, nil
 }
 
-func buildDatadogDashboardListItems(d *schema.ResourceData) ([]datadog.DashboardListItem, error) {
-	var dashboardListItems []datadog.DashboardListItem
+func buildDatadogDashboardListV2Items(d *schema.ResourceData) ([]datadog.DashboardListV2Item, error) {
+	var dashboardListV2Items []datadog.DashboardListV2Item
 	for _, dashItem := range d.Get("dash_item").(*schema.Set).List() {
 		dashItemRaw := dashItem.(map[string]interface{})
-		var dashItem datadog.DashboardListItem
-		dashItem.SetId(dashItemRaw["dash_id"].(string))
+		var dashItem datadog.DashboardListV2Item
+		dashItem.SetID(dashItemRaw["dash_id"].(string))
 		dashItem.SetType(dashItemRaw["type"].(string))
-		dashboardListItems = append(dashboardListItems, dashItem)
+		dashboardListV2Items = append(dashboardListV2Items, dashItem)
 	}
-	return dashboardListItems, nil
+	return dashboardListV2Items, nil
+}
+
+func buildTerraformDashboardListv2Items(d *schema.ResourceData, completeItemListV2 []datadog.DashboardListV2Item) ([]map[string]interface{}, error) {
+	dashItemListV2 := make([]map[string]interface{}, 0, 1)
+	for _, item := range completeItemListV2 {
+		dashItem := make(map[string]interface{})
+		dashItem["type"] = item.GetType()
+		dashItem["dash_id"] = item.GetID()
+		dashItemListV2 = append(dashItemListV2, dashItem)
+	}
+	return dashItemListV2, nil
 }

@@ -4107,18 +4107,18 @@ func (d *DashboardList) SetName(v string) {
 }
 
 // GetId returns the Id field if non-nil, zero value otherwise.
-func (d *DashboardListItem) GetId() string {
+func (d *DashboardListItem) GetId() int {
 	if d == nil || d.Id == nil {
-		return ""
+		return 0
 	}
 	return *d.Id
 }
 
 // GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
-func (d *DashboardListItem) GetIdOk() (string, bool) {
+func (d *DashboardListItem) GetIdOk() (int, bool) {
 	if d == nil || d.Id == nil {
-		return "", false
+		return 0, false
 	}
 	return *d.Id, true
 }
@@ -4133,7 +4133,7 @@ func (d *DashboardListItem) HasId() bool {
 }
 
 // SetId allocates a new d.Id and returns the pointer to it.
-func (d *DashboardListItem) SetId(v string) {
+func (d *DashboardListItem) SetId(v int) {
 	d.Id = &v
 }
 
