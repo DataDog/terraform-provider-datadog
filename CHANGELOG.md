@@ -9,8 +9,8 @@ IMPROVEMENTS:
 `datadog_synthetics_test`: Support SSL synthetics tests. [GH-279]
 
 BUGFIXES:
-`datadog_synthetics_test`: Fix follow redirects field to properly apply and save in state. [GH-256]
 `datadog_dashboards`: Safely type assert optional fields from log and apm query to avoid a panic if they aren't supplied [GH-283]
+`datadog_synthetics_test`: Fix follow redirects field to properly apply and save in state. [GH-256]
 
 ## 2.1.0 (July 24, 2019)
 
