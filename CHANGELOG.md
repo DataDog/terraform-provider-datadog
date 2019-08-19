@@ -1,4 +1,17 @@
-## 2.1.1 (Unreleased)
+## 2.2.0 (Unreleased)
+
+FEATURES:
+`datadog_service_level_objective`: New resource for Service Level Objective (SLO) [GH-263]
+
+IMPROVEMENTS:
+`datadog_dashbaord`: Add support for style block in dashboard widgets. [GH-277]
+`datadog_dashboard`: Add support for metadata block in dashboard widgets [GH-278]
+`datadog_synthetics_test`: Support SSL synthetics tests. [GH-279]
+
+BUGFIXES:
+`datadog_synthetics_test`: Fix follow redirects field to properly apply and save in state. [GH-256]
+`datadog_dashboards`: Safely type assert optional fields from log and apm query to avoid a panic if they aren't supplied [GH-283]
+
 ## 2.1.0 (July 24, 2019)
 
 FEATURES:
