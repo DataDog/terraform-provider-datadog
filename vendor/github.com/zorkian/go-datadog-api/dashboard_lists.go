@@ -29,7 +29,13 @@ type DashboardList struct {
 
 // DashboardListItem represents a single dashboard in a dashboard list.
 type DashboardListItem struct {
-	Id   *int    `json:"id,omitempty"`
+	Id   *string `json:"id,omitempty"`
+	Type *string `json:"type,omitempty"`
+}
+
+// DashboardListItemV2 represents a single dashbord in a dashboard list for the V2 endpoint
+type DashboardListItemV2 struct {
+	Id   *string `json:"id,omitempty"`
 	Type *string `json:"type,omitempty"`
 }
 
@@ -56,7 +62,7 @@ type reqGetDashboardLists struct {
 // GetDashboardList returns a single dashboard list created on this account.
 func (client *Client) GetDashboardList(id int) (*DashboardList, error) {
 	var out DashboardList
-	if err := client.doJsonRequest("GET", fmt.Sprintf("/v1/dashboard/lists/manual/%d", id), nil, &out); err != nil {
+	if err := client.doJsonRequest("GET", fmt.Sprintf("/v2/dashboard/lists/manual/%d", id), nil, &out); err != nil {
 		return nil, err
 	}
 	return &out, nil
@@ -65,7 +71,7 @@ func (client *Client) GetDashboardList(id int) (*DashboardList, error) {
 // GetDashboardLists returns a list of all dashboard lists created on this account.
 func (client *Client) GetDashboardLists() ([]DashboardList, error) {
 	var out reqGetDashboardLists
-	if err := client.doJsonRequest("GET", "/v1/dashboard/lists/manual", nil, &out); err != nil {
+	if err := client.doJsonRequest("GET", "/v2/dashboard/lists/manual", nil, &out); err != nil {
 		return nil, err
 	}
 	return out.DashboardLists, nil
@@ -74,7 +80,7 @@ func (client *Client) GetDashboardLists() ([]DashboardList, error) {
 // CreateDashboardList returns a single dashboard list created on this account.
 func (client *Client) CreateDashboardList(list *DashboardList) (*DashboardList, error) {
 	var out DashboardList
-	if err := client.doJsonRequest("POST", "/v1/dashboard/lists/manual", list, &out); err != nil {
+	if err := client.doJsonRequest("POST", "/v2/dashboard/lists/manual", list, &out); err != nil {
 		return nil, err
 	}
 	return &out, nil
@@ -83,18 +89,18 @@ func (client *Client) CreateDashboardList(list *DashboardList) (*DashboardList, 
 // UpdateDashboardList returns a single dashboard list created on this account.
 func (client *Client) UpdateDashboardList(list *DashboardList) error {
 	req := reqUpdateDashboardList{list.GetName()}
-	return client.doJsonRequest("PUT", fmt.Sprintf("/v1/dashboard/lists/manual/%d", *list.Id), req, nil)
+	return client.doJsonRequest("PUT", fmt.Sprintf("/v2/dashboard/lists/manual/%d", *list.Id), req, nil)
 }
 
 // DeleteDashboardList deletes a dashboard list by the identifier.
 func (client *Client) DeleteDashboardList(id int) error {
-	return client.doJsonRequest("DELETE", fmt.Sprintf("/v1/dashboard/lists/manual/%d", id), nil, nil)
+	return client.doJsonRequest("DELETE", fmt.Sprintf("/v2/dashboard/lists/manual/%d", id), nil, nil)
 }
 
 // GetDashboardListItems fetches the dashboard list's dashboard definitions.
 func (client *Client) GetDashboardListItems(id int) ([]DashboardListItem, error) {
 	var out reqDashboardListItems
-	if err := client.doJsonRequest("GET", fmt.Sprintf("/v1/dashboard/lists/manual/%d/dashboards", id), nil, &out); err != nil {
+	if err := client.doJsonRequest("GET", fmt.Sprintf("/v2/dashboard/lists/manual/%d/dashboards", id), nil, &out); err != nil {
 		return nil, err
 	}
 	return out.Dashboards, nil
@@ -106,7 +112,7 @@ func (client *Client) GetDashboardListItems(id int) ([]DashboardListItem, error)
 func (client *Client) AddDashboardListItems(dashboardListId int, items []DashboardListItem) ([]DashboardListItem, error) {
 	req := reqDashboardListItems{items}
 	var out reqAddedDashboardListItems
-	if err := client.doJsonRequest("POST", fmt.Sprintf("/v1/dashboard/lists/manual/%d/dashboards", dashboardListId), req, &out); err != nil {
+	if err := client.doJsonRequest("POST", fmt.Sprintf("/v2/dashboard/lists/manual/%d/dashboards", dashboardListId), req, &out); err != nil {
 		return nil, err
 	}
 	return out.Dashboards, nil
@@ -118,7 +124,7 @@ func (client *Client) AddDashboardListItems(dashboardListId int, items []Dashboa
 func (client *Client) UpdateDashboardListItems(dashboardListId int, items []DashboardListItem) ([]DashboardListItem, error) {
 	req := reqDashboardListItems{items}
 	var out reqDashboardListItems
-	if err := client.doJsonRequest("PUT", fmt.Sprintf("/v1/dashboard/lists/manual/%d/dashboards", dashboardListId), req, &out); err != nil {
+	if err := client.doJsonRequest("PUT", fmt.Sprintf("/v2/dashboard/lists/manual/%d/dashboards", dashboardListId), req, &out); err != nil {
 		return nil, err
 	}
 	return out.Dashboards, nil
@@ -130,7 +136,7 @@ func (client *Client) UpdateDashboardListItems(dashboardListId int, items []Dash
 func (client *Client) DeleteDashboardListItems(dashboardListId int, items []DashboardListItem) ([]DashboardListItem, error) {
 	req := reqDashboardListItems{items}
 	var out reqDeletedDashboardListItems
-	if err := client.doJsonRequest("DELETE", fmt.Sprintf("/v1/dashboard/lists/manual/%d/dashboards", dashboardListId), req, &out); err != nil {
+	if err := client.doJsonRequest("DELETE", fmt.Sprintf("/v2/dashboard/lists/manual/%d/dashboards", dashboardListId), req, &out); err != nil {
 		return nil, err
 	}
 	return out.Dashboards, nil
