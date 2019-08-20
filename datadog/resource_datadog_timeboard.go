@@ -483,15 +483,17 @@ func buildTemplateVariables(terraformTemplateVariables *[]interface{}) *[]datado
 	return &datadogTemplateVariables
 }
 
-func buildDatadogGraphApmOrLogQuery(terraformLogOrApmQuery map[string]interface{}) *datadog.GraphApmOrLogQuery {
+func buildDatadogGraphApmOrLogQuery(source interface{}) *datadog.GraphApmOrLogQuery {
+	terraformLogOrApmQuery := source.(map[string]interface{})
 	// Index
 	datadogQuery := datadog.GraphApmOrLogQuery{
 		Index: datadog.String(terraformLogOrApmQuery["index"].(string)),
 	}
 	// Compute
 	terraformCompute := terraformLogOrApmQuery["compute"].(map[string]interface{})
-	datadogCompute := datadog.GraphApmOrLogQueryCompute{
-		Aggregation: datadog.String(terraformCompute["aggregation"].(string)),
+	datadogCompute := datadog.GraphApmOrLogQueryCompute{}
+	if v, ok := terraformCompute["aggregation"].(string); ok && len(v) != 0 {
+		datadogCompute.Aggregation = datadog.String(terraformCompute["aggregation"].(string))
 	}
 	if v, ok := terraformCompute["facet"].(string); ok && len(v) != 0 {
 		datadogCompute.Facet = datadog.String(v)
@@ -637,7 +639,6 @@ func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{
 			d.Metadata = map[string]datadog.GraphDefinitionMetadata{}
 			getMetadataFromJSON([]byte(v.(string)), &d.Metadata)
 		}
-
 		datadogGraph.Definition.Requests = append(datadogGraph.Definition.Requests, d)
 	}
 
@@ -861,16 +862,18 @@ func buildTFGraphApmOrLogQuery(datadogQuery datadog.GraphApmOrLogQuery) map[stri
 	// Index
 	terraformQuery["index"] = *datadogQuery.Index
 	// Compute
-	terraformCompute := map[string]interface{}{
-		"aggregation": *datadogQuery.Compute.Aggregation,
+	if datadogQuery.Compute != nil {
+		terraformCompute := map[string]interface{}{
+			"aggregation": *datadogQuery.Compute.Aggregation,
+		}
+		if datadogQuery.Compute.Facet != nil {
+			terraformCompute["facet"] = *datadogQuery.Compute.Facet
+		}
+		if datadogQuery.Compute.Interval != nil {
+			terraformCompute["interval"] = strconv.FormatInt(int64(*datadogQuery.Compute.Interval), 10)
+		}
+		terraformQuery["compute"] = terraformCompute
 	}
-	if datadogQuery.Compute.Facet != nil {
-		terraformCompute["facet"] = *datadogQuery.Compute.Facet
-	}
-	if datadogQuery.Compute.Interval != nil {
-		terraformCompute["interval"] = strconv.FormatInt(int64(*datadogQuery.Compute.Interval), 10)
-	}
-	terraformQuery["compute"] = terraformCompute
 	// Search
 	if datadogQuery.Search != nil {
 		terraformQuery["search"] = map[string]interface{}{

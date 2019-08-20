@@ -872,13 +872,15 @@ func buildTileDefRequestsGroupBys(source interface{}) []datadog.TileDefApmOrLogQ
 			}})
 		if groupBySort, ok := groupByMap["sort"].(map[string]interface{}); ok {
 			s := datadog.TileDefApmOrLogQueryGroupBySort{}
-			batchSetFromDict(batch{
-				dict: groupBySort,
-				matches: []match{
-					{"aggregation", &s.Aggregation},
-					{"order", &s.Order},
-					{"facet", &s.Facet},
-				}})
+			if aggr, ok := groupBySort["aggregation"].(string); ok && len(aggr) > 0 {
+				s.Aggregation = datadog.String(aggr)
+			}
+			if order, ok := groupBySort["order"].(string); ok && len(order) > 0 {
+				s.Order = datadog.String(order)
+			}
+			if facet, ok := groupBySort["facet"].(string); ok && len(facet) > 0 {
+				s.Facet = datadog.String(facet)
+			}
 			d.Sort = &s
 		}
 		r = append(r, d)
@@ -896,11 +898,12 @@ func buildTileDefRequestsApmOrLogQuery(source interface{}) *datadog.TileDefApmOr
 
 	// Compute
 	terraformCompute := datadogQuery["compute"].(map[string]interface{})
-	datadogCompute := datadog.TileDefApmOrLogQueryCompute{
-		Aggregation: datadog.String(terraformCompute["aggregation"].(string)),
+	datadogCompute := datadog.TileDefApmOrLogQueryCompute{}
+	if aggr, ok := terraformCompute["aggregation"].(string); ok && len(aggr) != 0 {
+		datadogCompute.Aggregation = datadog.String(aggr)
 	}
-	if v, ok := terraformCompute["facet"].(string); ok && len(v) != 0 {
-		datadogCompute.Facet = datadog.String(v)
+	if facet, ok := terraformCompute["facet"].(string); ok && len(facet) != 0 {
+		datadogCompute.Facet = datadog.String(facet)
 	}
 	if v, ok := terraformCompute["interval"].(string); ok && len(v) != 0 {
 		datadogCompute.Interval = datadog.String(v)
@@ -1447,8 +1450,9 @@ func buildTFTileDefApmOrLogQuery(datadogQuery datadog.TileDefApmOrLogQuery) map[
 	// Index
 	terraformQuery["index"] = *datadogQuery.Index
 	// Compute
-	terraformCompute := map[string]interface{}{
-		"aggregation": *datadogQuery.Compute.Aggregation,
+	terraformCompute := map[string]interface{}{}
+	if datadogQuery.Compute.Aggregation != nil {
+		terraformCompute["aggregation"] = *datadogQuery.Compute.Aggregation
 	}
 	if datadogQuery.Compute.Facet != nil {
 		terraformCompute["facet"] = *datadogQuery.Compute.Facet
@@ -1477,9 +1481,12 @@ func buildTFTileDefApmOrLogQuery(datadogQuery datadog.TileDefApmOrLogQuery) map[
 			}
 			// Sort
 			if groupBy.Sort != nil {
-				sort := map[string]string{
-					"aggregation": *groupBy.Sort.Aggregation,
-					"order":       *groupBy.Sort.Order,
+				sort := map[string]string{}
+				if groupBy.Sort.Aggregation != nil {
+					sort["aggregation"] = *groupBy.Sort.Aggregation
+				}
+				if groupBy.Sort.Order != nil {
+					sort["order"] = *groupBy.Sort.Order
 				}
 				if groupBy.Sort.Facet != nil {
 					sort["facet"] = *groupBy.Sort.Facet
