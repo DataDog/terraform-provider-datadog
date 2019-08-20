@@ -24,7 +24,6 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceDatadogIntegrationAwsCreate,
 		Read:   resourceDatadogIntegrationAwsRead,
-		Update: resourceDatadogIntegrationAwsUpdate,
 		Delete: resourceDatadogIntegrationAwsDelete,
 		Exists: resourceDatadogIntegrationAwsExists,
 		Importer: &schema.ResourceImporter{
@@ -35,6 +34,7 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 			"account_id": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"role_name": {
 				Type:     schema.TypeString,
@@ -170,40 +170,6 @@ func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{})
 		}
 	}
 	return fmt.Errorf("error getting a Amazon Web Services integration: account_id=%s, role_name=%s", accountID, roleName)
-}
-
-func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{}) error {
-	// Unfortunately the PUT operation for updating the AWS configuration is not available at the moment.
-	// However this feature is one we have in our backlog. I don't know if it's scheduled for delivery short-term,
-	// however I will follow-up after reviewing with product management.
-	// ©
-
-	// UpdateIntegrationAWS function:
-	// func (client *Client) UpdateIntegrationAWS(awsAccount *IntegrationAWSAccount) (*IntegrationAWSAccountCreateResponse, error) {
-	// 	var out IntegrationAWSAccountCreateResponse
-	// 	if err := client.doJsonRequest("PUT", "/v1/integration/aws", awsAccount, &out); err != nil {
-	// 		return nil, err
-	// 	}
-	// 	return &out, nil
-	// }
-
-	client := meta.(*datadog.Client)
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
-
-	accountID, roleName, err := accountAndRoleFromID(d.Id())
-	if err != nil {
-		return err
-	}
-
-	iaws := resourceDatadogIntegrationAwsPrepareCreateRequest(d, accountID, roleName)
-
-	_, err = client.CreateIntegrationAWS(&iaws)
-	if err != nil {
-		return fmt.Errorf("error updating a Amazon Web Services integration: %s", err.Error())
-	}
-
-	return resourceDatadogIntegrationAwsRead(d, meta)
 }
 
 func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{}) error {
