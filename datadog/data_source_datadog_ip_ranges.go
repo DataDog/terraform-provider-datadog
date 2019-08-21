@@ -5,43 +5,43 @@ import (
 	datadog "github.com/zorkian/go-datadog-api"
 )
 
-func dataSourceDatadogIPRanges() *schema.Resource {
+func dataSourceDatadogIpRanges() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceDatadogIPRangesRead,
+		Read: dataSourceDatadogIpRangesRead,
 
 		Schema: map[string]*schema.Schema{
-			"agents": {
-				Type:     schema.TypeMap,
+			"agents_ipv4": {
+				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			"api": {
-				Type:     schema.TypeMap,
+			"api_ipv4": {
+				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			"apm": {
-				Type:     schema.TypeMap,
+			"apm_ipv4": {
+				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			"logs": {
-				Type:     schema.TypeMap,
+			"logs_ipv4": {
+				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			"process": {
-				Type:     schema.TypeMap,
+			"process_ipv4": {
+				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			"synthetics": {
-				Type:     schema.TypeMap,
+			"synthetics_ipv4": {
+				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			"webhooks": {
-				Type:     schema.TypeMap,
+			"webhooks_ipv4": {
+				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
@@ -49,24 +49,36 @@ func dataSourceDatadogIPRanges() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogIPRangesRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogIpRangesRead(d *schema.ResourceData, meta interface{}) error {
 
 	client := meta.(*datadog.Client)
 
 	ipAddresses, err := client.GetIPRanges()
+
 	if err != nil {
 		return err
 	}
 
-	d.SetId("datadog-ip-ranges")
+	if len(ipAddresses.Agents)+len(ipAddresses.API)+len(ipAddresses.Apm)+len(ipAddresses.Logs)+len(ipAddresses.Process)+len(ipAddresses.Synthetics)+len(ipAddresses.Webhooks) > 0 {
+		d.SetId("datadog-ip-ranges")
+	}
 
-	d.Set("agents", ipAddresses.Agents["prefixes_ipv4"])
-	d.Set("api", ipAddresses.API["prefixes_ipv4"])
-	d.Set("apm", ipAddresses.Apm["prefixes_ipv4"])
-	d.Set("logs", ipAddresses.Logs["prefixes_ipv4"])
-	d.Set("process", ipAddresses.Process["prefixes_ipv4"])
-	d.Set("synthetics", ipAddresses.Synthetics["prefixes_ipv4"])
-	d.Set("webhooks", ipAddresses.Webhooks["prefixes_ipv4"])
+	switch {
+	case len(ipAddresses.Agents["prefixes_ipv4"]) > 0:
+		d.Set("agents_ipv4", ipAddresses.Agents["prefixes_ipv4"])
+	case len(ipAddresses.API["prefixes_ipv4"]) > 0:
+		d.Set("api_ipv4", ipAddresses.API["prefixes_ipv4"])
+	case len(ipAddresses.Apm["prefixes_ipv4"]) > 0:
+		d.Set("apm_ipv4", ipAddresses.Apm["prefixes_ipv4"])
+	case len(ipAddresses.Logs["prefixes_ipv4"]) > 0:
+		d.Set("logs_ipv4", ipAddresses.Logs["prefixes_ipv4"])
+	case len(ipAddresses.Process["prefixes_ipv4"]) > 0:
+		d.Set("process_ipv4", ipAddresses.Process["prefixes_ipv4"])
+	case len(ipAddresses.Synthetics["prefixes_ipv4"]) > 0:
+		d.Set("synthetics_ipv4", ipAddresses.Synthetics["prefixes_ipv4"])
+	case len(ipAddresses.Webhooks["prefixes_ipv4"]) > 0:
+		d.Set("webhooks_ipv4", ipAddresses.Webhooks["prefixes_ipv4"])
+	}
 
 	return nil
 }

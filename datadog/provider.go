@@ -4,7 +4,7 @@ import (
 	"errors"
 	"log"
 
-	"github.com/hashicorp/go-cleanhttp"
+	cleanhttp "github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform/helper/logging"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
@@ -46,6 +46,10 @@ func Provider() terraform.ResourceProvider {
 			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
 			"datadog_timeboard":                            resourceDatadogTimeboard(),
 			"datadog_user":                                 resourceDatadogUser(),
+		},
+
+		DataSourcesMap: map[string]*schema.Resource{
+			"datadog_ip_ranges": dataSourceDatadogIpRanges(),
 		},
 
 		ConfigureFunc: providerConfigure,
