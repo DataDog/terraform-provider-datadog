@@ -77,18 +77,18 @@ resource "datadog_screenboard" "acceptance_test" {
 			request {
 				log_query {
 					index = "mcnulty"
-					compute = {
+					compute {
 						aggregation = "avg"
 						facet = "@duration"
 						interval = "5000"
 					}
-					search = {
+					search {
 						query = "status:info"
 					}
 					group_by {
 						facet = "host"
 						limit = 10
-						sort = {
+						sort {
 							aggregation = "avg"
 							order = "desc"
 							facet = "@duration"
@@ -101,18 +101,18 @@ resource "datadog_screenboard" "acceptance_test" {
 			request {
 				apm_query {
 					index = "apm-search"
-					compute = {
+					compute {
 						aggregation = "avg"
 						facet = "@duration"
 						interval = "5000"
 					}
-					search = {
+					search {
 						query = "type:web"
 					}
 					group_by {
 						facet = "resource_name"
 						limit = 50
-						sort = {
+						sort {
 							aggregation = "avg"
 							order = "desc"
 							facet = "@string_query.interval"
@@ -614,28 +614,28 @@ func TestAccDatadogScreenboard_update(t *testing.T) {
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.text_align", ""),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.viz", "timeseries"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.index", "mcnulty"),
-			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.compute.aggregation", "avg"),
-			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.compute.facet", "@duration"),
-			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.compute.interval", "5000"),
-			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.search.query", "status:info"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.compute.0.aggregation", "avg"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.compute.0.facet", "@duration"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.compute.0.interval", "5000"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.search.0.query", "status:info"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.group_by.#", "1"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.group_by.0.facet", "host"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.group_by.0.limit", "10"),
-			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.group_by.0.sort.aggregation", "avg"),
-			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.group_by.0.sort.facet", "@duration"),
-			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.group_by.0.sort.order", "desc"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.group_by.0.sort.0.aggregation", "avg"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.group_by.0.sort.0.facet", "@duration"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.log_query.0.group_by.0.sort.0.order", "desc"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.1.type", "area"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.index", "apm-search"),
-			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.compute.aggregation", "avg"),
-			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.compute.facet", "@duration"),
-			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.compute.interval", "5000"),
-			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.search.query", "type:web"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.compute.0.aggregation", "avg"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.compute.0.facet", "@duration"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.compute.0.interval", "5000"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.search.0.query", "type:web"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.group_by.#", "1"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.group_by.0.facet", "resource_name"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.group_by.0.limit", "50"),
-			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.group_by.0.sort.aggregation", "avg"),
-			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.group_by.0.sort.facet", "@string_query.interval"),
-			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.group_by.0.sort.order", "desc"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.group_by.0.sort.0.aggregation", "avg"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.group_by.0.sort.0.facet", "@string_query.interval"),
+			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.apm_query.0.group_by.0.sort.0.order", "desc"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.2.type", "bars"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.3.process_query.0.metric", "process.stat.cpu.total_pct"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.3.process_query.0.search_by", "error"),

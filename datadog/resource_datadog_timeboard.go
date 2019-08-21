@@ -24,8 +24,9 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Required: true,
 				},
 				"compute": &schema.Schema{
-					Type:     schema.TypeMap,
+					Type:     schema.TypeList,
 					Required: true,
+					MaxItems: 1,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"aggregation": {
@@ -44,8 +45,9 @@ func resourceDatadogTimeboard() *schema.Resource {
 					},
 				},
 				"search": &schema.Schema{
-					Type:     schema.TypeMap,
+					Type:     schema.TypeList,
 					Optional: true,
+					MaxItems: 1,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"query": {
@@ -69,8 +71,9 @@ func resourceDatadogTimeboard() *schema.Resource {
 								Optional: true,
 							},
 							"sort": {
-								Type:     schema.TypeMap,
+								Type:     schema.TypeList,
 								Optional: true,
+								MaxItems: 1,
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"aggregation": {
@@ -490,20 +493,23 @@ func buildDatadogGraphApmOrLogQuery(source interface{}) *datadog.GraphApmOrLogQu
 		Index: datadog.String(terraformLogOrApmQuery["index"].(string)),
 	}
 	// Compute
-	terraformCompute := terraformLogOrApmQuery["compute"].(map[string]interface{})
-	datadogCompute := datadog.GraphApmOrLogQueryCompute{}
-	if v, ok := terraformCompute["aggregation"].(string); ok && len(v) != 0 {
-		datadogCompute.Aggregation = datadog.String(terraformCompute["aggregation"].(string))
+	if compute, ok := terraformLogOrApmQuery["compute"].([]interface{}); ok && len(compute) > 0 {
+		terraformCompute := compute[0].(map[string]interface{})
+		datadogCompute := datadog.GraphApmOrLogQueryCompute{}
+		if v, ok := terraformCompute["aggregation"].(string); ok && len(v) != 0 {
+			datadogCompute.SetAggregation(v)
+		}
+		if v, ok := terraformCompute["facet"].(string); ok && len(v) != 0 {
+			datadogCompute.SetFacet(v)
+		}
+		if v, ok := terraformCompute["interval"].(int); ok && v != 0 {
+			datadogCompute.SetInterval(v)
+		}
+		datadogQuery.Compute = &datadogCompute
 	}
-	if v, ok := terraformCompute["facet"].(string); ok && len(v) != 0 {
-		datadogCompute.Facet = datadog.String(v)
-	}
-	if v, err := strconv.ParseInt(terraformCompute["interval"].(string), 10, 64); err == nil {
-		datadogCompute.Interval = datadog.Int(int(v))
-	}
-	datadogQuery.Compute = &datadogCompute
 	// Search
-	if terraformSearch, ok := terraformLogOrApmQuery["search"].(map[string]interface{}); ok && len(terraformSearch) > 0 {
+	if search, ok := terraformLogOrApmQuery["search"].([]interface{}); ok && len(search) > 0 {
+		terraformSearch := search[0].(map[string]interface{})
 		datadogQuery.Search = &datadog.GraphApmOrLogQuerySearch{
 			Query: datadog.String(terraformSearch["query"].(string)),
 		}
@@ -522,13 +528,14 @@ func buildDatadogGraphApmOrLogQuery(source interface{}) *datadog.GraphApmOrLogQu
 				datadogGroupBy.Limit = &v
 			}
 			// Sort
-			if sort, ok := groupBy["sort"].(map[string]interface{}); ok && len(sort) > 0 {
+			if sort, ok := groupBy["sort"].([]interface{}); ok && len(sort) > 0 {
+				terraformSort := sort[0].(map[string]interface{})
 				datadogGroupBy.Sort = &datadog.GraphApmOrLogQueryGroupBySort{
-					Aggregation: datadog.String(sort["aggregation"].(string)),
-					Order:       datadog.String(sort["order"].(string)),
+					Aggregation: datadog.String(terraformSort["aggregation"].(string)),
+					Order:       datadog.String(terraformSort["order"].(string)),
 				}
-				if facet, ok := sort["facet"].(string); ok && len(facet) != 0 {
-					datadogGroupBy.Sort.Facet = datadog.String(sort["facet"].(string))
+				if facet, ok := terraformSort["facet"].(string); ok && len(facet) != 0 {
+					datadogGroupBy.Sort.Facet = datadog.String(terraformSort["facet"].(string))
 				}
 			}
 			datadogGroupBys[i] = datadogGroupBy
@@ -870,15 +877,16 @@ func buildTFGraphApmOrLogQuery(datadogQuery datadog.GraphApmOrLogQuery) map[stri
 			terraformCompute["facet"] = *datadogQuery.Compute.Facet
 		}
 		if datadogQuery.Compute.Interval != nil {
-			terraformCompute["interval"] = strconv.FormatInt(int64(*datadogQuery.Compute.Interval), 10)
+			terraformCompute["interval"] = *datadogQuery.Compute.Interval
 		}
-		terraformQuery["compute"] = terraformCompute
+		terraformQuery["compute"] = []map[string]interface{}{terraformCompute}
 	}
 	// Search
 	if datadogQuery.Search != nil {
-		terraformQuery["search"] = map[string]interface{}{
+		terraformSearch := map[string]interface{}{
 			"query": *datadogQuery.Search.Query,
 		}
+		terraformQuery["search"] = []map[string]interface{}{terraformSearch}
 	}
 	// GroupBy
 	if datadogQuery.GroupBy != nil {
@@ -894,14 +902,14 @@ func buildTFGraphApmOrLogQuery(datadogQuery datadog.GraphApmOrLogQuery) map[stri
 			}
 			// Sort
 			if groupBy.Sort != nil {
-				sort := map[string]string{
+				sort := map[string]interface{}{
 					"aggregation": *groupBy.Sort.Aggregation,
 					"order":       *groupBy.Sort.Order,
 				}
 				if groupBy.Sort.Facet != nil {
 					sort["facet"] = *groupBy.Sort.Facet
 				}
-				terraformGroupBy["sort"] = sort
+				terraformGroupBy["sort"] = []map[string]interface{}{sort}
 			}
 
 			terraformGroupBys[i] = terraformGroupBy
