@@ -586,7 +586,6 @@ func TestAccDatadogScreenboard_update(t *testing.T) {
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.no_metric_hosts", "false"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.node_type", ""),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.precision", ""),
-
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.#", "1"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.0.aggregator", ""),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "widget.1.tile_def.0.request.0.change_type", ""),

@@ -41,18 +41,18 @@ resource "datadog_timeboard" "redis" {
     request {
         log_query {
           index = "mcnulty"
-          compute = {
+          compute {
             aggregation = "avg"
             facet = "@duration"
             interval = 5000
           }
-          search = {
+          search {
             query = "status:info"
           }
           group_by {
             facet = "host"
             limit = 10
-            sort = {
+            sort {
               aggregation = "avg"
               order = "desc"
               facet = "@duration"
@@ -65,18 +65,18 @@ resource "datadog_timeboard" "redis" {
       request {
         apm_query {
           index = "apm-search"
-          compute = {
+          compute {
             aggregation = "avg"
             facet = "@duration"
             interval = 5000
           }
-          search = {
+          search {
             query = "type:web"
           }
           group_by {
             facet = "resource_name"
             limit = 50
-            sort = {
+            sort {
               aggregation = "avg"
               order = "desc"
               facet = "@string_query.interval"
