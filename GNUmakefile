@@ -3,6 +3,7 @@ GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 WEBSITE_REPO=github.com/hashicorp/terraform-website
 PKG_NAME=datadog
 DIR=~/.terraform.d/plugins
+GO_CLIENT_VERSION=master
 
 default: build
 
@@ -65,5 +66,9 @@ ifeq (,$(wildcard $(GOPATH)/src/$(WEBSITE_REPO)))
 endif
 	@$(MAKE) -C $(GOPATH)/src/$(WEBSITE_REPO) website-provider-test PROVIDER_PATH=$(shell pwd) PROVIDER_NAME=$(PKG_NAME)
 
-.PHONY: build test testacc vet fmt fmtcheck errcheck test-compile website website-test
+update-go-client:
+	go get github.com/zorkian/go-datadog-api@$(GO_CLIENT_VERSION)
+	go mod vendor
+	go mod tidy
 
+.PHONY: build test testacc vet fmt fmtcheck errcheck test-compile website website-test
