@@ -4168,6 +4168,68 @@ func (d *DashboardListItem) SetType(v string) {
 	d.Type = &v
 }
 
+// GetID returns the ID field if non-nil, zero value otherwise.
+func (d *DashboardListItemV2) GetID() string {
+	if d == nil || d.ID == nil {
+		return ""
+	}
+	return *d.ID
+}
+
+// GetIDOk returns a tuple with the ID field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *DashboardListItemV2) GetIDOk() (string, bool) {
+	if d == nil || d.ID == nil {
+		return "", false
+	}
+	return *d.ID, true
+}
+
+// HasID returns a boolean if a field has been set.
+func (d *DashboardListItemV2) HasID() bool {
+	if d != nil && d.ID != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetID allocates a new d.ID and returns the pointer to it.
+func (d *DashboardListItemV2) SetID(v string) {
+	d.ID = &v
+}
+
+// GetType returns the Type field if non-nil, zero value otherwise.
+func (d *DashboardListItemV2) GetType() string {
+	if d == nil || d.Type == nil {
+		return ""
+	}
+	return *d.Type
+}
+
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *DashboardListItemV2) GetTypeOk() (string, bool) {
+	if d == nil || d.Type == nil {
+		return "", false
+	}
+	return *d.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (d *DashboardListItemV2) HasType() bool {
+	if d != nil && d.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetType allocates a new d.Type and returns the pointer to it.
+func (d *DashboardListItemV2) SetType(v string) {
+	d.Type = &v
+}
+
 // GetCreated returns the Created field if non-nil, zero value otherwise.
 func (d *DashboardLite) GetCreated() string {
 	if d == nil || d.Created == nil {
@@ -12445,6 +12507,409 @@ func (q *QueryConfig) SetTimeRange(v TimeRange) {
 	q.TimeRange = &v
 }
 
+// GetTime returns the Time field if non-nil, zero value otherwise.
+func (q *QueryTableDefinition) GetTime() WidgetTime {
+	if q == nil || q.Time == nil {
+		return WidgetTime{}
+	}
+	return *q.Time
+}
+
+// GetTimeOk returns a tuple with the Time field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryTableDefinition) GetTimeOk() (WidgetTime, bool) {
+	if q == nil || q.Time == nil {
+		return WidgetTime{}, false
+	}
+	return *q.Time, true
+}
+
+// HasTime returns a boolean if a field has been set.
+func (q *QueryTableDefinition) HasTime() bool {
+	if q != nil && q.Time != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTime allocates a new q.Time and returns the pointer to it.
+func (q *QueryTableDefinition) SetTime(v WidgetTime) {
+	q.Time = &v
+}
+
+// GetTitle returns the Title field if non-nil, zero value otherwise.
+func (q *QueryTableDefinition) GetTitle() string {
+	if q == nil || q.Title == nil {
+		return ""
+	}
+	return *q.Title
+}
+
+// GetTitleOk returns a tuple with the Title field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryTableDefinition) GetTitleOk() (string, bool) {
+	if q == nil || q.Title == nil {
+		return "", false
+	}
+	return *q.Title, true
+}
+
+// HasTitle returns a boolean if a field has been set.
+func (q *QueryTableDefinition) HasTitle() bool {
+	if q != nil && q.Title != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTitle allocates a new q.Title and returns the pointer to it.
+func (q *QueryTableDefinition) SetTitle(v string) {
+	q.Title = &v
+}
+
+// GetTitleAlign returns the TitleAlign field if non-nil, zero value otherwise.
+func (q *QueryTableDefinition) GetTitleAlign() string {
+	if q == nil || q.TitleAlign == nil {
+		return ""
+	}
+	return *q.TitleAlign
+}
+
+// GetTitleAlignOk returns a tuple with the TitleAlign field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryTableDefinition) GetTitleAlignOk() (string, bool) {
+	if q == nil || q.TitleAlign == nil {
+		return "", false
+	}
+	return *q.TitleAlign, true
+}
+
+// HasTitleAlign returns a boolean if a field has been set.
+func (q *QueryTableDefinition) HasTitleAlign() bool {
+	if q != nil && q.TitleAlign != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTitleAlign allocates a new q.TitleAlign and returns the pointer to it.
+func (q *QueryTableDefinition) SetTitleAlign(v string) {
+	q.TitleAlign = &v
+}
+
+// GetTitleSize returns the TitleSize field if non-nil, zero value otherwise.
+func (q *QueryTableDefinition) GetTitleSize() string {
+	if q == nil || q.TitleSize == nil {
+		return ""
+	}
+	return *q.TitleSize
+}
+
+// GetTitleSizeOk returns a tuple with the TitleSize field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryTableDefinition) GetTitleSizeOk() (string, bool) {
+	if q == nil || q.TitleSize == nil {
+		return "", false
+	}
+	return *q.TitleSize, true
+}
+
+// HasTitleSize returns a boolean if a field has been set.
+func (q *QueryTableDefinition) HasTitleSize() bool {
+	if q != nil && q.TitleSize != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTitleSize allocates a new q.TitleSize and returns the pointer to it.
+func (q *QueryTableDefinition) SetTitleSize(v string) {
+	q.TitleSize = &v
+}
+
+// GetType returns the Type field if non-nil, zero value otherwise.
+func (q *QueryTableDefinition) GetType() string {
+	if q == nil || q.Type == nil {
+		return ""
+	}
+	return *q.Type
+}
+
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryTableDefinition) GetTypeOk() (string, bool) {
+	if q == nil || q.Type == nil {
+		return "", false
+	}
+	return *q.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (q *QueryTableDefinition) HasType() bool {
+	if q != nil && q.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetType allocates a new q.Type and returns the pointer to it.
+func (q *QueryTableDefinition) SetType(v string) {
+	q.Type = &v
+}
+
+// GetAggregator returns the Aggregator field if non-nil, zero value otherwise.
+func (q *QueryTableRequest) GetAggregator() string {
+	if q == nil || q.Aggregator == nil {
+		return ""
+	}
+	return *q.Aggregator
+}
+
+// GetAggregatorOk returns a tuple with the Aggregator field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryTableRequest) GetAggregatorOk() (string, bool) {
+	if q == nil || q.Aggregator == nil {
+		return "", false
+	}
+	return *q.Aggregator, true
+}
+
+// HasAggregator returns a boolean if a field has been set.
+func (q *QueryTableRequest) HasAggregator() bool {
+	if q != nil && q.Aggregator != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAggregator allocates a new q.Aggregator and returns the pointer to it.
+func (q *QueryTableRequest) SetAggregator(v string) {
+	q.Aggregator = &v
+}
+
+// GetAlias returns the Alias field if non-nil, zero value otherwise.
+func (q *QueryTableRequest) GetAlias() string {
+	if q == nil || q.Alias == nil {
+		return ""
+	}
+	return *q.Alias
+}
+
+// GetAliasOk returns a tuple with the Alias field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryTableRequest) GetAliasOk() (string, bool) {
+	if q == nil || q.Alias == nil {
+		return "", false
+	}
+	return *q.Alias, true
+}
+
+// HasAlias returns a boolean if a field has been set.
+func (q *QueryTableRequest) HasAlias() bool {
+	if q != nil && q.Alias != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAlias allocates a new q.Alias and returns the pointer to it.
+func (q *QueryTableRequest) SetAlias(v string) {
+	q.Alias = &v
+}
+
+// GetApmQuery returns the ApmQuery field if non-nil, zero value otherwise.
+func (q *QueryTableRequest) GetApmQuery() WidgetApmOrLogQuery {
+	if q == nil || q.ApmQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *q.ApmQuery
+}
+
+// GetApmQueryOk returns a tuple with the ApmQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryTableRequest) GetApmQueryOk() (WidgetApmOrLogQuery, bool) {
+	if q == nil || q.ApmQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *q.ApmQuery, true
+}
+
+// HasApmQuery returns a boolean if a field has been set.
+func (q *QueryTableRequest) HasApmQuery() bool {
+	if q != nil && q.ApmQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetApmQuery allocates a new q.ApmQuery and returns the pointer to it.
+func (q *QueryTableRequest) SetApmQuery(v WidgetApmOrLogQuery) {
+	q.ApmQuery = &v
+}
+
+// GetLimit returns the Limit field if non-nil, zero value otherwise.
+func (q *QueryTableRequest) GetLimit() int {
+	if q == nil || q.Limit == nil {
+		return 0
+	}
+	return *q.Limit
+}
+
+// GetLimitOk returns a tuple with the Limit field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryTableRequest) GetLimitOk() (int, bool) {
+	if q == nil || q.Limit == nil {
+		return 0, false
+	}
+	return *q.Limit, true
+}
+
+// HasLimit returns a boolean if a field has been set.
+func (q *QueryTableRequest) HasLimit() bool {
+	if q != nil && q.Limit != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetLimit allocates a new q.Limit and returns the pointer to it.
+func (q *QueryTableRequest) SetLimit(v int) {
+	q.Limit = &v
+}
+
+// GetLogQuery returns the LogQuery field if non-nil, zero value otherwise.
+func (q *QueryTableRequest) GetLogQuery() WidgetApmOrLogQuery {
+	if q == nil || q.LogQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *q.LogQuery
+}
+
+// GetLogQueryOk returns a tuple with the LogQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryTableRequest) GetLogQueryOk() (WidgetApmOrLogQuery, bool) {
+	if q == nil || q.LogQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *q.LogQuery, true
+}
+
+// HasLogQuery returns a boolean if a field has been set.
+func (q *QueryTableRequest) HasLogQuery() bool {
+	if q != nil && q.LogQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetLogQuery allocates a new q.LogQuery and returns the pointer to it.
+func (q *QueryTableRequest) SetLogQuery(v WidgetApmOrLogQuery) {
+	q.LogQuery = &v
+}
+
+// GetMetricQuery returns the MetricQuery field if non-nil, zero value otherwise.
+func (q *QueryTableRequest) GetMetricQuery() string {
+	if q == nil || q.MetricQuery == nil {
+		return ""
+	}
+	return *q.MetricQuery
+}
+
+// GetMetricQueryOk returns a tuple with the MetricQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryTableRequest) GetMetricQueryOk() (string, bool) {
+	if q == nil || q.MetricQuery == nil {
+		return "", false
+	}
+	return *q.MetricQuery, true
+}
+
+// HasMetricQuery returns a boolean if a field has been set.
+func (q *QueryTableRequest) HasMetricQuery() bool {
+	if q != nil && q.MetricQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMetricQuery allocates a new q.MetricQuery and returns the pointer to it.
+func (q *QueryTableRequest) SetMetricQuery(v string) {
+	q.MetricQuery = &v
+}
+
+// GetOrder returns the Order field if non-nil, zero value otherwise.
+func (q *QueryTableRequest) GetOrder() string {
+	if q == nil || q.Order == nil {
+		return ""
+	}
+	return *q.Order
+}
+
+// GetOrderOk returns a tuple with the Order field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryTableRequest) GetOrderOk() (string, bool) {
+	if q == nil || q.Order == nil {
+		return "", false
+	}
+	return *q.Order, true
+}
+
+// HasOrder returns a boolean if a field has been set.
+func (q *QueryTableRequest) HasOrder() bool {
+	if q != nil && q.Order != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetOrder allocates a new q.Order and returns the pointer to it.
+func (q *QueryTableRequest) SetOrder(v string) {
+	q.Order = &v
+}
+
+// GetProcessQuery returns the ProcessQuery field if non-nil, zero value otherwise.
+func (q *QueryTableRequest) GetProcessQuery() WidgetProcessQuery {
+	if q == nil || q.ProcessQuery == nil {
+		return WidgetProcessQuery{}
+	}
+	return *q.ProcessQuery
+}
+
+// GetProcessQueryOk returns a tuple with the ProcessQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryTableRequest) GetProcessQueryOk() (WidgetProcessQuery, bool) {
+	if q == nil || q.ProcessQuery == nil {
+		return WidgetProcessQuery{}, false
+	}
+	return *q.ProcessQuery, true
+}
+
+// HasProcessQuery returns a boolean if a field has been set.
+func (q *QueryTableRequest) HasProcessQuery() bool {
+	if q != nil && q.ProcessQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetProcessQuery allocates a new q.ProcessQuery and returns the pointer to it.
+func (q *QueryTableRequest) SetProcessQuery(v WidgetProcessQuery) {
+	q.ProcessQuery = &v
+}
+
 // GetAutoscale returns the Autoscale field if non-nil, zero value otherwise.
 func (q *QueryValueDefinition) GetAutoscale() bool {
 	if q == nil || q.Autoscale == nil {
@@ -17685,18 +18150,18 @@ func (t *TileDefApmOrLogQueryCompute) SetFacet(v string) {
 }
 
 // GetInterval returns the Interval field if non-nil, zero value otherwise.
-func (t *TileDefApmOrLogQueryCompute) GetInterval() int {
+func (t *TileDefApmOrLogQueryCompute) GetInterval() string {
 	if t == nil || t.Interval == nil {
-		return 0
+		return ""
 	}
 	return *t.Interval
 }
 
 // GetIntervalOk returns a tuple with the Interval field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
-func (t *TileDefApmOrLogQueryCompute) GetIntervalOk() (int, bool) {
+func (t *TileDefApmOrLogQueryCompute) GetIntervalOk() (string, bool) {
 	if t == nil || t.Interval == nil {
-		return 0, false
+		return "", false
 	}
 	return *t.Interval, true
 }
@@ -17711,7 +18176,7 @@ func (t *TileDefApmOrLogQueryCompute) HasInterval() bool {
 }
 
 // SetInterval allocates a new t.Interval and returns the pointer to it.
-func (t *TileDefApmOrLogQueryCompute) SetInterval(v int) {
+func (t *TileDefApmOrLogQueryCompute) SetInterval(v string) {
 	t.Interval = &v
 }
 
@@ -23045,6 +23510,37 @@ func (w *WidgetConditionalFormat) HasImageUrl() bool {
 // SetImageUrl allocates a new w.ImageUrl and returns the pointer to it.
 func (w *WidgetConditionalFormat) SetImageUrl(v string) {
 	w.ImageUrl = &v
+}
+
+// GetMetric returns the Metric field if non-nil, zero value otherwise.
+func (w *WidgetConditionalFormat) GetMetric() string {
+	if w == nil || w.Metric == nil {
+		return ""
+	}
+	return *w.Metric
+}
+
+// GetMetricOk returns a tuple with the Metric field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *WidgetConditionalFormat) GetMetricOk() (string, bool) {
+	if w == nil || w.Metric == nil {
+		return "", false
+	}
+	return *w.Metric, true
+}
+
+// HasMetric returns a boolean if a field has been set.
+func (w *WidgetConditionalFormat) HasMetric() bool {
+	if w != nil && w.Metric != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMetric allocates a new w.Metric and returns the pointer to it.
+func (w *WidgetConditionalFormat) SetMetric(v string) {
+	w.Metric = &v
 }
 
 // GetPalette returns the Palette field if non-nil, zero value otherwise.
