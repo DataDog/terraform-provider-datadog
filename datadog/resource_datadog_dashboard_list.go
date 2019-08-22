@@ -23,7 +23,7 @@ func resourceDatadogDashboardList() *schema.Resource {
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "The name of the Dashboard ListV2",
+				Description: "The name of the Dashboard List",
 			},
 			"dash_item": {
 				Type:        schema.TypeSet,
@@ -40,9 +40,6 @@ func resourceDatadogDashboardList() *schema.Resource {
 							Type:        schema.TypeString,
 							Required:    true,
 							Description: "The list of dashboard IDs to add",
-							// Elem: &schema.Schema{
-							// 	Type: schema.TypeString,
-							// },
 						},
 					},
 				},
@@ -78,7 +75,7 @@ func resourceDatadogDashboardListCreate(d *schema.ResourceData, meta interface{}
 func resourceDatadogDashboardListUpdate(d *schema.ResourceData, meta interface{}) error {
 	id, err := strconv.Atoi(d.Id())
 
-	// Make any necessary updates to the Overall Dashboard ListV2 Object
+	// Make any necessary updates to the Overall Dashboard List Object
 	dashList, err := buildDatadogDashboardList(d)
 	dashList.SetId(id)
 	dashList.SetName(d.Get("name").(string))
@@ -111,12 +108,12 @@ func resourceDatadogDashboardListRead(d *schema.ResourceData, meta interface{}) 
 	id, err := strconv.Atoi(d.Id())
 
 	//Read the overall Dashboard List object
-	dashListV2, err := meta.(*datadog.Client).GetDashboardList(id)
+	dashList, err := meta.(*datadog.Client).GetDashboardList(id)
 	if err != nil {
 		return err
 	}
 	d.SetId(strconv.Itoa(id))
-	d.Set("name", dashListV2.GetName())
+	d.Set("name", dashList.GetName())
 
 	// Read and set all the dashboard list elements
 	completeItemListV2, err := meta.(*datadog.Client).GetDashboardListItemsV2(id)
@@ -130,8 +127,9 @@ func resourceDatadogDashboardListRead(d *schema.ResourceData, meta interface{}) 
 
 func resourceDatadogDashboardListDelete(d *schema.ResourceData, meta interface{}) error {
 	id, _ := strconv.Atoi(d.Id())
-	// Deleting the overall ListV2 will also take care of deleting its sub elements
+	// Deleting the overall List will also take care of deleting its sub elements
 	// Deletion of individual dash items happens in the Update method
+	// Note this doesn't delete the actual dashboards, just removes them from the deleted list
 	err := meta.(*datadog.Client).DeleteDashboardList(id)
 	if err != nil {
 		return err
@@ -141,7 +139,7 @@ func resourceDatadogDashboardListDelete(d *schema.ResourceData, meta interface{}
 
 func resourceDatadogDashboardListExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	id, _ := strconv.Atoi(d.Id())
-	// Only check existence of the overall Dash ListV2, not its sub items
+	// Only check existence of the overall Dash List, not its sub items
 	if _, err := meta.(*datadog.Client).GetDashboardList(id); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
@@ -159,9 +157,9 @@ func resourceDatadogDashboardListImport(d *schema.ResourceData, meta interface{}
 }
 
 func buildDatadogDashboardList(d *schema.ResourceData) (*datadog.DashboardList, error) {
-	var dashboardListV2 datadog.DashboardList
-	dashboardListV2.SetName(d.Get("name").(string))
-	return &dashboardListV2, nil
+	var dashboardList datadog.DashboardList
+	dashboardList.SetName(d.Get("name").(string))
+	return &dashboardList, nil
 }
 
 func buildDatadogDashboardListItemsV2(d *schema.ResourceData) ([]datadog.DashboardListItemV2, error) {
