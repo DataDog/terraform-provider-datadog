@@ -937,12 +937,13 @@ func buildTileDefRequestsProcessQuery(source interface{}) *datadog.TileDefProces
 			{"search_by", &d.SearchBy},
 			{"limit", &d.Limit},
 		}})
-	if filterBys, ok := datadogQuery["filter_by"].([]interface{}); ok && len(filterBys) != 0 {
-		datadogFilterbys := make([]string, len(filterBys))
-		for i, filtrBy := range filterBys {
-			datadogFilterbys[i] = filtrBy.(string)
+
+	if v, ok := datadogQuery["filter_by"].([]interface{}); ok && len(v) != 0 {
+		filters := make([]string, len(v))
+		for i, filter := range v {
+			filters[i] = filter.(string)
 		}
-		d.FilterBy = datadogFilterbys
+		d.FilterBy = filters
 	}
 	return &d
 }
@@ -1512,11 +1513,11 @@ func buildTFTileDefProcessQuery(datadogQuery datadog.TileDefProcessQuery) map[st
 		terraformQuery["search_by"] = *datadogQuery.SearchBy
 	}
 	if datadogQuery.FilterBy != nil {
-		terraformFilterBys := make([]string, len(datadogQuery.FilterBy))
+		terraformFilterBy := make([]string, len(datadogQuery.FilterBy))
 		for i, datadogFilterBy := range datadogQuery.FilterBy {
-			terraformFilterBys[i] = datadogFilterBy
+			terraformFilterBy[i] = datadogFilterBy
 		}
-		terraformQuery["filter_by"] = terraformFilterBys
+		terraformQuery["filter_by"] = terraformFilterBy
 	}
 	if datadogQuery.Limit != nil {
 		terraformQuery["limit"] = *datadogQuery.Limit
