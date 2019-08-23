@@ -13,6 +13,118 @@ import (
 )
 
 func resourceDatadogTimeboard() *schema.Resource {
+	apmOrLogQuery := &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		MaxItems: 1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"index": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"compute": &schema.Schema{
+					Type:     schema.TypeList,
+					Required: true,
+					MaxItems: 1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"aggregation": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"facet": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"interval": {
+								Type:     schema.TypeInt,
+								Optional: true,
+							},
+						},
+					},
+				},
+				"search": &schema.Schema{
+					Type:     schema.TypeList,
+					Optional: true,
+					MaxItems: 1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"query": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+						},
+					},
+				},
+				"group_by": &schema.Schema{
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"facet": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"limit": {
+								Type:     schema.TypeInt,
+								Optional: true,
+							},
+							"sort": {
+								Type:     schema.TypeList,
+								Optional: true,
+								MaxItems: 1,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"aggregation": {
+											Type:     schema.TypeString,
+											Required: true,
+										},
+										"order": {
+											Type:     schema.TypeString,
+											Required: true,
+										},
+										"facet": {
+											Type:     schema.TypeString,
+											Optional: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	processQuery := &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		MaxItems: 1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"metric": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"search_by": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"filter_by": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem:     &schema.Schema{Type: schema.TypeString},
+				},
+				"limit": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+			},
+		},
+	}
+
 	request := &schema.Schema{
 		Type:     schema.TypeList,
 		Required: true,
@@ -20,8 +132,11 @@ func resourceDatadogTimeboard() *schema.Resource {
 			Schema: map[string]*schema.Schema{
 				"q": {
 					Type:     schema.TypeString,
-					Required: true,
+					Optional: true,
 				},
+				"log_query":     apmOrLogQuery,
+				"apm_query":     apmOrLogQuery,
+				"process_query": processQuery,
 				"stacked": {
 					Type:     schema.TypeBool,
 					Optional: true,
@@ -371,15 +486,111 @@ func buildTemplateVariables(terraformTemplateVariables *[]interface{}) *[]datado
 	return &datadogTemplateVariables
 }
 
+func buildDatadogGraphApmOrLogQuery(source interface{}) *datadog.GraphApmOrLogQuery {
+	terraformLogOrApmQuery := source.(map[string]interface{})
+	// Index
+	datadogQuery := datadog.GraphApmOrLogQuery{
+		Index: datadog.String(terraformLogOrApmQuery["index"].(string)),
+	}
+	// Compute
+	if compute, ok := terraformLogOrApmQuery["compute"].([]interface{}); ok && len(compute) > 0 {
+		terraformCompute := compute[0].(map[string]interface{})
+		datadogCompute := datadog.GraphApmOrLogQueryCompute{}
+		if v, ok := terraformCompute["aggregation"].(string); ok && len(v) != 0 {
+			datadogCompute.SetAggregation(v)
+		}
+		if v, ok := terraformCompute["facet"].(string); ok && len(v) != 0 {
+			datadogCompute.SetFacet(v)
+		}
+		if v, ok := terraformCompute["interval"].(int); ok && v != 0 {
+			datadogCompute.SetInterval(v)
+		}
+		datadogQuery.Compute = &datadogCompute
+	}
+	// Search
+	if search, ok := terraformLogOrApmQuery["search"].([]interface{}); ok && len(search) > 0 {
+		terraformSearch := search[0].(map[string]interface{})
+		datadogQuery.Search = &datadog.GraphApmOrLogQuerySearch{
+			Query: datadog.String(terraformSearch["query"].(string)),
+		}
+	}
+	// GroupBy
+	if terraformGroupBys, ok := terraformLogOrApmQuery["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
+		datadogGroupBys := make([]datadog.GraphApmOrLogQueryGroupBy, len(terraformGroupBys))
+		for i, _groupBy := range terraformGroupBys {
+			groupBy := _groupBy.(map[string]interface{})
+			// Facet
+			datadogGroupBy := datadog.GraphApmOrLogQueryGroupBy{
+				Facet: datadog.String(groupBy["facet"].(string)),
+			}
+			// Limit
+			if v, ok := groupBy["limit"].(int); ok && v != 0 {
+				datadogGroupBy.Limit = &v
+			}
+			// Sort
+			if sort, ok := groupBy["sort"].([]interface{}); ok && len(sort) > 0 {
+				terraformSort := sort[0].(map[string]interface{})
+				datadogGroupBy.Sort = &datadog.GraphApmOrLogQueryGroupBySort{
+					Aggregation: datadog.String(terraformSort["aggregation"].(string)),
+					Order:       datadog.String(terraformSort["order"].(string)),
+				}
+				if facet, ok := terraformSort["facet"].(string); ok && len(facet) != 0 {
+					datadogGroupBy.Sort.Facet = datadog.String(terraformSort["facet"].(string))
+				}
+			}
+			datadogGroupBys[i] = datadogGroupBy
+		}
+		datadogQuery.GroupBy = datadogGroupBys
+	}
+	return &datadogQuery
+}
+
+func buildDatadogGraphProcessQuery(terraformQuery map[string]interface{}) *datadog.GraphProcessQuery {
+	datadogQuery := datadog.GraphProcessQuery{}
+	if v, ok := terraformQuery["metric"].(string); ok && len(v) != 0 {
+		datadogQuery.SetMetric(v)
+	}
+	if v, ok := terraformQuery["search_by"].(string); ok {
+		datadogQuery.SetSearchBy(v)
+	}
+
+	if v, ok := terraformQuery["filter_by"].([]interface{}); ok {
+		filters := make([]string, len(v))
+		for i, filter := range v {
+			filters[i] = filter.(string)
+		}
+		datadogQuery.FilterBy = filters
+	}
+
+	if v, ok := terraformQuery["limit"].(int); ok && v != 0 {
+		datadogQuery.SetLimit(v)
+	}
+
+	return &datadogQuery
+}
+
 func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{}) error {
 	for _, _t := range *terraformRequests {
 		t := _t.(map[string]interface{})
 		log.Printf("[DataDog] request: %v", pretty.Sprint(t))
 		d := datadog.GraphDefinitionRequest{
-			Query:      datadog.String(t["q"].(string)),
 			Type:       datadog.String(t["type"].(string)),
 			Aggregator: datadog.String(t["aggregator"].(string)),
 		}
+
+		if v, ok := t["q"].(string); ok && len(v) != 0 {
+			d.SetQuery(v)
+		} else if v, ok := t["log_query"].([]interface{}); ok && len(v) > 0 {
+			logQuery := v[0].(map[string]interface{})
+			d.LogQuery = buildDatadogGraphApmOrLogQuery(logQuery)
+		} else if v, ok := t["apm_query"].([]interface{}); ok && len(v) > 0 {
+			apmQuery := v[0].(map[string]interface{})
+			d.ApmQuery = buildDatadogGraphApmOrLogQuery(apmQuery)
+		} else if v, ok := t["process_query"].([]interface{}); ok && len(v) > 0 {
+			processQuery := v[0].(map[string]interface{})
+			d.ProcessQuery = buildDatadogGraphProcessQuery(processQuery)
+		}
+
 		if stacked, ok := t["stacked"]; ok {
 			d.SetStacked(stacked.(bool))
 		}
@@ -435,7 +646,6 @@ func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{
 			d.Metadata = map[string]datadog.GraphDefinitionMetadata{}
 			getMetadataFromJSON([]byte(v.(string)), &d.Metadata)
 		}
-
 		datadogGraph.Definition.Requests = append(datadogGraph.Definition.Requests, d)
 	}
 
@@ -632,13 +842,104 @@ func resourceDatadogTimeboardUpdate(d *schema.ResourceData, meta interface{}) er
 	}
 	return resourceDatadogTimeboardRead(d, meta)
 }
+func buildTFGraphProcessQuery(datadogQuery datadog.GraphProcessQuery) map[string]interface{} {
+	terraformQuery := map[string]interface{}{}
+	if datadogQuery.Metric != nil {
+		terraformQuery["metric"] = *datadogQuery.Metric
+	}
+	if datadogQuery.SearchBy != nil {
+		terraformQuery["search_by"] = *datadogQuery.SearchBy
+	}
+	if datadogQuery.FilterBy != nil {
+		terraformFilterBy := make([]string, len(datadogQuery.FilterBy))
+		for i, datadogFilterBy := range datadogQuery.FilterBy {
+			terraformFilterBy[i] = datadogFilterBy
+		}
+		terraformQuery["filter_by"] = terraformFilterBy
+	}
+	if datadogQuery.Limit != nil {
+		terraformQuery["limit"] = *datadogQuery.Limit
+	}
+
+	return terraformQuery
+}
+
+func buildTFGraphApmOrLogQuery(datadogQuery datadog.GraphApmOrLogQuery) map[string]interface{} {
+	terraformQuery := map[string]interface{}{}
+	// Index
+	terraformQuery["index"] = *datadogQuery.Index
+	// Compute
+	if datadogQuery.Compute != nil {
+		terraformCompute := map[string]interface{}{
+			"aggregation": *datadogQuery.Compute.Aggregation,
+		}
+		if datadogQuery.Compute.Facet != nil {
+			terraformCompute["facet"] = *datadogQuery.Compute.Facet
+		}
+		if datadogQuery.Compute.Interval != nil {
+			terraformCompute["interval"] = *datadogQuery.Compute.Interval
+		}
+		terraformQuery["compute"] = []map[string]interface{}{terraformCompute}
+	}
+	// Search
+	if datadogQuery.Search != nil {
+		terraformSearch := map[string]interface{}{
+			"query": *datadogQuery.Search.Query,
+		}
+		terraformQuery["search"] = []map[string]interface{}{terraformSearch}
+	}
+	// GroupBy
+	if datadogQuery.GroupBy != nil {
+		terraformGroupBys := make([]map[string]interface{}, len(datadogQuery.GroupBy))
+		for i, groupBy := range datadogQuery.GroupBy {
+			// Facet
+			terraformGroupBy := map[string]interface{}{
+				"facet": *groupBy.Facet,
+			}
+			// Limit
+			if groupBy.Limit != nil {
+				terraformGroupBy["limit"] = *groupBy.Limit
+			}
+			// Sort
+			if groupBy.Sort != nil {
+				sort := map[string]interface{}{
+					"aggregation": *groupBy.Sort.Aggregation,
+					"order":       *groupBy.Sort.Order,
+				}
+				if groupBy.Sort.Facet != nil {
+					sort["facet"] = *groupBy.Sort.Facet
+				}
+				terraformGroupBy["sort"] = []map[string]interface{}{sort}
+			}
+
+			terraformGroupBys[i] = terraformGroupBy
+		}
+		terraformQuery["group_by"] = &terraformGroupBys
+	}
+	return terraformQuery
+}
 
 func appendTerraformGraphRequests(datadogRequests []datadog.GraphDefinitionRequest, requests *[]map[string]interface{}) {
 	for _, datadogRequest := range datadogRequests {
 		request := map[string]interface{}{}
-		request["q"] = datadogRequest.GetQuery()
-		request["stacked"] = datadogRequest.GetStacked()
-		request["type"] = datadogRequest.GetType()
+		if v, ok := datadogRequest.GetQueryOk(); ok {
+			request["q"] = v
+		} else if datadogRequest.ApmQuery != nil {
+			terraformQuery := buildTFGraphApmOrLogQuery(*datadogRequest.ApmQuery)
+			request["apm_query"] = []map[string]interface{}{terraformQuery}
+		} else if datadogRequest.LogQuery != nil {
+			terraformQuery := buildTFGraphApmOrLogQuery(*datadogRequest.LogQuery)
+			request["log_query"] = []map[string]interface{}{terraformQuery}
+		} else if datadogRequest.ProcessQuery != nil {
+			terraformQuery := buildTFGraphProcessQuery(*datadogRequest.ProcessQuery)
+			request["process_query"] = []map[string]interface{}{terraformQuery}
+		}
+		if v, ok := datadogRequest.GetStackedOk(); ok {
+			request["stacked"] = v
+		}
+		if v, ok := datadogRequest.GetTypeOk(); ok {
+			request["type"] = v
+		}
 		if v, ok := datadogRequest.GetStyleOk(); ok {
 			style := map[string]string{}
 			if v, ok := v.GetPaletteOk(); ok {
