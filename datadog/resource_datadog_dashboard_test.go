@@ -430,12 +430,9 @@ resource "datadog_dashboard" "free_dashboard" {
 	widget {
 		manage_status_definition {
 			color_preference = "text"
-			count = 50
 			display_format = "countsAndList"
 			hide_zero_counts = true
 			query = "type:metric"
-			sort = "status,asc"
-			start = 0
 			title = "Widget Title"
 			title_size = 16
 			title_align = "left"
@@ -756,12 +753,9 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.layout.y", "51"),
 					// Manage Status widget
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.color_preference", "text"),
-					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.count", "50"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.display_format", "countsAndList"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.hide_zero_counts", "true"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.query", "type:metric"),
-					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.sort", "status,asc"),
-					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.start", "0"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.title", "Widget Title"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.title_align", "left"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.title_size", "16"),

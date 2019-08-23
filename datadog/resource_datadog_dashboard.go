@@ -2363,15 +2363,6 @@ func buildDatadogManageStatusDefinition(terraformDefinition map[string]interface
 	datadogDefinition.Type = datadog.String(datadog.MANAGE_STATUS_WIDGET)
 	datadogDefinition.Query = datadog.String(terraformDefinition["query"].(string))
 	// Optional params
-	if v, ok := terraformDefinition["sort"].(string); ok && len(v) != 0 {
-		datadogDefinition.SetSort(v)
-	}
-	if v, ok := terraformDefinition["count"].(int); ok {
-		datadogDefinition.SetCount(v)
-	}
-	if v, ok := terraformDefinition["start"].(int); ok {
-		datadogDefinition.SetStart(v)
-	}
 	if v, ok := terraformDefinition["display_format"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetDisplayFormat(v)
 	}
@@ -2398,15 +2389,6 @@ func buildTerraformManageStatusDefinition(datadogDefinition datadog.ManageStatus
 	// Required params
 	terraformDefinition["query"] = *datadogDefinition.Query
 	// Optional params
-	if datadogDefinition.Sort != nil {
-		terraformDefinition["sort"] = *datadogDefinition.Sort
-	}
-	if datadogDefinition.Count != nil {
-		terraformDefinition["count"] = *datadogDefinition.Count
-	}
-	if datadogDefinition.Start != nil {
-		terraformDefinition["start"] = *datadogDefinition.Start
-	}
 	if datadogDefinition.DisplayFormat != nil {
 		terraformDefinition["display_format"] = *datadogDefinition.DisplayFormat
 	}
