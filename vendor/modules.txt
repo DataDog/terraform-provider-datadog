@@ -236,7 +236,7 @@ github.com/zclconf/go-cty/cty/function
 github.com/zclconf/go-cty/cty/function/stdlib
 # github.com/zclconf/go-cty-yaml v0.1.0
 github.com/zclconf/go-cty-yaml
-# github.com/zorkian/go-datadog-api v2.22.1-0.20190805090016-93f907f168dd+incompatible
+# github.com/zorkian/go-datadog-api v2.22.1-0.20190822071453-e9c4097ea76f+incompatible
 github.com/zorkian/go-datadog-api
 # go.opencensus.io v0.18.0
 go.opencensus.io/trace

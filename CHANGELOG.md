@@ -1,4 +1,18 @@
-## 2.1.1 (Unreleased)
+## 2.2.1 (Unreleased)
+## 2.2.0 (August 19, 2019)
+
+FEATURES:
+* `datadog_service_level_objective`: New resource for Service Level Objective (SLO) ([#263](https://github.com/terraform-providers/terraform-provider-datadog/issues/263))
+
+IMPROVEMENTS:
+* `datadog_dashbaord`: Add support for style block in dashboard widgets. ([#277](https://github.com/terraform-providers/terraform-provider-datadog/issues/277))
+* `datadog_dashboard`: Add support for metadata block in dashboard widgets ([#278](https://github.com/terraform-providers/terraform-provider-datadog/issues/278))
+* `datadog_synthetics_test`: Support SSL synthetics tests. ([#279](https://github.com/terraform-providers/terraform-provider-datadog/issues/279))
+
+BUGFIXES:
+* `datadog_dashboards`: Safely type assert optional fields from log and apm query to avoid a panic if they aren't supplied ([#283](https://github.com/terraform-providers/terraform-provider-datadog/issues/283))
+* `datadog_synthetics_test`: Fix follow redirects field to properly apply and save in state. ([#256](https://github.com/terraform-providers/terraform-provider-datadog/issues/256))
+
 ## 2.1.0 (July 24, 2019)
 
 FEATURES:
