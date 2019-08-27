@@ -536,6 +536,7 @@ The following arguments are supported:
 - `title` - (Required) Title of the dashboard.
 - `widget` - (Required) Nested block describing a widget. The structure of this block is described [below](dashboard.html#nested-widget-blocks). Multiple `widget` blocks are allowed within a `datadog_dashboard` resource
 - `layout_type` - (Required) Layout type of the dashboard. Available values are: `ordered` (previous timeboard) or `free` (previous screenboard layout).
+<br>**Note: This value cannot be changed. Converting a dashboard from `free` <-> `ordered` requires destroying and re-creating the dashboard.**
 - `description` - (Optional) Description of the dashboard.
 - `is_read_only` - (Optional) Whether this dashboard is read-only. If `true`, only the author and admins can make changes to it.
 - `notify_list` - (Optional) List of handles of users to notify when changes are made to this dashboard.
