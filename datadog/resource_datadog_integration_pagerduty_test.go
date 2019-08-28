@@ -89,6 +89,11 @@ func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
 				),
 			},
 			{
+				// this represents the intermediary step which will ensure the old
+				// inline-defined service objects get removed
+				Config: testAccCheckDatadogIntegrationPagerdutyConfigDuringMigration,
+			},
+			{
 				Config: testAccCheckDatadogIntegrationPagerdutyConfigAfterMigration,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIntegrationPagerdutyExists("datadog_integration_pagerduty.pd"),
@@ -192,6 +197,16 @@ resource "datadog_integration_pagerduty" "pd" {
 		  service_key = services.value
 	  }
   }
+  schedules = [
+	  "https://ddog.pagerduty.com/schedules/X123VF",
+	  "https://ddog.pagerduty.com/schedules/X321XX"
+	]
+  subdomain = "ddog"
+  api_token = "*****"
+}`
+
+const testAccCheckDatadogIntegrationPagerdutyConfigDuringMigration = `
+resource "datadog_integration_pagerduty" "pd" {
   schedules = [
 	  "https://ddog.pagerduty.com/schedules/X123VF",
 	  "https://ddog.pagerduty.com/schedules/X321XX"
