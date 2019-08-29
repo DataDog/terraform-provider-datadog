@@ -97,10 +97,10 @@ resource "datadog_integration_pagerduty" "pd" {
 
 ### Migrating from Inline Services to Individual Resources
 
-Migrating from usage of inline services to individual resources is very simple. The following example shows how to convert an existing inline services configuration to configuration using individual resources. Doing analogous change and running `terraform apply` is all that's necessary to migrate.
+Migrating from usage of inline services to individual resources is very simple. The following example shows how to convert an existing inline services configuration to configuration using individual resources. Doing analogous change and running `terraform apply` after every step is all that's necessary to migrate.
 
 ```
-# Before
+# First step - this is what the configuration looked like initially
 
 locals {
   pd_services = {
@@ -127,11 +127,24 @@ resource "datadog_integration_pagerduty" "pd" {
 ```
 
 ```
-# After
+# Second step - this will remove the inline-defined service objects
+# Note that during this step, `individual_services` must not be defined
+resource "datadog_integration_pagerduty" "pd" {
+  # `services` was removed
+  schedules = [
+    "https://ddog.pagerduty.com/schedules/X123VF",
+    "https://ddog.pagerduty.com/schedules/X321XX"
+    ]
+  subdomain = "ddog"
+  api_token = "38457822378273432587234242874"
+}
+```
+
+```
+# Third step - this will reintroduce the service objects as individual resources
 
 resource "datadog_integration_pagerduty" "pd" {
-  # `individual_services` was added
-  # `services` was removed
+  # `individual_services = true` was added
   individual_services = true
   schedules = [
     "https://ddog.pagerduty.com/schedules/X123VF",

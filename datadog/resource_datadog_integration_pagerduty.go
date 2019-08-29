@@ -167,15 +167,17 @@ func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta inte
 	// if there are none currently configured services, we actually
 	// have to remove them explicitly, otherwise the underlying API client
 	// would not send the "services" key at all and they wouldn't get deleted
-	currentServices := d.Get("services").([]interface{})
-	if len(currentServices) == 0 {
-		pd, err := client.GetIntegrationPD()
-		if err != nil {
-			return fmt.Errorf("Error while deleting Pagerduty integration service object: %v", err)
-		}
-		for _, service := range pd.Services {
-			if err := client.DeleteIntegrationPDService(*service.ServiceName); err != nil {
+	if value, ok := d.GetOk("individual_services"); !ok || !value.(bool) {
+		currentServices := d.Get("services").([]interface{})
+		if len(currentServices) == 0 {
+			pd, err := client.GetIntegrationPD()
+			if err != nil {
 				return fmt.Errorf("Error while deleting Pagerduty integration service object: %v", err)
+			}
+			for _, service := range pd.Services {
+				if err := client.DeleteIntegrationPDService(*service.ServiceName); err != nil {
+					return fmt.Errorf("Error while deleting Pagerduty integration service object: %v", err)
+				}
 			}
 		}
 	}
