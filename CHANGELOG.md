@@ -1,4 +1,12 @@
-## 2.2.1 (Unreleased)
+## 2.3.0 (Unreleased)
+
+IMPROVEMENTS:
+* `datadog-dashboards`: Add resources for log, apm and process query in legacy dashboards [GH-272]
+
+BUGFIXES:
+* `datadog_integration_pagerduty`: Make sure PD services don't get removed by updating PD resource [GH-304]
+
+
 ## 2.2.0 (August 19, 2019)
 
 FEATURES:
