@@ -1,10 +1,10 @@
-## 2.3.0 (Unreleased)
+## 2.3.0 (August 29, 2019)
 
 IMPROVEMENTS:
-* `datadog-dashboards`: Add resources for log, apm and process query in legacy dashboards [GH-272]
+* `datadog-dashboards`: Add resources for log, apm and process query in legacy dashboards ([#272](https://github.com/terraform-providers/terraform-provider-datadog/issues/272))
 
 BUGFIXES:
-* `datadog_integration_pagerduty`: Make sure PD services don't get removed by updating PD resource [GH-304]
+* `datadog_integration_pagerduty`: Make sure PD services don't get removed by updating PD resource ([#304](https://github.com/terraform-providers/terraform-provider-datadog/issues/304))
 
 
 ## 2.2.0 (August 19, 2019)
