@@ -13747,6 +13747,223 @@ func (r *reqSingleServiceLevelObjective) SetData(v ServiceLevelObjective) {
 	r.Data = &v
 }
 
+// GetAccessRole returns the AccessRole field if non-nil, zero value otherwise.
+func (r *reqUpdateUser) GetAccessRole() string {
+	if r == nil || r.AccessRole == nil {
+		return ""
+	}
+	return *r.AccessRole
+}
+
+// GetAccessRoleOk returns a tuple with the AccessRole field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (r *reqUpdateUser) GetAccessRoleOk() (string, bool) {
+	if r == nil || r.AccessRole == nil {
+		return "", false
+	}
+	return *r.AccessRole, true
+}
+
+// HasAccessRole returns a boolean if a field has been set.
+func (r *reqUpdateUser) HasAccessRole() bool {
+	if r != nil && r.AccessRole != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAccessRole allocates a new r.AccessRole and returns the pointer to it.
+func (r *reqUpdateUser) SetAccessRole(v string) {
+	r.AccessRole = &v
+}
+
+// GetDisabled returns the Disabled field if non-nil, zero value otherwise.
+func (r *reqUpdateUser) GetDisabled() bool {
+	if r == nil || r.Disabled == nil {
+		return false
+	}
+	return *r.Disabled
+}
+
+// GetDisabledOk returns a tuple with the Disabled field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (r *reqUpdateUser) GetDisabledOk() (bool, bool) {
+	if r == nil || r.Disabled == nil {
+		return false, false
+	}
+	return *r.Disabled, true
+}
+
+// HasDisabled returns a boolean if a field has been set.
+func (r *reqUpdateUser) HasDisabled() bool {
+	if r != nil && r.Disabled != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetDisabled allocates a new r.Disabled and returns the pointer to it.
+func (r *reqUpdateUser) SetDisabled(v bool) {
+	r.Disabled = &v
+}
+
+// GetEmail returns the Email field if non-nil, zero value otherwise.
+func (r *reqUpdateUser) GetEmail() string {
+	if r == nil || r.Email == nil {
+		return ""
+	}
+	return *r.Email
+}
+
+// GetEmailOk returns a tuple with the Email field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (r *reqUpdateUser) GetEmailOk() (string, bool) {
+	if r == nil || r.Email == nil {
+		return "", false
+	}
+	return *r.Email, true
+}
+
+// HasEmail returns a boolean if a field has been set.
+func (r *reqUpdateUser) HasEmail() bool {
+	if r != nil && r.Email != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetEmail allocates a new r.Email and returns the pointer to it.
+func (r *reqUpdateUser) SetEmail(v string) {
+	r.Email = &v
+}
+
+// GetIsAdmin returns the IsAdmin field if non-nil, zero value otherwise.
+func (r *reqUpdateUser) GetIsAdmin() bool {
+	if r == nil || r.IsAdmin == nil {
+		return false
+	}
+	return *r.IsAdmin
+}
+
+// GetIsAdminOk returns a tuple with the IsAdmin field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (r *reqUpdateUser) GetIsAdminOk() (bool, bool) {
+	if r == nil || r.IsAdmin == nil {
+		return false, false
+	}
+	return *r.IsAdmin, true
+}
+
+// HasIsAdmin returns a boolean if a field has been set.
+func (r *reqUpdateUser) HasIsAdmin() bool {
+	if r != nil && r.IsAdmin != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetIsAdmin allocates a new r.IsAdmin and returns the pointer to it.
+func (r *reqUpdateUser) SetIsAdmin(v bool) {
+	r.IsAdmin = &v
+}
+
+// GetName returns the Name field if non-nil, zero value otherwise.
+func (r *reqUpdateUser) GetName() string {
+	if r == nil || r.Name == nil {
+		return ""
+	}
+	return *r.Name
+}
+
+// GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (r *reqUpdateUser) GetNameOk() (string, bool) {
+	if r == nil || r.Name == nil {
+		return "", false
+	}
+	return *r.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (r *reqUpdateUser) HasName() bool {
+	if r != nil && r.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetName allocates a new r.Name and returns the pointer to it.
+func (r *reqUpdateUser) SetName(v string) {
+	r.Name = &v
+}
+
+// GetRole returns the Role field if non-nil, zero value otherwise.
+func (r *reqUpdateUser) GetRole() string {
+	if r == nil || r.Role == nil {
+		return ""
+	}
+	return *r.Role
+}
+
+// GetRoleOk returns a tuple with the Role field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (r *reqUpdateUser) GetRoleOk() (string, bool) {
+	if r == nil || r.Role == nil {
+		return "", false
+	}
+	return *r.Role, true
+}
+
+// HasRole returns a boolean if a field has been set.
+func (r *reqUpdateUser) HasRole() bool {
+	if r != nil && r.Role != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRole allocates a new r.Role and returns the pointer to it.
+func (r *reqUpdateUser) SetRole(v string) {
+	r.Role = &v
+}
+
+// GetVerified returns the Verified field if non-nil, zero value otherwise.
+func (r *reqUpdateUser) GetVerified() bool {
+	if r == nil || r.Verified == nil {
+		return false
+	}
+	return *r.Verified
+}
+
+// GetVerifiedOk returns a tuple with the Verified field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (r *reqUpdateUser) GetVerifiedOk() (bool, bool) {
+	if r == nil || r.Verified == nil {
+		return false, false
+	}
+	return *r.Verified, true
+}
+
+// HasVerified returns a boolean if a field has been set.
+func (r *reqUpdateUser) HasVerified() bool {
+	if r != nil && r.Verified != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetVerified allocates a new r.Verified and returns the pointer to it.
+func (r *reqUpdateUser) SetVerified(v bool) {
+	r.Verified = &v
+}
+
 // GetColor returns the Color field if non-nil, zero value otherwise.
 func (r *Rule) GetColor() string {
 	if r == nil || r.Color == nil {
