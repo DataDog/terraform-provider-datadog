@@ -34,12 +34,12 @@ func resourceDatadogDashboardList() *schema.Resource {
 						"type": {
 							Type:        schema.TypeString,
 							Required:    true,
-							Description: "The type of these dashboards",
+							Description: "The type of this dashboard",
 						},
 						"dash_id": {
 							Type:        schema.TypeString,
 							Required:    true,
-							Description: "The list of dashboard IDs to add",
+							Description: "The ID of the dashboard to add",
 						},
 					},
 				},
