@@ -2960,6 +2960,21 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 				Schema: getWidgetMarkerSchema(),
 			},
 		},
+		"event": {
+			Type:     schema.TypeList,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: getWidgetEventSchema(),
+			},
+		},
+		"yaxis": {
+			Type:     schema.TypeList,
+			MaxItems: 1,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: getWidgetAxisSchema(),
+			},
+		},
 		"title": {
 			Type:     schema.TypeString,
 			Optional: true,
@@ -3000,6 +3015,14 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["marker"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.Markers = *buildDatadogWidgetMarkers(&v)
 	}
+	if v, ok := terraformDefinition["event"].([]interface{}); ok && len(v) > 0 {
+		datadogDefinition.Events = *buildDatadogWidgetEvents(&v)
+	}
+	if v, ok := terraformDefinition["yaxis"].([]interface{}); ok && len(v) > 0 {
+		if _axis, ok := v[0].(map[string]interface{}); ok && len(_axis) > 0 {
+			datadogDefinition.Yaxis = buildDatadogWidgetAxis(_axis)
+		}
+	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.Title = datadog.String(v)
 	}
@@ -3022,6 +3045,13 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadog.TimeseriesDefi
 	// Optional params
 	if datadogDefinition.Markers != nil {
 		terraformDefinition["marker"] = buildTerraformWidgetMarkers(&datadogDefinition.Markers)
+	}
+	if datadogDefinition.Events != nil {
+		terraformDefinition["event"] = buildTerraformWidgetEvents(&datadogDefinition.Events)
+	}
+	if datadogDefinition.Yaxis != nil {
+		_axis := buildTerraformWidgetAxis(*datadogDefinition.Yaxis)
+		terraformDefinition["yaxis"] = []map[string]interface{}{_axis}
 	}
 	if datadogDefinition.Title != nil {
 		terraformDefinition["title"] = *datadogDefinition.Title
@@ -3599,6 +3629,39 @@ func buildTerraformWidgetConditionalFormat(datadogWidgetConditionalFormat *[]dat
 		terraformWidgetConditionalFormat[i] = terraformConditionalFormat
 	}
 	return &terraformWidgetConditionalFormat
+}
+
+// Widget Event helpers
+
+func getWidgetEventSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"q": {
+			Type:     schema.TypeString,
+			Required: true,
+		},
+	}
+}
+func buildDatadogWidgetEvents(terraformWidgetEvents *[]interface{}) *[]datadog.WidgetEvent {
+	datadogWidgetEvents := make([]datadog.WidgetEvent, len(*terraformWidgetEvents))
+	for i, _event := range *terraformWidgetEvents {
+		terraformEvent := _event.(map[string]interface{})
+		datadogWidgetEvent := datadog.WidgetEvent{}
+		// Required params
+		datadogWidgetEvent.Query = datadog.String(terraformEvent["q"].(string))
+		datadogWidgetEvents[i] = datadogWidgetEvent
+	}
+
+	return &datadogWidgetEvents
+}
+func buildTerraformWidgetEvents(datadogWidgetEvents *[]datadog.WidgetEvent) *[]map[string]string {
+	terraformWidgetEvents := make([]map[string]string, len(*datadogWidgetEvents))
+	for i, datadogWidget := range *datadogWidgetEvents {
+		terraformWidget := map[string]string{}
+		// Required params
+		terraformWidget["q"] = *datadogWidget.Query
+		terraformWidgetEvents[i] = terraformWidget
+	}
+	return &terraformWidgetEvents
 }
 
 // Widget Time helpers
