@@ -282,7 +282,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			event {
 				q = "sources:test tags:2"
 			}
-			yaxis = {
+			yaxis {
 				scale = "log"
 				include_zero = false
 				max = 100
@@ -670,9 +670,9 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.time.live_span", "1h"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.event.0.q", "sources:test tags:1"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.event.1.q", "sources:test tags:2"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.yaxis.scale", "log"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.yaxis.include_zero", "false"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.yaxis.max", "100"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.yaxis.0.scale", "log"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.yaxis.0.include_zero", "false"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.yaxis.0.max", "100"),
 					// Toplist widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.11.toplist_definition.0.request.0.q", "avg:system.cpu.user{app:general} by {env}"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.11.toplist_definition.0.request.0.conditional_formats.#", "2"),

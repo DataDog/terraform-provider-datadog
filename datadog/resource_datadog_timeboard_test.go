@@ -145,6 +145,11 @@ resource "datadog_timeboard" "acceptance_test" {
     viz = "timeseries"
     request {
       q = "avg:system.cpu.user{*}"
+      metadata_json = jsonencode({
+        "avg:system.cpu.user{*}": {
+          "alias": "Avg CPU user"
+        }
+      })
       type = "line"
       style = {
         palette = "purple"
@@ -168,6 +173,7 @@ resource "datadog_timeboard" "acceptance_test" {
           limit = 10
           sort {
             aggregation = "avg"
+            facet = "@duration"
             order = "desc"
           }
         }
