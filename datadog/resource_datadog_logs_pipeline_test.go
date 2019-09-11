@@ -107,7 +107,6 @@ resource "datadog_logs_pipeline" "my_pipeline_test" {
 	}
 	processor {
 		status_remapper {
-			name = "test status remapper"
 			is_enabled = true
 			sources = ["redis.severity"]
 		}

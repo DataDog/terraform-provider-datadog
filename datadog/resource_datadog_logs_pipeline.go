@@ -545,7 +545,7 @@ func getProcessorSchema(isNested bool) map[string]*schema.Schema {
 
 func getSourceRemapper() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"name":       {Type: schema.TypeString, Required: true},
+		"name":       {Type: schema.TypeString, Optional: true},
 		"is_enabled": {Type: schema.TypeBool, Optional: true},
 		"sources":    {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
 	}
@@ -553,30 +553,30 @@ func getSourceRemapper() map[string]*schema.Schema {
 
 func getArithmeticProcessor() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"name":               {Type: schema.TypeString, Required: true},
+		"name":               {Type: schema.TypeString, Optional: true},
 		"is_enabled":         {Type: schema.TypeBool, Optional: true},
 		"expression":         {Type: schema.TypeString, Required: true},
 		"target":             {Type: schema.TypeString, Required: true},
-		"is_replace_missing": {Type: schema.TypeBool, Required: true},
+		"is_replace_missing": {Type: schema.TypeBool, Optional: true},
 	}
 }
 
 func getAttributeRemapper() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"name":                 {Type: schema.TypeString, Required: true},
+		"name":                 {Type: schema.TypeString, Optional: true},
 		"is_enabled":           {Type: schema.TypeBool, Optional: true},
 		"sources":              {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
 		"source_type":          {Type: schema.TypeString, Required: true},
 		"target":               {Type: schema.TypeString, Required: true},
 		"target_type":          {Type: schema.TypeString, Required: true},
-		"preserve_source":      {Type: schema.TypeBool, Required: true},
-		"override_on_conflict": {Type: schema.TypeBool, Required: true},
+		"preserve_source":      {Type: schema.TypeBool, Optional: true},
+		"override_on_conflict": {Type: schema.TypeBool, Optional: true},
 	}
 }
 
 func getCategoryProcessor() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"name":       {Type: schema.TypeString, Required: true},
+		"name":       {Type: schema.TypeString, Optional: true},
 		"is_enabled": {Type: schema.TypeBool, Optional: true},
 		"target":     {Type: schema.TypeString, Required: true},
 		"category": {Type: schema.TypeList, Required: true, Elem: &schema.Resource{
@@ -602,7 +602,7 @@ func getCategorySchema() map[string]*schema.Schema {
 
 func getGrokParser() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"name":       {Type: schema.TypeString, Required: true},
+		"name":       {Type: schema.TypeString, Optional: true},
 		"is_enabled": {Type: schema.TypeBool, Optional: true},
 		"source":     {Type: schema.TypeString, Required: true},
 		"grok": {
@@ -623,21 +623,21 @@ func getGrokSchema() map[string]*schema.Schema {
 
 func getUrlParser() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"name":                     {Type: schema.TypeString, Required: true},
+		"name":                     {Type: schema.TypeString, Optional: true},
 		"is_enabled":               {Type: schema.TypeBool, Optional: true},
 		"sources":                  {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
 		"target":                   {Type: schema.TypeString, Required: true},
-		"normalize_ending_slashes": {Type: schema.TypeBool, Required: true},
+		"normalize_ending_slashes": {Type: schema.TypeBool, Optional: true},
 	}
 }
 
 func getUserAgentParser() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"name":       {Type: schema.TypeString, Required: true},
+		"name":       {Type: schema.TypeString, Optional: true},
 		"is_enabled": {Type: schema.TypeBool, Optional: true},
 		"sources":    {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
 		"target":     {Type: schema.TypeString, Required: true},
-		"is_encoded": {Type: schema.TypeBool, Required: true},
+		"is_encoded": {Type: schema.TypeBool, Optional: true},
 	}
 }
 
