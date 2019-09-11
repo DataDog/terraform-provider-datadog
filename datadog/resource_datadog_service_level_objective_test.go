@@ -29,7 +29,7 @@ resource "datadog_service_level_objective" "foo" {
 
   thresholds {
 	timeframe = "30d"
-	target = 99 
+	target = 99
   }
 
   tags = ["foo:bar", "baz"]
@@ -54,7 +54,8 @@ resource "datadog_service_level_objective" "foo" {
 
   thresholds {
 	timeframe = "30d"
-	target = 98 
+	target = 98
+	warning = 99.0
   }
 
   tags = ["foo:bar", "baz"]
@@ -189,7 +190,7 @@ func testAccCheckDatadogServiceLevelObjectiveDestroy(s *terraform.State) error {
 func testAccCheckDatadogServiceLevelObjectiveExists(n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		client := testAccProvider.Meta().(*datadog.Client)
-		if err := existsHelper(s, client); err != nil {
+		if err := existsServiceLevelObjectiveHelper(s, client); err != nil {
 			return err
 		}
 		return nil
