@@ -1,10 +1,10 @@
-## 2.4.0 (Unreleased)
+## 2.4.0 (September 11, 2019)
 
 FEATURES:
-* `datadog_dashboard_list`: New resource for dashboard lists [GH-296]
+* `datadog_dashboard_list`: New resource for dashboard lists ([#296](https://github.com/terraform-providers/terraform-provider-datadog/issues/296))
 
 IMPROVEMENTS:
-* `datadog_dashboard`: Allow specifying `event` and `yaxis` for timeseries definitions [GH-282]
+* `datadog_dashboard`: Allow specifying `event` and `yaxis` for timeseries definitions ([#282](https://github.com/terraform-providers/terraform-provider-datadog/issues/282))
 
 ## 2.3.0 (August 29, 2019)
 
