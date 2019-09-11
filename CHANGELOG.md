@@ -1,4 +1,11 @@
-## 2.3.1 (Unreleased)
+## 2.4.0 (Unreleased)
+
+FEATURES:
+* `datadog_dashboard_list`: New resource for dashboard lists [GH-296]
+
+IMPROVEMENTS:
+* `datadog_dashboard`: Allow specifying `event` and `yaxis` for timeseries definitions [GH-282]
+
 ## 2.3.0 (August 29, 2019)
 
 IMPROVEMENTS:
