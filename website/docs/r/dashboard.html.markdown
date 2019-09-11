@@ -302,6 +302,17 @@ resource "datadog_dashboard" "ordered_dashboard" {
       time = {
         live_span = "1h"
       }
+      event {
+        q = "sources:test tags:1"
+      }
+      event {
+        q = "sources:test tags:2"
+      }
+      yaxis {
+        scale = "log"
+        include_zero = false
+        max = 100
+      }
     }
   }
 
@@ -726,6 +737,9 @@ Nested `widget` blocks have the following structure:
         - `title_size`: (Optional) The size of the widget's title. Default is 16.
         - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
         - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+        - `event`: (Optional) The definition of the event to overlay on the graph. Includes the following structure:
+          - `q`: (Required) The event query to use in the widget
+        - `yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
   - `toplist_definition`: The definition for a Toplist  widget. Exactly one nested block is allowed with the following structure:
         - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
             - `q`: (Optional) The metric query to use in the widget
