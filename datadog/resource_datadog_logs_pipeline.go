@@ -39,10 +39,10 @@ func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) e
 	if err != nil {
 		return err
 	}
-	if err = d.Set("name", *pipeline.Name); err != nil {
+	if err = d.Set("name", pipeline.GetName()); err != nil {
 		return err
 	}
-	if err = d.Set("is_enabled", *pipeline.IsEnabled); err != nil {
+	if err = d.Set("is_enabled", pipeline.GetIsEnabled()); err != nil {
 		return err
 	}
 	if err := setFilter(d, pipeline.Filter); err != nil {
@@ -106,12 +106,12 @@ func convertDDProcessors(tfProcessors []map[string]interface{}, processors []dat
 		tfPDetails["name"] = *ddProcessor.Name
 		tfPDetails["is_enabled"] = *ddProcessor.IsEnabled
 		switch *ddProcessor.Type {
-		case datadog.ARITHMETIC_PROCESSOR:
+		case datadog.ArithmeticProcessorType:
 			arithmeticP := ddProcessor.Definition.(datadog.ArithmeticProcessor)
 			tfPDetails["target"] = *arithmeticP.Target
 			tfPDetails["is_replace_missing"] = *arithmeticP.IsReplaceMissing
 			tfPDetails["expression"] = *arithmeticP.Expression
-		case datadog.ATTIBUTE_REMAPPER_PROCESSOR:
+		case datadog.AttributeRemapperType:
 			attributeP := ddProcessor.Definition.(datadog.AttributeRemapper)
 			sources := make([]string, len(attributeP.Sources))
 			for i, source := range attributeP.Sources {
@@ -123,7 +123,7 @@ func convertDDProcessors(tfProcessors []map[string]interface{}, processors []dat
 			tfPDetails["target_type"] = *attributeP.TargetType
 			tfPDetails["preserve_source"] = *attributeP.PreserveSource
 			tfPDetails["override_on_conflict"] = *attributeP.OverrideOnConflict
-		case datadog.CATEGORY_PROCESSOR:
+		case datadog.CategoryProcessorType:
 			categoryP := ddProcessor.Definition.(datadog.CategoryProcessor)
 			tfPDetails["target"] = *categoryP.Target
 			categories := make([]map[string]interface{}, len(categoryP.Categories))
@@ -138,18 +138,18 @@ func convertDDProcessors(tfProcessors []map[string]interface{}, processors []dat
 				categories[i] = category
 			}
 			tfPDetails["category"] = categories
-		case datadog.DATE_REMAPPER_PROCESSOR,
-			datadog.MESSAGE_REMAPPER_PROCESSOR,
-			datadog.SERVICE_REMAPPER_PROCESSOR,
-			datadog.STATUS_REMAPPER_PROCESSOR,
-			datadog.TRACE_ID_REMAPPER_PROCESSOR:
+		case datadog.DateRemapperType,
+			datadog.MessageRemapperType,
+			datadog.ServiceRemapperType,
+			datadog.StatusRemapperType,
+			datadog.TraceIdRemapperType:
 			sourceP := ddProcessor.Definition.(datadog.SourceRemapper)
 			sources := make([]string, len(sourceP.Sources))
 			for i, source := range sourceP.Sources {
 				sources[i] = source
 			}
 			tfPDetails["sources"] = sources
-		case datadog.GROK_PARSER_PROCESSOR:
+		case datadog.GrokParserType:
 			grokP := ddProcessor.Definition.(datadog.GrokParser)
 			tfPDetails["source"] = *grokP.Source
 			grok := make(map[string]interface{})
@@ -158,7 +158,7 @@ func convertDDProcessors(tfProcessors []map[string]interface{}, processors []dat
 			grokList := make([]interface{}, 1, 1)
 			grokList[0] = grok
 			tfPDetails["grok"] = grokList
-		case datadog.NESTED_PIPELINE_PROCESSOR:
+		case datadog.NestedPipelineType:
 			nestedP := ddProcessor.Definition.(datadog.NestedPipeline)
 			filter := make(map[string]interface{})
 			filter["query"] = *nestedP.Filter.Query
@@ -170,7 +170,7 @@ func convertDDProcessors(tfProcessors []map[string]interface{}, processors []dat
 				return nil
 			}
 			tfPDetails["processor"] = ps
-		case datadog.URL_PARSER_PROCESSOR:
+		case datadog.UrlParserType:
 			urlP := ddProcessor.Definition.(datadog.UrlParser)
 			sources := make([]string, len(urlP.Sources))
 			for i, source := range urlP.Sources {
@@ -179,7 +179,7 @@ func convertDDProcessors(tfProcessors []map[string]interface{}, processors []dat
 			tfPDetails["sources"] = sources
 			tfPDetails["target"] = *urlP.Target
 			tfPDetails["normalize_ending_slashes"] = *urlP.NormalizeEndingSlashes
-		case datadog.USER_AGENT_PARSER_PROCESSOR:
+		case datadog.UserAgentParserType:
 			userAgentP := ddProcessor.Definition.(datadog.UserAgentParser)
 			sources := make([]string, len(userAgentP.Sources))
 			for i, source := range userAgentP.Sources {
@@ -212,17 +212,11 @@ func setProcessors(d *schema.ResourceData, processors []datadog.LogsProcessor) e
 
 func buildDatadogLogsPipeline(d *schema.ResourceData) (*datadog.LogsPipeline, error) {
 	var pipeline datadog.LogsPipeline
-	if v, ok := d.GetOk("name"); ok {
-		name := v.(string)
-		pipeline.Name = &name
-	}
-	if v, ok := d.GetOk("is_enabled"); ok {
-		isEnabled := v.(bool)
-		pipeline.IsEnabled = &isEnabled
-	}
+	pipeline.SetName(d.Get("name").(string))
+	pipeline.SetIsEnabled(d.Get("is_enabled").(bool))
 	var ddFilter = datadog.FilterConfiguration{}
 	buildFilter(d, &ddFilter)
-	pipeline.Filter = &ddFilter
+	pipeline.SetFilter(ddFilter)
 	processors, err := buildProcessors(d)
 	if err != nil {
 		return nil, err
@@ -268,7 +262,7 @@ func convert(tfProcessor map[string]interface{}, processorType string, ddProcess
 		ddProcessor.IsEnabled = &isEnabled
 	}
 	switch processorType {
-	case datadog.ARITHMETIC_PROCESSOR:
+	case datadog.ArithmeticProcessorType:
 		var arithmeticProcessor = datadog.ArithmeticProcessor{}
 		if expression, ok := tfProcessor["expression"].(string); ok {
 			arithmeticProcessor.Expression = &expression
@@ -280,7 +274,7 @@ func convert(tfProcessor map[string]interface{}, processorType string, ddProcess
 			arithmeticProcessor.IsReplaceMissing = &isReplacingMissing
 		}
 		ddProcessor.Definition = arithmeticProcessor
-	case datadog.ATTIBUTE_REMAPPER_PROCESSOR:
+	case datadog.AttributeRemapperType:
 		var attributeRemapper = datadog.AttributeRemapper{}
 		if sources, ok := tfProcessor["sources"].([]interface{}); ok {
 			attributeRemapper.Sources = make([]string, len(sources))
@@ -304,7 +298,7 @@ func convert(tfProcessor map[string]interface{}, processorType string, ddProcess
 			attributeRemapper.OverrideOnConflict = &overrideOnConflict
 		}
 		ddProcessor.Definition = attributeRemapper
-	case datadog.CATEGORY_PROCESSOR:
+	case datadog.CategoryProcessorType:
 		var categoryProcessor = datadog.CategoryProcessor{}
 		if target, ok := tfProcessor["target"].(string); ok {
 			categoryProcessor.Target = &target
@@ -327,11 +321,11 @@ func convert(tfProcessor map[string]interface{}, processorType string, ddProcess
 			categoryProcessor.Categories = ddCategories
 		}
 		ddProcessor.Definition = categoryProcessor
-	case datadog.DATE_REMAPPER_PROCESSOR,
-		datadog.MESSAGE_REMAPPER_PROCESSOR,
-		datadog.SERVICE_REMAPPER_PROCESSOR,
-		datadog.STATUS_REMAPPER_PROCESSOR,
-		datadog.TRACE_ID_REMAPPER_PROCESSOR:
+	case datadog.DateRemapperType,
+		datadog.MessageRemapperType,
+		datadog.ServiceRemapperType,
+		datadog.StatusRemapperType,
+		datadog.TraceIdRemapperType:
 		var sourceRemapper = datadog.SourceRemapper{}
 		if sources, ok := tfProcessor["sources"].([]interface{}); ok {
 			sourceRemapper.Sources = make([]string, len(sources))
@@ -340,7 +334,7 @@ func convert(tfProcessor map[string]interface{}, processorType string, ddProcess
 			}
 		}
 		ddProcessor.Definition = sourceRemapper
-	case datadog.GROK_PARSER_PROCESSOR:
+	case datadog.GrokParserType:
 		var grokParser = datadog.GrokParser{}
 		if source, ok := tfProcessor["source"].(string); ok {
 			grokParser.Source = &source
@@ -357,7 +351,7 @@ func convert(tfProcessor map[string]interface{}, processorType string, ddProcess
 			grokParser.GrokRule = &ddGrok
 		}
 		ddProcessor.Definition = grokParser
-	case datadog.NESTED_PIPELINE_PROCESSOR:
+	case datadog.NestedPipelineType:
 		var nestedPipeline = datadog.NestedPipeline{}
 		if filter, ok := tfProcessor["filter"].([]interface{}); ok && len(filter) > 0 {
 			ddFilter := datadog.FilterConfiguration{}
@@ -372,7 +366,7 @@ func convert(tfProcessor map[string]interface{}, processorType string, ddProcess
 			nestedPipeline.Processors = nestedProcessors
 		}
 		ddProcessor.Definition = nestedPipeline
-	case datadog.URL_PARSER_PROCESSOR:
+	case datadog.UrlParserType:
 		var urlParser = datadog.UrlParser{}
 		if sources, ok := tfProcessor["sources"].([]interface{}); ok {
 			urlParser.Sources = make([]string, len(sources))
@@ -387,7 +381,7 @@ func convert(tfProcessor map[string]interface{}, processorType string, ddProcess
 			urlParser.NormalizeEndingSlashes = &normalizedEndingSlashes
 		}
 		ddProcessor.Definition = urlParser
-	case datadog.USER_AGENT_PARSER_PROCESSOR:
+	case datadog.UserAgentParserType:
 		var userAgentParser = datadog.UserAgentParser{}
 		if sources, ok := tfProcessor["sources"].([]interface{}); ok {
 			userAgentParser.Sources = make([]string, len(sources))
@@ -663,31 +657,31 @@ const (
 )
 
 var tfProcessorTypes = map[string]string{
-	tfArithmeticProcessor:        datadog.ARITHMETIC_PROCESSOR,
-	tfAttributeRemapperProcessor: datadog.ATTIBUTE_REMAPPER_PROCESSOR,
-	tfCategoryProcessor:          datadog.CATEGORY_PROCESSOR,
-	tfDateRemapperProcessor:      datadog.DATE_REMAPPER_PROCESSOR,
-	tfGrokParserProcessor:        datadog.GROK_PARSER_PROCESSOR,
-	tfMessageRemapperProcessor:   datadog.MESSAGE_REMAPPER_PROCESSOR,
-	tfNestedPipelineProcessor:    datadog.NESTED_PIPELINE_PROCESSOR,
-	tfServiceRemapperProcessor:   datadog.SERVICE_REMAPPER_PROCESSOR,
-	tfStatusRemapperProcessor:    datadog.STATUS_REMAPPER_PROCESSOR,
-	tfTraceIdRemapperProcessor:   datadog.TRACE_ID_REMAPPER_PROCESSOR,
-	tfUrlParserProcessor:         datadog.URL_PARSER_PROCESSOR,
-	tfUserAgentParserProcessor:   datadog.USER_AGENT_PARSER_PROCESSOR,
+	tfArithmeticProcessor:        datadog.ArithmeticProcessorType,
+	tfAttributeRemapperProcessor: datadog.AttributeRemapperType,
+	tfCategoryProcessor:          datadog.CategoryProcessorType,
+	tfDateRemapperProcessor:      datadog.DateRemapperType,
+	tfGrokParserProcessor:        datadog.GrokParserType,
+	tfMessageRemapperProcessor:   datadog.MessageRemapperType,
+	tfNestedPipelineProcessor:    datadog.NestedPipelineType,
+	tfServiceRemapperProcessor:   datadog.ServiceRemapperType,
+	tfStatusRemapperProcessor:    datadog.StatusRemapperType,
+	tfTraceIdRemapperProcessor:   datadog.TraceIdRemapperType,
+	tfUrlParserProcessor:         datadog.UrlParserType,
+	tfUserAgentParserProcessor:   datadog.UserAgentParserType,
 }
 
 var ddProcessorTypes = map[string]string{
-	datadog.ARITHMETIC_PROCESSOR:        tfArithmeticProcessor,
-	datadog.ATTIBUTE_REMAPPER_PROCESSOR: tfAttributeRemapperProcessor,
-	datadog.CATEGORY_PROCESSOR:          tfCategoryProcessor,
-	datadog.DATE_REMAPPER_PROCESSOR:     tfDateRemapperProcessor,
-	datadog.GROK_PARSER_PROCESSOR:       tfGrokParserProcessor,
-	datadog.MESSAGE_REMAPPER_PROCESSOR:  tfMessageRemapperProcessor,
-	datadog.NESTED_PIPELINE_PROCESSOR:   tfNestedPipelineProcessor,
-	datadog.SERVICE_REMAPPER_PROCESSOR:  tfServiceRemapperProcessor,
-	datadog.STATUS_REMAPPER_PROCESSOR:   tfStatusRemapperProcessor,
-	datadog.TRACE_ID_REMAPPER_PROCESSOR: tfTraceIdRemapperProcessor,
-	datadog.URL_PARSER_PROCESSOR:        tfUrlParserProcessor,
-	datadog.USER_AGENT_PARSER_PROCESSOR: tfUserAgentParserProcessor,
+	datadog.ArithmeticProcessorType: tfArithmeticProcessor,
+	datadog.AttributeRemapperType:   tfAttributeRemapperProcessor,
+	datadog.CategoryProcessorType:   tfCategoryProcessor,
+	datadog.DateRemapperType:        tfDateRemapperProcessor,
+	datadog.GrokParserType:          tfGrokParserProcessor,
+	datadog.MessageRemapperType:     tfMessageRemapperProcessor,
+	datadog.NestedPipelineType:      tfNestedPipelineProcessor,
+	datadog.ServiceRemapperType:     tfServiceRemapperProcessor,
+	datadog.StatusRemapperType:      tfStatusRemapperProcessor,
+	datadog.TraceIdRemapperType:     tfTraceIdRemapperProcessor,
+	datadog.UrlParserType:           tfUrlParserProcessor,
+	datadog.UserAgentParserType:     tfUserAgentParserProcessor,
 }
