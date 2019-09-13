@@ -28,9 +28,9 @@ resource "datadog_logs_pipelineorder" "pipelines" {
 	]
 	name = "pipelines"
 	pipelines = [
-		"-fhApkC3S0uzZmztKPaGWA",
-        "TPOHRa2PS2WNbfQOu0Oaxw",
-        "DltQ5IkGQOOXPNc_ut6X2w",
+		"kGZarioHSEGNPGyy9gISkw",
+        "EZXoa97wSHWnFNglBAB91Q",
+        "xUjMTstsS0WPRNOFzxH5vg",
 		"${datadog_logs_pipeline.pipeline_1.id}",
 		"${datadog_logs_pipeline.pipeline_2.id}"
 	]
@@ -38,6 +38,21 @@ resource "datadog_logs_pipelineorder" "pipelines" {
 `
 
 const orderUpdateConfig = `
+resource "datadog_logs_pipeline" "pipeline_1" {
+	name = "my first pipeline"
+	is_enabled = true
+	filter {
+		query = "source:redis"
+	}
+}
+resource "datadog_logs_pipeline" "pipeline_2" {
+	name = "my second pipeline"
+	is_enabled = true
+	filter {
+		query = "source:agent"
+	}
+}
+
 resource "datadog_logs_pipelineorder" "pipelines" {
 	depends_on = [
 		"datadog_logs_pipeline.pipeline_1",
@@ -45,9 +60,9 @@ resource "datadog_logs_pipelineorder" "pipelines" {
 	]
 	name = "pipelines"
 	pipelines = [
-		"-fhApkC3S0uzZmztKPaGWA",
-		"TPOHRa2PS2WNbfQOu0Oaxw",
-		"DltQ5IkGQOOXPNc_ut6X2w",
+		"kGZarioHSEGNPGyy9gISkw",
+        "EZXoa97wSHWnFNglBAB91Q",
+        "xUjMTstsS0WPRNOFzxH5vg",
 		"${datadog_logs_pipeline.pipeline_2.id}",
 		"${datadog_logs_pipeline.pipeline_1.id}"
 	]
@@ -65,6 +80,17 @@ func TestAccDatadogLogsPipelineOrder_basic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPipelineExists("datadog_logs_pipeline.pipeline_1"),
 					testAccCheckPipelineExists("datadog_logs_pipeline.pipeline_2"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_pipelineorder.pipelines", "name", "pipelines"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_pipelineorder.pipelines", "pipelines.#", "5"),
+				),
+			},
+			{
+				Config: orderUpdateConfig,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckPipelineExists("datadog_logs_pipeline.pipeline_2"),
+					testAccCheckPipelineExists("datadog_logs_pipeline.pipeline_1"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_pipelineorder.pipelines", "name", "pipelines"),
 					resource.TestCheckResourceAttr(

@@ -32,15 +32,12 @@ func resourceDatadogLogsPipelineOrderCreate(d *schema.ResourceData, meta interfa
 }
 
 func resourceDatadogLogsPipelineOrderRead(d *schema.ResourceData, meta interface{}) error {
-	pipelineList, err := meta.(*datadog.Client).GetLogsPipelineList()
+	ddList, err := meta.(*datadog.Client).GetLogsPipelineList()
 	if err != nil {
 		return err
 	}
-	tfList := make([]string, len(pipelineList.PipelineIds))
-	for i, id := range pipelineList.PipelineIds {
-		tfList[i] = id
-	}
-	if err = d.Set("pipelines", tfList); err != nil {
+
+	if err = d.Set("pipelines", ddList.PipelineIds); err != nil {
 		return err
 	}
 
@@ -55,12 +52,14 @@ func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interfa
 		ddList[i] = id.(string)
 	}
 	ddPipelineList.PipelineIds = ddList
+	var tfId string
+	if name, exists := d.GetOk("name"); exists {
+		tfId = name.(string)
+	}
 	if _, err := meta.(*datadog.Client).UpdateLogsPipelineList(&ddPipelineList); err != nil {
 		return fmt.Errorf("error updating logs pipeline list: (%s)", err.Error())
 	}
-	if name, ok := d.GetOk("name"); ok {
-		d.SetId(name.(string))
-	}
+	d.SetId(tfId)
 	return resourceDatadogLogsPipelineOrderRead(d, meta)
 }
 
