@@ -52,6 +52,84 @@ var ddProcessorTypes = map[string]string{
 	datadog.UserAgentParserType:     tfUserAgentParserProcessor,
 }
 
+var arithmeticProcessor = map[string]*schema.Schema{
+	"name":               {Type: schema.TypeString, Optional: true},
+	"is_enabled":         {Type: schema.TypeBool, Optional: true},
+	"expression":         {Type: schema.TypeString, Required: true},
+	"target":             {Type: schema.TypeString, Required: true},
+	"is_replace_missing": {Type: schema.TypeBool, Optional: true},
+}
+
+var attributeRemapper = map[string]*schema.Schema{
+	"name":                 {Type: schema.TypeString, Optional: true},
+	"is_enabled":           {Type: schema.TypeBool, Optional: true},
+	"sources":              {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
+	"source_type":          {Type: schema.TypeString, Required: true},
+	"target":               {Type: schema.TypeString, Required: true},
+	"target_type":          {Type: schema.TypeString, Required: true},
+	"preserve_source":      {Type: schema.TypeBool, Optional: true},
+	"override_on_conflict": {Type: schema.TypeBool, Optional: true},
+}
+
+var categoryProcessor = map[string]*schema.Schema{
+	"name":       {Type: schema.TypeString, Optional: true},
+	"is_enabled": {Type: schema.TypeBool, Optional: true},
+	"target":     {Type: schema.TypeString, Required: true},
+	"category": {Type: schema.TypeList, Required: true, Elem: &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"filter": {
+				Type:     schema.TypeList,
+				Required: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"query": {Type: schema.TypeString, Required: true},
+					},
+				},
+			},
+			"name": {Type: schema.TypeString, Required: true},
+		},
+	}},
+}
+
+var grokParser = map[string]*schema.Schema{
+	"name":       {Type: schema.TypeString, Optional: true},
+	"is_enabled": {Type: schema.TypeBool, Optional: true},
+	"source":     {Type: schema.TypeString, Required: true},
+	"grok": {
+		Type:     schema.TypeList,
+		MaxItems: 1,
+		Required: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"support_rules": {Type: schema.TypeString, Required: true},
+				"match_rules":   {Type: schema.TypeString, Required: true},
+			},
+		},
+	},
+}
+
+var sourceRemapper = map[string]*schema.Schema{
+	"name":       {Type: schema.TypeString, Optional: true},
+	"is_enabled": {Type: schema.TypeBool, Optional: true},
+	"sources":    {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
+}
+
+var urlParser = map[string]*schema.Schema{
+	"name":                     {Type: schema.TypeString, Optional: true},
+	"is_enabled":               {Type: schema.TypeBool, Optional: true},
+	"sources":                  {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
+	"target":                   {Type: schema.TypeString, Required: true},
+	"normalize_ending_slashes": {Type: schema.TypeBool, Optional: true},
+}
+
+var userAgentParser = map[string]*schema.Schema{
+	"name":       {Type: schema.TypeString, Optional: true},
+	"is_enabled": {Type: schema.TypeBool, Optional: true},
+	"sources":    {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
+	"target":     {Type: schema.TypeString, Required: true},
+	"is_encoded": {Type: schema.TypeBool, Optional: true},
+}
+
 func resourceDatadogLogsPipeline() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceDatadogLogsPipelineCreate,
@@ -540,7 +618,7 @@ func getProcessorSchema(isNested bool) map[string]*schema.Schema {
 		MaxItems: 1,
 		Optional: true,
 		Elem: &schema.Resource{
-			Schema: getArithmeticProcessor(),
+			Schema: arithmeticProcessor,
 		},
 	}
 	processorsSchema[tfAttributeRemapperProcessor] = &schema.Schema{
@@ -548,7 +626,7 @@ func getProcessorSchema(isNested bool) map[string]*schema.Schema {
 		MaxItems: 1,
 		Optional: true,
 		Elem: &schema.Resource{
-			Schema: getAttributeRemapper(),
+			Schema: attributeRemapper,
 		},
 	}
 	processorsSchema[tfCategoryProcessor] = &schema.Schema{
@@ -556,7 +634,7 @@ func getProcessorSchema(isNested bool) map[string]*schema.Schema {
 		MaxItems: 1,
 		Optional: true,
 		Elem: &schema.Resource{
-			Schema: getCategoryProcessor(),
+			Schema: categoryProcessor,
 		},
 	}
 	processorsSchema[tfDateRemapperProcessor] = &schema.Schema{
@@ -564,7 +642,7 @@ func getProcessorSchema(isNested bool) map[string]*schema.Schema {
 		MaxItems: 1,
 		Optional: true,
 		Elem: &schema.Resource{
-			Schema: getSourceRemapper(),
+			Schema: sourceRemapper,
 		},
 	}
 	processorsSchema[tfGrokParserProcessor] = &schema.Schema{
@@ -572,7 +650,7 @@ func getProcessorSchema(isNested bool) map[string]*schema.Schema {
 		MaxItems: 1,
 		Optional: true,
 		Elem: &schema.Resource{
-			Schema: getGrokParser(),
+			Schema: grokParser,
 		},
 	}
 	processorsSchema[tfMessageRemapperProcessor] = &schema.Schema{
@@ -580,7 +658,7 @@ func getProcessorSchema(isNested bool) map[string]*schema.Schema {
 		MaxItems: 1,
 		Optional: true,
 		Elem: &schema.Resource{
-			Schema: getSourceRemapper(),
+			Schema: sourceRemapper,
 		},
 	}
 	processorsSchema[tfServiceRemapperProcessor] = &schema.Schema{
@@ -588,7 +666,7 @@ func getProcessorSchema(isNested bool) map[string]*schema.Schema {
 		MaxItems: 1,
 		Optional: true,
 		Elem: &schema.Resource{
-			Schema: getSourceRemapper(),
+			Schema: sourceRemapper,
 		},
 	}
 	processorsSchema[tfStatusRemapperProcessor] = &schema.Schema{
@@ -596,7 +674,7 @@ func getProcessorSchema(isNested bool) map[string]*schema.Schema {
 		MaxItems: 1,
 		Optional: true,
 		Elem: &schema.Resource{
-			Schema: getSourceRemapper(),
+			Schema: sourceRemapper,
 		},
 	}
 	processorsSchema[tfTraceIdRemapperProcessor] = &schema.Schema{
@@ -604,7 +682,7 @@ func getProcessorSchema(isNested bool) map[string]*schema.Schema {
 		MaxItems: 1,
 		Optional: true,
 		Elem: &schema.Resource{
-			Schema: getSourceRemapper(),
+			Schema: sourceRemapper,
 		},
 	}
 	processorsSchema[tfUrlParserProcessor] = &schema.Schema{
@@ -612,7 +690,7 @@ func getProcessorSchema(isNested bool) map[string]*schema.Schema {
 		MaxItems: 1,
 		Optional: true,
 		Elem: &schema.Resource{
-			Schema: getUrlParser(),
+			Schema: urlParser,
 		},
 	}
 	processorsSchema[tfUserAgentParserProcessor] = &schema.Schema{
@@ -620,106 +698,8 @@ func getProcessorSchema(isNested bool) map[string]*schema.Schema {
 		MaxItems: 1,
 		Optional: true,
 		Elem: &schema.Resource{
-			Schema: getUserAgentParser(),
+			Schema: userAgentParser,
 		},
 	}
 	return processorsSchema
-}
-
-func getSourceRemapper() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
-		"name":       {Type: schema.TypeString, Optional: true},
-		"is_enabled": {Type: schema.TypeBool, Optional: true},
-		"sources":    {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
-	}
-}
-
-func getArithmeticProcessor() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
-		"name":               {Type: schema.TypeString, Optional: true},
-		"is_enabled":         {Type: schema.TypeBool, Optional: true},
-		"expression":         {Type: schema.TypeString, Required: true},
-		"target":             {Type: schema.TypeString, Required: true},
-		"is_replace_missing": {Type: schema.TypeBool, Optional: true},
-	}
-}
-
-func getAttributeRemapper() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
-		"name":                 {Type: schema.TypeString, Optional: true},
-		"is_enabled":           {Type: schema.TypeBool, Optional: true},
-		"sources":              {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
-		"source_type":          {Type: schema.TypeString, Required: true},
-		"target":               {Type: schema.TypeString, Required: true},
-		"target_type":          {Type: schema.TypeString, Required: true},
-		"preserve_source":      {Type: schema.TypeBool, Optional: true},
-		"override_on_conflict": {Type: schema.TypeBool, Optional: true},
-	}
-}
-
-func getCategoryProcessor() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
-		"name":       {Type: schema.TypeString, Optional: true},
-		"is_enabled": {Type: schema.TypeBool, Optional: true},
-		"target":     {Type: schema.TypeString, Required: true},
-		"category": {Type: schema.TypeList, Required: true, Elem: &schema.Resource{
-			Schema: getCategorySchema(),
-		}},
-	}
-}
-
-func getCategorySchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
-		"filter": {
-			Type:     schema.TypeList,
-			Required: true,
-			Elem: &schema.Resource{
-				Schema: map[string]*schema.Schema{
-					"query": {Type: schema.TypeString, Required: true},
-				},
-			},
-		},
-		"name": {Type: schema.TypeString, Required: true},
-	}
-}
-
-func getGrokParser() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
-		"name":       {Type: schema.TypeString, Optional: true},
-		"is_enabled": {Type: schema.TypeBool, Optional: true},
-		"source":     {Type: schema.TypeString, Required: true},
-		"grok": {
-			Type:     schema.TypeList,
-			MaxItems: 1,
-			Required: true,
-			Elem:     &schema.Resource{Schema: getGrokSchema()},
-		},
-	}
-}
-
-func getGrokSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
-		"support_rules": {Type: schema.TypeString, Required: true},
-		"match_rules":   {Type: schema.TypeString, Required: true},
-	}
-}
-
-func getUrlParser() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
-		"name":                     {Type: schema.TypeString, Optional: true},
-		"is_enabled":               {Type: schema.TypeBool, Optional: true},
-		"sources":                  {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
-		"target":                   {Type: schema.TypeString, Required: true},
-		"normalize_ending_slashes": {Type: schema.TypeBool, Optional: true},
-	}
-}
-
-func getUserAgentParser() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
-		"name":       {Type: schema.TypeString, Optional: true},
-		"is_enabled": {Type: schema.TypeBool, Optional: true},
-		"sources":    {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
-		"target":     {Type: schema.TypeString, Required: true},
-		"is_encoded": {Type: schema.TypeBool, Optional: true},
-	}
 }
