@@ -144,7 +144,7 @@ resource "datadog_logs_pipelineorder" "sample_pipeline_order" {
         "datadog_logs_pipeline.sample_pipeline"
     ]
     pipelines = [
-        "${datadog_logs_pipeline.my.id}"
+        "${datadog_logs_pipeline.sample_pipeline.id}"
     ]
 }
 ```
