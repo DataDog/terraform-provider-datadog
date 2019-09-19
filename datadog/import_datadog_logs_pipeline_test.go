@@ -119,6 +119,18 @@ resource "datadog_logs_pipeline" "test_import" {
 }	
 `
 
+const pipelineorderConfigForImport = `
+resource "datadog_logs_pipelineorder" "pipelines" {
+	name = "pipelines"
+	pipelines = [
+		"TOYNsNfjTD6zTXVg8_ej1g",
+        "VxXfWxegScyjG8mMJwnFIA",
+        "GGVTp-5PT_O9Xhmsxnsu_w",
+        "VgZXJneKR2qh2WcfAQi6fA"
+	]
+}
+`
+
 func TestAccLogsPipeline_importBasic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -137,6 +149,26 @@ func TestAccLogsPipeline_importBasic(t *testing.T) {
 				ResourceName:      "datadog_logs_pipeline.test_import",
 				ImportState:       true,
 				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func TestAccLogsPipelineOrder_importBasic(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
+		Providers: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: pipelineorderConfigForImport,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_logs_pipelineorder.pipelines", "name", "pipelines"),
+				),
+			},
+			{
+				ResourceName: "datadog_logs_pipelineorder.pipelines",
+				ImportState:  true,
 			},
 		},
 	})
