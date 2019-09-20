@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform/helper/logging"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
-	datadog "github.com/zorkian/go-datadog-api"
+	"github.com/zorkian/go-datadog-api"
 )
 
 func Provider() terraform.ResourceProvider {
@@ -47,7 +47,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_timeboard":                            resourceDatadogTimeboard(),
 			"datadog_user":                                 resourceDatadogUser(),
 			"datadog_logs_pipeline":                        resourceDatadogLogsPipeline(),
-			"datadog_logs_pipelineorder":                   resourceDatadogLogsPipelineOrder(),
+			"datadog_logs_pipeline_order":                  resourceDatadogLogsPipelineOrder(),
 		},
 
 		ConfigureFunc: providerConfigure,

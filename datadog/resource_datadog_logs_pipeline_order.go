@@ -71,8 +71,5 @@ func resourceDatadogLogsPipelineOrderDelete(d *schema.ResourceData, meta interfa
 }
 
 func resourceDatadogLogsPipelineOrderExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	if pipelineList, err := meta.(*datadog.Client).GetLogsPipelineList(); err == nil && len(pipelineList.PipelineIds) > 0 {
-		return true, nil
-	}
-	return false, nil
+	return true, nil
 }

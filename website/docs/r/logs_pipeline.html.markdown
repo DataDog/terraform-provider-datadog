@@ -11,10 +11,11 @@ description: |-
 Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/?lang=python#logs-pipelines) resource. This can be used to create and manage Datadog logs pipelines.
 
 
-## Example Usage: Datadog logs pipeline
+## Example Usage
+
+Create a Datadog logs pipeline.
 
 ```hcl
-# Create a new Datadog logs pipeline
 resource "datadog_logs_pipeline" "sample_pipeline" {
     name = "sample pipeline"
     is_enabled = true
@@ -135,19 +136,6 @@ resource "datadog_logs_pipeline" "sample_pipeline" {
     }
 }
 ```
-## Example Usage: Datadog logs pipeline order
-
-```hcl
-resource "datadog_logs_pipelineorder" "sample_pipeline_order" {
-    name = "sample_pipeline_order"
-    depends_on = [
-        "datadog_logs_pipeline.sample_pipeline"
-    ]
-    pipelines = [
-        "${datadog_logs_pipeline.sample_pipeline.id}"
-    ]
-}
-```
 
 ## Argument Reference
 
@@ -158,6 +146,8 @@ The following arguments are supported:
 * `filter` - (Required) Defines your pipeline filter. Only logs that match the filter criteria are processed by this pipeline.
   * `query` - (Required)
 * `processor` - (Optional) processors or nested pipelines. See [below](logs_pipeline.html#Processors) for more detailed descriptions.
+
+**Note** Pipeline or its processors are disabled by default if `is_enabled` is not explicitly set to `true`.
 
 ### Processors
 
@@ -181,9 +171,9 @@ The following arguments are supported:
   * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
   * `target` - (Required) Name of the target attribute which value is defined by the matching category.
   * `category` - (Required) List of filters to match or not a log and their corresponding name to assign a custom value to the log.
-    * `name` - (Required) 
+    * `name` - (Required) Name of the cateory.
     * `filter`
-      * `query` - (Required)
+      * `query` - (Required) Filter criteria of the category.
 * date_remapper
   * `name` - (Optional) Name of the processor.
   * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
@@ -230,16 +220,6 @@ The following arguments are supported:
   * `target` - (Required) Name of the parent attribute that contains all the extracted details from the sources.
   * `is_encoded` - (Optional, default = false) If the source attribute is url encoded or not.
 
-## Attributes Reference
-
-* `name` - (Required) The name attribute in resource `datadog_logs_pipelineorder` needs to be unique. It's better to set to the same value as the resource `NAME`. 
-There is no related field can be found in  [Logs Pipeline API](https://docs.datadoghq.com/api/?lang=python#get-pipeline-order).
-* `pipelines` - (Required) The pipeline ids list. The order of pipeline ids in this attribute defines the overall pipelines order for Logs.
-
-**Note:** The [read-only pipelines](https://docs.datadoghq.com/logs/processing/pipelines/#integration-pipelines) also need to be included in the `pipelines`
-list in resource `datadog_logs_pipelineorder`. You can update the order of these pipelines, but you can't modify the **read-only** pipelines 
-through this provider. 
-
 ## Import
 
 For the pipelines that are already created (including the **read-only** ones), you can include them into terraform by `import` operation.
@@ -248,7 +228,7 @@ import them. You will need to do ```terraform import <resource.name> <pipelineID
 
 ## Important Notes
 
-Each `datadog_logs_pipeline` resource defines a complete pipeline. The order of pipelines are maintained in resource `datadog_logs_pipelineorder`.
-There should be just one `datadog_logs_pipelineorder` resource. When creating a new pipeline, you need to **explicitly** add this pipeline to 
-`datadog_logs_pipelineorder` resource to keep track of this pipeline. Similarly, when a pipeline needs to be destroyed, do not forget to also remove
-its references from `datadog_logs_pipelineorder` resource. 
+Each `datadog_logs_pipeline` resource defines a complete pipeline. The order of pipelines are maintained in resource 
+[datadog_logs_pipeline_order](logs_pipeline_order.html#datadog_logs_pipeline_order). When creating a new pipeline, you
+need to **explicitly** add this pipeline to `datadog_logs_pipeline_order` resource to keep track of this pipeline.
+Similarly, when a pipeline needs to be destroyed, do not forget to also remove its references from `datadog_logs_pipeline_order` resource.

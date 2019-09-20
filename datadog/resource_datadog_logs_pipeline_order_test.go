@@ -21,7 +21,7 @@ resource "datadog_logs_pipeline" "pipeline_2" {
 	}
 }
 
-resource "datadog_logs_pipelineorder" "pipelines" {
+resource "datadog_logs_pipeline_order" "pipelines" {
 	depends_on = [
 		"datadog_logs_pipeline.pipeline_1",
 		"datadog_logs_pipeline.pipeline_2"
@@ -53,7 +53,7 @@ resource "datadog_logs_pipeline" "pipeline_2" {
 	}
 }
 
-resource "datadog_logs_pipelineorder" "pipelines" {
+resource "datadog_logs_pipeline_order" "pipelines" {
 	depends_on = [
 		"datadog_logs_pipeline.pipeline_1",
 		"datadog_logs_pipeline.pipeline_2"
@@ -81,9 +81,9 @@ func TestAccDatadogLogsPipelineOrder_basic(t *testing.T) {
 					testAccCheckPipelineExists("datadog_logs_pipeline.pipeline_1"),
 					testAccCheckPipelineExists("datadog_logs_pipeline.pipeline_2"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipelineorder.pipelines", "name", "pipelines"),
+						"datadog_logs_pipeline_order.pipelines", "name", "pipelines"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipelineorder.pipelines", "pipelines.#", "5"),
+						"datadog_logs_pipeline_order.pipelines", "pipelines.#", "5"),
 				),
 			},
 			{
@@ -92,9 +92,9 @@ func TestAccDatadogLogsPipelineOrder_basic(t *testing.T) {
 					testAccCheckPipelineExists("datadog_logs_pipeline.pipeline_2"),
 					testAccCheckPipelineExists("datadog_logs_pipeline.pipeline_1"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipelineorder.pipelines", "name", "pipelines"),
+						"datadog_logs_pipeline_order.pipelines", "name", "pipelines"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipelineorder.pipelines", "pipelines.#", "5"),
+						"datadog_logs_pipeline_order.pipelines", "pipelines.#", "5"),
 				),
 			},
 		},

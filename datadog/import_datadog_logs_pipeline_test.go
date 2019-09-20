@@ -58,6 +58,13 @@ resource "datadog_logs_pipeline" "test_import" {
 		}
 	}
 	processor {
+		date_remapper {
+			name = "2nd date remapper"
+			is_enabled = true
+			sources = ["other"]
+		}
+	}
+	processor {
 		message_remapper {
 			name = "test message remapper"
 			is_enabled = false
@@ -120,13 +127,13 @@ resource "datadog_logs_pipeline" "test_import" {
 `
 
 const pipelineorderConfigForImport = `
-resource "datadog_logs_pipelineorder" "pipelines" {
+resource "datadog_logs_pipeline_order" "pipelines" {
 	name = "pipelines"
 	pipelines = [
 		"TOYNsNfjTD6zTXVg8_ej1g",
-        "VxXfWxegScyjG8mMJwnFIA",
-        "GGVTp-5PT_O9Xhmsxnsu_w",
-        "VgZXJneKR2qh2WcfAQi6fA"
+		"VxXfWxegScyjG8mMJwnFIA",
+		"GGVTp-5PT_O9Xhmsxnsu_w",
+		"VgZXJneKR2qh2WcfAQi6fA"
 	]
 }
 `
