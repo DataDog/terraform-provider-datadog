@@ -90,17 +90,20 @@ The following arguments are supported:
     * `warning_display` - (Optional) the string version to specify additional digits in the case of `99` but want 3 digits like `99.000` to display.
 
 The following options are specific to the `type` of service level objective:
+
 * `metric` type SLOs:
     * `query` - (Required) The metric query configuration to use for the SLI. This is a dictionary and requires both the `numerator` and `denominator` fields which should be `count` metrics using the `sum` aggregator.
         * `numerator` - (Required) the sum of all the `good` events
         * `denominator` - (Required) the sum of the `total` events
         * Example Usage:
+        
 ```hcl
 query {
     numerator   = "sum:my.custom.count.metric{type:good}.as_count()"
     denominator = "sum:my.custom.count.metric{*}.as_count()" 
 }
 ```
+
 * `monitor` type SLOs:
     * `monitor_ids` - (Optional) A list of numeric monitor IDs for which to use as SLIs. Their tags will be auto-imported into `monitor_tags` field in the API resource. At least 1 of `monitor_ids` or `monitor_search` must be provided.
     * `monitor_search` - (Optional) The monitor query search used on the monitor search API to add monitor_ids by searching. Their tags will be auto-imported into `monitor_tags` field in the API resource. At least 1 of `monitor_ids` or `monitor_search` must be provided.
