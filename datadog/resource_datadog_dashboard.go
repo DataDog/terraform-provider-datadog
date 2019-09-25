@@ -3888,8 +3888,8 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadog.W
 				if order, ok := sort["order"].(string); ok && len(order) > 0 {
 					datadogGroupBy.Sort.Order = datadog.String(order)
 				}
-				if len(sort["facet"].(string)) > 0 {
-					datadogGroupBy.Sort.Facet = datadog.String(sort["facet"].(string))
+				if facet, ok := sort["facet"].(string); ok && len(facet) > 0 {
+					datadogGroupBy.Sort.Facet = datadog.String(facet)
 				}
 			}
 			datadogGroupBys[i] = datadogGroupBy
