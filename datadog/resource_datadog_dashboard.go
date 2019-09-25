@@ -3806,7 +3806,7 @@ func getApmOrLogQuerySchema() *schema.Schema {
 						Schema: map[string]*schema.Schema{
 							"facet": {
 								Type:     schema.TypeString,
-								Required: true,
+								Optional: true,
 							},
 							"limit": {
 								Type:     schema.TypeInt,
