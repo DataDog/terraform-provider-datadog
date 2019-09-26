@@ -12,7 +12,9 @@ Provides a Datadog [Logs Index API](https://docs.datadoghq.com/api/?lang=python#
 
 ## Example Usage
 
-Create a Datadog logs index resource:
+A sample Datadog logs index resource definition. Note that at this point, it is not possible to create new logs indexes
+through Terraform, so the `name` field must match a name of an already existing index. If you want to keep the current 
+state of the index, we suggest importing it (see below).
 
 ```hcl
 resource "datadog_logs_index" "sample_index" {
@@ -48,7 +50,7 @@ The following arguments are supported:
   * `query` - (Required) Logs filter criteria. Only logs matching this filter criteria are considered for this index.
 * `exclusion_filter` - (Required) List of exclusion filters.
   * `filter` - (Required)
-      * `query` - (Required) Only logs matching the filter criteria and the query of the parent index will be considered for this exclusion filter.
+      * `query` - (Optional) Only logs matching the filter criteria and the query of the parent index will be considered for this exclusion filter.
       * `sample_rate` - (Optional, default = 0.0) The fraction of logs excluded by the exclusion filter, when active.
   * `name` - (Optional) The name of the exclusion filter.
   * `is_enabled` - (Optional, default = false) A boolean stating if the exclusion is active or not.

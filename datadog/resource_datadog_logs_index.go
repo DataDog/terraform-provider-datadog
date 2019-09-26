@@ -85,6 +85,9 @@ func resourceDatadogLogsIndexUpdate(d *schema.ResourceData, meta interface{}) er
 	client := meta.(*datadog.Client)
 	tfName := d.Get("name").(string)
 	if _, err := client.UpdateLogsIndex(tfName, ddIndex); err != nil {
+		if strings.Contains(err.Error(), "404 Not Found") {
+			return fmt.Errorf("logs index creation is not allowed, index_name: %s", tfName)
+		}
 		return fmt.Errorf("error updating logs index: (%s)", err.Error())
 	}
 	d.SetId(tfName)
