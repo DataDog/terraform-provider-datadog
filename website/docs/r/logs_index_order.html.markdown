@@ -12,7 +12,7 @@ Provides a Datadog [Logs Index API](https://docs.datadoghq.com/api/?lang=python#
 
 ## Example Usage
 
-Create a Datadog logs pipeline order resource
+Create a Datadog logs pipeline order resource:
 
 ```hcl
 resource "datadog_logs_index_order" "sample_index_order" {
@@ -35,6 +35,6 @@ The following arguments are supported:
 
 ## Import
 
-The current datadog terraform provider version does not support the creation and deletion of index order. 
-Do `terraform import <datadog_logs_index_order.name> <name>` to import index order to terraform. There must be at
+The current Datadog Terraform provider version does not support the creation and deletion of index orders. 
+Do `terraform import <datadog_logs_index_order.name> <name>` to import index order to Terraform. There must be at
 most one `datadog_logs_index_order` resource.
