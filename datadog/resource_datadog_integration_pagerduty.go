@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -16,6 +17,7 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceDatadogIntegrationPagerdutyCreate,
 		Read:   resourceDatadogIntegrationPagerdutyRead,
+		Exists: resourceDatadogIntegrationPagerdutyExists,
 		Update: resourceDatadogIntegrationPagerdutyUpdate,
 		Delete: resourceDatadogIntegrationPagerdutyDelete,
 		Importer: &schema.ResourceImporter{
@@ -148,6 +150,20 @@ func resourceDatadogIntegrationPagerdutyRead(d *schema.ResourceData, meta interf
 	d.Set("api_token", pd.GetAPIToken())
 
 	return nil
+}
+
+func resourceDatadogIntegrationPagerdutyExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
+	client := meta.(*datadog.Client)
+
+	_, err := client.GetIntegrationPD()
+	if err != nil {
+		if strings.Contains(err.Error(), "404 Not Found") {
+			return false, nil
+		}
+		return false, err
+	}
+
+	return true, nil
 }
 
 func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta interface{}) error {
