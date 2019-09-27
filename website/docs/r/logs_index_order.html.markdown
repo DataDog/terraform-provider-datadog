@@ -12,8 +12,6 @@ Provides a Datadog [Logs Index API](https://docs.datadoghq.com/api/?lang=python#
 
 ## Example Usage
 
-Create a Datadog logs pipeline order resource:
-
 ```hcl
 resource "datadog_logs_index_order" "sample_index_order" {
     name = "sample_index_order"
