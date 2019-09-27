@@ -13,8 +13,6 @@ Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/?lang=pyth
 
 ## Example Usage
 
-Create a Datadog logs pipeline order resource:
-
 ```hcl
 resource "datadog_logs_pipeline_order" "sample_pipeline_order" {
     name = "sample_pipeline_order"
