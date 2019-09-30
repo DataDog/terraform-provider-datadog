@@ -28,9 +28,9 @@ resource "datadog_logs_pipeline_order" "pipelines" {
 	]
 	name = "pipelines"
 	pipelines = [
-		"kGZarioHSEGNPGyy9gISkw",
-        "EZXoa97wSHWnFNglBAB91Q",
-        "xUjMTstsS0WPRNOFzxH5vg",
+		"vnWbxv_QT52wKgMF-7-WUw",
+		"hDFZwxpLSAa8Cje-MTBl_w",
+		"lAofLqbSQiOXX8IcFE58Yw",
 		"${datadog_logs_pipeline.pipeline_1.id}",
 		"${datadog_logs_pipeline.pipeline_2.id}"
 	]
@@ -60,9 +60,9 @@ resource "datadog_logs_pipeline_order" "pipelines" {
 	]
 	name = "pipelines"
 	pipelines = [
-		"kGZarioHSEGNPGyy9gISkw",
-        "EZXoa97wSHWnFNglBAB91Q",
-        "xUjMTstsS0WPRNOFzxH5vg",
+		"vnWbxv_QT52wKgMF-7-WUw",
+		"hDFZwxpLSAa8Cje-MTBl_w",
+		"lAofLqbSQiOXX8IcFE58Yw",
 		"${datadog_logs_pipeline.pipeline_2.id}",
 		"${datadog_logs_pipeline.pipeline_1.id}"
 	]

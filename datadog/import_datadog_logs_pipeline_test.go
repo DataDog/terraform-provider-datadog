@@ -130,10 +130,9 @@ const pipelineorderConfigForImport = `
 resource "datadog_logs_pipeline_order" "pipelines" {
 	name = "pipelines"
 	pipelines = [
-		"TOYNsNfjTD6zTXVg8_ej1g",
-		"VxXfWxegScyjG8mMJwnFIA",
-		"GGVTp-5PT_O9Xhmsxnsu_w",
-		"VgZXJneKR2qh2WcfAQi6fA"
+		"vnWbxv_QT52wKgMF-7-WUw",
+		"hDFZwxpLSAa8Cje-MTBl_w",
+		"lAofLqbSQiOXX8IcFE58Yw"
 	]
 }
 `
@@ -170,11 +169,11 @@ func TestAccLogsPipelineOrder_importBasic(t *testing.T) {
 				Config: pipelineorderConfigForImport,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipelineorder.pipelines", "name", "pipelines"),
+						"datadog_logs_pipeline_order.pipelines", "name", "pipelines"),
 				),
 			},
 			{
-				ResourceName: "datadog_logs_pipelineorder.pipelines",
+				ResourceName: "datadog_logs_pipeline_order.pipelines",
 				ImportState:  true,
 			},
 		},
