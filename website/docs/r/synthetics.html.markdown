@@ -148,7 +148,7 @@ The following arguments are supported:
 
 The following attributes are exported:
 
-- `public_id` - ID of the Datadog synthetics test
+- `id` - ID of the Datadog synthetics test
 
 ## Import
 
