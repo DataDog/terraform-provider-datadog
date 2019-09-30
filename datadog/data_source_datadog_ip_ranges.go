@@ -98,7 +98,13 @@ func dataSourceDatadogIpRangesRead(d *schema.ResourceData, meta interface{}) err
 	}
 
 	// v4 and v6
-	if len(ipAddresses.Agents["prefixes_ipv4"])+len(ipAddresses.API["prefixes_ipv4"])+len(ipAddresses.Apm["prefixes_ipv4"])+len(ipAddresses.Logs["prefixes_ipv4"])+len(ipAddresses.Process["prefixes_ipv4"])+len(ipAddresses.Synthetics["prefixes_ipv4"])+len(ipAddresses.Webhooks["prefixes_ipv4"])+len(ipAddresses.Agents["prefixes_ipv6"])+len(ipAddresses.API["prefixes_ipv6"])+len(ipAddresses.Apm["prefixes_ipv6"])+len(ipAddresses.Logs["prefixes_ipv6"])+len(ipAddresses.Process["prefixes_ipv6"])+len(ipAddresses.Synthetics["prefixes_ipv6"])+len(ipAddresses.Webhooks["prefixes_ipv6"]) > 0 {
+	if len(ipAddresses.Agents["prefixes_ipv4"])+len(ipAddresses.API["prefixes_ipv4"])+
+		len(ipAddresses.Apm["prefixes_ipv4"])+len(ipAddresses.Logs["prefixes_ipv4"])+
+		len(ipAddresses.Process["prefixes_ipv4"])+len(ipAddresses.Synthetics["prefixes_ipv4"])+
+		len(ipAddresses.Webhooks["prefixes_ipv4"])+len(ipAddresses.Agents["prefixes_ipv6"])+
+		len(ipAddresses.API["prefixes_ipv6"])+len(ipAddresses.Apm["prefixes_ipv6"])+
+		len(ipAddresses.Logs["prefixes_ipv6"])+len(ipAddresses.Process["prefixes_ipv6"])+
+		len(ipAddresses.Synthetics["prefixes_ipv6"])+len(ipAddresses.Webhooks["prefixes_ipv6"]) > 0 {
 		d.SetId("datadog-ip-ranges")
 	}
 
