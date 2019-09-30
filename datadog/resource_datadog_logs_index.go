@@ -20,7 +20,7 @@ var indexSchema = map[string]*schema.Schema{
 	},
 	"exclusion_filter": {
 		Type:     schema.TypeList,
-		Required: true,
+		Optional: true,
 		Elem: &schema.Resource{
 			Schema: exclusionFilterSchema,
 		},
@@ -32,7 +32,7 @@ var exclusionFilterSchema = map[string]*schema.Schema{
 	"is_enabled": {Type: schema.TypeBool, Optional: true},
 	"filter": {
 		Type:     schema.TypeList,
-		Required: true,
+		Optional: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"query":       {Type: schema.TypeString, Optional: true},
