@@ -108,61 +108,91 @@ func dataSourceDatadogIpRangesRead(d *schema.ResourceData, meta interface{}) err
 		d.SetId("datadog-ip-ranges")
 	}
 
-	//Set ranges when the list is not empty
+	// Set ranges when the list is not empty
 	// v4
 	if len(ipAddresses.Agents["prefixes_ipv4"]) > 0 {
 		d.Set("agents_ipv4", ipAddresses.Agents["prefixes_ipv4"])
+	} else {
+		d.Set("agents_ipv4", []string{})
 	}
+
 	if len(ipAddresses.API["prefixes_ipv4"]) > 0 {
 		d.Set("api_ipv4", ipAddresses.API["prefixes_ipv4"])
+	} else {
+		d.Set("api_ipv4", []string{})
 	}
 
 	if len(ipAddresses.Apm["prefixes_ipv4"]) > 0 {
 		d.Set("apm_ipv4", ipAddresses.Apm["prefixes_ipv4"])
+	} else {
+		d.Set("apm_ipv4", []string{})
 	}
 
 	if len(ipAddresses.Logs["prefixes_ipv4"]) > 0 {
 		d.Set("logs_ipv4", ipAddresses.Logs["prefixes_ipv4"])
+	} else {
+		d.Set("logs_ipv4", []string{})
 	}
 
 	if len(ipAddresses.Process["prefixes_ipv4"]) > 0 {
 		d.Set("process_ipv4", ipAddresses.Process["prefixes_ipv4"])
+	} else {
+		d.Set("process_ipv4", []string{})
 	}
 
 	if len(ipAddresses.Synthetics["prefixes_ipv4"]) > 0 {
 		d.Set("synthetics_ipv4", ipAddresses.Synthetics["prefixes_ipv4"])
+	} else {
+		d.Set("synthetics_ipv4", []string{})
 	}
 
 	if len(ipAddresses.Webhooks["prefixes_ipv4"]) > 0 {
 		d.Set("webhooks_ipv4", ipAddresses.Webhooks["prefixes_ipv4"])
+	} else {
+		d.Set("webhooks_ipv4", []string{})
 	}
 
 	// v6
 	if len(ipAddresses.Agents["prefixes_ipv6"]) > 0 {
 		d.Set("agents_ipv6", ipAddresses.Agents["prefixes_ipv6"])
+	} else {
+		d.Set("agents_ipv6", []string{})
 	}
+
 	if len(ipAddresses.API["prefixes_ipv6"]) > 0 {
 		d.Set("api_ipv6", ipAddresses.API["prefixes_ipv6"])
+	} else {
+		d.Set("api_ipv6", []string{})
 	}
 
 	if len(ipAddresses.Apm["prefixes_ipv6"]) > 0 {
 		d.Set("apm_ipv6", ipAddresses.Apm["prefixes_ipv6"])
+	} else {
+		d.Set("apm_ipv6", []string{})
 	}
 
 	if len(ipAddresses.Logs["prefixes_ipv6"]) > 0 {
 		d.Set("logs_ipv6", ipAddresses.Logs["prefixes_ipv6"])
+	} else {
+		d.Set("logs_ipv6", []string{})
 	}
 
 	if len(ipAddresses.Process["prefixes_ipv6"]) > 0 {
 		d.Set("process_ipv6", ipAddresses.Process["prefixes_ipv6"])
+	} else {
+		d.Set("process_ipv6", []string{})
 	}
 
 	if len(ipAddresses.Synthetics["prefixes_ipv6"]) > 0 {
 		d.Set("synthetics_ipv6", ipAddresses.Synthetics["prefixes_ipv6"])
+	} else {
+		d.Set("synthetics_ipv6", []string{})
 	}
 
 	if len(ipAddresses.Webhooks["prefixes_ipv6"]) > 0 {
 		d.Set("webhooks_ipv6", ipAddresses.Webhooks["prefixes_ipv6"])
+	} else {
+		d.Set("webhooks_ipv6", []string{})
 	}
 
 	return nil
