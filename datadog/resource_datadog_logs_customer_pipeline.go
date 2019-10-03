@@ -231,7 +231,7 @@ var userAgentParser = &schema.Schema{
 	},
 }
 
-func resourceDatadogLogsPipeline() *schema.Resource {
+func resourceDatadogLogsCustomerPipeline() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceDatadogLogsPipelineCreate,
 		Update: resourceDatadogLogsPipelineUpdate,

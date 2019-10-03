@@ -6,7 +6,7 @@ import (
 )
 
 const pipelineConfigForImport = `
-resource "datadog_logs_pipeline" "test_import" {
+resource "datadog_logs_customer_pipeline" "test_import" {
 	name = "imported pipeline"
 	is_enabled = false
 	filter {
@@ -126,18 +126,7 @@ resource "datadog_logs_pipeline" "test_import" {
 }	
 `
 
-const pipelineorderConfigForImport = `
-resource "datadog_logs_pipeline_order" "pipelines" {
-	name = "pipelines"
-	pipelines = [
-		"vnWbxv_QT52wKgMF-7-WUw",
-		"hDFZwxpLSAa8Cje-MTBl_w",
-		"lAofLqbSQiOXX8IcFE58Yw"
-	]
-}
-`
-
-func TestAccLogsPipeline_importBasic(t *testing.T) {
+func TestAccLogsCustomerPipeline_importBasic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
@@ -146,35 +135,15 @@ func TestAccLogsPipeline_importBasic(t *testing.T) {
 			{
 				Config: pipelineConfigForImport,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPipelineExists("datadog_logs_pipeline.test_import"),
+					testAccCheckPipelineExists("datadog_logs_customer_pipeline.test_import"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.test_import", "name", "imported pipeline"),
+						"datadog_logs_customer_pipeline.test_import", "name", "imported pipeline"),
 				),
 			},
 			{
-				ResourceName:      "datadog_logs_pipeline.test_import",
+				ResourceName:      "datadog_logs_customer_pipeline.test_import",
 				ImportState:       true,
 				ImportStateVerify: true,
-			},
-		},
-	})
-}
-
-func TestAccLogsPipelineOrder_importBasic(t *testing.T) {
-	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
-		Steps: []resource.TestStep{
-			{
-				Config: pipelineorderConfigForImport,
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline_order.pipelines", "name", "pipelines"),
-				),
-			},
-			{
-				ResourceName: "datadog_logs_pipeline_order.pipelines",
-				ImportState:  true,
 			},
 		},
 	})

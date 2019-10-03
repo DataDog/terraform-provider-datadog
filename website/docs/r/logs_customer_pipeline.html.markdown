@@ -1,22 +1,20 @@
 ---
 layout: "datadog"
-page_title: "Datadog: datadog_logs_pipeline"
-sidebar_current: "docs-datadog-resource-logs-pipeline"
+page_title: "Datadog: datadog_logs_customer_pipeline"
+sidebar_current: "docs-datadog-resource-logs-customer-pipeline"
 description: |-
-  Provides a Datadog logs pipeline resource, which is used to create and manage logs pipelines.
+  Provides a Datadog logs customer pipeline resource, which is used to create and manage logs customer pipelines.
 ---
 
-# datadog_logs_pipeline
+# datadog_logs_customer_pipeline
 
-Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/?lang=python#logs-pipelines) resource, which is used to create and manage Datadog logs pipelines.
+Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/?lang=python#logs-pipelines) resource, which is used to create and manage Datadog logs customer pipelines.
 
 
 ## Example Usage
 
-Create a Datadog logs pipeline:
-
 ```hcl
-resource "datadog_logs_pipeline" "sample_pipeline" {
+resource "datadog_logs_customer_pipeline" "sample_pipeline" {
     filter {
         query = "source:foo"
     }
@@ -221,18 +219,18 @@ The following arguments are supported:
   * `name` - (Optional) Name of the processor
   * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
 
+Even though some arguments are optional, we still recommend you to state **all** arguments in the resource to avoid 
+unnecessary confusion.
+
 ## Import
 
-For the previously created pipelines (including the **read-only** ones), you can include them in Terraform with the `import` operation.
+For the previously created customer pipelines, you can include them in Terraform with the `import` operation.
 Currently, Terraform requires you to explicitly create resources that match the existing pipelines to 
 import them. Use ```terraform import <resource.name> <pipelineID>``` for each existing pipeline.
 
 ## Important Notes
 
-Each `datadog_logs_pipeline` resource defines a complete pipeline. The order of pipelines are maintained in resource 
+Each `datadog_logs_customer_pipeline` resource defines a complete pipeline. The order of pipelines are maintained in resource 
 [datadog_logs_pipeline_order](logs_pipeline_order.html#datadog_logs_pipeline_order). When creating a new pipeline, you
 need to **explicitly** add this pipeline to the `datadog_logs_pipeline_order` resource to track the pipeline.
 Similarly, when a pipeline needs to be destroyed, remove its references from the `datadog_logs_pipeline_order` resource.
-
-Even though some arguments are optional, we still recommend to state **all** arguments in the resource to avoid 
-unnecessary confusion.
