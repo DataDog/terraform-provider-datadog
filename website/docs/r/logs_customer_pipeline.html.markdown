@@ -143,7 +143,7 @@ The following arguments are supported:
   * `query` - (Required) Defines the filter criteria.
 * `name` - (Required) Your pipeline name.
 * `is_enabled` - (Optional, default = false) Boolean value to enable your pipeline.
-* `processor` - (Optional) Processors or nested pipelines. See [below](logs_pipeline.html#Processors) for more detailed descriptions.
+* `processor` - (Optional) Processors or nested pipelines. See [below](logs_customer_pipeline.html#Processors) for more detailed descriptions.
 
 **Note** A pipeline or its processors are disabled by default if `is_enabled` is not explicitly set to `true`.
 
@@ -191,7 +191,7 @@ The following arguments are supported:
 * pipeline
   * `filter` - (Required) Defines the nested pipeline filter. Only logs that match the filter criteria are processed by this pipeline.
     * `query` - (Required)
-  * `processor` - (Optional) [Processors](logs_pipeline.html#Processors). Nested pipeline can't take any other nested pipeline as its processor.
+  * `processor` - (Optional) [Processors](logs_customer_pipeline.html#Processors). Nested pipeline can't take any other nested pipeline as its processor.
   * `name` - (Optional) Name of the nested pipeline.
   * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
 * service_remapper
