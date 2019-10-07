@@ -1,20 +1,20 @@
 ---
 layout: "datadog"
-page_title: "Datadog: datadog_logs_customer_pipeline"
-sidebar_current: "docs-datadog-resource-logs-customer-pipeline"
+page_title: "Datadog: datadog_logs_custom_pipeline"
+sidebar_current: "docs-datadog-resource-logs-custom-pipeline"
 description: |-
-  Provides a Datadog logs customer pipeline resource, which is used to create and manage logs customer pipelines.
+  Provides a Datadog logs custom pipeline resource, which is used to create and manage logs custom pipelines.
 ---
 
-# datadog_logs_customer_pipeline
+# datadog_logs_custom_pipeline
 
-Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/?lang=python#logs-pipelines) resource, which is used to create and manage Datadog logs customer pipelines.
+Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/?lang=python#logs-pipelines) resource, which is used to create and manage Datadog logs custom pipelines.
 
 
 ## Example Usage
 
 ```hcl
-resource "datadog_logs_customer_pipeline" "sample_pipeline" {
+resource "datadog_logs_custom_pipeline" "sample_pipeline" {
     filter {
         query = "source:foo"
     }
@@ -143,7 +143,7 @@ The following arguments are supported:
   * `query` - (Required) Defines the filter criteria.
 * `name` - (Required) Your pipeline name.
 * `is_enabled` - (Optional, default = false) Boolean value to enable your pipeline.
-* `processor` - (Optional) Processors or nested pipelines. See [below](logs_customer_pipeline.html#Processors) for more detailed descriptions.
+* `processor` - (Optional) Processors or nested pipelines. See [below](logs_custom_pipeline.html#Processors) for more detailed descriptions.
 
 **Note** A pipeline or its processors are disabled by default if `is_enabled` is not explicitly set to `true`.
 
@@ -191,7 +191,7 @@ The following arguments are supported:
 * pipeline
   * `filter` - (Required) Defines the nested pipeline filter. Only logs that match the filter criteria are processed by this pipeline.
     * `query` - (Required)
-  * `processor` - (Optional) [Processors](logs_customer_pipeline.html#Processors). Nested pipeline can't take any other nested pipeline as its processor.
+  * `processor` - (Optional) [Processors](logs_custom_pipeline.html#Processors). Nested pipeline can't take any other nested pipeline as its processor.
   * `name` - (Optional) Name of the nested pipeline.
   * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
 * service_remapper
@@ -224,13 +224,14 @@ unnecessary confusion.
 
 ## Import
 
-For the previously created customer pipelines, you can include them in Terraform with the `import` operation.
+For the previously created custom pipelines, you can include them in Terraform with the `import` operation.
 Currently, Terraform requires you to explicitly create resources that match the existing pipelines to 
 import them. Use ```terraform import <resource.name> <pipelineID>``` for each existing pipeline.
 
 ## Important Notes
 
-Each `datadog_logs_customer_pipeline` resource defines a complete pipeline. The order of pipelines are maintained in resource 
-[datadog_logs_pipeline_order](logs_pipeline_order.html#datadog_logs_pipeline_order). When creating a new pipeline, you
-need to **explicitly** add this pipeline to the `datadog_logs_pipeline_order` resource to track the pipeline.
-Similarly, when a pipeline needs to be destroyed, remove its references from the `datadog_logs_pipeline_order` resource.
+Each `datadog_logs_custom_pipeline` resource defines a complete pipeline. The order of the pipelines is maintained in
+a different resource [datadog_logs_pipeline_order](logs_pipeline_order.html#datadog_logs_pipeline_order).
+When creating a new pipeline, you need to **explicitly** add this pipeline to the `datadog_logs_pipeline_order` 
+resource to track the pipeline. Similarly, when a pipeline needs to be destroyed, remove its references from the 
+`datadog_logs_pipeline_order` resource.

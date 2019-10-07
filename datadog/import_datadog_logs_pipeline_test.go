@@ -6,7 +6,7 @@ import (
 )
 
 const pipelineConfigForImport = `
-resource "datadog_logs_customer_pipeline" "test_import" {
+resource "datadog_logs_custom_pipeline" "test_import" {
 	name = "imported pipeline"
 	is_enabled = false
 	filter {
@@ -135,13 +135,13 @@ func TestAccLogsCustomerPipeline_importBasic(t *testing.T) {
 			{
 				Config: pipelineConfigForImport,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPipelineExists("datadog_logs_customer_pipeline.test_import"),
+					testAccCheckPipelineExists("datadog_logs_custom_pipeline.test_import"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_customer_pipeline.test_import", "name", "imported pipeline"),
+						"datadog_logs_custom_pipeline.test_import", "name", "imported pipeline"),
 				),
 			},
 			{
-				ResourceName:      "datadog_logs_customer_pipeline.test_import",
+				ResourceName:      "datadog_logs_custom_pipeline.test_import",
 				ImportState:       true,
 				ImportStateVerify: true,
 			},

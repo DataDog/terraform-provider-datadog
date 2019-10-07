@@ -39,7 +39,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
 			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
 			"datadog_integration_pagerduty_service_object": resourceDatadogIntegrationPagerdutySO(),
-			"datadog_logs_customer_pipeline":               resourceDatadogLogsCustomerPipeline(),
+			"datadog_logs_custom_pipeline":                 resourceDatadogLogsCustomPipeline(),
 			"datadog_logs_index":                           resourceDatadogLogsIndex(),
 			"datadog_logs_index_order":                     resourceDatadogLogsIndexOrder(),
 			"datadog_logs_integration_pipeline":            resourceDatadogLogsIntegrationPipeline(),
