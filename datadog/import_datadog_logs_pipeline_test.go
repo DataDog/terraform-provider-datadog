@@ -126,7 +126,7 @@ resource "datadog_logs_custom_pipeline" "test_import" {
 }	
 `
 
-func TestAccLogsCustomerPipeline_importBasic(t *testing.T) {
+func TestAccLogsCustomPipeline_importBasic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
