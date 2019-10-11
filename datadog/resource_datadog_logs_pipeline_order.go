@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/zorkian/go-datadog-api"
+	"strings"
 )
 
 func resourceDatadogLogsPipelineOrder() *schema.Resource {
@@ -57,6 +58,16 @@ func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interfa
 		tfId = name.(string)
 	}
 	if _, err := meta.(*datadog.Client).UpdateLogsPipelineList(&ddPipelineList); err != nil {
+		// Cannot map pipelines to existing ones
+		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
+			ddPipelineOrder, getErr := meta.(*datadog.Client).GetLogsPipelineList()
+			if getErr != nil {
+				return fmt.Errorf("error updating logs pipeline list: (%s)", err.Error())
+			}
+			return fmt.Errorf("cannot map pipelines to existing ones\n existing pipelines: %s\n pipeline to be updated: %s",
+				ddPipelineOrder.PipelineIds,
+				ddList)
+		}
 		return fmt.Errorf("error updating logs pipeline list: (%s)", err.Error())
 	}
 	d.SetId(tfId)

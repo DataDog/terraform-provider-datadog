@@ -50,11 +50,3 @@ You can import the `datadog_logs_pipeline_order` or create a pipeline order (whi
 ```
 terraform import <datadog_logs_pipeline_order.name> <name>
 ```
-
-## Troubleshooting
-
-Sometimes when applying your `datadog_logs_pipeline_order` resource, you can get an error with status `422` 
-`Unprocessable Entity` with error message like `Cannot map pipelines to existing ones`, most likely the pipelines are 
-incompatible with the ones declared in your `datadog_logs_pipeline_order` resource. In this case, make
-sure that no pipeline gets added or deleted via other method (for example, through API call or from Datadog Logs
-configuration UI).
