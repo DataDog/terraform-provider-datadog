@@ -13,6 +13,8 @@ Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/?lang=pyth
 
 ## Example Usage
 
+Create a Datadog logs pipeline:
+
 ```hcl
 resource "datadog_logs_custom_pipeline" "sample_pipeline" {
     filter {

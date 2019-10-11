@@ -1,5 +1,7 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
+replace git.apache.org/thrift.git => github.com/apache/thrift v0.0.0-20180902110319-2566ecd5d999
+
 require (
 	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
 	github.com/golang/protobuf v1.3.2 // indirect

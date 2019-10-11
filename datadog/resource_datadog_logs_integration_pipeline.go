@@ -24,7 +24,7 @@ func resourceDatadogLogsIntegrationPipeline() *schema.Resource {
 }
 
 func resourceDatadogLogsIntegrationPipelineCreate(d *schema.ResourceData, meta interface{}) error {
-	return fmt.Errorf("cannot create an integration pipeline, try import it")
+	return fmt.Errorf("cannot create an integration pipeline, please import it first to make changes")
 }
 
 func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta interface{}) error {
