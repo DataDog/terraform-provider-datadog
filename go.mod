@@ -1,5 +1,7 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
+go 1.13
+
 require (
 	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
 	github.com/golang/protobuf v1.3.2 // indirect
