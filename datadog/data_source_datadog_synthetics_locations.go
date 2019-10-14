@@ -44,6 +44,8 @@ func dataSourceDatadogSyntheticsLocationsRead(d *schema.ResourceData, meta inter
 	if len(syntheticsLocations) > 0 {
 		d.SetId("datadog-synthetics-location")
 		d.Set("locations", locationsList)
+	} else {
+		d.Set("locations", []string{})
 	}
 
 	return nil
