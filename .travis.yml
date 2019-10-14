@@ -1,9 +1,9 @@
 dist: bionic
 services:
-	- docker
+  - docker
 language: go
 go:
-	- "1.13"
+  - "1.13"
 
 install:
 # This script is used by the Travis build to install a cookie for
