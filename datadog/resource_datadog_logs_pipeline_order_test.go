@@ -77,7 +77,7 @@ func TestAccDatadogLogsPipelineOrder_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_pipeline_order.pipelines", "name", "pipelines"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline_order.pipelines", "pipelines.#", "5"),
+						"datadog_logs_pipeline_order.pipelines", "pipelines.#", "2"),
 				),
 			},
 			{
@@ -88,7 +88,7 @@ func TestAccDatadogLogsPipelineOrder_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_pipeline_order.pipelines", "name", "pipelines"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline_order.pipelines", "pipelines.#", "5"),
+						"datadog_logs_pipeline_order.pipelines", "pipelines.#", "2"),
 				),
 			},
 		},
