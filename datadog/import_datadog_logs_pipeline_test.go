@@ -6,7 +6,7 @@ import (
 )
 
 const pipelineConfigForImport = `
-resource "datadog_logs_pipeline" "test_import" {
+resource "datadog_logs_custom_pipeline" "test_import" {
 	name = "imported pipeline"
 	is_enabled = false
 	filter {
@@ -126,19 +126,7 @@ resource "datadog_logs_pipeline" "test_import" {
 }	
 `
 
-const pipelineorderConfigForImport = `
-resource "datadog_logs_pipeline_order" "pipelines" {
-	name = "pipelines"
-	pipelines = [
-		"TOYNsNfjTD6zTXVg8_ej1g",
-		"VxXfWxegScyjG8mMJwnFIA",
-		"GGVTp-5PT_O9Xhmsxnsu_w",
-		"VgZXJneKR2qh2WcfAQi6fA"
-	]
-}
-`
-
-func TestAccLogsPipeline_importBasic(t *testing.T) {
+func TestAccLogsCustomPipeline_importBasic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
@@ -147,35 +135,15 @@ func TestAccLogsPipeline_importBasic(t *testing.T) {
 			{
 				Config: pipelineConfigForImport,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPipelineExists("datadog_logs_pipeline.test_import"),
+					testAccCheckPipelineExists("datadog_logs_custom_pipeline.test_import"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.test_import", "name", "imported pipeline"),
+						"datadog_logs_custom_pipeline.test_import", "name", "imported pipeline"),
 				),
 			},
 			{
-				ResourceName:      "datadog_logs_pipeline.test_import",
+				ResourceName:      "datadog_logs_custom_pipeline.test_import",
 				ImportState:       true,
 				ImportStateVerify: true,
-			},
-		},
-	})
-}
-
-func TestAccLogsPipelineOrder_importBasic(t *testing.T) {
-	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
-		Steps: []resource.TestStep{
-			{
-				Config: pipelineorderConfigForImport,
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(
-						"datadog_logs_pipelineorder.pipelines", "name", "pipelines"),
-				),
-			},
-			{
-				ResourceName: "datadog_logs_pipelineorder.pipelines",
-				ImportState:  true,
 			},
 		},
 	})

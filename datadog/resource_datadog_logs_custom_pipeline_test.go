@@ -10,7 +10,7 @@ import (
 )
 
 const pipelineConfigForCreation = `
-resource "datadog_logs_pipeline" "my_pipeline_test" {
+resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 	name = "my first pipeline"
 	is_enabled = true
 	filter {
@@ -92,7 +92,7 @@ resource "datadog_logs_pipeline" "my_pipeline_test" {
 }
 `
 const pipelineConfigForUpdate = `
-resource "datadog_logs_pipeline" "my_pipeline_test" {
+resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 	name = "updated pipeline"
 	is_enabled = false
 	filter {
@@ -135,40 +135,40 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 			{
 				Config: pipelineConfigForCreation,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPipelineExists("datadog_logs_pipeline.my_pipeline_test"),
+					testAccCheckPipelineExists("datadog_logs_custom_pipeline.my_pipeline_test"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.my_pipeline_test", "name", "my first pipeline"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "name", "my first pipeline"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.my_pipeline_test", "is_enabled", "true"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "is_enabled", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.my_pipeline_test", "filter.0.query", "source:redis"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "filter.0.query", "source:redis"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.my_pipeline_test", "processor.0.date_remapper.0.sources.#", "1"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.0.date_remapper.0.sources.#", "1"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.my_pipeline_test", "processor.1.arithmetic_processor.0.expression", "(time1-time2)*1000"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.1.arithmetic_processor.0.expression", "(time1-time2)*1000"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.my_pipeline_test", "processor.2.category_processor.0.category.0.filter.0.query", "@severity: \"-\""),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.2.category_processor.0.category.0.filter.0.query", "@severity: \"-\""),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.my_pipeline_test", "processor.3.grok_parser.0.grok.0.match_rules", "rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.3.grok_parser.0.grok.0.match_rules", "rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.my_pipeline_test", "processor.4.pipeline.0.filter.0.query", "source:kafka"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.pipeline.0.filter.0.query", "source:kafka"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.my_pipeline_test", "processor.4.pipeline.0.processor.0.url_parser.0.sources.#", "1"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.pipeline.0.processor.0.url_parser.0.sources.#", "1"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.my_pipeline_test", "processor.4.pipeline.0.processor.1.user_agent_parser.0.target", "http_agent.details"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.pipeline.0.processor.1.user_agent_parser.0.target", "http_agent.details"),
 				),
 			}, {
 				Config: pipelineConfigForUpdate,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPipelineExists("datadog_logs_pipeline.my_pipeline_test"),
+					testAccCheckPipelineExists("datadog_logs_custom_pipeline.my_pipeline_test"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.my_pipeline_test", "name", "updated pipeline"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "name", "updated pipeline"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.my_pipeline_test", "is_enabled", "false"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "is_enabled", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.my_pipeline_test", "filter.0.query", "source:kafka"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "filter.0.query", "source:kafka"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline.my_pipeline_test", "processor.2.attribute_remapper.0.preserve_source", "true"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.2.attribute_remapper.0.preserve_source", "true"),
 				),
 			},
 		},
@@ -187,7 +187,7 @@ func testAccCheckPipelineExists(name string) resource.TestCheckFunc {
 
 func pipelineExistsChecker(s *terraform.State, client *datadog.Client) error {
 	for _, r := range s.RootModule().Resources {
-		if r.Type == "datadog_logs_pipeline" {
+		if r.Type == "datadog_logs_custom_pipeline" {
 			id := r.Primary.ID
 			if _, err := client.GetLogsPipeline(id); err != nil {
 				return fmt.Errorf("received an error when retrieving pipeline, (%s)", err)
@@ -207,7 +207,7 @@ func testAccCheckPipelineDestroy(s *terraform.State) error {
 
 func pipelineDestroyHelper(s *terraform.State, client *datadog.Client) error {
 	for _, r := range s.RootModule().Resources {
-		if r.Type == "datadog_logs_pipeline" {
+		if r.Type == "datadog_logs_custom_pipeline" {
 			id := r.Primary.ID
 			p, err := client.GetLogsPipeline(id)
 
