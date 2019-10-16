@@ -10,10 +10,27 @@ description: |-
 
 Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.
 
-## Example Usage
+## Example: downtime for a specific monitor
 
 ```hcl
-# Create a new daily 1700-0900 Datadog downtime
+# Create a new daily 1700-0900 Datadog downtime for a specific monitor id
+resource "datadog_downtime" "foo" {
+  scope = ["*"]
+  start = 1483308000
+  end   = 1483365600
+  monitor_id = 12345
+
+  recurrence {
+    type   = "days"
+    period = 1
+  }
+}
+```
+
+## Example: downtime for all monitors
+
+```hcl
+# Create a new daily 1700-0900 Datadog downtime for all monitors
 resource "datadog_downtime" "foo" {
   scope = ["*"]
   start = 1483308000
