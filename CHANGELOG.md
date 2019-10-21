@@ -1,4 +1,23 @@
-## 2.4.1 (Unreleased)
+## 2.5.0 (Unreleased)
+
+FEATURES:
+* `datadog_ip_ranges`: New data source for IP ranges [GH-298]
+* `datadog_logs_custom_pipeline`: New resource for custom logs pipelines [GH-312, GH-332]
+* `datadog_logs_index`: New resource for logs indexes [GH-326]
+* `datadog_logs_index_order`: New resource for logs index ordering [GH-326]
+* `datadog_logs_integration_pipeline`: New resource for integration logs pipelines [GH-312, GH-332]
+* `datadog_logs_pipeline_order`: New resources for logs pipeline ordering [GH-312]
+
+IMPROVEMENTS:
+* `datadog_dashboard`: Added documentation of `event` and `axis` [GH-314]
+* `datadog_screenboard`: Added `count` as a valid aggregation method [GH-333]
+
+BUGFIXES:
+* `datadog_dashboard`: Fixed parsing of `compute.interval` and `group_by.sort.facet`, mark `group_by.facet` as optional for apm and log queries [GH-322, GH-325]
+* `datadog_dashboard`: Properly respect `show_legend` [GH-329]
+* `datadog_integration_pagerduty`: Add missing exists methods to prevent failing when resource was manually removed outside of Terraform [GH-324]
+* `datadog_integration_pagerduty_service_object`: Add missing exists methods to prevent failing when resource was manually removed outside of Terraform [GH-324]
+
 ## 2.4.0 (September 11, 2019)
 
 FEATURES:
