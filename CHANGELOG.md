@@ -1,22 +1,22 @@
-## 2.5.0 (Unreleased)
+## 2.5.0 (October 22, 2019)
 
 FEATURES:
-* `datadog_ip_ranges`: New data source for IP ranges [GH-298]
-* `datadog_logs_custom_pipeline`: New resource for custom logs pipelines [GH-312, GH-332]
-* `datadog_logs_index`: New resource for logs indexes [GH-326]
-* `datadog_logs_index_order`: New resource for logs index ordering [GH-326]
-* `datadog_logs_integration_pipeline`: New resource for integration logs pipelines [GH-312, GH-332]
-* `datadog_logs_pipeline_order`: New resources for logs pipeline ordering [GH-312]
+* `datadog_ip_ranges`: New data source for IP ranges ([#298](https://github.com/terraform-providers/terraform-provider-datadog/issues/298))
+* `datadog_logs_custom_pipeline`: New resource for custom logs pipelines ([#312](https://github.com/terraform-providers/terraform-provider-datadog/issues/312), [#332](https://github.com/terraform-providers/terraform-provider-datadog/issues/332))
+* `datadog_logs_index`: New resource for logs indexes ([#326](https://github.com/terraform-providers/terraform-provider-datadog/issues/326))
+* `datadog_logs_index_order`: New resource for logs index ordering ([#326](https://github.com/terraform-providers/terraform-provider-datadog/issues/326))
+* `datadog_logs_integration_pipeline`: New resource for integration logs pipelines ([#312](https://github.com/terraform-providers/terraform-provider-datadog/issues/312), [#332](https://github.com/terraform-providers/terraform-provider-datadog/issues/332))
+* `datadog_logs_pipeline_order`: New resources for logs pipeline ordering ([#312](https://github.com/terraform-providers/terraform-provider-datadog/issues/312))
 
 IMPROVEMENTS:
-* `datadog_dashboard`: Added documentation of `event` and `axis` [GH-314]
-* `datadog_screenboard`: Added `count` as a valid aggregation method [GH-333]
+* `datadog_dashboard`: Added documentation of `event` and `axis` ([#314](https://github.com/terraform-providers/terraform-provider-datadog/issues/314))
+* `datadog_screenboard`: Added `count` as a valid aggregation method ([#333](https://github.com/terraform-providers/terraform-provider-datadog/issues/333))
 
 BUGFIXES:
-* `datadog_dashboard`: Fixed parsing of `compute.interval` and `group_by.sort.facet`, mark `group_by.facet` as optional for apm and log queries [GH-322, GH-325]
-* `datadog_dashboard`: Properly respect `show_legend` [GH-329]
-* `datadog_integration_pagerduty`: Add missing exists methods to prevent failing when resource was manually removed outside of Terraform [GH-324]
-* `datadog_integration_pagerduty_service_object`: Add missing exists methods to prevent failing when resource was manually removed outside of Terraform [GH-324]
+* `datadog_dashboard`: Fixed parsing of `compute.interval` and `group_by.sort.facet`, mark `group_by.facet` as optional for apm and log queries ([#322](https://github.com/terraform-providers/terraform-provider-datadog/issues/322), [#325](https://github.com/terraform-providers/terraform-provider-datadog/issues/325))
+* `datadog_dashboard`: Properly respect `show_legend` ([#329](https://github.com/terraform-providers/terraform-provider-datadog/issues/329))
+* `datadog_integration_pagerduty`: Add missing exists methods to prevent failing when resource was manually removed outside of Terraform ([#324](https://github.com/terraform-providers/terraform-provider-datadog/issues/324))
+* `datadog_integration_pagerduty_service_object`: Add missing exists methods to prevent failing when resource was manually removed outside of Terraform ([#324](https://github.com/terraform-providers/terraform-provider-datadog/issues/324))
 
 ## 2.4.0 (September 11, 2019)
 
