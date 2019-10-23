@@ -9,12 +9,9 @@ import (
 
 func resourceDatadogIntegrationAzure() *schema.Resource {
 	return &schema.Resource{
-		Create:            resourceDatadogIntegrationAzureCreate,
-		Read:              resourceDatadogIntegrationAzureRead,
-		Update:            resourceDatadogIntegrationAzureUpdate,
-		UpdateHostFilters: resourceDatadogIntegrationAzureUpdateHostFilters,
-		Delete:            resourceDatadogIntegrationAzureDelete,
-		Exists:            resourceDatadogIntegrationAzureExists,
+		Create: resourceDatadogIntegrationAzureCreate,
+		Read:   resourceDatadogIntegrationAzureRead,
+		Delete: resourceDatadogIntegrationAzureDelete,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogIntegrationAzureImport,
 		},
@@ -61,13 +58,6 @@ func resourceDatadogIntegrationAzureRead(d *schema.ResourceData, meta interface{
 	return fmt.Errorf("error getting an Azure integration: tenant_name=%s", tenantName)
 }
 
-func resourceDatadogIntegrationAzureImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogIntegrationAzureRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
-}
-
 func resourceDatadogIntegrationAzureCreate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
 
@@ -87,4 +77,26 @@ func resourceDatadogIntegrationAzureCreate(d *schema.ResourceData, meta interfac
 	d.SetId(tenantName)
 
 	return resourceDatadogIntegrationAzureRead(d, meta)
+}
+
+func resourceDatadogIntegrationAzureDelete(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*datadog.Client)
+
+	if err := client.DeleteIntegrationAzure(
+		&datadog.IntegrationAzure{
+			TenantName: datadog.String(d.Id()),
+			ClientID:   datadog.String(d.Get("client_id").(string)),
+		},
+	); err != nil {
+		return fmt.Errorf("error deleting an Azure integration: %s", err.Error())
+	}
+
+	return nil
+}
+
+func resourceDatadogIntegrationAzureImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	if err := resourceDatadogIntegrationAzureRead(d, meta); err != nil {
+		return nil, err
+	}
+	return []*schema.ResourceData{d}, nil
 }
