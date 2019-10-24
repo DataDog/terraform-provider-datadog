@@ -51,7 +51,8 @@ func resourceDatadogIntegrationGcp() *schema.Resource {
 func resourceDatadogIntegrationGcpExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	integrations, err := client.ListIntegrationGCP()
 	if err != nil {
@@ -75,7 +76,8 @@ const (
 )
 
 func resourceDatadogIntegrationGcpCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	projectID := d.Get("project_id").(string)
 
@@ -103,7 +105,8 @@ func resourceDatadogIntegrationGcpCreate(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogIntegrationGcpRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	projectID := d.Id()
 
@@ -123,7 +126,8 @@ func resourceDatadogIntegrationGcpRead(d *schema.ResourceData, meta interface{})
 }
 
 func resourceDatadogIntegrationGcpUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	if err := client.UpdateIntegrationGCP(
 		&datadog.IntegrationGCPUpdateRequest{
@@ -139,7 +143,8 @@ func resourceDatadogIntegrationGcpUpdate(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogIntegrationGcpDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	if err := client.DeleteIntegrationGCP(
 		&datadog.IntegrationGCPDeleteRequest{

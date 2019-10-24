@@ -7,7 +7,6 @@ import (
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-	datadog "github.com/zorkian/go-datadog-api"
 )
 
 func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
@@ -670,7 +669,8 @@ resource "datadog_synthetics_test" "bar" {
 
 func testSyntheticsTestExists() resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := testAccProvider.Meta().(*datadog.Client)
+		providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 
 		for _, r := range s.RootModule().Resources {
 			if _, err := client.GetSyntheticsTest(r.Primary.ID); err != nil {
@@ -682,7 +682,8 @@ func testSyntheticsTestExists() resource.TestCheckFunc {
 }
 
 func testSyntheticsTestIsDestroyed(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
+	providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	for _, r := range s.RootModule().Resources {
 		if _, err := client.GetSyntheticsTest(r.Primary.ID); err != nil {

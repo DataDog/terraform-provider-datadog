@@ -457,7 +457,7 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfig_ints,
+				Config: testAccCheckDatadogMonitorConfigInts,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
@@ -472,7 +472,7 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 			},
 
 			{
-				Config: testAccCheckDatadogMonitorConfig_ints_mixed,
+				Config: testAccCheckDatadogMonitorConfigIntsMixed,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
@@ -641,7 +641,8 @@ func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
 }
 
 func testAccCheckDatadogMonitorDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
+	providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	if err := destroyHelper(s, client); err != nil {
 		return err
@@ -651,7 +652,8 @@ func testAccCheckDatadogMonitorDestroy(s *terraform.State) error {
 
 func testAccCheckDatadogMonitorExists(n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := testAccProvider.Meta().(*datadog.Client)
+		providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 		if err := existsHelper(s, client); err != nil {
 			return err
 		}
@@ -885,7 +887,7 @@ resource "datadog_monitor" "foo" {
 }
 `
 
-const testAccCheckDatadogMonitorConfig_ints = `
+const testAccCheckDatadogMonitorConfigInts = `
 resource "datadog_monitor" "foo" {
   name               = "name for monitor foo"
   type               = "query alert"
@@ -914,7 +916,7 @@ resource "datadog_monitor" "foo" {
 }
 `
 
-const testAccCheckDatadogMonitorConfig_ints_mixed = `
+const testAccCheckDatadogMonitorConfigIntsMixed = `
 resource "datadog_monitor" "foo" {
   name               = "name for monitor foo"
   type               = "query alert"

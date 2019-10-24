@@ -274,7 +274,8 @@ func floatOk(val interface{}) (float64, bool) {
 }
 
 func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	slo := buildServiceLevelObjectiveStruct(d)
 	slo, err := client.CreateServiceLevelObjective(slo)
@@ -290,7 +291,8 @@ func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta int
 func resourceDatadogServiceLevelObjectiveExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	if _, err := client.GetServiceLevelObjective(d.Id()); err != nil {
 		errStr := strings.ToLower(err.Error())
@@ -304,7 +306,8 @@ func resourceDatadogServiceLevelObjectiveExists(d *schema.ResourceData, meta int
 }
 
 func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	slo, err := client.GetServiceLevelObjective(d.Id())
 	if err != nil {
@@ -366,7 +369,8 @@ func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta inter
 }
 
 func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	slo := &datadog.ServiceLevelObjective{
 		ID: datadog.String(d.Id()),
 	}
@@ -474,7 +478,8 @@ func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta int
 }
 
 func resourceDatadogServiceLevelObjectiveDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	return client.DeleteServiceLevelObjective(d.Id())
 }

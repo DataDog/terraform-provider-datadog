@@ -2,9 +2,10 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/zorkian/go-datadog-api"
-	"strings"
 )
 
 func resourceDatadogLogsIntegrationPipeline() *schema.Resource {
@@ -28,7 +29,9 @@ func resourceDatadogLogsIntegrationPipelineCreate(d *schema.ResourceData, meta i
 }
 
 func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta interface{}) error {
-	ddPipeline, err := meta.(*datadog.Client).GetLogsPipeline(d.Id())
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	ddPipeline, err := client.GetLogsPipeline(d.Id())
 	if err != nil {
 		return err
 	}
@@ -39,9 +42,10 @@ func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta int
 }
 
 func resourceDatadogLogsIntegrationPipelineUpdate(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	var ddPipeline datadog.LogsPipeline
 	ddPipeline.SetIsEnabled(d.Get("is_enabled").(bool))
-	client := meta.(*datadog.Client)
 	updatedPipeline, err := client.UpdateLogsPipeline(d.Id(), &ddPipeline)
 	if err != nil {
 		return fmt.Errorf("error updating logs pipeline: (%s)", err.Error())
@@ -55,7 +59,8 @@ func resourceDatadogLogsIntegrationPipelineDelete(d *schema.ResourceData, meta i
 }
 
 func resourceDatadogLogsIntegrationPipelineExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	ddPipeline, err := client.GetLogsPipeline(d.Id())
 	if err != nil {
 		// API returns 400 when the specific pipeline id doesn't exist through GET request.

@@ -6,7 +6,6 @@ import (
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
-	datadog "github.com/zorkian/go-datadog-api"
 )
 
 const testAccCheckDatadogIntegrationGCPConfig = `
@@ -88,7 +87,8 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 }
 
 func checkIntegrationGCPExists(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
+	providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	integrations, err := client.ListIntegrationGCP()
 	if err != nil {
 		return err
@@ -106,7 +106,8 @@ func checkIntegrationGCPExists(s *terraform.State) error {
 }
 
 func checkIntegrationGCPDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
+	providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	integrations, err := client.ListIntegrationGCP()
 	if err != nil {
 		return err

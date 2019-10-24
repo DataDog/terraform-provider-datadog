@@ -179,7 +179,8 @@ func existsServiceLevelObjectiveHelper(s *terraform.State, client *datadog.Clien
 }
 
 func testAccCheckDatadogServiceLevelObjectiveDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
+	providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	if err := destroyServiceLevelObjectiveHelper(s, client); err != nil {
 		return err
@@ -189,7 +190,8 @@ func testAccCheckDatadogServiceLevelObjectiveDestroy(s *terraform.State) error {
 
 func testAccCheckDatadogServiceLevelObjectiveExists(n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := testAccProvider.Meta().(*datadog.Client)
+		providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 		if err := existsServiceLevelObjectiveHelper(s, client); err != nil {
 			return err
 		}

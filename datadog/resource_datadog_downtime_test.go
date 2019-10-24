@@ -322,7 +322,8 @@ func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
 }
 
 func testAccCheckDatadogDowntimeDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
+	providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	if err := datadogDowntimeDestroyHelper(s, client); err != nil {
 		return err
@@ -332,7 +333,8 @@ func testAccCheckDatadogDowntimeDestroy(s *terraform.State) error {
 
 func testAccCheckDatadogDowntimeExists(n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := testAccProvider.Meta().(*datadog.Client)
+		providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 		if err := datadogDowntimeExistsHelper(s, client); err != nil {
 			return err
 		}

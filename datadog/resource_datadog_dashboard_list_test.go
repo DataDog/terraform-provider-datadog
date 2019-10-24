@@ -96,7 +96,8 @@ func TestDatadogDashListImport(t *testing.T) {
 }
 
 func testAccCheckDatadogDashListDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
+	providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	return datadogDashListDestroyHelper(s, client)
 }
@@ -122,7 +123,8 @@ func datadogDashListDestroyHelper(s *terraform.State, client *datadog.Client) er
 
 func testAccCheckDatadogDashListExists(n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := testAccProvider.Meta().(*datadog.Client)
+		providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 		return datadogDashListExistsHelper(s, client)
 	}
 }

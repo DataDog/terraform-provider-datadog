@@ -2,12 +2,11 @@ package datadog
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
-	datadog "github.com/zorkian/go-datadog-api"
 )
 
-func dataSourceDatadogIpRanges() *schema.Resource {
+func dataSourceDatadogIPRanges() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceDatadogIpRangesRead,
+		Read: dataSourceDatadogIPRangesRead,
 
 		// IP ranges are divided between ipv4 and ipv6
 		Schema: map[string]*schema.Schema{
@@ -87,9 +86,10 @@ func dataSourceDatadogIpRanges() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogIpRangesRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogIPRangesRead(d *schema.ResourceData, meta interface{}) error {
 
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	ipAddresses, err := client.GetIPRanges()
 

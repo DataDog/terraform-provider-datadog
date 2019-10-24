@@ -2,11 +2,12 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
+	"testing"
+
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/zorkian/go-datadog-api"
-	"strings"
-	"testing"
 )
 
 const pipelineConfigForCreation = `
@@ -39,13 +40,13 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			target = "redis.severity"
 			category {
 				filter {
-					query = "@severity: \"-\""  
+					query = "@severity: \"-\""
 				}
 				name = "verbose"
 			}
 			category {
 				filter {
-					query = "@severity: \".\""  
+					query = "@severity: \".\""
 				}
 				name = "debug"
 			}
@@ -224,7 +225,8 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 
 func testAccCheckPipelineExists(name string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := testAccProvider.Meta().(*datadog.Client)
+		providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 		if err := pipelineExistsChecker(s, client); err != nil {
 			return err
 		}
@@ -245,7 +247,8 @@ func pipelineExistsChecker(s *terraform.State, client *datadog.Client) error {
 }
 
 func testAccCheckPipelineDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
+	providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	if err := pipelineDestroyHelper(s, client); err != nil {
 		return err
 	}

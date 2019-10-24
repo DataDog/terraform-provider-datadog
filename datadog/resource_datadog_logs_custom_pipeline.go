@@ -2,9 +2,10 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/zorkian/go-datadog-api"
-	"strings"
 )
 
 const (
@@ -19,8 +20,8 @@ const (
 	tfServiceRemapperProcessor   = "service_remapper"
 	tfStatusRemapperProcessor    = "status_remapper"
 	tfStringBuilderProcessor     = "string_builder_processor"
-	tfTraceIdRemapperProcessor   = "trace_id_remapper"
-	tfUrlParserProcessor         = "url_parser"
+	tfTraceIDRemapperProcessor   = "trace_id_remapper"
+	tfURLParserProcessor         = "url_parser"
 	tfUserAgentParserProcessor   = "user_agent_parser"
 )
 
@@ -36,8 +37,8 @@ var tfProcessorTypes = map[string]string{
 	tfServiceRemapperProcessor:   datadog.ServiceRemapperType,
 	tfStatusRemapperProcessor:    datadog.StatusRemapperType,
 	tfStringBuilderProcessor:     datadog.StringBuilderProcessorType,
-	tfTraceIdRemapperProcessor:   datadog.TraceIdRemapperType,
-	tfUrlParserProcessor:         datadog.UrlParserType,
+	tfTraceIDRemapperProcessor:   datadog.TraceIdRemapperType,
+	tfURLParserProcessor:         datadog.UrlParserType,
 	tfUserAgentParserProcessor:   datadog.UserAgentParserType,
 }
 
@@ -52,8 +53,8 @@ var tfProcessors = map[string]*schema.Schema{
 	tfServiceRemapperProcessor:   serviceRemapper,
 	tfStatusRemapperProcessor:    statusRemmaper,
 	tfStringBuilderProcessor:     stringBuilderProcessor,
-	tfTraceIdRemapperProcessor:   traceIdRemapper,
-	tfUrlParserProcessor:         urlParser,
+	tfTraceIDRemapperProcessor:   traceIDRemapper,
+	tfURLParserProcessor:         urlParser,
 	tfUserAgentParserProcessor:   userAgentParser,
 }
 
@@ -69,8 +70,8 @@ var ddProcessorTypes = map[string]string{
 	datadog.ServiceRemapperType:        tfServiceRemapperProcessor,
 	datadog.StatusRemapperType:         tfStatusRemapperProcessor,
 	datadog.StringBuilderProcessorType: tfStringBuilderProcessor,
-	datadog.TraceIdRemapperType:        tfTraceIdRemapperProcessor,
-	datadog.UrlParserType:              tfUrlParserProcessor,
+	datadog.TraceIdRemapperType:        tfTraceIDRemapperProcessor,
+	datadog.UrlParserType:              tfURLParserProcessor,
 	datadog.UserAgentParserType:        tfUserAgentParserProcessor,
 }
 
@@ -228,7 +229,7 @@ var stringBuilderProcessor = &schema.Schema{
 	},
 }
 
-var traceIdRemapper = &schema.Schema{
+var traceIDRemapper = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
 	Optional: true,
@@ -288,11 +289,13 @@ func resourceDatadogLogsCustomPipeline() *schema.Resource {
 }
 
 func resourceDatadogLogsPipelineCreate(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	ddPipeline, err := buildDatadogPipeline(d)
 	if err != nil {
 		return err
 	}
-	createdPipeline, err := meta.(*datadog.Client).CreateLogsPipeline(ddPipeline)
+	createdPipeline, err := client.CreateLogsPipeline(ddPipeline)
 	if err != nil {
 		return fmt.Errorf("failed to create logs pipeline using Datadog API: %s", err.Error())
 	}
@@ -301,7 +304,9 @@ func resourceDatadogLogsPipelineCreate(d *schema.ResourceData, meta interface{})
 }
 
 func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) error {
-	ddPipeline, err := meta.(*datadog.Client).GetLogsPipeline(d.Id())
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	ddPipeline, err := client.GetLogsPipeline(d.Id())
 	if err != nil {
 		return err
 	}
@@ -325,11 +330,12 @@ func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) e
 }
 
 func resourceDatadogLogsPipelineUpdate(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	ddPipeline, err := buildDatadogPipeline(d)
 	if err != nil {
 		return err
 	}
-	client := meta.(*datadog.Client)
 	if _, err := client.UpdateLogsPipeline(d.Id(), ddPipeline); err != nil {
 		return fmt.Errorf("error updating logs pipeline: (%s)", err.Error())
 	}
@@ -337,7 +343,9 @@ func resourceDatadogLogsPipelineUpdate(d *schema.ResourceData, meta interface{})
 }
 
 func resourceDatadogLogsPipelineDelete(d *schema.ResourceData, meta interface{}) error {
-	if err := meta.(*datadog.Client).DeleteLogsPipeline(d.Id()); err != nil {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	if err := client.DeleteLogsPipeline(d.Id()); err != nil {
 		// API returns 400 when the specific pipeline id doesn't exist through DELETE request.
 		if strings.Contains(err.Error(), "400 Bad Request") {
 			return nil
@@ -348,7 +356,8 @@ func resourceDatadogLogsPipelineDelete(d *schema.ResourceData, meta interface{})
 }
 
 func resourceDatadogLogsPipelineExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	if _, err := client.GetLogsPipeline(d.Id()); err != nil {
 		// API returns 400 when the specific pipeline id doesn't exist through GET request.
 		if strings.Contains(err.Error(), "400 Bad Request") {
@@ -397,7 +406,7 @@ func buildTerraformProcessor(ddProcessor datadog.LogsProcessor) (map[string]inte
 	case datadog.StringBuilderProcessorType:
 		tfProcessor = buildTerraformStringBuilderProcessor(ddProcessor.Definition.(datadog.StringBuilderProcessor))
 	case datadog.UrlParserType:
-		tfProcessor = buildTerraformUrlParser(ddProcessor.Definition.(datadog.UrlParser))
+		tfProcessor = buildTerraformURLParser(ddProcessor.Definition.(datadog.UrlParser))
 	case datadog.UserAgentParserType:
 		tfProcessor = buildTerraformUserAgentParser(ddProcessor.Definition.(datadog.UserAgentParser))
 	default:
@@ -421,11 +430,11 @@ func buildTerraformUserAgentParser(ddUserAgent datadog.UserAgentParser) map[stri
 	}
 }
 
-func buildTerraformUrlParser(ddUrl datadog.UrlParser) map[string]interface{} {
+func buildTerraformURLParser(ddURL datadog.UrlParser) map[string]interface{} {
 	return map[string]interface{}{
-		"sources":                  ddUrl.Sources,
-		"target":                   ddUrl.GetTarget(),
-		"normalize_ending_slashes": ddUrl.GetNormalizeEndingSlashes(),
+		"sources":                  ddURL.Sources,
+		"target":                   ddURL.GetTarget(),
+		"normalize_ending_slashes": ddURL.GetNormalizeEndingSlashes(),
 	}
 }
 
@@ -579,7 +588,7 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 	case datadog.StringBuilderProcessorType:
 		ddProcessor.Definition = buildDatadogStringBuilderProcessor(tfProcessor)
 	case datadog.UrlParserType:
-		ddProcessor.Definition = buildDatadogUrlParser(tfProcessor)
+		ddProcessor.Definition = buildDatadogURLParser(tfProcessor)
 	case datadog.UserAgentParserType:
 		ddProcessor.Definition = buildDatadogUserAgentParser(tfProcessor)
 	default:
@@ -595,18 +604,18 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 	return ddProcessor, err
 }
 
-func buildDatadogUrlParser(tfProcessor map[string]interface{}) datadog.UrlParser {
-	ddUrlParser := datadog.UrlParser{}
+func buildDatadogURLParser(tfProcessor map[string]interface{}) datadog.UrlParser {
+	ddURLParser := datadog.UrlParser{}
 	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
-		ddUrlParser.Sources = ddSources
+		ddURLParser.Sources = ddSources
 	}
 	if tfTarget, exists := tfProcessor["target"].(string); exists {
-		ddUrlParser.SetTarget(tfTarget)
+		ddURLParser.SetTarget(tfTarget)
 	}
 	if tfNormalizeEndingSlashes, exists := tfProcessor["normalize_ending_slashes"].(bool); exists {
-		ddUrlParser.SetNormalizeEndingSlashes(tfNormalizeEndingSlashes)
+		ddURLParser.SetNormalizeEndingSlashes(tfNormalizeEndingSlashes)
 	}
-	return ddUrlParser
+	return ddURLParser
 }
 
 func buildDatadogUserAgentParser(tfProcessor map[string]interface{}) datadog.UserAgentParser {
