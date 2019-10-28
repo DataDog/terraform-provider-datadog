@@ -669,7 +669,7 @@ Nested `widget` blocks have the following structure:
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
       - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
       - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
-  - `manage_status_definition`: The definition for a Manage Status widget. Exactly one nested block is allowed with the following structure:
+  - `manage_status_definition`: The definition for a Manage Status, aka Monitor Summary, widget. Exactly one nested block is allowed with the following structure:
       - `query`: (Required) The query to use in the widget.
       - `sort` - (Optional) The method to use to sort monitors. One of : "desc" or "asc".
       `count` - (Optional) The number of monitors to display.
