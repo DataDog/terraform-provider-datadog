@@ -317,7 +317,9 @@ func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta inter
 		t := map[string]interface{}{
 			"timeframe": threshold.GetTimeFrame(),
 			"target":    threshold.GetTarget(),
-			"warning":   threshold.GetWarning(),
+		}
+		if warning, ok := threshold.GetWarningOk(); ok {
+			t["warning"] = warning
 		}
 		if targetDisplay, ok := threshold.GetTargetDisplayOk(); ok {
 			t["target_display"] = targetDisplay
