@@ -4,11 +4,11 @@ import (
 	"errors"
 	"log"
 
-	"github.com/hashicorp/go-cleanhttp"
+	cleanhttp "github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform/helper/logging"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
-	datadog "github.com/zorkian/go-datadog-api"
+	"github.com/zorkian/go-datadog-api"
 )
 
 func Provider() terraform.ResourceProvider {
@@ -32,18 +32,29 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
-			"datadog_downtime":                             resourceDatadogDowntime(),
-			"datadog_metric_metadata":                      resourceDatadogMetricMetadata(),
-			"datadog_monitor":                              resourceDatadogMonitor(),
-			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
-			"datadog_timeboard":                            resourceDatadogTimeboard(),
-			"datadog_screenboard":                          resourceDatadogScreenboard(),
 			"datadog_dashboard":                            resourceDatadogDashboard(),
-			"datadog_user":                                 resourceDatadogUser(),
+			"datadog_dashboard_list":                       resourceDatadogDashboardList(),
+			"datadog_downtime":                             resourceDatadogDowntime(),
 			"datadog_integration_gcp":                      resourceDatadogIntegrationGcp(),
 			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
 			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
 			"datadog_integration_pagerduty_service_object": resourceDatadogIntegrationPagerdutySO(),
+			"datadog_logs_custom_pipeline":                 resourceDatadogLogsCustomPipeline(),
+			"datadog_logs_index":                           resourceDatadogLogsIndex(),
+			"datadog_logs_index_order":                     resourceDatadogLogsIndexOrder(),
+			"datadog_logs_integration_pipeline":            resourceDatadogLogsIntegrationPipeline(),
+			"datadog_logs_pipeline_order":                  resourceDatadogLogsPipelineOrder(),
+			"datadog_metric_metadata":                      resourceDatadogMetricMetadata(),
+			"datadog_monitor":                              resourceDatadogMonitor(),
+			"datadog_screenboard":                          resourceDatadogScreenboard(),
+			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
+			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
+			"datadog_timeboard":                            resourceDatadogTimeboard(),
+			"datadog_user":                                 resourceDatadogUser(),
+		},
+
+		DataSourcesMap: map[string]*schema.Resource{
+			"datadog_ip_ranges": dataSourceDatadogIpRanges(),
 		},
 
 		ConfigureFunc: providerConfigure,

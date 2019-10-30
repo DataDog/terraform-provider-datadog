@@ -202,6 +202,10 @@ resource "datadog_dashboard" "ordered_dashboard" {
 					line_type = "dashed"
 					line_width = "thin"
 				}
+				metadata {
+					expression = "avg:system.cpu.user{app:general} by {env}"
+					alias_name = "Alpha"
+				  }
 			}
 			request {
 				log_query {
@@ -269,9 +273,21 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				label = " x=8 "
 			}
 			title = "Widget Title"
+			show_legend = true
 			time = {
 				live_span = "1h"
 			}
+			event {
+				q = "sources:test tags:1"
+			}
+			event {
+				q = "sources:test tags:2"
+			}
+			yaxis {
+				scale = "log"
+				include_zero = false
+				max = 100
+			  }
 		}
 	}
 	widget {
@@ -612,6 +628,8 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.0.style.0.palette", "warm"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.0.style.0.line_type", "dashed"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.0.style.0.line_width", "thin"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.0.metadata.0.expression", "avg:system.cpu.user{app:general} by {env}"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.0.metadata.0.alias_name", "Alpha"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.1.log_query.0.index", "mcnulty"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.1.log_query.0.compute.aggregation", "count"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.request.1.log_query.0.compute.facet", "@duration"),
@@ -650,7 +668,13 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.marker.1.label", " x=8 "),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.marker.1.value", "10 < y < 999"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.title", "Widget Title"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.show_legend", "true"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.time.live_span", "1h"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.event.0.q", "sources:test tags:1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.event.1.q", "sources:test tags:2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.yaxis.0.scale", "log"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.yaxis.0.include_zero", "false"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.yaxis.0.max", "100"),
 					// Toplist widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.11.toplist_definition.0.request.0.q", "avg:system.cpu.user{app:general} by {env}"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.11.toplist_definition.0.request.0.conditional_formats.#", "2"),

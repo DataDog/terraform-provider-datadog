@@ -228,12 +228,16 @@ resource "datadog_dashboard" "ordered_dashboard" {
           line_type = "dashed"
           line_width = "thin"
         }
+        metadata {
+          expression = "avg:system.cpu.user{app:general} by {env}"
+          alias_name = "Alpha"
+        }
       }
       request {
         log_query {
           index = "mcnulty"
           compute = {
-            aggregation = "count"
+            aggregation = "avg"
             facet = "@duration"
             interval = 5000
           }
@@ -256,7 +260,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
         apm_query {
           index = "apm-search"
           compute = {
-            aggregation = "count"
+            aggregation = "avg"
             facet = "@duration"
             interval = 5000
           }
@@ -295,8 +299,20 @@ resource "datadog_dashboard" "ordered_dashboard" {
         label = " x=8 "
       }
       title = "Widget Title"
+      show_legend = true
       time = {
         live_span = "1h"
+      }
+      event {
+        q = "sources:test tags:1"
+      }
+      event {
+        q = "sources:test tags:2"
+      }
+      yaxis {
+        scale = "log"
+        include_zero = false
+        max = 100
       }
     }
   }
@@ -532,6 +548,7 @@ The following arguments are supported:
 - `title` - (Required) Title of the dashboard.
 - `widget` - (Required) Nested block describing a widget. The structure of this block is described [below](dashboard.html#nested-widget-blocks). Multiple `widget` blocks are allowed within a `datadog_dashboard` resource
 - `layout_type` - (Required) Layout type of the dashboard. Available values are: `ordered` (previous timeboard) or `free` (previous screenboard layout).
+<br>**Note: This value cannot be changed. Converting a dashboard from `free` <-> `ordered` requires destroying and re-creating the dashboard.** Instead of using `ForceNew`, this is a manual action as many underlying widget configs need to be updated to work for the updated layout, otherwise the new dashboard won't be created properly.
 - `description` - (Optional) Description of the dashboard.
 - `is_read_only` - (Optional) Whether this dashboard is read-only. If `true`, only the author and admins can make changes to it.
 - `notify_list` - (Optional) List of handles of users to notify when changes are made to this dashboard.
@@ -626,8 +643,8 @@ Nested `widget` blocks have the following structure:
           - `size`: (Optional) The query used to size the map. Exactly one nested block is allowed with the following structure:
               - `q`: (Required) The metric query to use in the widget.
       - `node_type` - (Optional) The type of node used. Either "host" or "container".
-      - `no_metric_host` - (Optional) Boolean indicating whether to show nodes with no metrics.
-      - `no_group_host` - (Optional) Boolean indicating whether to show ungrouped nodes.
+      - `no_metric_hosts` - (Optional) Boolean indicating whether to show nodes with no metrics.
+      - `no_group_hosts` - (Optional) Boolean indicating whether to show ungrouped nodes.
       - `group` - (Optional) The list of tags to group nodes by.
       - `scope` - (Optional) The list of tags to filter nodes by.
       - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
@@ -652,7 +669,7 @@ Nested `widget` blocks have the following structure:
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
       - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
       - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
-  - `manage_status_definition`: The definition for a Manage Status widget. Exactly one nested block is allowed with the following structure:
+  - `manage_status_definition`: The definition for a Manage Status, aka Monitor Summary, widget. Exactly one nested block is allowed with the following structure:
       - `query`: (Required) The query to use in the widget.
       - `sort` - (Optional) The method to use to sort monitors. One of : "desc" or "asc".
       `count` - (Optional) The number of monitors to display.
@@ -713,11 +730,18 @@ Nested `widget` blocks have the following structure:
               - `palette` - (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
               - `line_type` - (Optional) Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.
               - `line_width` - (Optional) Width of line displayed. Available values are: `normal`, `thick`, or `thin`.
+            - `metadata` - (Optional). Used to define expression aliases. Multiple nested blocks are allowed with the following structure:
+              - `expression` - (Required)
+              - `alias_name` - (Optional)
         - `marker` - (Optional) Nested block describing the marker to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widgetmarker-blocks). Multiple marker blocks are allowed within a given tile_def block.
         - `title`: (Optional) The title of the widget.
         - `title_size`: (Optional) The size of the widget's title. Default is 16.
         - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
         - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+        - `show_legend`: (Optional) Whether or not to show the legend on this widget.
+        - `event`: (Optional) The definition of the event to overlay on the graph. Includes the following structure:
+          - `q`: (Required) The event query to use in the widget
+        - `yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
   - `toplist_definition`: The definition for a Toplist  widget. Exactly one nested block is allowed with the following structure:
         - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
             - `q`: (Optional) The metric query to use in the widget
@@ -795,8 +819,8 @@ Nested `apm_query` and `log_query` blocks have the following structure (Visit th
     - `facet` - (Optional)
     - `limit` - (Optional)
     - `sort` - (Optional). One nested block is allowed with the following structure:
-      - `aggregation` - (Optional)
-      - `order` - (Optional)
+      - `aggregation` - (Required)
+      - `order` - (Required)
       - `facet` - (Optional)
 
 

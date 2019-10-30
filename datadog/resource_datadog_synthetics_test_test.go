@@ -28,6 +28,24 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed,
+		Steps: []resource.TestStep{
+			{
+				Config: createSyntheticsSSLTestConfig,
+			},
+			{
+				ResourceName:      "datadog_synthetics_test.ssl",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -69,6 +87,29 @@ func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed,
+		Steps: []resource.TestStep{
+			createSyntheticsSSLTestStep,
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed,
+		Steps: []resource.TestStep{
+			createSyntheticsSSLTestStep,
+			updateSyntheticsSSLTestStep,
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -98,6 +139,8 @@ var createSyntheticsAPITestStep = resource.TestStep{
 		testSyntheticsTestExists(),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "type", "api"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.foo", "subtype", "http"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "request.method", "GET"),
 		resource.TestCheckResourceAttr(
@@ -137,6 +180,8 @@ var createSyntheticsAPITestStep = resource.TestStep{
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "options.tick_every", "60"),
 		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.foo", "options.follow_redirects", "true"),
+		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "options.min_failure_duration", "0"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
@@ -160,6 +205,7 @@ var createSyntheticsAPITestStep = resource.TestStep{
 const createSyntheticsAPITestConfig = `
 resource "datadog_synthetics_test" "foo" {
 	type = "api"
+	subtype = "http"
 
 	request = {
 		method = "GET"
@@ -199,6 +245,7 @@ resource "datadog_synthetics_test" "foo" {
 	locations = [ "aws:eu-central-1" ]
 	options = {
 		tick_every = 60
+		follow_redirects = true
 		min_failure_duration = 0
 		min_location_failed = 1
 	}
@@ -217,6 +264,8 @@ var updateSyntheticsAPITestStep = resource.TestStep{
 		testSyntheticsTestExists(),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "type", "api"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.foo", "subtype", "http"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "request.method", "GET"),
 		resource.TestCheckResourceAttr(
@@ -237,6 +286,8 @@ var updateSyntheticsAPITestStep = resource.TestStep{
 			"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "options.tick_every", "900"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.foo", "options.follow_redirects", "false"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.foo", "options.min_failure_duration", "10"),
 		resource.TestCheckResourceAttr(
@@ -263,6 +314,7 @@ var updateSyntheticsAPITestStep = resource.TestStep{
 const updateSyntheticsAPITestConfig = `
 resource "datadog_synthetics_test" "foo" {
 	type = "api"
+	subtype = "http"
 
 	request = {
 		method = "GET"
@@ -282,8 +334,166 @@ resource "datadog_synthetics_test" "foo" {
 
 	options = {
 		tick_every = 900
+		follow_redirects = false
 		min_failure_duration = 10
 		min_location_failed = 1
+	}
+
+	name = "updated name"
+	message = "Notify @pagerduty"
+	tags = ["foo:bar", "foo", "env:test"]
+
+	status = "live"
+}
+`
+
+var createSyntheticsSSLTestStep = resource.TestStep{
+	Config: createSyntheticsSSLTestConfig,
+	Check: resource.ComposeTestCheckFunc(
+		testSyntheticsTestExists(),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "type", "api"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "subtype", "ssl"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "request.host", "datadoghq.com"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "request.port", "443"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "assertions.#", "1"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "assertions.0.type", "certificate"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "assertions.0.operator", "isInMoreThan"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "assertions.0.target", "30"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "locations.#", "1"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "options.tick_every", "60"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "options.accept_self_signed", "true"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "name", "name for synthetics test ssl"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "message", "Notify @datadog.user"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "tags.#", "2"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "tags.0", "foo:bar"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "tags.1", "baz"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "status", "paused"),
+		resource.TestCheckResourceAttrSet(
+			"datadog_synthetics_test.ssl", "monitor_id"),
+	),
+}
+
+const createSyntheticsSSLTestConfig = `
+resource "datadog_synthetics_test" "ssl" {
+	type = "api"
+	subtype = "ssl"
+
+	request = {
+		host = "datadoghq.com"
+		port = 443
+	}
+
+	assertions = [
+		{
+			type = "certificate"
+			operator = "isInMoreThan"
+			target = 30
+		}
+	]
+
+	locations = [ "aws:eu-central-1" ]
+	options = {
+		tick_every = 60
+		accept_self_signed = true
+	}
+
+	name = "name for synthetics test ssl"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+
+	status = "paused"
+}
+`
+
+var updateSyntheticsSSLTestStep = resource.TestStep{
+	Config: updateSyntheticsSSLTestConfig,
+	Check: resource.ComposeTestCheckFunc(
+		testSyntheticsTestExists(),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "type", "api"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "subtype", "ssl"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "request.host", "datadoghq.com"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "request.port", "443"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "assertions.#", "1"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "assertions.0.type", "certificate"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "assertions.0.operator", "isInMoreThan"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "assertions.0.target", "60"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "locations.#", "1"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "options.tick_every", "60"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "options.accept_self_signed", "false"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "name", "updated name"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "message", "Notify @pagerduty"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "tags.#", "3"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "tags.0", "foo:bar"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "tags.1", "foo"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "tags.2", "env:test"),
+		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "status", "live"),
+		resource.TestCheckResourceAttrSet(
+			"datadog_synthetics_test.ssl", "monitor_id"),
+	),
+}
+
+const updateSyntheticsSSLTestConfig = `
+resource "datadog_synthetics_test" "ssl" {
+	type = "api"
+	subtype = "ssl"
+
+	request = {
+		host = "datadoghq.com"
+		port = 443
+	}
+
+	assertions = [
+		{
+			type = "certificate"
+			operator = "isInMoreThan"
+			target = 60
+		}
+	]
+
+	locations = [ "aws:eu-central-1" ]
+
+	options = {
+		tick_every = 60
+		accept_self_signed = false
 	}
 
 	name = "updated name"

@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/resource"
@@ -46,6 +47,10 @@ func TestAccDatadogIntegrationPagerdutyServiceObject_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty_service_object.testing_bar", "service_key", "54321098765432109876_2"),
 				),
+			},
+			{
+				// make sure that updating the PD resource itself doesn't delete the individual service objects
+				Config: strings.Replace(testAccCheckDatadogIntegrationPagerdutyServiceObjectUpdatedConfig, "testdomain", "testdomain2", -1),
 			},
 		},
 	})

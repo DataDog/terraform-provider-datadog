@@ -10,7 +10,7 @@ description: |-
 
 Provides a Datadog screenboard resource. This can be used to create and manage Datadog screenboards.
 
-~> **Note:**This resource is outdated. Use the new [`datadog_dashboard`](dashboard.html) resource instead.
+~> **Note:** This resource is outdated. Use the new [`datadog_dashboard`](dashboard.html) resource instead.
 
 ## Example Usage
 
@@ -76,6 +76,64 @@ resource "datadog_screenboard" "acceptance_test" {
             "alias": "CPU Usage"
           }
         })
+      }
+
+      request {
+        log_query {
+          index = "mcnulty"
+          compute {
+            aggregation = "avg"
+            facet = "@duration"
+            interval = 5000
+          }
+          search {
+            query = "status:info"
+          }
+          group_by {
+            facet = "host"
+            limit = 10
+            sort {
+              aggregation = "avg"
+              order = "desc"
+              facet = "@duration"
+            }
+          }
+        }
+        type = "area"
+      }
+
+      request {
+        apm_query {
+          index = "apm-search"
+          compute {
+            aggregation = "avg"
+            facet = "@duration"
+            interval = 5000
+          }
+          search {
+            query = "type:web"
+          }
+          group_by {
+            facet = "resource_name"
+            limit = 50
+            sort {
+              aggregation = "avg"
+              order = "desc"
+              facet = "@string_query.interval"
+            }
+          }
+        }
+        type = "bars"
+      }
+
+      request {
+        process_query {
+          metric = "process.stat.cpu.total_pct"
+          search_by = "error"
+          filter_by = ["active"]
+          limit = 50
+        }
+        type = "area"
       }
 
       marker {
@@ -502,8 +560,8 @@ Nested `widget` `tile_def` blocks have the following structure:
 - `node_type` - (Optional, only for widgets of type "hostmap") The type of node used. Either "host" or "container".
 - `scope` - (Optional, only for widgets of type "hostmap") The list of tags to filter nodes by.
 - `group` - (Optional, only for widgets of type "hostmap") The list of tags to group nodes by.
-- `no_group_host` - (Optional, only for widgets of type "hostmap") Boolean indicating whether to show ungrouped nodes.
-- `no_metric_host` - (Optional, only for widgets of type "hostmap") Boolean indicating whether to show nodes with no metrics.
+- `no_group_hosts` - (Optional, only for widgets of type "hostmap") Boolean indicating whether to show ungrouped nodes.
+- `no_metric_hosts` - (Optional, only for widgets of type "hostmap") Boolean indicating whether to show nodes with no metrics.
 - `style` - (Optional, only for widgets of type "hostmap") Nested block describing how to display the widget. The structure of this block is described below. At most one such block should be present in a given tile_def block.
 
 ### Nested `widget` `tile_def` `style` blocks
@@ -538,10 +596,12 @@ Nested `widget` `tile_def` `event` blocks have the following structure:
 ### Nested `widget` `tile_def` `request` blocks
 
 Only for widgets of type "timeseries", "query_value", "toplist", "change", "hostmap", "process".
+Nested `widget` `tile_def` `request` blocks have the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
 
-Nested `widget` `tile_def` `request` blocks have the following structure:
-
-- `q` - (Optional, only for widgets of type "timeseries", "query_value", "toplist", "change", "hostmap") The query of the request. Pro tip: Use the JSON tab inside the Datadog UI to help build you query strings.
+- `q` - (Optional) Only for widgets of type "timeseries", "query_value", "toplist", "change", "hostmap") The query of the request. Pro tip: Use the JSON tab inside the Datadog UI to help build you query strings.
+- `apm_query` - (Optional) The APM query to use in the widget. The structure of this block is described [below](screenboard.html#nested-widget-tile_def-request-apm_query-and-log_query-blocks).
+- `log_query` - (Optional) The log query to use in the widget. The structure of this block is described [below](screenboard.html#nested-widget-tile_def-request-apm_query-and-log_query-blocks).
+- `process_query` - (Optional) The process query to use in the widget. The structure of this block is described [below](screenboard.html#nested-widget-tile_def-request-process_query-blocks).
 - `type` - (Optional, only for widgets of type "timeseries", "query_value", "hostmap") Choose the type of representation to use for this query. For widgets of type "timeseries" and "query_value", use one of "line", "bars" or "area". For widgets of type "hostmap", use "fill" or "size".
 - `query_type` - (Optional, only for widgets of type "process") Use "process".
 - `metric` - (Optional, only for widgets of type "process") The metric you want to use for the widget.
@@ -592,6 +652,34 @@ The nested `style` blocks has the following structure:
 - `width` - (Optional) Line width. Possible values: "thin", "normal", "thick". Default: "normal".
 - `type` - (Optional) Type of line drawn. Possible values: "dashed", "solid", "dotted". Default: "solid".
 
+### Nested `widget` `tile_def` `request` `apm_query` and `log_query` blocks
+
+Nested `apm_query` and `log_query` blocks have the following structure (Visit the [ Graph Primer](https://docs.datadoghq.com/graphing/) for more information about these values):
+
+- `index` - (Required)
+- `compute` - (Required). Exactly one nested block is required with the following structure:
+  - `aggregation` - (Required)
+  - `facet` - (Optional)
+  - `interval` - (Optional)
+- `search` - (Optional). One nested block is allowed with the following structure:
+  - `query` - (Optional)
+- `group_by` - (Optional). Multiple nested blocks are allowed with the following structure:
+  - `facet` - (Optional)
+  - `limit` - (Optional)
+  - `sort` - (Optional). One nested block is allowed with the following structure:
+    - `aggregation` - (Optional)
+    - `order` - (Optional)
+    - `facet` - (Optional)
+
+### Nested `widget` `tile_def` `request` `process_query` blocks
+
+Nested `process_query` blocks have the following structure (Visit the [ Graph Primer](https://docs.datadoghq.com/graphing/) for more information about these values):
+
+- `metric` - (Required)
+- `search_by` - (Required)
+- `filter_by` - (Required)
+- `limit` - (Required)
+
 ### Nested `widget` `tile_def` `request` `conditional_format` block
 
 The nested `conditional_format` blocks has the following structure:
@@ -606,7 +694,7 @@ The nested `conditional_format` blocks has the following structure:
 
 Nested `template_variable` blocks have the following structure:
 
-- `name` - (Required) The variable name. Can be referenced as $name in `graph` `request` `q` query strings.
+- `name` - (Required) The variable name. Can be referenced as \$name in `graph` `request` `q` query strings.
 - `prefix` - (Optional) The tag group. Default: no tag group.
 - `default` - (Optional) The default tag. Default: "\*" (match all).
 

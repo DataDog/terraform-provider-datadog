@@ -14,6 +14,7 @@ import (
 )
 
 var syntheticsTypes = []string{"api", "browser"}
+var syntheticsSubTypes = []string{"http", "ssl"}
 
 func resourceDatadogSyntheticsTest() *schema.Resource {
 	return &schema.Resource{
@@ -29,6 +30,18 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validation.StringInSlice(syntheticsTypes, false),
+			},
+			"subtype": {
+				Type:     schema.TypeString,
+				Optional: true,
+				DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
+					if d.Get("type") == "api" && old == "http" && new == "" {
+						// defaults to http if type is api for retro-compatibility
+						return true
+					}
+					return old == new
+				},
+				ValidateFunc: validation.StringInSlice(syntheticsSubTypes, false),
 			},
 			"request": syntheticsTestRequest(),
 			"request_headers": {
@@ -89,17 +102,26 @@ func syntheticsTestRequest() *schema.Schema {
 			Schema: map[string]*schema.Schema{
 				"method": {
 					Type:     schema.TypeString,
-					Required: true,
+					Optional: true,
 				},
 				"url": {
 					Type:     schema.TypeString,
-					Required: true,
+					Optional: true,
 				},
 				"body": {
 					Type:     schema.TypeString,
 					Optional: true,
 				},
 				"timeout": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					Default:  60,
+				},
+				"host": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"port": {
 					Type:     schema.TypeInt,
 					Optional: true,
 					Default:  60,
@@ -111,7 +133,47 @@ func syntheticsTestRequest() *schema.Schema {
 
 func syntheticsTestOptions() *schema.Schema {
 	return &schema.Schema{
-		Type:     schema.TypeMap,
+		Type: schema.TypeMap,
+		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
+			if key == "options.follow_redirects" || key == "options.accept_self_signed" {
+				// TF nested schemas is limited to string values only
+				// follow_redirects and accept_self_signed being booleans in Datadog json api
+				// we need a sane way to convert from boolean to string
+				// and from string to boolean
+				oldValue, err1 := strconv.ParseBool(old)
+				newValue, err2 := strconv.ParseBool(new)
+				if err1 != nil || err2 != nil {
+					return false
+				}
+				return oldValue == newValue
+			}
+			return old == new
+		},
+		ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+			followRedirectsRaw, ok := val.(map[string]interface{})["follow_redirects"]
+			if ok {
+				followRedirectsStr := convertToString(followRedirectsRaw)
+				switch followRedirectsStr {
+				case "0", "1":
+					warns = append(warns, fmt.Sprintf("%q.follow_redirects must be either true or false, got: %s (please change 1 => true, 0 => false)", key, followRedirectsStr))
+				case "true", "false":
+					break
+				default:
+					errs = append(errs, fmt.Errorf("%q.follow_redirects must be either true or false, got: %s", key, followRedirectsStr))
+				}
+			}
+			acceptSelfSignedRaw, ok := val.(map[string]interface{})["accept_self_signed"]
+			if ok {
+				acceptSelfSignedStr := convertToString(acceptSelfSignedRaw)
+				switch acceptSelfSignedStr {
+				case "true", "false":
+					break
+				default:
+					errs = append(errs, fmt.Errorf("%q.accept_self_signed must be either true or false, got: %s", key, acceptSelfSignedStr))
+				}
+			}
+			return
+		},
 		Optional: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
@@ -130,6 +192,10 @@ func syntheticsTestOptions() *schema.Schema {
 				"tick_every": {
 					Type:     schema.TypeInt,
 					Required: true,
+				},
+				"accept_self_signed": {
+					Type:     schema.TypeBool,
+					Optional: true,
 				},
 			},
 		},
@@ -198,7 +264,7 @@ func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{
 }
 
 func isTargetOfTypeInt(assertionType string) bool {
-	for _, intTargetAssertionType := range []string{"responseTime", "statusCode"} {
+	for _, intTargetAssertionType := range []string{"responseTime", "statusCode", "certificate"} {
 		if assertionType == intTargetAssertionType {
 			return true
 		}
@@ -220,6 +286,13 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 	if attr, ok := d.GetOk("request.timeout"); ok {
 		timeoutInt, _ := strconv.Atoi(attr.(string))
 		request.SetTimeout(timeoutInt)
+	}
+	if attr, ok := d.GetOk("request.host"); ok {
+		request.SetHost(attr.(string))
+	}
+	if attr, ok := d.GetOk("request.port"); ok {
+		portInt, _ := strconv.Atoi(attr.(string))
+		request.SetPort(portInt)
 	}
 	if attr, ok := d.GetOk("request_headers"); ok {
 		headers := attr.(map[string]interface{})
@@ -272,7 +345,10 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 		options.SetTickEvery(tickEvery)
 	}
 	if attr, ok := d.GetOk("options.follow_redirects"); ok {
-		followRedirects := attr.(string) == "1"
+		// follow_redirects is a string ("true" or "false") in TF state
+		// it used to be "1" and "0" but it does not play well with the API
+		// we support both for retro-compatibility
+		followRedirects, _ := strconv.ParseBool(attr.(string))
 		options.SetFollowRedirects(followRedirects)
 	}
 	if attr, ok := d.GetOk("options.min_failure_duration"); ok {
@@ -282,6 +358,12 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 	if attr, ok := d.GetOk("options.min_location_failed"); ok {
 		minLocationFailed, _ := strconv.Atoi(attr.(string))
 		options.SetMinLocationFailed(minLocationFailed)
+	}
+	if attr, ok := d.GetOk("options.accept_self_signed"); ok {
+		// for some reason, attr is equal to "1" or "0" in TF 0.11
+		// so ParseBool is required for retro-compatibility
+		acceptSelfSigned, _ := strconv.ParseBool(attr.(string))
+		options.SetAcceptSelfSigned(acceptSelfSigned)
 	}
 	if attr, ok := d.GetOk("device_ids"); ok {
 		deviceIds := []string{}
@@ -316,11 +398,23 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 	}
 	syntheticsTest.Tags = tags
 
+	if attr, ok := d.GetOk("subtype"); ok {
+		syntheticsTest.Subtype = datadog.String(attr.(string))
+	} else {
+		if *syntheticsTest.Type == "api" {
+			// we want to default to "http" subtype when type is "api"
+			syntheticsTest.Subtype = datadog.String("http")
+		}
+	}
+
 	return &syntheticsTest
 }
 
 func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *datadog.SyntheticsTest) {
 	d.Set("type", syntheticsTest.GetType())
+	if syntheticsTest.HasSubtype() {
+		d.Set("subtype", syntheticsTest.GetSubtype())
+	}
 
 	actualRequest := syntheticsTest.GetConfig().Request
 	localRequest := make(map[string]string)
@@ -335,6 +429,12 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 	if actualRequest.HasUrl() {
 		localRequest["url"] = actualRequest.GetUrl()
+	}
+	if actualRequest.HasHost() {
+		localRequest["host"] = actualRequest.GetHost()
+	}
+	if actualRequest.HasPort() {
+		localRequest["port"] = convertToString(actualRequest.GetPort())
 	}
 	d.Set("request", localRequest)
 	d.Set("request_headers", actualRequest.Headers)
@@ -377,6 +477,9 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	if actualOptions.HasTickEvery() {
 		localOptions["tick_every"] = convertToString(actualOptions.GetTickEvery())
 	}
+	if actualOptions.HasAcceptSelfSigned() {
+		localOptions["accept_self_signed"] = convertToString(actualOptions.GetAcceptSelfSigned())
+	}
 
 	d.Set("options", localOptions)
 
@@ -390,10 +493,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 func convertToString(i interface{}) string {
 	switch v := i.(type) {
 	case bool:
-		if v {
-			return "1"
-		}
-		return "0"
+		return strconv.FormatBool(v)
 	case int:
 		return strconv.Itoa(v)
 	case float64:

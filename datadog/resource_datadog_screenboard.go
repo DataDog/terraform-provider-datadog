@@ -88,6 +88,118 @@ func resourceDatadogScreenboard() *schema.Resource {
 		},
 	}
 
+	tileDefApmOrLogQuery := &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		MaxItems: 1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"index": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"compute": &schema.Schema{
+					Type:     schema.TypeList,
+					Required: true,
+					MaxItems: 1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"aggregation": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"facet": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"interval": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+						},
+					},
+				},
+				"search": &schema.Schema{
+					Type:     schema.TypeList,
+					Optional: true,
+					MaxItems: 1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"query": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+						},
+					},
+				},
+				"group_by": &schema.Schema{
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"facet": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"limit": {
+								Type:     schema.TypeInt,
+								Optional: true,
+							},
+							"sort": {
+								Type:     schema.TypeList,
+								Optional: true,
+								MaxItems: 1,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"aggregation": {
+											Type:     schema.TypeString,
+											Required: true,
+										},
+										"order": {
+											Type:     schema.TypeString,
+											Required: true,
+										},
+										"facet": {
+											Type:     schema.TypeString,
+											Optional: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	tileDefProcessQuery := &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		MaxItems: 1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"metric": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"search_by": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"filter_by": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem:     &schema.Schema{Type: schema.TypeString},
+				},
+				"limit": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+			},
+		},
+	}
+
 	tileDefRequest := &schema.Schema{
 		Type:     schema.TypeList,
 		Required: true,
@@ -97,6 +209,9 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Type:     schema.TypeString,
 					Optional: true,
 				},
+				"log_query":     tileDefApmOrLogQuery,
+				"apm_query":     tileDefApmOrLogQuery,
+				"process_query": tileDefProcessQuery,
 				"type": {
 					Type:     schema.TypeString,
 					Optional: true,
@@ -127,9 +242,10 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Optional: true,
 				},
 				"conditional_format": tileDefRequestConditionalFormat,
-				"aggregator": {
-					Type:     schema.TypeString,
-					Optional: true,
+				"aggregator": &schema.Schema{
+					Type:         schema.TypeString,
+					Optional:     true,
+					ValidateFunc: validateAggregatorMethod,
 				},
 				"compare_to": {
 					Type:     schema.TypeString,
@@ -741,6 +857,98 @@ func buildTileDefRequestsConditionalFormats(source interface{}) []datadog.Condit
 	return r
 }
 
+func buildTileDefRequestsGroupBys(source interface{}) []datadog.TileDefApmOrLogQueryGroupBy {
+	groupBys, ok := source.([]interface{})
+	if !ok || len(groupBys) == 0 {
+		return nil
+	}
+
+	r := []datadog.TileDefApmOrLogQueryGroupBy{}
+	for _, groupBy := range groupBys {
+		groupByMap := groupBy.(map[string]interface{})
+		d := datadog.TileDefApmOrLogQueryGroupBy{}
+
+		batchSetFromDict(batch{
+			dict: groupByMap,
+			matches: []match{
+				{"facet", &d.Facet},
+				{"limit", &d.Limit},
+			}})
+		if groupBySort, ok := groupByMap["sort"].([]interface{}); ok && len(groupBySort) > 0 {
+			terraformSort := groupBySort[0].(map[string]interface{})
+			s := datadog.TileDefApmOrLogQueryGroupBySort{
+				Aggregation: datadog.String(terraformSort["aggregation"].(string)),
+				Order:       datadog.String(terraformSort["order"].(string)),
+			}
+			if facet, ok := terraformSort["facet"].(string); ok && len(facet) > 0 {
+				s.Facet = datadog.String(facet)
+			}
+			d.Sort = &s
+		}
+		r = append(r, d)
+	}
+	return r
+}
+
+func buildTileDefRequestsApmOrLogQuery(source interface{}) *datadog.TileDefApmOrLogQuery {
+	datadogQuery := source.(map[string]interface{})
+
+	// Index
+	d := datadog.TileDefApmOrLogQuery{
+		Index: datadog.String(datadogQuery["index"].(string)),
+	}
+
+	// Compute
+	if compute, ok := datadogQuery["compute"].([]interface{}); ok && len(compute) > 0 {
+		terraformCompute := compute[0].(map[string]interface{})
+		datadogCompute := datadog.TileDefApmOrLogQueryCompute{}
+		if aggr, ok := terraformCompute["aggregation"].(string); ok && len(aggr) != 0 {
+			datadogCompute.SetAggregation(aggr)
+		}
+		if facet, ok := terraformCompute["facet"].(string); ok && len(facet) != 0 {
+			datadogCompute.SetFacet(facet)
+		}
+		if v, ok := terraformCompute["interval"].(string); ok && len(v) != 0 {
+			datadogCompute.SetInterval(v)
+		}
+		d.Compute = &datadogCompute
+	}
+
+	// Search
+	if search, ok := datadogQuery["search"].([]interface{}); ok && len(search) > 0 {
+		terraformSearch := search[0].(map[string]interface{})
+		s := datadog.TileDefApmOrLogQuerySearch{
+			Query: datadog.String(terraformSearch["query"].(string)),
+		}
+		d.Search = &s
+	}
+
+	// GroupBy
+	d.GroupBy = buildTileDefRequestsGroupBys(datadogQuery["group_by"])
+	return &d
+}
+
+func buildTileDefRequestsProcessQuery(source interface{}) *datadog.TileDefProcessQuery {
+	datadogQuery := source.(map[string]interface{})
+	d := datadog.TileDefProcessQuery{}
+	batchSetFromDict(batch{
+		dict: datadogQuery,
+		matches: []match{
+			{"metric", &d.Metric},
+			{"search_by", &d.SearchBy},
+			{"limit", &d.Limit},
+		}})
+
+	if v, ok := datadogQuery["filter_by"].([]interface{}); ok && len(v) != 0 {
+		filters := make([]string, len(v))
+		for i, filter := range v {
+			filters[i] = filter.(string)
+		}
+		d.FilterBy = filters
+	}
+	return &d
+}
+
 func buildTileDefRequests(source interface{}) []datadog.TileDefRequest {
 	requests, ok := source.([]interface{})
 	if !ok || len(requests) == 0 {
@@ -757,7 +965,6 @@ func buildTileDefRequests(source interface{}) []datadog.TileDefRequest {
 		batchSetFromDict(batch{
 			dict: requestMap,
 			matches: []match{
-				{"q", &d.Query},
 				{"type", &d.Type},
 				{"query_type", &d.QueryType},
 				{"metric", &d.Metric},
@@ -785,6 +992,19 @@ func buildTileDefRequests(source interface{}) []datadog.TileDefRequest {
 					{"width", &d.Style.Width},
 				},
 			})
+		}
+
+		if v, ok := requestMap["q"].(string); ok && len(v) != 0 {
+			d.Query = &v
+		} else if v, ok := requestMap["log_query"].([]interface{}); ok && len(v) > 0 {
+			logQuery := v[0].(map[string]interface{})
+			d.LogQuery = buildTileDefRequestsApmOrLogQuery(logQuery)
+		} else if v, ok := requestMap["apm_query"].([]interface{}); ok && len(v) > 0 {
+			apmQuery := v[0].(map[string]interface{})
+			d.ApmQuery = buildTileDefRequestsApmOrLogQuery(apmQuery)
+		} else if v, ok := requestMap["process_query"].([]interface{}); ok && len(v) > 0 {
+			processQuery := v[0].(map[string]interface{})
+			d.ProcessQuery = buildTileDefRequestsProcessQuery(processQuery)
 		}
 
 		// request.conditionalFormats
@@ -1172,14 +1392,12 @@ func buildTFTileDefRequests(d []datadog.TileDefRequest) []interface{} {
 	if l == 0 {
 		return nil
 	}
-
 	r := make([]interface{}, l)
 	for i, ddRequest := range d {
 		tfRequest := map[string]interface{}{}
 		batchSetToDict(batch{
 			dict: tfRequest,
 			matches: []match{
-				{"q", ddRequest.Query},
 				{"type", ddRequest.Type},
 				{"query_type", ddRequest.QueryType},
 				{"metric", ddRequest.Metric},
@@ -1212,6 +1430,18 @@ func buildTFTileDefRequests(d []datadog.TileDefRequest) []interface{} {
 			tfRequest["style"] = tfStyle
 		}
 
+		if ddRequest.Query != nil {
+			tfRequest["q"] = *ddRequest.Query
+		} else if ddRequest.ApmQuery != nil {
+			terraformQuery := buildTFTileDefApmOrLogQuery(*ddRequest.ApmQuery)
+			tfRequest["apm_query"] = []map[string]interface{}{terraformQuery}
+		} else if ddRequest.LogQuery != nil {
+			terraformQuery := buildTFTileDefApmOrLogQuery(*ddRequest.LogQuery)
+			tfRequest["log_query"] = []map[string]interface{}{terraformQuery}
+		} else if ddRequest.ProcessQuery != nil {
+			terraformQuery := buildTFTileDefProcessQuery(*ddRequest.ProcessQuery)
+			tfRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		}
 		// request.conditionalFormats
 		tfRequest["conditional_format"] = buildTFTileDefRequestConditionalFormats(ddRequest.ConditionalFormats)
 
@@ -1219,6 +1449,82 @@ func buildTFTileDefRequests(d []datadog.TileDefRequest) []interface{} {
 	}
 
 	return r
+}
+
+func buildTFTileDefApmOrLogQuery(datadogQuery datadog.TileDefApmOrLogQuery) map[string]interface{} {
+	terraformQuery := map[string]interface{}{}
+	// Index
+	terraformQuery["index"] = *datadogQuery.Index
+	// Compute
+	terraformCompute := map[string]interface{}{}
+	if datadogQuery.Compute.Aggregation != nil {
+		terraformCompute["aggregation"] = *datadogQuery.Compute.Aggregation
+	}
+	if datadogQuery.Compute.Facet != nil {
+		terraformCompute["facet"] = *datadogQuery.Compute.Facet
+	}
+	if datadogQuery.Compute.Interval != nil {
+		terraformCompute["interval"] = *datadogQuery.Compute.Interval
+	}
+	terraformQuery["compute"] = []map[string]interface{}{terraformCompute}
+	// Search
+	if datadogQuery.Search != nil {
+		terraformSearch := map[string]interface{}{
+			"query": *datadogQuery.Search.Query,
+		}
+		terraformQuery["search"] = []map[string]interface{}{terraformSearch}
+	}
+	// GroupBy
+	if datadogQuery.GroupBy != nil {
+		terraformGroupBys := make([]map[string]interface{}, len(datadogQuery.GroupBy))
+		for i, groupBy := range datadogQuery.GroupBy {
+			// Facet
+			terraformGroupBy := map[string]interface{}{
+				"facet": *groupBy.Facet,
+			}
+			// Limit
+			if groupBy.Limit != nil {
+				terraformGroupBy["limit"] = *groupBy.Limit
+			}
+			// Sort
+			if groupBy.Sort != nil {
+				sort := map[string]interface{}{
+					"aggregation": *groupBy.Sort.Aggregation,
+					"order":       *groupBy.Sort.Order,
+				}
+				if groupBy.Sort.Facet != nil {
+					sort["facet"] = *groupBy.Sort.Facet
+				}
+				terraformGroupBy["sort"] = []map[string]interface{}{sort}
+			}
+
+			terraformGroupBys[i] = terraformGroupBy
+		}
+		terraformQuery["group_by"] = &terraformGroupBys
+	}
+	return terraformQuery
+}
+
+func buildTFTileDefProcessQuery(datadogQuery datadog.TileDefProcessQuery) map[string]interface{} {
+	terraformQuery := map[string]interface{}{}
+	if datadogQuery.Metric != nil {
+		terraformQuery["metric"] = *datadogQuery.Metric
+	}
+	if datadogQuery.SearchBy != nil {
+		terraformQuery["search_by"] = *datadogQuery.SearchBy
+	}
+	if datadogQuery.FilterBy != nil {
+		terraformFilterBy := make([]string, len(datadogQuery.FilterBy))
+		for i, datadogFilterBy := range datadogQuery.FilterBy {
+			terraformFilterBy[i] = datadogFilterBy
+		}
+		terraformQuery["filter_by"] = terraformFilterBy
+	}
+	if datadogQuery.Limit != nil {
+		terraformQuery["limit"] = *datadogQuery.Limit
+	}
+
+	return terraformQuery
 }
 
 func buildTFTileDefEvents(d []datadog.TileDefEvent) []interface{} {

@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/zorkian/go-datadog-api"
@@ -13,6 +14,7 @@ func resourceDatadogIntegrationPagerdutySO() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceDatadogIntegrationPagerdutySOCreate,
 		Read:   resourceDatadogIntegrationPagerdutySORead,
+		Exists: resourceDatadogIntegrationPagerdutySOExists,
 		Update: resourceDatadogIntegrationPagerdutySOUpdate,
 		Delete: resourceDatadogIntegrationPagerdutySODelete,
 		// since the API never returns service_key, it's impossible to meaningfully import resources
@@ -77,6 +79,20 @@ func resourceDatadogIntegrationPagerdutySORead(d *schema.ResourceData, meta inte
 	}
 
 	return nil
+}
+
+func resourceDatadogIntegrationPagerdutySOExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
+	client := meta.(*datadog.Client)
+
+	_, err := client.GetIntegrationPDService(d.Id())
+	if err != nil {
+		if strings.Contains(err.Error(), "404 Not Found") {
+			return false, nil
+		}
+		return false, err
+	}
+
+	return true, nil
 }
 
 func resourceDatadogIntegrationPagerdutySOUpdate(d *schema.ResourceData, meta interface{}) error {

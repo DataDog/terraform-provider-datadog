@@ -1,4 +1,55 @@
-## 2.1.1 (Unreleased)
+## 2.5.1 (Unreleased)
+## 2.5.0 (October 22, 2019)
+
+FEATURES:
+* `datadog_ip_ranges`: New data source for IP ranges ([#298](https://github.com/terraform-providers/terraform-provider-datadog/issues/298))
+* `datadog_logs_custom_pipeline`: New resource for custom logs pipelines ([#312](https://github.com/terraform-providers/terraform-provider-datadog/issues/312), [#332](https://github.com/terraform-providers/terraform-provider-datadog/issues/332))
+* `datadog_logs_index`: New resource for logs indexes ([#326](https://github.com/terraform-providers/terraform-provider-datadog/issues/326))
+* `datadog_logs_index_order`: New resource for logs index ordering ([#326](https://github.com/terraform-providers/terraform-provider-datadog/issues/326))
+* `datadog_logs_integration_pipeline`: New resource for integration logs pipelines ([#312](https://github.com/terraform-providers/terraform-provider-datadog/issues/312), [#332](https://github.com/terraform-providers/terraform-provider-datadog/issues/332))
+* `datadog_logs_pipeline_order`: New resources for logs pipeline ordering ([#312](https://github.com/terraform-providers/terraform-provider-datadog/issues/312))
+
+IMPROVEMENTS:
+* `datadog_dashboard`: Added documentation of `event` and `axis` ([#314](https://github.com/terraform-providers/terraform-provider-datadog/issues/314))
+* `datadog_screenboard`: Added `count` as a valid aggregation method ([#333](https://github.com/terraform-providers/terraform-provider-datadog/issues/333))
+
+BUGFIXES:
+* `datadog_dashboard`: Fixed parsing of `compute.interval` and `group_by.sort.facet`, mark `group_by.facet` as optional for apm and log queries ([#322](https://github.com/terraform-providers/terraform-provider-datadog/issues/322), [#325](https://github.com/terraform-providers/terraform-provider-datadog/issues/325))
+* `datadog_dashboard`: Properly respect `show_legend` ([#329](https://github.com/terraform-providers/terraform-provider-datadog/issues/329))
+* `datadog_integration_pagerduty`: Add missing exists methods to prevent failing when resource was manually removed outside of Terraform ([#324](https://github.com/terraform-providers/terraform-provider-datadog/issues/324))
+* `datadog_integration_pagerduty_service_object`: Add missing exists methods to prevent failing when resource was manually removed outside of Terraform ([#324](https://github.com/terraform-providers/terraform-provider-datadog/issues/324))
+
+## 2.4.0 (September 11, 2019)
+
+FEATURES:
+* `datadog_dashboard_list`: New resource for dashboard lists ([#296](https://github.com/terraform-providers/terraform-provider-datadog/issues/296))
+
+IMPROVEMENTS:
+* `datadog_dashboard`: Allow specifying `event` and `yaxis` for timeseries definitions ([#282](https://github.com/terraform-providers/terraform-provider-datadog/issues/282))
+
+## 2.3.0 (August 29, 2019)
+
+IMPROVEMENTS:
+* `datadog-dashboards`: Add resources for log, apm and process query in legacy dashboards ([#272](https://github.com/terraform-providers/terraform-provider-datadog/issues/272))
+
+BUGFIXES:
+* `datadog_integration_pagerduty`: Make sure PD services don't get removed by updating PD resource ([#304](https://github.com/terraform-providers/terraform-provider-datadog/issues/304))
+
+
+## 2.2.0 (August 19, 2019)
+
+FEATURES:
+* `datadog_service_level_objective`: New resource for Service Level Objective (SLO) ([#263](https://github.com/terraform-providers/terraform-provider-datadog/issues/263))
+
+IMPROVEMENTS:
+* `datadog_dashbaord`: Add support for style block in dashboard widgets. ([#277](https://github.com/terraform-providers/terraform-provider-datadog/issues/277))
+* `datadog_dashboard`: Add support for metadata block in dashboard widgets ([#278](https://github.com/terraform-providers/terraform-provider-datadog/issues/278))
+* `datadog_synthetics_test`: Support SSL synthetics tests. ([#279](https://github.com/terraform-providers/terraform-provider-datadog/issues/279))
+
+BUGFIXES:
+* `datadog_dashboards`: Safely type assert optional fields from log and apm query to avoid a panic if they aren't supplied ([#283](https://github.com/terraform-providers/terraform-provider-datadog/issues/283))
+* `datadog_synthetics_test`: Fix follow redirects field to properly apply and save in state. ([#256](https://github.com/terraform-providers/terraform-provider-datadog/issues/256))
+
 ## 2.1.0 (July 24, 2019)
 
 FEATURES:
