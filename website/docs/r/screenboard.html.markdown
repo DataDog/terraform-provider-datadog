@@ -466,8 +466,8 @@ The following arguments are supported:
 Nested `widget` blocks have the following structure:
 
 - `type` - (Required) The type of the widget. One of "free_text", "timeseries", "query_value", "toplist", "change", "event_timeline", "event_stream", "image", "note", "alert_graph", "alert_value", "iframe", "check_status", "trace_service", "hostmap", "manage_status", "log_stream", or "process".
-- `x` - (Required) The position of the widget on the x (vertical) axis. Should be greater or equal to 0.
-- `y` - (Required) The position of the widget on the y (horizontal) axis. Should be greater or equal to 0.
+- `x` - (Required) The position of the widget on the x (horizontal) axis. Should be greater or equal to 0.
+- `y` - (Required) The position of the widget on the y (vertical) axis. Should be greater or equal to 0.
 - `title` - (Optional) The title of the widget.
 - `title_align` - (Optional) The alignment of the widget's title. One of "left", "center", or "right".
 - `title_size` - (Optional) The size of the widget's title. Default is 16.

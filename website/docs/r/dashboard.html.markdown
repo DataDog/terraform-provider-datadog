@@ -775,8 +775,8 @@ Nested `widget` blocks have the following structure:
 ### Nested `widget` `layout` blocks
 Nested `layout` blocks have the following structure:
 
-- `x` - (Required) The position of the widget on the x (vertical) axis. Should be greater or equal to 0.
-- `y` - (Required) The position of the widget on the y (horizontal) axis. Should be greater or equal to 0.
+- `x` - (Required) The position of the widget on the x (horizontal) axis. Should be greater or equal to 0.
+- `y` - (Required) The position of the widget on the y (vertical) axis. Should be greater or equal to 0.
 - `width` - (Required) The width of the widget.
 - `height` - (Required) The height of the widget.
 
