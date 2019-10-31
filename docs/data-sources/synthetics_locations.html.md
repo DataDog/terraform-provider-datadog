@@ -16,3 +16,5 @@ data "datadog_synthetics_locations" "test" {}
 ```
 
 ## Attributes Reference
+
+ * `locations` - An Array of available Synthetics locations for Synthetics tests.
