@@ -366,6 +366,17 @@ resource "datadog_dashboard" "ordered_dashboard" {
     }
   }
 
+	widget {
+		service_level_objective_definition {
+			title = "Widget Title"
+			view_type = "detail"
+			slo_id = "56789"
+			show_error_budget = true
+			view_mode = "overall"
+			time_windows = ["7d", "previous_week"]
+		}
+	}
+
   template_variable {
     name   = "var_1"
     prefix = "host"
@@ -719,6 +730,15 @@ Nested `widget` blocks have the following structure:
         - `title_size`: (Optional) The size of the widget's title. Default is 16.
         - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
         - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+  - `service_level_objective_definition`: The definition for a Service Level Objective widget. Exactly one nested block is allowed with the following structure:
+        - `view_type`: (Optional) Type of view to use when displaying the widget. Only "detail" is currently supported.
+        - `slo_id`: (Optional) The ID of the service level objective used by the widget.
+        - `show_error_budget`: (Optional) Whether to show the error budget or not.
+        - `view_mode`: (Optional) View mode for the widget. One of "overall", "component", or "both".
+        - `time_windows`: (Optional) List of time windows to display in the widget. Each value in the list must be one of "7d", "30d", "90d", "week_to_date",  "previous_week", "month_to_date", or "previous_month".
+        - `title`: (Optional) The title of the widget.
+        - `title_size`: (Optional) The size of the widget's title. Default is 16.
+        - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
   - `timeseries_definition`: The definition for a Timeseries  widget. Exactly one nested block is allowed with the following structure:
         - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
             - `q`: (Optional) The metric query to use in the widget
