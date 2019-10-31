@@ -466,6 +466,15 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getScatterplotDefinitionSchema(),
 			},
 		},
+		"service_level_objective_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Service Level Objective widget",
+			Elem: &schema.Resource{
+				Schema: getServiceLevelObjectiveDefinitionSchema(),
+			},
+		},
 		"timeseries_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -594,6 +603,10 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadog.BoardW
 		if scatterplotDefinition, ok := _def[0].(map[string]interface{}); ok {
 			datadogWidget.Definition = buildDatadogScatterplotDefinition(scatterplotDefinition)
 		}
+	} else if _def, ok := terraformWidget["service_level_objective_definition"].([]interface{}); ok && len(_def) > 0 {
+		if serviceLevelObjectiveDefinition, ok := _def[0].(map[string]interface{}); ok {
+			datadogWidget.Definition = buildDatadogServiceLevelObjectiveDefinition(serviceLevelObjectiveDefinition)
+		}
 	} else if _def, ok := terraformWidget["timeseries_definition"].([]interface{}); ok && len(_def) > 0 {
 		if timeseriesDefinition, ok := _def[0].(map[string]interface{}); ok {
 			datadogWidget.Definition = buildDatadogTimeseriesDefinition(timeseriesDefinition)
@@ -713,6 +726,10 @@ func buildTerraformWidget(datadogWidget datadog.BoardWidget) (map[string]interfa
 		datadogDefinition := datadogWidget.Definition.(datadog.ScatterplotDefinition)
 		terraformDefinition := buildTerraformScatterplotDefinition(datadogDefinition)
 		terraformWidget["scatterplot_definition"] = []map[string]interface{}{terraformDefinition}
+	case datadog.SERVICE_LEVEL_OBJECTIVE_WIDGET:
+		datadogDefinition := datadogWidget.Definition.(datadog.ServiceLevelObjectiveDefinition)
+		terraformDefinition := buildTerraformServiceLevelObjectiveDefinition(datadogDefinition)
+		terraformWidget["service_level_objective_definition"] = []map[string]interface{}{terraformDefinition}
 	case datadog.TIMESERIES_WIDGET:
 		datadogDefinition := datadogWidget.Definition.(datadog.TimeseriesDefinition)
 		terraformDefinition := buildTerraformTimeseriesDefinition(datadogDefinition)
@@ -2938,6 +2955,120 @@ func buildTerraformScatterplotRequest(datadogScatterplotRequest *datadog.Scatter
 		terraformRequest["aggregator"] = *datadogScatterplotRequest.Aggregator
 	}
 	return &terraformRequest
+}
+
+//
+// Service Level Objective Widget Definition helpers
+//
+
+func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"title": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"title_size": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"title_align": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"view_type": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"slo_id": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"show_error_budget": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
+		"view_mode": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"time_windows": {
+			Type:     schema.TypeList,
+			Optional: true,
+			Elem:     &schema.Schema{Type: schema.TypeString},
+		},
+	}
+}
+
+func buildDatadogServiceLevelObjectiveDefinition(terraformDefinition map[string]interface{}) *datadog.ServiceLevelObjectiveDefinition {
+	datadogDefinition := &datadog.ServiceLevelObjectiveDefinition{}
+	// Required params
+	datadogDefinition.SetType(datadog.SERVICE_LEVEL_OBJECTIVE_WIDGET)
+
+	// Optional params
+	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitle(v)
+	}
+	if v, ok := terraformDefinition["title_size"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleSize(v)
+	}
+	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleAlign(v)
+	}
+	if v, ok := terraformDefinition["view_type"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetViewType(v)
+	}
+	if v, ok := terraformDefinition["slo_id"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetServiceLevelObjectiveID(v)
+	}
+	if v, ok := terraformDefinition["show_error_budget"].(bool); ok {
+		datadogDefinition.SetShowErrorBudget(v)
+	}
+	if v, ok := terraformDefinition["view_mode"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetViewMode(v)
+	}
+	if terraformTimeWindows, ok := terraformDefinition["time_windows"].([]interface{}); ok && len(terraformTimeWindows) > 0 {
+		datadogTimeWindows := make([]string, len(terraformTimeWindows))
+		for i, timeWindows := range terraformTimeWindows {
+			datadogTimeWindows[i] = timeWindows.(string)
+		}
+		datadogDefinition.TimeWindows = datadogTimeWindows
+	}
+	return datadogDefinition
+}
+
+func buildTerraformServiceLevelObjectiveDefinition(datadogDefinition datadog.ServiceLevelObjectiveDefinition) map[string]interface{} {
+	terraformDefinition := map[string]interface{}{}
+	// Required params
+	// Optional params
+	if title, ok := datadogDefinition.GetTitleOk(); ok {
+		terraformDefinition["title"] = title
+	}
+	if titleSize, ok := datadogDefinition.GetTitleSizeOk(); ok {
+		terraformDefinition["title_size"] = titleSize
+	}
+	if titleAlign, ok := datadogDefinition.GetTitleAlignOk(); ok {
+		terraformDefinition["title_align"] = titleAlign
+	}
+	if viewType, ok := datadogDefinition.GetViewTypeOk(); ok {
+		terraformDefinition["view_type"] = viewType
+	}
+	if sloID, ok := datadogDefinition.GetServiceLevelObjectiveIDOk(); ok {
+		terraformDefinition["slo_id"] = sloID
+	}
+	if showErrorBudget, ok := datadogDefinition.GetShowErrorBudgetOk(); ok {
+		terraformDefinition["show_error_budget"] = showErrorBudget
+	}
+	if viewMode, ok := datadogDefinition.GetViewModeOk(); ok {
+		terraformDefinition["view_mode"] = viewMode
+	}
+	if datadogDefinition.TimeWindows != nil {
+		terraformTimeWindows := make([]string, len(datadogDefinition.TimeWindows))
+		for i, datadogTimeWindow := range datadogDefinition.TimeWindows {
+			terraformTimeWindows[i] = datadogTimeWindow
+		}
+		terraformDefinition["time_windows"] = terraformTimeWindows
+	}
+	return terraformDefinition
 }
 
 //

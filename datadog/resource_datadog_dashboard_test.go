@@ -336,6 +336,16 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			}
 		}
 	}
+	widget {
+		service_level_objective_definition {
+			title = "Widget Title"
+			view_type = "detail"
+			slo_id = "56789"
+			show_error_budget = true
+			view_mode = "overall"
+			time_windows = ["7d", "previous_week"]
+		}
+	}
 	template_variable {
 		name   = "var_1"
 		prefix = "host"
@@ -702,6 +712,15 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.1.alert_graph_definition.0.viz_type", "toplist"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.1.alert_graph_definition.0.title", "Alert Graph"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.12.group_definition.0.widget.1.alert_graph_definition.0.time.live_span", "1h"),
+					// Service Level Objective widget
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.13.scatterplot_definition.0.title", "Widget Title"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.13.scatterplot_definition.0.view_type", "detail"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.13.scatterplot_definition.0.slo_id", "56789"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.13.scatterplot_definition.0.show_error_budget", "true"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.13.scatterplot_definition.0.view_mode", "overall"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.13.scatterplot_definition.0.time_windows.#", "2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.13.scatterplot_definition.0.time_windows.0", "7d"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.13.scatterplot_definition.0.time_windows.1", "previous_week"),
 					// Template Variables
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable.#", "2"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable.0.name", "var_1"),
