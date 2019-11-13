@@ -30,6 +30,8 @@ $ cd $GOPATH/src/github.com/terraform-providers/terraform-provider-datadog
 $ make build
 ```
 
+**Note**: For contributions created from forks, the repository should still be cloned under the `$GOPATH/src/github.com/terraform-providers/terraform-provider-datadog` directory to allow the provided `make` commands to properly run, build, and test this project.
+
 Using the provider
 ----------------------
 If you're building the provider, follow the instructions to [install it as a plugin.](https://www.terraform.io/docs/plugins/basics.html#installing-a-plugin) After placing it into your plugins directory,  run `terraform init` to initialize it.
