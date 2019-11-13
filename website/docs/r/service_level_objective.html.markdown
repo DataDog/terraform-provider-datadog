@@ -105,7 +105,7 @@ query {
 ```
 
 * `monitor` type SLOs:
-    * `monitor_ids` - (Optional) A list of numeric monitor IDs for which to use as SLIs. Their tags will be auto-imported into `monitor_tags` field in the API resource.
+    * `monitor_ids` - (Required) A list of numeric monitor IDs for which to use as SLIs. Their tags will be auto-imported into `monitor_tags` field in the API resource.
     * `groups` - (Optional) A custom set of groups from the monitor(s) for which to use as the SLI instead of all the groups.
 
 
