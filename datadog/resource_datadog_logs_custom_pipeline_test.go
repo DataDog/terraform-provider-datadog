@@ -89,6 +89,14 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			}
 		}
 	}
+	processor {
+		geo_ip_parser {
+			name = "geo ip parse"
+			is_enabled = true
+			target = "ip.address"
+			sources = ["ip1"]
+		}
+	}
 }
 `
 const pipelineConfigForUpdate = `
@@ -123,6 +131,35 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			override_on_conflict = false
 		}
 	}
+	processor {
+		grok_parser {
+			name = "Parsing Stack traces"
+			is_enabled = true
+			source = "message"
+			samples = ["sample1", "sample2"]
+			grok {
+				support_rules = "date_parser %%{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"
+				match_rules = "rule %%{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"
+			}
+		}
+	}
+	processor {
+		string_builder_processor {
+			name = "string builder"
+			is_enabled = true
+			template = "%%{user.name} is awesome"
+			target = "user.name"
+			is_replace_missing = true
+		}
+	}
+	processor {
+		geo_ip_parser {
+			name = "geo ip parse"
+			is_enabled = true
+			target = "ip.address"
+			sources = ["ip1", "ip2"]
+		}
+	}
 }
 `
 
@@ -151,11 +188,15 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.3.grok_parser.0.grok.0.match_rules", "rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"),
 					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.3.grok_parser.0.samples.#", "0"),
+					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.pipeline.0.filter.0.query", "source:kafka"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.pipeline.0.processor.0.url_parser.0.sources.#", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.pipeline.0.processor.1.user_agent_parser.0.target", "http_agent.details"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.5.geo_ip_parser.0.sources.#", "1"),
 				),
 			}, {
 				Config: pipelineConfigForUpdate,
@@ -169,6 +210,12 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 						"datadog_logs_custom_pipeline.my_pipeline_test", "filter.0.query", "source:kafka"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.2.attribute_remapper.0.preserve_source", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.3.grok_parser.0.samples.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.string_builder_processor.0.template", "%{user.name} is awesome"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.5.geo_ip_parser.0.sources.#", "2"),
 				),
 			},
 		},

@@ -12,11 +12,13 @@ const (
 	tfAttributeRemapperProcessor = "attribute_remapper"
 	tfCategoryProcessor          = "category_processor"
 	tfDateRemapperProcessor      = "date_remapper"
+	tfGeoIPParserProcessor       = "geo_ip_parser"
 	tfGrokParserProcessor        = "grok_parser"
 	tfMessageRemapperProcessor   = "message_remapper"
 	tfNestedPipelineProcessor    = "pipeline"
 	tfServiceRemapperProcessor   = "service_remapper"
 	tfStatusRemapperProcessor    = "status_remapper"
+	tfStringBuilderProcessor     = "string_builder_processor"
 	tfTraceIdRemapperProcessor   = "trace_id_remapper"
 	tfUrlParserProcessor         = "url_parser"
 	tfUserAgentParserProcessor   = "user_agent_parser"
@@ -27,11 +29,13 @@ var tfProcessorTypes = map[string]string{
 	tfAttributeRemapperProcessor: datadog.AttributeRemapperType,
 	tfCategoryProcessor:          datadog.CategoryProcessorType,
 	tfDateRemapperProcessor:      datadog.DateRemapperType,
+	tfGeoIPParserProcessor:       datadog.GeoIPParserType,
 	tfGrokParserProcessor:        datadog.GrokParserType,
 	tfMessageRemapperProcessor:   datadog.MessageRemapperType,
 	tfNestedPipelineProcessor:    datadog.NestedPipelineType,
 	tfServiceRemapperProcessor:   datadog.ServiceRemapperType,
 	tfStatusRemapperProcessor:    datadog.StatusRemapperType,
+	tfStringBuilderProcessor:     datadog.StringBuilderProcessorType,
 	tfTraceIdRemapperProcessor:   datadog.TraceIdRemapperType,
 	tfUrlParserProcessor:         datadog.UrlParserType,
 	tfUserAgentParserProcessor:   datadog.UserAgentParserType,
@@ -42,28 +46,32 @@ var tfProcessors = map[string]*schema.Schema{
 	tfAttributeRemapperProcessor: attributeRemapper,
 	tfCategoryProcessor:          categoryProcessor,
 	tfDateRemapperProcessor:      dateRemapper,
+	tfGeoIPParserProcessor:       geoIPParser,
 	tfGrokParserProcessor:        grokParser,
 	tfMessageRemapperProcessor:   messageRemapper,
 	tfServiceRemapperProcessor:   serviceRemapper,
 	tfStatusRemapperProcessor:    statusRemmaper,
+	tfStringBuilderProcessor:     stringBuilderProcessor,
 	tfTraceIdRemapperProcessor:   traceIdRemapper,
 	tfUrlParserProcessor:         urlParser,
 	tfUserAgentParserProcessor:   userAgentParser,
 }
 
 var ddProcessorTypes = map[string]string{
-	datadog.ArithmeticProcessorType: tfArithmeticProcessor,
-	datadog.AttributeRemapperType:   tfAttributeRemapperProcessor,
-	datadog.CategoryProcessorType:   tfCategoryProcessor,
-	datadog.DateRemapperType:        tfDateRemapperProcessor,
-	datadog.GrokParserType:          tfGrokParserProcessor,
-	datadog.MessageRemapperType:     tfMessageRemapperProcessor,
-	datadog.NestedPipelineType:      tfNestedPipelineProcessor,
-	datadog.ServiceRemapperType:     tfServiceRemapperProcessor,
-	datadog.StatusRemapperType:      tfStatusRemapperProcessor,
-	datadog.TraceIdRemapperType:     tfTraceIdRemapperProcessor,
-	datadog.UrlParserType:           tfUrlParserProcessor,
-	datadog.UserAgentParserType:     tfUserAgentParserProcessor,
+	datadog.ArithmeticProcessorType:    tfArithmeticProcessor,
+	datadog.AttributeRemapperType:      tfAttributeRemapperProcessor,
+	datadog.CategoryProcessorType:      tfCategoryProcessor,
+	datadog.DateRemapperType:           tfDateRemapperProcessor,
+	datadog.GeoIPParserType:            tfGeoIPParserProcessor,
+	datadog.GrokParserType:             tfGrokParserProcessor,
+	datadog.MessageRemapperType:        tfMessageRemapperProcessor,
+	datadog.NestedPipelineType:         tfNestedPipelineProcessor,
+	datadog.ServiceRemapperType:        tfServiceRemapperProcessor,
+	datadog.StatusRemapperType:         tfStatusRemapperProcessor,
+	datadog.StringBuilderProcessorType: tfStringBuilderProcessor,
+	datadog.TraceIdRemapperType:        tfTraceIdRemapperProcessor,
+	datadog.UrlParserType:              tfUrlParserProcessor,
+	datadog.UserAgentParserType:        tfUserAgentParserProcessor,
 }
 
 var arithmeticProcessor = &schema.Schema{
@@ -135,6 +143,20 @@ var dateRemapper = &schema.Schema{
 	},
 }
 
+var geoIPParser = &schema.Schema{
+	Type:     schema.TypeList,
+	MaxItems: 1,
+	Optional: true,
+	Elem: &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"name":       {Type: schema.TypeString, Optional: true},
+			"is_enabled": {Type: schema.TypeBool, Optional: true},
+			"sources":    {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
+			"target":     {Type: schema.TypeString, Required: true},
+		},
+	},
+}
+
 var grokParser = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
@@ -144,6 +166,11 @@ var grokParser = &schema.Schema{
 			"name":       {Type: schema.TypeString, Optional: true},
 			"is_enabled": {Type: schema.TypeBool, Optional: true},
 			"source":     {Type: schema.TypeString, Required: true},
+			"samples": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
 			"grok": {
 				Type:     schema.TypeList,
 				MaxItems: 1,
@@ -183,6 +210,21 @@ var statusRemmaper = &schema.Schema{
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: sourceRemapper,
+	},
+}
+
+var stringBuilderProcessor = &schema.Schema{
+	Type:     schema.TypeList,
+	MaxItems: 1,
+	Optional: true,
+	Elem: &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"name":               {Type: schema.TypeString, Optional: true},
+			"is_enabled":         {Type: schema.TypeBool, Optional: true},
+			"template":           {Type: schema.TypeString, Required: true},
+			"target":             {Type: schema.TypeString, Required: true},
+			"is_replace_missing": {Type: schema.TypeBool, Optional: true},
+		},
 	},
 }
 
@@ -346,10 +388,14 @@ func buildTerraformProcessor(ddProcessor datadog.LogsProcessor) (map[string]inte
 		datadog.StatusRemapperType,
 		datadog.TraceIdRemapperType:
 		tfProcessor = buildTerraformSourceRemapper(ddProcessor.Definition.(datadog.SourceRemapper))
+	case datadog.GeoIPParserType:
+		tfProcessor = buildTerraformGeoIPParser(ddProcessor.Definition.(datadog.GeoIPParser))
 	case datadog.GrokParserType:
 		tfProcessor = buildTerraformGrokParser(ddProcessor.Definition.(datadog.GrokParser))
 	case datadog.NestedPipelineType:
 		tfProcessor, err = buildTerraformNestedPipeline(ddProcessor.Definition.(datadog.NestedPipeline))
+	case datadog.StringBuilderProcessorType:
+		tfProcessor = buildTerraformStringBuilderProcessor(ddProcessor.Definition.(datadog.StringBuilderProcessor))
 	case datadog.UrlParserType:
 		tfProcessor = buildTerraformUrlParser(ddProcessor.Definition.(datadog.UrlParser))
 	case datadog.UserAgentParserType:
@@ -394,10 +440,26 @@ func buildTerraformNestedPipeline(ddNested datadog.NestedPipeline) (map[string]i
 	}, nil
 }
 
+func buildTerraformStringBuilderProcessor(ddStringBuilder datadog.StringBuilderProcessor) map[string]interface{} {
+	return map[string]interface{}{
+		"template":           ddStringBuilder.GetTemplate(),
+		"target":             ddStringBuilder.GetTarget(),
+		"is_replace_missing": ddStringBuilder.GetIsReplaceMissing(),
+	}
+}
+
+func buildTerraformGeoIPParser(ddGeoIPParser datadog.GeoIPParser) map[string]interface{} {
+	return map[string]interface{}{
+		"sources": ddGeoIPParser.Sources,
+		"target":  ddGeoIPParser.GetTarget(),
+	}
+}
+
 func buildTerraformGrokParser(ddGrok datadog.GrokParser) map[string]interface{} {
 	return map[string]interface{}{
-		"source": ddGrok.GetSource(),
-		"grok":   buildTerraformGrokRule(ddGrok.GrokRule),
+		"samples": ddGrok.Samples,
+		"source":  ddGrok.GetSource(),
+		"grok":    buildTerraformGrokRule(ddGrok.GrokRule),
 	}
 }
 
@@ -508,10 +570,14 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 		datadog.StatusRemapperType,
 		datadog.TraceIdRemapperType:
 		ddProcessor.Definition = buildDatadogSourceRemapper(tfProcessor)
+	case datadog.GeoIPParserType:
+		ddProcessor.Definition = buildDatadogGeoIPParser(tfProcessor)
 	case datadog.GrokParserType:
 		ddProcessor.Definition = buildDatadogGrokParser(tfProcessor)
 	case datadog.NestedPipelineType:
 		ddProcessor.Definition, err = buildDatadogNestedPipeline(tfProcessor)
+	case datadog.StringBuilderProcessorType:
+		ddProcessor.Definition = buildDatadogStringBuilderProcessor(tfProcessor)
 	case datadog.UrlParserType:
 		ddProcessor.Definition = buildDatadogUrlParser(tfProcessor)
 	case datadog.UserAgentParserType:
@@ -572,10 +638,42 @@ func buildDatadogNestedPipeline(tfProcessor map[string]interface{}) (datadog.Nes
 	return ddNestedPipeline, nil
 }
 
+func buildDatadogStringBuilderProcessor(tfProcessor map[string]interface{}) datadog.StringBuilderProcessor {
+	ddStringBuilder := datadog.StringBuilderProcessor{}
+	if tfTemplate, exists := tfProcessor["template"].(string); exists {
+		ddStringBuilder.SetTemplate(tfTemplate)
+	}
+	if tfTarget, exists := tfProcessor["target"].(string); exists {
+		ddStringBuilder.SetTarget(tfTarget)
+	}
+	if tfReplaceMissing, exists := tfProcessor["is_replace_missing"].(bool); exists {
+		ddStringBuilder.SetIsReplaceMissing(tfReplaceMissing)
+	}
+	return ddStringBuilder
+}
+
+func buildDatadogGeoIPParser(tfProcessor map[string]interface{}) datadog.GeoIPParser {
+	ddGeoIPParser := datadog.GeoIPParser{}
+	if tfTarget, exists := tfProcessor["target"].(string); exists {
+		ddGeoIPParser.SetTarget(tfTarget)
+	}
+	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
+		ddGeoIPParser.Sources = ddSources
+	}
+	return ddGeoIPParser
+}
+
 func buildDatadogGrokParser(tfProcessor map[string]interface{}) datadog.GrokParser {
 	ddGrokParser := datadog.GrokParser{}
 	if tfSource, exists := tfProcessor["source"].(string); exists {
 		ddGrokParser.SetSource(tfSource)
+	}
+	if tfSamples, exists := tfProcessor["samples"].([]interface{}); exists && len(tfSamples) > 0 {
+		ddSamples := make([]string, len(tfSamples))
+		for i, tfSample := range tfSamples {
+			ddSamples[i] = tfSample.(string)
+		}
+		ddGrokParser.Samples = ddSamples
 	}
 	if tfGrok, exists := tfProcessor["grok"].([]interface{}); exists && len(tfGrok) > 0 {
 		ddGrok := datadog.GrokRule{}
