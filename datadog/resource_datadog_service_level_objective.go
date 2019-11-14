@@ -87,7 +87,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Type:          schema.TypeList,
 				MaxItems:      1,
 				Optional:      true,
-				ConflictsWith: []string{"monitor_ids", "monitor_search", "groups"},
+				ConflictsWith: []string{"monitor_ids", "groups"},
 				Description:   "The metric query of good / total events",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -113,7 +113,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 			"monitor_ids": {
 				Type:          schema.TypeSet,
 				Optional:      false,
-				ConflictsWith: []string{"query", "monitor_search"},
+				ConflictsWith: []string{"query"},
 				Description:   "A static set of monitor IDs to use as part of the SLO",
 				Elem:          &schema.Schema{Type: schema.TypeInt, MinItems: 1},
 			},
