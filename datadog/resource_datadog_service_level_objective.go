@@ -112,16 +112,10 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 			// Monitor-Based SLO
 			"monitor_ids": {
 				Type:          schema.TypeSet,
-				Optional:      true,
+				Optional:      false,
 				ConflictsWith: []string{"query", "monitor_search"},
 				Description:   "A static set of monitor IDs to use as part of the SLO",
 				Elem:          &schema.Schema{Type: schema.TypeInt, MinItems: 1},
-			},
-			"monitor_search": {
-				Type:          schema.TypeString,
-				Optional:      true,
-				ConflictsWith: []string{"query", "monitor_ids"},
-				Description:   "A dynamic search on creation for the SLO",
 			},
 			"groups": {
 				Type:          schema.TypeSet,
