@@ -527,7 +527,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "description", "Created using the Datadog provider in Terraform"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "layout_type", "ordered"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "is_read_only", "true"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.#", "13"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.#", "14"),
 					// Alert Graph widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.0.alert_graph_definition.0.alert_id", "895605"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.0.alert_graph_definition.0.viz_type", "timeseries"),
