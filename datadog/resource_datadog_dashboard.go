@@ -2977,11 +2977,11 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 		},
 		"view_type": {
 			Type:     schema.TypeString,
-			Optional: true,
+			Required: true,
 		},
 		"slo_id": {
 			Type:     schema.TypeString,
-			Optional: true,
+			Required: true,
 		},
 		"show_error_budget": {
 			Type:     schema.TypeBool,
@@ -2989,11 +2989,11 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 		},
 		"view_mode": {
 			Type:     schema.TypeString,
-			Optional: true,
+			Required: true,
 		},
 		"time_windows": {
 			Type:     schema.TypeList,
-			Optional: true,
+			Required: true,
 			Elem:     &schema.Schema{Type: schema.TypeString},
 		},
 	}

@@ -731,11 +731,11 @@ Nested `widget` blocks have the following structure:
         - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
         - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
   - `service_level_objective_definition`: The definition for a Service Level Objective widget. Exactly one nested block is allowed with the following structure:
-        - `view_type`: (Optional) Type of view to use when displaying the widget. Only "detail" is currently supported.
-        - `slo_id`: (Optional) The ID of the service level objective used by the widget.
+        - `view_type`: (Required) Type of view to use when displaying the widget. Only "detail" is currently supported.
+        - `slo_id`: (Required) The ID of the service level objective used by the widget.
         - `show_error_budget`: (Optional) Whether to show the error budget or not.
-        - `view_mode`: (Optional) View mode for the widget. One of "overall", "component", or "both".
-        - `time_windows`: (Optional) List of time windows to display in the widget. Each value in the list must be one of "7d", "30d", "90d", "week_to_date",  "previous_week", "month_to_date", or "previous_month".
+        - `view_mode`: (Required) View mode for the widget. One of "overall", "component", or "both".
+        - `time_windows`: (Required) List of time windows to display in the widget. Each value in the list must be one of "7d", "30d", "90d", "week_to_date",  "previous_week", "month_to_date", or "previous_month".
         - `title`: (Optional) The title of the widget.
         - `title_size`: (Optional) The size of the widget's title. Default is 16.
         - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
