@@ -118,10 +118,10 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Elem:          &schema.Schema{Type: schema.TypeInt, MinItems: 1},
 			},
 			"monitor_search": {
-				Type:          schema.TypeString,
-				Optional:      true,
-				Removed:       "Feature is not yet supported",
-				Computed:      true,
+				Type:     schema.TypeString,
+				Optional: true,
+				Removed:  "Feature is not yet supported",
+				Computed: true,
 			},
 			"groups": {
 				Type:          schema.TypeSet,
