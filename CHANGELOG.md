@@ -1,4 +1,8 @@
 ## 2.5.1 (Unreleased)
+
+BUGFIXES:
+* `monitor_search`: Feature removed from SLO as it is not yet supported
+
 ## 2.5.0 (October 22, 2019)
 
 FEATURES:

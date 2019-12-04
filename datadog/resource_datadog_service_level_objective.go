@@ -117,6 +117,12 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Description:   "A static set of monitor IDs to use as part of the SLO",
 				Elem:          &schema.Schema{Type: schema.TypeInt, MinItems: 1},
 			},
+			"monitor_search": {
+				Type:          schema.TypeString,
+				Optional:      true,
+				Removed:   "Feature is not yet supported",
+				Computed: true
+			},
 			"groups": {
 				Type:          schema.TypeSet,
 				Optional:      true,
