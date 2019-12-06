@@ -10275,6 +10275,37 @@ func (i *IntegrationAWSServicesLogCollection) SetAccountID(v string) {
 	i.AccountID = &v
 }
 
+// GetAutoMute returns the AutoMute field if non-nil, zero value otherwise.
+func (i *IntegrationGCP) GetAutoMute() bool {
+	if i == nil || i.AutoMute == nil {
+		return false
+	}
+	return *i.AutoMute
+}
+
+// GetAutoMuteOk returns a tuple with the AutoMute field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCP) GetAutoMuteOk() (bool, bool) {
+	if i == nil || i.AutoMute == nil {
+		return false, false
+	}
+	return *i.AutoMute, true
+}
+
+// HasAutoMute returns a boolean if a field has been set.
+func (i *IntegrationGCP) HasAutoMute() bool {
+	if i != nil && i.AutoMute != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAutoMute allocates a new i.AutoMute and returns the pointer to it.
+func (i *IntegrationGCP) SetAutoMute(v bool) {
+	i.AutoMute = &v
+}
+
 // GetClientEmail returns the ClientEmail field if non-nil, zero value otherwise.
 func (i *IntegrationGCP) GetClientEmail() string {
 	if i == nil || i.ClientEmail == nil {
@@ -10428,6 +10459,37 @@ func (i *IntegrationGCPCreateRequest) HasAuthURI() bool {
 // SetAuthURI allocates a new i.AuthURI and returns the pointer to it.
 func (i *IntegrationGCPCreateRequest) SetAuthURI(v string) {
 	i.AuthURI = &v
+}
+
+// GetAutoMute returns the AutoMute field if non-nil, zero value otherwise.
+func (i *IntegrationGCPCreateRequest) GetAutoMute() bool {
+	if i == nil || i.AutoMute == nil {
+		return false
+	}
+	return *i.AutoMute
+}
+
+// GetAutoMuteOk returns a tuple with the AutoMute field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPCreateRequest) GetAutoMuteOk() (bool, bool) {
+	if i == nil || i.AutoMute == nil {
+		return false, false
+	}
+	return *i.AutoMute, true
+}
+
+// HasAutoMute returns a boolean if a field has been set.
+func (i *IntegrationGCPCreateRequest) HasAutoMute() bool {
+	if i != nil && i.AutoMute != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAutoMute allocates a new i.AutoMute and returns the pointer to it.
+func (i *IntegrationGCPCreateRequest) SetAutoMute(v bool) {
+	i.AutoMute = &v
 }
 
 // GetClientEmail returns the ClientEmail field if non-nil, zero value otherwise.
@@ -10771,6 +10833,99 @@ func (i *IntegrationGCPDeleteRequest) SetProjectID(v string) {
 	i.ProjectID = &v
 }
 
+// GetAuthProviderX509CertURL returns the AuthProviderX509CertURL field if non-nil, zero value otherwise.
+func (i *IntegrationGCPUpdateRequest) GetAuthProviderX509CertURL() string {
+	if i == nil || i.AuthProviderX509CertURL == nil {
+		return ""
+	}
+	return *i.AuthProviderX509CertURL
+}
+
+// GetAuthProviderX509CertURLOk returns a tuple with the AuthProviderX509CertURL field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPUpdateRequest) GetAuthProviderX509CertURLOk() (string, bool) {
+	if i == nil || i.AuthProviderX509CertURL == nil {
+		return "", false
+	}
+	return *i.AuthProviderX509CertURL, true
+}
+
+// HasAuthProviderX509CertURL returns a boolean if a field has been set.
+func (i *IntegrationGCPUpdateRequest) HasAuthProviderX509CertURL() bool {
+	if i != nil && i.AuthProviderX509CertURL != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAuthProviderX509CertURL allocates a new i.AuthProviderX509CertURL and returns the pointer to it.
+func (i *IntegrationGCPUpdateRequest) SetAuthProviderX509CertURL(v string) {
+	i.AuthProviderX509CertURL = &v
+}
+
+// GetAuthURI returns the AuthURI field if non-nil, zero value otherwise.
+func (i *IntegrationGCPUpdateRequest) GetAuthURI() string {
+	if i == nil || i.AuthURI == nil {
+		return ""
+	}
+	return *i.AuthURI
+}
+
+// GetAuthURIOk returns a tuple with the AuthURI field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPUpdateRequest) GetAuthURIOk() (string, bool) {
+	if i == nil || i.AuthURI == nil {
+		return "", false
+	}
+	return *i.AuthURI, true
+}
+
+// HasAuthURI returns a boolean if a field has been set.
+func (i *IntegrationGCPUpdateRequest) HasAuthURI() bool {
+	if i != nil && i.AuthURI != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAuthURI allocates a new i.AuthURI and returns the pointer to it.
+func (i *IntegrationGCPUpdateRequest) SetAuthURI(v string) {
+	i.AuthURI = &v
+}
+
+// GetAutoMute returns the AutoMute field if non-nil, zero value otherwise.
+func (i *IntegrationGCPUpdateRequest) GetAutoMute() bool {
+	if i == nil || i.AutoMute == nil {
+		return false
+	}
+	return *i.AutoMute
+}
+
+// GetAutoMuteOk returns a tuple with the AutoMute field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPUpdateRequest) GetAutoMuteOk() (bool, bool) {
+	if i == nil || i.AutoMute == nil {
+		return false, false
+	}
+	return *i.AutoMute, true
+}
+
+// HasAutoMute returns a boolean if a field has been set.
+func (i *IntegrationGCPUpdateRequest) HasAutoMute() bool {
+	if i != nil && i.AutoMute != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAutoMute allocates a new i.AutoMute and returns the pointer to it.
+func (i *IntegrationGCPUpdateRequest) SetAutoMute(v bool) {
+	i.AutoMute = &v
+}
+
 // GetClientEmail returns the ClientEmail field if non-nil, zero value otherwise.
 func (i *IntegrationGCPUpdateRequest) GetClientEmail() string {
 	if i == nil || i.ClientEmail == nil {
@@ -10800,6 +10955,68 @@ func (i *IntegrationGCPUpdateRequest) HasClientEmail() bool {
 // SetClientEmail allocates a new i.ClientEmail and returns the pointer to it.
 func (i *IntegrationGCPUpdateRequest) SetClientEmail(v string) {
 	i.ClientEmail = &v
+}
+
+// GetClientID returns the ClientID field if non-nil, zero value otherwise.
+func (i *IntegrationGCPUpdateRequest) GetClientID() string {
+	if i == nil || i.ClientID == nil {
+		return ""
+	}
+	return *i.ClientID
+}
+
+// GetClientIDOk returns a tuple with the ClientID field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPUpdateRequest) GetClientIDOk() (string, bool) {
+	if i == nil || i.ClientID == nil {
+		return "", false
+	}
+	return *i.ClientID, true
+}
+
+// HasClientID returns a boolean if a field has been set.
+func (i *IntegrationGCPUpdateRequest) HasClientID() bool {
+	if i != nil && i.ClientID != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetClientID allocates a new i.ClientID and returns the pointer to it.
+func (i *IntegrationGCPUpdateRequest) SetClientID(v string) {
+	i.ClientID = &v
+}
+
+// GetClientX509CertURL returns the ClientX509CertURL field if non-nil, zero value otherwise.
+func (i *IntegrationGCPUpdateRequest) GetClientX509CertURL() string {
+	if i == nil || i.ClientX509CertURL == nil {
+		return ""
+	}
+	return *i.ClientX509CertURL
+}
+
+// GetClientX509CertURLOk returns a tuple with the ClientX509CertURL field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPUpdateRequest) GetClientX509CertURLOk() (string, bool) {
+	if i == nil || i.ClientX509CertURL == nil {
+		return "", false
+	}
+	return *i.ClientX509CertURL, true
+}
+
+// HasClientX509CertURL returns a boolean if a field has been set.
+func (i *IntegrationGCPUpdateRequest) HasClientX509CertURL() bool {
+	if i != nil && i.ClientX509CertURL != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetClientX509CertURL allocates a new i.ClientX509CertURL and returns the pointer to it.
+func (i *IntegrationGCPUpdateRequest) SetClientX509CertURL(v string) {
+	i.ClientX509CertURL = &v
 }
 
 // GetHostFilters returns the HostFilters field if non-nil, zero value otherwise.
@@ -10833,6 +11050,68 @@ func (i *IntegrationGCPUpdateRequest) SetHostFilters(v string) {
 	i.HostFilters = &v
 }
 
+// GetPrivateKey returns the PrivateKey field if non-nil, zero value otherwise.
+func (i *IntegrationGCPUpdateRequest) GetPrivateKey() string {
+	if i == nil || i.PrivateKey == nil {
+		return ""
+	}
+	return *i.PrivateKey
+}
+
+// GetPrivateKeyOk returns a tuple with the PrivateKey field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPUpdateRequest) GetPrivateKeyOk() (string, bool) {
+	if i == nil || i.PrivateKey == nil {
+		return "", false
+	}
+	return *i.PrivateKey, true
+}
+
+// HasPrivateKey returns a boolean if a field has been set.
+func (i *IntegrationGCPUpdateRequest) HasPrivateKey() bool {
+	if i != nil && i.PrivateKey != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetPrivateKey allocates a new i.PrivateKey and returns the pointer to it.
+func (i *IntegrationGCPUpdateRequest) SetPrivateKey(v string) {
+	i.PrivateKey = &v
+}
+
+// GetPrivateKeyID returns the PrivateKeyID field if non-nil, zero value otherwise.
+func (i *IntegrationGCPUpdateRequest) GetPrivateKeyID() string {
+	if i == nil || i.PrivateKeyID == nil {
+		return ""
+	}
+	return *i.PrivateKeyID
+}
+
+// GetPrivateKeyIDOk returns a tuple with the PrivateKeyID field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPUpdateRequest) GetPrivateKeyIDOk() (string, bool) {
+	if i == nil || i.PrivateKeyID == nil {
+		return "", false
+	}
+	return *i.PrivateKeyID, true
+}
+
+// HasPrivateKeyID returns a boolean if a field has been set.
+func (i *IntegrationGCPUpdateRequest) HasPrivateKeyID() bool {
+	if i != nil && i.PrivateKeyID != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetPrivateKeyID allocates a new i.PrivateKeyID and returns the pointer to it.
+func (i *IntegrationGCPUpdateRequest) SetPrivateKeyID(v string) {
+	i.PrivateKeyID = &v
+}
+
 // GetProjectID returns the ProjectID field if non-nil, zero value otherwise.
 func (i *IntegrationGCPUpdateRequest) GetProjectID() string {
 	if i == nil || i.ProjectID == nil {
@@ -10862,6 +11141,68 @@ func (i *IntegrationGCPUpdateRequest) HasProjectID() bool {
 // SetProjectID allocates a new i.ProjectID and returns the pointer to it.
 func (i *IntegrationGCPUpdateRequest) SetProjectID(v string) {
 	i.ProjectID = &v
+}
+
+// GetTokenURI returns the TokenURI field if non-nil, zero value otherwise.
+func (i *IntegrationGCPUpdateRequest) GetTokenURI() string {
+	if i == nil || i.TokenURI == nil {
+		return ""
+	}
+	return *i.TokenURI
+}
+
+// GetTokenURIOk returns a tuple with the TokenURI field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPUpdateRequest) GetTokenURIOk() (string, bool) {
+	if i == nil || i.TokenURI == nil {
+		return "", false
+	}
+	return *i.TokenURI, true
+}
+
+// HasTokenURI returns a boolean if a field has been set.
+func (i *IntegrationGCPUpdateRequest) HasTokenURI() bool {
+	if i != nil && i.TokenURI != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTokenURI allocates a new i.TokenURI and returns the pointer to it.
+func (i *IntegrationGCPUpdateRequest) SetTokenURI(v string) {
+	i.TokenURI = &v
+}
+
+// GetType returns the Type field if non-nil, zero value otherwise.
+func (i *IntegrationGCPUpdateRequest) GetType() string {
+	if i == nil || i.Type == nil {
+		return ""
+	}
+	return *i.Type
+}
+
+// GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (i *IntegrationGCPUpdateRequest) GetTypeOk() (string, bool) {
+	if i == nil || i.Type == nil {
+		return "", false
+	}
+	return *i.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (i *IntegrationGCPUpdateRequest) HasType() bool {
+	if i != nil && i.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetType allocates a new i.Type and returns the pointer to it.
+func (i *IntegrationGCPUpdateRequest) SetType(v string) {
+	i.Type = &v
 }
 
 // GetAPIToken returns the APIToken field if non-nil, zero value otherwise.
@@ -11761,6 +12102,99 @@ func (l *LogStreamDefinition) HasType() bool {
 // SetType allocates a new l.Type and returns the pointer to it.
 func (l *LogStreamDefinition) SetType(v string) {
 	l.Type = &v
+}
+
+// GetDefaultLookup returns the DefaultLookup field if non-nil, zero value otherwise.
+func (l *LookupProcessor) GetDefaultLookup() string {
+	if l == nil || l.DefaultLookup == nil {
+		return ""
+	}
+	return *l.DefaultLookup
+}
+
+// GetDefaultLookupOk returns a tuple with the DefaultLookup field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (l *LookupProcessor) GetDefaultLookupOk() (string, bool) {
+	if l == nil || l.DefaultLookup == nil {
+		return "", false
+	}
+	return *l.DefaultLookup, true
+}
+
+// HasDefaultLookup returns a boolean if a field has been set.
+func (l *LookupProcessor) HasDefaultLookup() bool {
+	if l != nil && l.DefaultLookup != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetDefaultLookup allocates a new l.DefaultLookup and returns the pointer to it.
+func (l *LookupProcessor) SetDefaultLookup(v string) {
+	l.DefaultLookup = &v
+}
+
+// GetSource returns the Source field if non-nil, zero value otherwise.
+func (l *LookupProcessor) GetSource() string {
+	if l == nil || l.Source == nil {
+		return ""
+	}
+	return *l.Source
+}
+
+// GetSourceOk returns a tuple with the Source field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (l *LookupProcessor) GetSourceOk() (string, bool) {
+	if l == nil || l.Source == nil {
+		return "", false
+	}
+	return *l.Source, true
+}
+
+// HasSource returns a boolean if a field has been set.
+func (l *LookupProcessor) HasSource() bool {
+	if l != nil && l.Source != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSource allocates a new l.Source and returns the pointer to it.
+func (l *LookupProcessor) SetSource(v string) {
+	l.Source = &v
+}
+
+// GetTarget returns the Target field if non-nil, zero value otherwise.
+func (l *LookupProcessor) GetTarget() string {
+	if l == nil || l.Target == nil {
+		return ""
+	}
+	return *l.Target
+}
+
+// GetTargetOk returns a tuple with the Target field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (l *LookupProcessor) GetTargetOk() (string, bool) {
+	if l == nil || l.Target == nil {
+		return "", false
+	}
+	return *l.Target, true
+}
+
+// HasTarget returns a boolean if a field has been set.
+func (l *LookupProcessor) HasTarget() bool {
+	if l != nil && l.Target != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTarget allocates a new l.Target and returns the pointer to it.
+func (l *LookupProcessor) SetTarget(v string) {
+	l.Target = &v
 }
 
 // GetColorPreference returns the ColorPreference field if non-nil, zero value otherwise.
