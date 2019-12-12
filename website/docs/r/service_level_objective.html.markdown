@@ -29,7 +29,7 @@ resource "datadog_service_level_objective" "foo" {
     target = 99.9
     warning = 99.99
     target_display = "99.900"
-    warning_display = "99.990"      
+    warning_display = "99.990"
   }
 
   thresholds {
@@ -37,7 +37,7 @@ resource "datadog_service_level_objective" "foo" {
     target = 99.9
     warning = 99.99
     target_display = "99.900"
-    warning_display = "99.990"      
+    warning_display = "99.990"
   }
 
   tags = ["foo:bar", "baz"]
@@ -56,13 +56,13 @@ resource "datadog_service_level_objective" "bar" {
   thresholds {
     timeframe = "7d"
     target = 99.9
-    warning = 99.99      
+    warning = 99.99
   }
 
   thresholds {
     timeframe = "30d"
     target = 99.9
-    warning = 99.99      
+    warning = 99.99
   }
 
   tags = ["foo:bar", "baz"]
@@ -96,17 +96,16 @@ The following options are specific to the `type` of service level objective:
         * `numerator` - (Required) the sum of all the `good` events
         * `denominator` - (Required) the sum of the `total` events
         * Example Usage:
-        
+
 ```hcl
 query {
     numerator   = "sum:my.custom.count.metric{type:good}.as_count()"
-    denominator = "sum:my.custom.count.metric{*}.as_count()" 
+    denominator = "sum:my.custom.count.metric{*}.as_count()"
 }
 ```
 
 * `monitor` type SLOs:
-    * `monitor_ids` - (Optional) A list of numeric monitor IDs for which to use as SLIs. Their tags will be auto-imported into `monitor_tags` field in the API resource. At least 1 of `monitor_ids` or `monitor_search` must be provided.
-    * `monitor_search` - (Optional) The monitor query search used on the monitor search API to add monitor_ids by searching. Their tags will be auto-imported into `monitor_tags` field in the API resource. At least 1 of `monitor_ids` or `monitor_search` must be provided.
+    * `monitor_ids` - (Required) A list of numeric monitor IDs for which to use as SLIs. Their tags will be auto-imported into `monitor_tags` field in the API resource.
     * `groups` - (Optional) A custom set of groups from the monitor(s) for which to use as the SLI instead of all the groups.
 
 
