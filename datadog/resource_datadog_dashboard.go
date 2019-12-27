@@ -2846,7 +2846,7 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"limit": {
-			Type:     schema.TypeString,
+			Type:     schema.TypeInt,
 			Optional: true,
 		},
 		"order": {
