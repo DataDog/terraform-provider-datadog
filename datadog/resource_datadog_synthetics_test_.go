@@ -197,6 +197,52 @@ func syntheticsTestOptions() *schema.Schema {
 					Type:     schema.TypeBool,
 					Optional: true,
 				},
+				"monitor_options": syntheticsTestMonitorOptions(),
+			},
+		},
+	}
+}
+
+func syntheticsTestMonitorOptions() *schema.Schema {
+	return &schema.Schema{
+		Type: schema.TypeMap,
+		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
+			if key == "options.follow_redirects" || key == "options.accept_self_signed" {
+				// TF nested schemas is limited to string values only
+				// follow_redirects and accept_self_signed being booleans in Datadog json api
+				// we need a sane way to convert from boolean to string
+				// and from string to boolean
+				oldValue, err1 := strconv.ParseBool(old)
+				newValue, err2 := strconv.ParseBool(new)
+				if err1 != nil || err2 != nil {
+					return false
+				}
+				return oldValue == newValue
+			}
+			return old == new
+		},
+		ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+			renotifyInterval, ok := val.(map[string]interface{})["renotify_interval"]
+			if ok {
+				renotifyIntervalInt, ok := renotifyInterval.(int)
+				if !ok {
+					errs = append(errs, fmt.Errorf("%q.renotify_interval must be number, got: %v", key, renotifyInterval))
+				}
+
+				if renotifyIntervalInt <= 0 {
+					errs = append(errs, fmt.Errorf("%q.renotify_interval must be more than 0, got: %d", key, renotifyIntervalInt))
+				}
+			}
+
+			return
+		},
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"renotify_interval": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
 			},
 		},
 	}
