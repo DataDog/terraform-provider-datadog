@@ -165,7 +165,7 @@ type Widget struct {
 	// For Timeseries, TopList, EventTimeline, EvenStream, AlertGraph, CheckStatus, ServiceSummary, LogStream widgets
 	Time *Time `json:"time,omitempty"`
 
-	// For Timeseries, QueryValue, QueryTable, HostMap, Change, Toplist, Process widgets
+	// For Timeseries, QueryValue, HostMap, Change, Toplist, Process widgets
 	TileDef *TileDef `json:"tile_def,omitempty"`
 
 	// For FreeText widget
@@ -180,7 +180,7 @@ type Widget struct {
 	// AlertGraph widget
 	VizType *string `json:"viz_type,omitempty"`
 
-	// For AlertValue, QueryValue, QueryTable, FreeText, Note widgets
+	// For AlertValue, QueryValue, FreeText, Note widgets
 	TextAlign *string `json:"text_align,omitempty"`
 
 	// For FreeText, Note widgets
@@ -190,7 +190,7 @@ type Widget struct {
 	AlertID     *int  `json:"alert_id,omitempty"`
 	AutoRefresh *bool `json:"auto_refresh,omitempty"`
 
-	// For Timeseries, QueryValue, QueryTable, Toplist widgets
+	// For Timeseries, QueryValue, Toplist widgets
 	Legend     *bool   `json:"legend,omitempty"`
 	LegendSize *string `json:"legend_size,omitempty"`
 
