@@ -346,6 +346,29 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			time_windows = ["7d", "previous_week"]
 		}
 	}
+	widget {
+		query_table_definition {
+		  request {
+			q = "avg:system.load.1{env:staging} by {account}"
+			aggregator = "sum"
+			limit = "10"
+			conditional_formats {
+				comparator = "<"
+				value = "2"
+				palette = "white_on_green"
+			}
+			conditional_formats {
+				comparator = ">"
+				value = "2.2"
+				palette = "white_on_red"
+			}
+		  }
+		  title = "Widget Title"
+		  time = {
+		    live_span = "1h"
+		  }
+		}
+	}
 	template_variable {
 		name   = "var_1"
 		prefix = "host"
@@ -527,7 +550,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "description", "Created using the Datadog provider in Terraform"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "layout_type", "ordered"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "is_read_only", "true"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.#", "14"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.#", "15"),
 					// Alert Graph widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.0.alert_graph_definition.0.alert_id", "895605"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.0.alert_graph_definition.0.viz_type", "timeseries"),
@@ -597,7 +620,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.7.note_definition.0.show_tick", "true"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.7.note_definition.0.tick_edge", "left"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.7.note_definition.0.tick_pos", "50%"),
-					// Query valye widget
+					// Query Value widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_value_definition.0.request.0.q", "avg:system.load.1{env:staging} by {account}"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_value_definition.0.request.0.aggregator", "sum"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_value_definition.0.request.0.conditional_formats.#", "2"),
@@ -612,6 +635,21 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_value_definition.0.precision", "4"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_value_definition.0.title", "Widget Title"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_value_definition.0.time.live_span", "1h"),
+					// Query Table widget
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_table_definition.0.request.0.q", "avg:system.load.1{env:staging} by {account}"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_table_definition.0.request.0.conditional_formats.#", "2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_table_definition.0.request.0.conditional_formats.0.comparator", "<"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_table_definition.0.request.0.conditional_formats.0.value", "2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_table_definition.0.request.0.conditional_formats.0.palette", "white_on_green"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_table_definition.0.request.0.conditional_formats.1.comparator", ">"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_table_definition.0.request.0.conditional_formats.1.value", "2.2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_table_definition.0.request.0.conditional_formats.1.palette", "white_on_red"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_table_definition.0.request.0.alias", "Lookups"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_table_definition.0.request.0.aggregator", "sum"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_table_definition.0.request.0.limit", "10"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_table_definition.0.request.0.order", "desc"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_table_definition.0.title", "Widget Title"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_table_definition.0.time.live_span", "1h"),
 					// Scatterplot widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.request.0.x.0.q", "avg:system.cpu.user{*} by {service, account}"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.9.scatterplot_definition.0.request.0.x.0.aggregator", "max"),
