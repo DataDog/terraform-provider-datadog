@@ -376,6 +376,8 @@ var createSyntheticsSSLTestStep = resource.TestStep{
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.ssl", "options.accept_self_signed", "true"),
 		resource.TestCheckResourceAttr(
+			"datadog_synthetics_test.ssl", "options.monitor_options.renotify_interval", "20"),
+		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.ssl", "name", "name for synthetics test ssl"),
 		resource.TestCheckResourceAttr(
 			"datadog_synthetics_test.ssl", "message", "Notify @datadog.user"),
@@ -414,6 +416,9 @@ resource "datadog_synthetics_test" "ssl" {
 	options = {
 		tick_every = 60
 		accept_self_signed = true
+		monitor_options {
+			renotify_interval = 20
+		}
 	}
 
 	name = "name for synthetics test ssl"
