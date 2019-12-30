@@ -102,7 +102,7 @@ resource "datadog_user" "foo" {
 func datadogUserDestroyHelper(auth context.Context, s *terraform.State, client *datadog.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		id := r.Primary.ID
-		userResponse, _, err := client.UsersApi.GetUser(auth, id)
+		userResponse, _, err := client.UsersApi.GetUser(auth, id).Execute()
 		u := userResponse.GetUser()
 
 		if err != nil {
@@ -124,7 +124,7 @@ func datadogUserDestroyHelper(auth context.Context, s *terraform.State, client *
 func datadogUserExistsHelper(auth context.Context, s *terraform.State, client *datadog.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		id := r.Primary.ID
-		if _, _, err := client.UsersApi.GetUser(auth, id); err != nil {
+		if _, _, err := client.UsersApi.GetUser(auth, id).Execute(); err != nil {
 			return fmt.Errorf("Received an error retrieving user %s", err)
 		}
 	}

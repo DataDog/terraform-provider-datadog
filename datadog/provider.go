@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	cleanhttp "github.com/hashicorp/go-cleanhttp"
@@ -110,7 +111,11 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	)
 	config := datadog.NewConfiguration()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
-		config.BasePath = apiURL
+		if strings.Contains(apiURL, "datadoghq.eu") {
+			auth = context.WithValue(auth, datadog.ContextServerVariables, map[string]string{
+				"site": "datadoghq.eu",
+			})
+		}
 	}
 	datadogClient := datadog.NewAPIClient(config)
 

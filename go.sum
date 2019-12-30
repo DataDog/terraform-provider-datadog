@@ -19,6 +19,8 @@ github.com/ChrisTrenkamp/goxpath v0.0.0-20170922090931-c385f95c6022 h1:y8Gs8CzNf
 github.com/ChrisTrenkamp/goxpath v0.0.0-20170922090931-c385f95c6022/go.mod h1:nuWgzSkT5PnyOd+272uUmV0dnAnAn42Mk7PiQC5VzN4=
 github.com/DataDog/datadog-api-client-go v0.0.0-20191122173906-3fc81e967aee h1:E9xZ4WNXMXX3j+I5U9GmCO0wZDJV27Fq4elyZnuABr0=
 github.com/DataDog/datadog-api-client-go v0.0.0-20191122173906-3fc81e967aee/go.mod h1:1J9nHS2GnYTVMXP2kspgUvJxpBGucciCvrISW/sc+j4=
+github.com/DataDog/datadog-api-client-go v0.0.0-20191219183121-bef4e50dd06f h1:0+Th3epU0YC5y84UsqrXDrZkUyZmbydNh8X0bvEqaFc=
+github.com/DataDog/datadog-api-client-go v0.0.0-20191219183121-bef4e50dd06f/go.mod h1:1J9nHS2GnYTVMXP2kspgUvJxpBGucciCvrISW/sc+j4=
 github.com/Unknwon/com v0.0.0-20151008135407-28b053d5a292 h1:tuQ7w+my8a8mkwN7x2TSd7OzTjkZ7rAeSyH4xncuAMI=
 github.com/Unknwon/com v0.0.0-20151008135407-28b053d5a292/go.mod h1:KYCjqMOeHpNuTOiFQU6WEcTG7poCJrUs0YgyHNtn1no=
 github.com/abdullin/seq v0.0.0-20160510034733-d5467c17e7af/go.mod h1:5Jv4cbFiHJMsVxt52+i0Ha45fjshj6wxYr1r19tB9bw=

@@ -70,7 +70,7 @@ func resourceDatadogUserExists(d *schema.ResourceData, meta interface{}) (b bool
 	client := providerConf.DatadogClientV1
 	auth := providerConf.Auth
 
-	if _, _, err := client.UsersApi.GetUser(auth, d.Id()); err != nil {
+	if _, _, err := client.UsersApi.GetUser(auth, d.Id()).Execute(); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
@@ -99,14 +99,14 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 
 	// Datadog does not actually delete users, so CreateUser might return a 409.
 	// We ignore that case and proceed, likely re-enabling the user.
-	if _, _, err := client.UsersApi.CreateUser(auth, userCreate); err != nil {
+	if _, _, err := client.UsersApi.CreateUser(auth).User(userCreate).Execute(); err != nil {
 		if !strings.Contains(err.Error(), "API error 409 Conflict") {
 			return fmt.Errorf("error creating user: %s", err.Error())
 		}
 		log.Printf("[INFO] Updating existing Datadog user %s", *userCreate.Handle)
 	}
 
-	res, _, err := client.UsersApi.UpdateUser(auth, d.Get("handle").(string), userUpdate)
+	res, _, err := client.UsersApi.UpdateUser(auth, d.Get("handle").(string)).User(userUpdate).Execute()
 
 	if err != nil {
 		return fmt.Errorf("error creating user: %s", err.Error())
@@ -123,7 +123,7 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 	client := providerConf.DatadogClientV1
 	auth := providerConf.Auth
 
-	userResponse, _, err := client.UsersApi.GetUser(auth, d.Id())
+	userResponse, _, err := client.UsersApi.GetUser(auth, d.Id()).Execute()
 	if err != nil {
 		return err
 	}
@@ -148,7 +148,7 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 	userUpdate.SetAccessRole(d.Get("access_role").(string))
 	userUpdate.SetDisabled(d.Get("disabled").(bool))
 
-	if _, _, err := client.UsersApi.UpdateUser(auth, d.Get("handle").(string), userUpdate); err != nil {
+	if _, _, err := client.UsersApi.UpdateUser(auth, d.Get("handle").(string)).User(userUpdate).Execute(); err != nil {
 		return fmt.Errorf("error updating user: %s", err.Error())
 	}
 
@@ -162,13 +162,13 @@ func resourceDatadogUserDelete(d *schema.ResourceData, meta interface{}) error {
 
 	// Datadog does not actually delete users, but instead marks them as disabled.
 	// Bypass DeleteUser if GetUser returns User.Disabled == true, otherwise it will 400.
-	userResponse, _, err := client.UsersApi.GetUser(auth, d.Id())
+	userResponse, _, err := client.UsersApi.GetUser(auth, d.Id()).Execute()
 	u := userResponse.GetUser()
 	if err == nil && u.GetDisabled() {
 		return nil
 	}
 
-	if _, _, err := client.UsersApi.DisableUser(auth, d.Id()); err != nil {
+	if _, _, err := client.UsersApi.DisableUser(auth, d.Id()).Execute(); err != nil {
 		return err
 	}
 
