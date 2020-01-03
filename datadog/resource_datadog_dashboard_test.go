@@ -356,6 +356,26 @@ resource "datadog_dashboard" "ordered_dashboard" {
 		prefix = "service_name"
 		default = "autoscaling"
 	}
+	template_variable_preset {
+		name = "preset_1"
+
+		template_variable {
+			name = "var_1"
+			value = "var_1_value"
+		}
+		template_variable {
+			name = "var_2"
+			value = "var_2_value"
+		}
+	}
+	template_variable_preset {
+		name = "preset_2"
+
+		template_variable {
+			name = "var_1"
+			value = "var_1_value"
+		}
+	}
 }
 
 resource "datadog_dashboard" "free_dashboard" {
@@ -507,6 +527,26 @@ resource "datadog_dashboard" "free_dashboard" {
 		name   = "var_2"
 		prefix = "service_name"
 		default = "autoscaling"
+	}
+	template_variable_preset {
+		name = "preset_1"
+
+		template_variable {
+			name = "var_1"
+			value = "var_1_value"
+		}
+		template_variable {
+			name = "var_2"
+			value = "var_2_value"
+		}
+	}
+	template_variable_preset {
+		name = "preset_2"
+
+		template_variable {
+			name = "var_1"
+			value = "var_1_value"
+		}
 	}
 }
 `
@@ -733,6 +773,17 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable.1.default", "autoscaling"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "description", "Created using the Datadog provider in Terraform"),
 
+					// Template Variable Presets
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.#", "2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.0.name", "preset_1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.0.template_variable.0.name", "var_1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.0.template_variable.0.value", "var_1_value"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.0.template_variable.1.name", "var_2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.0.template_variable.1.value", "var_2_value"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.1.name", "preset_2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.1.template_variable.0.name", "var_1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.1.template_variable.0.value", "var_1_value"),
+
 					// Free layout dashboard
 
 					// Dashboard metadata
@@ -834,6 +885,17 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable.1.default", "autoscaling"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable.1.name", "var_2"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable.1.prefix", "service_name"),
+
+					// Template Variable Presets
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.#", "2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.0.name", "preset_1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.0.template_variable.0.name", "var_1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.0.template_variable.0.value", "var_1_value"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.0.template_variable.1.name", "var_2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.0.template_variable.1.value", "var_2_value"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.1.name", "preset_2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.1.template_variable.0.name", "var_1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.1.template_variable.0.value", "var_1_value"),
 				),
 			},
 		},
