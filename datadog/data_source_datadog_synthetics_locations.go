@@ -37,8 +37,8 @@ func dataSourceDatadogSyntheticsLocationsRead(d *schema.ResourceData, meta inter
 
 	// Fill locationsList with location names
 	for _, location := range syntheticsLocations {
-		// access the pointer of the struct element DisplayName
-		locationsList = append(locationsList, location.GetDisplayName())
+		// access the pointer of the struct element Name
+		locationsList = append(locationsList, location.GetName())
 	}
 
 	if len(syntheticsLocations) > 0 {
