@@ -8,7 +8,7 @@ description: |-
 
 # datadog_synthetics_locations
 
-Use this data source to retrieve information about Datadog's Synthetics Locations.
+Use this data source to retrieve Datadog's Synthetics Locations (to be used in Synthetics tests).
 ## Example Usage
 
 ```hcl
