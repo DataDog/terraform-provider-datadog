@@ -20,6 +20,8 @@ func dataSourceDatadogSyntheticsLocations() *schema.Resource {
 	}
 }
 
+type LocationMap map[string]string
+
 func dataSourceDatadogSyntheticsLocationsRead(d *schema.ResourceData, meta interface{}) error {
 
 	client := meta.(*datadog.Client)
@@ -33,10 +35,19 @@ func dataSourceDatadogSyntheticsLocationsRead(d *schema.ResourceData, meta inter
 	// Create a list of location names to be used in the data source
 	var locationsList []string
 
-	// Fill locationsList with location names
+	// Declare the list of maps
+	var LocationMapSlice []LocationMap
+
+	// Fill locationsList with the above map containing region, display name and name
 	for _, location := range syntheticsLocations {
-		// access the pointer of the struct element Name
-		locationsList = append(locationsList, location.GetName())
+		// access the pointer of each struct element
+		lm := LocationMap{"region": location.GetRegion(), "display_name": location.GetDisplayName(), "name": location.GetName()}
+		LocationMapSlice = append(LocationMapSlice, lm)
+	}
+
+	for _, location := range LocationMapSlice {
+		// In order to create a Synthetics test, we only need a list of location "name"
+		locationsList = append(locationsList, location["name"])
 	}
 
 	if len(syntheticsLocations) > 0 {
