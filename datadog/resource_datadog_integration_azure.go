@@ -11,6 +11,7 @@ func resourceDatadogIntegrationAzure() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceDatadogIntegrationAzureCreate,
 		Read:   resourceDatadogIntegrationAzureRead,
+		Update: resourceDatadogIntegrationAzureUpdate,
 		Delete: resourceDatadogIntegrationAzureDelete,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogIntegrationAzureImport,
@@ -34,6 +35,14 @@ func resourceDatadogIntegrationAzure() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"new_tenant_name": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"new_client_id": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -43,7 +52,7 @@ func resourceDatadogIntegrationAzureRead(d *schema.ResourceData, meta interface{
 
 	tenantName := d.Id()
 
-	integrations, err := client.ListIntegrationAzure()
+	integrations, err := client.ListIntegrationsAzure()
 	if err != nil {
 		return err
 	}
@@ -77,6 +86,25 @@ func resourceDatadogIntegrationAzureCreate(d *schema.ResourceData, meta interfac
 	d.SetId(tenantName)
 
 	return resourceDatadogIntegrationAzureRead(d, meta)
+}
+
+func resourceDatadogIntegrationAzureUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*datadog.Client)
+
+	if err := client.UpdateIntegrationAccountAzure(
+		&datadog.IntegrationAzureUpdateAccountRequest{
+			TenantName:    datadog.String(d.Get("tenant_name").(string)),
+			NewTenantName: datadog.String(d.Get("new_tenant_name").(string)),
+			ClientID:      datadog.String(d.Get("client_id").(string)),
+			NewClientID:   datadog.String(d.Get("new_client_id").(string)),
+			ClientSecret:  datadog.String(d.Get("client_secret").(string)),
+			HostFilters:   datadog.String(d.Get("host_filters").(string)),
+		},
+	); err != nil {
+		return fmt.Errorf("error updating a Google Cloud Platform integration: %s", err.Error())
+	}
+
+	return resourceDatadogIntegrationGcpRead(d, meta)
 }
 
 func resourceDatadogIntegrationAzureDelete(d *schema.ResourceData, meta interface{}) error {
