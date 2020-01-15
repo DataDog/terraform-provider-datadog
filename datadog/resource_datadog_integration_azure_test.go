@@ -20,8 +20,8 @@ resource "datadog_integration_azure" "an_azure_integration" {
 
 func TestAccDatadogIntegrationAzure(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck:	func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
 		CheckDestroy: checkIntegrationAzureDestroy,
 		Steps: []resource.TestStep{
 			{
@@ -40,11 +40,11 @@ func TestAccDatadogIntegrationAzure(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_azure.an_azure_integration",
 						"host_filters", "foo:bar,buzz:lightyear"),
-					),
-				},
+				),
 			},
 		},
-	})
+	},
+	)
 }
 
 func checkIntegrationAzureExists(s *terraform.State) error {
@@ -65,7 +65,7 @@ func checkIntegrationAzureExists(s *terraform.State) error {
 	return nil
 }
 
-func checkIntegrationAzureDestroy((s *terraform.State) error {
+func checkIntegrationAzureDestroy(s *terraform.State) error {
 	client := testAccProvider.Meta().(*datadog.Client)
 	integrations, err := client.ListIntegrationAzure()
 	if err != nil {

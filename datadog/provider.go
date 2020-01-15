@@ -35,6 +35,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_dashboard":                            resourceDatadogDashboard(),
 			"datadog_dashboard_list":                       resourceDatadogDashboardList(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
+			"datadog_integration_azure":                    resourceDatadogIntegrationAzure(),
 			"datadog_integration_gcp":                      resourceDatadogIntegrationGcp(),
 			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
 			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
