@@ -184,29 +184,29 @@ resource "datadog_dashboard" "ordered_dashboard" {
     }
   }
 
-	widget {
-		query_table_definition {
-		  request {
-			  q = "avg:system.load.1{env:staging} by {account}"
-			  aggregator = "sum"
-			  limit = "10"
-			  conditional_formats {
-				  comparator = "<"
-				  value = "2"
-				  palette = "white_on_green"
-			  }
-			  conditional_formats {
-				  comparator = ">"
-				  value = "2.2"
-				  palette = "white_on_red"
-			  }
+  widget {
+    query_table_definition {
+      request {
+        q = "avg:system.load.1{env:staging} by {account}"
+        aggregator = "sum"
+        limit = "10"
+        conditional_formats {
+          comparator = "<"
+          value = "2"
+          palette = "white_on_green"
+        }
+        conditional_formats {
+          comparator = ">"
+          value = "2.2"
+          palette = "white_on_red"
+        }
       }
-			title = "Widget Title"
-			time = {
-			  live_span = "1h"
-			}
-		}
-	}
+      title = "Widget Title"
+      time = {
+        live_span = "1h"
+      }
+    }
+  }
 
   widget {
     scatterplot_definition {
@@ -739,7 +739,7 @@ Nested `widget` blocks have the following structure:
         - `title_size`: (Optional) The size of the widget's title. Default is 16.
         - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
         - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
-  - `query_table_definition`: The definition for a Query Value widget. Exactly one nested block is allowed with the following structure:
+  - `query_table_definition`: The definition for a Query Table widget. Exactly one nested block is allowed with the following structure:
         - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
             - `q`: (Optional) The metric query to use in the widget
             - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
