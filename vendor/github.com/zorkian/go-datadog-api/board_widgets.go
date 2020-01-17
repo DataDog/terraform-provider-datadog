@@ -304,17 +304,19 @@ type LogStreamDefinition struct {
 
 // ManageStatusDefinition represents the definition for a Manage Status widget
 type ManageStatusDefinition struct {
-	Type            *string `json:"type"`
-	Query           *string `json:"query"`
-	Sort            *string `json:"sort,omitempty"`
-	Count           *int    `json:"count,omitempty"`
-	Start           *int    `json:"start,omitempty"`
-	DisplayFormat   *string `json:"display_format,omitempty"`
-	ColorPreference *string `json:"color_preference,omitempty"`
-	HideZeroCounts  *bool   `json:"hide_zero_counts,omitempty"`
-	Title           *string `json:"title,omitempty"`
-	TitleSize       *string `json:"title_size,omitempty"`
-	TitleAlign      *string `json:"title_align,omitempty"`
+	Type              *string `json:"type"`
+	SummaryType       *string `json:"summary_type,omitempty"`
+	Query             *string `json:"query"`
+	Sort              *string `json:"sort,omitempty"`
+	Count             *int    `json:"count,omitempty"`
+	Start             *int    `json:"start,omitempty"`
+	DisplayFormat     *string `json:"display_format,omitempty"`
+	ColorPreference   *string `json:"color_preference,omitempty"`
+	HideZeroCounts    *bool   `json:"hide_zero_counts,omitempty"`
+	ShowLastTriggered *bool   `json:"show_last_triggered,omitempty"`
+	Title             *string `json:"title,omitempty"`
+	TitleSize         *string `json:"title_size,omitempty"`
+	TitleAlign        *string `json:"title_align,omitempty"`
 }
 
 // NoteDefinition represents the definition for a Note widget

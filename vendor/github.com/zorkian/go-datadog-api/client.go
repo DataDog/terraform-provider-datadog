@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 )
 
@@ -27,6 +28,19 @@ type Client struct {
 
 	//Option to specify extra headers like User-Agent
 	ExtraHeader map[string]string
+
+	// rateLimiting is used to store the rate limitting stats.
+	// More information in the official documentation: https://docs.datadoghq.com/api/?lang=bash#rate-limiting
+	rateLimitingStats map[string]RateLimit
+	// Mutex to protect the rate limiting map.
+	m sync.Mutex
+}
+
+type RateLimit struct {
+	Limit     string
+	Period    string
+	Reset     string
+	Remaining string
 }
 
 // valid is the struct to unmarshal validation endpoint responses into.
@@ -44,11 +58,13 @@ func NewClient(apiKey, appKey string) *Client {
 	}
 
 	return &Client{
-		apiKey:       apiKey,
-		appKey:       appKey,
-		baseUrl:      baseUrl,
-		HttpClient:   http.DefaultClient,
-		RetryTimeout: time.Duration(60 * time.Second),
+		apiKey:            apiKey,
+		appKey:            appKey,
+		baseUrl:           baseUrl,
+		HttpClient:        http.DefaultClient,
+		RetryTimeout:      time.Duration(60 * time.Second),
+		rateLimitingStats: make(map[string]RateLimit),
+		ExtraHeader:       make(map[string]string),
 	}
 }
 
