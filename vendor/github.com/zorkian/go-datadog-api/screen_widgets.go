@@ -243,6 +243,8 @@ type Widget struct {
 	ManageStatusTitleSize  *string `json:"titleSize,omitempty"`
 	ManageStatusTitleAlign *string `json:"titleAlign,omitempty"`
 	Params                 *Params `json:"params,omitempty"`
+	ShowLastTriggered      *bool   `json:"show_last_triggered,omitempty"`
+	SummaryType            *string `json:"summary_type,omitempty"`
 
 	// For LogStream widget
 	Columns *string `json:"columns,omitempty"`

@@ -12,6 +12,7 @@ const (
 	DateRemapperType           = "date-remapper"
 	GeoIPParserType            = "geo-ip-parser"
 	GrokParserType             = "grok-parser"
+	LookupProcessorType        = "lookup-processor"
 	MessageRemapperType        = "message-remapper"
 	NestedPipelineType         = "pipeline"
 	ServiceRemapperType        = "service-remapper"
@@ -91,6 +92,14 @@ type GrokParser struct {
 type GrokRule struct {
 	SupportRules *string `json:"support_rules"`
 	MatchRules   *string `json:"match_rules"`
+}
+
+// LookupProcessor represents the lookup processor from config API.
+type LookupProcessor struct {
+	Source        *string  `json:"source"`
+	Target        *string  `json:"target"`
+	LookupTable   []string `json:"lookup_table"`
+	DefaultLookup *string  `json:"default_lookup,omitempty"`
 }
 
 // NestedPipeline represents the pipeline as processor from config API.
@@ -200,6 +209,12 @@ func (processor *LogsProcessor) UnmarshalJSON(data []byte) error {
 			return err
 		}
 		processor.Definition = grokParser
+	case LookupProcessorType:
+		var lookupProcessor LookupProcessor
+		if err := json.Unmarshal(data, &lookupProcessor); err != nil {
+			return err
+		}
+		processor.Definition = lookupProcessor
 	case NestedPipelineType:
 		var nestedPipeline NestedPipeline
 		if err := json.Unmarshal(data, &nestedPipeline); err != nil {

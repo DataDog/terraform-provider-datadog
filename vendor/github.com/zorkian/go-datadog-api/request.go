@@ -122,7 +122,6 @@ func (client *Client) doJsonRequestUnredacted(method, api string,
 	if err != nil {
 		return err
 	}
-
 	// Perform the request and retry it if it's not a POST or PUT request
 	var resp *http.Response
 	if method == "POST" || method == "PUT" {
@@ -152,6 +151,12 @@ func (client *Client) doJsonRequestUnredacted(method, api string,
 	// saves us some work in other parts of the code.
 	if len(body) == 0 {
 		body = []byte{'{', '}'}
+	}
+
+	err = client.updateRateLimits(resp, req.URL)
+	if err != nil {
+		// Inability to update the rate limiting stats should not be a blocking error.
+		fmt.Printf("Error Updating the Rate Limit statistics: %s", err.Error())
 	}
 
 	// Try to parse common response fields to check whether there's an error reported in a response.
