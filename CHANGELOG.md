@@ -1,4 +1,4 @@
-## 2.6.0 (Unreleased)
+## 2.6.0 (January 21, 2020)
 
 FEATURES:
 * `datadog_dashboard`: Add Datadog dashboard SLO widget support ([#355](https://github.com/terraform-providers/terraform-provider-datadog/issues/355)) Thanks [@mbarrien](https://github.com/mbarrien)
