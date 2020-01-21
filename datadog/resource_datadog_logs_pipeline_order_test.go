@@ -1,10 +1,5 @@
 package datadog
 
-import (
-	"github.com/hashicorp/terraform/helper/resource"
-	"testing"
-)
-
 const pipelinesConfig = `
 resource "datadog_logs_custom_pipeline" "pipeline_1" {
 	name = "my first pipeline"
