@@ -1,3 +1,4 @@
+## 2.6.1 (Unreleased)
 ## 2.6.0 (January 21, 2020)
 
 FEATURES:
