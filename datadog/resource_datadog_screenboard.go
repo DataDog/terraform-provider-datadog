@@ -559,6 +559,17 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "One of: ['monitors', 'groups', 'combined']",
+					ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+						v := val.(string)
+						summaryTypes := []string{"monitors", "groups", "combined"}
+						for _, t := range summaryTypes {
+							if v == t {
+								return
+							}
+						}
+						errs = append(errs, fmt.Errorf("%q must be one of: %q, got: %q", key, summaryTypes, v))
+						return
+					},
 				},
 				"display_format": {
 					Type:        schema.TypeString,
