@@ -2335,6 +2335,10 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Type:     schema.TypeString,
 			Required: true,
 		},
+		"summary_type": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
 		"sort": {
 			Type:     schema.TypeString,
 			Optional: true,
@@ -2359,6 +2363,10 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Type:     schema.TypeBool,
 			Optional: true,
 		},
+		"show_last_triggered": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
 		"title": {
 			Type:     schema.TypeString,
 			Optional: true,
@@ -2380,6 +2388,9 @@ func buildDatadogManageStatusDefinition(terraformDefinition map[string]interface
 	datadogDefinition.Type = datadog.String(datadog.MANAGE_STATUS_WIDGET)
 	datadogDefinition.Query = datadog.String(terraformDefinition["query"].(string))
 	// Optional params
+	if v, ok := terraformDefinition["summary_type"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetSummaryType(v)
+	}
 	if v, ok := terraformDefinition["sort"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetSort(v)
 	}
@@ -2398,6 +2409,9 @@ func buildDatadogManageStatusDefinition(terraformDefinition map[string]interface
 	if v, ok := terraformDefinition["hide_zero_counts"].(bool); ok {
 		datadogDefinition.SetHideZeroCounts(v)
 	}
+	if v, ok := terraformDefinition["show_last_triggered"].(bool); ok {
+		datadogDefinition.SetShowLastTriggered(v)
+	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
 	}
@@ -2415,6 +2429,9 @@ func buildTerraformManageStatusDefinition(datadogDefinition datadog.ManageStatus
 	// Required params
 	terraformDefinition["query"] = *datadogDefinition.Query
 	// Optional params
+	if datadogDefinition.SummaryType != nil {
+		terraformDefinition["summary_type"] = *datadogDefinition.SummaryType
+	}
 	if datadogDefinition.Sort != nil {
 		terraformDefinition["sort"] = *datadogDefinition.Sort
 	}
@@ -2432,6 +2449,9 @@ func buildTerraformManageStatusDefinition(datadogDefinition datadog.ManageStatus
 	}
 	if datadogDefinition.HideZeroCounts != nil {
 		terraformDefinition["hide_zero_counts"] = *datadogDefinition.HideZeroCounts
+	}
+	if datadogDefinition.ShowLastTriggered != nil {
+		terraformDefinition["show_last_triggered"] = *datadogDefinition.ShowLastTriggered
 	}
 	if datadogDefinition.Title != nil {
 		terraformDefinition["title"] = *datadogDefinition.Title
