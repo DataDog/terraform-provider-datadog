@@ -14,7 +14,7 @@ import (
 
 var (
 	BuildVersion string = ""
-	BuildTime string = ""
+	BuildTime    string = ""
 )
 
 func Provider() terraform.ResourceProvider {
