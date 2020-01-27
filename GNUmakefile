@@ -14,7 +14,7 @@ build: fmtcheck
 
 install: fmtcheck
 	mkdir -vp $(DIR)
-	go build -ldflags="-X 'datadog.BuildTime=$(BUILD_TIME)' -X 'datadog.BuildVersion=$(BUILD_VERSION)"  -o $(DIR)/terraform-provider-datadog
+	go build -ldflags="-X 'datadog.BuildTime=\"$(BUILD_TIME)\"' -X 'datadog.BuildVersion=\"$(BUILD_VERSION)\"'"  -o $(DIR)/terraform-provider-datadog
 
 uninstall:
 	@rm -vf $(DIR)/terraform-provider-datadog
