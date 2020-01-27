@@ -2,12 +2,15 @@ package datadog
 
 import (
 	"errors"
+	"fmt"
 	"log"
+	"runtime"
 
 	cleanhttp "github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform/helper/logging"
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/terraform-providers/terraform-provider-datadog/version"
 	"github.com/zorkian/go-datadog-api"
 )
 
@@ -70,6 +73,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", c.Transport)
 	client.HttpClient = c
+	client.ExtraHeader["User-Agent"] = fmt.Sprintf("Datadog/%s/terraform (%s)", version.ProviderVersion, runtime.Version())
 
 	log.Println("[INFO] Datadog client successfully initialized, now validating...")
 	ok, err := client.Validate()
