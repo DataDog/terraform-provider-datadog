@@ -4,6 +4,8 @@ WEBSITE_REPO=github.com/hashicorp/terraform-website
 PKG_NAME=datadog
 DIR=~/.terraform.d/plugins
 GO_CLIENT_VERSION=master
+BUILD_VERSION=2.6.0
+BUILD_TIME=$$(date -u)
 
 default: build
 
@@ -12,7 +14,7 @@ build: fmtcheck
 
 install: fmtcheck
 	mkdir -vp $(DIR)
-	go build -o $(DIR)/terraform-provider-datadog
+	go build -ldflags="-X 'datadog.BuildTime=$(BUILD_TIME)' -X 'datadog.BuildVersion=$(BUILD_VERSION)"  -o $(DIR)/terraform-provider-datadog
 
 uninstall:
 	@rm -vf $(DIR)/terraform-provider-datadog
