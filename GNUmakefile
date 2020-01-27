@@ -4,7 +4,7 @@ WEBSITE_REPO=github.com/hashicorp/terraform-website
 PKG_NAME=datadog
 DIR=~/.terraform.d/plugins
 GO_CLIENT_VERSION=master
-BUILD_VERSION=2.6.0
+BUILD_VERSION=$$(cat ./VERSION)
 BUILD_TIME=$$(date -u)
 
 default: build
