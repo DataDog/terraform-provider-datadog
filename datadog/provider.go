@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"runtime"
 
 	cleanhttp "github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform/helper/logging"
@@ -76,7 +77,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", c.Transport)
 	client.HttpClient = c
-	client.ExtraHeader["User-Agent"] = fmt.Sprintf("Terraform-Datadog-Provider/%s (%s)", BuildVersion, BuildTime)
+	client.ExtraHeader["User-Agent"] = fmt.Sprintf("Datadog/%s/terraform (%s) (%s)", BuildVersion, BuildTime, runtime.Version())
 
 	log.Println("[INFO] Datadog client successfully initialized, now validating...")
 	ok, err := client.Validate()
