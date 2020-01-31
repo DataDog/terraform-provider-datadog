@@ -396,9 +396,11 @@ resource "datadog_screenboard" "acceptance_test" {
     type                      = "manage_status"
     x                         = 305
     y                         = 5
+    summary_type              = "monitors"
     display_format            = "countsAndList"
     color_preference          = "background"
     hide_zero_counts          = true
+    show_last_triggered       = false
     manage_status_show_title  = false
     manage_status_title_text  = "test title"
     manage_status_title_size  = "20"
@@ -511,9 +513,11 @@ Nested `widget` blocks have the following structure:
 - `must_show_breakdown` - (Optional, only for widgets of type "trace_service") Boolean indicating whether to display breakdown.
 - `must_show_distribution` - (Optional, only for widgets of type "trace_service") Boolean indicating whether to display distribution.
 - `must_show_resource_list` - (Optional, only for widgets of type "trace_service") Boolean indicating whether to display resources.
+- `summary_type` - (Optional, only for widgets of type "manage_status") The monitor summary type to use. One of "monitors", "groups", or "combined". Defaults to "monitors".
 - `display_format` - (Optional, only for widgets of type "manage_status") The display setting to use. One of "counts", "list", or "countsAndList".
 - `color_preference` - (Optional, only for widgets of type "manage_status") Whether to colorize text or background. One of "text", "background".
 - `hide_zero_counts` - (Optional, only for widgets of type "manage_status") Boolean indicating whether to hide empty categories.
+- `show_last_triggered` - (Optional, only for widgets of type "manage_status") Boolean indicating whether to show when monitors/groups last triggered.
 - `manage_status_show_title` - (Optional, only for widgets of type "manage_status") Boolean indicating whether to show a title.
 - `manage_status_title_text` - (Optional, only for widgets of type "manage_status") The title of the widget.
 - `manage_status_title_size` - (Optional, only for widgets of type "manage_status") The size of the widget's title.

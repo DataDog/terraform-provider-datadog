@@ -497,8 +497,10 @@ resource "datadog_dashboard" "free_dashboard" {
       display_format = "countsAndList"
       hide_zero_counts = true
       query = "type:metric"
+      show_last_triggered = false
       sort = "status,asc"
       start = 0
+      summary_type = "monitors"
       title = "Widget Title"
       title_size = 16
       title_align = "left"
@@ -682,13 +684,15 @@ Nested `widget` blocks have the following structure:
       - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
   - `manage_status_definition`: The definition for a Manage Status, aka Monitor Summary, widget. Exactly one nested block is allowed with the following structure:
       - `query`: (Required) The query to use in the widget.
+      - `summary_type` - (Optional) The monitor summary type to use. One of "monitors", "groups", or "combined". Defaults to "monitors".
       - `sort` - (Optional) The method to use to sort monitors. One of : "desc" or "asc".
       `count` - (Optional) The number of monitors to display.
       `start` - (Optional) The start of the list. Typically 0.
       - `display_format` - (Optional") The display setting to use. One of "counts", "list", or "countsAndList".
       - `color_preference` - (Optional") Whether to colorize text or background. One of "text", "background".
       - `hide_zero_counts` - (Optional") Boolean indicating whether to hide empty categories.
-       - `title`: (Optional) The title of the widget.
+      - `show_last_triggered` - (Optional) Boolean indicating whether to show when monitors/groups last triggered.
+      - `title`: (Optional) The title of the widget.
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
       - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
   - `note_definition`: The definition for a Note widget. Exactly one nested block is allowed with the following structure:
