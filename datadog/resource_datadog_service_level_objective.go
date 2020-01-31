@@ -434,29 +434,39 @@ func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta int
 		slo.Tags = s
 	}
 
-	if attr, ok := d.GetOk("thresholds"); ok {
+	if _, ok := d.GetOk("thresholds"); ok {
+		numThresholds := d.Get("thresholds.#").(int)
 		sloThresholds := make(datadog.ServiceLevelObjectiveThresholds, 0)
-		thresholds := make([]map[string]interface{}, 0)
-		raw := attr.([]interface{})
-		for _, rawThreshold := range raw {
-			if threshold, ok := rawThreshold.(map[string]interface{}); ok {
-				thresholds = append(thresholds, threshold)
+		for i := 0; i < numThresholds; i++ {
+			prefix := fmt.Sprintf("thresholds.%d.", i)
+			t := datadog.ServiceLevelObjectiveThreshold{}
+
+			if tf, ok := d.GetOk(prefix + "timeframe"); ok {
+				t.TimeFrame = datadog.String(tf.(string))
 			}
-		}
-		for _, threshold := range thresholds {
-			t := datadog.ServiceLevelObjectiveThreshold{
-				TimeFrame: datadog.String(threshold["timeframe"].(string)),
-				Target:    datadog.Float64(threshold["target"].(float64)),
+
+			if targetValue, ok := d.GetOk(prefix + "target"); ok {
+				if f, ok := floatOk(targetValue); ok {
+					t.Target = datadog.Float64(f)
+				}
 			}
-			if warningValueRaw, ok := threshold["warning"]; ok {
-				t.Warning = datadog.Float64(warningValueRaw.(float64))
+
+			if warningValue, ok := d.GetOk(prefix + "warning"); ok {
+				if f, ok := floatOk(warningValue); ok {
+					t.Warning = datadog.Float64(f)
+				}
 			}
-			// display settings
-			if targetDisplay, ok := threshold["target_display"]; ok {
-				t.TargetDisplay = datadog.String(targetDisplay.(string))
+
+			if targetDisplayValue, ok := d.GetOk(prefix + "target_display"); ok {
+				if s, ok := targetDisplayValue.(string); ok && strings.TrimSpace(s) != "" {
+					t.TargetDisplay = datadog.String(strings.TrimSpace(targetDisplayValue.(string)))
+				}
 			}
-			if warningDisplay, ok := threshold["warning_display"]; ok {
-				t.WarningDisplay = datadog.String(warningDisplay.(string))
+
+			if warningDisplayValue, ok := d.GetOk(prefix + "warning_display"); ok {
+				if s, ok := warningDisplayValue.(string); ok && strings.TrimSpace(s) != "" {
+					t.WarningDisplay = datadog.String(strings.TrimSpace(warningDisplayValue.(string)))
+				}
 			}
 			sloThresholds = append(sloThresholds, &t)
 		}
