@@ -1766,17 +1766,25 @@ func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) er
 	if err := d.Set("title", screenboard.GetTitle()); err != nil {
 		return err
 	}
-	if err := d.Set("height", strconv.Itoa(screenboard.GetHeight())); err != nil {
-		return err
+	if v, ok := screenboard.GetHeightOk(); ok {
+		if err := d.Set("height", strconv.Itoa(v)); err != nil {
+			return err
+		}
 	}
-	if err := d.Set("width", strconv.Itoa(screenboard.GetWidth())); err != nil {
-		return err
+	if v, ok := screenboard.GetWidthOk(); ok {
+		if err := d.Set("width", strconv.Itoa(v)); err != nil {
+			return err
+		}
 	}
-	if err := d.Set("shared", screenboard.GetShared()); err != nil {
-		return err
+	if v, ok := screenboard.GetSharedOk(); ok {
+		if err := d.Set("shared", v); err != nil {
+			return err
+		}
 	}
-	if err := d.Set("read_only", screenboard.GetReadOnly()); err != nil {
-		return err
+	if v, ok := screenboard.GetReadOnlyOk(); ok {
+		if err := d.Set("read_only", v); err != nil {
+			return err
+		}
 	}
 
 	widgets := []map[string]interface{}{}
