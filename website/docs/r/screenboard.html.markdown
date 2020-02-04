@@ -409,8 +409,6 @@ resource "datadog_screenboard" "acceptance_test" {
     params = {
       sort  = "status,asc"
       text  = "status:alert"
-      count = 50
-      start = 0
     }
   }
 
@@ -544,8 +542,6 @@ Nested `widget` `params` blocks have the following structure:
 
 - `sort` - (Optional) The method to use to sort monitors. Example: "status,asc".
 - `text` - (Optional) The query to use to get monitors. Example: "status:alert".
-- `count` - (Optional) The number of monitors to display.
-- `start` - (Optional) The start of the list. Typically 0.
 
 ### Nested `widget` `tile_def` blocks
 
