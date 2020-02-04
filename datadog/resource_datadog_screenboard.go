@@ -1208,6 +1208,7 @@ func buildWidgets(tfWidgets *[]interface{}) []datadog.Widget {
 				matches: []match{
 					{"sort", &d.Params.Sort},
 					{"text", &d.Params.Text},
+					// The count and start params are deprecated for the monitor summary widget
 					{"count", &d.Params.Count},
 					{"start", &d.Params.Start},
 				}})

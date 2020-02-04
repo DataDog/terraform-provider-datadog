@@ -685,9 +685,7 @@ Nested `widget` blocks have the following structure:
   - `manage_status_definition`: The definition for a Manage Status, aka Monitor Summary, widget. Exactly one nested block is allowed with the following structure:
       - `query`: (Required) The query to use in the widget.
       - `summary_type` - (Optional) The monitor summary type to use. One of "monitors", "groups", or "combined". Defaults to "monitors".
-      - `sort` - (Optional) The method to use to sort monitors. One of : "desc" or "asc".
-      `count` - (Optional) The number of monitors to display.
-      `start` - (Optional) The start of the list. Typically 0.
+      - `sort` - (Optional) The method to use to sort monitors. Example: "status,asc".
       - `display_format` - (Optional") The display setting to use. One of "counts", "list", or "countsAndList".
       - `color_preference` - (Optional") Whether to colorize text or background. One of "text", "background".
       - `hide_zero_counts` - (Optional") Boolean indicating whether to hide empty categories.
