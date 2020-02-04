@@ -493,13 +493,11 @@ resource "datadog_dashboard" "free_dashboard" {
   widget {
     manage_status_definition {
       color_preference = "text"
-      count = 50
       display_format = "countsAndList"
       hide_zero_counts = true
       query = "type:metric"
       show_last_triggered = false
       sort = "status,asc"
-      start = 0
       summary_type = "monitors"
       title = "Widget Title"
       title_size = 16
