@@ -2357,13 +2357,15 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 		},
 		// The count param is deprecated
 		"count": {
-			Type:     schema.TypeInt,
-			Optional: true,
+			Type:       schema.TypeInt,
+			Deprecated: "This parameter may be removed from the dashboard API in the future",
+			Optional:   true,
 		},
 		// The start param is deprecated
 		"start": {
-			Type:     schema.TypeInt,
-			Optional: true,
+			Type:       schema.TypeInt,
+			Deprecated: "This parameter may be removed from the dashboard API in the future",
+			Optional:   true,
 		},
 		"display_format": {
 			Type:     schema.TypeString,
