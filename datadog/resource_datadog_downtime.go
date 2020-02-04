@@ -297,11 +297,18 @@ func resourceDatadogDowntimeExists(d *schema.ResourceData, meta interface{}) (b 
 		return false, err
 	}
 
-	if _, err = client.GetDowntime(id); err != nil {
+	downtime, err := client.GetDowntime(id)
+	if err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
 		return false, err
+	}
+
+	if _, ok := downtime.GetCanceledOk(); ok {
+		// when the Downtime is deleted via UI, it is in fact still returned through API, it's just "canceled"
+		// in this case, we need to consider it deleted, as canceled downtimes can't be used again
+		return false, nil
 	}
 
 	return true, nil
