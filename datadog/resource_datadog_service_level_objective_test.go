@@ -107,14 +107,10 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 						"datadog_service_level_objective.foo", "thresholds.1.timeframe", "30d"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.1.target", "99"),
-					resource.TestCheckNoResourceAttr(
-						"datadog_service_level_objective.foo", "thresholds.1.warning"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.2.timeframe", "90d"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.2.target", "99"),
-					resource.TestCheckNoResourceAttr(
-						"datadog_service_level_objective.foo", "thresholds.2.warning"),
 					// Tags are a TypeSet => use a weird way to access members by their hash
 					// TF TypeSet is internally represented as a map that maps computed hashes
 					// to actual values. Since the hashes are always the same for one value,
@@ -160,8 +156,6 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 						"datadog_service_level_objective.foo", "thresholds.2.timeframe", "90d"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.2.target", "99.9"),
-					resource.TestCheckNoResourceAttr(
-						"datadog_service_level_objective.foo", "thresholds.2.warning"),
 					// Tags are a TypeSet => use a weird way to access members by their hash
 					// TF TypeSet is internally represented as a map that maps computed hashes
 					// to actual values. Since the hashes are always the same for one value,
