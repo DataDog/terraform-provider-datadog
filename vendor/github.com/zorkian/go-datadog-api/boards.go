@@ -12,21 +12,35 @@ import (
 	"fmt"
 )
 
+// Template variable preset represents a set of template variable values on a dashboard
+// Not available to timeboards and screenboards
+type TemplateVariablePreset struct {
+	Name              *string                       `json:"name,omitempty"`
+	TemplateVariables []TemplateVariablePresetValue `json:"template_variables"`
+}
+
+// Template variable preset value represents the value for "name" template variable to assume
+type TemplateVariablePresetValue struct {
+	Name  *string `json:"name,omitempty"`
+	Value *string `json:"value,omitempty"`
+}
+
 // Board represents a user created dashboard. This is the full dashboard
 // struct when we load a dashboard in detail.
 type Board struct {
-	Title             *string            `json:"title"`
-	Widgets           []BoardWidget      `json:"widgets"`
-	LayoutType        *string            `json:"layout_type"`
-	Id                *string            `json:"id,omitempty"`
-	Description       *string            `json:"description,omitempty"`
-	TemplateVariables []TemplateVariable `json:"template_variables,omitempty"`
-	IsReadOnly        *bool              `json:"is_read_only,omitempty"`
-	NotifyList        []string           `json:"notify_list,omitempty"`
-	AuthorHandle      *string            `json:"author_handle,omitempty"`
-	Url               *string            `json:"url,omitempty"`
-	CreatedAt         *string            `json:"created_at,omitempty"`
-	ModifiedAt        *string            `json:"modified_at,omitempty"`
+	Title                   *string                  `json:"title"`
+	Widgets                 []BoardWidget            `json:"widgets"`
+	LayoutType              *string                  `json:"layout_type"`
+	Id                      *string                  `json:"id,omitempty"`
+	Description             *string                  `json:"description,omitempty"`
+	TemplateVariables       []TemplateVariable       `json:"template_variables,omitempty"`
+	TemplateVariablePresets []TemplateVariablePreset `json:"template_variable_presets,omitempty"`
+	IsReadOnly              *bool                    `json:"is_read_only,omitempty"`
+	NotifyList              []string                 `json:"notify_list,omitempty"`
+	AuthorHandle            *string                  `json:"author_handle,omitempty"`
+	Url                     *string                  `json:"url,omitempty"`
+	CreatedAt               *string                  `json:"created_at,omitempty"`
+	ModifiedAt              *string                  `json:"modified_at,omitempty"`
 }
 
 // BoardLite represents a simplify dashboard (without widgets, notify list, ...)

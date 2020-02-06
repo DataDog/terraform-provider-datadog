@@ -13747,6 +13747,37 @@ func (m *Monitor) SetType(v string) {
 	m.Type = &v
 }
 
+// GetRenotifyInterval returns the RenotifyInterval field if non-nil, zero value otherwise.
+func (m *MonitorOptions) GetRenotifyInterval() int {
+	if m == nil || m.RenotifyInterval == nil {
+		return 0
+	}
+	return *m.RenotifyInterval
+}
+
+// GetRenotifyIntervalOk returns a tuple with the RenotifyInterval field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (m *MonitorOptions) GetRenotifyIntervalOk() (int, bool) {
+	if m == nil || m.RenotifyInterval == nil {
+		return 0, false
+	}
+	return *m.RenotifyInterval, true
+}
+
+// HasRenotifyInterval returns a boolean if a field has been set.
+func (m *MonitorOptions) HasRenotifyInterval() bool {
+	if m != nil && m.RenotifyInterval != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRenotifyInterval allocates a new m.RenotifyInterval and returns the pointer to it.
+func (m *MonitorOptions) SetRenotifyInterval(v int) {
+	m.RenotifyInterval = &v
+}
+
 // GetName returns the Name field if non-nil, zero value otherwise.
 func (m *MonitorQueryOpts) GetName() string {
 	if m == nil || m.Name == nil {
@@ -16442,6 +16473,68 @@ func (r *reqUpdateUser) HasVerified() bool {
 // SetVerified allocates a new r.Verified and returns the pointer to it.
 func (r *reqUpdateUser) SetVerified(v bool) {
 	r.Verified = &v
+}
+
+// GetCount returns the Count field if non-nil, zero value otherwise.
+func (r *Retry) GetCount() int {
+	if r == nil || r.Count == nil {
+		return 0
+	}
+	return *r.Count
+}
+
+// GetCountOk returns a tuple with the Count field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (r *Retry) GetCountOk() (int, bool) {
+	if r == nil || r.Count == nil {
+		return 0, false
+	}
+	return *r.Count, true
+}
+
+// HasCount returns a boolean if a field has been set.
+func (r *Retry) HasCount() bool {
+	if r != nil && r.Count != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCount allocates a new r.Count and returns the pointer to it.
+func (r *Retry) SetCount(v int) {
+	r.Count = &v
+}
+
+// GetInterval returns the Interval field if non-nil, zero value otherwise.
+func (r *Retry) GetInterval() int {
+	if r == nil || r.Interval == nil {
+		return 0
+	}
+	return *r.Interval
+}
+
+// GetIntervalOk returns a tuple with the Interval field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (r *Retry) GetIntervalOk() (int, bool) {
+	if r == nil || r.Interval == nil {
+		return 0, false
+	}
+	return *r.Interval, true
+}
+
+// HasInterval returns a boolean if a field has been set.
+func (r *Retry) HasInterval() bool {
+	if r != nil && r.Interval != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetInterval allocates a new r.Interval and returns the pointer to it.
+func (r *Retry) SetInterval(v int) {
+	r.Interval = &v
 }
 
 // GetColor returns the Color field if non-nil, zero value otherwise.
@@ -19730,6 +19823,68 @@ func (s *SyntheticsOptions) SetMinLocationFailed(v int) {
 	s.MinLocationFailed = &v
 }
 
+// GetMonitorOptions returns the MonitorOptions field if non-nil, zero value otherwise.
+func (s *SyntheticsOptions) GetMonitorOptions() MonitorOptions {
+	if s == nil || s.MonitorOptions == nil {
+		return MonitorOptions{}
+	}
+	return *s.MonitorOptions
+}
+
+// GetMonitorOptionsOk returns a tuple with the MonitorOptions field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *SyntheticsOptions) GetMonitorOptionsOk() (MonitorOptions, bool) {
+	if s == nil || s.MonitorOptions == nil {
+		return MonitorOptions{}, false
+	}
+	return *s.MonitorOptions, true
+}
+
+// HasMonitorOptions returns a boolean if a field has been set.
+func (s *SyntheticsOptions) HasMonitorOptions() bool {
+	if s != nil && s.MonitorOptions != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMonitorOptions allocates a new s.MonitorOptions and returns the pointer to it.
+func (s *SyntheticsOptions) SetMonitorOptions(v MonitorOptions) {
+	s.MonitorOptions = &v
+}
+
+// GetRetry returns the Retry field if non-nil, zero value otherwise.
+func (s *SyntheticsOptions) GetRetry() Retry {
+	if s == nil || s.Retry == nil {
+		return Retry{}
+	}
+	return *s.Retry
+}
+
+// GetRetryOk returns a tuple with the Retry field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *SyntheticsOptions) GetRetryOk() (Retry, bool) {
+	if s == nil || s.Retry == nil {
+		return Retry{}, false
+	}
+	return *s.Retry, true
+}
+
+// HasRetry returns a boolean if a field has been set.
+func (s *SyntheticsOptions) HasRetry() bool {
+	if s != nil && s.Retry != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRetry allocates a new s.Retry and returns the pointer to it.
+func (s *SyntheticsOptions) SetRetry(v Retry) {
+	s.Retry = &v
+}
+
 // GetTickEvery returns the TickEvery field if non-nil, zero value otherwise.
 func (s *SyntheticsOptions) GetTickEvery() int {
 	if s == nil || s.TickEvery == nil {
@@ -20627,6 +20782,99 @@ func (t *TemplateVariable) HasPrefix() bool {
 // SetPrefix allocates a new t.Prefix and returns the pointer to it.
 func (t *TemplateVariable) SetPrefix(v string) {
 	t.Prefix = &v
+}
+
+// GetName returns the Name field if non-nil, zero value otherwise.
+func (t *TemplateVariablePreset) GetName() string {
+	if t == nil || t.Name == nil {
+		return ""
+	}
+	return *t.Name
+}
+
+// GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (t *TemplateVariablePreset) GetNameOk() (string, bool) {
+	if t == nil || t.Name == nil {
+		return "", false
+	}
+	return *t.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (t *TemplateVariablePreset) HasName() bool {
+	if t != nil && t.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetName allocates a new t.Name and returns the pointer to it.
+func (t *TemplateVariablePreset) SetName(v string) {
+	t.Name = &v
+}
+
+// GetName returns the Name field if non-nil, zero value otherwise.
+func (t *TemplateVariablePresetValue) GetName() string {
+	if t == nil || t.Name == nil {
+		return ""
+	}
+	return *t.Name
+}
+
+// GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (t *TemplateVariablePresetValue) GetNameOk() (string, bool) {
+	if t == nil || t.Name == nil {
+		return "", false
+	}
+	return *t.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (t *TemplateVariablePresetValue) HasName() bool {
+	if t != nil && t.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetName allocates a new t.Name and returns the pointer to it.
+func (t *TemplateVariablePresetValue) SetName(v string) {
+	t.Name = &v
+}
+
+// GetValue returns the Value field if non-nil, zero value otherwise.
+func (t *TemplateVariablePresetValue) GetValue() string {
+	if t == nil || t.Value == nil {
+		return ""
+	}
+	return *t.Value
+}
+
+// GetValueOk returns a tuple with the Value field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (t *TemplateVariablePresetValue) GetValueOk() (string, bool) {
+	if t == nil || t.Value == nil {
+		return "", false
+	}
+	return *t.Value, true
+}
+
+// HasValue returns a boolean if a field has been set.
+func (t *TemplateVariablePresetValue) HasValue() bool {
+	if t != nil && t.Value != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetValue allocates a new t.Value and returns the pointer to it.
+func (t *TemplateVariablePresetValue) SetValue(v string) {
+	t.Value = &v
 }
 
 // GetCritical returns the Critical field if non-nil, zero value otherwise.
@@ -24657,6 +24905,192 @@ func (u *UserAgentParser) HasTarget() bool {
 // SetTarget allocates a new u.Target and returns the pointer to it.
 func (u *UserAgentParser) SetTarget(v string) {
 	u.Target = &v
+}
+
+// GetCustomPayload returns the CustomPayload field if non-nil, zero value otherwise.
+func (w *Webhook) GetCustomPayload() string {
+	if w == nil || w.CustomPayload == nil {
+		return ""
+	}
+	return *w.CustomPayload
+}
+
+// GetCustomPayloadOk returns a tuple with the CustomPayload field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *Webhook) GetCustomPayloadOk() (string, bool) {
+	if w == nil || w.CustomPayload == nil {
+		return "", false
+	}
+	return *w.CustomPayload, true
+}
+
+// HasCustomPayload returns a boolean if a field has been set.
+func (w *Webhook) HasCustomPayload() bool {
+	if w != nil && w.CustomPayload != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomPayload allocates a new w.CustomPayload and returns the pointer to it.
+func (w *Webhook) SetCustomPayload(v string) {
+	w.CustomPayload = &v
+}
+
+// GetEncodeAsForm returns the EncodeAsForm field if non-nil, zero value otherwise.
+func (w *Webhook) GetEncodeAsForm() string {
+	if w == nil || w.EncodeAsForm == nil {
+		return ""
+	}
+	return *w.EncodeAsForm
+}
+
+// GetEncodeAsFormOk returns a tuple with the EncodeAsForm field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *Webhook) GetEncodeAsFormOk() (string, bool) {
+	if w == nil || w.EncodeAsForm == nil {
+		return "", false
+	}
+	return *w.EncodeAsForm, true
+}
+
+// HasEncodeAsForm returns a boolean if a field has been set.
+func (w *Webhook) HasEncodeAsForm() bool {
+	if w != nil && w.EncodeAsForm != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetEncodeAsForm allocates a new w.EncodeAsForm and returns the pointer to it.
+func (w *Webhook) SetEncodeAsForm(v string) {
+	w.EncodeAsForm = &v
+}
+
+// GetHeaders returns the Headers field if non-nil, zero value otherwise.
+func (w *Webhook) GetHeaders() string {
+	if w == nil || w.Headers == nil {
+		return ""
+	}
+	return *w.Headers
+}
+
+// GetHeadersOk returns a tuple with the Headers field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *Webhook) GetHeadersOk() (string, bool) {
+	if w == nil || w.Headers == nil {
+		return "", false
+	}
+	return *w.Headers, true
+}
+
+// HasHeaders returns a boolean if a field has been set.
+func (w *Webhook) HasHeaders() bool {
+	if w != nil && w.Headers != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetHeaders allocates a new w.Headers and returns the pointer to it.
+func (w *Webhook) SetHeaders(v string) {
+	w.Headers = &v
+}
+
+// GetName returns the Name field if non-nil, zero value otherwise.
+func (w *Webhook) GetName() string {
+	if w == nil || w.Name == nil {
+		return ""
+	}
+	return *w.Name
+}
+
+// GetNameOk returns a tuple with the Name field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *Webhook) GetNameOk() (string, bool) {
+	if w == nil || w.Name == nil {
+		return "", false
+	}
+	return *w.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (w *Webhook) HasName() bool {
+	if w != nil && w.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetName allocates a new w.Name and returns the pointer to it.
+func (w *Webhook) SetName(v string) {
+	w.Name = &v
+}
+
+// GetURL returns the URL field if non-nil, zero value otherwise.
+func (w *Webhook) GetURL() string {
+	if w == nil || w.URL == nil {
+		return ""
+	}
+	return *w.URL
+}
+
+// GetURLOk returns a tuple with the URL field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *Webhook) GetURLOk() (string, bool) {
+	if w == nil || w.URL == nil {
+		return "", false
+	}
+	return *w.URL, true
+}
+
+// HasURL returns a boolean if a field has been set.
+func (w *Webhook) HasURL() bool {
+	if w != nil && w.URL != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetURL allocates a new w.URL and returns the pointer to it.
+func (w *Webhook) SetURL(v string) {
+	w.URL = &v
+}
+
+// GetUseCustomPayload returns the UseCustomPayload field if non-nil, zero value otherwise.
+func (w *Webhook) GetUseCustomPayload() string {
+	if w == nil || w.UseCustomPayload == nil {
+		return ""
+	}
+	return *w.UseCustomPayload
+}
+
+// GetUseCustomPayloadOk returns a tuple with the UseCustomPayload field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *Webhook) GetUseCustomPayloadOk() (string, bool) {
+	if w == nil || w.UseCustomPayload == nil {
+		return "", false
+	}
+	return *w.UseCustomPayload, true
+}
+
+// HasUseCustomPayload returns a boolean if a field has been set.
+func (w *Webhook) HasUseCustomPayload() bool {
+	if w != nil && w.UseCustomPayload != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetUseCustomPayload allocates a new w.UseCustomPayload and returns the pointer to it.
+func (w *Webhook) SetUseCustomPayload(v string) {
+	w.UseCustomPayload = &v
 }
 
 // GetAlertID returns the AlertID field if non-nil, zero value otherwise.
