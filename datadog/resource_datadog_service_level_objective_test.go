@@ -151,7 +151,7 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.1.target", "98"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "thresholds.1.warning", "99.0"),
+						"datadog_service_level_objective.foo", "thresholds.1.warning", "99"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.2.timeframe", "90d"),
 					resource.TestCheckResourceAttr(
