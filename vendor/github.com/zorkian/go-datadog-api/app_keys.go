@@ -15,7 +15,7 @@ import (
 // APPKey represents an APP key
 type APPKey struct {
 	Owner *string `json:"owner,omitempty"`
-	Name  *string `json:"name,omitemtpy"`
+	Name  *string `json:"name,omitempty"`
 	Hash  *string `json:"hash,omitempty"`
 }
 

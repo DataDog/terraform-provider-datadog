@@ -159,6 +159,52 @@ func (client *Client) DeleteIntegrationSlack() error {
 }
 
 /*
+	Webhook Integration
+*/
+
+// IntegrationWebhookRequest defines the structure of the a webhook request
+type IntegrationWebhookRequest struct {
+	Webhooks []Webhook `json:"hooks"`
+}
+
+// Webhook defines the structure of the a webhook
+type Webhook struct {
+	Name             *string `json:"name"`
+	URL              *string `json:"url"`
+	UseCustomPayload *string `json:"use_custom_payload,omitempty"`
+	CustomPayload    *string `json:"custom_payload,omitempty"`
+	EncodeAsForm     *string `json:"encode_as_form,omitempty"`
+	Headers          *string `json:"headers,omitempty"`
+}
+
+// CreateIntegrationWebhook creates new webhook integration object(s).
+func (client *Client) CreateIntegrationWebhook(webhookIntegration *IntegrationWebhookRequest) error {
+	return client.doJsonRequest("POST", "/v1/integration/webhooks", webhookIntegration, nil)
+}
+
+// UpdateIntegrationWebhook updates the Webhook Integration.
+// It replaces the existing configuration with the configuration sent in this
+// request.
+func (client *Client) UpdateIntegrationWebhook(webhookIntegration *IntegrationWebhookRequest) error {
+	return client.doJsonRequest("PUT", "/v1/integration/webhooks", webhookIntegration, nil)
+}
+
+// GetIntegrationWebhook gets all the Webhook Integrations from Datadog.
+func (client *Client) GetIntegrationWebhook() (*IntegrationWebhookRequest, error) {
+	var out IntegrationWebhookRequest
+	if err := client.doJsonRequest("GET", "/v1/integration/webhooks", nil, &out); err != nil {
+		return nil, err
+	}
+
+	return &out, nil
+}
+
+// DeleteIntegrationWebhook removes the Webhook Integration from Datadog.
+func (client *Client) DeleteIntegrationWebhook() error {
+	return client.doJsonRequest("DELETE", "/v1/integration/webhooks", nil, nil)
+}
+
+/*
 	AWS Integration
 */
 

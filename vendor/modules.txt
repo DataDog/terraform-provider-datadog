@@ -231,7 +231,7 @@ github.com/zclconf/go-cty/cty/msgpack
 github.com/zclconf/go-cty/cty/set
 # github.com/zclconf/go-cty-yaml v1.0.1
 github.com/zclconf/go-cty-yaml
-# github.com/zorkian/go-datadog-api v2.26.0+incompatible
+# github.com/zorkian/go-datadog-api v2.27.0+incompatible
 github.com/zorkian/go-datadog-api
 # go.opencensus.io v0.22.0
 go.opencensus.io

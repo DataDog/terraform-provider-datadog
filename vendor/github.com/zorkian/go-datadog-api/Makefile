@@ -20,7 +20,7 @@ testrace:
 	go test -race $(TEST) $(TESTARGS)
 
 fmt:
-	gofmt -w $(GOFMT_FILES)
+	gofmt -w -s $(GOFMT_FILES)
 
 # vet runs the Go source code static analysis tool `vet` to find
 # any common errors.
