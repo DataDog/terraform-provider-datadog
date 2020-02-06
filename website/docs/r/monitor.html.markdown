@@ -37,8 +37,9 @@ resource "datadog_monitor" "foo" {
   timeout_h    = 60
   include_tags = true
 
-  silenced = {
-    "*" = 0
+  # ignore any changes in silenced value; using silenced is deprecated in favor of downtimes
+  lifecycle {
+    ignore_changes = [silenced]
   }
 
   tags = ["foo:bar", "baz"]
