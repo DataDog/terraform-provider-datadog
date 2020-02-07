@@ -1,0 +1,33 @@
+# See https://help.github.com/articles/about-codeowners/ for syntax
+# Rules are matched bottom-to-top, so one team can own subdirectories
+# and another the rest of the directory.
+
+# All your base
+*                                         @DataDog/integrations-tools-and-libraries
+
+datadog/*datadog_dashboard*               @DataDog/integrations-tools-and-libraries @DataDog/dashboards
+website/docs/r/dashboard*                 @DataDog/integrations-tools-and-libraries @DataDog/dashboards
+datadog/*datadog_downtime*                @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
+website/docs/r/downtime*                  @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
+datadog/*datadog_integration_aws*         @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
+website/docs/r/integration_aws*           @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
+datadog/*datadog_integration_gcp*         @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
+website/docs/r/integration_gcp*           @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
+datadog/*datadog_integration_pagerduty*   @DataDog/integrations-tools-and-libraries @DataDog/web-integrations
+website/docs/r/integration_pagerduty*     @DataDog/integrations-tools-and-libraries @DataDog/web-integrations
+datadog/*datadog_logs*                    @DataDog/integrations-tools-and-libraries @DataDog/logs-intake
+website/docs/r/logs*                      @DataDog/integrations-tools-and-libraries @DataDog/logs-intake
+datadog/*datadog_metric*                  @DataDog/integrations-tools-and-libraries @DataDog/metrics-intake @DataDog/metrics-query
+website/docs/r/metric*                    @DataDog/integrations-tools-and-libraries @DataDog/metrics-intake @DataDog/metrics-query
+datadog/*datadog_monitor*                 @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
+website/docs/r/monitor*                   @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
+datadog/*datadog_screenboard*             @DataDog/integrations-tools-and-libraries @DataDog/dashboards
+website/docs/r/screenboard*               @DataDog/integrations-tools-and-libraries @DataDog/dashboards
+datadog/*datadog_service_level_objective* @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
+website/docs/r/service_level_objective*   @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
+datadog/*datadog_synthetics_test*         @DataDog/integrations-tools-and-libraries @DataDog/synthetics-app
+website/docs/r/synthetics*                @DataDog/integrations-tools-and-libraries @DataDog/synthetics-app
+datadog/*datadog_timeboard*               @DataDog/integrations-tools-and-libraries @DataDog/dashboards
+website/docs/r/timeboard*                 @DataDog/integrations-tools-and-libraries @DataDog/dashboards
+datadog/*datadog_user*                    @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
+website/docs/r/user*                      @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
