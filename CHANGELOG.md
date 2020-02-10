@@ -1,4 +1,19 @@
-## 2.6.1 (Unreleased)
+## 2.7.0 (Unreleased)
+
+IMPROVEMENTS:
+* `datadog_dashboard`: Add `template_variable_presets` parameter [GH-401]
+* `datadog_dashboard`: Add new Monitor Summary widget parameters: `summary_type` and `show_last_triggered` [GH-396]
+* `datadog_dashboard`: Hide deprecated Monitor Summary widget parameters: `count` and `start` [GH-403]
+* `datadog_monitor`: Improve monitor example with ignoring changes on silenced [GH-406]
+* `datadog_service_level_objective`: Fix optional threshold fields handling when updating [GH-400]
+
+BUGFIXES:
+* `datadog_downtime`: Gracefully handle recreating downtimes that were canceled manually [GH-405]
+* `datadog_screenboard`:  Properly set screenboard attributes from client response to not produce non-empty plans [GH-404]
+
+NOTES:
+* This is the first release to use the new `terraform-plugin-sdk` [GH-346]
+
 ## 2.6.0 (January 21, 2020)
 
 FEATURES:
