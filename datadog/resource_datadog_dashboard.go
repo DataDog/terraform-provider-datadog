@@ -59,6 +59,14 @@ func resourceDatadogDashboard() *schema.Resource {
 					Schema: getTemplateVariableSchema(),
 				},
 			},
+			"template_variable_preset": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "The list of selectable template variable presets for this dashboard.",
+				Elem: &schema.Resource{
+					Schema: getTemplateVariablePresetSchema(),
+				},
+			},
 			"notify_list": {
 				Type:        schema.TypeList,
 				Optional:    true,
@@ -125,6 +133,12 @@ func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) erro
 	// Set template variables
 	templateVariables := buildTerraformTemplateVariables(&dashboard.TemplateVariables)
 	if err := d.Set("template_variable", templateVariables); err != nil {
+		return err
+	}
+
+	// Set template variable presets
+	templateVariablePresets := buildTerraformTemplateVariablePresets(&dashboard.TemplateVariablePresets)
+	if err := d.Set("template_variable_preset", templateVariablePresets); err != nil {
 		return err
 	}
 
@@ -197,6 +211,10 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadog.Board, error) {
 	templateVariables := d.Get("template_variable").([]interface{})
 	dashboard.TemplateVariables = *buildDatadogTemplateVariables(&templateVariables)
 
+	// Build TemplateVariablePresets
+	templateVariablePresets := d.Get("template_variable_preset").([]interface{})
+	dashboard.TemplateVariablePresets = *buildDatadogTemplateVariablePresets(&templateVariablePresets)
+
 	return &dashboard, nil
 }
 
@@ -259,6 +277,119 @@ func buildTerraformTemplateVariables(datadogTemplateVariables *[]datadog.Templat
 		terraformTemplateVariables[i] = terraformTemplateVariable
 	}
 	return &terraformTemplateVariables
+}
+
+//
+// Template Variable Preset Helpers
+//
+
+func getTemplateVariablePresetSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"name": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "The name of the preset.",
+		},
+		"template_variable": {
+			Type:        schema.TypeList,
+			Required:    true,
+			Description: "The template variable names and assumed values under the given preset",
+			Elem: &schema.Resource{
+				Schema: getTemplateVariablePresetValueSchema(),
+			},
+		},
+	}
+}
+
+func getTemplateVariablePresetValueSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"name": {
+			Type:        schema.TypeString,
+			Description: "The name of the template variable",
+			Required:    true,
+		},
+		"value": {
+			Type:        schema.TypeString,
+			Description: "The value that should be assumed by the template variable in this preset",
+			Required:    true,
+		},
+	}
+}
+
+func buildDatadogTemplateVariablePresets(terraformTemplateVariablePresets *[]interface{}) *[]datadog.TemplateVariablePreset {
+	datadogTemplateVariablePresets := make([]datadog.TemplateVariablePreset, len(*terraformTemplateVariablePresets))
+
+	for i, _templateVariablePreset := range *terraformTemplateVariablePresets {
+		templateVariablePreset := _templateVariablePreset.(map[string]interface{})
+		var datadogTemplateVariablePreset datadog.TemplateVariablePreset
+
+		if v, ok := templateVariablePreset["name"].(string); ok && len(v) != 0 {
+			datadogTemplateVariablePreset.SetName(v)
+		}
+
+		if templateVariablePresetValues, ok := templateVariablePreset["template_variable"].([]interface{}); ok && len(templateVariablePresetValues) != 0 {
+			datadogTemplateVariablePresetValues := make([]datadog.TemplateVariablePresetValue, len(templateVariablePresetValues))
+
+			for j, _templateVariablePresetValue := range templateVariablePresetValues {
+				templateVariablePresetValue := _templateVariablePresetValue.(map[string]interface{})
+				var datadogTemplateVariablePresetValue datadog.TemplateVariablePresetValue
+
+				if w, ok := templateVariablePresetValue["name"].(string); ok && len(w) != 0 {
+					datadogTemplateVariablePresetValue.SetName(w)
+				}
+
+				if w, ok := templateVariablePresetValue["value"].(string); ok && len(w) != 0 {
+					datadogTemplateVariablePresetValue.SetValue(w)
+				}
+
+				datadogTemplateVariablePresetValues[j] = datadogTemplateVariablePresetValue
+			}
+
+			datadogTemplateVariablePreset.TemplateVariables = datadogTemplateVariablePresetValues
+		}
+
+		datadogTemplateVariablePresets[i] = datadogTemplateVariablePreset
+	}
+
+	return &datadogTemplateVariablePresets
+}
+
+func buildTerraformTemplateVariablePresets(datadogTemplateVariablePresets *[]datadog.TemplateVariablePreset) *[]map[string]interface{} {
+	// Allocate final resting place for tf/hash version
+	terraformTemplateVariablePresets := make([]map[string]interface{}, len(*datadogTemplateVariablePresets))
+
+	//iterate over preset objects
+	for i, templateVariablePreset := range *datadogTemplateVariablePresets {
+		// Allocate for this preset group, a map of string key to obj (string for name, array for preset values
+		terraformTemplateVariablePreset := make(map[string]interface{})
+		if v, ok := templateVariablePreset.GetNameOk(); ok {
+			terraformTemplateVariablePreset["name"] = v
+		}
+
+		// allocate for array of preset values (names = name,value, values = name, template variable)
+
+		terraformTemplateVariablePresetValues := make([]map[string]string, len(templateVariablePreset.TemplateVariables))
+		for j, templateVariablePresetValue := range templateVariablePreset.TemplateVariables {
+			// allocate map for name => name value => value
+			terraformTemplateVariablePresetValue := make(map[string]string)
+			if v, ok := templateVariablePresetValue.GetNameOk(); ok {
+				terraformTemplateVariablePresetValue["name"] = v
+			}
+			if v, ok := templateVariablePresetValue.GetValueOk(); ok {
+				terraformTemplateVariablePresetValue["value"] = v
+			}
+
+			terraformTemplateVariablePresetValues[j] = terraformTemplateVariablePresetValue
+		}
+
+		// Set template_variable to the array of values we just created
+		terraformTemplateVariablePreset["template_variable"] = terraformTemplateVariablePresetValues
+
+		// put the preset group into the output var
+		terraformTemplateVariablePresets[i] = terraformTemplateVariablePreset
+	}
+
+	return &terraformTemplateVariablePresets
 }
 
 //
