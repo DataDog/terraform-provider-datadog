@@ -753,10 +753,8 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.conditional_formats.1.comparator", ">"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.conditional_formats.1.value", "2.2"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.conditional_formats.1.palette", "white_on_red"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.alias", "Lookups"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.aggregator", "sum"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.limit", "10"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.order", "desc"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.title", "Widget Title"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.time.live_span", "1h"),
 					// Template Variables
