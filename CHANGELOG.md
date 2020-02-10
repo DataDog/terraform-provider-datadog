@@ -2,7 +2,7 @@
 
 IMPROVEMENTS:
 * `datadog_dashboard`: Add `template_variable_presets` parameter [GH-401]
-* `datadog-dashboard`: Add new Monitor Summary widget parameters: `summary_type` and `show_last_triggered` [GH-396]
+* `datadog_dashboard`: Add new Monitor Summary widget parameters: `summary_type` and `show_last_triggered` [GH-396]
 * `datadog_dashboard`: Hide deprecated Monitor Summary widget parameters: `count` and `start` [GH-403]
 * `datadog_monitor`: Improve monitor example with ignoring changes on silenced [GH-406]
 * `datadog_service_level_objective`: Fix optional threshold fields handling when updating [GH-400]
