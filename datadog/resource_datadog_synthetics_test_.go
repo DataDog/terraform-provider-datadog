@@ -207,7 +207,7 @@ func syntheticsTestMonitorOptions() *schema.Schema {
 	return &schema.Schema{
 		Type: schema.TypeMap,
 		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
-			if key == "options.follow_redirects" || key == "options.accept_self_signed" {
+			if key == "options.monitor_options.renotify_interval" {
 				// TF nested schemas is limited to string values only
 				// follow_redirects and accept_self_signed being booleans in Datadog json api
 				// we need a sane way to convert from boolean to string
