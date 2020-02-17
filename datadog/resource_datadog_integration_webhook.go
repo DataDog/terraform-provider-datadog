@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -53,8 +54,8 @@ func resourceDatadogIntegrationWebhook() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			"hooks": {
-				Type:     schema.TypeList,
+			"hook": {
+				Type:     schema.TypeSet,
 				Required: true,
 				ForceNew: true,
 				Elem: &schema.Resource{
@@ -82,10 +83,20 @@ func resourceDatadogIntegrationWebhookExists(d *schema.ResourceData, meta interf
 }
 
 func buildDatadogHeader(headers map[string]string) string {
-	var headerList []string
+	headerList := make([]string, len(headers))
+	keys := make([]string, len(headers))
 
-	for key, value := range headers {
-		headerList = append(headerList, fmt.Sprintf("%s: %s", key, value))
+	// forcing consistency in constructing the header string.... thanks Go for making this difficult
+	i := 0
+	for key := range headers {
+		keys[i] = key
+		i++
+	}
+	sort.Strings(keys)
+	j := 0
+	for _, key := range keys {
+		headerList[j] = fmt.Sprintf("%s: %s", key, headers[key])
+		j++
 	}
 
 	return strings.Join(headerList, "\n")
@@ -116,25 +127,18 @@ func buildDatadogWebhook(terraformWebhook map[string]interface{}) datadog.Webhoo
 	return webhook
 }
 
-func resourceDatadogIntegrationWebhookPrepareCreateRequest(d *schema.ResourceData) datadog.IntegrationWebhookRequest {
-
-	iwebhook := datadog.IntegrationWebhookRequest{
-		Webhooks: []datadog.Webhook{},
-	}
-
-	for _, hook := range d.Get("hooks").([]interface{}) {
-		iwebhook.Webhooks = append(iwebhook.Webhooks, buildDatadogWebhook(hook.(map[string]interface{})))
-	}
-
-	return iwebhook
-}
-
 func resourceDatadogIntegrationWebhookCreate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
 	integrationWebhookMutex.Lock()
 	defer integrationWebhookMutex.Unlock()
 
-	iwebhook := resourceDatadogIntegrationWebhookPrepareCreateRequest(d)
+	iwebhook := datadog.IntegrationWebhookRequest{
+		Webhooks: []datadog.Webhook{},
+	}
+
+	for _, hook := range d.Get("hook").([]interface{}) {
+		iwebhook.Webhooks = append(iwebhook.Webhooks, buildDatadogWebhook(hook.(map[string]interface{})))
+	}
 
 	if err := client.CreateIntegrationWebhook(&iwebhook); err != nil {
 		return fmt.Errorf("error creating a Webhook integration: %s", err.Error())
@@ -218,7 +222,7 @@ func resourceDatadogIntegrationWebhookRead(d *schema.ResourceData, meta interfac
 		return err
 	}
 
-	return d.Set("hooks", terraformWebhooks)
+	return d.Set("hook", terraformWebhooks)
 }
 
 func resourceDatadogIntegrationWebhookDelete(d *schema.ResourceData, meta interface{}) error {
