@@ -1,4 +1,8 @@
 ## 2.8.0 (Unreleased)
+
+FEATURES:
+* `webhook_integration`: Add `webhook_integration` support ([#344](https://github.com/terraform-providers/terraform-provider-datadog/issues/344))
+
 ## 2.7.0 (February 10, 2020)
 
 IMPROVEMENTS:
