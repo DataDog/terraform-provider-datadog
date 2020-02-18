@@ -247,5 +247,12 @@ func resourceDatadogIntegrationWebhookImport(d *schema.ResourceData, meta interf
 	if err := resourceDatadogIntegrationWebhookRead(d, meta); err != nil {
 		return nil, err
 	}
+
+	if id, err := uuid.GenerateUUID(); err != nil {
+		return nil, fmt.Errorf("cannot generate internal Id: %s", err)
+	} else {
+		d.SetId(id)
+	}
+
 	return []*schema.ResourceData{d}, nil
 }
