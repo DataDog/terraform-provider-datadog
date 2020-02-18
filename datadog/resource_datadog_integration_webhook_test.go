@@ -1,28 +1,33 @@
 package datadog
 
 import (
+	"fmt"
+	"strconv"
+	"strings"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"github.com/zorkian/go-datadog-api"
 )
 
 func TestBuildDatadogHeader(t *testing.T) {
 	cases := map[string]struct {
-		terraformHeaders       map[string]string
+		terraformHeaders       map[string]interface{}
 		expectedDatadogHeaders string
 	}{
 		"no headers": {
-			terraformHeaders:       map[string]string{},
+			terraformHeaders:       map[string]interface{}{},
 			expectedDatadogHeaders: "",
 		},
 		"single header": {
-			terraformHeaders: map[string]string{
+			terraformHeaders: map[string]interface{}{
 				"header1": "val1",
 			},
 			expectedDatadogHeaders: "header1: val1",
 		},
 		"multiple header": {
-			terraformHeaders: map[string]string{
+			terraformHeaders: map[string]interface{}{
 				"header1": "val1",
 				"header2": "val2",
 				"header3": "val3",
@@ -42,66 +47,63 @@ func TestBuildDatadogHeader(t *testing.T) {
 func TestBuildTerraformHeader(t *testing.T) {
 	cases := map[string]struct {
 		datadogHeaders           string
-		expectedTerraformHeaders map[string]string
+		expectedTerraformHeaders map[string]interface{}
 		expectedError            error
 	}{
 		"no headers": {
 			datadogHeaders:           "",
-			expectedTerraformHeaders: map[string]string{},
+			expectedTerraformHeaders: map[string]interface{}{},
 			expectedError:            nil,
 		},
 		"no headers with whitespace": {
 			datadogHeaders:           "  \t",
-			expectedTerraformHeaders: map[string]string{},
+			expectedTerraformHeaders: map[string]interface{}{},
 			expectedError:            nil,
 		},
 		"single header": {
 			datadogHeaders: "header1: val1",
-			expectedTerraformHeaders: map[string]string{
+			expectedTerraformHeaders: map[string]interface{}{
 				"header1": "val1",
 			},
 			expectedError: nil,
 		},
 		"multiple headers": {
 			datadogHeaders: "header1: val1\nheader2: val2\nheader3: val3",
-			expectedTerraformHeaders: map[string]string{
+			expectedTerraformHeaders: map[string]interface{}{
 				"header1": "val1",
 				"header2": "val2",
 				"header3": "val3",
 			},
 			expectedError: nil,
 		},
+		"colon in value": {
+			datadogHeaders: "header1: val:with:colon",
+			expectedTerraformHeaders: map[string]interface{}{
+				"header1": "val:with:colon",
+			},
+			expectedError: nil,
+		},
+		"no colon between header and value": {
+			datadogHeaders: "header1 val",
+			expectedTerraformHeaders: nil,
+			expectedError: fmt.Errorf("header not correctly formatted, expected ':' in 'header1 val'"),
+		},
 	}
 	for name, tc := range cases {
-		actualTerraformHeaders, err := buildTerraformHeader(&tc.datadogHeaders)
+		actualTerraformHeaders, err := buildTerraformHeader(tc.datadogHeaders)
 
-		if err != tc.expectedError {
-			if err != nil {
-				t.Errorf("%s: Unexpected error occured '%s', expected '%s'", name, err.Error(), tc.expectedError.Error())
-			} else {
-				t.Errorf("%s: Expected error '%s', but none was thrown", name, tc.expectedError.Error())
-			}
-			return
-		}
-
-		if actualTerraformHeaders == nil && tc.expectedError == nil {
+		if err != nil && tc.expectedError == nil {
+			t.Errorf("%s: Unexpected error occured '%s", name, err.Error())
+		} else if err == nil && tc.expectedError != nil {
+			t.Errorf("%s: Expected error '%s', but it was not thrown", name, tc.expectedError.Error())
+		} else if err != nil && tc.expectedError != nil && err.Error() != tc.expectedError.Error() {
+			t.Errorf("%s: Unexpected error occured '%s', expected '%s'", name, err.Error(), tc.expectedError.Error())
+		} else if actualTerraformHeaders == nil && tc.expectedError == nil {
 			t.Errorf("%s: Did not expect an error and terraform webhook is nil", name)
-		} else if tc.expectedError != nil {
+		} else if actualTerraformHeaders != nil && tc.expectedError != nil {
 			t.Errorf("%s: Expected error '%s', but got non-nil terraform webhook", name, tc.expectedError.Error())
 		} else if actualTerraformHeaders != nil {
 			compareTerraformHeaders(tc.expectedTerraformHeaders, *actualTerraformHeaders, name, t)
-		}
-	}
-}
-
-func compareTerraformHeaders(expectedTerraformHeaders map[string]string, actualTerraformHeaders map[string]string, name string, t *testing.T) {
-	for header, actualVal := range actualTerraformHeaders {
-		if expectedVal, ok := expectedTerraformHeaders[header]; ok {
-			if expectedVal != actualVal {
-				t.Errorf("%s: Expectd '%s', but got '%s' for header %s", name, expectedVal, actualVal, header)
-			}
-		} else {
-			t.Errorf("%s: found header '%s' that was not expected", name, header)
 		}
 	}
 }
@@ -290,25 +292,71 @@ func TestBuildTerraformWebhook(t *testing.T) {
 			}},
 			expectedError: nil,
 		},
+		"non-bool useCustomHeader": {
+			datadogWebhooks: []datadog.Webhook{{
+				Name: datadog.String("my_webhook"),
+				URL:  datadog.String("http://example.com"),
+				UseCustomPayload: datadog.String("I'm not a boolean"),
+			}},
+			expectedTerraformWebhooks: []map[string]interface{}{{
+				"name": "my_webhook",
+				"url":  "http://example.com",
+			}},
+			expectedError: fmt.Errorf("strconv.ParseBool: parsing \"I'm not a boolean\": invalid syntax"),
+		},
+		"non-bool encodeAsForm": {
+			datadogWebhooks: []datadog.Webhook{{
+				Name: datadog.String("my_webhook"),
+				URL:  datadog.String("http://example.com"),
+				EncodeAsForm: datadog.String("I'm also not a boolean"),
+			}},
+			expectedTerraformWebhooks: []map[string]interface{}{{
+				"name": "my_webhook",
+				"url":  "http://example.com",
+			}},
+			expectedError: fmt.Errorf("strconv.ParseBool: parsing \"I'm also not a boolean\": invalid syntax"),
+		},
+		"no colon between header and value": {
+			datadogWebhooks: []datadog.Webhook{{
+				Name: datadog.String("my_webhook"),
+				URL:  datadog.String("http://example.com"),
+				Headers: datadog.String("header1 val1"),
+			}},
+			expectedTerraformWebhooks: []map[string]interface{}{{
+				"name": "my_webhook",
+				"url":  "http://example.com",
+			}},
+			expectedError: fmt.Errorf("header not correctly formatted, expected ':' in 'header1 val1'"),
+		},
 	}
 	for name, tc := range cases {
 		actualTerraformWebhooks, err := buildTerraformWebhooks(tc.datadogWebhooks)
 
-		if err != tc.expectedError {
-			if err != nil {
-				t.Errorf("%s: Unexpected error occured '%s', expected '%s'", name, err.Error(), tc.expectedError.Error())
-			} else {
-				t.Errorf("%s: Expected error '%s', but none was thrown", name, tc.expectedError.Error())
-			}
-			return
-		}
-
-		if actualTerraformWebhooks == nil && tc.expectedError == nil {
+		if err != nil && tc.expectedError == nil {
+			t.Errorf("%s: Unexpected error occured '%s", name, err.Error())
+		} else if err == nil && tc.expectedError != nil {
+			t.Errorf("%s: Expected error '%s', but it was not thrown", name, tc.expectedError.Error())
+		} else if err != nil && tc.expectedError != nil && err.Error() != tc.expectedError.Error() {
+			t.Errorf("%s: Unexpected error occured '%s', expected '%s'", name, err.Error(), tc.expectedError.Error())
+		} else if actualTerraformWebhooks == nil && tc.expectedError == nil {
 			t.Errorf("%s: Did not expect an error and terraform webhook is nil", name)
-		} else if tc.expectedError != nil {
+		} else if actualTerraformWebhooks != nil && tc.expectedError != nil {
 			t.Errorf("%s: Expected error '%s', but got non-nil terraform webhook", name, tc.expectedError.Error())
 		} else if actualTerraformWebhooks != nil {
 			compareTerraformWebhooks(tc.expectedTerraformWebhooks, *actualTerraformWebhooks, name, t)
+		}
+	}
+}
+
+// Helpers
+func compareTerraformHeaders(expectedTerraformHeaders map[string]interface{}, actualTerraformHeaders map[string]interface{}, name string, t *testing.T) {
+	for header, actualVal := range actualTerraformHeaders {
+		if expectedVal, ok := expectedTerraformHeaders[header]; ok {
+			if expectedVal != actualVal {
+				t.Errorf("%s: Expectd '%s', but got '%s' for header %s", name, expectedVal, actualVal, header)
+			}
+		} else {
+			t.Errorf("%s: found header '%s' that was not expected", name, header)
 		}
 	}
 }
@@ -376,7 +424,7 @@ func compareTerraformWebhook(expectedTerraformWebhook map[string]interface{}, ac
 	if expectedHeadersOk != actualHeadersOK {
 		t.Errorf("%s: Excpected URL to be %s and was %s", name, isPresentToString(expectedHeadersOk), isPresentToString(actualHeadersOK))
 	} else if expectedHeadersOk {
-		compareTerraformHeaders(expectedHeadersVal.(map[string]string), *actualHeadersVal.(*map[string]string), name, t)
+		compareTerraformHeaders(expectedHeadersVal.(map[string]interface{}), *actualHeadersVal.(*map[string]interface{}), name, t)
 	}
 }
 
@@ -387,3 +435,168 @@ func isPresentToString(isPresent bool) string {
 
 	return "not present"
 }
+
+// Acceptance tests
+func TestAccIntegrationWebhook_Basic(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckIntegrationWebhookDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccIntegrationWebhookConfigBasic,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogIntegrationWebhookExistsAndValid("test_1", "http://example.com", false, "", false, ""),
+				),
+			},
+		},
+	})
+}
+
+func TestAccIntegrationWebhook_AllParams(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckIntegrationWebhookDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccIntegrationWebhookConfigAllParams,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogIntegrationWebhookExistsAndValid("test_1", "http://example.com", true, "TITLE = $EVENT_TITLE", true, "X-DataDog-Event-Id: $ID"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccIntegrationWebhook_BasicMultiple(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckIntegrationWebhookDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccIntegrationWebhookConfigBasicMultiple,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogIntegrationWebhookExistsAndValid("test_1", "http://example.com", false, "", false, ""),
+					testAccCheckDatadogIntegrationWebhookExistsAndValid("test_2", "https://another.example.com", false, "", false, ""),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogIntegrationWebhookExistsAndValid(hookName string, url string, useCustomPayload bool, customPayload string, encodeAsForm bool, headers string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		client := testAccProvider.Meta().(*datadog.Client)
+		slackIntegration, err := client.GetIntegrationWebhook()
+		if err != nil {
+			return fmt.Errorf("received an error retrieving integration webhook %s", err)
+		}
+		for _, hook := range slackIntegration.Webhooks {
+			if hook.GetName() == hookName {
+
+				if !hook.HasURL() && url != "" {
+					return fmt.Errorf("expected encode as form field to be '%s', but was not set", url)
+				} else
+				if actual := hook.GetURL(); actual != url {
+					return fmt.Errorf("expected URL to be '%s', but was '%s'", url, actual)
+				}
+
+				if !hook.HasUseCustomPayload() && useCustomPayload {
+					return fmt.Errorf("expected use custom payload field to be '%t', but was not set", useCustomPayload)
+				} else {
+					actual, err:= strconv.ParseBool(hook.GetUseCustomPayload())
+
+					if err != nil {
+						return fmt.Errorf("unexpected error occured: %s", err)
+					}
+
+					if actual != useCustomPayload {
+						return fmt.Errorf("expected use custom payload field to be '%t', but was '%t'", useCustomPayload, actual)
+					}
+				}
+
+				if !hook.HasCustomPayload() && customPayload != "" {
+					return fmt.Errorf("expected encode as form field to be '%s', but was not set", customPayload)
+				} else if actual := hook.GetCustomPayload(); actual != customPayload {
+					return fmt.Errorf("expected custom payload to be '%s', but was '%s'", customPayload, actual)
+				}
+
+				if !hook.HasEncodeAsForm() && encodeAsForm {
+					return fmt.Errorf("expected encode as form field to be '%t', but was not set", encodeAsForm)
+				} else {
+					actual, err:= strconv.ParseBool(hook.GetEncodeAsForm())
+
+					if err != nil {
+						return fmt.Errorf("unexpected error occured: %s", err)
+					}
+
+					if actual != encodeAsForm {
+						return fmt.Errorf("expected encode as form field to be '%t', but was '%t'", encodeAsForm, actual)
+					}
+				}
+
+				if !hook.HasHeaders() && headers != "" {
+					return fmt.Errorf("expected encode as form field to be '%s', but was not set", headers)
+				} else if actual := hook.GetHeaders();  actual != headers {
+					return fmt.Errorf("expected custom payload to be '%s', but was '%s'", actual, headers)
+				}
+
+				return nil
+			}
+		}
+		return fmt.Errorf("didn't find hook (%s) in integration webhook", hookName)
+	}
+}
+
+func testAccCheckIntegrationWebhookDestroy(s *terraform.State) error {
+	client := testAccProvider.Meta().(*datadog.Client)
+
+	_, err := client.GetIntegrationWebhook()
+	if err != nil {
+		if strings.Contains(err.Error(), "webhooks not found") {
+			return nil
+		}
+
+		return fmt.Errorf("received an error retrieving integration webhook %s", err)
+	}
+
+	return fmt.Errorf("integration webhook is not properly destroyed")
+}
+
+const testAccIntegrationWebhookConfigBasic = `
+resource "datadog_integration_webhook" "test" {
+   hook {
+	   name = "test_1"
+	   url = "http://example.com"       
+   }
+}`
+
+const testAccIntegrationWebhookConfigAllParams = `
+resource "datadog_integration_webhook" "test" {
+   hook {
+	   name = "test_1"
+	   url = "http://example.com"       
+       use_custom_payload = true
+       custom_payload = "TITLE = $EVENT_TITLE"
+       encode_as_form = true
+       headers = {
+		   "X-DataDog-Event-Id": "$ID"
+       }
+   }
+}`
+
+const testAccIntegrationWebhookConfigBasicMultiple = `
+resource "datadog_integration_webhook" "test" {
+   hook {
+	   name = "test_1"
+	   url = "http://example.com"       
+   }
+
+	hook {
+	   name = "test_2"
+	   url = "https://another.example.com"       
+   }
+}`
+

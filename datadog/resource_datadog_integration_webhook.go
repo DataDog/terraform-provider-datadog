@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"fmt"
+	"github.com/hashicorp/go-uuid"
 	"sort"
 	"strconv"
 	"strings"
@@ -73,7 +74,7 @@ func resourceDatadogIntegrationWebhookExists(d *schema.ResourceData, meta interf
 
 	integration, err := client.GetIntegrationWebhook()
 
-	if err != nil && err.Error() == "Not Found" {
+	if err != nil && strings.Contains(err.Error(), "webhooks not found") {
 		return false, nil
 	} else if err != nil {
 		return false, err
@@ -82,7 +83,7 @@ func resourceDatadogIntegrationWebhookExists(d *schema.ResourceData, meta interf
 	return len(integration.Webhooks) > 0, nil
 }
 
-func buildDatadogHeader(headers map[string]string) string {
+func buildDatadogHeader(headers map[string]interface{}) string {
 	headerList := make([]string, len(headers))
 	keys := make([]string, len(headers))
 
@@ -121,7 +122,7 @@ func buildDatadogWebhook(terraformWebhook map[string]interface{}) datadog.Webhoo
 	}
 
 	if attr, ok := terraformWebhook["headers"]; ok {
-		webhook.Headers = datadog.String(buildDatadogHeader(attr.(map[string]string)))
+		webhook.Headers = datadog.String(buildDatadogHeader(attr.(map[string]interface{})))
 	}
 
 	return webhook
@@ -136,28 +137,33 @@ func resourceDatadogIntegrationWebhookCreate(d *schema.ResourceData, meta interf
 		Webhooks: []datadog.Webhook{},
 	}
 
-	for _, hook := range d.Get("hook").([]interface{}) {
+	for _, hook := range d.Get("hook").(*schema.Set).List() {
 		iwebhook.Webhooks = append(iwebhook.Webhooks, buildDatadogWebhook(hook.(map[string]interface{})))
 	}
 
 	if err := client.CreateIntegrationWebhook(&iwebhook); err != nil {
-		return fmt.Errorf("error creating a Webhook integration: %s", err.Error())
+		return fmt.Errorf("error creating a Webhook integration: %s", err)
 	}
 
+	if id, err := uuid.GenerateUUID(); err != nil {
+		return fmt.Errorf("cannot generate internal Id: %s", err)
+	} else {
+		d.SetId(id)
+	}
 	return resourceDatadogIntegrationWebhookRead(d, meta)
 }
 
-func buildTerraformHeader(datadogHeader *string) (*map[string]string, error) {
-	terraformHeaders := map[string]string{}
+func buildTerraformHeader(datadogHeader string) (*map[string]interface{}, error) {
+	terraformHeaders := map[string]interface{}{}
 
-	if strings.Trim(*datadogHeader, " \t\n") != "" {
-		headerStrList := strings.Split(*datadogHeader, "\n")
+	if strings.Trim(datadogHeader, " \t\n") != "" {
+		headerStrList := strings.Split(datadogHeader, "\n")
 
 		for _, headerStr := range headerStrList {
 			if strings.Contains(headerStr, ":") {
 				split := strings.Split(headerStr, ":")
 
-				terraformHeaders[split[0]] = strings.TrimLeft(strings.Join(split[1:], ""), " ")
+				terraformHeaders[split[0]] = strings.TrimLeft(strings.Join(split[1:], ":"), " ")
 			} else {
 				return nil, fmt.Errorf("header not correctly formatted, expected ':' in '%s'", headerStr)
 			}
@@ -175,32 +181,32 @@ func buildTerraformWebhooks(datadogWebhooks []datadog.Webhook) (*[]map[string]in
 		terraformWebhook["name"] = datadogWebhook.Name
 		terraformWebhook["url"] = datadogWebhook.URL
 
-		if datadogWebhook.UseCustomPayload != nil {
-			val, err := strconv.ParseBool(*datadogWebhook.UseCustomPayload)
+		if useCustomPayload, ok := datadogWebhook.GetUseCustomPayloadOk(); ok && useCustomPayload != "" {
+			val, err := strconv.ParseBool(useCustomPayload)
 			if err != nil {
 				return nil, err
 			}
 			terraformWebhook["use_custom_payload"] = val
 		}
 
-		if datadogWebhook.CustomPayload != nil {
-			terraformWebhook["custom_payload"] = datadogWebhook.CustomPayload
+		if customPayload, ok := datadogWebhook.GetCustomPayloadOk(); ok {
+			terraformWebhook["custom_payload"] = customPayload
 		}
 
-		if datadogWebhook.EncodeAsForm != nil {
-			val, err := strconv.ParseBool(*datadogWebhook.EncodeAsForm)
+		if encodeAsForm, ok := datadogWebhook.GetEncodeAsFormOk(); ok && encodeAsForm != "" {
+			val, err := strconv.ParseBool(encodeAsForm)
 			if err != nil {
 				return nil, err
 			}
 			terraformWebhook["encode_as_form"] = val
 		}
 
-		if datadogWebhook.Headers != nil {
-			val, err := buildTerraformHeader(datadogWebhook.Headers)
+		if headers, ok := datadogWebhook.GetHeadersOk(); ok {
+			val, err := buildTerraformHeader(headers)
 			if err != nil {
 				return nil, err
 			}
-			terraformWebhook["headers"] = val
+			terraformWebhook["headers"] = *val
 		}
 
 		terraformWebhooks[idx] = terraformWebhook
