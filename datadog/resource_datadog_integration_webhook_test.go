@@ -84,9 +84,9 @@ func TestBuildTerraformHeader(t *testing.T) {
 			expectedError: nil,
 		},
 		"no colon between header and value": {
-			datadogHeaders: "header1 val",
+			datadogHeaders:           "header1 val",
 			expectedTerraformHeaders: nil,
-			expectedError: fmt.Errorf("header not correctly formatted, expected ':' in 'header1 val'"),
+			expectedError:            fmt.Errorf("header not correctly formatted, expected ':' in 'header1 val'"),
 		},
 	}
 	for name, tc := range cases {
@@ -127,7 +127,7 @@ func TestBuildDatadogWebhook(t *testing.T) {
 			terraformWebhook: map[string]interface{}{
 				"name": "my_webhook",
 				"url":  "http://example.com",
-				"headers": map[string]string{
+				"headers": map[string]interface{}{
 					"header1": "val1",
 				},
 			},
@@ -254,7 +254,7 @@ func TestBuildTerraformWebhook(t *testing.T) {
 			expectedTerraformWebhooks: []map[string]interface{}{{
 				"name": "my_webhook",
 				"url":  "http://example.com",
-				"headers": map[string]string{
+				"headers": map[string]interface{}{
 					"header1": "val1",
 				},
 			}},
@@ -294,8 +294,8 @@ func TestBuildTerraformWebhook(t *testing.T) {
 		},
 		"non-bool useCustomHeader": {
 			datadogWebhooks: []datadog.Webhook{{
-				Name: datadog.String("my_webhook"),
-				URL:  datadog.String("http://example.com"),
+				Name:             datadog.String("my_webhook"),
+				URL:              datadog.String("http://example.com"),
 				UseCustomPayload: datadog.String("I'm not a boolean"),
 			}},
 			expectedTerraformWebhooks: []map[string]interface{}{{
@@ -306,8 +306,8 @@ func TestBuildTerraformWebhook(t *testing.T) {
 		},
 		"non-bool encodeAsForm": {
 			datadogWebhooks: []datadog.Webhook{{
-				Name: datadog.String("my_webhook"),
-				URL:  datadog.String("http://example.com"),
+				Name:         datadog.String("my_webhook"),
+				URL:          datadog.String("http://example.com"),
 				EncodeAsForm: datadog.String("I'm also not a boolean"),
 			}},
 			expectedTerraformWebhooks: []map[string]interface{}{{
@@ -318,8 +318,8 @@ func TestBuildTerraformWebhook(t *testing.T) {
 		},
 		"no colon between header and value": {
 			datadogWebhooks: []datadog.Webhook{{
-				Name: datadog.String("my_webhook"),
-				URL:  datadog.String("http://example.com"),
+				Name:    datadog.String("my_webhook"),
+				URL:     datadog.String("http://example.com"),
 				Headers: datadog.String("header1 val1"),
 			}},
 			expectedTerraformWebhooks: []map[string]interface{}{{
@@ -405,8 +405,8 @@ func compareTerraformWebhook(expectedTerraformWebhook map[string]interface{}, ac
 
 	if expectedUseCustomPayloadOk != actualUseCustomPayloadOK {
 		t.Errorf("%s: Excpected custom payload to be %s and was %s", name, isPresentToString(expectedCustomPayloadOk), isPresentToString(actualCustomPayloadOK))
-	} else if expectedCustomPayloadOk && expectedCustomPayloadVal.(string) != *actualCustomPayloadVal.(*string) {
-		t.Errorf("%s: Expected ustom payload to be '%s', but got '%s'", name, expectedCustomPayloadVal.(string), *actualCustomPayloadVal.(*string))
+	} else if expectedCustomPayloadOk && expectedCustomPayloadVal.(string) != actualCustomPayloadVal.(string) {
+		t.Errorf("%s: Expected ustom payload to be '%s', but got '%s'", name, expectedCustomPayloadVal.(string), actualCustomPayloadVal.(string))
 	}
 
 	expectedEncodeAsFormVal, expectedEncodeAsFormOk := expectedTerraformWebhook["encode_as_form"]
@@ -424,7 +424,7 @@ func compareTerraformWebhook(expectedTerraformWebhook map[string]interface{}, ac
 	if expectedHeadersOk != actualHeadersOK {
 		t.Errorf("%s: Excpected URL to be %s and was %s", name, isPresentToString(expectedHeadersOk), isPresentToString(actualHeadersOK))
 	} else if expectedHeadersOk {
-		compareTerraformHeaders(expectedHeadersVal.(map[string]interface{}), *actualHeadersVal.(*map[string]interface{}), name, t)
+		compareTerraformHeaders(expectedHeadersVal.(map[string]interface{}), actualHeadersVal.(map[string]interface{}), name, t)
 	}
 }
 
@@ -439,7 +439,7 @@ func isPresentToString(isPresent bool) string {
 // Acceptance tests
 func TestAccIntegrationWebhook_Basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck: func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckIntegrationWebhookDestroy,
 		Steps: []resource.TestStep{
@@ -455,7 +455,7 @@ func TestAccIntegrationWebhook_Basic(t *testing.T) {
 
 func TestAccIntegrationWebhook_AllParams(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck: func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckIntegrationWebhookDestroy,
 		Steps: []resource.TestStep{
@@ -471,7 +471,7 @@ func TestAccIntegrationWebhook_AllParams(t *testing.T) {
 
 func TestAccIntegrationWebhook_BasicMultiple(t *testing.T) {
 	resource.Test(t, resource.TestCase{
-		PreCheck: func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckIntegrationWebhookDestroy,
 		Steps: []resource.TestStep{
@@ -498,15 +498,14 @@ func testAccCheckDatadogIntegrationWebhookExistsAndValid(hookName string, url st
 
 				if !hook.HasURL() && url != "" {
 					return fmt.Errorf("expected encode as form field to be '%s', but was not set", url)
-				} else
-				if actual := hook.GetURL(); actual != url {
+				} else if actual := hook.GetURL(); actual != url {
 					return fmt.Errorf("expected URL to be '%s', but was '%s'", url, actual)
 				}
 
 				if !hook.HasUseCustomPayload() && useCustomPayload {
 					return fmt.Errorf("expected use custom payload field to be '%t', but was not set", useCustomPayload)
 				} else {
-					actual, err:= strconv.ParseBool(hook.GetUseCustomPayload())
+					actual, err := strconv.ParseBool(hook.GetUseCustomPayload())
 
 					if err != nil {
 						return fmt.Errorf("unexpected error occured: %s", err)
@@ -526,7 +525,7 @@ func testAccCheckDatadogIntegrationWebhookExistsAndValid(hookName string, url st
 				if !hook.HasEncodeAsForm() && encodeAsForm {
 					return fmt.Errorf("expected encode as form field to be '%t', but was not set", encodeAsForm)
 				} else {
-					actual, err:= strconv.ParseBool(hook.GetEncodeAsForm())
+					actual, err := strconv.ParseBool(hook.GetEncodeAsForm())
 
 					if err != nil {
 						return fmt.Errorf("unexpected error occured: %s", err)
@@ -539,7 +538,7 @@ func testAccCheckDatadogIntegrationWebhookExistsAndValid(hookName string, url st
 
 				if !hook.HasHeaders() && headers != "" {
 					return fmt.Errorf("expected encode as form field to be '%s', but was not set", headers)
-				} else if actual := hook.GetHeaders();  actual != headers {
+				} else if actual := hook.GetHeaders(); actual != headers {
 					return fmt.Errorf("expected custom payload to be '%s', but was '%s'", actual, headers)
 				}
 
@@ -599,4 +598,3 @@ resource "datadog_integration_webhook" "test" {
 	   url = "https://another.example.com"       
    }
 }`
-
