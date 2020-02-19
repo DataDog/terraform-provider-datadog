@@ -1291,10 +1291,11 @@ func buildTerraformChangeDefinition(datadogDefinition datadogV1.ChangeWidgetDefi
 func getChangeRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
+		"q":              getMetricQuerySchema(),
+		"apm_query":      getApmOrLogQuerySchema(),
+		"log_query":      getApmOrLogQuerySchema(),
+		"security_query": getApmOrLogQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
 		// Settings specific to Change requests
 		"change_type": {
 			Type:     schema.TypeString,
@@ -1336,6 +1337,9 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 		} else if v, ok := terraformRequest["log_query"].([]interface{}); ok && len(v) > 0 {
 			logQuery := v[0].(map[string]interface{})
 			datadogChangeRequest.LogQuery = buildDatadogApmOrLogQuery(logQuery)
+		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
+			securityQuery := v[0].(map[string]interface{})
+			datadogChangeRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogChangeRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
@@ -1379,6 +1383,9 @@ func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidge
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		} else if datadogRequest.SecurityQuery != nil {
+			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.SecurityQuery)
+			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 
 		if v, ok := datadogRequest.GetChangeTypeOk(); ok {
@@ -3033,10 +3040,11 @@ func buildTerraformQueryValueDefinition(datadogDefinition datadogV1.QueryValueWi
 func getQueryValueRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
+		"q":              getMetricQuerySchema(),
+		"apm_query":      getApmOrLogQuerySchema(),
+		"log_query":      getApmOrLogQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
+		"security_query": getApmOrLogQuerySchema(),
 		// Settings specific to QueryValue requests
 		"conditional_formats": {
 			Type:     schema.TypeList,
@@ -3068,6 +3076,9 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogQueryValueRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
+			securityQuery := v[0].(map[string]interface{})
+			datadogQueryValueRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 		}
 
 		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
@@ -3096,6 +3107,9 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 		} else if datadogRequest.ProcessQuery != nil {
 			terraformQuery := buildTerraformProcessQuery(*datadogRequest.ProcessQuery)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		} else if datadogRequest.SecurityQuery != nil {
+			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.SecurityQuery)
+			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 
 		if datadogRequest.ConditionalFormats != nil {
@@ -3187,10 +3201,11 @@ func buildTerraformQueryTableDefinition(datadogDefinition datadogV1.TableWidgetD
 func getQueryTableRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
+		"q":              getMetricQuerySchema(),
+		"apm_query":      getApmOrLogQuerySchema(),
+		"log_query":      getApmOrLogQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
+		"security_query": getApmOrLogQuerySchema(),
 		// Settings specific to QueryTable requests
 		"conditional_formats": {
 			Type:     schema.TypeList,
@@ -3234,6 +3249,9 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogQueryTableRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
+			securityQuery := v[0].(map[string]interface{})
+			datadogQueryTableRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 		}
 
 		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
@@ -3271,6 +3289,9 @@ func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.Tab
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		} else if datadogRequest.SecurityQuery != nil {
+			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.SecurityQuery)
+			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 
 		if v, ok := datadogRequest.GetConditionalFormatsOk(); ok {
@@ -3849,12 +3870,13 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 func getTimeseriesRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
+		"q":              getMetricQuerySchema(),
+		"apm_query":      getApmOrLogQuerySchema(),
+		"log_query":      getApmOrLogQuerySchema(),
 		"rum_query":     getApmLogNetworkOrRumQuerySchema(),
 		"network_query": getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
+		"security_query": getApmOrLogQuerySchema(),
 		// Settings specific to Timeseries requests
 		"style": {
 			Type:     schema.TypeList,
@@ -3919,6 +3941,9 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["rum_query"].([]interface{}); ok && len(v) > 0 {
 			rumQuery := v[0].(map[string]interface{})
 			datadogTimeseriesRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
+		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
+			securityQuery := v[0].(map[string]interface{})
+			datadogTimeseriesRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogTimeseriesRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
@@ -3971,6 +3996,9 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		} else if datadogRequest.SecurityQuery != nil {
+			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.SecurityQuery)
+			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 		if v, ok := datadogRequest.GetStyleOk(); ok {
 			style := buildTerraformWidgetRequestStyle(*v)
@@ -4078,10 +4106,11 @@ func buildTerraformToplistDefinition(datadogDefinition datadogV1.ToplistWidgetDe
 func getToplistRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
+		"q":              getMetricQuerySchema(),
+		"apm_query":      getApmOrLogQuerySchema(),
+		"log_query":      getApmOrLogQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
+		"security_query": getApmOrLogQuerySchema(),
 		// Settings specific to Toplist requests
 		"conditional_formats": {
 			Type:     schema.TypeList,
@@ -4117,6 +4146,9 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogToplistRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
+			securityQuery := v[0].(map[string]interface{})
+			datadogToplistRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 		}
 		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
 			datadogToplistRequest.ConditionalFormats = buildDatadogWidgetConditionalFormat(&v)
@@ -4145,6 +4177,9 @@ func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWi
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		} else if datadogRequest.SecurityQuery != nil {
+			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.SecurityQuery)
+			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 
 		if v, ok := datadogRequest.GetConditionalFormatsOk(); ok {
