@@ -19,7 +19,7 @@ var createdTimeLayout = "2006-01-02 15:04:05"
 // APIKey represents and API key
 type APIKey struct {
 	CreatedBy *string    `json:"created_by,omitempty"`
-	Name      *string    `json:"name,omitemtpy"`
+	Name      *string    `json:"name,omitempty"`
 	Key       *string    `json:"key,omitempty"`
 	Created   *time.Time `json:"created,omitempty"`
 }

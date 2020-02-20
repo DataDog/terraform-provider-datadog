@@ -1,7 +1,32 @@
-## 2.5.1 (Unreleased)
+## 2.8.0 (Unreleased)
+## 2.7.0 (February 10, 2020)
+
+IMPROVEMENTS:
+* `datadog_dashboard`: Add `template_variable_presets` parameter ([#401](https://github.com/terraform-providers/terraform-provider-datadog/issues/401))
+* `datadog_dashboard`: Add new Monitor Summary widget parameters: `summary_type` and `show_last_triggered` ([#396](https://github.com/terraform-providers/terraform-provider-datadog/issues/396))
+* `datadog_dashboard`: Hide deprecated Monitor Summary widget parameters: `count` and `start` ([#403](https://github.com/terraform-providers/terraform-provider-datadog/issues/403))
+* `datadog_monitor`: Improve monitor example with ignoring changes on silenced ([#406](https://github.com/terraform-providers/terraform-provider-datadog/issues/406))
+* `datadog_service_level_objective`: Fix optional threshold fields handling when updating ([#400](https://github.com/terraform-providers/terraform-provider-datadog/issues/400))
 
 BUGFIXES:
-* `monitor_search`: Feature removed from SLO as it is not yet supported
+* `datadog_downtime`: Gracefully handle recreating downtimes that were canceled manually ([#405](https://github.com/terraform-providers/terraform-provider-datadog/issues/405))
+* `datadog_screenboard`:  Properly set screenboard attributes from client response to not produce non-empty plans ([#404](https://github.com/terraform-providers/terraform-provider-datadog/issues/404))
+
+NOTES:
+* This is the first release to use the new `terraform-plugin-sdk` ([#346](https://github.com/terraform-providers/terraform-provider-datadog/issues/346))
+
+## 2.6.0 (January 21, 2020)
+
+FEATURES:
+* `datadog_dashboard`: Add Datadog dashboard SLO widget support ([#355](https://github.com/terraform-providers/terraform-provider-datadog/issues/355)) Thanks [@mbarrien](https://github.com/mbarrien)
+
+IMPROVEMENTS:
+* `datadog_logs_custom_pipeline`: Support all processors in Logs pipeline ([#357](https://github.com/terraform-providers/terraform-provider-datadog/pull/357)) Thanks [@tt810](https://github.com/tt810)
+
+BUGFIXES:
+* `datadog_service_level_objective`: Fix slo threshold warning value modified when storing the state ([#352](https://github.com/terraform-providers/terraform-provider-datadog/pull/352))
+* `datadog_service_level_objective`: `monitor_search` schema removed from the SLO resource as it is not yet supported ([#358](https://github.com/terraform-providers/terraform-provider-datadog/issues/358)) Thanks [@unclebconnor](https://github.com/unclebconnor)
+* `datadog_monitor`: Resolve non empty diff: "no_data_timeframe = 0 -> 10" on plan diff ([#384](https://github.com/terraform-providers/terraform-provider-datadog/issues/384)) Thanks [@abicky](https://github.com/abicky)
 
 ## 2.5.0 (October 22, 2019)
 

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/kr/pretty"
 	datadog "github.com/zorkian/go-datadog-api"
 )
@@ -555,6 +555,22 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Type:     schema.TypeBool,
 					Optional: true,
 				},
+				"summary_type": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "One of: ['monitors', 'groups', 'combined']",
+					ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+						v := val.(string)
+						summaryTypes := []string{"monitors", "groups", "combined"}
+						for _, t := range summaryTypes {
+							if v == t {
+								return
+							}
+						}
+						errs = append(errs, fmt.Errorf("%q must be one of: %q, got: %q", key, summaryTypes, v))
+						return
+					},
+				},
 				"display_format": {
 					Type:        schema.TypeString,
 					Optional:    true,
@@ -566,6 +582,10 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Description: "One of: ['background', 'text']",
 				},
 				"hide_zero_counts": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"show_last_triggered": {
 					Type:     schema.TypeBool,
 					Optional: true,
 				},
@@ -1164,9 +1184,11 @@ func buildWidgets(tfWidgets *[]interface{}) []datadog.Widget {
 				{"must_show_breakdown", &d.MustShowBreakdown},
 				{"must_show_distribution", &d.MustShowDistribution},
 				{"must_show_resource_list", &d.MustShowResourceList},
+				{"summary_type", &d.SummaryType},
 				{"display_format", &d.DisplayFormat},
 				{"color_preference", &d.ColorPreference},
 				{"hide_zero_counts", &d.HideZeroCounts},
+				{"show_last_triggered", &d.ShowLastTriggered},
 				{"manage_status_show_title", &d.ManageStatusShowTitle},
 				{"manage_status_title_text", &d.ManageStatusTitleText},
 				{"manage_status_title_size", &d.ManageStatusTitleSize},
@@ -1186,6 +1208,7 @@ func buildWidgets(tfWidgets *[]interface{}) []datadog.Widget {
 				matches: []match{
 					{"sort", &d.Params.Sort},
 					{"text", &d.Params.Text},
+					// The count and start params are deprecated for the monitor summary widget
 					{"count", &d.Params.Count},
 					{"start", &d.Params.Start},
 				}})
@@ -1663,9 +1686,11 @@ func buildTFWidget(dw datadog.Widget) map[string]interface{} {
 			{"must_show_breakdown", dw.MustShowBreakdown},
 			{"must_show_distribution", dw.MustShowDistribution},
 			{"must_show_resource_list", dw.MustShowResourceList},
+			{"summary_type", dw.SummaryType},
 			{"display_format", dw.DisplayFormat},
 			{"color_preference", dw.ColorPreference},
 			{"hide_zero_counts", dw.HideZeroCounts},
+			{"show_last_triggered", dw.ShowLastTriggered},
 			{"manage_status_show_title", dw.ManageStatusShowTitle},
 			{"manage_status_title_text", dw.ManageStatusTitleText},
 			{"manage_status_title_size", dw.ManageStatusTitleSize},
@@ -1742,17 +1767,25 @@ func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) er
 	if err := d.Set("title", screenboard.GetTitle()); err != nil {
 		return err
 	}
-	if err := d.Set("height", strconv.Itoa(screenboard.GetHeight())); err != nil {
-		return err
+	if v, ok := screenboard.GetHeightOk(); ok {
+		if err := d.Set("height", strconv.Itoa(v)); err != nil {
+			return err
+		}
 	}
-	if err := d.Set("width", strconv.Itoa(screenboard.GetWidth())); err != nil {
-		return err
+	if v, ok := screenboard.GetWidthOk(); ok {
+		if err := d.Set("width", strconv.Itoa(v)); err != nil {
+			return err
+		}
 	}
-	if err := d.Set("shared", screenboard.GetShared()); err != nil {
-		return err
+	if v, ok := screenboard.GetSharedOk(); ok {
+		if err := d.Set("shared", v); err != nil {
+			return err
+		}
 	}
-	if err := d.Set("read_only", screenboard.GetReadOnly()); err != nil {
-		return err
+	if v, ok := screenboard.GetReadOnlyOk(); ok {
+		if err := d.Set("read_only", v); err != nil {
+			return err
+		}
 	}
 
 	widgets := []map[string]interface{}{}

@@ -1,10 +1,5 @@
 package datadog
 
-import (
-	"github.com/hashicorp/terraform/helper/resource"
-	"testing"
-)
-
 const pipelinesConfig = `
 resource "datadog_logs_custom_pipeline" "pipeline_1" {
 	name = "my first pipeline"
@@ -62,35 +57,3 @@ resource "datadog_logs_pipeline_order" "pipelines" {
 	]
 }
 `
-
-func TestAccDatadogLogsPipelineOrder_basic(t *testing.T) {
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckPipelineDestroy,
-		Steps: []resource.TestStep{
-			{
-				Config: pipelinesConfig,
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPipelineExists("datadog_logs_custom_pipeline.pipeline_1"),
-					testAccCheckPipelineExists("datadog_logs_custom_pipeline.pipeline_2"),
-					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline_order.pipelines", "name", "pipelines"),
-					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline_order.pipelines", "pipelines.#", "2"),
-				),
-			},
-			{
-				Config: orderUpdateConfig,
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPipelineExists("datadog_logs_custom_pipeline.pipeline_2"),
-					testAccCheckPipelineExists("datadog_logs_custom_pipeline.pipeline_1"),
-					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline_order.pipelines", "name", "pipelines"),
-					resource.TestCheckResourceAttr(
-						"datadog_logs_pipeline_order.pipelines", "pipelines.#", "2"),
-				),
-			},
-		},
-	})
-}

@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"github.com/zorkian/go-datadog-api"
 )
 
@@ -29,6 +29,11 @@ resource "datadog_service_level_objective" "foo" {
 
   thresholds {
 	timeframe = "30d"
+	target = 99
+  }
+
+  thresholds {
+	timeframe = "90d"
 	target = 99
   }
 
@@ -56,6 +61,11 @@ resource "datadog_service_level_objective" "foo" {
 	timeframe = "30d"
 	target = 98
 	warning = 99.0
+  }
+
+  thresholds {
+	timeframe = "90d"
+	target = 99.9
   }
 
   tags = ["foo:bar", "baz"]
@@ -86,7 +96,7 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 						"datadog_service_level_objective.foo", "query.0.denominator", "sum:my.metric{*}.as_count()"),
 					// Thresholds are a TypeList, that are sorted by timeframe alphabetically.
 					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "thresholds.#", "2"),
+						"datadog_service_level_objective.foo", "thresholds.#", "3"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.0.timeframe", "7d"),
 					resource.TestCheckResourceAttr(
@@ -97,6 +107,10 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 						"datadog_service_level_objective.foo", "thresholds.1.timeframe", "30d"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.1.target", "99"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.2.timeframe", "90d"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.2.target", "99"),
 					// Tags are a TypeSet => use a weird way to access members by their hash
 					// TF TypeSet is internally represented as a map that maps computed hashes
 					// to actual values. Since the hashes are always the same for one value,
@@ -125,7 +139,7 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 						"datadog_service_level_objective.foo", "query.0.denominator", "sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()"),
 					// Thresholds are a TypeList, that are sorted by timeframe alphabetically.
 					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "thresholds.#", "2"),
+						"datadog_service_level_objective.foo", "thresholds.#", "3"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.0.timeframe", "7d"),
 					resource.TestCheckResourceAttr(
@@ -136,6 +150,12 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 						"datadog_service_level_objective.foo", "thresholds.1.timeframe", "30d"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.1.target", "98"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.1.warning", "99"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.2.timeframe", "90d"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.2.target", "99.9"),
 					// Tags are a TypeSet => use a weird way to access members by their hash
 					// TF TypeSet is internally represented as a map that maps computed hashes
 					// to actual values. Since the hashes are always the same for one value,

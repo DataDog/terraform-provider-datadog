@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 )
 
@@ -24,6 +25,22 @@ type Client struct {
 	//The Http Client that is used to make requests
 	HttpClient   *http.Client
 	RetryTimeout time.Duration
+
+	//Option to specify extra headers like User-Agent
+	ExtraHeader map[string]string
+
+	// rateLimiting is used to store the rate limitting stats.
+	// More information in the official documentation: https://docs.datadoghq.com/api/?lang=bash#rate-limiting
+	rateLimitingStats map[string]RateLimit
+	// Mutex to protect the rate limiting map.
+	m sync.Mutex
+}
+
+type RateLimit struct {
+	Limit     string
+	Period    string
+	Reset     string
+	Remaining string
 }
 
 // valid is the struct to unmarshal validation endpoint responses into.
@@ -41,11 +58,13 @@ func NewClient(apiKey, appKey string) *Client {
 	}
 
 	return &Client{
-		apiKey:       apiKey,
-		appKey:       appKey,
-		baseUrl:      baseUrl,
-		HttpClient:   http.DefaultClient,
-		RetryTimeout: time.Duration(60 * time.Second),
+		apiKey:            apiKey,
+		appKey:            appKey,
+		baseUrl:           baseUrl,
+		HttpClient:        http.DefaultClient,
+		RetryTimeout:      time.Duration(60 * time.Second),
+		rateLimitingStats: make(map[string]RateLimit),
+		ExtraHeader:       make(map[string]string),
 	}
 }
 
@@ -65,7 +84,7 @@ func (c *Client) GetBaseUrl() string {
 	return c.baseUrl
 }
 
-// Validate checks if the API and application keys are valid.
+// Validate checks if the API key (not the APP key) is valid.
 func (client *Client) Validate() (bool, error) {
 	var out valid
 	var resp *http.Response
@@ -79,6 +98,8 @@ func (client *Client) Validate() (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	req.Header.Set("DD-API-KEY", client.apiKey)
+	req.Header.Set("DD-APPLICATION-KEY", client.appKey)
 
 	resp, err = client.doRequestWithRetries(req, client.RetryTimeout)
 	if err != nil {
@@ -86,6 +107,10 @@ func (client *Client) Validate() (bool, error) {
 	}
 
 	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusForbidden {
+		return false, nil
+	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

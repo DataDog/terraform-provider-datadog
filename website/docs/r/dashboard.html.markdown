@@ -185,6 +185,30 @@ resource "datadog_dashboard" "ordered_dashboard" {
   }
 
   widget {
+    query_table_definition {
+      request {
+        q = "avg:system.load.1{env:staging} by {account}"
+        aggregator = "sum"
+        limit = "10"
+        conditional_formats {
+          comparator = "<"
+          value = "2"
+          palette = "white_on_green"
+        }
+        conditional_formats {
+          comparator = ">"
+          value = "2.2"
+          palette = "white_on_red"
+        }
+      }
+      title = "Widget Title"
+      time = {
+        live_span = "1h"
+      }
+    }
+  }
+
+  widget {
     scatterplot_definition {
       request {
         x {
@@ -366,6 +390,17 @@ resource "datadog_dashboard" "ordered_dashboard" {
     }
   }
 
+	widget {
+		service_level_objective_definition {
+			title = "Widget Title"
+			view_type = "detail"
+			slo_id = "56789"
+			show_error_budget = true
+			view_mode = "overall"
+			time_windows = ["7d", "previous_week"]
+		}
+	}
+
   template_variable {
     name   = "var_1"
     prefix = "host"
@@ -375,6 +410,18 @@ resource "datadog_dashboard" "ordered_dashboard" {
     name   = "var_2"
     prefix = "service_name"
     default = "autoscaling"
+  }
+
+  template_variable_preset {
+    name = "preset_1"
+    template_variable {
+      name = "var_1"
+      value = "host.dc"
+    }
+    template_variable {
+      name = "var_2"
+      value = "my_service"
+    }
   }
 }
 ```
@@ -482,12 +529,12 @@ resource "datadog_dashboard" "free_dashboard" {
   widget {
     manage_status_definition {
       color_preference = "text"
-      count = 50
       display_format = "countsAndList"
       hide_zero_counts = true
       query = "type:metric"
+      show_last_triggered = false
       sort = "status,asc"
-      start = 0
+      summary_type = "monitors"
       title = "Widget Title"
       title_size = 16
       title_align = "left"
@@ -538,6 +585,18 @@ resource "datadog_dashboard" "free_dashboard" {
     prefix = "service_name"
     default = "autoscaling"
   }
+
+  template_variable_preset {
+    name = "preset_1"
+    template_variable {
+      name = "var_1"
+      value = "host.dc"
+    }
+    template_variable {
+      name = "var_2"
+      value = "my_service"
+    }
+  }
 }
 ```
 
@@ -546,13 +605,14 @@ resource "datadog_dashboard" "free_dashboard" {
 The following arguments are supported:
 
 - `title` - (Required) Title of the dashboard.
-- `widget` - (Required) Nested block describing a widget. The structure of this block is described [below](dashboard.html#nested-widget-blocks). Multiple `widget` blocks are allowed within a `datadog_dashboard` resource
+- `widget` - (Required) Nested block describing a widget. The structure of this block is described [below](dashboard.html#nested-widget-blocks). Multiple `widget` blocks are allowed within a `datadog_dashboard` resource.
 - `layout_type` - (Required) Layout type of the dashboard. Available values are: `ordered` (previous timeboard) or `free` (previous screenboard layout).
 <br>**Note: This value cannot be changed. Converting a dashboard from `free` <-> `ordered` requires destroying and re-creating the dashboard.** Instead of using `ForceNew`, this is a manual action as many underlying widget configs need to be updated to work for the updated layout, otherwise the new dashboard won't be created properly.
 - `description` - (Optional) Description of the dashboard.
 - `is_read_only` - (Optional) Whether this dashboard is read-only. If `true`, only the author and admins can make changes to it.
 - `notify_list` - (Optional) List of handles of users to notify when changes are made to this dashboard.
 - `template_variables` - (Optional) Nested block describing a template variable. The structure of this block is described [below](dashboard.html#nested-template_variable-blocks). Multiple template_variable blocks are allowed within a `datadog_dashboard` resource.
+- `template_variable_presets` - (Optional) Nested block describing saved configurations of existing template variables. The structure of this block is described [below](dashboard.html#nested-template_variable_preset-blocks). Multiple template_variable_preset blocks are allowed within a `datadog_dashboard` resource, and multiple template_variables can be described by each template_variable_preset.
 
 ### Nested `widget` blocks
 
@@ -671,17 +731,17 @@ Nested `widget` blocks have the following structure:
       - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
   - `manage_status_definition`: The definition for a Manage Status, aka Monitor Summary, widget. Exactly one nested block is allowed with the following structure:
       - `query`: (Required) The query to use in the widget.
-      - `sort` - (Optional) The method to use to sort monitors. One of : "desc" or "asc".
-      `count` - (Optional) The number of monitors to display.
-      `start` - (Optional) The start of the list. Typically 0.
+      - `summary_type` - (Optional) The monitor summary type to use. One of "monitors", "groups", or "combined". Defaults to "monitors".
+      - `sort` - (Optional) The method to use to sort monitors. Example: "status,asc".
       - `display_format` - (Optional") The display setting to use. One of "counts", "list", or "countsAndList".
       - `color_preference` - (Optional") Whether to colorize text or background. One of "text", "background".
       - `hide_zero_counts` - (Optional") Boolean indicating whether to hide empty categories.
-       - `title`: (Optional) The title of the widget.
+      - `show_last_triggered` - (Optional) Boolean indicating whether to show when monitors/groups last triggered.
+      - `title`: (Optional) The title of the widget.
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
       - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
   - `note_definition`: The definition for a Note widget. Exactly one nested block is allowed with the following structure:
-      - `content` - (Required) Content of the note
+      - `content` - (Required) Content of the note.
       - `background_color` - (Optional) Background color of the note.
       - `font_size` - (Optional) Size of the text.
       - `text_align` - (Optional) How to align the text on the widget. Available values are: `center`, `left`, or `right`.
@@ -690,16 +750,31 @@ Nested `widget` blocks have the following structure:
       - `tick_edge` - (Optional") When tick = true, string indicating on which side of the widget the tick should be displayed. One of "bottom", "top", "left", "right".
   - `query_value_definition`: The definition for a Query Value widget. Exactly one nested block is allowed with the following structure:
         - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
-            - `q`: (Optional) The metric query to use in the widget
+            - `q`: (Optional) The metric query to use in the widget.
             - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
             - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
             - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             - `conditional_formats` - (Optional) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple request blocks are allowed. The structure of this block is described [below](dashboard.html#nested-widget-conditional_formats-blocks).
             - `aggregator` - (Optional) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
         - `autoscale` - (Optional) Boolean indicating whether to automatically scale the tile.
-        - `custom_unit` - (Optional) The unit for the value displayed in the widget
+        - `custom_unit` - (Optional) The unit for the value displayed in the widget.
         - `precision` - (Optional) The precision to use when displaying the tile.
         - `text_align` - (Optional, "alert_value", "note") The alignment of the text in the widget.
+        - `title`: (Optional) The title of the widget.
+        - `title_size`: (Optional) The size of the widget's title. Default is 16.
+        - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+        - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+  - `query_table_definition`: The definition for a Query Table widget. Exactly one nested block is allowed with the following structure:
+        - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
+            - `q`: (Optional) The metric query to use in the widget
+            - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
+            - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
+            - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
+            - `conditional_formats` - (Optional) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple request blocks are allowed. The structure of this block is described [below](dashboard.html#nested-widget-conditional_formats-blocks).
+            - `alias` - (Optional) The alias for the column name. Default is the metric name.
+            - `aggregator` - (Optional) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
+            - `limit` - (Required) The number of lines to show in the table.
+            - `order` - (Optional) The sort order for the rows. One of `desc` or `asc`.
         - `title`: (Optional) The title of the widget.
         - `title_size`: (Optional) The size of the widget's title. Default is 16.
         - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
@@ -719,9 +794,18 @@ Nested `widget` blocks have the following structure:
         - `title_size`: (Optional) The size of the widget's title. Default is 16.
         - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
         - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+  - `service_level_objective_definition`: The definition for a Service Level Objective widget. Exactly one nested block is allowed with the following structure:
+        - `view_type`: (Required) Type of view to use when displaying the widget. Only "detail" is currently supported.
+        - `slo_id`: (Required) The ID of the service level objective used by the widget.
+        - `show_error_budget`: (Optional) Whether to show the error budget or not.
+        - `view_mode`: (Required) View mode for the widget. One of "overall", "component", or "both".
+        - `time_windows`: (Required) List of time windows to display in the widget. Each value in the list must be one of "7d", "30d", "90d", "week_to_date",  "previous_week", "month_to_date", or "previous_month".
+        - `title`: (Optional) The title of the widget.
+        - `title_size`: (Optional) The size of the widget's title. Default is 16.
+        - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
   - `timeseries_definition`: The definition for a Timeseries  widget. Exactly one nested block is allowed with the following structure:
         - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
-            - `q`: (Optional) The metric query to use in the widget
+            - `q`: (Optional) The metric query to use in the widget.
             - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
             - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
             - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
@@ -740,11 +824,11 @@ Nested `widget` blocks have the following structure:
         - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
         - `show_legend`: (Optional) Whether or not to show the legend on this widget.
         - `event`: (Optional) The definition of the event to overlay on the graph. Includes the following structure:
-          - `q`: (Required) The event query to use in the widget
+          - `q`: (Required) The event query to use in the widget.
         - `yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
   - `toplist_definition`: The definition for a Toplist  widget. Exactly one nested block is allowed with the following structure:
         - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
-            - `q`: (Optional) The metric query to use in the widget
+            - `q`: (Optional) The metric query to use in the widget.
             - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
             - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
             - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
@@ -851,6 +935,15 @@ Nested `template_variable` blocks have the following structure:
 - `name` - (Required) The variable name. Can be referenced as $name in `graph` `request` `q` query strings.
 - `prefix` - (Optional) The tag group. Default: no tag group.
 - `default` - (Optional) The default tag. Default: "\*" (match all).
+
+### Nested `template_variable_preset` blocks
+
+Nested `template_variable_preset` blocks have the following structure:
+
+- `name` - (Required) The displayed name of the preset.
+- `template_variable`: (Required) Block describing the values that a template_variable within this preset should assume. Each referenced template_variable name must be defined on the dashboard, but not all template_variables must be included in a preset. One or more blocks can be defined per preset.
+    - `name`: (Required) The name of the template_variable being referenced.
+    - `value`: (Required) The value that the template_variable should assume.
 
 ## Import
 

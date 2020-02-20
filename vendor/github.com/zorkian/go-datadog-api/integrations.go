@@ -8,6 +8,8 @@
 
 package datadog
 
+import "net/url"
+
 /*
 	PagerDuty Integration
 */
@@ -157,6 +159,52 @@ func (client *Client) DeleteIntegrationSlack() error {
 }
 
 /*
+	Webhook Integration
+*/
+
+// IntegrationWebhookRequest defines the structure of the a webhook request
+type IntegrationWebhookRequest struct {
+	Webhooks []Webhook `json:"hooks"`
+}
+
+// Webhook defines the structure of the a webhook
+type Webhook struct {
+	Name             *string `json:"name"`
+	URL              *string `json:"url"`
+	UseCustomPayload *string `json:"use_custom_payload,omitempty"`
+	CustomPayload    *string `json:"custom_payload,omitempty"`
+	EncodeAsForm     *string `json:"encode_as_form,omitempty"`
+	Headers          *string `json:"headers,omitempty"`
+}
+
+// CreateIntegrationWebhook creates new webhook integration object(s).
+func (client *Client) CreateIntegrationWebhook(webhookIntegration *IntegrationWebhookRequest) error {
+	return client.doJsonRequest("POST", "/v1/integration/webhooks", webhookIntegration, nil)
+}
+
+// UpdateIntegrationWebhook updates the Webhook Integration.
+// It replaces the existing configuration with the configuration sent in this
+// request.
+func (client *Client) UpdateIntegrationWebhook(webhookIntegration *IntegrationWebhookRequest) error {
+	return client.doJsonRequest("PUT", "/v1/integration/webhooks", webhookIntegration, nil)
+}
+
+// GetIntegrationWebhook gets all the Webhook Integrations from Datadog.
+func (client *Client) GetIntegrationWebhook() (*IntegrationWebhookRequest, error) {
+	var out IntegrationWebhookRequest
+	if err := client.doJsonRequest("GET", "/v1/integration/webhooks", nil, &out); err != nil {
+		return nil, err
+	}
+
+	return &out, nil
+}
+
+// DeleteIntegrationWebhook removes the Webhook Integration from Datadog.
+func (client *Client) DeleteIntegrationWebhook() error {
+	return client.doJsonRequest("DELETE", "/v1/integration/webhooks", nil, nil)
+}
+
+/*
 	AWS Integration
 */
 
@@ -185,6 +233,28 @@ type IntegrationAWSAccountDeleteRequest struct {
 	RoleName  *string `json:"role_name"`
 }
 
+type IntegrationAWSLambdaARNRequest struct {
+	AccountID *string `json:"account_id"`
+	LambdaARN *string `json:"lambda_arn"`
+}
+
+// IntegrationAWSLambdaARN is only defined to properly parse the AWS logs GET response
+type IntegrationAWSLambdaARN struct {
+	LambdaARN *string `json:"arn"`
+}
+
+type IntegrationAWSServicesLogCollection struct {
+	AccountID *string  `json:"account_id"`
+	Services  []string `json:"services"`
+}
+
+// IntegrationAWSLogs is only defined to properly parse the AWS logs GET response
+type IntegrationAWSLogCollection struct {
+	AccountID  *string                   `json:"account_id"`
+	LambdaARNs []IntegrationAWSLambdaARN `json:"lambdas"`
+	Services   []string                  `json:"services"`
+}
+
 // CreateIntegrationAWS adds a new AWS Account in the AWS Integrations.
 // Use this if you want to setup the integration for the first time
 // or to add more accounts.
@@ -195,6 +265,14 @@ func (client *Client) CreateIntegrationAWS(awsAccount *IntegrationAWSAccount) (*
 	}
 
 	return &out, nil
+}
+
+// UpdateIntegrationAWS updates an already existing AWS Account in the AWS Integration
+func (client *Client) UpdateIntegrationAWS(awsAccount *IntegrationAWSAccount) error {
+	additionalParameters := url.Values{}
+	additionalParameters.Set("account_id", *awsAccount.AccountID)
+	additionalParameters.Add("role_name", *awsAccount.RoleName)
+	return client.doJsonRequest("PUT", "/v1/integration/aws?"+additionalParameters.Encode(), awsAccount, nil)
 }
 
 // GetIntegrationAWS gets all the AWS Accounts in the AWS Integrations from Datadog.
@@ -212,6 +290,31 @@ func (client *Client) DeleteIntegrationAWS(awsAccount *IntegrationAWSAccountDele
 	return client.doJsonRequest("DELETE", "/v1/integration/aws", awsAccount, nil)
 }
 
+// AttachLambdaARNIntegrationAWS attach a lambda ARN to an AWS account ID to enable log collection
+func (client *Client) AttachLambdaARNIntegrationAWS(lambdaARN *IntegrationAWSLambdaARNRequest) error {
+	return client.doJsonRequest("POST", "/v1/integration/aws/logs", lambdaARN, nil)
+}
+
+// EnableLogCollectionAWSServices enables the log collection for the given AWS services
+func (client *Client) EnableLogCollectionAWSServices(services *IntegrationAWSServicesLogCollection) error {
+	return client.doJsonRequest("POST", "/v1/integration/aws/logs/services", services, nil)
+}
+
+// GetIntegrationAWSLogCollection gets all the configuration for the AWS log collection
+func (client *Client) GetIntegrationAWSLogCollection() (*[]IntegrationAWSLogCollection, error) {
+	var response []IntegrationAWSLogCollection
+	if err := client.doJsonRequest("GET", "/v1/integration/aws/logs", nil, &response); err != nil {
+		return nil, err
+	}
+
+	return &response, nil
+}
+
+// DeleteAWSLogCollection removes the log collection configuration for a given ARN and AWS account
+func (client *Client) DeleteAWSLogCollection(lambdaARN *IntegrationAWSLambdaARNRequest) error {
+	return client.doJsonRequest("DELETE", "/v1/integration/aws/logs", lambdaARN, nil)
+}
+
 /*
 	Google Cloud Platform Integration
 */
@@ -221,6 +324,7 @@ type IntegrationGCP struct {
 	ProjectID   *string `json:"project_id"`
 	ClientEmail *string `json:"client_email"`
 	HostFilters *string `json:"host_filters"`
+	AutoMute    *bool   `json:"automute,omitempty"`
 }
 
 // IntegrationGCPCreateRequest defines the request payload for creating Datadog-Google CloudPlatform integration.
@@ -236,13 +340,23 @@ type IntegrationGCPCreateRequest struct {
 	AuthProviderX509CertURL *string `json:"auth_provider_x509_cert_url"` // Should be https://www.googleapis.com/oauth2/v1/certs
 	ClientX509CertURL       *string `json:"client_x509_cert_url"`        // https://www.googleapis.com/robot/v1/metadata/x509/<CLIENT_EMAIL>
 	HostFilters             *string `json:"host_filters,omitempty"`
+	AutoMute                *bool   `json:"automute,omitempty"`
 }
 
 // IntegrationGCPUpdateRequest defines the request payload for updating Datadog-Google CloudPlatform integration.
 type IntegrationGCPUpdateRequest struct {
-	ProjectID   *string `json:"project_id"`
-	ClientEmail *string `json:"client_email"`
-	HostFilters *string `json:"host_filters,omitempty"`
+	Type                    *string `json:"type,omitempty"` // Should be service_account
+	ProjectID               *string `json:"project_id"`
+	PrivateKeyID            *string `json:"private_key_id,omitempty"`
+	PrivateKey              *string `json:"private_key,omitempty"`
+	ClientEmail             *string `json:"client_email"`
+	ClientID                *string `json:"client_id,omitempty"`
+	AuthURI                 *string `json:"auth_uri,omitempty"`                    // Should be https://accounts.google.com/o/oauth2/auth
+	TokenURI                *string `json:"token_uri,omitempty"`                   // Should be https://accounts.google.com/o/oauth2/token
+	AuthProviderX509CertURL *string `json:"auth_provider_x509_cert_url,omitempty"` // Should be https://www.googleapis.com/oauth2/v1/certs
+	ClientX509CertURL       *string `json:"client_x509_cert_url,omitempty"`        // https://www.googleapis.com/robot/v1/metadata/x509/<CLIENT_EMAIL>
+	HostFilters             *string `json:"host_filters,omitempty"`
+	AutoMute                *bool   `json:"automute,omitempty"`
 }
 
 // IntegrationGCPDeleteRequest defines the request payload for deleting Datadog-Google CloudPlatform integration.
@@ -265,9 +379,9 @@ func (client *Client) CreateIntegrationGCP(cir *IntegrationGCPCreateRequest) err
 	return client.doJsonRequest("POST", "/v1/integration/gcp", cir, nil)
 }
 
-// UpdateIntegrationGCP updates a Google Cloud Platform Integration.
+// UpdateIntegrationGCP updates a Google Cloud Platform Integration project.
 func (client *Client) UpdateIntegrationGCP(cir *IntegrationGCPUpdateRequest) error {
-	return client.doJsonRequest("POST", "/v1/integration/gcp/host_filters", cir, nil)
+	return client.doJsonRequest("PUT", "/v1/integration/gcp", cir, nil)
 }
 
 // DeleteIntegrationGCP deletes a Google Cloud Platform Integration.

@@ -28,6 +28,15 @@ type Response struct {
 	Error  string `json:"error"`
 }
 
+func (client *Client) apiAcceptsKeysInHeaders(api string) bool {
+	for _, prefix := range []string{"/v1/series", "/v1/check_run", "/v1/events", "/v1/screen"} {
+		if strings.HasPrefix(api, prefix) {
+			return false
+		}
+	}
+	return true
+}
+
 // uriForAPI is to be called with either an API resource like "/v1/events"
 // or a full URL like the IP Ranges one
 // and it will give the proper request URI to be posted to.
@@ -40,8 +49,10 @@ func (client *Client) uriForAPI(api string) (string, error) {
 			return "", err
 		}
 		q := apiBase.Query()
-		q.Add("api_key", client.apiKey)
-		q.Add("application_key", client.appKey)
+		if !client.apiAcceptsKeysInHeaders(api) {
+			q.Add("api_key", client.apiKey)
+			q.Add("application_key", client.appKey)
+		}
 		apiBase.RawQuery = q.Encode()
 		return apiBase.String(), nil
 	}
@@ -111,7 +122,6 @@ func (client *Client) doJsonRequestUnredacted(method, api string,
 	if err != nil {
 		return err
 	}
-
 	// Perform the request and retry it if it's not a POST or PUT request
 	var resp *http.Response
 	if method == "POST" || method == "PUT" {
@@ -141,6 +151,12 @@ func (client *Client) doJsonRequestUnredacted(method, api string,
 	// saves us some work in other parts of the code.
 	if len(body) == 0 {
 		body = []byte{'{', '}'}
+	}
+
+	err = client.updateRateLimits(resp, req.URL)
+	if err != nil {
+		// Inability to update the rate limiting stats should not be a blocking error.
+		fmt.Printf("Error Updating the Rate Limit statistics: %s", err.Error())
 	}
 
 	// Try to parse common response fields to check whether there's an error reported in a response.
@@ -233,8 +249,16 @@ func (client *Client) createRequest(method, api string, reqbody interface{}) (*h
 	if err != nil {
 		return nil, err
 	}
+	if client.apiAcceptsKeysInHeaders(api) {
+		req.Header.Set("DD-API-KEY", client.apiKey)
+		req.Header.Set("DD-APPLICATION-KEY", client.appKey)
+	}
 	if bodyReader != nil {
 		req.Header.Add("Content-Type", "application/json")
 	}
+	for k, v := range client.ExtraHeader {
+		req.Header.Add(k, v)
+	}
+
 	return req, nil
 }

@@ -6,7 +6,7 @@ import (
 
 	"github.com/zorkian/go-datadog-api"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourceDatadogMetricMetadata() *schema.Resource {

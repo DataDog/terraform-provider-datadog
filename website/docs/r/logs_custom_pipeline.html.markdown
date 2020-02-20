@@ -70,41 +70,29 @@ resource "datadog_logs_custom_pipeline" "sample_pipeline" {
         }
     }
     processor {
-        message_remapper {
-            sources = ["msg"]
-            name = "sample message remapper"
-            is_enabled = true
-        }
-    }
-    processor {
-        status_remapper {
-            sources = ["info", "trace"]
-            name = "sample status remapper"
-            is_enabled = true
-        }
-    }
-    processor {
-        trace_id_remapper {
-            sources = ["dd.trace_id"]
-            name = "sample trace id remapper"
-            is_enabled = true
-        }
-    }
-    processor {
-        service_remapper {
-            sources = ["service"]
-            name = "sample service remapper"
+        geo_ip_parser {
+            sources = ["network.client.ip"]
+            target = "network.client.geoip"
+            name = "sample geo ip parser"
             is_enabled = true
         }
     }
     processor {
         grok_parser {
+            samples = ["sample log 1"]
             source = "message"
             grok {
                 support_rules = ""
                 match_rules = "Rule %%{word:my_word2} %%{number:my_float2}"
             }
             name = "sample grok parser"
+            is_enabled = true
+        }
+    }
+    processor {
+        message_remapper {
+            sources = ["msg"]
+            name = "sample message remapper"
             is_enabled = true
         }
     }
@@ -122,6 +110,36 @@ resource "datadog_logs_custom_pipeline" "sample_pipeline" {
                 }
             }
             name = "nested pipeline"
+            is_enabled = true
+        }
+    }
+    processor {
+        service_remapper {
+            sources = ["service"]
+            name = "sample service remapper"
+            is_enabled = true
+        }
+    }
+    processor {
+        status_remapper {
+            sources = ["info", "trace"]
+            name = "sample status remapper"
+            is_enabled = true
+        }
+    }
+    processor {
+        string_builder_processor {
+            target = "user_activity"
+            template = "%%{user.name} logged in at %%{timestamp}"
+            name = "sample string builder processor"
+            is_enabled = true
+            is_replace_missing = false
+        }
+    }
+    processor {
+        trace_id_remapper {
+            sources = ["dd.trace_id"]
+            name = "sample trace id remapper"
             is_enabled = true
         }
     }
@@ -178,8 +196,13 @@ The following arguments are supported:
   * `sources` - (Required) List of source attributes.
   * `name` - (Optional) Name of the processor.
   * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
-    
+* geo_ip_parser
+  * `sources` - (Required) List of source attributes.
+  * `target` - (Required) Name of the parent attribute that contains all the extracted details from the `sources`.
+  * `name` - (Optional) Name of the processor.
+  * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
 * grok_parser
+  * `samples` - (Optional) List of sample logs for this parser. It can save up to 5 samples. Each sample takes up to 5000 characters.
   * `source` - (Required) Name of the log attribute to parse.
   * `grok`
     * `support_rules` - (Required) Support rules for your grok parser.
@@ -204,6 +227,12 @@ The following arguments are supported:
   * `sources` - (Required) List of source attributes.
   * `name` - (Optional) Name of the processor
   * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
+* string_builder_processor
+  * `target` - (Required) The name of the attribute that contains the result of the template.
+  * `template` - (Required) The formula with one or more attributes and raw text.
+  * `name` - (Optional) The name of the processor.
+  * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
+  * `is_replace_missing` - (Optional, default = false) If it replaces all missing attributes of `template` by an empty string.
 * trace_id_remapper
   * `sources` - (Required) List of source attributes.
   * `name` - (Optional) Name of the processor

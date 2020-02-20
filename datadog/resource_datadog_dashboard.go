@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	datadog "github.com/zorkian/go-datadog-api"
 )
 
@@ -57,6 +57,14 @@ func resourceDatadogDashboard() *schema.Resource {
 				Description: "The list of template variables for this dashboard.",
 				Elem: &schema.Resource{
 					Schema: getTemplateVariableSchema(),
+				},
+			},
+			"template_variable_preset": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "The list of selectable template variable presets for this dashboard.",
+				Elem: &schema.Resource{
+					Schema: getTemplateVariablePresetSchema(),
 				},
 			},
 			"notify_list": {
@@ -125,6 +133,12 @@ func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) erro
 	// Set template variables
 	templateVariables := buildTerraformTemplateVariables(&dashboard.TemplateVariables)
 	if err := d.Set("template_variable", templateVariables); err != nil {
+		return err
+	}
+
+	// Set template variable presets
+	templateVariablePresets := buildTerraformTemplateVariablePresets(&dashboard.TemplateVariablePresets)
+	if err := d.Set("template_variable_preset", templateVariablePresets); err != nil {
 		return err
 	}
 
@@ -197,6 +211,10 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadog.Board, error) {
 	templateVariables := d.Get("template_variable").([]interface{})
 	dashboard.TemplateVariables = *buildDatadogTemplateVariables(&templateVariables)
 
+	// Build TemplateVariablePresets
+	templateVariablePresets := d.Get("template_variable_preset").([]interface{})
+	dashboard.TemplateVariablePresets = *buildDatadogTemplateVariablePresets(&templateVariablePresets)
+
 	return &dashboard, nil
 }
 
@@ -259,6 +277,119 @@ func buildTerraformTemplateVariables(datadogTemplateVariables *[]datadog.Templat
 		terraformTemplateVariables[i] = terraformTemplateVariable
 	}
 	return &terraformTemplateVariables
+}
+
+//
+// Template Variable Preset Helpers
+//
+
+func getTemplateVariablePresetSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"name": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "The name of the preset.",
+		},
+		"template_variable": {
+			Type:        schema.TypeList,
+			Required:    true,
+			Description: "The template variable names and assumed values under the given preset",
+			Elem: &schema.Resource{
+				Schema: getTemplateVariablePresetValueSchema(),
+			},
+		},
+	}
+}
+
+func getTemplateVariablePresetValueSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"name": {
+			Type:        schema.TypeString,
+			Description: "The name of the template variable",
+			Required:    true,
+		},
+		"value": {
+			Type:        schema.TypeString,
+			Description: "The value that should be assumed by the template variable in this preset",
+			Required:    true,
+		},
+	}
+}
+
+func buildDatadogTemplateVariablePresets(terraformTemplateVariablePresets *[]interface{}) *[]datadog.TemplateVariablePreset {
+	datadogTemplateVariablePresets := make([]datadog.TemplateVariablePreset, len(*terraformTemplateVariablePresets))
+
+	for i, _templateVariablePreset := range *terraformTemplateVariablePresets {
+		templateVariablePreset := _templateVariablePreset.(map[string]interface{})
+		var datadogTemplateVariablePreset datadog.TemplateVariablePreset
+
+		if v, ok := templateVariablePreset["name"].(string); ok && len(v) != 0 {
+			datadogTemplateVariablePreset.SetName(v)
+		}
+
+		if templateVariablePresetValues, ok := templateVariablePreset["template_variable"].([]interface{}); ok && len(templateVariablePresetValues) != 0 {
+			datadogTemplateVariablePresetValues := make([]datadog.TemplateVariablePresetValue, len(templateVariablePresetValues))
+
+			for j, _templateVariablePresetValue := range templateVariablePresetValues {
+				templateVariablePresetValue := _templateVariablePresetValue.(map[string]interface{})
+				var datadogTemplateVariablePresetValue datadog.TemplateVariablePresetValue
+
+				if w, ok := templateVariablePresetValue["name"].(string); ok && len(w) != 0 {
+					datadogTemplateVariablePresetValue.SetName(w)
+				}
+
+				if w, ok := templateVariablePresetValue["value"].(string); ok && len(w) != 0 {
+					datadogTemplateVariablePresetValue.SetValue(w)
+				}
+
+				datadogTemplateVariablePresetValues[j] = datadogTemplateVariablePresetValue
+			}
+
+			datadogTemplateVariablePreset.TemplateVariables = datadogTemplateVariablePresetValues
+		}
+
+		datadogTemplateVariablePresets[i] = datadogTemplateVariablePreset
+	}
+
+	return &datadogTemplateVariablePresets
+}
+
+func buildTerraformTemplateVariablePresets(datadogTemplateVariablePresets *[]datadog.TemplateVariablePreset) *[]map[string]interface{} {
+	// Allocate final resting place for tf/hash version
+	terraformTemplateVariablePresets := make([]map[string]interface{}, len(*datadogTemplateVariablePresets))
+
+	//iterate over preset objects
+	for i, templateVariablePreset := range *datadogTemplateVariablePresets {
+		// Allocate for this preset group, a map of string key to obj (string for name, array for preset values
+		terraformTemplateVariablePreset := make(map[string]interface{})
+		if v, ok := templateVariablePreset.GetNameOk(); ok {
+			terraformTemplateVariablePreset["name"] = v
+		}
+
+		// allocate for array of preset values (names = name,value, values = name, template variable)
+
+		terraformTemplateVariablePresetValues := make([]map[string]string, len(templateVariablePreset.TemplateVariables))
+		for j, templateVariablePresetValue := range templateVariablePreset.TemplateVariables {
+			// allocate map for name => name value => value
+			terraformTemplateVariablePresetValue := make(map[string]string)
+			if v, ok := templateVariablePresetValue.GetNameOk(); ok {
+				terraformTemplateVariablePresetValue["name"] = v
+			}
+			if v, ok := templateVariablePresetValue.GetValueOk(); ok {
+				terraformTemplateVariablePresetValue["value"] = v
+			}
+
+			terraformTemplateVariablePresetValues[j] = terraformTemplateVariablePresetValue
+		}
+
+		// Set template_variable to the array of values we just created
+		terraformTemplateVariablePreset["template_variable"] = terraformTemplateVariablePresetValues
+
+		// put the preset group into the output var
+		terraformTemplateVariablePresets[i] = terraformTemplateVariablePreset
+	}
+
+	return &terraformTemplateVariablePresets
 }
 
 //
@@ -457,6 +588,15 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getQueryValueDefinitionSchema(),
 			},
 		},
+		"query_table_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Query Table widget",
+			Elem: &schema.Resource{
+				Schema: getQueryTableDefinitionSchema(),
+			},
+		},
 		"scatterplot_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -464,6 +604,15 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 			Description: "The definition for a Scatterplot widget",
 			Elem: &schema.Resource{
 				Schema: getScatterplotDefinitionSchema(),
+			},
+		},
+		"service_level_objective_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Service Level Objective widget",
+			Elem: &schema.Resource{
+				Schema: getServiceLevelObjectiveDefinitionSchema(),
 			},
 		},
 		"timeseries_definition": {
@@ -590,9 +739,17 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadog.BoardW
 		if queryValueDefinition, ok := _def[0].(map[string]interface{}); ok {
 			datadogWidget.Definition = buildDatadogQueryValueDefinition(queryValueDefinition)
 		}
+	} else if _def, ok := terraformWidget["query_table_definition"].([]interface{}); ok && len(_def) > 0 {
+		if queryTableDefinition, ok := _def[0].(map[string]interface{}); ok {
+			datadogWidget.Definition = buildDatadogQueryTableDefinition(queryTableDefinition)
+		}
 	} else if _def, ok := terraformWidget["scatterplot_definition"].([]interface{}); ok && len(_def) > 0 {
 		if scatterplotDefinition, ok := _def[0].(map[string]interface{}); ok {
 			datadogWidget.Definition = buildDatadogScatterplotDefinition(scatterplotDefinition)
+		}
+	} else if _def, ok := terraformWidget["service_level_objective_definition"].([]interface{}); ok && len(_def) > 0 {
+		if serviceLevelObjectiveDefinition, ok := _def[0].(map[string]interface{}); ok {
+			datadogWidget.Definition = buildDatadogServiceLevelObjectiveDefinition(serviceLevelObjectiveDefinition)
 		}
 	} else if _def, ok := terraformWidget["timeseries_definition"].([]interface{}); ok && len(_def) > 0 {
 		if timeseriesDefinition, ok := _def[0].(map[string]interface{}); ok {
@@ -709,10 +866,18 @@ func buildTerraformWidget(datadogWidget datadog.BoardWidget) (map[string]interfa
 		datadogDefinition := datadogWidget.Definition.(datadog.QueryValueDefinition)
 		terraformDefinition := buildTerraformQueryValueDefinition(datadogDefinition)
 		terraformWidget["query_value_definition"] = []map[string]interface{}{terraformDefinition}
+	case datadog.QUERY_TABLE_WIDGET:
+		datadogDefinition := datadogWidget.Definition.(datadog.QueryTableDefinition)
+		terraformDefinition := buildTerraformQueryTableDefinition(datadogDefinition)
+		terraformWidget["query_table_definition"] = []map[string]interface{}{terraformDefinition}
 	case datadog.SCATTERPLOT_WIDGET:
 		datadogDefinition := datadogWidget.Definition.(datadog.ScatterplotDefinition)
 		terraformDefinition := buildTerraformScatterplotDefinition(datadogDefinition)
 		terraformWidget["scatterplot_definition"] = []map[string]interface{}{terraformDefinition}
+	case datadog.SERVICE_LEVEL_OBJECTIVE_WIDGET:
+		datadogDefinition := datadogWidget.Definition.(datadog.ServiceLevelObjectiveDefinition)
+		terraformDefinition := buildTerraformServiceLevelObjectiveDefinition(datadogDefinition)
+		terraformWidget["service_level_objective_definition"] = []map[string]interface{}{terraformDefinition}
 	case datadog.TIMESERIES_WIDGET:
 		datadogDefinition := datadogWidget.Definition.(datadog.TimeseriesDefinition)
 		terraformDefinition := buildTerraformTimeseriesDefinition(datadogDefinition)
@@ -2318,17 +2483,37 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Type:     schema.TypeString,
 			Required: true,
 		},
+		"summary_type": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "One of: ['monitors', 'groups', 'combined']",
+			ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+				v := val.(string)
+				summaryTypes := []string{"monitors", "groups", "combined"}
+				for _, t := range summaryTypes {
+					if v == t {
+						return
+					}
+				}
+				errs = append(errs, fmt.Errorf("%q must be one of: %q, got: %q", key, summaryTypes, v))
+				return
+			},
+		},
 		"sort": {
 			Type:     schema.TypeString,
 			Optional: true,
 		},
+		// The count param is deprecated
 		"count": {
-			Type:     schema.TypeInt,
-			Optional: true,
+			Type:       schema.TypeInt,
+			Deprecated: "This parameter may be removed from the dashboard API in the future",
+			Optional:   true,
 		},
+		// The start param is deprecated
 		"start": {
-			Type:     schema.TypeInt,
-			Optional: true,
+			Type:       schema.TypeInt,
+			Deprecated: "This parameter may be removed from the dashboard API in the future",
+			Optional:   true,
 		},
 		"display_format": {
 			Type:     schema.TypeString,
@@ -2339,6 +2524,10 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"hide_zero_counts": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
+		"show_last_triggered": {
 			Type:     schema.TypeBool,
 			Optional: true,
 		},
@@ -2363,6 +2552,9 @@ func buildDatadogManageStatusDefinition(terraformDefinition map[string]interface
 	datadogDefinition.Type = datadog.String(datadog.MANAGE_STATUS_WIDGET)
 	datadogDefinition.Query = datadog.String(terraformDefinition["query"].(string))
 	// Optional params
+	if v, ok := terraformDefinition["summary_type"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetSummaryType(v)
+	}
 	if v, ok := terraformDefinition["sort"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetSort(v)
 	}
@@ -2381,6 +2573,9 @@ func buildDatadogManageStatusDefinition(terraformDefinition map[string]interface
 	if v, ok := terraformDefinition["hide_zero_counts"].(bool); ok {
 		datadogDefinition.SetHideZeroCounts(v)
 	}
+	if v, ok := terraformDefinition["show_last_triggered"].(bool); ok {
+		datadogDefinition.SetShowLastTriggered(v)
+	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
 	}
@@ -2398,6 +2593,9 @@ func buildTerraformManageStatusDefinition(datadogDefinition datadog.ManageStatus
 	// Required params
 	terraformDefinition["query"] = *datadogDefinition.Query
 	// Optional params
+	if datadogDefinition.SummaryType != nil {
+		terraformDefinition["summary_type"] = *datadogDefinition.SummaryType
+	}
 	if datadogDefinition.Sort != nil {
 		terraformDefinition["sort"] = *datadogDefinition.Sort
 	}
@@ -2415,6 +2613,9 @@ func buildTerraformManageStatusDefinition(datadogDefinition datadog.ManageStatus
 	}
 	if datadogDefinition.HideZeroCounts != nil {
 		terraformDefinition["hide_zero_counts"] = *datadogDefinition.HideZeroCounts
+	}
+	if datadogDefinition.ShowLastTriggered != nil {
+		terraformDefinition["show_last_triggered"] = *datadogDefinition.ShowLastTriggered
 	}
 	if datadogDefinition.Title != nil {
 		terraformDefinition["title"] = *datadogDefinition.Title
@@ -2715,6 +2916,191 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadog.Query
 }
 
 //
+// Query Table Widget Definition helpers
+//
+func getQueryTableDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"request": {
+			Type:     schema.TypeList,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: getQueryTableRequestSchema(),
+			},
+		},
+		"title": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"title_size": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"title_align": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"time": {
+			Type:     schema.TypeMap,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: getWidgetTimeSchema(),
+			},
+		},
+	}
+}
+func buildDatadogQueryTableDefinition(terraformDefinition map[string]interface{}) *datadog.QueryTableDefinition {
+	datadogDefinition := &datadog.QueryTableDefinition{}
+	// Required params
+	datadogDefinition.SetType(datadog.QUERY_TABLE_WIDGET)
+	terraformRequests := terraformDefinition["request"].([]interface{})
+	datadogDefinition.Requests = *buildDatadogQueryTableRequests(&terraformRequests)
+	// Optional params
+	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+		datadogDefinition.Title = datadog.String(v)
+	}
+	if v, ok := terraformDefinition["title_size"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleSize(v)
+	}
+	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleAlign(v)
+	}
+	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
+		datadogDefinition.SetTime(*buildDatadogWidgetTime(v))
+	}
+	return datadogDefinition
+}
+func buildTerraformQueryTableDefinition(datadogDefinition datadog.QueryTableDefinition) map[string]interface{} {
+	terraformDefinition := map[string]interface{}{}
+	// Required params
+	terraformDefinition["request"] = buildTerraformQueryTableRequests(&datadogDefinition.Requests)
+	// Optional params
+	if datadogDefinition.Title != nil {
+		terraformDefinition["title"] = *datadogDefinition.Title
+	}
+	if datadogDefinition.TitleSize != nil {
+		terraformDefinition["title_size"] = *datadogDefinition.TitleSize
+	}
+	if datadogDefinition.TitleAlign != nil {
+		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
+	}
+	if datadogDefinition.Time != nil {
+		terraformDefinition["time"] = buildTerraformWidgetTime(*datadogDefinition.Time)
+	}
+	return terraformDefinition
+}
+
+func getQueryTableRequestSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		// A request should implement exactly one of the following type of query
+		"q":             getMetricQuerySchema(),
+		"apm_query":     getApmOrLogQuerySchema(),
+		"log_query":     getApmOrLogQuerySchema(),
+		"process_query": getProcessQuerySchema(),
+		// Settings specific to QueryTable requests
+		"conditional_formats": {
+			Type:     schema.TypeList,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: getWidgetConditionalFormatSchema(),
+			},
+		},
+		"alias": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"aggregator": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"limit": {
+			Type:     schema.TypeInt,
+			Optional: true,
+		},
+		"order": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+	}
+}
+func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog.QueryTableRequest {
+	datadogRequests := make([]datadog.QueryTableRequest, len(*terraformRequests))
+	for i, _request := range *terraformRequests {
+		terraformRequest := _request.(map[string]interface{})
+		// Build QueryTableRequest
+		datadogQueryTableRequest := datadog.QueryTableRequest{}
+		if v, ok := terraformRequest["q"].(string); ok && len(v) != 0 {
+			datadogQueryTableRequest.SetMetricQuery(v)
+		} else if v, ok := terraformRequest["apm_query"].([]interface{}); ok && len(v) > 0 {
+			apmQuery := v[0].(map[string]interface{})
+			datadogQueryTableRequest.ApmQuery = buildDatadogApmOrLogQuery(apmQuery)
+		} else if v, ok := terraformRequest["log_query"].([]interface{}); ok && len(v) > 0 {
+			logQuery := v[0].(map[string]interface{})
+			datadogQueryTableRequest.LogQuery = buildDatadogApmOrLogQuery(logQuery)
+		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
+			processQuery := v[0].(map[string]interface{})
+			datadogQueryTableRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		}
+
+		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
+			datadogQueryTableRequest.ConditionalFormats = *buildDatadogWidgetConditionalFormat(&v)
+		}
+		if v, ok := terraformRequest["aggregator"].(string); ok && len(v) != 0 {
+			datadogQueryTableRequest.SetAggregator(v)
+		}
+		if v, ok := terraformRequest["alias"].(string); ok && len(v) != 0 {
+			datadogQueryTableRequest.SetAlias(v)
+
+		}
+		if v, ok := terraformRequest["limit"].(int); ok && v != 0 {
+			datadogQueryTableRequest.SetLimit(v)
+		}
+		if v, ok := terraformRequest["order"].(string); ok && len(v) != 0 {
+			datadogQueryTableRequest.SetOrder(v)
+		}
+		datadogRequests[i] = datadogQueryTableRequest
+	}
+	return &datadogRequests
+}
+func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadog.QueryTableRequest) *[]map[string]interface{} {
+	terraformRequests := make([]map[string]interface{}, len(*datadogQueryTableRequests))
+	for i, datadogRequest := range *datadogQueryTableRequests {
+		terraformRequest := map[string]interface{}{}
+		if datadogRequest.MetricQuery != nil {
+			terraformRequest["q"] = *datadogRequest.MetricQuery
+		} else if datadogRequest.ApmQuery != nil {
+			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.ApmQuery)
+			terraformRequest["apm_query"] = []map[string]interface{}{terraformQuery}
+		} else if datadogRequest.LogQuery != nil {
+			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.LogQuery)
+			terraformRequest["log_query"] = []map[string]interface{}{terraformQuery}
+		} else if datadogRequest.ProcessQuery != nil {
+			terraformQuery := buildTerraformProcessQuery(*datadogRequest.ProcessQuery)
+			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		}
+
+		if datadogRequest.ConditionalFormats != nil {
+			terraformConditionalFormats := buildTerraformWidgetConditionalFormat(&datadogRequest.ConditionalFormats)
+			terraformRequest["conditional_formats"] = terraformConditionalFormats
+		}
+
+		if datadogRequest.Aggregator != nil {
+			terraformRequest["aggregator"] = *datadogRequest.Aggregator
+		}
+		if datadogRequest.Alias != nil {
+			terraformRequest["alias"] = *datadogRequest.Alias
+		}
+		if datadogRequest.Limit != nil {
+			terraformRequest["limit"] = *datadogRequest.Limit
+		}
+		if datadogRequest.Order != nil {
+			terraformRequest["order"] = *datadogRequest.Order
+		}
+		terraformRequests[i] = terraformRequest
+	}
+	return &terraformRequests
+}
+
+//
 // Scatterplot Widget Definition helpers
 //
 
@@ -2938,6 +3324,120 @@ func buildTerraformScatterplotRequest(datadogScatterplotRequest *datadog.Scatter
 		terraformRequest["aggregator"] = *datadogScatterplotRequest.Aggregator
 	}
 	return &terraformRequest
+}
+
+//
+// Service Level Objective Widget Definition helpers
+//
+
+func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"title": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"title_size": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"title_align": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"view_type": {
+			Type:     schema.TypeString,
+			Required: true,
+		},
+		"slo_id": {
+			Type:     schema.TypeString,
+			Required: true,
+		},
+		"show_error_budget": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
+		"view_mode": {
+			Type:     schema.TypeString,
+			Required: true,
+		},
+		"time_windows": {
+			Type:     schema.TypeList,
+			Required: true,
+			Elem:     &schema.Schema{Type: schema.TypeString},
+		},
+	}
+}
+
+func buildDatadogServiceLevelObjectiveDefinition(terraformDefinition map[string]interface{}) *datadog.ServiceLevelObjectiveDefinition {
+	datadogDefinition := &datadog.ServiceLevelObjectiveDefinition{}
+	// Required params
+	datadogDefinition.SetType(datadog.SERVICE_LEVEL_OBJECTIVE_WIDGET)
+
+	// Optional params
+	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitle(v)
+	}
+	if v, ok := terraformDefinition["title_size"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleSize(v)
+	}
+	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleAlign(v)
+	}
+	if v, ok := terraformDefinition["view_type"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetViewType(v)
+	}
+	if v, ok := terraformDefinition["slo_id"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetServiceLevelObjectiveID(v)
+	}
+	if v, ok := terraformDefinition["show_error_budget"].(bool); ok {
+		datadogDefinition.SetShowErrorBudget(v)
+	}
+	if v, ok := terraformDefinition["view_mode"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetViewMode(v)
+	}
+	if terraformTimeWindows, ok := terraformDefinition["time_windows"].([]interface{}); ok && len(terraformTimeWindows) > 0 {
+		datadogTimeWindows := make([]string, len(terraformTimeWindows))
+		for i, timeWindows := range terraformTimeWindows {
+			datadogTimeWindows[i] = timeWindows.(string)
+		}
+		datadogDefinition.TimeWindows = datadogTimeWindows
+	}
+	return datadogDefinition
+}
+
+func buildTerraformServiceLevelObjectiveDefinition(datadogDefinition datadog.ServiceLevelObjectiveDefinition) map[string]interface{} {
+	terraformDefinition := map[string]interface{}{}
+	// Required params
+	// Optional params
+	if title, ok := datadogDefinition.GetTitleOk(); ok {
+		terraformDefinition["title"] = title
+	}
+	if titleSize, ok := datadogDefinition.GetTitleSizeOk(); ok {
+		terraformDefinition["title_size"] = titleSize
+	}
+	if titleAlign, ok := datadogDefinition.GetTitleAlignOk(); ok {
+		terraformDefinition["title_align"] = titleAlign
+	}
+	if viewType, ok := datadogDefinition.GetViewTypeOk(); ok {
+		terraformDefinition["view_type"] = viewType
+	}
+	if sloID, ok := datadogDefinition.GetServiceLevelObjectiveIDOk(); ok {
+		terraformDefinition["slo_id"] = sloID
+	}
+	if showErrorBudget, ok := datadogDefinition.GetShowErrorBudgetOk(); ok {
+		terraformDefinition["show_error_budget"] = showErrorBudget
+	}
+	if viewMode, ok := datadogDefinition.GetViewModeOk(); ok {
+		terraformDefinition["view_mode"] = viewMode
+	}
+	if datadogDefinition.TimeWindows != nil {
+		terraformTimeWindows := make([]string, len(datadogDefinition.TimeWindows))
+		for i, datadogTimeWindow := range datadogDefinition.TimeWindows {
+			terraformTimeWindows[i] = datadogTimeWindow
+		}
+		terraformDefinition["time_windows"] = terraformTimeWindows
+	}
+	return terraformDefinition
 }
 
 //

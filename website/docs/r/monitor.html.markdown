@@ -37,8 +37,9 @@ resource "datadog_monitor" "foo" {
   timeout_h    = 60
   include_tags = true
 
-  silenced = {
-    "*" = 0
+  # ignore any changes in silenced value; using silenced is deprecated in favor of downtimes
+  lifecycle {
+    ignore_changes = [silenced]
   }
 
   tags = ["foo:bar", "baz"]
@@ -49,7 +50,7 @@ resource "datadog_monitor" "foo" {
 
 The following arguments are supported:
 
-* `type` - (Required) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation](https://docs.datadoghq.com/api/?lang=python#create-a-monitor) page. Available options to choose from are:
+* `type` - (Required) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation](https://docs.datadoghq.com/api/?lang=python#create-a-monitor) page. The available options are below. **Note**: The monitor type cannot be changed after a monitor is created.
     * `metric alert`
     * `service check`
     * `event alert`
