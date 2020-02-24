@@ -100,8 +100,7 @@ The following arguments are supported:
     the monitor will evaluate data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled
     metrics to ensure the monitor will always have data during evaluation.
 * `no_data_timeframe` (Optional) The number of minutes before a monitor will notify when data stops reporting. Provider defaults to 10 minutes.
-    We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.  If omitted, we fall back to
-    the evaluation timeframe for metric alerts, and 24 hours for service checks.
+    We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.
 * `renotify_interval` (Optional) The number of minutes after the last notification before a monitor will re-notify
     on the current status. It will only re-notify if it's not resolved.
 * `notify_audit` (Optional) A boolean indicating whether tagged users will be notified on changes to this monitor.
