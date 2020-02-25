@@ -324,6 +324,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
       }
       title = "Widget Title"
       show_legend = true
+      legend_size = "2"
       time = {
         live_span = "1h"
       }
@@ -823,6 +824,7 @@ Nested `widget` blocks have the following structure:
         - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
         - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
         - `show_legend`: (Optional) Whether or not to show the legend on this widget.
+        - `legend_size`: (Optional) The size of the legend displayed in the widget.
         - `event`: (Optional) The definition of the event to overlay on the graph. Includes the following structure:
           - `q`: (Required) The event query to use in the widget.
         - `yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)

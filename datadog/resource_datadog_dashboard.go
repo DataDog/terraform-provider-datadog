@@ -3538,6 +3538,9 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["show_legend"].(bool); ok {
 		datadogDefinition.ShowLegend = datadog.Bool(v)
 	}
+	if v, ok := terraformDefinition["legend_size"].(string); ok && len(v) != 0 {
+		datadogDefinition.LegendSize = datadog.String(v)
+	}
 	return datadogDefinition
 }
 
@@ -3570,6 +3573,9 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadog.TimeseriesDefi
 	}
 	if datadogDefinition.ShowLegend != nil {
 		terraformDefinition["show_legend"] = *datadogDefinition.ShowLegend
+	}
+	if datadogDefinition.LegendSize != nil {
+		terraformDefinition["legend_size"] = *datadogDefinition.LegendSize
 	}
 	return terraformDefinition
 }
