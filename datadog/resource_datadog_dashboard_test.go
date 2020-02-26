@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	datadog "github.com/zorkian/go-datadog-api"
 )
@@ -575,16 +576,19 @@ resource "datadog_dashboard" "free_dashboard" {
 `
 
 func TestAccDatadogDashboard_update(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: checkDashboardDestroy,
+		Providers:    accProviders,
+		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: datadogDashboardConfig,
 				Check: resource.ComposeTestCheckFunc(
-					checkDashboardExists,
+					checkDashboardExists(accProvider),
 					// Ordered layout dashboard
 
 					// Dashboard metadata
@@ -939,10 +943,14 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 }
 
 func TestAccDatadogDashboard_import(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: checkDashboardDestroy,
+		Providers:    accProviders,
+		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: datadogDashboardConfig,
@@ -961,26 +969,30 @@ func TestAccDatadogDashboard_import(t *testing.T) {
 	})
 }
 
-func checkDashboardExists(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
-	for _, r := range s.RootModule().Resources {
-		if _, err := client.GetBoard(r.Primary.ID); err != nil {
-			return fmt.Errorf("Received an error retrieving dashboard1 %s", err)
+func checkDashboardExists(accProvider *schema.Provider) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		client := accProvider.Meta().(*datadog.Client)
+		for _, r := range s.RootModule().Resources {
+			if _, err := client.GetBoard(r.Primary.ID); err != nil {
+				return fmt.Errorf("Received an error retrieving dashboard1 %s", err)
+			}
 		}
+		return nil
 	}
-	return nil
 }
 
-func checkDashboardDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
-	for _, r := range s.RootModule().Resources {
-		if _, err := client.GetBoard(r.Primary.ID); err != nil {
-			if strings.Contains(err.Error(), "404 Not Found") {
-				continue
+func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		client := accProvider.Meta().(*datadog.Client)
+		for _, r := range s.RootModule().Resources {
+			if _, err := client.GetBoard(r.Primary.ID); err != nil {
+				if strings.Contains(err.Error(), "404 Not Found") {
+					continue
+				}
+				return fmt.Errorf("Received an error retrieving dashboard2 %s", err)
 			}
-			return fmt.Errorf("Received an error retrieving dashboard2 %s", err)
+			return fmt.Errorf("Dashboard still exists")
 		}
-		return fmt.Errorf("Dashboard still exists")
+		return nil
 	}
-	return nil
 }

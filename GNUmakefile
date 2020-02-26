@@ -25,6 +25,10 @@ test: fmtcheck
 testacc: fmtcheck
 	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
 
+record-testacc: fmtcheck
+	rm datadog/cassettes/*
+	RECORD=true TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
+
 vet:
 	@echo "go vet ."
 	@go vet $$(go list ./... | grep -v vendor/) ; if [ $$? -eq 1 ]; then \
@@ -71,4 +75,4 @@ update-go-client:
 	go mod vendor
 	go mod tidy
 
-.PHONY: build test testacc vet fmt fmtcheck errcheck test-compile website website-test
+.PHONY: build test testacc record-testacc vet fmt fmtcheck errcheck test-compile website website-test

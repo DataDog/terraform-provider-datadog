@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	datadog "github.com/zorkian/go-datadog-api"
 )
@@ -76,12 +77,16 @@ resource "datadog_dashboard" "screen" {
 
 func TestDatadogDashListImport(t *testing.T) {
 	resourceName := "datadog_dashboard_list.new_list"
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	// Getting the hash for a TypeSet element that has dynamic elements isn't possible
 	// So instead we use an import test to make sure the resource can be imported properly.
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogDashListDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDashListDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDashListConfig,
@@ -95,10 +100,11 @@ func TestDatadogDashListImport(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogDashListDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
-
-	return datadogDashListDestroyHelper(s, client)
+func testAccCheckDatadogDashListDestroy(accProvider *schema.Provider) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		client := accProvider.Meta().(*datadog.Client)
+		return datadogDashListDestroyHelper(s, client)
+	}
 }
 
 func datadogDashListDestroyHelper(s *terraform.State, client *datadog.Client) error {
@@ -120,9 +126,9 @@ func datadogDashListDestroyHelper(s *terraform.State, client *datadog.Client) er
 	return nil
 }
 
-func testAccCheckDatadogDashListExists(n string) resource.TestCheckFunc {
+func testAccCheckDatadogDashListExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := testAccProvider.Meta().(*datadog.Client)
+		client := accProvider.Meta().(*datadog.Client)
 		return datadogDashListExistsHelper(s, client)
 	}
 }
