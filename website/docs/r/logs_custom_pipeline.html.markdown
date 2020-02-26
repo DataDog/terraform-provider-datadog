@@ -93,7 +93,7 @@ resource "datadog_logs_custom_pipeline" "sample_pipeline" {
         lookup_processor {
             source = "service_id"
             target = "service_name"
-            lookup_table = ["1", "my service"]
+            lookup_table = ["1,my service"]
             default_lookup = "unknown service"
             name = "sample lookup processor"
             is_enabled = true
