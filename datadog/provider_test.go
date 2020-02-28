@@ -27,6 +27,10 @@ func isRecording() bool {
 	return os.Getenv("RECORD") == "true"
 }
 
+func isReplaying() bool {
+	return os.Getenv("RECORD") == "false"
+}
+
 func setClock(t *testing.T) clockwork.FakeClock {
 	os.MkdirAll("cassettes", 0755)
 	f, err := os.Create(fmt.Sprintf("cassettes/%s.freeze", t.Name()))
@@ -55,8 +59,11 @@ func restoreClock(t *testing.T) clockwork.FakeClock {
 func testClock(t *testing.T) clockwork.FakeClock {
 	if isRecording() {
 		return setClock(t)
+	} else if isReplaying() {
+		return restoreClock(t)
 	}
-	return restoreClock(t)
+	// do not set or restore frozen time
+	return clockwork.NewFakeClockAt(clockwork.NewRealClock().Now())
 }
 
 func removeURLSecrets(u *url.URL) *url.URL {
@@ -71,8 +78,10 @@ func initAccProvider(t *testing.T) (*schema.Provider, func(t *testing.T)) {
 	var mode recorder.Mode
 	if isRecording() {
 		mode = recorder.ModeRecording
-	} else {
+	} else if isReplaying() {
 		mode = recorder.ModeReplaying
+	} else {
+		mode = recorder.ModeDisabled
 	}
 
 	rec, err := recorder.NewAsMode(fmt.Sprintf("cassettes/%s", t.Name()), mode, nil)
@@ -117,7 +126,7 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 		client.HttpClient = c
 		client.ExtraHeader["User-Agent"] = fmt.Sprintf("Datadog/%s/terraform (%s)", version.ProviderVersion, runtime.Version())
 
-		if os.Getenv("RECORD") != "true" {
+		if !isReplaying() {
 			return client, nil
 		}
 
@@ -167,6 +176,9 @@ func TestProvider_impl(t *testing.T) {
 }
 
 func testAccPreCheck(t *testing.T) {
+	if isReplaying() {
+		return
+	}
 	if v := os.Getenv("DATADOG_API_KEY"); v == "" {
 		t.Fatal("DATADOG_API_KEY must be set for acceptance tests")
 	}
