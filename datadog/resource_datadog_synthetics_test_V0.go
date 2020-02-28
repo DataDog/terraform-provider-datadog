@@ -13,42 +13,14 @@ import (
 	datadog "github.com/zorkian/go-datadog-api"
 )
 
-var syntheticsTypes = []string{"api", "browser"}
-var syntheticsSubTypes = []string{"http", "ssl"}
-
-func resourceDatadogSyntheticsTestStateUpgradeV0(rawState map[string]interface{}, meta interface{}) (map[string]interface{}, error) {
-	optionsKV := map[string]string{
-		"options.follow_redirects":     "options.0.follow_redirects",
-		"options.min_failure_duration": "options.0.min_failure_duration",
-		"options.min_location_failed":  "options.0.min_location_failed",
-		"options.tick_every":           "options.0.tick_every",
-		"options.accept_self_signed":   "options.0.accept_self_signed",
-	}
-	rawState["options.#"] = "1"
-	for v0Field, v1Field := range optionsKV {
-		if v, ok := rawState[v0Field]; ok {
-			rawState[v1Field] = v
-		}
-	}
-	return rawState, nil
-}
-
-func resourceDatadogSyntheticsTest() *schema.Resource {
+func resourceDatadogSyntheticsTestV0() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogSyntheticsTestCreate,
-		Read:   resourceDatadogSyntheticsTestRead,
-		Update: resourceDatadogSyntheticsTestUpdate,
-		Delete: resourceDatadogSyntheticsTestDelete,
+		Create: resourceDatadogSyntheticsTestCreateV0,
+		Read:   resourceDatadogSyntheticsTestReadV0,
+		Update: resourceDatadogSyntheticsTestUpdateV0,
+		Delete: resourceDatadogSyntheticsTestDeleteV0,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
-		},
-		SchemaVersion: 1,
-		StateUpgraders: []schema.StateUpgrader{
-			{
-				Type:    resourceDatadogSyntheticsTestV0().CoreConfigSchema().ImpliedType(),
-				Upgrade: resourceDatadogSyntheticsTestStateUpgradeV0,
-				Version: 0,
-			},
 		},
 		Schema: map[string]*schema.Schema{
 			"type": {
@@ -92,7 +64,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"options": syntheticsTestOptions(),
+			"options": syntheticsTestOptionsV0(),
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -119,12 +91,50 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 	}
 }
 
-func syntheticsTestOptions() *schema.Schema {
+func syntheticsTestOptionsV0() *schema.Schema {
 	return &schema.Schema{
-		// options as a schema.TypeMap is deprecated, it will be a TypeList in next Major version
-		Type:     schema.TypeList,
+		Type: schema.TypeMap,
+		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
+			if key == "options.follow_redirects" || key == "options.accept_self_signed" {
+				// TF nested schemas is limited to string values only
+				// follow_redirects and accept_self_signed being booleans in Datadog json api
+				// we need a sane way to convert from boolean to string
+				// and from string to boolean
+				oldValue, err1 := strconv.ParseBool(old)
+				newValue, err2 := strconv.ParseBool(new)
+				if err1 != nil || err2 != nil {
+					return false
+				}
+				return oldValue == newValue
+			}
+			return old == new
+		},
+		ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+			followRedirectsRaw, ok := val.(map[string]interface{})["follow_redirects"]
+			if ok {
+				followRedirectsStr := convertToString(followRedirectsRaw)
+				switch followRedirectsStr {
+				case "0", "1":
+					warns = append(warns, fmt.Sprintf("%q.follow_redirects must be either true or false, got: %s (please change 1 => true, 0 => false)", key, followRedirectsStr))
+				case "true", "false":
+					break
+				default:
+					errs = append(errs, fmt.Errorf("%q.follow_redirects must be either true or false, got: %s", key, followRedirectsStr))
+				}
+			}
+			acceptSelfSignedRaw, ok := val.(map[string]interface{})["accept_self_signed"]
+			if ok {
+				acceptSelfSignedStr := convertToString(acceptSelfSignedRaw)
+				switch acceptSelfSignedStr {
+				case "true", "false":
+					break
+				default:
+					errs = append(errs, fmt.Errorf("%q.accept_self_signed must be either true or false, got: %s", key, acceptSelfSignedStr))
+				}
+			}
+			return
+		},
 		Optional: true,
-		MaxItems: 1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"follow_redirects": {
@@ -147,83 +157,15 @@ func syntheticsTestOptions() *schema.Schema {
 					Type:     schema.TypeBool,
 					Optional: true,
 				},
-				"monitor_options": {
-					Type:     schema.TypeMap,
-					Optional: true,
-					Elem: &schema.Resource{
-						Schema: map[string]*schema.Schema{
-							"renotify_interval": {
-								Type:     schema.TypeInt,
-								Default:  0,
-								Optional: true,
-							},
-						},
-					},
-				},
-				"retry": {
-					Type:     schema.TypeMap,
-					Optional: true,
-					Elem: &schema.Resource{
-						Schema: map[string]*schema.Schema{
-							"count": {
-								Type:     schema.TypeInt,
-								Default:  0,
-								Optional: true,
-							},
-							"interval": {
-								Type:     schema.TypeInt,
-								Default:  300,
-								Optional: true,
-							},
-						},
-					},
-				},
 			},
 		},
 	}
 }
 
-func syntheticsTestRequest() *schema.Schema {
-	return &schema.Schema{
-		Type:     schema.TypeMap,
-		Required: true,
-		Elem: &schema.Resource{
-			Schema: map[string]*schema.Schema{
-				"method": {
-					Type:     schema.TypeString,
-					Optional: true,
-				},
-				"url": {
-					Type:     schema.TypeString,
-					Optional: true,
-				},
-				"body": {
-					Type:     schema.TypeString,
-					Optional: true,
-				},
-				"timeout": {
-					Type:     schema.TypeInt,
-					Optional: true,
-					Default:  60,
-				},
-				"host": {
-					Type:     schema.TypeString,
-					Optional: true,
-				},
-				"port": {
-					Type:     schema.TypeInt,
-					Optional: true,
-					Default:  60,
-				},
-			},
-		},
-	}
-}
-
-func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsTestCreateV0(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
 
-	syntheticsTest := newSyntheticsTestFromLocalState(d)
+	syntheticsTest := newSyntheticsTestFromLocalStateV0(d)
 	createdSyntheticsTest, err := client.CreateSyntheticsTest(syntheticsTest)
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
@@ -235,10 +177,10 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 	d.SetId(createdSyntheticsTest.GetPublicId())
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
-	return resourceDatadogSyntheticsTestRead(d, meta)
+	return resourceDatadogSyntheticsTestReadV0(d, meta)
 }
 
-func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsTestReadV0(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
 
 	syntheticsTest, err := client.GetSyntheticsTest(d.Id())
@@ -251,25 +193,25 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 		return err
 	}
 
-	updateSyntheticsTestLocalState(d, syntheticsTest)
+	updateSyntheticsTestLocalStateV0(d, syntheticsTest)
 
 	return nil
 }
 
-func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsTestUpdateV0(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
 
-	syntheticsTest := newSyntheticsTestFromLocalState(d)
+	syntheticsTest := newSyntheticsTestFromLocalStateV0(d)
 	if _, err := client.UpdateSyntheticsTest(d.Id(), syntheticsTest); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
 		return err
 	}
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
-	return resourceDatadogSyntheticsTestRead(d, meta)
+	return resourceDatadogSyntheticsTestReadV0(d, meta)
 }
 
-func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsTestDeleteV0(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
 
 	if err := client.DeleteSyntheticsTests([]string{d.Id()}); err != nil {
@@ -281,16 +223,7 @@ func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{
 	return nil
 }
 
-func isTargetOfTypeInt(assertionType string) bool {
-	for _, intTargetAssertionType := range []string{"responseTime", "statusCode", "certificate"} {
-		if assertionType == intTargetAssertionType {
-			return true
-		}
-	}
-	return false
-}
-
-func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.SyntheticsTest {
+func newSyntheticsTestFromLocalStateV0(d *schema.ResourceData) *datadog.SyntheticsTest {
 	request := datadog.SyntheticsRequest{}
 	if attr, ok := d.GetOk("request.method"); ok {
 		request.SetMethod(attr.(string))
@@ -358,47 +291,30 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 	}
 
 	options := datadog.SyntheticsOptions{}
-	if attr, ok := d.GetOk("options.0.tick_every"); ok {
-		options.SetTickEvery(attr.(int))
+	if attr, ok := d.GetOk("options.tick_every"); ok {
+		tickEvery, _ := strconv.Atoi(attr.(string))
+		options.SetTickEvery(tickEvery)
 	}
-	if attr, ok := d.GetOk("options.0.follow_redirects"); ok {
+	if attr, ok := d.GetOk("options.follow_redirects"); ok {
 		// follow_redirects is a string ("true" or "false") in TF state
 		// it used to be "1" and "0" but it does not play well with the API
 		// we support both for retro-compatibility
-		options.SetFollowRedirects(attr.(bool))
+		followRedirects, _ := strconv.ParseBool(attr.(string))
+		options.SetFollowRedirects(followRedirects)
 	}
-	if attr, ok := d.GetOk("options.0.min_failure_duration"); ok {
-		options.SetMinFailureDuration(attr.(int))
+	if attr, ok := d.GetOk("options.min_failure_duration"); ok {
+		minFailureDuration, _ := strconv.Atoi(attr.(string))
+		options.SetMinFailureDuration(minFailureDuration)
 	}
-	if attr, ok := d.GetOk("options.0.min_location_failed"); ok {
-		options.SetMinLocationFailed(attr.(int))
+	if attr, ok := d.GetOk("options.min_location_failed"); ok {
+		minLocationFailed, _ := strconv.Atoi(attr.(string))
+		options.SetMinLocationFailed(minLocationFailed)
 	}
-	if attr, ok := d.GetOk("options.0.accept_self_signed"); ok {
+	if attr, ok := d.GetOk("options.accept_self_signed"); ok {
 		// for some reason, attr is equal to "1" or "0" in TF 0.11
 		// so ParseBool is required for retro-compatibility
-		options.SetAcceptSelfSigned(attr.(bool))
-	}
-	if attr, ok := d.GetOk("options.0.monitor_options"); ok {
-		monitorOptions := attr.(map[string]interface{})
-		if v, ok := monitorOptions["renotify_interval"]; ok {
-			renotifyInterval, _ := strconv.Atoi(v.(string))
-			newMonitorOptions := datadog.MonitorOptions{RenotifyInterval: datadog.Int(renotifyInterval)}
-			options.SetMonitorOptions(newMonitorOptions)
-		}
-
-	}
-	if attr, ok := d.GetOk("options.0.retry"); ok {
-		retryOptions := attr.(map[string]interface{})
-		newRetryOptions := datadog.Retry{}
-		if v, ok := retryOptions["count"]; ok {
-			count, _ := strconv.Atoi(v.(string))
-			newRetryOptions.SetCount(count)
-		}
-		if v, ok := retryOptions["interval"]; ok {
-			interval, _ := strconv.Atoi(v.(string))
-			newRetryOptions.SetInterval(interval)
-		}
-		options.SetRetry(newRetryOptions)
+		acceptSelfSigned, _ := strconv.ParseBool(attr.(string))
+		options.SetAcceptSelfSigned(acceptSelfSigned)
 	}
 	if attr, ok := d.GetOk("device_ids"); ok {
 		deviceIds := []string{}
@@ -445,7 +361,7 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 	return &syntheticsTest
 }
 
-func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *datadog.SyntheticsTest) {
+func updateSyntheticsTestLocalStateV0(d *schema.ResourceData, syntheticsTest *datadog.SyntheticsTest) {
 	d.Set("type", syntheticsTest.GetType())
 	if syntheticsTest.HasSubtype() {
 		d.Set("subtype", syntheticsTest.GetSubtype())
@@ -499,60 +415,28 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("locations", syntheticsTest.Locations)
 
 	actualOptions := syntheticsTest.GetOptions()
-	localOptions := make(map[string]interface{})
+	localOptions := make(map[string]string)
 	if actualOptions.HasFollowRedirects() {
-		localOptions["follow_redirects"] = actualOptions.GetFollowRedirects()
+		localOptions["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
 	}
 	if actualOptions.HasMinFailureDuration() {
-		localOptions["min_failure_duration"] = actualOptions.GetMinFailureDuration()
+		localOptions["min_failure_duration"] = convertToString(actualOptions.GetMinFailureDuration())
 	}
 	if actualOptions.HasMinLocationFailed() {
-		localOptions["min_location_failed"] = actualOptions.GetMinLocationFailed()
+		localOptions["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
 	}
 	if actualOptions.HasTickEvery() {
-		localOptions["tick_every"] = actualOptions.GetTickEvery()
+		localOptions["tick_every"] = convertToString(actualOptions.GetTickEvery())
 	}
 	if actualOptions.HasAcceptSelfSigned() {
-		localOptions["accept_self_signed"] = actualOptions.GetAcceptSelfSigned()
-	}
-	if actualOptions.HasMonitorOptions() {
-		monitorOptions := actualOptions.GetMonitorOptions()
-		localOptions["monitor_options"] = map[string]interface{}{
-			"renotify_interval": convertToString(*monitorOptions.RenotifyInterval),
-		}
-	}
-	if actualOptions.HasRetry() {
-		retry := actualOptions.GetRetry()
-		localOptions["retry"] = map[string]interface{}{
-			"count":    convertToString(*retry.Count),
-			"interval": convertToString(*retry.Interval),
-		}
+		localOptions["accept_self_signed"] = convertToString(actualOptions.GetAcceptSelfSigned())
 	}
 
-	d.Set("options", []interface{}{localOptions})
+	d.Set("options", localOptions)
+
 	d.Set("name", syntheticsTest.GetName())
 	d.Set("message", syntheticsTest.GetMessage())
 	d.Set("status", syntheticsTest.GetStatus())
 	d.Set("tags", syntheticsTest.Tags)
 	d.Set("monitor_id", syntheticsTest.MonitorId)
-}
-
-func convertToString(i interface{}) string {
-	switch v := i.(type) {
-	case bool:
-		return strconv.FormatBool(v)
-	case int:
-		return strconv.Itoa(v)
-	case float64:
-		return strconv.FormatFloat(v, 'f', -1, 64)
-	case string:
-		return v
-	default:
-		// TODO: manage target for JSON body assertions
-		valStrr, err := json.Marshal(v)
-		if err == nil {
-			return string(valStrr)
-		}
-		return ""
-	}
 }

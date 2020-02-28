@@ -52,6 +52,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_screenboard":                          resourceDatadogScreenboard(),
 			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
 			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
+			"datadog_synthetics_test_V0":                   resourceDatadogSyntheticsTestV0(),
 			"datadog_timeboard":                            resourceDatadogTimeboard(),
 			"datadog_user":                                 resourceDatadogUser(),
 		},

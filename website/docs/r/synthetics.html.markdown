@@ -36,6 +36,13 @@ resource "datadog_synthetics_test" "test_api" {
   locations = [ "aws:eu-central-1" ]
   options = {
     tick_every = 900
+    monitor_options = {
+            renotify_interval = 60
+    }
+    retry = {
+        count = 2
+        interval = 1600
+    }
   }
   name = "An API test on example.org"
   message = "Notify @pagerduty"
@@ -68,6 +75,13 @@ resource "datadog_synthetics_test" "test_ssl" {
   options = {
     tick_every = 900
     accept_self_signed = true
+    monitor_options = {
+            renotify_interval = 60
+    }
+    retry = {
+        count = 2
+        interval = 1600
+    }
   }
   name = "An API test on example.org"
   message = "Notify @pagerduty"
@@ -96,6 +110,13 @@ resource "datadog_synthetics_test" "test_browser" {
 
   options = {
     tick_every = 3600
+    monitor_options = {
+            renotify_interval = 60
+    }
+    retry = {
+        count = 2
+        interval = 1600
+    }
   }
 
   name = "A Browser test on example.org"
@@ -134,12 +155,23 @@ The following arguments are supported:
   - `operator` - (Required) Please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation) as operator depend on assertion type
   - `target` - (Required) Expected value, please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation) as target depend on assertion type
   - `property` - (Optional) if assertion type is "header", this is a the header name
-- `options` - (Required)
+- `options` - (Required) **Deprecated**
+  - `tick_every` - (Required)  **Deprecated** How often the test should run (in seconds). Current possible values are 900, 1800, 3600, 21600, 43200, 86400, 604800 plus 60 if type=api or 300 if type=browser
+  - `follow_redirects` - (Optional) **Deprecated** For type=api, true or false
+  - `min_failure_duration` - (Optional) **Deprecated** How long the test should be in failure before alerting (integer, number of seconds, max 7200). Default is 0.
+  - `min_location_failed` - (Optional) **Deprecated** Threshold below which a synthetics test is allowed to fail before sending notifications. Default is 1.
+  - `accept_self_signed` - (Optional) **Deprecated** For type=ssl, true or false
+- `options_list` - (Required)
   - `tick_every` - (Required)  How often the test should run (in seconds). Current possible values are 900, 1800, 3600, 21600, 43200, 86400, 604800 plus 60 if type=api or 300 if type=browser
   - `follow_redirects` - (Optional) For type=api, true or false
   - `min_failure_duration` - (Optional) How long the test should be in failure before alerting (integer, number of seconds, max 7200). Default is 0.
-  - `min_location_failed` - (Optional) Threshold below which a synthetics test is allowed to fail before sending notifications
+  - `min_location_failed` - (Optional) Threshold below which a synthetics test is allowed to fail before sending notifications. Default is 1.
   - `accept_self_signed` - (Optional) For type=ssl, true or false
+  - `retry` - (Optional)
+    - `count` - (Required) The number of times (count) to retry a test after it has failed
+    - `interval` - (Required) The number of milliseconds (interval) to retry a test after it has failed
+  - `monitor_options` - (Optional)
+    - `renotify_interval` - (Required) The number of minutes after the last notification before a monitor re-notifies on the current status. It only re-notifies if it’s not resolved.
 - `locations` - (Required) Please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#request) for available locations (e.g. "aws:eu-central-1")
 - `device_ids` - (Optional) "laptop_large", "tablet" or "mobile_small" (only available if type=browser)
 - `status` - (Required) "live", "paused"
