@@ -48,7 +48,8 @@ func buildIntegrationPagerdutySO(d *schema.ResourceData) *datadog.ServicePDReque
 }
 
 func resourceDatadogIntegrationPagerdutySOCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	integrationPdMutex.Lock()
 	defer integrationPdMutex.Unlock()
 
@@ -64,7 +65,8 @@ func resourceDatadogIntegrationPagerdutySOCreate(d *schema.ResourceData, meta in
 }
 
 func resourceDatadogIntegrationPagerdutySORead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	so, err := client.GetIntegrationPDService(d.Id())
 	if err != nil {
@@ -82,7 +84,8 @@ func resourceDatadogIntegrationPagerdutySORead(d *schema.ResourceData, meta inte
 }
 
 func resourceDatadogIntegrationPagerdutySOExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	_, err := client.GetIntegrationPDService(d.Id())
 	if err != nil {
@@ -96,7 +99,8 @@ func resourceDatadogIntegrationPagerdutySOExists(d *schema.ResourceData, meta in
 }
 
 func resourceDatadogIntegrationPagerdutySOUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	integrationPdMutex.Lock()
 	defer integrationPdMutex.Unlock()
 
@@ -111,7 +115,8 @@ func resourceDatadogIntegrationPagerdutySOUpdate(d *schema.ResourceData, meta in
 }
 
 func resourceDatadogIntegrationPagerdutySODelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	integrationPdMutex.Lock()
 	defer integrationPdMutex.Unlock()
 

@@ -2,9 +2,10 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/zorkian/go-datadog-api"
-	"strings"
 )
 
 var indexSchema = map[string]*schema.Schema{
@@ -61,7 +62,9 @@ func resourceDatadogLogsIndexCreate(d *schema.ResourceData, meta interface{}) er
 }
 
 func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) error {
-	ddIndex, err := meta.(*datadog.Client).GetLogsIndex(d.Id())
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	ddIndex, err := client.GetLogsIndex(d.Id())
 	if err != nil {
 		return err
 	}
@@ -78,11 +81,12 @@ func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) erro
 }
 
 func resourceDatadogLogsIndexUpdate(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	ddIndex, err := buildDatadogIndex(d)
 	if err != nil {
 		return err
 	}
-	client := meta.(*datadog.Client)
 	tfName := d.Get("name").(string)
 	if _, err := client.UpdateLogsIndex(tfName, ddIndex); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
@@ -99,7 +103,8 @@ func resourceDatadogLogsIndexDelete(d *schema.ResourceData, meta interface{}) er
 }
 
 func resourceDatadogLogsIndexExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	if _, err := client.GetLogsIndex(d.Id()); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil

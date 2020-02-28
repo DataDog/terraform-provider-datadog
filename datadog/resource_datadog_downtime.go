@@ -290,7 +290,8 @@ func buildDowntimeStruct(d *schema.ResourceData, client *datadog.Client, updatin
 func resourceDatadogDowntimeExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
@@ -315,7 +316,8 @@ func resourceDatadogDowntimeExists(d *schema.ResourceData, meta interface{}) (b 
 }
 
 func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	dts, err := buildDowntimeStruct(d, client, false)
 	if err != nil {
@@ -332,7 +334,8 @@ func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) err
 }
 
 func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
@@ -403,7 +406,8 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 }
 
 func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	dt, err := buildDowntimeStruct(d, client, true)
 	if err != nil {
@@ -425,7 +429,8 @@ func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) err
 }
 
 func resourceDatadogDowntimeDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {

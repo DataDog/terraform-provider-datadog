@@ -1,13 +1,14 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testing"
 
+	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"github.com/zorkian/go-datadog-api"
 )
 
 func TestAccDatadogUser_Updated(t *testing.T) {
@@ -56,9 +57,11 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 }
 
 func testAccCheckDatadogUserDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
+	providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	if err := datadogUserDestroyHelper(s, client); err != nil {
+	if err := datadogUserDestroyHelper(auth, s, client); err != nil {
 		return err
 	}
 	return nil
@@ -66,8 +69,10 @@ func testAccCheckDatadogUserDestroy(s *terraform.State) error {
 
 func testAccCheckDatadogUserExists(n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := testAccProvider.Meta().(*datadog.Client)
-		if err := datadogUserExistsHelper(s, client); err != nil {
+		providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.DatadogClientV1
+		auth := providerConf.Auth
+		if err := datadogUserExistsHelper(auth, s, client); err != nil {
 			return err
 		}
 		return nil
@@ -94,10 +99,11 @@ resource "datadog_user" "foo" {
 }
 `
 
-func datadogUserDestroyHelper(s *terraform.State, client *datadog.Client) error {
+func datadogUserDestroyHelper(auth context.Context, s *terraform.State, client *datadog.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		id := r.Primary.ID
-		u, err := client.GetUser(id)
+		userResponse, _, err := client.UsersApi.GetUser(auth, id).Execute()
+		u := userResponse.GetUser()
 
 		if err != nil {
 			if strings.Contains(err.Error(), "404 Not Found") {
@@ -115,10 +121,10 @@ func datadogUserDestroyHelper(s *terraform.State, client *datadog.Client) error 
 	return nil
 }
 
-func datadogUserExistsHelper(s *terraform.State, client *datadog.Client) error {
+func datadogUserExistsHelper(auth context.Context, s *terraform.State, client *datadog.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		id := r.Primary.ID
-		if _, err := client.GetUser(id); err != nil {
+		if _, _, err := client.UsersApi.GetUser(auth, id).Execute(); err != nil {
 			return fmt.Errorf("Received an error retrieving user %s", err)
 		}
 	}

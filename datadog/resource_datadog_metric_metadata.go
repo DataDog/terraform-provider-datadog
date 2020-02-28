@@ -67,7 +67,8 @@ func buildMetricMetadataStruct(d *schema.ResourceData) (string, *datadog.MetricM
 func resourceDatadogMetricMetadataExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	id, _ := buildMetricMetadataStruct(d)
 
@@ -83,7 +84,8 @@ func resourceDatadogMetricMetadataExists(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogMetricMetadataCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	id, m := buildMetricMetadataStruct(d)
 	_, err := client.EditMetricMetadata(id, m)
@@ -98,7 +100,8 @@ func resourceDatadogMetricMetadataCreate(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	id, _ := buildMetricMetadataStruct(d)
 
@@ -118,7 +121,8 @@ func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{})
 }
 
 func resourceDatadogMetricMetadataUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	m := &datadog.MetricMetadata{}
 	id := d.Get("metric").(string)

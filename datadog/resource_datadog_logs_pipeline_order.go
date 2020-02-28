@@ -2,9 +2,10 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/zorkian/go-datadog-api"
-	"strings"
 )
 
 func resourceDatadogLogsPipelineOrder() *schema.Resource {
@@ -33,7 +34,9 @@ func resourceDatadogLogsPipelineOrderCreate(d *schema.ResourceData, meta interfa
 }
 
 func resourceDatadogLogsPipelineOrderRead(d *schema.ResourceData, meta interface{}) error {
-	ddList, err := meta.(*datadog.Client).GetLogsPipelineList()
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	ddList, err := client.GetLogsPipelineList()
 	if err != nil {
 		return err
 	}
@@ -46,6 +49,8 @@ func resourceDatadogLogsPipelineOrderRead(d *schema.ResourceData, meta interface
 }
 
 func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	var ddPipelineList datadog.LogsPipelineList
 	tfList := d.Get("pipelines").([]interface{})
 	ddList := make([]string, len(tfList))
@@ -53,14 +58,14 @@ func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interfa
 		ddList[i] = id.(string)
 	}
 	ddPipelineList.PipelineIds = ddList
-	var tfId string
+	var tfID string
 	if name, exists := d.GetOk("name"); exists {
-		tfId = name.(string)
+		tfID = name.(string)
 	}
-	if _, err := meta.(*datadog.Client).UpdateLogsPipelineList(&ddPipelineList); err != nil {
+	if _, err := client.UpdateLogsPipelineList(&ddPipelineList); err != nil {
 		// Cannot map pipelines to existing ones
 		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
-			ddPipelineOrder, getErr := meta.(*datadog.Client).GetLogsPipelineList()
+			ddPipelineOrder, getErr := client.GetLogsPipelineList()
 			if getErr != nil {
 				return fmt.Errorf("error updating logs pipeline list: (%s)", err.Error())
 			}
@@ -70,7 +75,7 @@ func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interfa
 		}
 		return fmt.Errorf("error updating logs pipeline list: (%s)", err.Error())
 	}
-	d.SetId(tfId)
+	d.SetId(tfID)
 	return resourceDatadogLogsPipelineOrderRead(d, meta)
 }
 

@@ -820,11 +820,13 @@ func buildTimeboard(d *schema.ResourceData) (*datadog.Dashboard, error) {
 }
 
 func resourceDatadogTimeboardCreate(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	timeboard, err := buildTimeboard(d)
 	if err != nil {
 		return fmt.Errorf("Failed to parse resource configuration: %s", err.Error())
 	}
-	timeboard, err = meta.(*datadog.Client).CreateDashboard(timeboard)
+	timeboard, err = client.CreateDashboard(timeboard)
 	if err != nil {
 		return fmt.Errorf("Failed to create timeboard using Datadog API: %s", err.Error())
 	}
@@ -833,11 +835,13 @@ func resourceDatadogTimeboardCreate(d *schema.ResourceData, meta interface{}) er
 }
 
 func resourceDatadogTimeboardUpdate(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	timeboard, err := buildTimeboard(d)
 	if err != nil {
 		return fmt.Errorf("Failed to parse resource configuration: %s", err.Error())
 	}
-	if err = meta.(*datadog.Client).UpdateDashboard(timeboard); err != nil {
+	if err = client.UpdateDashboard(timeboard); err != nil {
 		return fmt.Errorf("Failed to update timeboard using Datadog API: %s", err.Error())
 	}
 	return resourceDatadogTimeboardRead(d, meta)
@@ -1114,8 +1118,10 @@ func buildTerraformGraph(datadogGraph datadog.Graph) map[string]interface{} {
 }
 
 func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	id := d.Id()
-	timeboard, err := meta.(*datadog.Client).GetDashboard(id)
+	timeboard, err := client.GetDashboard(id)
 	if err != nil {
 		return err
 	}
@@ -1160,11 +1166,13 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 }
 
 func resourceDatadogTimeboardDelete(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return err
 	}
-	if err = meta.(*datadog.Client).DeleteDashboard(id); err != nil {
+	if err = client.DeleteDashboard(id); err != nil {
 		return err
 	}
 	return nil
@@ -1178,11 +1186,13 @@ func resourceDatadogTimeboardImport(d *schema.ResourceData, meta interface{}) ([
 }
 
 func resourceDatadogTimeboardExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
 		return false, err
 	}
-	if _, err = meta.(*datadog.Client).GetDashboard(id); err != nil {
+	if _, err = client.GetDashboard(id); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}

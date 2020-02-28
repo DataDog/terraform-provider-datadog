@@ -8,7 +8,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	datadog "github.com/zorkian/go-datadog-api"
 )
 
 const config = `
@@ -1873,7 +1872,8 @@ func TestAccDatadogScreenboard_update(t *testing.T) {
 }
 
 func checkScreenboardExists(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
+	providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	for _, r := range s.RootModule().Resources {
 		i, _ := strconv.Atoi(r.Primary.ID)
 		if _, err := client.GetScreenboard(i); err != nil {
@@ -1884,7 +1884,8 @@ func checkScreenboardExists(s *terraform.State) error {
 }
 
 func checkScreenboardDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
+	providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	for _, r := range s.RootModule().Resources {
 		i, _ := strconv.Atoi(r.Primary.ID)
 		if _, err := client.GetScreenboard(i); err != nil {

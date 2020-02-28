@@ -70,7 +70,8 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 func resourceDatadogIntegrationAwsExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	integrations, err := client.GetIntegrationAWS()
 	if err != nil {
@@ -126,7 +127,8 @@ func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, a
 }
 
 func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
@@ -147,7 +149,8 @@ func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	accountID, roleName, err := accountAndRoleFromID(d.Id())
 
@@ -187,7 +190,8 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 	// 	return &out, nil
 	// }
 
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
@@ -207,7 +211,8 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
