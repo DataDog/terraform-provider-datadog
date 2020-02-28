@@ -896,7 +896,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 16:36:49 GMT
+      - Fri, 28 Feb 2020 17:03:09 GMT
       Last-Modified:
       - Wed, 13 Nov 2019 16:02:25 GMT
       Server:
@@ -904,13 +904,13 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 315f537a0be356b37267f2ae21a5363d.cloudfront.net (CloudFront)
+      - 1.1 366c47f12008eb7cc950e42132b7422f.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - j1cXAwCPsH2gHlc-6tcA1s7N4XGT57BiJw5H1aMbGG2-foADMe9WHg==
+      - AxhHr91YD_Wk39v_fhkcaQL1RnnaUVirKZgxxTscjy_ecIYsX-aZqg==
       X-Amz-Cf-Pop:
       - MAD50-C1
       X-Cache:
-      - RefreshHit from cloudfront
+      - Miss from cloudfront
     status: 200 OK
     code: 200
     duration: ""
@@ -1809,7 +1809,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 16:36:50 GMT
+      - Fri, 28 Feb 2020 17:03:10 GMT
       Last-Modified:
       - Wed, 13 Nov 2019 16:02:25 GMT
       Server:
@@ -1817,13 +1817,13 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 315f537a0be356b37267f2ae21a5363d.cloudfront.net (CloudFront)
+      - 1.1 366c47f12008eb7cc950e42132b7422f.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - g0FVSjDK9oI9CoBmaBTzeyHT9NiduLBcGNR_lz42IZ--K8ecLirT3g==
+      - 1tFhiMhhJewQ1D0v7Y4QHD8tjU9c6QAj3W0nwjRDAKORGMt29udIMw==
       X-Amz-Cf-Pop:
       - MAD50-C1
       X-Cache:
-      - RefreshHit from cloudfront
+      - Miss from cloudfront
     status: 200 OK
     code: 200
     duration: ""
@@ -2722,7 +2722,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 16:36:50 GMT
+      - Fri, 28 Feb 2020 17:03:10 GMT
       Last-Modified:
       - Wed, 13 Nov 2019 16:02:25 GMT
       Server:
@@ -2730,9 +2730,9 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 315f537a0be356b37267f2ae21a5363d.cloudfront.net (CloudFront)
+      - 1.1 366c47f12008eb7cc950e42132b7422f.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - WxXBcUwynsf22si_e6Qo2woQwlmY6n741Svopq0jJEm3x0CLEONwug==
+      - Jb72GEzuOpFeIVJgRZ40yDugAuFhnQLXnV8l4U3mgfsbpY_gGEJPQA==
       X-Amz-Cf-Pop:
       - MAD50-C1
       X-Cache:
@@ -3635,7 +3635,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 16:36:50 GMT
+      - Fri, 28 Feb 2020 17:03:10 GMT
       Last-Modified:
       - Wed, 13 Nov 2019 16:02:25 GMT
       Server:
@@ -3643,9 +3643,9 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 315f537a0be356b37267f2ae21a5363d.cloudfront.net (CloudFront)
+      - 1.1 366c47f12008eb7cc950e42132b7422f.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - Y3Wt3d1BiUZK5M9LO182BDk6Y7MIhnAVx1nZ1vZPN9u0sNi99e4-Og==
+      - xVeQxBlJ9AqAhPlOGvvESDqYKEwTH_ACxdzxMhkw23wpOLhwaPaalQ==
       X-Amz-Cf-Pop:
       - MAD50-C1
       X-Cache:
