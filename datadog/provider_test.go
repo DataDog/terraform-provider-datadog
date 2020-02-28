@@ -1,7 +1,6 @@
 package datadog
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -125,24 +124,6 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 		c.Transport = logging.NewTransport("Datadog", r)
 		client.HttpClient = c
 		client.ExtraHeader["User-Agent"] = fmt.Sprintf("Datadog/%s/terraform (%s)", version.ProviderVersion, runtime.Version())
-
-		if !isReplaying() {
-			return client, nil
-		}
-
-		// Do not validate API and APP keys when we are not recording
-		log.Println("[INFO] Datadog client successfully initialized, now validating...")
-		ok, err := client.Validate()
-		if err != nil {
-			log.Printf("[ERROR] Datadog Client validation error: %v", err)
-			return client, err
-		} else if !ok {
-			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and see https://terraform.io/docs/providers/datadog/index.html for more information on providing credentials for the Datadog Provider`)
-			log.Printf("[ERROR] Datadog Client validation error: %v", err)
-			return client, err
-		}
-		log.Printf("[INFO] Datadog Client successfully validated.")
-
 		return client, nil
 	}
 }
