@@ -2,88 +2,6 @@
 version: 1
 interactions:
 - request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:17 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:17 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - vG5kxpR47Wd0uZGIzWkStfMxs3cmVIjKYEHLQf0xQiHS0P2BwlwJHwTESUSKlcdO
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:17 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:17 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - RngFxOd8mVeT14auLfzsH/6kz142QLoKkYXZjfmXpXDkZ/eN6uoCM3cTScXuFEa0
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
     body: '{"name":"name for synthetics test ssl","type":"api","subtype":"ssl","tags":["foo:bar","baz"],"config":{"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"message":"Notify
       @datadog.user","options":{"tick_every":60,"accept_self_signed":true},"locations":["aws:eu-central-1"],"status":"paused"}'
     form: {}
@@ -91,12 +9,12 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
+      - Datadog/dev/terraform (go1.14)
     url: https://api.datadoghq.com/api/v1/synthetics/tests
     method: POST
   response:
-    body: '{"status":"paused","public_id":"2yh-ape-553","tags":["foo:bar","baz"],"org_id":382568,"locations":["aws:eu-central-1"],"message":"Notify
-      @datadog.user","deleted_at":null,"name":"name for synthetics test ssl","monitor_id":16070531,"type":"api","created_at":"2020-02-27T11:40:17.891937+00:00","modified_at":"2020-02-27T11:40:17.891937+00:00","subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"tqa-fuh-u7u","tags":["foo:bar","baz"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify
+      @datadog.user","deleted_at":null,"name":"name for synthetics test ssl","monitor_id":16133654,"type":"api","created_at":"2020-02-28T16:43:21.270577+00:00","modified_at":"2020-02-28T16:43:21.270577+00:00","subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -107,13 +25,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:17 GMT
+      - Fri, 28 Feb 2020 16:43:21 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:17 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:21 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -122,9 +40,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - L5yd3v29mZzDtdpTLB/OLdaP/nm856X8oKVK7IsHIbLmKRYkqq5Jv7+SBx/bs1VS
+      - QO3HutZQjgMDp/HqClcLon+qq5lEghb3LRV+gXMIQ2Jivd1m1eEGCh0RxplUQMIV
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -135,14 +53,13 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/2yh-ape-553
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/tqa-fuh-u7u
     method: GET
   response:
-    body: '{"status":"paused","public_id":"2yh-ape-553","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
-      @datadog.user","modified_by":{"email":"jiri.kuncar@datadoghq.com","handle":"jiri.kuncar@datadoghq.com","id":1628996,"name":"Ji\u0159\u00ed
-      Kun\u010dar"},"name":"name for synthetics test ssl","monitor_id":16070531,"type":"api","created_at":"2020-02-27T11:40:17.891937+00:00","modified_at":"2020-02-27T11:40:17.891937+00:00","created_by":{"email":"jiri.kuncar@datadoghq.com","handle":"jiri.kuncar@datadoghq.com","id":1628996,"name":"Ji\u0159\u00ed
-      Kun\u010dar"},"subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"tqa-fuh-u7u","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
+      @datadog.user","modified_by":{"email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416,"name":null},"name":"name
+      for synthetics test ssl","monitor_id":16133654,"type":"api","created_at":"2020-02-28T16:43:21.270577+00:00","modified_at":"2020-02-28T16:43:21.270577+00:00","created_by":{"email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416,"name":null},"subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -153,13 +70,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:18 GMT
+      - Fri, 28 Feb 2020 16:43:21 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:18 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:21 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -168,91 +85,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Jhz2Lh32XBCZ7PVSj7/lof8hXjgbtiexG4VIRWAEYHPFefqyYpXnVaeT62yBncrB
+      - JEThRmJp6qTNp8pxXQqPpRD40l23OvSASz6GutTWG+aCw+n9cF/5KqfPSziGHWsU
       X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:18 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:18 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - FB5oGxuL9E/cplxahdQnU5Nw5E7KX0Smq18it9qYKIt8BXsSloE0IpDRA39tfQwn
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:18 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:18 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - MZCX71FNdAUQ6AMWRBKW1fkNpiPTypOoXE57zLYE3lG5gigqB2nroYJ/8uMn9muy
-      X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -263,14 +98,13 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/2yh-ape-553
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/tqa-fuh-u7u
     method: GET
   response:
-    body: '{"status":"paused","public_id":"2yh-ape-553","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
-      @datadog.user","modified_by":{"email":"jiri.kuncar@datadoghq.com","handle":"jiri.kuncar@datadoghq.com","id":1628996,"name":"Ji\u0159\u00ed
-      Kun\u010dar"},"name":"name for synthetics test ssl","monitor_id":16070531,"type":"api","created_at":"2020-02-27T11:40:17.891937+00:00","modified_at":"2020-02-27T11:40:17.891937+00:00","created_by":{"email":"jiri.kuncar@datadoghq.com","handle":"jiri.kuncar@datadoghq.com","id":1628996,"name":"Ji\u0159\u00ed
-      Kun\u010dar"},"subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"tqa-fuh-u7u","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
+      @datadog.user","modified_by":{"email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416,"name":null},"name":"name
+      for synthetics test ssl","monitor_id":16133654,"type":"api","created_at":"2020-02-28T16:43:21.270577+00:00","modified_at":"2020-02-28T16:43:21.270577+00:00","created_by":{"email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416,"name":null},"subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -281,13 +115,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:18 GMT
+      - Fri, 28 Feb 2020 16:43:21 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:18 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:21 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -296,91 +130,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - fLh2Ki8TBaqqP7azNnKugW2P+FqYhl36RGg8m8syr+2I6kNse5gXxG00+xylWppT
+      - yEcEaKqmSUfeSlQ/kN/c5E6EpIXbM1JPI9KV27pdsvBWWv3FI4tsqqRarYTS+fS+
       X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:18 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:18 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - vG5kxpR47Wd0uZGIzWkStfMxs3cmVIjKYEHLQf0xQiHS0P2BwlwJHwTESUSKlcdO
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:18 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:18 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - B/LXPck0nGNX0RSV/Gw7cnZ0oe92FUOfg1ec7WcU0kSvw/UBT+IXTFTD87Snvz2v
-      X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -391,14 +143,13 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/2yh-ape-553
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/tqa-fuh-u7u
     method: GET
   response:
-    body: '{"status":"paused","public_id":"2yh-ape-553","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
-      @datadog.user","modified_by":{"email":"jiri.kuncar@datadoghq.com","handle":"jiri.kuncar@datadoghq.com","id":1628996,"name":"Ji\u0159\u00ed
-      Kun\u010dar"},"name":"name for synthetics test ssl","monitor_id":16070531,"type":"api","created_at":"2020-02-27T11:40:17.891937+00:00","modified_at":"2020-02-27T11:40:17.891937+00:00","created_by":{"email":"jiri.kuncar@datadoghq.com","handle":"jiri.kuncar@datadoghq.com","id":1628996,"name":"Ji\u0159\u00ed
-      Kun\u010dar"},"subtype":"ssl","overall_state_modified":"2020-02-27T11:40:19.524147+00:00","overall_state":2,"config":{"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"tqa-fuh-u7u","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
+      @datadog.user","modified_by":{"email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416,"name":null},"name":"name
+      for synthetics test ssl","monitor_id":16133654,"type":"api","created_at":"2020-02-28T16:43:21.270577+00:00","modified_at":"2020-02-28T16:43:21.270577+00:00","created_by":{"email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416,"name":null},"subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -409,13 +160,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:19 GMT
+      - Fri, 28 Feb 2020 16:43:21 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:19 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:21 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -424,50 +175,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - vYQu3ls2HKdZ2pXErBiwg/FlJyuK31hjiI+oJSqoEPPw/7mzimb2FzvWEsshbznY
+      - AVsav2jjRGvwjNvJeRUS7kJsgTlhh9y9smyL3UJVQTMAUoPyejdL0bVSnanIQLK4
       X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:19 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:19 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - f5hY0MW4w2fhZz0SAfv1+LF9me92dJz6mowUerU7gZ8k/CpuQLqOWzykixb5WZaX
-      X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -478,14 +188,13 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/2yh-ape-553
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/tqa-fuh-u7u
     method: GET
   response:
-    body: '{"status":"paused","public_id":"2yh-ape-553","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
-      @datadog.user","modified_by":{"email":"jiri.kuncar@datadoghq.com","handle":"jiri.kuncar@datadoghq.com","id":1628996,"name":"Ji\u0159\u00ed
-      Kun\u010dar"},"name":"name for synthetics test ssl","monitor_id":16070531,"type":"api","created_at":"2020-02-27T11:40:17.891937+00:00","modified_at":"2020-02-27T11:40:17.891937+00:00","created_by":{"email":"jiri.kuncar@datadoghq.com","handle":"jiri.kuncar@datadoghq.com","id":1628996,"name":"Ji\u0159\u00ed
-      Kun\u010dar"},"subtype":"ssl","overall_state_modified":"2020-02-27T11:40:19.828495+00:00","overall_state":2,"config":{"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"tqa-fuh-u7u","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
+      @datadog.user","modified_by":{"email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416,"name":null},"name":"name
+      for synthetics test ssl","monitor_id":16133654,"type":"api","created_at":"2020-02-28T16:43:21.270577+00:00","modified_at":"2020-02-28T16:43:21.270577+00:00","created_by":{"email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416,"name":null},"subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -496,13 +205,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:19 GMT
+      - Fri, 28 Feb 2020 16:43:22 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:19 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:21 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -511,67 +220,26 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - ADT0ms9dQnbDHbbduv4c09ChngZrYY7A/Pgms/qacMOruS4mPwZ1GJWq74I7G11W
+      - GG9N5JNk6zUo5YQ1gmfpF0kYcSj/kjDOsFItaODUS7qQCwsMrhI3QWJVQns7uvtI
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:20 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:20 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - v8lEj/pYmsavh1I0Db6FT/BAvLdOdAv91ctM9ImcmfZ/KHrCACXEdhuskTCPihd+
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: '{"public_ids":["2yh-ape-553"]}'
+    body: '{"public_ids":["tqa-fuh-u7u"]}'
     form: {}
     headers:
       Content-Type:
       - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
+      - Datadog/dev/terraform (go1.14)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
     method: POST
   response:
-    body: '{"deleted_tests":[{"deleted_at":"2020-02-27T11:40:20.284113+00:00","public_id":"2yh-ape-553"}]}'
+    body: '{"deleted_tests":[{"deleted_at":"2020-02-28T16:43:22.179177+00:00","public_id":"tqa-fuh-u7u"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -582,13 +250,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:20 GMT
+      - Fri, 28 Feb 2020 16:43:22 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:20 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:22 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -597,9 +265,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 0pa1dtuadfHOUeVqLiK3mljtwHC7xKOrqXlG1EXfeExc1YyvZm51+jZLEiJ3YUs6
+      - DNJM9d0LaQZJbuEjasKEmgCwDoiLnJW9mPQJm+yWIlQRbFhX4Vzx4uuDCt38dWhb
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -610,8 +278,8 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/2yh-ape-553
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/tqa-fuh-u7u
     method: GET
   response:
     body: '{"errors": ["Synthetics test not found"]}'
@@ -625,7 +293,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:20 GMT
+      - Fri, 28 Feb 2020 16:43:22 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -637,7 +305,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found

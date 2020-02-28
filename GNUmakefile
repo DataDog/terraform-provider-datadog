@@ -18,19 +18,17 @@ uninstall:
 	@rm -vf $(DIR)/terraform-provider-datadog
 
 test-install:
-	go test -i $(TEST) || exit 1
 
-test: fmtcheck test-install
+test: fmtcheck
+	go test -i $(TEST) || exit 1
 	echo $(TEST) | \
 		xargs -t -n4 go test $(TESTARGS) -timeout=30s -parallel=4
-
-replay: fmtcheck test-install
 	RECORD=false TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout=30s
 
-testacc: fmtcheck test-install
+testacc: fmtcheck
 	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
 
-record: fmtcheck
+cassettes: fmtcheck
 	rm datadog/cassettes/*
 	RECORD=true TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
 
@@ -80,4 +78,4 @@ update-go-client:
 	go mod vendor
 	go mod tidy
 
-.PHONY: build test testacc record-testacc vet fmt fmtcheck errcheck test-install test-compile website website-test
+.PHONY: build test testacc cassettes vet fmt fmtcheck errcheck test-compile website website-test

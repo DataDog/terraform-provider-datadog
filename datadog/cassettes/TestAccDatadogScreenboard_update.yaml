@@ -2,88 +2,6 @@
 version: 1
 interactions:
 - request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:39:25 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:39:25 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - rK52fEhHKxisnKo2rembr3YValr4L+BG6/8tD9iNDc8Prg2mnV6DynBkS75++wh/
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:39:25 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:39:25 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - sAPKocoLMDEnM5qY2PL6SCQ+dkENYAR/6IistAQ5iiTU/UnJHAba158nxOvVRvKJ
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
     body: '{"id":0,"board_title":"Acceptance Test Screenboard","height":480,"width":640,"shared":false,"template_variables":[{"name":"varname
       1","prefix":"pod_name","default":"*"},{"name":"varname 2","prefix":"service_name","default":"autoscaling"}],"widgets":[{"type":"free_text","title":true,"title_text":"","title_align":"left","title_size":16,"height":15,"width":50,"x":5,"y":5,"time":{},"text":"test
       text","color":"#ffc0cb","text_size":"auto","unit":"","precision":"","viz_type":"","text_align":"right","font_size":"36","alert_id":0,"auto_refresh":false,"legend":false,"legend_size":"","query":"","url":"","check":"","grouping":"","group":"","tick_pos":"","tick_edge":"","html":"","tick":false,"bgcolor":"","event_size":"","sizing":"","margin":"","env":"","serviceService":"","serviceName":"","sizeVersion":"","layoutVersion":"","mustShowHits":false,"mustShowErrors":false,"mustShowLatency":false,"mustShowBreakdown":false,"mustShowDistribution":false,"mustShowResourceList":false,"displayFormat":"","colorPreference":"","hideZeroCounts":false,"showTitle":false,"titleText":"","titleSize":"","titleAlign":"","params":{},"show_last_triggered":false,"summary_type":"","columns":"","logset":"","monitor":{}},{"type":"timeseries","title":true,"title_text":"graph
@@ -111,11 +29,11 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
+      - Datadog/dev/terraform (go1.14)
     url: https://api.datadoghq.com/api/v1/screen
     method: POST
   response:
-    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-27T11:39:26.045204+00:00","new_id":"mu4-9k3-fgt","modified":"2020-02-27T11:39:26.045209+00:00","height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
+    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-28T16:42:40.666719+00:00","new_id":"gn7-tkh-ecm","modified":"2020-02-28T16:42:40.666726+00:00","height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
       1"},{"default":"autoscaling","prefix":"service_name","name":"varname 2"}],"widgets":[{"logset":"","mustShowErrors":false,"color":"#ffc0cb","text":"test
       text","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"right","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"free_text","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"36","y":5,"x":5,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"right","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"16","type":"timeseries","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1d"},"serviceService":"","precision":"","title_text":"graph
       title terraform","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":true,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"precision":"","markers":[{"type":"error
@@ -136,7 +54,7 @@ interactions:
       title","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"cluster:test","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":245,"margin":"","width":50,"event_size":"","grouping":"check"},{"logset":"","mustShowErrors":true,"color":"","text":"","height":15,"mustShowBreakdown":true,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"large","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"testEnv","params":{},"legend_size":"","type":"trace_service","showTitle":false,"layoutVersion":"three_column","mustShowResourceList":true,"time":{"live_span":"30m"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":true,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":true,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":true,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":265,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"avg:system.load.1{*}
       by {host}","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"hostmap","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"nodeType":"container","style":{"fillMax":300,"palette":"hostmap_blues","fillMin":20,"paletteFlip":"true"},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"hostmap","scope":["datacenter:test"],"requests":[{"extra_col":"","style":{},"change_type":"","text_filter":"","query_type":"","metric":"","tag_filters":[],"q":"max:process.stat.container.io.wbps{datacenter:test}
       by {host}","limit":0,"increase_good":false,"aggregator":"","order_by":"","type":"fill","compare_to":"","order_dir":""}],"group":["pod_name"],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":285,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"background","html":"","hideZeroCounts":true,"titleText":"test
-      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":994801}'
+      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":997035}'
     headers:
       Cache-Control:
       - no-cache
@@ -147,13 +65,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:39:26 GMT
+      - Fri, 28 Feb 2020 16:42:40 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:39:26 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:42:40 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -162,9 +80,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - pT9LlAdgAzlrCUxMXQkBRs/Qti76jKIHng1uB0/SctAaYjB4WqOgOZYpCbOMQKll
+      - LOVPYRkvxiVgJlSU7tTR5QW5I3IByFfoP5oRWZk6jukYFQiYGeCZXWoo6PiPBzrK
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -175,12 +93,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/screen/994801
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/screen/997035
     method: GET
   response:
-    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-27T11:39:26.045204+00:00","new_id":"mu4-9k3-fgt","modified":"2020-02-27T11:39:26.045209+00:00","created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
+    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-28T16:42:40.666719+00:00","new_id":"gn7-tkh-ecm","modified":"2020-02-28T16:42:40.666726+00:00","created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
       1"},{"default":"autoscaling","prefix":"service_name","name":"varname 2"}],"widgets":[{"logset":"","mustShowErrors":false,"color":"#ffc0cb","text":"test
       text","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"right","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"free_text","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"36","y":5,"x":5,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"right","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"16","type":"timeseries","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1d"},"serviceService":"","precision":"","title_text":"graph
       title terraform","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":true,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"precision":"","markers":[{"type":"error
@@ -201,7 +118,7 @@ interactions:
       title","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"cluster:test","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":245,"margin":"","width":50,"event_size":"","grouping":"check"},{"logset":"","mustShowErrors":true,"color":"","text":"","height":15,"mustShowBreakdown":true,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"large","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"testEnv","params":{},"legend_size":"","type":"trace_service","showTitle":false,"layoutVersion":"three_column","mustShowResourceList":true,"time":{"live_span":"30m"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":true,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":true,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":true,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":265,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"avg:system.load.1{*}
       by {host}","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"hostmap","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"nodeType":"container","style":{"fillMax":300,"palette":"hostmap_blues","fillMin":20,"paletteFlip":"true"},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"hostmap","scope":["datacenter:test"],"requests":[{"extra_col":"","style":{},"change_type":"","text_filter":"","query_type":"","metric":"","tag_filters":[],"q":"max:process.stat.container.io.wbps{datacenter:test}
       by {host}","limit":0,"increase_good":false,"aggregator":"","order_by":"","type":"fill","compare_to":"","order_dir":""}],"group":["pod_name"],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":285,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"background","html":"","hideZeroCounts":true,"titleText":"test
-      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":994801}'
+      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":997035}'
     headers:
       Cache-Control:
       - no-cache
@@ -212,13 +129,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:39:26 GMT
+      - Fri, 28 Feb 2020 16:42:40 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:39:26 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:42:40 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -227,9 +144,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - J5PL0LnJukdy69mckjXi3cjye/YJX2hkoCBkqKQi+tYjrsXYELx6DfDD11fhyjYF
+      - YKF8+1vTI0wiWlB3VWhiMVnZ1RLtV3h2yAW6/TGe9qIMWdYXxsNpy3J4QxfrJoDD
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -240,12 +157,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/screen/994801
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/screen/997035
     method: GET
   response:
-    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-27T11:39:26.045204+00:00","new_id":"mu4-9k3-fgt","modified":"2020-02-27T11:39:26.045209+00:00","created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
+    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-28T16:42:40.666719+00:00","new_id":"gn7-tkh-ecm","modified":"2020-02-28T16:42:40.666726+00:00","created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
       1"},{"default":"autoscaling","prefix":"service_name","name":"varname 2"}],"widgets":[{"logset":"","mustShowErrors":false,"color":"#ffc0cb","text":"test
       text","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"right","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"free_text","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"36","y":5,"x":5,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"right","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"16","type":"timeseries","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1d"},"serviceService":"","precision":"","title_text":"graph
       title terraform","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":true,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"precision":"","markers":[{"type":"error
@@ -266,7 +182,7 @@ interactions:
       title","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"cluster:test","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":245,"margin":"","width":50,"event_size":"","grouping":"check"},{"logset":"","mustShowErrors":true,"color":"","text":"","height":15,"mustShowBreakdown":true,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"large","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"testEnv","params":{},"legend_size":"","type":"trace_service","showTitle":false,"layoutVersion":"three_column","mustShowResourceList":true,"time":{"live_span":"30m"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":true,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":true,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":true,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":265,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"avg:system.load.1{*}
       by {host}","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"hostmap","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"nodeType":"container","style":{"fillMax":300,"palette":"hostmap_blues","fillMin":20,"paletteFlip":"true"},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"hostmap","scope":["datacenter:test"],"requests":[{"extra_col":"","style":{},"change_type":"","text_filter":"","query_type":"","metric":"","tag_filters":[],"q":"max:process.stat.container.io.wbps{datacenter:test}
       by {host}","limit":0,"increase_good":false,"aggregator":"","order_by":"","type":"fill","compare_to":"","order_dir":""}],"group":["pod_name"],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":285,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"background","html":"","hideZeroCounts":true,"titleText":"test
-      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":994801}'
+      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":997035}'
     headers:
       Cache-Control:
       - no-cache
@@ -277,13 +193,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:39:26 GMT
+      - Fri, 28 Feb 2020 16:42:41 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:39:26 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:42:41 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -292,91 +208,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - aiFdvD+ESSGWQuLeXGShIAaySBrTSq6aZf+crfPnDVFrMRUU9f0HobLUCBopvakz
+      - CPK+34LtKdL5YYX/NFOJUdMpxMoO80HISGpGpzDG5fENYSoZ2QNw1gEubOsJ9JNb
       X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:39:26 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:39:26 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - aJ6GOq3zw1bWl+5n1TKdeAvWSB1g5Zer85qbkQ07UFNZhgfVh/zeqVhNb8FjtbN9
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:39:26 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:39:26 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - RbevWUvO2oQYYDnX/G1lndTh/kTt+ebFIvajU6/3Ivb5c6aUQf49/uD1ICaXyx52
-      X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -387,12 +221,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/screen/994801
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/screen/997035
     method: GET
   response:
-    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-27T11:39:26.045204+00:00","new_id":"mu4-9k3-fgt","modified":"2020-02-27T11:39:26.045209+00:00","created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
+    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-28T16:42:40.666719+00:00","new_id":"gn7-tkh-ecm","modified":"2020-02-28T16:42:40.666726+00:00","created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
       1"},{"default":"autoscaling","prefix":"service_name","name":"varname 2"}],"widgets":[{"logset":"","mustShowErrors":false,"color":"#ffc0cb","text":"test
       text","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"right","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"free_text","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"36","y":5,"x":5,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"right","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"16","type":"timeseries","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1d"},"serviceService":"","precision":"","title_text":"graph
       title terraform","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":true,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"precision":"","markers":[{"type":"error
@@ -413,7 +246,7 @@ interactions:
       title","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"cluster:test","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":245,"margin":"","width":50,"event_size":"","grouping":"check"},{"logset":"","mustShowErrors":true,"color":"","text":"","height":15,"mustShowBreakdown":true,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"large","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"testEnv","params":{},"legend_size":"","type":"trace_service","showTitle":false,"layoutVersion":"three_column","mustShowResourceList":true,"time":{"live_span":"30m"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":true,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":true,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":true,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":265,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"avg:system.load.1{*}
       by {host}","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"hostmap","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"nodeType":"container","style":{"fillMax":300,"palette":"hostmap_blues","fillMin":20,"paletteFlip":"true"},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"hostmap","scope":["datacenter:test"],"requests":[{"extra_col":"","style":{},"change_type":"","text_filter":"","query_type":"","metric":"","tag_filters":[],"q":"max:process.stat.container.io.wbps{datacenter:test}
       by {host}","limit":0,"increase_good":false,"aggregator":"","order_by":"","type":"fill","compare_to":"","order_dir":""}],"group":["pod_name"],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":285,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"background","html":"","hideZeroCounts":true,"titleText":"test
-      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":994801}'
+      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":997035}'
     headers:
       Cache-Control:
       - no-cache
@@ -424,13 +257,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:39:27 GMT
+      - Fri, 28 Feb 2020 16:42:41 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:39:27 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:42:41 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -439,9 +272,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - pdoE+6MDHF3ASB0y6TdRZq9HO/3uAKc0XPY7EkyNyaFqpXeeAHwz2Ce2QWIN714X
+      - rpB/2GMZHvzTHZxhwmnNa1XnSQuif7FV+gIndoDc8IvUeRNb65r4x+P7Djp1119C
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -452,12 +285,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/screen/994801
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/screen/997035
     method: GET
   response:
-    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-27T11:39:26.045204+00:00","new_id":"mu4-9k3-fgt","modified":"2020-02-27T11:39:26.045209+00:00","created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
+    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-28T16:42:40.666719+00:00","new_id":"gn7-tkh-ecm","modified":"2020-02-28T16:42:40.666726+00:00","created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
       1"},{"default":"autoscaling","prefix":"service_name","name":"varname 2"}],"widgets":[{"logset":"","mustShowErrors":false,"color":"#ffc0cb","text":"test
       text","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"right","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"free_text","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"36","y":5,"x":5,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"right","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"16","type":"timeseries","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1d"},"serviceService":"","precision":"","title_text":"graph
       title terraform","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":true,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"precision":"","markers":[{"type":"error
@@ -478,7 +310,7 @@ interactions:
       title","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"cluster:test","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":245,"margin":"","width":50,"event_size":"","grouping":"check"},{"logset":"","mustShowErrors":true,"color":"","text":"","height":15,"mustShowBreakdown":true,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"large","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"testEnv","params":{},"legend_size":"","type":"trace_service","showTitle":false,"layoutVersion":"three_column","mustShowResourceList":true,"time":{"live_span":"30m"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":true,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":true,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":true,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":265,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"avg:system.load.1{*}
       by {host}","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"hostmap","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"nodeType":"container","style":{"fillMax":300,"palette":"hostmap_blues","fillMin":20,"paletteFlip":"true"},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"hostmap","scope":["datacenter:test"],"requests":[{"extra_col":"","style":{},"change_type":"","text_filter":"","query_type":"","metric":"","tag_filters":[],"q":"max:process.stat.container.io.wbps{datacenter:test}
       by {host}","limit":0,"increase_good":false,"aggregator":"","order_by":"","type":"fill","compare_to":"","order_dir":""}],"group":["pod_name"],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":285,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"background","html":"","hideZeroCounts":true,"titleText":"test
-      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":994801}'
+      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":997035}'
     headers:
       Cache-Control:
       - no-cache
@@ -489,13 +321,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:39:27 GMT
+      - Fri, 28 Feb 2020 16:42:42 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:39:27 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:42:42 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -504,91 +336,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - cYNsy3QDuOaYo2clO/PharSNtCykS9KtUfiNevH3xDbHJlRyddWkNpuDhMgHWZ43
+      - GM3qkj4SwEuhNLnO2bGVKXmYyTyl+x7nOBmAec7P90wogSgnhOkciAg/AUC2jkes
       X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:39:27 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:39:27 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - DNJM9d0LaQZJbuEjasKEmgCwDoiLnJW9mPQJm+yWIlQRbFhX4Vzx4uuDCt38dWhb
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:39:27 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:39:27 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 69kiClanS8NcBSsdd51HHifvhQSGoRbJJjhU9l40yqxQHVNrndFN9zVtFJW1OcSf
-      X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -599,12 +349,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/screen/994801
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/screen/997035
     method: GET
   response:
-    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-27T11:39:26.045204+00:00","new_id":"mu4-9k3-fgt","modified":"2020-02-27T11:39:26.045209+00:00","created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
+    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-28T16:42:40.666719+00:00","new_id":"gn7-tkh-ecm","modified":"2020-02-28T16:42:40.666726+00:00","created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
       1"},{"default":"autoscaling","prefix":"service_name","name":"varname 2"}],"widgets":[{"logset":"","mustShowErrors":false,"color":"#ffc0cb","text":"test
       text","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"right","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"free_text","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"36","y":5,"x":5,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"right","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"16","type":"timeseries","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1d"},"serviceService":"","precision":"","title_text":"graph
       title terraform","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":true,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"precision":"","markers":[{"type":"error
@@ -625,7 +374,7 @@ interactions:
       title","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"cluster:test","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":245,"margin":"","width":50,"event_size":"","grouping":"check"},{"logset":"","mustShowErrors":true,"color":"","text":"","height":15,"mustShowBreakdown":true,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"large","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"testEnv","params":{},"legend_size":"","type":"trace_service","showTitle":false,"layoutVersion":"three_column","mustShowResourceList":true,"time":{"live_span":"30m"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":true,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":true,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":true,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":265,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"avg:system.load.1{*}
       by {host}","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"hostmap","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"nodeType":"container","style":{"fillMax":300,"palette":"hostmap_blues","fillMin":20,"paletteFlip":"true"},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"hostmap","scope":["datacenter:test"],"requests":[{"extra_col":"","style":{},"change_type":"","text_filter":"","query_type":"","metric":"","tag_filters":[],"q":"max:process.stat.container.io.wbps{datacenter:test}
       by {host}","limit":0,"increase_good":false,"aggregator":"","order_by":"","type":"fill","compare_to":"","order_dir":""}],"group":["pod_name"],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":285,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"background","html":"","hideZeroCounts":true,"titleText":"test
-      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":994801}'
+      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":997035}'
     headers:
       Cache-Control:
       - no-cache
@@ -636,13 +385,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:39:28 GMT
+      - Fri, 28 Feb 2020 16:42:43 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:39:28 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:42:43 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -651,9 +400,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - oQ/oy4ezTZ+/WzL4afBMlDjLd5w62e5H15hF5BJChw1Gte+Sq8B8tB7i6vlTiLL0
+      - o1rjyOSbDnvYaQgtO33vwWSNsIwHafzLqam2amG/PbTP69SVY965ZpWutdoYJB30
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -664,12 +413,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/screen/994801
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/screen/997035
     method: GET
   response:
-    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-27T11:39:26.045204+00:00","new_id":"mu4-9k3-fgt","modified":"2020-02-27T11:39:26.045209+00:00","created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
+    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-28T16:42:40.666719+00:00","new_id":"gn7-tkh-ecm","modified":"2020-02-28T16:42:40.666726+00:00","created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
       1"},{"default":"autoscaling","prefix":"service_name","name":"varname 2"}],"widgets":[{"logset":"","mustShowErrors":false,"color":"#ffc0cb","text":"test
       text","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"right","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"free_text","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"36","y":5,"x":5,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"right","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"16","type":"timeseries","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1d"},"serviceService":"","precision":"","title_text":"graph
       title terraform","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":true,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"precision":"","markers":[{"type":"error
@@ -690,7 +438,7 @@ interactions:
       title","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"cluster:test","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":245,"margin":"","width":50,"event_size":"","grouping":"check"},{"logset":"","mustShowErrors":true,"color":"","text":"","height":15,"mustShowBreakdown":true,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"large","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"testEnv","params":{},"legend_size":"","type":"trace_service","showTitle":false,"layoutVersion":"three_column","mustShowResourceList":true,"time":{"live_span":"30m"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":true,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":true,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":true,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":265,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"avg:system.load.1{*}
       by {host}","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"hostmap","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"nodeType":"container","style":{"fillMax":300,"palette":"hostmap_blues","fillMin":20,"paletteFlip":"true"},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"hostmap","scope":["datacenter:test"],"requests":[{"extra_col":"","style":{},"change_type":"","text_filter":"","query_type":"","metric":"","tag_filters":[],"q":"max:process.stat.container.io.wbps{datacenter:test}
       by {host}","limit":0,"increase_good":false,"aggregator":"","order_by":"","type":"fill","compare_to":"","order_dir":""}],"group":["pod_name"],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":285,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"background","html":"","hideZeroCounts":true,"titleText":"test
-      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":994801}'
+      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":997035}'
     headers:
       Cache-Control:
       - no-cache
@@ -701,13 +449,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:39:28 GMT
+      - Fri, 28 Feb 2020 16:42:43 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:39:28 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:42:43 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -716,50 +464,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - aiFdvD+ESSGWQuLeXGShIAaySBrTSq6aZf+crfPnDVFrMRUU9f0HobLUCBopvakz
+      - nDs7oXQtOYsvIIpPzuNZX0qDgGBu3ENkec7da4phztYl7kD88B7t5enRlUQmZVgO
       X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:39:28 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:39:28 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - J7vOWsxZd7Grxzg2TIaQpn2nGjrOScgI4Kwzur8V2oOTYInX6xbVT4leinNkGLPk
-      X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -770,11 +477,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/screen/994801
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/screen/997035
     method: DELETE
   response:
-    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-27T11:39:26.045204+00:00","new_id":"mu4-9k3-fgt","modified":"2020-02-27T11:39:26.045209+00:00","height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
+    body: '{"board_title":"Acceptance Test Screenboard","read_only":true,"description":null,"created":"2020-02-28T16:42:40.666719+00:00","new_id":"gn7-tkh-ecm","modified":"2020-02-28T16:42:40.666726+00:00","height":480,"width":640,"template_variables":[{"default":"*","prefix":"pod_name","name":"varname
       1"},{"default":"autoscaling","prefix":"service_name","name":"varname 2"}],"widgets":[{"logset":"","mustShowErrors":false,"color":"#ffc0cb","text":"test
       text","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"right","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"free_text","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"36","y":5,"x":5,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"right","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"16","type":"timeseries","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1d"},"serviceService":"","precision":"","title_text":"graph
       title terraform","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":true,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"precision":"","markers":[{"type":"error
@@ -795,7 +502,7 @@ interactions:
       title","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"cluster:test","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":245,"margin":"","width":50,"event_size":"","grouping":"check"},{"logset":"","mustShowErrors":true,"color":"","text":"","height":15,"mustShowBreakdown":true,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"large","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"testEnv","params":{},"legend_size":"","type":"trace_service","showTitle":false,"layoutVersion":"three_column","mustShowResourceList":true,"time":{"live_span":"30m"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":true,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":true,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":true,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":265,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"avg:system.load.1{*}
       by {host}","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"hostmap","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"nodeType":"container","style":{"fillMax":300,"palette":"hostmap_blues","fillMin":20,"paletteFlip":"true"},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"hostmap","scope":["datacenter:test"],"requests":[{"extra_col":"","style":{},"change_type":"","text_filter":"","query_type":"","metric":"","tag_filters":[],"q":"max:process.stat.container.io.wbps{datacenter:test}
       by {host}","limit":0,"increase_good":false,"aggregator":"","order_by":"","type":"fill","compare_to":"","order_dir":""}],"group":["pod_name"],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":285,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"background","html":"","hideZeroCounts":true,"titleText":"test
-      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":994801}'
+      title","env":"","params":{"sort":"status,asc","text":"status:alert","count":"50","start":"0"},"legend_size":"","type":"manage_status","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":true,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"20","url":"","mustShowDistribution":false,"titleAlign":"right","tick_edge":"","displayFormat":"countsAndList","mustShowLatency":false,"bgcolor":"","summary_type":"monitors","columns":"","font_size":"","y":5,"x":305,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"1234","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"source:kubernetes","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"log_stream","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{"live_span":"1h"},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"[\"column1\",\"column2\",\"column3\"]","font_size":"","y":5,"x":325,"margin":"","width":50,"event_size":"","grouping":""},{"logset":"","mustShowErrors":false,"color":"","text":"","height":15,"mustShowBreakdown":false,"alert_id":0,"query":"","text_size":"auto","tick_pos":"","check":"","unit":"","sizeVersion":"","title_size":16,"monitor":{},"viz_type":"","title":true,"title_align":"left","text_align":"","colorPreference":"","html":"","hideZeroCounts":false,"titleText":"","env":"","params":{},"legend_size":"","type":"process","showTitle":false,"layoutVersion":"","mustShowResourceList":false,"time":{},"serviceService":"","precision":"","title_text":"","auto_refresh":false,"mustShowHits":false,"show_last_triggered":false,"group":"","tick":false,"legend":false,"serviceName":"","sizing":"","titleSize":"","url":"","mustShowDistribution":false,"titleAlign":"","tick_edge":"","displayFormat":"","tile_def":{"style":{},"autoscale":true,"text_align":"","precision":"","noMetricHosts":false,"custom_unit":"","viz":"process","nodeType":"","requests":[{"extra_col":"","style":{"palette":"dog_classic_area"},"change_type":"","text_filter":"","query_type":"process","metric":"process.stat.cpu.total_pct","tag_filters":[],"limit":200,"increase_good":false,"aggregator":"","order_by":"","type":"","compare_to":"","order_dir":""}],"noGroupHosts":false},"mustShowLatency":false,"bgcolor":"","summary_type":"","columns":"","font_size":"","y":5,"x":365,"margin":"","width":50,"event_size":"","grouping":""}],"shared":false,"id":997035}'
     headers:
       Cache-Control:
       - no-cache
@@ -806,13 +513,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:39:29 GMT
+      - Fri, 28 Feb 2020 16:42:46 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:39:28 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:42:43 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -821,9 +528,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - CFSDBBie5Okt4N1oWVJNTAqpt778eCo7VQZ0NhVFWw8MHYFUwuA7DURhpFRYY+Wy
+      - OGWvqyuIWnbl6WkXpkkRXBvKLURJhdDx+xXZ6vxnnyjZzYdefkAlNGOfG85GcOUu
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -834,11 +541,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/screen/994801
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/screen/997035
     method: GET
   response:
-    body: '{"errors": ["Unable to find Screenboard for id 994801"]}'
+    body: '{"errors": ["Unable to find Screenboard for id 997035"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -849,7 +556,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:39:29 GMT
+      - Fri, 28 Feb 2020 16:42:46 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -861,7 +568,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found

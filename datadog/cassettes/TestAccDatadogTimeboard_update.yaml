@@ -2,88 +2,6 @@
 version: 1
 interactions:
 - request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:00 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:00 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - lyzq/AwBoYy31tqkvQ8mzBugAZOys447o2yCYdRfm1oPuJTtZy0Uz+ukzrgaZfIT
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:00 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:00 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - IRAJ1mQ+c3epm0CLGtZoe/y8O4TCss3jYw+fwQOm7+eSKRCE+p3OtawVnIQ5ts76
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
     body: '{"id":0,"description":"Created using the Datadog provider in Terraform","title":"Acceptance
       Test Timeboard","graphs":[{"title":"Top System CPU by Docker container","definition":{"viz":"toplist","requests":[{"stacked":false,"aggregator":"","type":"line","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","q":"top(avg:docker.cpu.system{*}
       by {container_name}, 10, ''mean'', ''desc'')"}],"yaxis":{},"autoscale":false,"text_align":"","custom_unit":"","style":{"paletteFlip":false},"noMetricHosts":false,"noGroupHosts":false,"nodeType":""}},{"title":"Top
@@ -94,7 +12,7 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
+      - Datadog/dev/terraform (go1.14)
     url: https://api.datadoghq.com/api/v1/dash
     method: POST
   response:
@@ -103,8 +21,7 @@ interactions:
       System CPU by Docker container"},{"definition":{"style":{"paletteFlip":true},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
       by {container_name}, 10, ''mean'', ''desc'')","aggregator":"","style":{},"stacked":false,"type":"line"}],"noGroupHosts":false},"title":"Top
       System CPU by Docker container, flipped"}],"template_variables":null,"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:00.473842+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:02.150289+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
     headers:
       Cache-Control:
       - no-cache
@@ -115,13 +32,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:00 GMT
+      - Fri, 28 Feb 2020 16:43:02 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:00 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:02 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -130,9 +47,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - bZxgHnChon9vZm5xdRa4NrQAYSVWc7iQc54D228L4geTT/U2FwMh0nkSo8j+6vpL
+      - IkXBg4ZNMRmDsobzMjEa2v35+NuPiQI0gFmho/o6e7+hfyyJl3rjuklsE4uVJo7l
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -143,8 +60,8 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
     method: GET
   response:
     body: '{"dash":{"read_only":true,"graphs":[{"definition":{"style":{"paletteFlip":false},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
@@ -152,8 +69,7 @@ interactions:
       System CPU by Docker container"},{"definition":{"style":{"paletteFlip":true},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
       by {container_name}, 10, ''mean'', ''desc'')","aggregator":"","style":{},"stacked":false,"type":"line"}],"noGroupHosts":false},"title":"Top
       System CPU by Docker container, flipped"}],"template_variables":null,"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:00.473842+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:02.150289+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
     headers:
       Cache-Control:
       - no-cache
@@ -164,13 +80,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:00 GMT
+      - Fri, 28 Feb 2020 16:43:02 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:00 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:02 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -179,9 +95,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - wFmrQbB6wLDPf1aNlKcgRoMicVhPlX6qIVwwvniX5cF7oyd+90s5trfE73Pzpvml
+      - j0VNx9cZdAj+uuO7pabHlao4Ioc5q8ovvp4Ja/NYzbHA51zSBYXNvtO+8cOYbE0B
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -192,8 +108,8 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
     method: GET
   response:
     body: '{"dash":{"read_only":true,"graphs":[{"definition":{"style":{"paletteFlip":false},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
@@ -201,8 +117,7 @@ interactions:
       System CPU by Docker container"},{"definition":{"style":{"paletteFlip":true},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
       by {container_name}, 10, ''mean'', ''desc'')","aggregator":"","style":{},"stacked":false,"type":"line"}],"noGroupHosts":false},"title":"Top
       System CPU by Docker container, flipped"}],"template_variables":null,"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:00.473842+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:02.150289+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
     headers:
       Cache-Control:
       - no-cache
@@ -213,193 +128,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:00 GMT
+      - Fri, 28 Feb 2020 16:43:02 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:00 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - zgs4/R8U39Dx88K274ycCG8gmotK2r1yjyecTfeITqBuGEc/zW9V1MMOyMl9URns
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:01 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:00 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - Jhz2Lh32XBCZ7PVSj7/lof8hXjgbtiexG4VIRWAEYHPFefqyYpXnVaeT62yBncrB
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:01 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:01 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - dPTJBBDv5jeY1gnH1FisDpda5Hi0boOGbsHxIOi4qkMt+QLOH7F7P7MeSr40vXZ0
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":true,"graphs":[{"definition":{"style":{"paletteFlip":false},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
-      by {container_name}, 10, ''mean'', ''desc'')","aggregator":"","style":{},"stacked":false,"type":"line"}],"noGroupHosts":false},"title":"Top
-      System CPU by Docker container"},{"definition":{"style":{"paletteFlip":true},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
-      by {container_name}, 10, ''mean'', ''desc'')","aggregator":"","style":{},"stacked":false,"type":"line"}],"noGroupHosts":false},"title":"Top
-      System CPU by Docker container, flipped"}],"template_variables":null,"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:00.473842+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:01 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:01 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 4HTfT92VNwJOKM3+9Fghpi7RnKwXOMM9XiE8bZkwhVPDb5jbW4knJKZPCpE1XUb8
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":true,"graphs":[{"definition":{"style":{"paletteFlip":false},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
-      by {container_name}, 10, ''mean'', ''desc'')","aggregator":"","style":{},"stacked":false,"type":"line"}],"noGroupHosts":false},"title":"Top
-      System CPU by Docker container"},{"definition":{"style":{"paletteFlip":true},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
-      by {container_name}, 10, ''mean'', ''desc'')","aggregator":"","style":{},"stacked":false,"type":"line"}],"noGroupHosts":false},"title":"Top
-      System CPU by Docker container, flipped"}],"template_variables":null,"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:00.473842+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:01 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:01 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:02 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -410,89 +145,7 @@ interactions:
       X-Dd-Debug:
       - HtltRxB6FWULKbr8JD/35HKWhI+dqAFQg/rNpMbjeMOPUq5j5iWk+nIs8OwDOqUR
       X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:01 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:01 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - UmZMvwWLI5lgbGFBnw6J7jqO5hwyrvVF8Un8TwZ8TRQQ6jetE/6GVTSaoSUmQWRg
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:01 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:01 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - YNGrI7M9aLfuf6Npp7n/51e6xDtYCO9Rm/LB+HGbX4I6A/e7rnC+cgQxIZnsU+fj
-      X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -503,8 +156,8 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
     method: GET
   response:
     body: '{"dash":{"read_only":true,"graphs":[{"definition":{"style":{"paletteFlip":false},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
@@ -512,8 +165,7 @@ interactions:
       System CPU by Docker container"},{"definition":{"style":{"paletteFlip":true},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
       by {container_name}, 10, ''mean'', ''desc'')","aggregator":"","style":{},"stacked":false,"type":"line"}],"noGroupHosts":false},"title":"Top
       System CPU by Docker container, flipped"}],"template_variables":null,"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:00.473842+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:02.150289+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
     headers:
       Cache-Control:
       - no-cache
@@ -524,13 +176,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:01 GMT
+      - Fri, 28 Feb 2020 16:43:02 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:01 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:02 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -539,9 +191,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - PmDXJXCpOnq24qtagNCLPTUoILSRgi3DGaXUca70kUEAM8DZBLYkwSVilYSYEHCG
+      - rK52fEhHKxisnKo2rembr3YValr4L+BG6/8tD9iNDc8Prg2mnV6DynBkS75++wh/
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -552,8 +204,8 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
     method: GET
   response:
     body: '{"dash":{"read_only":true,"graphs":[{"definition":{"style":{"paletteFlip":false},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
@@ -561,8 +213,7 @@ interactions:
       System CPU by Docker container"},{"definition":{"style":{"paletteFlip":true},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
       by {container_name}, 10, ''mean'', ''desc'')","aggregator":"","style":{},"stacked":false,"type":"line"}],"noGroupHosts":false},"title":"Top
       System CPU by Docker container, flipped"}],"template_variables":null,"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:00.473842+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:02.150289+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
     headers:
       Cache-Control:
       - no-cache
@@ -573,1544 +224,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:02 GMT
+      - Fri, 28 Feb 2020 16:43:02 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:02 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - KKQq2SiaDLpychKSp47ffvU6SRxUV+VzBWr187ESkULBuGOI+kREfb/2NCy8DAWC
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:02 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:02 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - aq7EAvMMXGdldXT5eVhOcqdveqp5VDY6MoO0A/xKTuSa7v4Cc6HWT9iWUnYD+m1F
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:02 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:02 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - ns395qtajdi4vImLC5PhByq3vzX3KV9r4kOaLqZ3Kb42AGxxpM06vNzB/Pdubr1b
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: '{"id":1611252,"description":"Created using the Datadog provider in Terraform","title":"Acceptance
-      Test Timeboard","graphs":[{"title":"Redis latency (ms)","definition":{"viz":"timeseries","requests":[{"stacked":false,"aggregator":"","type":"line","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
-      latency"}},"q":"avg:redis.info.latency_ms{$host}"}],"yaxis":{},"autoscale":false,"text_align":"","custom_unit":"","style":{},"noMetricHosts":false,"noGroupHosts":false,"nodeType":""}},{"title":"Redis
-      memory usage","definition":{"viz":"timeseries","requests":[{"stacked":true,"aggregator":"sum","type":"line","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","q":"avg:redis.mem.used{$host}
-      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}"},{"stacked":false,"aggregator":"","type":"line","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","q":"avg:redis.mem.rss{$host}"},{"stacked":false,"aggregator":"max","type":"bars","style":{"palette":"warm"},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","q":"avg:redis.mem.rss{$host}"}],"yaxis":{},"autoscale":false,"text_align":"","custom_unit":"","style":{},"noMetricHosts":false,"noGroupHosts":false,"nodeType":""}}],"template_variables":[{"name":"host","prefix":"host","default":""}],"read_only":false}'
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: PUT
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
-      latency"}}}],"noGroupHosts":false},"title":"Redis latency (ms)"},{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":true,"aggregator":"sum","q":"avg:redis.mem.used{$host}
-      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}","type":"line"},{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.mem.rss{$host}","type":"line"},{"style":{"palette":"warm"},"stacked":false,"aggregator":"max","q":"avg:redis.mem.rss{$host}","type":"bars"}],"noGroupHosts":false},"title":"Redis
-      memory usage"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:02.622316+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:02 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:02 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - x4m73yTAj65OpCjnvpw3RBJyiFQpkDOBZ7rE/UM6Q4o0837nUb4ZsWFNJUD0Xh0e
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
-      latency"}}}],"noGroupHosts":false},"title":"Redis latency (ms)"},{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":true,"aggregator":"sum","q":"avg:redis.mem.used{$host}
-      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}","type":"line"},{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.mem.rss{$host}","type":"line"},{"style":{"palette":"warm"},"stacked":false,"aggregator":"max","q":"avg:redis.mem.rss{$host}","type":"bars"}],"noGroupHosts":false},"title":"Redis
-      memory usage"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:02.622316+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:02 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:02 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - oiF9oLqSEnBWpAh9z89c+Ruy9xKAqrdZzQPjGsNOxlGQNWaw3sCTSoKaMkMdPunL
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
-      latency"}}}],"noGroupHosts":false},"title":"Redis latency (ms)"},{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":true,"aggregator":"sum","q":"avg:redis.mem.used{$host}
-      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}","type":"line"},{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.mem.rss{$host}","type":"line"},{"style":{"palette":"warm"},"stacked":false,"aggregator":"max","q":"avg:redis.mem.rss{$host}","type":"bars"}],"noGroupHosts":false},"title":"Redis
-      memory usage"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:02.622316+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:02 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:02 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 2AZOmbSnS2o4jaTO55IoEgDi10r3ewUAnpo5XLuAFAThAxt0uvbRy8dZoSIDmBYA
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:03 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:03 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - CPK+34LtKdL5YYX/NFOJUdMpxMoO80HISGpGpzDG5fENYSoZ2QNw1gEubOsJ9JNb
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:03 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:03 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - mGJe6qmS66N9ddKWdHwHEzQK9VHuaMNr7+EsVTKliCkGq+ayJZmadUyCSwID4him
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
-      latency"}}}],"noGroupHosts":false},"title":"Redis latency (ms)"},{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":true,"aggregator":"sum","q":"avg:redis.mem.used{$host}
-      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}","type":"line"},{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.mem.rss{$host}","type":"line"},{"style":{"palette":"warm"},"stacked":false,"aggregator":"max","q":"avg:redis.mem.rss{$host}","type":"bars"}],"noGroupHosts":false},"title":"Redis
-      memory usage"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:02.622316+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:03 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:03 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - TAg/qKywM5rz/AUGkmt8+wB4wzGMJfSiHOrBzxBctPLsV/erSD5TChi/uo5ZlVXK
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
-      latency"}}}],"noGroupHosts":false},"title":"Redis latency (ms)"},{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":true,"aggregator":"sum","q":"avg:redis.mem.used{$host}
-      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}","type":"line"},{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.mem.rss{$host}","type":"line"},{"style":{"palette":"warm"},"stacked":false,"aggregator":"max","q":"avg:redis.mem.rss{$host}","type":"bars"}],"noGroupHosts":false},"title":"Redis
-      memory usage"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:02.622316+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:03 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:03 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - RbevWUvO2oQYYDnX/G1lndTh/kTt+ebFIvajU6/3Ivb5c6aUQf49/uD1ICaXyx52
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:03 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:03 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - WatxAL43AyqgfI4tyA152NzYM3DLdjL7IWr0SzhldiWriTsbw9vUaRZnaqhOCdUk
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:03 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:03 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - Z91NUpPIZnIQ9h7lBFWBkEPGVUEsn4/i71imPPwrChu4RPI5uNM5HGuodISK1HBR
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
-      latency"}}}],"noGroupHosts":false},"title":"Redis latency (ms)"},{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":true,"aggregator":"sum","q":"avg:redis.mem.used{$host}
-      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}","type":"line"},{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.mem.rss{$host}","type":"line"},{"style":{"palette":"warm"},"stacked":false,"aggregator":"max","q":"avg:redis.mem.rss{$host}","type":"bars"}],"noGroupHosts":false},"title":"Redis
-      memory usage"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:02.622316+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:04 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:04 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - bZxgHnChon9vZm5xdRa4NrQAYSVWc7iQc54D228L4geTT/U2FwMh0nkSo8j+6vpL
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
-      latency"}}}],"noGroupHosts":false},"title":"Redis latency (ms)"},{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":true,"aggregator":"sum","q":"avg:redis.mem.used{$host}
-      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}","type":"line"},{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.mem.rss{$host}","type":"line"},{"style":{"palette":"warm"},"stacked":false,"aggregator":"max","q":"avg:redis.mem.rss{$host}","type":"bars"}],"noGroupHosts":false},"title":"Redis
-      memory usage"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:02.622316+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:04 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:04 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - tC9U8NM0Z/kvHE2H14k1U3spiHbXz72rh5O3tOqhQhVPC3nlvooY3TRyCaI/gIdt
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:04 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:04 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - IYH6Ubmq2MBSPq8ODr3BCv3hq6/qfjckWAQPmybeluQn4umf0be4fk6ceyy1pnBw
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:04 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:04 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - rpB/2GMZHvzTHZxhwmnNa1XnSQuif7FV+gIndoDc8IvUeRNb65r4x+P7Djp1119C
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: '{"id":1611252,"description":"Created using the Datadog provider in Terraform","title":"Acceptance
-      Test Timeboard","graphs":[{"title":"Redis latency (ms)","definition":{"viz":"timeseries","requests":[{"stacked":false,"aggregator":"","type":"line","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","q":"avg:redis.info.latency_ms{$host}"}],"events":[{"q":"sources:capistrano"}],"markers":[{"type":"error
-      solid","value":"y \u003e 100","label":"High Latency"}],"yaxis":{"max":50,"scale":"sqrt","includeZero":true,"units":true},"autoscale":false,"text_align":"","custom_unit":"","style":{},"noMetricHosts":false,"noGroupHosts":false,"nodeType":""}},{"title":"ELB
-      Requests","definition":{"viz":"query_value","requests":[{"stacked":false,"aggregator":"min","conditional_formats":[{"palette":"white_on_red","comparator":"\u003e","custom_bg_color":"","value":1000,"custom_fg_color":""},{"palette":"white_on_green","comparator":"\u003c=","custom_bg_color":"","value":1000,"custom_fg_color":""}],"type":"line","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","q":"sum:aws.elb.request_count{*}.as_count()"}],"yaxis":{},"autoscale":false,"text_align":"left","precision":"*","custom_unit":"hits","style":{},"noMetricHosts":false,"noGroupHosts":false,"nodeType":""}}],"template_variables":[{"name":"host","prefix":"host","default":""}],"read_only":false}'
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: PUT
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{"scale":"sqrt","max":"50","units":true,"includeZero":true},"text_align":"","markers":[{"type":"error
-      solid","value":"y > 100","label":"High Latency"}],"custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line"}],"events":[{"q":"sources:capistrano"}],"noGroupHosts":false},"title":"Redis
-      latency (ms)"},{"definition":{"style":{},"autoscale":false,"yaxis":{},"text_align":"left","custom_unit":"hits","noMetricHosts":false,"precision":"*","viz":"query_value","nodeType":"","requests":[{"style":{},"stacked":false,"aggregator":"min","conditional_formats":[{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_red","value":1000,"comparator":">"},{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_green","value":1000,"comparator":"<="}],"q":"sum:aws.elb.request_count{*}.as_count()","type":"line"}],"noGroupHosts":false},"title":"ELB
-      Requests"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:05.037345+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:05 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:04 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 0pa1dtuadfHOUeVqLiK3mljtwHC7xKOrqXlG1EXfeExc1YyvZm51+jZLEiJ3YUs6
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{"scale":"sqrt","max":"50","units":true,"includeZero":true},"text_align":"","markers":[{"type":"error
-      solid","value":"y > 100","label":"High Latency"}],"custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line"}],"events":[{"q":"sources:capistrano"}],"noGroupHosts":false},"title":"Redis
-      latency (ms)"},{"definition":{"style":{},"autoscale":false,"yaxis":{},"text_align":"left","custom_unit":"hits","noMetricHosts":false,"precision":"*","viz":"query_value","nodeType":"","requests":[{"style":{},"stacked":false,"aggregator":"min","conditional_formats":[{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_red","value":1000,"comparator":">"},{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_green","value":1000,"comparator":"<="}],"q":"sum:aws.elb.request_count{*}.as_count()","type":"line"}],"noGroupHosts":false},"title":"ELB
-      Requests"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:05.037345+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:05 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:05 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - ztq+F8HwxRthTKNo0l2MCEDK5uwvgQzF00nWu49lHsBM51hGZBm/pPILDqupy+Xd
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{"scale":"sqrt","max":"50","units":true,"includeZero":true},"text_align":"","markers":[{"type":"error
-      solid","value":"y > 100","label":"High Latency"}],"custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line"}],"events":[{"q":"sources:capistrano"}],"noGroupHosts":false},"title":"Redis
-      latency (ms)"},{"definition":{"style":{},"autoscale":false,"yaxis":{},"text_align":"left","custom_unit":"hits","noMetricHosts":false,"precision":"*","viz":"query_value","nodeType":"","requests":[{"style":{},"stacked":false,"aggregator":"min","conditional_formats":[{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_red","value":1000,"comparator":">"},{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_green","value":1000,"comparator":"<="}],"q":"sum:aws.elb.request_count{*}.as_count()","type":"line"}],"noGroupHosts":false},"title":"ELB
-      Requests"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:05.037345+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:05 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:05 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - RngFxOd8mVeT14auLfzsH/6kz142QLoKkYXZjfmXpXDkZ/eN6uoCM3cTScXuFEa0
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:05 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:05 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 8jOW1djIgkdkj4STw+0pQ3G+kGKfu548DWINvnE6phacY0k9vgC3cU1LaI38XIYk
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:06 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:06 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - Wn01ZjXucAfzJfwvKAkpy0yFfNtHyWu4ZB2aA4ZDwwhXkyLHirYeUNsx208dZz9p
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{"scale":"sqrt","max":"50","units":true,"includeZero":true},"text_align":"","markers":[{"type":"error
-      solid","value":"y > 100","label":"High Latency"}],"custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line"}],"events":[{"q":"sources:capistrano"}],"noGroupHosts":false},"title":"Redis
-      latency (ms)"},{"definition":{"style":{},"autoscale":false,"yaxis":{},"text_align":"left","custom_unit":"hits","noMetricHosts":false,"precision":"*","viz":"query_value","nodeType":"","requests":[{"style":{},"stacked":false,"aggregator":"min","conditional_formats":[{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_red","value":1000,"comparator":">"},{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_green","value":1000,"comparator":"<="}],"q":"sum:aws.elb.request_count{*}.as_count()","type":"line"}],"noGroupHosts":false},"title":"ELB
-      Requests"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:05.037345+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:06 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:06 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - u2B27rQjtu8TuEjzrroc8ae3xeJMLmsxU6SiAszW1tH+EI3X0cOP819eGNRqlxzl
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{"scale":"sqrt","max":"50","units":true,"includeZero":true},"text_align":"","markers":[{"type":"error
-      solid","value":"y > 100","label":"High Latency"}],"custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line"}],"events":[{"q":"sources:capistrano"}],"noGroupHosts":false},"title":"Redis
-      latency (ms)"},{"definition":{"style":{},"autoscale":false,"yaxis":{},"text_align":"left","custom_unit":"hits","noMetricHosts":false,"precision":"*","viz":"query_value","nodeType":"","requests":[{"style":{},"stacked":false,"aggregator":"min","conditional_formats":[{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_red","value":1000,"comparator":">"},{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_green","value":1000,"comparator":"<="}],"q":"sum:aws.elb.request_count{*}.as_count()","type":"line"}],"noGroupHosts":false},"title":"ELB
-      Requests"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:05.037345+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:06 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:06 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - QaEGvF++JqTbTiFomKhE21Fdnra2zinKOaCEqOgwcd7OtJatRLgvovBbCNyGqcpO
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:06 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:06 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - FGm8mbL/ixNS/zyX94m5xaWAxszhu9w68KL0QwTbLNqYgp2ZyX2W4rsoYLDoadr+
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:06 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:06 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - vLqqOLcWkbQm3aIBHfcEmIwzrJtjtqNdArlWt57BFwl8nfWymjIeK67csuZ1woEb
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{"scale":"sqrt","max":"50","units":true,"includeZero":true},"text_align":"","markers":[{"type":"error
-      solid","value":"y > 100","label":"High Latency"}],"custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line"}],"events":[{"q":"sources:capistrano"}],"noGroupHosts":false},"title":"Redis
-      latency (ms)"},{"definition":{"style":{},"autoscale":false,"yaxis":{},"text_align":"left","custom_unit":"hits","noMetricHosts":false,"precision":"*","viz":"query_value","nodeType":"","requests":[{"style":{},"stacked":false,"aggregator":"min","conditional_formats":[{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_red","value":1000,"comparator":">"},{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_green","value":1000,"comparator":"<="}],"q":"sum:aws.elb.request_count{*}.as_count()","type":"line"}],"noGroupHosts":false},"title":"ELB
-      Requests"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:05.037345+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:06 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:06 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - zgs4/R8U39Dx88K274ycCG8gmotK2r1yjyecTfeITqBuGEc/zW9V1MMOyMl9URns
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{"scale":"sqrt","max":"50","units":true,"includeZero":true},"text_align":"","markers":[{"type":"error
-      solid","value":"y > 100","label":"High Latency"}],"custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line"}],"events":[{"q":"sources:capistrano"}],"noGroupHosts":false},"title":"Redis
-      latency (ms)"},{"definition":{"style":{},"autoscale":false,"yaxis":{},"text_align":"left","custom_unit":"hits","noMetricHosts":false,"precision":"*","viz":"query_value","nodeType":"","requests":[{"style":{},"stacked":false,"aggregator":"min","conditional_formats":[{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_red","value":1000,"comparator":">"},{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_green","value":1000,"comparator":"<="}],"q":"sum:aws.elb.request_count{*}.as_count()","type":"line"}],"noGroupHosts":false},"title":"ELB
-      Requests"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
-      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:05.037345+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:07 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:07 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - IWbeot5NPPjwzkLRJwJSrhKxooUYWPiItYmeOu7MvfpEU9kI8879nM2EukYnEnom
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:07 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:07 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - Jhz2Lh32XBCZ7PVSj7/lof8hXjgbtiexG4VIRWAEYHPFefqyYpXnVaeT62yBncrB
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:07 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:07 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - RL7BSOiWXeq2P2iJbmiDo/2BPpcpoCDzQceVuBkp6yO348trcqTrfm/pm8rvZRoT
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: '{"id":1611252,"description":"Created using the Datadog provider in Terraform","title":"Acceptance
-      Test Timeboard","graphs":[{"title":"Widget with Multiple Queries","definition":{"viz":"timeseries","requests":[{"stacked":false,"aggregator":"","type":"line","style":{"palette":"purple","width":"thin","type":"dashed"},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
-      CPU user"}},"q":"avg:system.cpu.user{*}"},{"stacked":false,"aggregator":"","type":"area","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","log_query":{"index":"mcnulty","compute":{"aggregation":"avg","facet":"@duration","interval":5000},"search":{"query":"status:info"},"groupBy":[{"facet":"host","limit":10,"sort":{"aggregation":"avg","order":"desc","facet":"@duration"}}]}},{"stacked":false,"aggregator":"","type":"bars","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","apm_query":{"index":"apm-search","compute":{"aggregation":"avg","facet":"@duration","interval":5000},"search":{"query":"type:web"},"groupBy":[{"facet":"resource_name","limit":50,"sort":{"aggregation":"avg","order":"desc","facet":"@string_query.interval"}}]}},{"stacked":false,"aggregator":"","type":"area","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","process_query":{"metric":"process.stat.cpu.total_pct","search_by":"error","filter_by":["active"],"limit":50}}],"yaxis":{},"autoscale":false,"text_align":"","custom_unit":"","style":{},"noMetricHosts":false,"noGroupHosts":false,"nodeType":""}}],"read_only":false}'
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: PUT
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{"palette":"purple","width":"thin","type":"dashed"},"stacked":false,"aggregator":"","q":"avg:system.cpu.user{*}","type":"line","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
-      CPU user"}}},{"style":{},"stacked":false,"log_query":{"index":"mcnulty","search":{"query":"status:info"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}]},"aggregator":"","type":"area"},{"style":{},"stacked":false,"aggregator":"","type":"bars","apm_query":{"index":"apm-search","search":{"query":"type:web"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}]}},{"style":{},"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"stacked":false,"aggregator":"","type":"area"}],"noGroupHosts":false},"title":"Widget
-      with Multiple Queries"}],"template_variables":null,"description":"Created using
-      the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:07.587367+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:07 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:07 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - ucJMu0SEwqvJ36fqkYRsP+glKObktTtdBf6X17lKXJ4+xOn7nFKnx11beu1ycofn
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{"palette":"purple","width":"thin","type":"dashed"},"stacked":false,"aggregator":"","q":"avg:system.cpu.user{*}","type":"line","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
-      CPU user"}}},{"style":{},"stacked":false,"log_query":{"index":"mcnulty","search":{"query":"status:info"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}]},"aggregator":"","type":"area"},{"style":{},"stacked":false,"aggregator":"","type":"bars","apm_query":{"index":"apm-search","search":{"query":"type:web"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}]}},{"style":{},"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"stacked":false,"aggregator":"","type":"area"}],"noGroupHosts":false},"title":"Widget
-      with Multiple Queries"}],"template_variables":null,"description":"Created using
-      the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:07.587367+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:07 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:07 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - og1WGdy+2nV+rkkclmd3Cf2I26XhV3/6yjBeQCP8aHbH2k2cKwC+X9WmhIghcJ94
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{"palette":"purple","width":"thin","type":"dashed"},"stacked":false,"aggregator":"","q":"avg:system.cpu.user{*}","type":"line","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
-      CPU user"}}},{"style":{},"stacked":false,"log_query":{"index":"mcnulty","search":{"query":"status:info"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}]},"aggregator":"","type":"area"},{"style":{},"stacked":false,"aggregator":"","type":"bars","apm_query":{"index":"apm-search","search":{"query":"type:web"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}]}},{"style":{},"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"stacked":false,"aggregator":"","type":"area"}],"noGroupHosts":false},"title":"Widget
-      with Multiple Queries"}],"template_variables":null,"description":"Created using
-      the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:07.587367+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:07 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:07 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - o8MFmk+4Ge4vq85ax+5C1nfQs0lbtaPPYZrpqzeG6IsYGNLGMu/G7PbJElpjPS5i
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:08 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:08 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - DAk/CQntZmry+u4cYsuVOELuKFo1I3NzKRNwPlY9WvlbH+rffk5VylB8tKDaSRWP
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:08 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:08 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - FGm8mbL/ixNS/zyX94m5xaWAxszhu9w68KL0QwTbLNqYgp2ZyX2W4rsoYLDoadr+
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
-  response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{"palette":"purple","width":"thin","type":"dashed"},"stacked":false,"aggregator":"","q":"avg:system.cpu.user{*}","type":"line","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
-      CPU user"}}},{"style":{},"stacked":false,"log_query":{"index":"mcnulty","search":{"query":"status:info"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}]},"aggregator":"","type":"area"},{"style":{},"stacked":false,"aggregator":"","type":"bars","apm_query":{"index":"apm-search","search":{"query":"type:web"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}]}},{"style":{},"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"stacked":false,"aggregator":"","type":"area"}],"noGroupHosts":false},"title":"Widget
-      with Multiple Queries"}],"template_variables":null,"description":"Created using
-      the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:07.587367+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:08 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:08 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:02 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -2121,7 +241,7 @@ interactions:
       X-Dd-Debug:
       - NclXS5F5t+kukUaODU4jY2oSI1KBdPHFdFhJZNfbXLWDOThxbCLlKKmYvikjdDSg
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -2132,15 +252,16 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
     method: GET
   response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{"palette":"purple","width":"thin","type":"dashed"},"stacked":false,"aggregator":"","q":"avg:system.cpu.user{*}","type":"line","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
-      CPU user"}}},{"style":{},"stacked":false,"log_query":{"index":"mcnulty","search":{"query":"status:info"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}]},"aggregator":"","type":"area"},{"style":{},"stacked":false,"aggregator":"","type":"bars","apm_query":{"index":"apm-search","search":{"query":"type:web"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}]}},{"style":{},"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"stacked":false,"aggregator":"","type":"area"}],"noGroupHosts":false},"title":"Widget
-      with Multiple Queries"}],"template_variables":null,"description":"Created using
-      the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:07.587367+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
+    body: '{"dash":{"read_only":true,"graphs":[{"definition":{"style":{"paletteFlip":false},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
+      by {container_name}, 10, ''mean'', ''desc'')","aggregator":"","style":{},"stacked":false,"type":"line"}],"noGroupHosts":false},"title":"Top
+      System CPU by Docker container"},{"definition":{"style":{"paletteFlip":true},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
+      by {container_name}, 10, ''mean'', ''desc'')","aggregator":"","style":{},"stacked":false,"type":"line"}],"noGroupHosts":false},"title":"Top
+      System CPU by Docker container, flipped"}],"template_variables":null,"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:02.150289+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
     headers:
       Cache-Control:
       - no-cache
@@ -2151,13 +272,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:08 GMT
+      - Fri, 28 Feb 2020 16:43:03 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:08 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:03 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -2166,91 +287,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - gVnECQ7ifaEfJ6BNPsXSglLjlU41ay4U8jXHC6V3+oC4U6gHkBb20H5zrSJj1zee
+      - QgRGXxkxV9A4PZPYRoesCGgupw+m7xaD1r9nbJHgAaPeprYV0FnzI0EYYO7x6f4+
       X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:09 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:09 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - wNaVyRyNliLxKeX4pqFHOJTBG1dRCwo1/ihrnAf0GXtGNGahc1XK8Xzj/ssA3R20
-      X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:09 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:09 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - ldNaA6dSEPDapjFoBolZNm9KKT/3iEJM/Q1IyMe2D0P7l2S/rGI4bTGzxgP0/9Zs
-      X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -2261,15 +300,16 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
     method: GET
   response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{"palette":"purple","width":"thin","type":"dashed"},"stacked":false,"aggregator":"","q":"avg:system.cpu.user{*}","type":"line","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
-      CPU user"}}},{"style":{},"stacked":false,"log_query":{"index":"mcnulty","search":{"query":"status:info"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}]},"aggregator":"","type":"area"},{"style":{},"stacked":false,"aggregator":"","type":"bars","apm_query":{"index":"apm-search","search":{"query":"type:web"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}]}},{"style":{},"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"stacked":false,"aggregator":"","type":"area"}],"noGroupHosts":false},"title":"Widget
-      with Multiple Queries"}],"template_variables":null,"description":"Created using
-      the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:07.587367+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
+    body: '{"dash":{"read_only":true,"graphs":[{"definition":{"style":{"paletteFlip":false},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
+      by {container_name}, 10, ''mean'', ''desc'')","aggregator":"","style":{},"stacked":false,"type":"line"}],"noGroupHosts":false},"title":"Top
+      System CPU by Docker container"},{"definition":{"style":{"paletteFlip":true},"autoscale":false,"yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"toplist","nodeType":"","requests":[{"q":"top(avg:docker.cpu.system{*}
+      by {container_name}, 10, ''mean'', ''desc'')","aggregator":"","style":{},"stacked":false,"type":"line"}],"noGroupHosts":false},"title":"Top
+      System CPU by Docker container, flipped"}],"template_variables":null,"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:02.150289+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
     headers:
       Cache-Control:
       - no-cache
@@ -2280,13 +320,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:09 GMT
+      - Fri, 28 Feb 2020 16:43:03 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:09 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:03 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -2295,28 +335,34 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - tC9U8NM0Z/kvHE2H14k1U3spiHbXz72rh5O3tOqhQhVPC3nlvooY3TRyCaI/gIdt
+      - x4pYHtiOW9rUeREgXmH2iIgBaXVGD7x1RIZUg56H0ghPppdtz0ZBEK6nMs8tuoqc
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: ""
+    body: '{"id":1614411,"description":"Created using the Datadog provider in Terraform","title":"Acceptance
+      Test Timeboard","graphs":[{"title":"Redis latency (ms)","definition":{"viz":"timeseries","requests":[{"stacked":false,"aggregator":"","type":"line","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
+      latency"}},"q":"avg:redis.info.latency_ms{$host}"}],"yaxis":{},"autoscale":false,"text_align":"","custom_unit":"","style":{},"noMetricHosts":false,"noGroupHosts":false,"nodeType":""}},{"title":"Redis
+      memory usage","definition":{"viz":"timeseries","requests":[{"stacked":true,"aggregator":"sum","type":"line","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","q":"avg:redis.mem.used{$host}
+      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}"},{"stacked":false,"aggregator":"","type":"line","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","q":"avg:redis.mem.rss{$host}"},{"stacked":false,"aggregator":"max","type":"bars","style":{"palette":"warm"},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","q":"avg:redis.mem.rss{$host}"}],"yaxis":{},"autoscale":false,"text_align":"","custom_unit":"","style":{},"noMetricHosts":false,"noGroupHosts":false,"nodeType":""}}],"template_variables":[{"name":"host","prefix":"host","default":""}],"read_only":false}'
     form: {}
     headers:
+      Content-Type:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
-    method: GET
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: PUT
   response:
-    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{"palette":"purple","width":"thin","type":"dashed"},"stacked":false,"aggregator":"","q":"avg:system.cpu.user{*}","type":"line","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
-      CPU user"}}},{"style":{},"stacked":false,"log_query":{"index":"mcnulty","search":{"query":"status:info"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}]},"aggregator":"","type":"area"},{"style":{},"stacked":false,"aggregator":"","type":"bars","apm_query":{"index":"apm-search","search":{"query":"type:web"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}]}},{"style":{},"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"stacked":false,"aggregator":"","type":"area"}],"noGroupHosts":false},"title":"Widget
-      with Multiple Queries"}],"template_variables":null,"description":"Created using
-      the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-27T11:40:00.473842+00:00","new_id":"ba2-aet-ji3","id":1611252,"created_by":{"disabled":false,"handle":"jiri.kuncar@datadoghq.com","name":"Ji\u0159\u00ed
-      Kun\u010dar","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"jiri.kuncar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/66ee7f2fa751a5b5483138ba182e13d9?s=48&d=retro"},"modified":"2020-02-27T11:40:07.587367+00:00"},"url":"/dash/1611252/acceptance-test-timeboard","resource":"/api/v1/dash/1611252"}'
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
+      latency"}}}],"noGroupHosts":false},"title":"Redis latency (ms)"},{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":true,"aggregator":"sum","q":"avg:redis.mem.used{$host}
+      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}","type":"line"},{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.mem.rss{$host}","type":"line"},{"style":{"palette":"warm"},"stacked":false,"aggregator":"max","q":"avg:redis.mem.rss{$host}","type":"bars"}],"noGroupHosts":false},"title":"Redis
+      memory usage"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:03.585080+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
     headers:
       Cache-Control:
       - no-cache
@@ -2327,13 +373,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:09 GMT
+      - Fri, 28 Feb 2020 16:43:03 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:09 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:03 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -2342,50 +388,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - RngFxOd8mVeT14auLfzsH/6kz142QLoKkYXZjfmXpXDkZ/eN6uoCM3cTScXuFEa0
+      - eORbNuNjI+uNwQ5fL4WiSFLQTO+rx/Fd8RRk0TnSyEY4gQIkjrXIuJ1XAoOa+8yj
       X-Dd-Version:
-      - "35.2219923"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers: {}
-    url: https://api.datadoghq.com/api/v1/validate
-    method: GET
-  response:
-    body: '{"valid":true}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "14"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Feb 2020 11:40:09 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:09 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - nfUJgEhoI/RZ8GJVApSQj6s2TfLYXQ1qvePMFw8ZmKB2iBVwiNegJAc5RNY4ZZbI
-      X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -2396,8 +401,950 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
+      latency"}}}],"noGroupHosts":false},"title":"Redis latency (ms)"},{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":true,"aggregator":"sum","q":"avg:redis.mem.used{$host}
+      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}","type":"line"},{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.mem.rss{$host}","type":"line"},{"style":{"palette":"warm"},"stacked":false,"aggregator":"max","q":"avg:redis.mem.rss{$host}","type":"bars"}],"noGroupHosts":false},"title":"Redis
+      memory usage"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:03.585080+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:06 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:03 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - bJj7D3RvHsKo+7eO3lrtPpPG0z8SsAwLw7bNfLb4htD+N9Ub8bD3AFgh45XaVsFM
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
+      latency"}}}],"noGroupHosts":false},"title":"Redis latency (ms)"},{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":true,"aggregator":"sum","q":"avg:redis.mem.used{$host}
+      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}","type":"line"},{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.mem.rss{$host}","type":"line"},{"style":{"palette":"warm"},"stacked":false,"aggregator":"max","q":"avg:redis.mem.rss{$host}","type":"bars"}],"noGroupHosts":false},"title":"Redis
+      memory usage"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:03.585080+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:06 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:06 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - OGWvqyuIWnbl6WkXpkkRXBvKLURJhdDx+xXZ6vxnnyjZzYdefkAlNGOfG85GcOUu
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
+      latency"}}}],"noGroupHosts":false},"title":"Redis latency (ms)"},{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":true,"aggregator":"sum","q":"avg:redis.mem.used{$host}
+      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}","type":"line"},{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.mem.rss{$host}","type":"line"},{"style":{"palette":"warm"},"stacked":false,"aggregator":"max","q":"avg:redis.mem.rss{$host}","type":"bars"}],"noGroupHosts":false},"title":"Redis
+      memory usage"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:03.585080+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:07 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:07 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - aswcxBk1J00Iy18+kQFKF6EQfzLy4sWD4ILciesVMX5rWDYniffEYH6qbK0qwOgw
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
+      latency"}}}],"noGroupHosts":false},"title":"Redis latency (ms)"},{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":true,"aggregator":"sum","q":"avg:redis.mem.used{$host}
+      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}","type":"line"},{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.mem.rss{$host}","type":"line"},{"style":{"palette":"warm"},"stacked":false,"aggregator":"max","q":"avg:redis.mem.rss{$host}","type":"bars"}],"noGroupHosts":false},"title":"Redis
+      memory usage"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:03.585080+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:09 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:09 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 3GTZ6ImnvkiMOuKTP2ILv/2CbQJLb5wTjyX1KOTCD/aaxDS+HyYye1EH1uVK9Ajh
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
+      latency"}}}],"noGroupHosts":false},"title":"Redis latency (ms)"},{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":true,"aggregator":"sum","q":"avg:redis.mem.used{$host}
+      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}","type":"line"},{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.mem.rss{$host}","type":"line"},{"style":{"palette":"warm"},"stacked":false,"aggregator":"max","q":"avg:redis.mem.rss{$host}","type":"bars"}],"noGroupHosts":false},"title":"Redis
+      memory usage"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:03.585080+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:10 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:10 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 2qCkWfddHrPF9jSCADI+4oMJC7ye/JJPxREHTFHEFILURsabvi1w9B+PDmBrh/Xk
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line","metadata":{"avg:redis.info.latency_ms{$host}":{"alias":"Redis
+      latency"}}}],"noGroupHosts":false},"title":"Redis latency (ms)"},{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":true,"aggregator":"sum","q":"avg:redis.mem.used{$host}
+      - avg:redis.mem.lua{$host}, avg:redis.mem.lua{$host}","type":"line"},{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.mem.rss{$host}","type":"line"},{"style":{"palette":"warm"},"stacked":false,"aggregator":"max","q":"avg:redis.mem.rss{$host}","type":"bars"}],"noGroupHosts":false},"title":"Redis
+      memory usage"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:03.585080+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:10 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:10 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - Xj/PwLDKe3Ll1QwGP2SdQuyUcOtG0YD60hQDJ9tPEhK9OEMHkSCPXdZRvPX0YYGO
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"id":1614411,"description":"Created using the Datadog provider in Terraform","title":"Acceptance
+      Test Timeboard","graphs":[{"title":"Redis latency (ms)","definition":{"viz":"timeseries","requests":[{"stacked":false,"aggregator":"","type":"line","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","q":"avg:redis.info.latency_ms{$host}"}],"events":[{"q":"sources:capistrano"}],"markers":[{"type":"error
+      solid","value":"y \u003e 100","label":"High Latency"}],"yaxis":{"max":50,"scale":"sqrt","includeZero":true,"units":true},"autoscale":false,"text_align":"","custom_unit":"","style":{},"noMetricHosts":false,"noGroupHosts":false,"nodeType":""}},{"title":"ELB
+      Requests","definition":{"viz":"query_value","requests":[{"stacked":false,"aggregator":"min","conditional_formats":[{"palette":"white_on_red","comparator":"\u003e","custom_bg_color":"","value":1000,"custom_fg_color":""},{"palette":"white_on_green","comparator":"\u003c=","custom_bg_color":"","value":1000,"custom_fg_color":""}],"type":"line","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","q":"sum:aws.elb.request_count{*}.as_count()"}],"yaxis":{},"autoscale":false,"text_align":"left","precision":"*","custom_unit":"hits","style":{},"noMetricHosts":false,"noGroupHosts":false,"nodeType":""}}],"template_variables":[{"name":"host","prefix":"host","default":""}],"read_only":false}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: PUT
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{"scale":"sqrt","max":"50","units":true,"includeZero":true},"text_align":"","markers":[{"type":"error
+      solid","value":"y > 100","label":"High Latency"}],"custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line"}],"events":[{"q":"sources:capistrano"}],"noGroupHosts":false},"title":"Redis
+      latency (ms)"},{"definition":{"style":{},"autoscale":false,"yaxis":{},"text_align":"left","custom_unit":"hits","noMetricHosts":false,"precision":"*","viz":"query_value","nodeType":"","requests":[{"style":{},"stacked":false,"aggregator":"min","conditional_formats":[{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_red","value":1000,"comparator":">"},{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_green","value":1000,"comparator":"<="}],"q":"sum:aws.elb.request_count{*}.as_count()","type":"line"}],"noGroupHosts":false},"title":"ELB
+      Requests"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:10.684150+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:10 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:10 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 3GTZ6ImnvkiMOuKTP2ILv/2CbQJLb5wTjyX1KOTCD/aaxDS+HyYye1EH1uVK9Ajh
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{"scale":"sqrt","max":"50","units":true,"includeZero":true},"text_align":"","markers":[{"type":"error
+      solid","value":"y > 100","label":"High Latency"}],"custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line"}],"events":[{"q":"sources:capistrano"}],"noGroupHosts":false},"title":"Redis
+      latency (ms)"},{"definition":{"style":{},"autoscale":false,"yaxis":{},"text_align":"left","custom_unit":"hits","noMetricHosts":false,"precision":"*","viz":"query_value","nodeType":"","requests":[{"style":{},"stacked":false,"aggregator":"min","conditional_formats":[{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_red","value":1000,"comparator":">"},{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_green","value":1000,"comparator":"<="}],"q":"sum:aws.elb.request_count{*}.as_count()","type":"line"}],"noGroupHosts":false},"title":"ELB
+      Requests"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:10.684150+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:10 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:10 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - em3KoJu1XYdqq1w4EpLi4L54svjYBxZahEDJ8c5gcdIOxnNafHMdF5LLysPLuNcH
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{"scale":"sqrt","max":"50","units":true,"includeZero":true},"text_align":"","markers":[{"type":"error
+      solid","value":"y > 100","label":"High Latency"}],"custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line"}],"events":[{"q":"sources:capistrano"}],"noGroupHosts":false},"title":"Redis
+      latency (ms)"},{"definition":{"style":{},"autoscale":false,"yaxis":{},"text_align":"left","custom_unit":"hits","noMetricHosts":false,"precision":"*","viz":"query_value","nodeType":"","requests":[{"style":{},"stacked":false,"aggregator":"min","conditional_formats":[{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_red","value":1000,"comparator":">"},{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_green","value":1000,"comparator":"<="}],"q":"sum:aws.elb.request_count{*}.as_count()","type":"line"}],"noGroupHosts":false},"title":"ELB
+      Requests"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:10.684150+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:11 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:11 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - WatxAL43AyqgfI4tyA152NzYM3DLdjL7IWr0SzhldiWriTsbw9vUaRZnaqhOCdUk
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{"scale":"sqrt","max":"50","units":true,"includeZero":true},"text_align":"","markers":[{"type":"error
+      solid","value":"y > 100","label":"High Latency"}],"custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line"}],"events":[{"q":"sources:capistrano"}],"noGroupHosts":false},"title":"Redis
+      latency (ms)"},{"definition":{"style":{},"autoscale":false,"yaxis":{},"text_align":"left","custom_unit":"hits","noMetricHosts":false,"precision":"*","viz":"query_value","nodeType":"","requests":[{"style":{},"stacked":false,"aggregator":"min","conditional_formats":[{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_red","value":1000,"comparator":">"},{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_green","value":1000,"comparator":"<="}],"q":"sum:aws.elb.request_count{*}.as_count()","type":"line"}],"noGroupHosts":false},"title":"ELB
+      Requests"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:10.684150+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:11 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:11 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - nwn8Akm+cp12Jtby9xyfYjHWK2KZDWf5LxY+SMa+2NK6hVIBcKsVHXjynaTEG+o0
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{"scale":"sqrt","max":"50","units":true,"includeZero":true},"text_align":"","markers":[{"type":"error
+      solid","value":"y > 100","label":"High Latency"}],"custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line"}],"events":[{"q":"sources:capistrano"}],"noGroupHosts":false},"title":"Redis
+      latency (ms)"},{"definition":{"style":{},"autoscale":false,"yaxis":{},"text_align":"left","custom_unit":"hits","noMetricHosts":false,"precision":"*","viz":"query_value","nodeType":"","requests":[{"style":{},"stacked":false,"aggregator":"min","conditional_formats":[{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_red","value":1000,"comparator":">"},{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_green","value":1000,"comparator":"<="}],"q":"sum:aws.elb.request_count{*}.as_count()","type":"line"}],"noGroupHosts":false},"title":"ELB
+      Requests"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:10.684150+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:11 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:11 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - FkKIRCzyOlcTfevOWu/Pn0jzNwYGEOKsDSSLLIk1UH0umdv3B3q8BoRMqfK8ce37
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{"scale":"sqrt","max":"50","units":true,"includeZero":true},"text_align":"","markers":[{"type":"error
+      solid","value":"y > 100","label":"High Latency"}],"custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line"}],"events":[{"q":"sources:capistrano"}],"noGroupHosts":false},"title":"Redis
+      latency (ms)"},{"definition":{"style":{},"autoscale":false,"yaxis":{},"text_align":"left","custom_unit":"hits","noMetricHosts":false,"precision":"*","viz":"query_value","nodeType":"","requests":[{"style":{},"stacked":false,"aggregator":"min","conditional_formats":[{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_red","value":1000,"comparator":">"},{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_green","value":1000,"comparator":"<="}],"q":"sum:aws.elb.request_count{*}.as_count()","type":"line"}],"noGroupHosts":false},"title":"ELB
+      Requests"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:10.684150+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:11 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:11 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - FiLv+OaMPfXL1uddbn+9yDPMV5awac1EEhAgzXF2ZG6GNVh7KFUCM+HhGv6IDSg0
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{"scale":"sqrt","max":"50","units":true,"includeZero":true},"text_align":"","markers":[{"type":"error
+      solid","value":"y > 100","label":"High Latency"}],"custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{},"stacked":false,"aggregator":"","q":"avg:redis.info.latency_ms{$host}","type":"line"}],"events":[{"q":"sources:capistrano"}],"noGroupHosts":false},"title":"Redis
+      latency (ms)"},{"definition":{"style":{},"autoscale":false,"yaxis":{},"text_align":"left","custom_unit":"hits","noMetricHosts":false,"precision":"*","viz":"query_value","nodeType":"","requests":[{"style":{},"stacked":false,"aggregator":"min","conditional_formats":[{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_red","value":1000,"comparator":">"},{"custom_fg_color":"","custom_bg_color":"","palette":"white_on_green","value":1000,"comparator":"<="}],"q":"sum:aws.elb.request_count{*}.as_count()","type":"line"}],"noGroupHosts":false},"title":"ELB
+      Requests"}],"template_variables":[{"default":"","prefix":"host","name":"host"}],"description":"Created
+      using the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:10.684150+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:11 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:11 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - bJj7D3RvHsKo+7eO3lrtPpPG0z8SsAwLw7bNfLb4htD+N9Ub8bD3AFgh45XaVsFM
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"id":1614411,"description":"Created using the Datadog provider in Terraform","title":"Acceptance
+      Test Timeboard","graphs":[{"title":"Widget with Multiple Queries","definition":{"viz":"timeseries","requests":[{"stacked":false,"aggregator":"","type":"line","style":{"palette":"purple","width":"thin","type":"dashed"},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
+      CPU user"}},"q":"avg:system.cpu.user{*}"},{"stacked":false,"aggregator":"","type":"area","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","log_query":{"index":"mcnulty","compute":{"aggregation":"avg","facet":"@duration","interval":5000},"search":{"query":"status:info"},"groupBy":[{"facet":"host","limit":10,"sort":{"aggregation":"avg","order":"desc","facet":"@duration"}}]}},{"stacked":false,"aggregator":"","type":"bars","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","apm_query":{"index":"apm-search","compute":{"aggregation":"avg","facet":"@duration","interval":5000},"search":{"query":"type:web"},"groupBy":[{"facet":"resource_name","limit":50,"sort":{"aggregation":"avg","order":"desc","facet":"@string_query.interval"}}]}},{"stacked":false,"aggregator":"","type":"area","style":{},"change_type":"","order_dir":"","compare_to":"","increase_good":false,"order_by":"","process_query":{"metric":"process.stat.cpu.total_pct","search_by":"error","filter_by":["active"],"limit":50}}],"yaxis":{},"autoscale":false,"text_align":"","custom_unit":"","style":{},"noMetricHosts":false,"noGroupHosts":false,"nodeType":""}}],"read_only":false}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: PUT
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{"palette":"purple","width":"thin","type":"dashed"},"stacked":false,"aggregator":"","q":"avg:system.cpu.user{*}","type":"line","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
+      CPU user"}}},{"style":{},"stacked":false,"log_query":{"index":"mcnulty","search":{"query":"status:info"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}]},"aggregator":"","type":"area"},{"style":{},"stacked":false,"aggregator":"","type":"bars","apm_query":{"index":"apm-search","search":{"query":"type:web"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}]}},{"style":{},"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"stacked":false,"aggregator":"","type":"area"}],"noGroupHosts":false},"title":"Widget
+      with Multiple Queries"}],"template_variables":null,"description":"Created using
+      the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:12.152354+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:12 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:12 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - ucJMu0SEwqvJ36fqkYRsP+glKObktTtdBf6X17lKXJ4+xOn7nFKnx11beu1ycofn
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{"palette":"purple","width":"thin","type":"dashed"},"stacked":false,"aggregator":"","q":"avg:system.cpu.user{*}","type":"line","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
+      CPU user"}}},{"style":{},"stacked":false,"log_query":{"index":"mcnulty","search":{"query":"status:info"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}]},"aggregator":"","type":"area"},{"style":{},"stacked":false,"aggregator":"","type":"bars","apm_query":{"index":"apm-search","search":{"query":"type:web"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}]}},{"style":{},"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"stacked":false,"aggregator":"","type":"area"}],"noGroupHosts":false},"title":"Widget
+      with Multiple Queries"}],"template_variables":null,"description":"Created using
+      the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:12.152354+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:12 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:12 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - tp1qdVxoUmtlsVp6hgBWraWfL5vEbA116VZkaWKWIZtgPr5Ima8zysCBv+o2WoZ/
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{"palette":"purple","width":"thin","type":"dashed"},"stacked":false,"aggregator":"","q":"avg:system.cpu.user{*}","type":"line","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
+      CPU user"}}},{"style":{},"stacked":false,"log_query":{"index":"mcnulty","search":{"query":"status:info"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}]},"aggregator":"","type":"area"},{"style":{},"stacked":false,"aggregator":"","type":"bars","apm_query":{"index":"apm-search","search":{"query":"type:web"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}]}},{"style":{},"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"stacked":false,"aggregator":"","type":"area"}],"noGroupHosts":false},"title":"Widget
+      with Multiple Queries"}],"template_variables":null,"description":"Created using
+      the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:12.152354+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:12 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:12 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 4HTfT92VNwJOKM3+9Fghpi7RnKwXOMM9XiE8bZkwhVPDb5jbW4knJKZPCpE1XUb8
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{"palette":"purple","width":"thin","type":"dashed"},"stacked":false,"aggregator":"","q":"avg:system.cpu.user{*}","type":"line","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
+      CPU user"}}},{"style":{},"stacked":false,"log_query":{"index":"mcnulty","search":{"query":"status:info"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}]},"aggregator":"","type":"area"},{"style":{},"stacked":false,"aggregator":"","type":"bars","apm_query":{"index":"apm-search","search":{"query":"type:web"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}]}},{"style":{},"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"stacked":false,"aggregator":"","type":"area"}],"noGroupHosts":false},"title":"Widget
+      with Multiple Queries"}],"template_variables":null,"description":"Created using
+      the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:12.152354+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:12 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:12 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - WyM4veckZw3QTGGZ+Ro8psXMR12RERTyuAWc4KNrn9Mfk0tQy+xf5Ofi04GlB+uh
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{"palette":"purple","width":"thin","type":"dashed"},"stacked":false,"aggregator":"","q":"avg:system.cpu.user{*}","type":"line","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
+      CPU user"}}},{"style":{},"stacked":false,"log_query":{"index":"mcnulty","search":{"query":"status:info"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}]},"aggregator":"","type":"area"},{"style":{},"stacked":false,"aggregator":"","type":"bars","apm_query":{"index":"apm-search","search":{"query":"type:web"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}]}},{"style":{},"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"stacked":false,"aggregator":"","type":"area"}],"noGroupHosts":false},"title":"Widget
+      with Multiple Queries"}],"template_variables":null,"description":"Created using
+      the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:12.152354+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:12 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:12 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - gCSZ7BDMU1GjNFaR6hO6ZgwcgG3iOVugDLAlbR+YVBEuMFHhC330JIFkvjLveHm3
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{"palette":"purple","width":"thin","type":"dashed"},"stacked":false,"aggregator":"","q":"avg:system.cpu.user{*}","type":"line","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
+      CPU user"}}},{"style":{},"stacked":false,"log_query":{"index":"mcnulty","search":{"query":"status:info"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}]},"aggregator":"","type":"area"},{"style":{},"stacked":false,"aggregator":"","type":"bars","apm_query":{"index":"apm-search","search":{"query":"type:web"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}]}},{"style":{},"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"stacked":false,"aggregator":"","type":"area"}],"noGroupHosts":false},"title":"Widget
+      with Multiple Queries"}],"template_variables":null,"description":"Created using
+      the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:12.152354+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:13 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:13 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - /Ib6MMQTHlX0/jTb6tlEMzSZs2crLqjkGjYkoQ/zb0RHtMaXT744DZRFpy23W0oi
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
+    method: GET
+  response:
+    body: '{"dash":{"read_only":false,"graphs":[{"definition":{"style":{},"nodeType":"","yaxis":{},"text_align":"","custom_unit":"","noMetricHosts":false,"viz":"timeseries","autoscale":false,"requests":[{"style":{"palette":"purple","width":"thin","type":"dashed"},"stacked":false,"aggregator":"","q":"avg:system.cpu.user{*}","type":"line","metadata":{"avg:system.cpu.user{*}":{"alias":"Avg
+      CPU user"}}},{"style":{},"stacked":false,"log_query":{"index":"mcnulty","search":{"query":"status:info"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}]},"aggregator":"","type":"area"},{"style":{},"stacked":false,"aggregator":"","type":"bars","apm_query":{"index":"apm-search","search":{"query":"type:web"},"compute":{"facet":"@duration","interval":5000,"aggregation":"avg"},"groupBy":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}]}},{"style":{},"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"stacked":false,"aggregator":"","type":"area"}],"noGroupHosts":false},"title":"Widget
+      with Multiple Queries"}],"template_variables":null,"description":"Created using
+      the Datadog provider in Terraform","title":"Acceptance Test Timeboard","created":"2020-02-28T16:43:02.150289+00:00","new_id":"z68-ebw-b52","id":1614411,"created_by":{"disabled":false,"handle":"frog@datadoghq.com","name":null,"title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"},"modified":"2020-02-28T16:43:12.152354+00:00"},"url":"/dash/1614411/acceptance-test-timeboard","resource":"/api/v1/dash/1614411"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Feb 2020 16:43:13 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:13 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - EbXB0e7cF4uDRViRvI+w6qPg1YzykoJqZiw5SbqL/81VRQW4a286h09eTGyIVvXJ
+      X-Dd-Version:
+      - "35.2224896"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
     method: DELETE
   response:
     body: ""
@@ -2413,22 +1360,22 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:09 GMT
+      - Fri, 28 Feb 2020 16:43:16 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=224; Max-Age=604800; Path=/; expires=Thu, 05-Mar-2020 11:40:09 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:43:13 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - LOVPYRkvxiVgJlSU7tTR5QW5I3IByFfoP5oRWZk6jukYFQiYGeCZXWoo6PiPBzrK
+      - yL2jMz/muX5URjcdpTHzlehf0qi0hyVxH7uShvIhWEeYrIRwdt0CU/7wzCTakK6N
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -2439,8 +1386,8 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.13.6)
-    url: https://api.datadoghq.com/api/v1/dash/1611252
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/dash/1614411
     method: GET
   response:
     body: '{"errors": ["No dashboard matches that dash_id."]}'
@@ -2454,7 +1401,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 27 Feb 2020 11:40:10 GMT
+      - Fri, 28 Feb 2020 16:43:16 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -2466,7 +1413,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.2219923"
+      - "35.2224896"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found
