@@ -132,9 +132,9 @@ func TestBuildDatadogWebhook(t *testing.T) {
 				},
 			},
 			expectedDatadogWebhook: datadog.Webhook{
-				Name: datadog.String("my_webhook"),
-				URL:  datadog.String("http://example.com"),
-				Headers: datadog.String("header1: val),
+				Name:    datadog.String("my_webhook"),
+				URL:     datadog.String("http://example.com"),
+				Headers: datadog.String("header1: val1"),
 			},
 		},
 		"custom payload": {
