@@ -7,7 +7,6 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk v1.6.0
 	github.com/jonboulle/clockwork v0.1.0
 	github.com/kr/pretty v0.1.0
-	github.com/stretchr/testify v1.3.0
 	github.com/zorkian/go-datadog-api v2.27.0+incompatible
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 )
