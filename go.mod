@@ -7,6 +7,7 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.1
 	github.com/hashicorp/terraform-plugin-sdk v1.6.0
 	github.com/kr/pretty v0.1.0
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/zorkian/go-datadog-api v2.27.0+incompatible
 	gopkg.in/h2non/gock.v1 v1.0.15 // indirect
 	gotest.tools v2.2.0+incompatible // indirect

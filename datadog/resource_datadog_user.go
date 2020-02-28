@@ -89,12 +89,12 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 	userCreate.SetEmail(d.Get("email").(string))
 	userCreate.SetHandle(d.Get("handle").(string))
 	userCreate.SetName(d.Get("name").(string))
-	userCreate.SetAccessRole(d.Get("access_role").(datadog.AccessRole))
+	userCreate.SetAccessRole(datadog.AccessRole(d.Get("access_role").(string)))
 
 	var userUpdate datadog.User
 	userUpdate.SetEmail(d.Get("email").(string))
 	userUpdate.SetName(d.Get("name").(string))
-	userUpdate.SetAccessRole(d.Get("access_role").(datadog.AccessRole))
+	userUpdate.SetAccessRole(datadog.AccessRole(d.Get("access_role").(string)))
 	userUpdate.SetDisabled(d.Get("disabled").(bool))
 
 	// Datadog does not actually delete users, so CreateUser might return a 409.
@@ -145,7 +145,7 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 	var userUpdate datadog.User
 	userUpdate.SetEmail(d.Get("email").(string))
 	userUpdate.SetName(d.Get("name").(string))
-	userUpdate.SetAccessRole(d.Get("access_role").(datadog.AccessRole))
+	userUpdate.SetAccessRole(datadog.AccessRole(d.Get("access_role").(string)))
 	userUpdate.SetDisabled(d.Get("disabled").(bool))
 
 	if _, _, err := client.UsersApi.UpdateUser(auth, d.Get("handle").(string)).Body(userUpdate).Execute(); err != nil {
