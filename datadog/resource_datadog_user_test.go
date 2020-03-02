@@ -6,20 +6,25 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"github.com/zorkian/go-datadog-api"
 )
 
 func TestAccDatadogUser_Updated(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogUserDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogUserDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogUserConfigRequired,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogUserExists("datadog_user.foo"),
+					testAccCheckDatadogUserExists(accProvider, "datadog_user.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "email", "tftestuser@example.com"),
 					resource.TestCheckResourceAttr(
@@ -33,7 +38,7 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogUserConfigUpdated,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogUserExists("datadog_user.foo"),
+					testAccCheckDatadogUserExists(accProvider, "datadog_user.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "disabled", "true"),
 					// NOTE: it's not possible ATM to update email of another user
@@ -55,18 +60,20 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogUserDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
+func testAccCheckDatadogUserDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		client := accProvider.Meta().(*datadog.Client)
 
-	if err := datadogUserDestroyHelper(s, client); err != nil {
-		return err
+		if err := datadogUserDestroyHelper(s, client); err != nil {
+			return err
+		}
+		return nil
 	}
-	return nil
 }
 
-func testAccCheckDatadogUserExists(n string) resource.TestCheckFunc {
+func testAccCheckDatadogUserExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := testAccProvider.Meta().(*datadog.Client)
+		client := accProvider.Meta().(*datadog.Client)
 		if err := datadogUserExistsHelper(s, client); err != nil {
 			return err
 		}
