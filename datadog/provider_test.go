@@ -117,7 +117,6 @@ func initAccProvider(t *testing.T) (*schema.Provider, func(t *testing.T)) {
 
 func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 	return func(d *schema.ResourceData) (interface{}, error) {
-
 		communityClient := datadogCommunity.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
 		if apiURL := d.Get("api_url").(string); apiURL != "" {
 			communityClient.SetBaseUrl(apiURL)
@@ -133,18 +132,19 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 			context.Background(),
 			datadog.ContextAPIKeys,
 			map[string]datadog.APIKey{
-				"api_key": datadog.APIKey{
+				"apiKeyAuth": datadog.APIKey{
 					Key: d.Get("api_key").(string),
 				},
-				"application_key": datadog.APIKey{
+				"appKeyAuth": datadog.APIKey{
 					Key: d.Get("app_key").(string),
 				},
 			},
 		)
-		//fmt.Println("API_KEY = " + d.Get("api_key").(string))
-		//fmt.Println("APP_KEY = " + d.Get("app_key").(string))
-		//fmt.Println("API_URL = " + d.Get("api_url").(string))
+
+		//config.HTTPClient
 		config := datadog.NewConfiguration()
+		config.Debug = true
+		config.HTTPClient = c
 		if apiURL := d.Get("api_url").(string); apiURL != "" {
 			if strings.Contains(apiURL, "datadoghq.eu") {
 				auth = context.WithValue(auth, datadog.ContextServerVariables, map[string]string{

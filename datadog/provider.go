@@ -106,10 +106,10 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		context.Background(),
 		datadog.ContextAPIKeys,
 		map[string]datadog.APIKey{
-			"api_key": datadog.APIKey{
+			"apiKeyAuth": datadog.APIKey{
 				Key: d.Get("api_key").(string),
 			},
-			"application_key": datadog.APIKey{
+			"appKeyAuth": datadog.APIKey{
 				Key: d.Get("app_key").(string),
 			},
 		},
@@ -123,7 +123,6 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		}
 	}
 	datadogClient := datadog.NewAPIClient(config)
-
 	return &ProviderConfiguration{
 		CommunityClient: communityClient,
 		DatadogClientV1: datadogClient,
