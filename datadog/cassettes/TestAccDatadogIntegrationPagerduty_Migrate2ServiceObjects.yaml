@@ -8,7 +8,7 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: PUT
   response:
@@ -21,20 +21,20 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Fri, 28 Feb 2020 17:01:27 GMT
+      - Mon, 02 Mar 2020 19:16:15 GMT
       Dd-Pool:
       - dogweb
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:27 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:15 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - RL7BSOiWXeq2P2iJbmiDo/2BPpcpoCDzQceVuBkp6yO348trcqTrfm/pm8rvZRoT
+      - wFmrQbB6wLDPf1aNlKcgRoMicVhPlX6qIVwwvniX5cF7oyd+90s5trfE73Pzpvml
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -45,7 +45,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -60,13 +60,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:28 GMT
+      - Mon, 02 Mar 2020 19:16:15 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:27 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:15 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -75,9 +75,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - XsUcj00kgZUn78/yrMgBc2B4U9QizwFFNtN2OKmtTvmSRTdL165j4Ltg6xvjCzDU
+      - 3GTZ6ImnvkiMOuKTP2ILv/2CbQJLb5wTjyX1KOTCD/aaxDS+HyYye1EH1uVK9Ajh
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -88,7 +88,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -103,13 +103,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:28 GMT
+      - Mon, 02 Mar 2020 19:16:16 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:28 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:15 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -118,9 +118,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - hABsPq9DIvV7yAEiU7rMxs7UCRuTbRH/kYpwue4a0q9qmwd4SUh9bBZ5SHPkBLc6
+      - pxuY3ZnSwE+rCP/MLubWk3EuAMlxxciIsQ2EBSRxZafCu9H4+UEVULDCm144bb3W
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -131,7 +131,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -146,13 +146,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:28 GMT
+      - Mon, 02 Mar 2020 19:16:16 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:28 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:16 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -161,9 +161,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - FkKIRCzyOlcTfevOWu/Pn0jzNwYGEOKsDSSLLIk1UH0umdv3B3q8BoRMqfK8ce37
+      - lyzq/AwBoYy31tqkvQ8mzBugAZOys447o2yCYdRfm1oPuJTtZy0Uz+ukzrgaZfIT
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -174,7 +174,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -189,13 +189,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:28 GMT
+      - Mon, 02 Mar 2020 19:16:16 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:28 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:16 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -204,9 +204,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - TAg/qKywM5rz/AUGkmt8+wB4wzGMJfSiHOrBzxBctPLsV/erSD5TChi/uo5ZlVXK
+      - gH++OYwf8a2QZXnzDsHHnXqPhHbI48oqNvFjE/0p0ObpMBY4290QCI5SB0tU0MAF
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -217,7 +217,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -232,13 +232,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:28 GMT
+      - Mon, 02 Mar 2020 19:16:16 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:28 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:16 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -247,9 +247,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - aiFdvD+ESSGWQuLeXGShIAaySBrTSq6aZf+crfPnDVFrMRUU9f0HobLUCBopvakz
+      - vYQu3ls2HKdZ2pXErBiwg/FlJyuK31hjiI+oJSqoEPPw/7mzimb2FzvWEsshbznY
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -260,7 +260,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -275,13 +275,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:29 GMT
+      - Mon, 02 Mar 2020 19:16:16 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:28 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:16 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -290,9 +290,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 69kiClanS8NcBSsdd51HHifvhQSGoRbJJjhU9l40yqxQHVNrndFN9zVtFJW1OcSf
+      - em3KoJu1XYdqq1w4EpLi4L54svjYBxZahEDJ8c5gcdIOxnNafHMdF5LLysPLuNcH
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -305,7 +305,7 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: PUT
   response:
@@ -318,20 +318,20 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Fri, 28 Feb 2020 17:01:29 GMT
+      - Mon, 02 Mar 2020 19:16:17 GMT
       Dd-Pool:
       - dogweb
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:29 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:16 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - pxuY3ZnSwE+rCP/MLubWk3EuAMlxxciIsQ2EBSRxZafCu9H4+UEVULDCm144bb3W
+      - /Ib6MMQTHlX0/jTb6tlEMzSZs2crLqjkGjYkoQ/zb0RHtMaXT744DZRFpy23W0oi
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -342,7 +342,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -357,13 +357,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:29 GMT
+      - Mon, 02 Mar 2020 19:16:17 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:29 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:17 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -372,9 +372,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - hABsPq9DIvV7yAEiU7rMxs7UCRuTbRH/kYpwue4a0q9qmwd4SUh9bBZ5SHPkBLc6
+      - QO3HutZQjgMDp/HqClcLon+qq5lEghb3LRV+gXMIQ2Jivd1m1eEGCh0RxplUQMIV
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -385,7 +385,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/testing_bar
     method: DELETE
   response:
@@ -402,22 +402,22 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:29 GMT
+      - Mon, 02 Mar 2020 19:16:17 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:29 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:17 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - zgs4/R8U39Dx88K274ycCG8gmotK2r1yjyecTfeITqBuGEc/zW9V1MMOyMl9URns
+      - Dpx7DG2N4VEOVm8I4W97n4HwOzBXFJSj1QrKca/nHpAZ6o7/LrJ0o2qyQx0XjNXl
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -428,7 +428,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/testing_foo
     method: DELETE
   response:
@@ -445,22 +445,22 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:29 GMT
+      - Mon, 02 Mar 2020 19:16:17 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:29 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:17 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - nfUJgEhoI/RZ8GJVApSQj6s2TfLYXQ1qvePMFw8ZmKB2iBVwiNegJAc5RNY4ZZbI
+      - PKDIrz8Hcluof9oNzY3q1BouPTowe6nlZ4slm6KLsMEc/9DaK1hteKVCh6mza/IQ
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -471,7 +471,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -486,13 +486,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:30 GMT
+      - Mon, 02 Mar 2020 19:16:17 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:30 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:17 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -501,9 +501,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - gVnECQ7ifaEfJ6BNPsXSglLjlU41ay4U8jXHC6V3+oC4U6gHkBb20H5zrSJj1zee
+      - DNJM9d0LaQZJbuEjasKEmgCwDoiLnJW9mPQJm+yWIlQRbFhX4Vzx4uuDCt38dWhb
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -514,7 +514,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -529,13 +529,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:30 GMT
+      - Mon, 02 Mar 2020 19:16:17 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:30 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:17 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -544,9 +544,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - wB7h0Rt2IYxDUBLtoJ4y0ZOq10ZaMdDZiRuFZ3d/FUUtC7gfBEZWTs0Y6dZhoLZS
+      - ucJMu0SEwqvJ36fqkYRsP+glKObktTtdBf6X17lKXJ4+xOn7nFKnx11beu1ycofn
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -557,7 +557,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -572,13 +572,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:30 GMT
+      - Mon, 02 Mar 2020 19:16:18 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:30 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:18 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -587,9 +587,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - o1rjyOSbDnvYaQgtO33vwWSNsIwHafzLqam2amG/PbTP69SVY965ZpWutdoYJB30
+      - KKdI9UAf8fC5q7osIllxNui0A1CUm45w7mZBz+tu6Vlp/ga+Q6ZXvY0JoJlUBVi+
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -600,7 +600,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -615,13 +615,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:30 GMT
+      - Mon, 02 Mar 2020 19:16:18 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:30 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:18 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -630,9 +630,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 6qTaw+brNWWnKD6ULH8747/TVkPK0wedRsruOmMITJcYBkJ/Eac9bUO9jP1Btfl5
+      - ty7T8eIeXOfZhM7KDN5nGo8JS7ZSIWAqBNFeZshTg3LLDJJa7mPU5wqGt0nOPCpy
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -643,7 +643,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -658,13 +658,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:30 GMT
+      - Mon, 02 Mar 2020 19:16:18 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:30 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:18 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -673,9 +673,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - wB7h0Rt2IYxDUBLtoJ4y0ZOq10ZaMdDZiRuFZ3d/FUUtC7gfBEZWTs0Y6dZhoLZS
+      - A5a5htKhTUF1FdBQZRUZl4RVawKwk2RUtaZz3EDBmdXc0X6i0O7TBEBWn4bIBQ01
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -688,7 +688,7 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: PUT
   response:
@@ -701,20 +701,20 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Fri, 28 Feb 2020 17:01:31 GMT
+      - Mon, 02 Mar 2020 19:16:18 GMT
       Dd-Pool:
       - dogweb
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:31 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:18 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 3OCRM/4FZbkllI4iloi1acHDABD1SJi2aj2fysEPLLsOVOk5Ki6mi6IOsVG7JIay
+      - fFk0sZgwwse+ZeEmqVGZPgcNG+SDXdM7Y74n6iOGuvoZenvaYEqZOvpOSMu1XDXx
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -725,7 +725,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -740,13 +740,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:31 GMT
+      - Mon, 02 Mar 2020 19:16:19 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:31 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:18 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -755,9 +755,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - mGJe6qmS66N9ddKWdHwHEzQK9VHuaMNr7+EsVTKliCkGq+ayJZmadUyCSwID4him
+      - wB7h0Rt2IYxDUBLtoJ4y0ZOq10ZaMdDZiRuFZ3d/FUUtC7gfBEZWTs0Y6dZhoLZS
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -770,7 +770,7 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services
     method: POST
   response:
@@ -787,22 +787,22 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:31 GMT
+      - Mon, 02 Mar 2020 19:16:19 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:31 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:19 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - sg8vzlrAXfi82gDuSEBUxkn5dG85uDtr4RhaVLNn521TM8s6JdimiKDHvX2NhFjo
+      - vYQu3ls2HKdZ2pXErBiwg/FlJyuK31hjiI+oJSqoEPPw/7mzimb2FzvWEsshbznY
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 201 Created
@@ -813,7 +813,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/testing_bar
     method: GET
   response:
@@ -828,13 +828,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:31 GMT
+      - Mon, 02 Mar 2020 19:16:19 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:31 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:19 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -843,9 +843,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - vG5kxpR47Wd0uZGIzWkStfMxs3cmVIjKYEHLQf0xQiHS0P2BwlwJHwTESUSKlcdO
+      - jety+2H6BA1H4x31+wzy5BjqI2NDwh54fgbjSYyrLU0p2tWQPCCTKspX7sHO7u1n
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -858,7 +858,7 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services
     method: POST
   response:
@@ -875,22 +875,22 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:32 GMT
+      - Mon, 02 Mar 2020 19:16:19 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:32 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:19 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - AVsav2jjRGvwjNvJeRUS7kJsgTlhh9y9smyL3UJVQTMAUoPyejdL0bVSnanIQLK4
+      - 8jOW1djIgkdkj4STw+0pQ3G+kGKfu548DWINvnE6phacY0k9vgC3cU1LaI38XIYk
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 201 Created
@@ -901,7 +901,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/testing_foo
     method: GET
   response:
@@ -916,13 +916,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:32 GMT
+      - Mon, 02 Mar 2020 19:16:19 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:32 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:19 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -931,9 +931,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - u2B27rQjtu8TuEjzrroc8ae3xeJMLmsxU6SiAszW1tH+EI3X0cOP819eGNRqlxzl
+      - Wpac2a5DsHa/eqG3DjQhOxPXeBQRcLxZ18fT3wn3gFeruJMdJwvfZxTA9hAiHLHZ
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -944,7 +944,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -959,13 +959,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:32 GMT
+      - Mon, 02 Mar 2020 19:16:19 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:32 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:19 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -974,9 +974,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 69kiClanS8NcBSsdd51HHifvhQSGoRbJJjhU9l40yqxQHVNrndFN9zVtFJW1OcSf
+      - nfUJgEhoI/RZ8GJVApSQj6s2TfLYXQ1qvePMFw8ZmKB2iBVwiNegJAc5RNY4ZZbI
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -987,7 +987,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -1002,13 +1002,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:32 GMT
+      - Mon, 02 Mar 2020 19:16:20 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:32 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:20 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1017,9 +1017,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 69kiClanS8NcBSsdd51HHifvhQSGoRbJJjhU9l40yqxQHVNrndFN9zVtFJW1OcSf
+      - pdoE+6MDHF3ASB0y6TdRZq9HO/3uAKc0XPY7EkyNyaFqpXeeAHwz2Ce2QWIN714X
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1030,7 +1030,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -1045,13 +1045,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:32 GMT
+      - Mon, 02 Mar 2020 19:16:20 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:32 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:20 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1060,9 +1060,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 9KqlMq3gTLpkJSVJyvAwXe8+x8jjzLiadKiJ+urXt2iPIG7RDD8GegNJYYpRqZOo
+      - Z91NUpPIZnIQ9h7lBFWBkEPGVUEsn4/i71imPPwrChu4RPI5uNM5HGuodISK1HBR
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1073,7 +1073,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/testing_bar
     method: GET
   response:
@@ -1088,13 +1088,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:33 GMT
+      - Mon, 02 Mar 2020 19:16:20 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:32 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:20 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1103,9 +1103,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - em3KoJu1XYdqq1w4EpLi4L54svjYBxZahEDJ8c5gcdIOxnNafHMdF5LLysPLuNcH
+      - UlUHD7I7ISIp2OTIKJ1HGCksOU1snpAx2HtkPJw2SYzWMPmqzICEuimWl9Uiyokg
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1116,7 +1116,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/testing_foo
     method: GET
   response:
@@ -1131,13 +1131,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:33 GMT
+      - Mon, 02 Mar 2020 19:16:20 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:32 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:20 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1146,9 +1146,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 6TICFxDFBNq65Lw6aA0hO1z7nxUSiTzUAT0k7ln4UasEU6/emXomwtYWMJdIuxUV
+      - CPK+34LtKdL5YYX/NFOJUdMpxMoO80HISGpGpzDG5fENYSoZ2QNw1gEubOsJ9JNb
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1159,7 +1159,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/testing_bar
     method: GET
   response:
@@ -1174,13 +1174,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:33 GMT
+      - Mon, 02 Mar 2020 19:16:20 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:33 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:20 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1189,9 +1189,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - vYQu3ls2HKdZ2pXErBiwg/FlJyuK31hjiI+oJSqoEPPw/7mzimb2FzvWEsshbznY
+      - F2g1vP9i37Cj4rH5vEufbSNzCmriMTDVzKKqVk/JOUesbIz8psR3R2945wO0PbTf
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1202,7 +1202,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/testing_foo
     method: GET
   response:
@@ -1217,13 +1217,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:33 GMT
+      - Mon, 02 Mar 2020 19:16:20 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:33 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:20 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1232,9 +1232,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - sg8vzlrAXfi82gDuSEBUxkn5dG85uDtr4RhaVLNn521TM8s6JdimiKDHvX2NhFjo
+      - nfUJgEhoI/RZ8GJVApSQj6s2TfLYXQ1qvePMFw8ZmKB2iBVwiNegJAc5RNY4ZZbI
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1245,7 +1245,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -1260,13 +1260,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:33 GMT
+      - Mon, 02 Mar 2020 19:16:20 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:33 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:20 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1275,9 +1275,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - rk3iIRyevtXsTLLTMsm8PoHrVjRY2UIgJwOnYxasATpPihgg0ps3VPSw7zz+6jrL
+      - rxkz+JB0yzarEINDeNWQGs9dk7PLNAMnAw2wV8MNkZOhKDtz+JOpGuIyyBUaWwyF
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1288,7 +1288,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -1303,13 +1303,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:33 GMT
+      - Mon, 02 Mar 2020 19:16:20 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:33 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:20 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1318,9 +1318,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - fGPsEOteKPqWrypJlOWIRpMZD2l0VjpTiFY5o5e56+jFb+ShdPzcenDH6s8Ah62s
+      - vlc9b/rJPByGsV/acj3ScS7B1lo9nEAbSgYCfkl0GH3egry4iXeiGBP0WX8DpJ/T
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1331,7 +1331,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/testing_foo
     method: GET
   response:
@@ -1346,13 +1346,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:33 GMT
+      - Mon, 02 Mar 2020 19:16:21 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:33 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:21 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1361,9 +1361,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - QaEGvF++JqTbTiFomKhE21Fdnra2zinKOaCEqOgwcd7OtJatRLgvovBbCNyGqcpO
+      - aERr2Ftx8O/BR8oAhSymZ3bVROQEC+81YMSphOQK1me4DxXSbMIcFkB0Di4ggZ++
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1374,7 +1374,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/testing_bar
     method: GET
   response:
@@ -1389,13 +1389,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:33 GMT
+      - Mon, 02 Mar 2020 19:16:21 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:33 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:21 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1404,9 +1404,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - nRZqCODixwNZX0HLyT17WzYwenviVG0rmnZak57k5KsDWun3aWEsPedTsRpiFQxf
+      - FB5oGxuL9E/cplxahdQnU5Nw5E7KX0Smq18it9qYKIt8BXsSloE0IpDRA39tfQwn
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1417,7 +1417,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/testing_foo
     method: GET
   response:
@@ -1432,13 +1432,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:33 GMT
+      - Mon, 02 Mar 2020 19:16:21 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:33 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:21 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1447,9 +1447,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - oQ/oy4ezTZ+/WzL4afBMlDjLd5w62e5H15hF5BJChw1Gte+Sq8B8tB7i6vlTiLL0
+      - Z91NUpPIZnIQ9h7lBFWBkEPGVUEsn4/i71imPPwrChu4RPI5uNM5HGuodISK1HBR
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1460,7 +1460,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/testing_bar
     method: GET
   response:
@@ -1475,13 +1475,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:33 GMT
+      - Mon, 02 Mar 2020 19:16:21 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:33 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:21 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1490,9 +1490,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - LOVPYRkvxiVgJlSU7tTR5QW5I3IByFfoP5oRWZk6jukYFQiYGeCZXWoo6PiPBzrK
+      - UmZMvwWLI5lgbGFBnw6J7jqO5hwyrvVF8Un8TwZ8TRQQ6jetE/6GVTSaoSUmQWRg
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1503,7 +1503,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/testing_foo
     method: DELETE
   response:
@@ -1520,22 +1520,22 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:34 GMT
+      - Mon, 02 Mar 2020 19:16:21 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:34 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:21 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - GAK1J4mJd/EBZfEK4rqUw9OeB9GOeKgSyrXGtzNUi5zrv5sHYU56xJgA4bcbtgUA
+      - ucJMu0SEwqvJ36fqkYRsP+glKObktTtdBf6X17lKXJ4+xOn7nFKnx11beu1ycofn
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1546,7 +1546,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/testing_bar
     method: DELETE
   response:
@@ -1563,22 +1563,22 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:34 GMT
+      - Mon, 02 Mar 2020 19:16:21 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:34 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:21 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - hABsPq9DIvV7yAEiU7rMxs7UCRuTbRH/kYpwue4a0q9qmwd4SUh9bBZ5SHPkBLc6
+      - btzHvL7Rg/f/n1wMP2CFVXsuErrwOO9p2hvsBofLQbxzRkmZbfvXcB18pURNtIOI
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1589,7 +1589,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: DELETE
   response:
@@ -1602,20 +1602,20 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Fri, 28 Feb 2020 17:01:35 GMT
+      - Mon, 02 Mar 2020 19:16:21 GMT
       Dd-Pool:
       - dogweb
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:34 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:21 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - u2B27rQjtu8TuEjzrroc8ae3xeJMLmsxU6SiAszW1tH+EI3X0cOP819eGNRqlxzl
+      - nSRgqrrNNmPPT6VSGZq0R9QdtdJF1qxzho2//eboP+tsIQDRgfSx3bSVb1t6QyYb
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -1626,7 +1626,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
@@ -1641,7 +1641,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:01:36 GMT
+      - Mon, 02 Mar 2020 19:16:21 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -1653,7 +1653,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found

@@ -23,11 +23,11 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines
     method: POST
   response:
-    body: '{"id":"u_qASoezQqaD9njPIxQ4LA","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
+    body: '{"id":"Jy_zO_VDTbqg6N4C3diLpg","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
       arithmetic processor","is_enabled":false,"expression":"(time1 - time2)*1000","target":"my_arithmetic","is_replace_missing":true,"type":"arithmetic-processor"},{"name":"test
       attribute remapper","is_enabled":true,"sources":["db.instance"],"source_type":"tag","target":"db","target_type":"tag","preserve_source":true,"override_on_conflict":false,"type":"attribute-remapper"},{"name":"test
       category processor","is_enabled":false,"categories":[{"filter":{"query":"@severity:
@@ -55,13 +55,13 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 28 Feb 2020 16:59:51 GMT
+      - Mon, 02 Mar 2020 19:14:01 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:59:51 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:14:01 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -70,9 +70,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - DNJM9d0LaQZJbuEjasKEmgCwDoiLnJW9mPQJm+yWIlQRbFhX4Vzx4uuDCt38dWhb
+      - cYNsy3QDuOaYo2clO/PharSNtCykS9KtUfiNevH3xDbHJlRyddWkNpuDhMgHWZ43
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -82,7 +82,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "94"
       X-Ratelimit-Reset:
-      - "9"
+      - "2759"
     status: 200 OK
     code: 200
     duration: ""
@@ -91,11 +91,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/u_qASoezQqaD9njPIxQ4LA
+      - Datadog/dev/terraform (go1.13)
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Jy_zO_VDTbqg6N4C3diLpg
     method: GET
   response:
-    body: '{"id":"u_qASoezQqaD9njPIxQ4LA","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
+    body: '{"id":"Jy_zO_VDTbqg6N4C3diLpg","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
       arithmetic processor","is_enabled":false,"expression":"(time1 - time2)*1000","target":"my_arithmetic","is_replace_missing":true,"type":"arithmetic-processor"},{"name":"test
       attribute remapper","is_enabled":true,"sources":["db.instance"],"source_type":"tag","target":"db","target_type":"tag","preserve_source":true,"override_on_conflict":false,"type":"attribute-remapper"},{"name":"test
       category processor","is_enabled":false,"categories":[{"filter":{"query":"@severity:
@@ -123,13 +123,13 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 28 Feb 2020 16:59:51 GMT
+      - Mon, 02 Mar 2020 19:14:01 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:59:51 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:14:01 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -138,9 +138,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - pEDVi2191MvoIMwusdL+COAxndBmcRhJtxAtWxDDnECWDI8Z99hIoBZbpR57tJKz
+      - pxuY3ZnSwE+rCP/MLubWk3EuAMlxxciIsQ2EBSRxZafCu9H4+UEVULDCm144bb3W
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -150,7 +150,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "4977"
       X-Ratelimit-Reset:
-      - "9"
+      - "2759"
     status: 200 OK
     code: 200
     duration: ""
@@ -159,11 +159,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/u_qASoezQqaD9njPIxQ4LA
+      - Datadog/dev/terraform (go1.13)
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Jy_zO_VDTbqg6N4C3diLpg
     method: GET
   response:
-    body: '{"id":"u_qASoezQqaD9njPIxQ4LA","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
+    body: '{"id":"Jy_zO_VDTbqg6N4C3diLpg","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
       arithmetic processor","is_enabled":false,"expression":"(time1 - time2)*1000","target":"my_arithmetic","is_replace_missing":true,"type":"arithmetic-processor"},{"name":"test
       attribute remapper","is_enabled":true,"sources":["db.instance"],"source_type":"tag","target":"db","target_type":"tag","preserve_source":true,"override_on_conflict":false,"type":"attribute-remapper"},{"name":"test
       category processor","is_enabled":false,"categories":[{"filter":{"query":"@severity:
@@ -191,13 +191,13 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 28 Feb 2020 16:59:51 GMT
+      - Mon, 02 Mar 2020 19:14:01 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:59:51 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:14:01 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -206,9 +206,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Wi4QF3nhe5s0sRyfZvyTHLc/3mQu/jJVn8BZnev44SXt+VBNA1+haKi5VcNZFpaP
+      - pT9LlAdgAzlrCUxMXQkBRs/Qti76jKIHng1uB0/SctAaYjB4WqOgOZYpCbOMQKll
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -218,7 +218,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "4976"
       X-Ratelimit-Reset:
-      - "9"
+      - "2759"
     status: 200 OK
     code: 200
     duration: ""
@@ -227,11 +227,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/u_qASoezQqaD9njPIxQ4LA
+      - Datadog/dev/terraform (go1.13)
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Jy_zO_VDTbqg6N4C3diLpg
     method: GET
   response:
-    body: '{"id":"u_qASoezQqaD9njPIxQ4LA","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
+    body: '{"id":"Jy_zO_VDTbqg6N4C3diLpg","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
       arithmetic processor","is_enabled":false,"expression":"(time1 - time2)*1000","target":"my_arithmetic","is_replace_missing":true,"type":"arithmetic-processor"},{"name":"test
       attribute remapper","is_enabled":true,"sources":["db.instance"],"source_type":"tag","target":"db","target_type":"tag","preserve_source":true,"override_on_conflict":false,"type":"attribute-remapper"},{"name":"test
       category processor","is_enabled":false,"categories":[{"filter":{"query":"@severity:
@@ -259,13 +259,13 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 28 Feb 2020 16:59:52 GMT
+      - Mon, 02 Mar 2020 19:14:02 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:59:51 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:14:02 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -274,9 +274,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - vlc9b/rJPByGsV/acj3ScS7B1lo9nEAbSgYCfkl0GH3egry4iXeiGBP0WX8DpJ/T
+      - nwn8Akm+cp12Jtby9xyfYjHWK2KZDWf5LxY+SMa+2NK6hVIBcKsVHXjynaTEG+o0
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -286,7 +286,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "4975"
       X-Ratelimit-Reset:
-      - "9"
+      - "2758"
     status: 200 OK
     code: 200
     duration: ""
@@ -295,11 +295,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/u_qASoezQqaD9njPIxQ4LA
+      - Datadog/dev/terraform (go1.13)
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Jy_zO_VDTbqg6N4C3diLpg
     method: GET
   response:
-    body: '{"id":"u_qASoezQqaD9njPIxQ4LA","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
+    body: '{"id":"Jy_zO_VDTbqg6N4C3diLpg","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
       arithmetic processor","is_enabled":false,"expression":"(time1 - time2)*1000","target":"my_arithmetic","is_replace_missing":true,"type":"arithmetic-processor"},{"name":"test
       attribute remapper","is_enabled":true,"sources":["db.instance"],"source_type":"tag","target":"db","target_type":"tag","preserve_source":true,"override_on_conflict":false,"type":"attribute-remapper"},{"name":"test
       category processor","is_enabled":false,"categories":[{"filter":{"query":"@severity:
@@ -327,13 +327,13 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 28 Feb 2020 16:59:52 GMT
+      - Mon, 02 Mar 2020 19:14:02 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:59:52 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:14:02 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -342,9 +342,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - gVnECQ7ifaEfJ6BNPsXSglLjlU41ay4U8jXHC6V3+oC4U6gHkBb20H5zrSJj1zee
+      - PmDXJXCpOnq24qtagNCLPTUoILSRgi3DGaXUca70kUEAM8DZBLYkwSVilYSYEHCG
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -354,7 +354,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "4974"
       X-Ratelimit-Reset:
-      - "8"
+      - "2758"
     status: 200 OK
     code: 200
     duration: ""
@@ -363,11 +363,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/u_qASoezQqaD9njPIxQ4LA
+      - Datadog/dev/terraform (go1.13)
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Jy_zO_VDTbqg6N4C3diLpg
     method: GET
   response:
-    body: '{"id":"u_qASoezQqaD9njPIxQ4LA","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
+    body: '{"id":"Jy_zO_VDTbqg6N4C3diLpg","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
       arithmetic processor","is_enabled":false,"expression":"(time1 - time2)*1000","target":"my_arithmetic","is_replace_missing":true,"type":"arithmetic-processor"},{"name":"test
       attribute remapper","is_enabled":true,"sources":["db.instance"],"source_type":"tag","target":"db","target_type":"tag","preserve_source":true,"override_on_conflict":false,"type":"attribute-remapper"},{"name":"test
       category processor","is_enabled":false,"categories":[{"filter":{"query":"@severity:
@@ -395,13 +395,13 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 28 Feb 2020 16:59:52 GMT
+      - Mon, 02 Mar 2020 19:14:02 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:59:52 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:14:02 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -410,9 +410,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Jhz2Lh32XBCZ7PVSj7/lof8hXjgbtiexG4VIRWAEYHPFefqyYpXnVaeT62yBncrB
+      - 6TICFxDFBNq65Lw6aA0hO1z7nxUSiTzUAT0k7ln4UasEU6/emXomwtYWMJdIuxUV
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -422,7 +422,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "4973"
       X-Ratelimit-Reset:
-      - "8"
+      - "2758"
     status: 200 OK
     code: 200
     duration: ""
@@ -431,11 +431,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/u_qASoezQqaD9njPIxQ4LA
+      - Datadog/dev/terraform (go1.13)
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Jy_zO_VDTbqg6N4C3diLpg
     method: GET
   response:
-    body: '{"id":"u_qASoezQqaD9njPIxQ4LA","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
+    body: '{"id":"Jy_zO_VDTbqg6N4C3diLpg","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
       arithmetic processor","is_enabled":false,"expression":"(time1 - time2)*1000","target":"my_arithmetic","is_replace_missing":true,"type":"arithmetic-processor"},{"name":"test
       attribute remapper","is_enabled":true,"sources":["db.instance"],"source_type":"tag","target":"db","target_type":"tag","preserve_source":true,"override_on_conflict":false,"type":"attribute-remapper"},{"name":"test
       category processor","is_enabled":false,"categories":[{"filter":{"query":"@severity:
@@ -463,13 +463,13 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 28 Feb 2020 16:59:52 GMT
+      - Mon, 02 Mar 2020 19:14:03 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:59:52 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:14:02 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -478,9 +478,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - hlZGwPPL87Cire+2SDWJrcKtg5ChXKBaVFmtHdrZS+BoDfdo10256wfXrEDRUv8c
+      - GM3qkj4SwEuhNLnO2bGVKXmYyTyl+x7nOBmAec7P90wogSgnhOkciAg/AUC2jkes
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -490,7 +490,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "4972"
       X-Ratelimit-Reset:
-      - "8"
+      - "2758"
     status: 200 OK
     code: 200
     duration: ""
@@ -499,11 +499,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/u_qASoezQqaD9njPIxQ4LA
+      - Datadog/dev/terraform (go1.13)
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Jy_zO_VDTbqg6N4C3diLpg
     method: GET
   response:
-    body: '{"id":"u_qASoezQqaD9njPIxQ4LA","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
+    body: '{"id":"Jy_zO_VDTbqg6N4C3diLpg","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
       arithmetic processor","is_enabled":false,"expression":"(time1 - time2)*1000","target":"my_arithmetic","is_replace_missing":true,"type":"arithmetic-processor"},{"name":"test
       attribute remapper","is_enabled":true,"sources":["db.instance"],"source_type":"tag","target":"db","target_type":"tag","preserve_source":true,"override_on_conflict":false,"type":"attribute-remapper"},{"name":"test
       category processor","is_enabled":false,"categories":[{"filter":{"query":"@severity:
@@ -531,13 +531,13 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 28 Feb 2020 16:59:52 GMT
+      - Mon, 02 Mar 2020 19:14:03 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:59:52 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:14:03 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -546,9 +546,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - BQaWiIhDCyK3JbvyPZudxtMuoedbvOKE6tb5GJMfo6GT4EOQ8qx9lqgA4UCxp88q
+      - J5PL0LnJukdy69mckjXi3cjye/YJX2hkoCBkqKQi+tYjrsXYELx6DfDD11fhyjYF
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -558,7 +558,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "4971"
       X-Ratelimit-Reset:
-      - "8"
+      - "2757"
     status: 200 OK
     code: 200
     duration: ""
@@ -567,11 +567,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/u_qASoezQqaD9njPIxQ4LA
+      - Datadog/dev/terraform (go1.13)
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Jy_zO_VDTbqg6N4C3diLpg
     method: GET
   response:
-    body: '{"id":"u_qASoezQqaD9njPIxQ4LA","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
+    body: '{"id":"Jy_zO_VDTbqg6N4C3diLpg","type":"pipeline","name":"imported pipeline","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test
       arithmetic processor","is_enabled":false,"expression":"(time1 - time2)*1000","target":"my_arithmetic","is_replace_missing":true,"type":"arithmetic-processor"},{"name":"test
       attribute remapper","is_enabled":true,"sources":["db.instance"],"source_type":"tag","target":"db","target_type":"tag","preserve_source":true,"override_on_conflict":false,"type":"attribute-remapper"},{"name":"test
       category processor","is_enabled":false,"categories":[{"filter":{"query":"@severity:
@@ -599,13 +599,13 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 28 Feb 2020 16:59:53 GMT
+      - Mon, 02 Mar 2020 19:14:03 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:59:53 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:14:03 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -614,9 +614,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - IYH6Ubmq2MBSPq8ODr3BCv3hq6/qfjckWAQPmybeluQn4umf0be4fk6ceyy1pnBw
+      - bJj7D3RvHsKo+7eO3lrtPpPG0z8SsAwLw7bNfLb4htD+N9Ub8bD3AFgh45XaVsFM
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -626,7 +626,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "4970"
       X-Ratelimit-Reset:
-      - "7"
+      - "2757"
     status: 200 OK
     code: 200
     duration: ""
@@ -635,8 +635,8 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/u_qASoezQqaD9njPIxQ4LA
+      - Datadog/dev/terraform (go1.13)
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Jy_zO_VDTbqg6N4C3diLpg
     method: DELETE
   response:
     body: ""
@@ -654,22 +654,22 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Fri, 28 Feb 2020 16:59:53 GMT
+      - Mon, 02 Mar 2020 19:14:03 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 16:59:53 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:14:03 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - ucJMu0SEwqvJ36fqkYRsP+glKObktTtdBf6X17lKXJ4+xOn7nFKnx11beu1ycofn
+      - DAk/CQntZmry+u4cYsuVOELuKFo1I3NzKRNwPlY9WvlbH+rffk5VylB8tKDaSRWP
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -679,7 +679,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "93"
       X-Ratelimit-Reset:
-      - "7"
+      - "2757"
     status: 200 OK
     code: 200
     duration: ""
@@ -688,8 +688,8 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/u_qASoezQqaD9njPIxQ4LA
+      - Datadog/dev/terraform (go1.13)
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Jy_zO_VDTbqg6N4C3diLpg
     method: GET
   response:
     body: '{"error":{"code":"InvalidArgument","message":"Non existing pipeline"}}'
@@ -705,7 +705,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 16:59:53 GMT
+      - Mon, 02 Mar 2020 19:14:03 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -715,7 +715,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.2224914"
+      - "35.2232835"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -725,7 +725,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "4969"
       X-Ratelimit-Reset:
-      - "7"
+      - "2757"
     status: 400 Bad Request
     code: 400
     duration: ""

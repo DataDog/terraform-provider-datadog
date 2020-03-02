@@ -3,8 +3,8 @@ package datadog
 import (
 	"fmt"
 	"log"
-	"strings"
 	"net/url"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
