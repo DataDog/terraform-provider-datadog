@@ -7,8 +7,11 @@ import (
 )
 
 func TestAccDatadogIpRangesDatasource_existing(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+
 	resource.ParallelTest(t, resource.TestCase{
-		Providers: testAccProviders,
+		Providers: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: `

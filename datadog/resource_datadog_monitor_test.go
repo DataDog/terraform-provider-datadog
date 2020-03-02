@@ -7,20 +7,25 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"github.com/zorkian/go-datadog-api"
 )
 
 func TestAccDatadogMonitor_Basic(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", "name for monitor foo"),
 					resource.TestCheckResourceAttr(
@@ -66,15 +71,19 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorServiceCheckConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", "name for monitor foo"),
 					resource.TestCheckResourceAttr(
@@ -117,15 +126,19 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorConfigNoThresholds,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", "name for monitor foo"),
 					resource.TestCheckResourceAttr(
@@ -156,15 +169,19 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_Updated(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", "name for monitor foo"),
 					resource.TestCheckResourceAttr(
@@ -213,7 +230,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMonitorConfigUpdated,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", "name for monitor bar"),
 					resource.TestCheckResourceAttr(
@@ -268,7 +285,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.complex_metric_alert_example_monitor"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.complex_metric_alert_example_monitor"),
 					// even though this is defined as a metric alert, the API will actually return query alert
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.complex_metric_alert_example_monitor", "type", "query alert"),
@@ -277,7 +294,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMonitorConfigQueryAlertNotUpdated,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.complex_query_alert_example_monitor"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.complex_query_alert_example_monitor"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.complex_query_alert_example_monitor", "type", "query alert"),
 				),
@@ -287,15 +304,19 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", "name for monitor foo"),
 					resource.TestCheckResourceAttr(
@@ -344,7 +365,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMonitorConfigUpdatedWithTagsRemoved,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", "name for monitor bar"),
 					resource.TestCheckResourceAttr(
@@ -394,7 +415,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.complex_metric_alert_example_monitor"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.complex_metric_alert_example_monitor"),
 					// even though this is defined as a metric alert, the API will actually return query alert
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.complex_metric_alert_example_monitor", "type", "query alert"),
@@ -403,7 +424,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMonitorConfigQueryAlertNotUpdated,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.complex_query_alert_example_monitor"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.complex_query_alert_example_monitor"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.complex_query_alert_example_monitor", "type", "query alert"),
 				),
@@ -413,15 +434,19 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorConfigWhitespace,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", "name for monitor foo"),
 					resource.TestCheckResourceAttr(
@@ -451,15 +476,19 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorConfigInts,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
@@ -474,7 +503,7 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMonitorConfigIntsMixed,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
@@ -490,15 +519,19 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_Log(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorConfigLogAlert,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", "name for monitor foo"),
 					resource.TestCheckResourceAttr(
@@ -524,15 +557,19 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_NoThresholdWindows(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorConfigNoThresholdWindows,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "name", "test bug 259"),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "message", "test"),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "type", "query alert"),
@@ -543,15 +580,19 @@ func TestAccDatadogMonitor_NoThresholdWindows(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorConfigThresholdWindows,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", "name for monitor foo"),
 					resource.TestCheckResourceAttr(
@@ -592,15 +633,19 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_MuteUnmuteSpecificScopes(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorConfigMuteSpecificScopes,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "silenced.%", "1"),
 					resource.TestCheckResourceAttr(
@@ -610,7 +655,7 @@ func TestAccDatadogMonitor_MuteUnmuteSpecificScopes(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMonitorConfigUnmuteSpecificScopes,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckNoResourceAttr(
 						"datadog_monitor.foo", "silenced"),
 				),
@@ -620,10 +665,14 @@ func TestAccDatadogMonitor_MuteUnmuteSpecificScopes(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorComposeWithSyntheticsTest,
@@ -640,20 +689,23 @@ func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogMonitorDestroy(s *terraform.State) error {
-	providerConf := testAccProvider.Meta().(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+func testAccCheckDatadogMonitorDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 
-	if err := destroyHelper(s, client); err != nil {
-		return err
+		if err := destroyHelper(s, client); err != nil {
+			return err
+		}
+		return nil
 	}
-	return nil
 }
 
-func testAccCheckDatadogMonitorExists(n string) resource.TestCheckFunc {
+func testAccCheckDatadogMonitorExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
 		client := providerConf.CommunityClient
+
 		if err := existsHelper(s, client); err != nil {
 			return err
 		}
@@ -662,15 +714,19 @@ func testAccCheckDatadogMonitorExists(n string) resource.TestCheckFunc {
 }
 
 func TestAccDatadogMonitor_SilencedRemove(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorSilenceZero,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", "name for monitor foo"),
 					resource.TestCheckResourceAttr(
@@ -686,7 +742,7 @@ func TestAccDatadogMonitor_SilencedRemove(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMonitorSilenceUnmute,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", "name for monitor foo"),
 					resource.TestCheckResourceAttr(
@@ -700,15 +756,19 @@ func TestAccDatadogMonitor_SilencedRemove(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorSilenceZero,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", "name for monitor foo"),
 					resource.TestCheckResourceAttr(
@@ -730,15 +790,19 @@ func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_SilencedUpdatePastTimestamp(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorSilenceZero,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists("datadog_monitor.foo"),
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", "name for monitor foo"),
 					resource.TestCheckResourceAttr(

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"github.com/zorkian/go-datadog-api"
 )
@@ -75,15 +76,19 @@ resource "datadog_service_level_objective" "foo" {
 // tests
 
 func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogServiceLevelObjectiveDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogServiceLevelObjectiveConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogServiceLevelObjectiveExists("datadog_service_level_objective.foo"),
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "name", "name for metric SLO foo"),
 					resource.TestCheckResourceAttr(
@@ -126,7 +131,7 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 			{
 				Config: testAccCheckDatadogServiceLevelObjectiveConfigUpdated,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogServiceLevelObjectiveExists("datadog_service_level_objective.foo"),
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "name", "updated name for metric SLO foo"),
 					resource.TestCheckResourceAttr(
@@ -198,20 +203,23 @@ func existsServiceLevelObjectiveHelper(s *terraform.State, client *datadog.Clien
 	return nil
 }
 
-func testAccCheckDatadogServiceLevelObjectiveDestroy(s *terraform.State) error {
-	providerConf := testAccProvider.Meta().(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+func testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 
-	if err := destroyServiceLevelObjectiveHelper(s, client); err != nil {
-		return err
+		if err := destroyServiceLevelObjectiveHelper(s, client); err != nil {
+			return err
+		}
+		return nil
 	}
-	return nil
 }
 
-func testAccCheckDatadogServiceLevelObjectiveExists(n string) resource.TestCheckFunc {
+func testAccCheckDatadogServiceLevelObjectiveExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
 		client := providerConf.CommunityClient
+
 		if err := existsServiceLevelObjectiveHelper(s, client); err != nil {
 			return err
 		}

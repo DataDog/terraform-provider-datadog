@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 )
 
@@ -449,11 +450,14 @@ resource "datadog_screenboard" "acceptance_test" {
 `
 
 func TestAccDatadogScreenboard_update(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
 
 	step1 := resource.TestStep{
 		Config: config,
 		Check: resource.ComposeTestCheckFunc(
-			checkScreenboardExists,
+			checkScreenboardExists(accProvider),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "width", "640"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "height", "480"),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "template_variable.#", "2"),
@@ -1865,36 +1869,42 @@ func TestAccDatadogScreenboard_update(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: checkScreenboardDestroy,
+		Providers:    accProviders,
+		CheckDestroy: checkScreenboardDestroy(accProvider),
 		Steps:        []resource.TestStep{step1},
 	})
 }
 
-func checkScreenboardExists(s *terraform.State) error {
-	providerConf := testAccProvider.Meta().(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-	for _, r := range s.RootModule().Resources {
-		i, _ := strconv.Atoi(r.Primary.ID)
-		if _, err := client.GetScreenboard(i); err != nil {
-			return fmt.Errorf("Received an error retrieving screenboard %s", err)
+func checkScreenboardExists(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
+		for _, r := range s.RootModule().Resources {
+			i, _ := strconv.Atoi(r.Primary.ID)
+			if _, err := client.GetScreenboard(i); err != nil {
+				return fmt.Errorf("Received an error retrieving screenboard %s", err)
+			}
 		}
+		return nil
 	}
-	return nil
 }
 
-func checkScreenboardDestroy(s *terraform.State) error {
-	providerConf := testAccProvider.Meta().(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-	for _, r := range s.RootModule().Resources {
-		i, _ := strconv.Atoi(r.Primary.ID)
-		if _, err := client.GetScreenboard(i); err != nil {
-			if strings.Contains(err.Error(), "404 Not Found") {
-				continue
+func checkScreenboardDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
+		for _, r := range s.RootModule().Resources {
+			i, _ := strconv.Atoi(r.Primary.ID)
+			if _, err := client.GetScreenboard(i); err != nil {
+				if strings.Contains(err.Error(), "404 Not Found") {
+					continue
+				}
+				return fmt.Errorf("Received an error retrieving screenboard %s", err)
 			}
-			return fmt.Errorf("Received an error retrieving screenboard %s", err)
+			return fmt.Errorf("Screenboard still exists")
 		}
-		return fmt.Errorf("Screenboard still exists")
+		return nil
 	}
-	return nil
 }

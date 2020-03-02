@@ -3,23 +3,27 @@ package datadog
 import (
 	"fmt"
 	"testing"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"github.com/zorkian/go-datadog-api"
 )
 
 func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		Providers: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
-					checkPostEvent(),
-					checkMetricMetadataExists("datadog_metric_metadata.foo"),
+					checkPostEvent(t, accProvider),
+					checkMetricMetadataExists(accProvider, "datadog_metric_metadata.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
 					resource.TestCheckResourceAttr(
@@ -39,15 +43,19 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: testAccProviders,
+		Providers: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
-					checkPostEvent(),
-					checkMetricMetadataExists("datadog_metric_metadata.foo"),
+					checkPostEvent(t, accProvider),
+					checkMetricMetadataExists(accProvider, "datadog_metric_metadata.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
 					resource.TestCheckResourceAttr(
@@ -65,7 +73,7 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMetricMetadataConfigUpdated,
 				Check: resource.ComposeTestCheckFunc(
-					checkMetricMetadataExists("datadog_metric_metadata.foo"),
+					checkMetricMetadataExists(accProvider, "datadog_metric_metadata.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
 					resource.TestCheckResourceAttr(
@@ -84,9 +92,9 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 	})
 }
 
-func checkMetricMetadataExists(name string) resource.TestCheckFunc {
+func checkMetricMetadataExists(accProvider *schema.Provider, name string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
 		client := providerConf.CommunityClient
 		for _, r := range s.RootModule().Resources {
 			metric, ok := r.Primary.Attributes["metric"]
@@ -101,11 +109,12 @@ func checkMetricMetadataExists(name string) resource.TestCheckFunc {
 	}
 }
 
-func checkPostEvent() resource.TestCheckFunc {
+func checkPostEvent(t *testing.T, accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := testAccProvider.Meta().(*ProviderConfiguration)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
 		client := providerConf.CommunityClient
-		datapointUnixTime := float64(time.Now().Unix())
+		clock := testClock(t)
+		datapointUnixTime := float64(clock.Now().Unix())
 		datapointValue := float64(1)
 		metric := datadog.Metric{
 			Metric: datadog.String("foo"),

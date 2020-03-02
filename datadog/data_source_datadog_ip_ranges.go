@@ -87,7 +87,6 @@ func dataSourceDatadogIPRanges() *schema.Resource {
 }
 
 func dataSourceDatadogIPRangesRead(d *schema.ResourceData, meta interface{}) error {
-
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 
