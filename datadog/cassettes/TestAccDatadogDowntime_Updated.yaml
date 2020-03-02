@@ -1,0 +1,710 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{"end":1735765200,"message":"Example Datadog downtime message.","monitor_tags":["*"],"timezone":"UTC","recurrence":{"period":1,"type":"days"},"scope":["*"],"start":1735707600}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime
+    method: POST
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"Example
+      Datadog downtime message.","downtime_type":0,"id":750624567,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:00:57 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:00:57 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - J5PL0LnJukdy69mckjXi3cjye/YJX2hkoCBkqKQi+tYjrsXYELx6DfDD11fhyjYF
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime/750624567
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"Example
+      Datadog downtime message.","downtime_type":0,"id":750624567,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:00:57 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:00:57 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - pxuY3ZnSwE+rCP/MLubWk3EuAMlxxciIsQ2EBSRxZafCu9H4+UEVULDCm144bb3W
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime/750624567
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"Example
+      Datadog downtime message.","downtime_type":0,"id":750624567,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:00:58 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:00:58 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - vYQu3ls2HKdZ2pXErBiwg/FlJyuK31hjiI+oJSqoEPPw/7mzimb2FzvWEsshbznY
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime/750624567
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"Example
+      Datadog downtime message.","downtime_type":0,"id":750624567,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:00:58 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:00:58 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - Iy6HNgrdx6jplabT1ZfQVzkCrk+jqjHEQw0NvfR/5Sb/NsvSUgBv2AbCahJdaB7p
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime/750624567
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"Example
+      Datadog downtime message.","downtime_type":0,"id":750624567,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:00:58 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:00:58 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - yL2jMz/muX5URjcdpTHzlehf0qi0hyVxH7uShvIhWEeYrIRwdt0CU/7wzCTakK6N
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime/750624567
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"Example
+      Datadog downtime message.","downtime_type":0,"id":750624567,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:00:58 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:00:58 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 0pmBjL5vG2A5IkxC4OBtwgn929khTZGgUquRW20JC77zchR4jTrHgra/pB22jP66
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime/750624567
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"Example
+      Datadog downtime message.","downtime_type":0,"id":750624567,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:00:58 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:00:58 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - YNGrI7M9aLfuf6Npp7n/51e6xDtYCO9Rm/LB+HGbX4I6A/e7rnC+cgQxIZnsU+fj
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"id":750624567,"message":"Example Datadog downtime message.","monitor_tags":["*"],"timezone":"UTC","recurrence":{"period":3,"type":"days"},"scope":["Updated"]}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime/750624567
+    method: PUT
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":750624567,"updater_id":1445416}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:00:58 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:00:58 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - A5a5htKhTUF1FdBQZRUZl4RVawKwk2RUtaZz3EDBmdXc0X6i0O7TBEBWn4bIBQ01
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime/750624567
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":750624567,"updater_id":1445416}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:00:58 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:00:58 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - tC9U8NM0Z/kvHE2H14k1U3spiHbXz72rh5O3tOqhQhVPC3nlvooY3TRyCaI/gIdt
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime/750624567
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":750624567,"updater_id":1445416}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:00:59 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:00:59 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 11g4TM+MO8VJV6iUJTOff4hAGEXsIqbG4IMv2YuWygOleCGxCxx6NihCkVtjenZN
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime/750624567
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":750624567,"updater_id":1445416}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:00:59 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:00:59 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - DAk/CQntZmry+u4cYsuVOELuKFo1I3NzKRNwPlY9WvlbH+rffk5VylB8tKDaSRWP
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime/750624567
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":750624567,"updater_id":1445416}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:00:59 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:00:59 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - Lo9psmCk9egobltaxBGqrQFhgCcgUTQoFZpr2xiSR+6tucB/owychJvFjr9YMWzu
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime/750624567
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":750624567,"updater_id":1445416}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:00:59 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:00:59 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - qQjtInIx1/QKXFlq6Yoz4D/caW/S2oJqgJl91CEEpXrlxRmYHcLgIFCRCvW61KAy
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime/750624567
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":750624567,"updater_id":1445416}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:00:59 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:00:59 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - e8t0cvW5uVKXk1zUsTcAcDpqv28dgy+lCs/R2sCfbKW6stomFiq2a4ijzxRdPBn5
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime/750624567
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "0"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - text/html; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:00:59 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:00:59 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - hABsPq9DIvV7yAEiU7rMxs7UCRuTbRH/kYpwue4a0q9qmwd4SUh9bBZ5SHPkBLc6
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/downtime/750624567
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":1582909259,"monitor_id":null,"org_id":321813,"disabled":true,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":750624567,"updater_id":1445416}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 28 Feb 2020 17:01:00 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 06-Mar-2020 17:01:00 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - CFSDBBie5Okt4N1oWVJNTAqpt778eCo7VQZ0NhVFWw8MHYFUwuA7DURhpFRYY+Wy
+      X-Dd-Version:
+      - "35.2224914"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
