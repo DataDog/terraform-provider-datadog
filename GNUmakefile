@@ -17,8 +17,6 @@ install: fmtcheck
 uninstall:
 	@rm -vf $(DIR)/terraform-provider-datadog
 
-test-install:
-
 test: fmtcheck
 	go test -i $(TEST) || exit 1
 	echo $(TEST) | \
