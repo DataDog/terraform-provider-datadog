@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"reflect"
@@ -8,9 +9,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
-	datadog "github.com/zorkian/go-datadog-api"
 )
 
 func resourceDatadogDowntime() *schema.Resource {
@@ -157,15 +158,15 @@ func resourceDatadogDowntime() *schema.Resource {
 // * `d` - current `*schema.ResourceData`
 // * `dateAttr` - name of the attribute in `d` which carries and RFC3339 date string, e.g. `end_date`
 // * `tsAttr` - name of the attribute in `d` which carries integer timestamp, e.g. `end`
-func getDowntimeBoundaryTimestamp(d *schema.ResourceData, dateAttr, tsAttr string) (ts int, tsFrom string) {
+func getDowntimeBoundaryTimestamp(d *schema.ResourceData, dateAttr, tsAttr string) (ts int64, tsFrom string) {
 	if attr, ok := d.GetOk(dateAttr); ok {
 		if t, err := time.Parse(time.RFC3339, attr.(string)); err == nil {
 			tsFrom = dateAttr
-			ts = int(t.Unix())
+			ts = t.Unix()
 		}
 	} else if attr, ok := d.GetOk(tsAttr); ok {
 		tsFrom = tsAttr
-		ts = attr.(int)
+		ts = int64(attr.(int))
 	}
 	return ts, tsFrom
 }
@@ -177,7 +178,7 @@ func getDowntimeBoundaryTimestamp(d *schema.ResourceData, dateAttr, tsAttr strin
 // * `apiTs` - current value (returned by API) of the boundary
 // * `configTs` - desired value (from TF configuration) of the boundary
 // * `updating` - `true` if this call is from Update method of the downtime resource, `false` if from Create
-func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, configTs int, updating bool) (apply bool) {
+func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, configTs int64, updating bool) (apply bool) {
 	if tsFrom == "" {
 		// if the boundary was not specified in the config, don't apply it
 		return apply
@@ -198,7 +199,7 @@ func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, co
 	return apply
 }
 
-func buildDowntimeStruct(d *schema.ResourceData, client *datadog.Client, updating bool) (*datadog.Downtime, error) {
+func buildDowntimeStruct(auth context.Context, d *schema.ResourceData, client *datadog.APIClient, updating bool) (*datadog.Downtime, error) {
 	// NOTE: for each of start/start_date/end/end_date, we only send the value when
 	// it has changed or if the configured value is different than current value
 	// (IOW there's a resource drift). This allows users to change other attributes
@@ -206,17 +207,18 @@ func buildDowntimeStruct(d *schema.ResourceData, client *datadog.Client, updatin
 	// in the future (this works thanks to the downtime API allowing not to send these
 	// values when they shouldn't be touched).
 	var dt datadog.Downtime
-	currentStart, currentEnd := 0, 0
+	var currentStart int64
+	var currentEnd datadog.NullableInt64
 	if updating {
-		id, err := strconv.Atoi(d.Id())
+		id, err := strconv.ParseInt(d.Id(), 10, 64)
 		if err != nil {
 			return nil, err
 		}
 
-		var currdt *datadog.Downtime
-		currdt, err = client.GetDowntime(id)
+		var currdt datadog.Downtime
+		currdt, _, err = client.DowntimesApi.GetDowntime(auth, id).Execute()
 		if err != nil {
-			return nil, err
+			return nil, translateClientError(err, "")
 		}
 		currentStart = currdt.GetStart()
 		currentEnd = currdt.GetEnd()
@@ -229,51 +231,56 @@ func buildDowntimeStruct(d *schema.ResourceData, client *datadog.Client, updatin
 		dt.SetDisabled(attr.(bool))
 	}
 	endValue, endAttrName := getDowntimeBoundaryTimestamp(d, "end_date", "end")
-	if downtimeBoundaryNeedsApply(d, endAttrName, currentEnd, endValue, updating) {
-		dt.SetEnd(endValue)
+	if currentEnd.Get() != nil {
+		if downtimeBoundaryNeedsApply(d, endAttrName, *currentEnd.Get(), endValue, updating) {
+			dt.SetEnd(*datadog.NewNullableInt64(&endValue))
+		}
 	}
 
 	if attr, ok := d.GetOk("message"); ok {
 		dt.SetMessage(strings.TrimSpace(attr.(string)))
 	}
 	if attr, ok := d.GetOk("monitor_id"); ok {
-		dt.SetMonitorId(attr.(int))
+		monitorId := int64(attr.(int))
+		dt.SetMonitorId(*datadog.NewNullableInt64(&monitorId))
 	}
 	if _, ok := d.GetOk("recurrence"); ok {
-		var recurrence datadog.Recurrence
+		var recurrence datadog.DowntimeRecurrence
 
 		if attr, ok := d.GetOk("recurrence.0.period"); ok {
-			recurrence.SetPeriod(attr.(int))
+			recurrence.SetPeriod(int32(attr.(int)))
 		}
 		if attr, ok := d.GetOk("recurrence.0.type"); ok {
 			recurrence.SetType(attr.(string))
 		}
 		if attr, ok := d.GetOk("recurrence.0.until_date"); ok {
-			recurrence.SetUntilDate(attr.(int))
+			untilDate := int64(attr.(int))
+			recurrence.SetUntilDate(*datadog.NewNullableInt64(&untilDate))
 		}
 		if attr, ok := d.GetOk("recurrence.0.until_occurrences"); ok {
-			recurrence.SetUntilOccurrences(attr.(int))
+			untilOccurrences := int32(attr.(int))
+			recurrence.SetUntilOccurrences(*datadog.NewNullableInt32(&untilOccurrences))
 		}
 		if attr, ok := d.GetOk("recurrence.0.week_days"); ok {
 			weekDays := make([]string, 0, len(attr.([]interface{})))
 			for _, weekDay := range attr.([]interface{}) {
 				weekDays = append(weekDays, weekDay.(string))
 			}
-			recurrence.WeekDays = weekDays
+			recurrence.SetWeekDays(weekDays)
 		}
 
-		dt.SetRecurrence(recurrence)
+		dt.SetRecurrence(*datadog.NewNullableDowntimeRecurrence(&recurrence))
 	}
 	scope := []string{}
 	for _, s := range d.Get("scope").([]interface{}) {
 		scope = append(scope, s.(string))
 	}
-	dt.Scope = scope
+	dt.SetScope(scope)
 	tags := []string{}
 	for _, mt := range d.Get("monitor_tags").([]interface{}) {
 		tags = append(tags, mt.(string))
 	}
-	dt.MonitorTags = tags
+	dt.SetMonitorTags(tags)
 
 	startValue, startAttrName := getDowntimeBoundaryTimestamp(d, "start_date", "start")
 	if downtimeBoundaryNeedsApply(d, startAttrName, currentStart, startValue, updating) {
@@ -291,19 +298,20 @@ func resourceDatadogDowntimeExists(d *schema.ResourceData, meta interface{}) (b 
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	id, err := strconv.Atoi(d.Id())
+	id, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return false, err
 	}
 
-	downtime, err := client.GetDowntime(id)
+	downtime, _, err := client.DowntimesApi.GetDowntime(auth, id).Execute()
 	if err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "")
 	}
 
 	if _, ok := downtime.GetCanceledOk(); ok {
@@ -317,34 +325,36 @@ func resourceDatadogDowntimeExists(d *schema.ResourceData, meta interface{}) (b 
 
 func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	dts, err := buildDowntimeStruct(d, client, false)
+	dts, err := buildDowntimeStruct(auth, d, client, false)
 	if err != nil {
 		return err
 	}
-	dt, err := client.CreateDowntime(dts)
+	dt, _, err := client.DowntimesApi.CreateDowntime(auth).Body(*dts).Execute()
 	if err != nil {
-		return fmt.Errorf("error updating downtime: %s", err.Error())
+		return translateClientError(err, "error updating downtime")
 	}
 
-	d.SetId(strconv.Itoa(dt.GetId()))
+	d.SetId(strconv.FormatInt(dt.GetId(), 10))
 
 	return nil
 }
 
 func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	id, err := strconv.Atoi(d.Id())
+	id, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return err
 	}
 
-	dt, err := client.GetDowntime(id)
+	dt, _, err := client.DowntimesApi.GetDowntime(auth, id).Execute()
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting downtime")
 	}
 
 	log.Printf("[DEBUG] downtime: %v", dt)
@@ -372,22 +382,22 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 	if r, ok := dt.GetRecurrenceOk(); ok {
 		recurrence := make(map[string]interface{})
 		recurrenceList := make([]map[string]interface{}, 0, 1)
-
-		if attr, ok := r.GetPeriodOk(); ok {
-			recurrence["period"] = strconv.Itoa(attr)
+		dt := r.Get()
+		if attr, ok := dt.GetPeriodOk(); ok {
+			recurrence["period"] = strconv.FormatInt(int64(attr), 10)
 		}
-		if attr, ok := r.GetTypeOk(); ok {
+		if attr, ok := dt.GetTypeOk(); ok {
 			recurrence["type"] = attr
 		}
-		if attr, ok := r.GetUntilDateOk(); ok {
-			recurrence["until_date"] = strconv.Itoa(attr)
+		if attr, ok := dt.GetUntilDateOk(); ok {
+			recurrence["until_date"] = strconv.FormatInt(*attr.Get(), 10)
 		}
-		if attr, ok := r.GetUntilOccurrencesOk(); ok {
-			recurrence["until_occurrences"] = strconv.Itoa(attr)
+		if attr, ok := dt.GetUntilOccurrencesOk(); ok {
+			recurrence["until_occurrences"] = strconv.FormatInt(int64(*attr.Get()), 10)
 		}
-		if r.WeekDays != nil {
-			weekDays := make([]string, 0, len(r.WeekDays))
-			for _, weekDay := range r.WeekDays {
+		if dt.GetWeekDays() != nil {
+			weekDays := make([]string, 0, len(dt.GetWeekDays()))
+			for _, weekDay := range dt.GetWeekDays() {
 				weekDays = append(weekDays, weekDay)
 			}
 			recurrence["week_days"] = weekDays
@@ -407,38 +417,40 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 
 func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	dt, err := buildDowntimeStruct(d, client, true)
+	dt, err := buildDowntimeStruct(auth, d, client, true)
 	if err != nil {
 		return err
 	}
-	id, err := strconv.Atoi(d.Id())
+	id, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return err
 	}
 	dt.SetId(id)
 
-	if err = client.UpdateDowntime(dt); err != nil {
-		return fmt.Errorf("error updating downtime: %s", err.Error())
+	if _, _, err = client.DowntimesApi.UpdateDowntime(auth, dt.GetId()).Execute(); err != nil {
+		return translateClientError(err, "error updating downtime")
 	}
 	// handle the case when a downtime is replaced
-	d.SetId(strconv.Itoa(dt.GetId()))
+	d.SetId(strconv.FormatInt(dt.GetId(), 10))
 
 	return resourceDatadogDowntimeRead(d, meta)
 }
 
 func resourceDatadogDowntimeDelete(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	id, err := strconv.Atoi(d.Id())
+	id, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return err
 	}
 
-	if err = client.DeleteDowntime(id); err != nil {
-		return err
+	if _, err = client.DowntimesApi.CancelDowntime(auth, id).Execute(); err != nil {
+		return translateClientError(err, "error cancelling downtime")
 	}
 
 	return nil

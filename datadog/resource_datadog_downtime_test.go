@@ -8,10 +8,11 @@ import (
 	"testing"
 	"time"
 
+	"context"
+	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"github.com/zorkian/go-datadog-api"
 )
 
 func TestAccDatadogDowntime_Basic(t *testing.T) {
@@ -367,8 +368,9 @@ func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
 func testAccCheckDatadogDowntimeDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
-		if err := datadogDowntimeDestroyHelper(s, client); err != nil {
+		client := providerConf.DatadogClientV1
+		auth := providerConf.Auth
+		if err := datadogDowntimeDestroyHelper(auth, s, client); err != nil {
 			return err
 		}
 		return nil
@@ -378,8 +380,9 @@ func testAccCheckDatadogDowntimeDestroy(accProvider *schema.Provider) func(*terr
 func testAccCheckDatadogDowntimeExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
-		if err := datadogDowntimeExistsHelper(s, client); err != nil {
+		client := providerConf.DatadogClientV1
+		auth := providerConf.Auth
+		if err := datadogDowntimeExistsHelper(auth, s, client); err != nil {
 			return err
 		}
 		return nil
@@ -766,15 +769,15 @@ func TestResourceDatadogDowntimeRecurrenceWeekDaysValidation(t *testing.T) {
 	}
 }
 
-func datadogDowntimeDestroyHelper(s *terraform.State, client *datadog.Client) error {
+func datadogDowntimeDestroyHelper(auth context.Context, s *terraform.State, client *datadog.APIClient) error {
 	for n, r := range s.RootModule().Resources {
 		fmt.Printf("Resource %s, type = %s\n", n, r.Type)
 		if r.Type != "datadog_downtime" {
 			continue
 		}
 
-		id, _ := strconv.Atoi(r.Primary.ID)
-		dt, err := client.GetDowntime(id)
+		id, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
+		dt, _, err := client.DowntimesApi.GetDowntime(auth, id).Execute()
 
 		if err != nil {
 			if strings.Contains(err.Error(), "404 Not Found") {
@@ -792,14 +795,14 @@ func datadogDowntimeDestroyHelper(s *terraform.State, client *datadog.Client) er
 	return nil
 }
 
-func datadogDowntimeExistsHelper(s *terraform.State, client *datadog.Client) error {
+func datadogDowntimeExistsHelper(auth context.Context, s *terraform.State, client *datadog.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type != "datadog_downtime" {
 			continue
 		}
 
-		id, _ := strconv.Atoi(r.Primary.ID)
-		if _, err := client.GetDowntime(id); err != nil {
+		id, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
+		if _, _, err := client.DowntimesApi.GetDowntime(auth, id).Execute(); err != nil {
 			return fmt.Errorf("Received an error retrieving downtime %s", err)
 		}
 	}
