@@ -1267,7 +1267,7 @@ resource "datadog_synthetics_test" "foo" {
 
 	locations = [ "aws:eu-central-1" ]
 
-	options = {
+	options {
 		tick_every = 900
 		min_failure_duration = 10
 		min_location_failed = 1

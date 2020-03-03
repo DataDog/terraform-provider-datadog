@@ -25,6 +25,14 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
+		SchemaVersion: 1,
+		StateUpgraders: []schema.StateUpgrader{
+			{
+				Type:    resourceDatadogSyntheticsTestV0().CoreConfigSchema().ImpliedType(),
+				Upgrade: resourceDatadogSyntheticsTestStateUpgradeV0,
+				Version: 0,
+			},
+		},
 		Schema: map[string]*schema.Schema{
 			"type": {
 				Type:         schema.TypeString,
@@ -43,7 +51,40 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				},
 				ValidateFunc: validation.StringInSlice(syntheticsSubTypes, false),
 			},
-			"request": syntheticsTestRequest(),
+			"request": {
+				Type:     schema.TypeMap,
+				Required: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"method": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"url": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"body": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"timeout": {
+							Type:     schema.TypeInt,
+							Optional: true,
+							Default:  60,
+						},
+						"host": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"port": {
+							Type:     schema.TypeInt,
+							Optional: true,
+							Default:  60,
+						},
+					},
+				},
+			},
 			"request_headers": {
 				Type:     schema.TypeMap,
 				Optional: true,
@@ -53,6 +94,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeMap,
+					Elem: &schema.Schema{Type: schema.TypeString},
 				},
 			},
 			"device_ids": {
@@ -63,11 +105,61 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			"locations": {
 				Type:     schema.TypeList,
 				Required: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
+			// From: https://www.terraform.io/docs/extend/writing-custom-providers.html
+			// Due to the limitation of tf-11115 it is not possible to nest maps.
+			// So the workaround is to let only the innermost data structure be of the type TypeMap: in this case retry.
+			// The outer data structures are of TypeList which can only have one item.
+			"options": &schema.Schema{
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"follow_redirects": {
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+						"min_failure_duration": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"min_location_failed": {
+							Type:     schema.TypeInt,
+							Optional: true,
+							Default:  1,
+						},
+						"tick_every": {
+							Type:     schema.TypeInt,
+							Required: true,
+						},
+						"accept_self_signed": {
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+						"retry": {
+							Type:     schema.TypeList,
+							Optional: true,
+							MaxItems: 1,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"interval": {
+										Type:     schema.TypeInt,
+										Optional: true,
+										Default:  0,
+									},
+									"count": {
+										Type:     schema.TypeInt,
+										Optional: true,
+										Default:  0,
+									},
+								},
+							},
+						},
+					},
 				},
 			},
-			"options": syntheticsTestOptions(),
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -94,109 +186,172 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 	}
 }
 
-func syntheticsTestRequest() *schema.Schema {
-	return &schema.Schema{
-		Type:     schema.TypeMap,
-		Required: true,
-		Elem: &schema.Resource{
-			Schema: map[string]*schema.Schema{
-				"method": {
-					Type:     schema.TypeString,
-					Optional: true,
+func resourceDatadogSyntheticsTestV0() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"type": {
+				Type:         schema.TypeString,
+				Required:     true,
+				ValidateFunc: validation.StringInSlice(syntheticsTypes, false),
+			},
+			"subtype": {
+				Type:     schema.TypeString,
+				Optional: true,
+				DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
+					if d.Get("type") == "api" && old == "http" && new == "" {
+						// defaults to http if type is api for retro-compatibility
+						return true
+					}
+					return old == new
 				},
-				"url": {
-					Type:     schema.TypeString,
-					Optional: true,
-				},
-				"body": {
-					Type:     schema.TypeString,
-					Optional: true,
-				},
-				"timeout": {
-					Type:     schema.TypeInt,
-					Optional: true,
-					Default:  60,
-				},
-				"host": {
-					Type:     schema.TypeString,
-					Optional: true,
-				},
-				"port": {
-					Type:     schema.TypeInt,
-					Optional: true,
-					Default:  60,
+				ValidateFunc: validation.StringInSlice(syntheticsSubTypes, false),
+			},
+			"request": {
+				Type:     schema.TypeMap,
+				Required: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"method": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"url": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"body": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"timeout": {
+							Type:     schema.TypeInt,
+							Optional: true,
+							Default:  60,
+						},
+						"host": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"port": {
+							Type:     schema.TypeInt,
+							Optional: true,
+							Default:  60,
+						},
+					},
 				},
 			},
-		},
-	}
-}
-
-func syntheticsTestOptions() *schema.Schema {
-	return &schema.Schema{
-		Type: schema.TypeMap,
-		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
-			if key == "options.follow_redirects" || key == "options.accept_self_signed" {
-				// TF nested schemas is limited to string values only
-				// follow_redirects and accept_self_signed being booleans in Datadog json api
-				// we need a sane way to convert from boolean to string
-				// and from string to boolean
-				oldValue, err1 := strconv.ParseBool(old)
-				newValue, err2 := strconv.ParseBool(new)
-				if err1 != nil || err2 != nil {
-					return false
-				}
-				return oldValue == newValue
-			}
-			return old == new
-		},
-		ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-			followRedirectsRaw, ok := val.(map[string]interface{})["follow_redirects"]
-			if ok {
-				followRedirectsStr := convertToString(followRedirectsRaw)
-				switch followRedirectsStr {
-				case "0", "1":
-					warns = append(warns, fmt.Sprintf("%q.follow_redirects must be either true or false, got: %s (please change 1 => true, 0 => false)", key, followRedirectsStr))
-				case "true", "false":
-					break
-				default:
-					errs = append(errs, fmt.Errorf("%q.follow_redirects must be either true or false, got: %s", key, followRedirectsStr))
-				}
-			}
-			acceptSelfSignedRaw, ok := val.(map[string]interface{})["accept_self_signed"]
-			if ok {
-				acceptSelfSignedStr := convertToString(acceptSelfSignedRaw)
-				switch acceptSelfSignedStr {
-				case "true", "false":
-					break
-				default:
-					errs = append(errs, fmt.Errorf("%q.accept_self_signed must be either true or false, got: %s", key, acceptSelfSignedStr))
-				}
-			}
-			return
-		},
-		Optional: true,
-		Elem: &schema.Resource{
-			Schema: map[string]*schema.Schema{
-				"follow_redirects": {
-					Type:     schema.TypeBool,
-					Optional: true,
+			"request_headers": {
+				Type:     schema.TypeMap,
+				Optional: true,
+			},
+			"assertions": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeMap,
 				},
-				"min_failure_duration": {
-					Type:     schema.TypeInt,
-					Optional: true,
+			},
+			"device_ids": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
+			"locations": {
+				Type:     schema.TypeList,
+				Required: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
 				},
-				"min_location_failed": {
-					Type:     schema.TypeInt,
-					Optional: true,
+			},
+			"options": {
+				Type: schema.TypeMap,
+				DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
+					if key == "options.follow_redirects" || key == "options.accept_self_signed" {
+						// TF nested schemas is limited to string values only
+						// follow_redirects and accept_self_signed being booleans in Datadog json api
+						// we need a sane way to convert from boolean to string
+						// and from string to boolean
+						oldValue, err1 := strconv.ParseBool(old)
+						newValue, err2 := strconv.ParseBool(new)
+						if err1 != nil || err2 != nil {
+							return false
+						}
+						return oldValue == newValue
+					}
+					return old == new
 				},
-				"tick_every": {
-					Type:     schema.TypeInt,
-					Required: true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					followRedirectsRaw, ok := val.(map[string]interface{})["follow_redirects"]
+					if ok {
+						followRedirectsStr := convertToString(followRedirectsRaw)
+						switch followRedirectsStr {
+						case "0", "1":
+							warns = append(warns, fmt.Sprintf("%q.follow_redirects must be either true or false, got: %s (please change 1 => true, 0 => false)", key, followRedirectsStr))
+						case "true", "false":
+							break
+						default:
+							errs = append(errs, fmt.Errorf("%q.follow_redirects must be either true or false, got: %s", key, followRedirectsStr))
+						}
+					}
+					acceptSelfSignedRaw, ok := val.(map[string]interface{})["accept_self_signed"]
+					if ok {
+						acceptSelfSignedStr := convertToString(acceptSelfSignedRaw)
+						switch acceptSelfSignedStr {
+						case "true", "false":
+							break
+						default:
+							errs = append(errs, fmt.Errorf("%q.accept_self_signed must be either true or false, got: %s", key, acceptSelfSignedStr))
+						}
+					}
+					return
 				},
-				"accept_self_signed": {
-					Type:     schema.TypeBool,
-					Optional: true,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"follow_redirects": {
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+						"min_failure_duration": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"min_location_failed": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						"tick_every": {
+							Type:     schema.TypeInt,
+							Required: true,
+						},
+						"accept_self_signed": {
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+					},
 				},
+			},
+			"name": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"message": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "",
+			},
+			"tags": {
+				Type:     schema.TypeList,
+				Required: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
+			"status": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"monitor_id": {
+				Type:     schema.TypeInt,
+				Computed: true,
 			},
 		},
 	}
@@ -339,32 +494,7 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 		}
 	}
 
-	options := datadog.SyntheticsOptions{}
-	if attr, ok := d.GetOk("options.tick_every"); ok {
-		tickEvery, _ := strconv.Atoi(attr.(string))
-		options.SetTickEvery(tickEvery)
-	}
-	if attr, ok := d.GetOk("options.follow_redirects"); ok {
-		// follow_redirects is a string ("true" or "false") in TF state
-		// it used to be "1" and "0" but it does not play well with the API
-		// we support both for retro-compatibility
-		followRedirects, _ := strconv.ParseBool(attr.(string))
-		options.SetFollowRedirects(followRedirects)
-	}
-	if attr, ok := d.GetOk("options.min_failure_duration"); ok {
-		minFailureDuration, _ := strconv.Atoi(attr.(string))
-		options.SetMinFailureDuration(minFailureDuration)
-	}
-	if attr, ok := d.GetOk("options.min_location_failed"); ok {
-		minLocationFailed, _ := strconv.Atoi(attr.(string))
-		options.SetMinLocationFailed(minLocationFailed)
-	}
-	if attr, ok := d.GetOk("options.accept_self_signed"); ok {
-		// for some reason, attr is equal to "1" or "0" in TF 0.11
-		// so ParseBool is required for retro-compatibility
-		acceptSelfSigned, _ := strconv.ParseBool(attr.(string))
-		options.SetAcceptSelfSigned(acceptSelfSigned)
-	}
+	options := expandOptions(d.Get("options").([]interface{})[0].(map[string]interface{}))
 	if attr, ok := d.GetOk("device_ids"); ok {
 		deviceIds := []string{}
 		for _, s := range attr.([]interface{}) {
@@ -377,7 +507,7 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 		Name:    datadog.String(d.Get("name").(string)),
 		Type:    datadog.String(d.Get("type").(string)),
 		Config:  &config,
-		Options: &options,
+		Options: options,
 		Message: datadog.String(d.Get("message").(string)),
 		Status:  datadog.String(d.Get("status").(string)),
 	}
@@ -463,25 +593,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 
 	d.Set("locations", syntheticsTest.Locations)
 
-	actualOptions := syntheticsTest.GetOptions()
-	localOptions := make(map[string]string)
-	if actualOptions.HasFollowRedirects() {
-		localOptions["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
-	}
-	if actualOptions.HasMinFailureDuration() {
-		localOptions["min_failure_duration"] = convertToString(actualOptions.GetMinFailureDuration())
-	}
-	if actualOptions.HasMinLocationFailed() {
-		localOptions["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
-	}
-	if actualOptions.HasTickEvery() {
-		localOptions["tick_every"] = convertToString(actualOptions.GetTickEvery())
-	}
-	if actualOptions.HasAcceptSelfSigned() {
-		localOptions["accept_self_signed"] = convertToString(actualOptions.GetAcceptSelfSigned())
-	}
-
-	d.Set("options", localOptions)
+	d.Set("options", flattenOptions(syntheticsTest.GetOptions()))
 
 	d.Set("name", syntheticsTest.GetName())
 	d.Set("message", syntheticsTest.GetMessage())
