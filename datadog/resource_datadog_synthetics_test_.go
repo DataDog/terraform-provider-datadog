@@ -197,6 +197,14 @@ func syntheticsTestOptions() *schema.Schema {
 					Type:     schema.TypeBool,
 					Optional: true,
 				},
+				"retry_count": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+				"retry_interval": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
 			},
 		},
 	}
@@ -365,6 +373,16 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 		acceptSelfSigned, _ := strconv.ParseBool(attr.(string))
 		options.SetAcceptSelfSigned(acceptSelfSigned)
 	}
+	if attr, ok := d.GetOk("options.retry_count"); ok {
+		retry := datadog.Retry{}
+		countInt, _ := strconv.Atoi(attr.(string))
+		retry.SetCount(countInt)
+		if attr, ok := d.GetOk("options.retry_interval"); ok {
+			intervalInt, _ := strconv.Atoi(attr.(string))
+			retry.SetInterval(intervalInt)
+		}
+		options.SetRetry(retry)
+	}
 	if attr, ok := d.GetOk("device_ids"); ok {
 		deviceIds := []string{}
 		for _, s := range attr.([]interface{}) {
@@ -479,6 +497,15 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 	if actualOptions.HasAcceptSelfSigned() {
 		localOptions["accept_self_signed"] = convertToString(actualOptions.GetAcceptSelfSigned())
+	}
+	if retry, ok := actualOptions.GetRetryOk(); ok {
+		if retry.HasCount() {
+			localOptions["retry_count"] = convertToString(retry.GetCount())
+		}
+
+		if retry.HasInterval() {
+			localOptions["retry_interval"] = convertToString(retry.GetInterval())
+		}
 	}
 
 	d.Set("options", localOptions)

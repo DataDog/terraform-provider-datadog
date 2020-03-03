@@ -589,6 +589,8 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.retry_count", "2"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", "name for synthetics browser test bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
@@ -625,6 +627,7 @@ resource "datadog_synthetics_test" "bar" {
 		tick_every = 900
 		min_failure_duration = 0
 		min_location_failed = 1
+		retry_count = 2
 	}
 
 	name = "name for synthetics browser test bar"
@@ -675,6 +678,8 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.retry_count", "3"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", "updated name for synthetics browser test bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @pagerduty"),
@@ -709,6 +714,7 @@ resource "datadog_synthetics_test" "bar" {
 		tick_every = 1800
 		min_failure_duration = 10
 		min_location_failed = 1
+		retry_count = 3
 	}
 	name = "updated name for synthetics browser test bar"
 	message = "Notify @pagerduty"
