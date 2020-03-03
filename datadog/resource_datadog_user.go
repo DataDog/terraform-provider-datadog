@@ -1,9 +1,7 @@
 package datadog
 
 import (
-	"fmt"
 	"log"
-	"net/url"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
@@ -102,7 +100,7 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 	// We ignore that case and proceed, likely re-enabling the user.
 	if _, _, err := client.UsersApi.CreateUser(auth).Body(userCreate).Execute(); err != nil {
 		if !strings.Contains(err.Error(), "API error 409 Conflict") {
-			return fmt.Errorf("error creating user: %s", err.(datadog.GenericOpenAPIError).Body())
+			return translateClientError(err, "error creating user")
 		}
 		log.Printf("[INFO] Updating existing Datadog user %s", *userCreate.Handle)
 	}
@@ -110,13 +108,7 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 	res, _, err := client.UsersApi.UpdateUser(auth, d.Get("handle").(string)).Body(userUpdate).Execute()
 
 	if err != nil {
-		if errBody, ok := err.(datadog.GenericOpenAPIError); ok {
-			return fmt.Errorf("error creating user: %s", string(errBody.Body()))
-		}
-		if errUrl, ok := err.(*url.Error); ok {
-			return fmt.Errorf("error creating user: %s", errUrl)
-		}
-		return fmt.Errorf("error creating user: %s", err.Error())
+		return translateClientError(err, "error creating user")
 	}
 
 	u := res.GetUser()
@@ -132,7 +124,7 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 
 	userResponse, _, err := client.UsersApi.GetUser(auth, d.Id()).Execute()
 	if err != nil {
-		return fmt.Errorf("error getting user: %s", err.(datadog.GenericOpenAPIError).Body())
+		return translateClientError(err, "error getting user")
 	}
 	u := userResponse.GetUser()
 	d.Set("disabled", u.GetDisabled())
@@ -156,7 +148,7 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 	userUpdate.SetDisabled(d.Get("disabled").(bool))
 
 	if _, _, err := client.UsersApi.UpdateUser(auth, d.Get("handle").(string)).Body(userUpdate).Execute(); err != nil {
-		return fmt.Errorf("error updating user: %s", err.(datadog.GenericOpenAPIError).Body())
+		return translateClientError(err, "error updating user")
 	}
 
 	return resourceDatadogUserRead(d, meta)
@@ -176,7 +168,7 @@ func resourceDatadogUserDelete(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	if _, _, err := client.UsersApi.DisableUser(auth, d.Id()).Execute(); err != nil {
-		return fmt.Errorf("error disabling user: %s", err.(datadog.GenericOpenAPIError).Body())
+		return translateClientError(err, "error disabling user")
 	}
 
 	return nil

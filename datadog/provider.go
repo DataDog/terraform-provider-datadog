@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"github.com/terraform-providers/terraform-provider-datadog/version"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
+	"net/url"
 )
 
 //ProviderConfiguration contains the initialized API clients to communicate with the Datadog API
@@ -128,4 +129,17 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		DatadogClientV1: datadogClient,
 		Auth:            auth,
 	}, nil
+}
+
+func translateClientError(err error, msg string) error {
+	if msg == "" {
+		msg = "an error occurred"
+	}
+	if errBody, ok := err.(datadog.GenericOpenAPIError); ok {
+		return fmt.Errorf(msg+" (datadog.GenericOpenAPIError): %s", string(errBody.Body()))
+	}
+	if errUrl, ok := err.(*url.Error); ok {
+		return fmt.Errorf(msg+" (url.Error): %s", errUrl)
+	}
+	return fmt.Errorf(msg+": %s", err.Error())
 }
