@@ -207,8 +207,8 @@ func buildDowntimeStruct(auth context.Context, d *schema.ResourceData, client *d
 	// in the future (this works thanks to the downtime API allowing not to send these
 	// values when they shouldn't be touched).
 	var dt datadog.Downtime
-	var currentStart int64
-	var currentEnd datadog.NullableInt64
+	var currentStart int64 = 0
+	var currentEnd = *datadog.NewNullableInt64(datadog.PtrInt64(0))
 	if updating {
 		id, err := strconv.ParseInt(d.Id(), 10, 64)
 		if err != nil {
@@ -231,20 +231,18 @@ func buildDowntimeStruct(auth context.Context, d *schema.ResourceData, client *d
 		dt.SetDisabled(attr.(bool))
 	}
 	endValue, endAttrName := getDowntimeBoundaryTimestamp(d, "end_date", "end")
-	if currentEnd.Get() != nil {
-		if downtimeBoundaryNeedsApply(d, endAttrName, *currentEnd.Get(), endValue, updating) {
-			dt.SetEnd(*datadog.NewNullableInt64(&endValue))
-		}
+	if downtimeBoundaryNeedsApply(d, endAttrName, *currentEnd.Get(), endValue, updating) {
+		dt.SetEnd(*datadog.NewNullableInt64(datadog.PtrInt64(endValue)))
 	}
-
 	if attr, ok := d.GetOk("message"); ok {
 		dt.SetMessage(strings.TrimSpace(attr.(string)))
 	}
 	if attr, ok := d.GetOk("monitor_id"); ok {
-		monitorId := int64(attr.(int))
-		dt.SetMonitorId(*datadog.NewNullableInt64(&monitorId))
+		dt.SetMonitorId(*datadog.NewNullableInt64(datadog.PtrInt64(int64(attr.(int)))))
 	}
 	if _, ok := d.GetOk("recurrence"); ok {
+		//recurrenceExists := len(r.([]interface{}))
+		//if recurrenceExists > 0 {
 		var recurrence datadog.DowntimeRecurrence
 
 		if attr, ok := d.GetOk("recurrence.0.period"); ok {
@@ -254,12 +252,10 @@ func buildDowntimeStruct(auth context.Context, d *schema.ResourceData, client *d
 			recurrence.SetType(attr.(string))
 		}
 		if attr, ok := d.GetOk("recurrence.0.until_date"); ok {
-			untilDate := int64(attr.(int))
-			recurrence.SetUntilDate(*datadog.NewNullableInt64(&untilDate))
+			recurrence.SetUntilDate(*datadog.NewNullableInt64(datadog.PtrInt64(int64(attr.(int)))))
 		}
 		if attr, ok := d.GetOk("recurrence.0.until_occurrences"); ok {
-			untilOccurrences := int32(attr.(int))
-			recurrence.SetUntilOccurrences(*datadog.NewNullableInt32(&untilOccurrences))
+			recurrence.SetUntilOccurrences(*datadog.NewNullableInt32(datadog.PtrInt32(int32(attr.(int)))))
 		}
 		if attr, ok := d.GetOk("recurrence.0.week_days"); ok {
 			weekDays := make([]string, 0, len(attr.([]interface{})))
@@ -270,6 +266,9 @@ func buildDowntimeStruct(auth context.Context, d *schema.ResourceData, client *d
 		}
 
 		dt.SetRecurrence(*datadog.NewNullableDowntimeRecurrence(&recurrence))
+		//} else {
+		//	dt.SetRecurrence(*datadog.NewNullableDowntimeRecurrence(nil))
+		//}
 	}
 	scope := []string{}
 	for _, s := range d.Get("scope").([]interface{}) {
@@ -339,6 +338,7 @@ func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) err
 
 	d.SetId(strconv.FormatInt(dt.GetId(), 10))
 
+	//return resourceDatadogDowntimeRead(d, meta)
 	return nil
 }
 
@@ -365,13 +365,14 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 	if err := d.Set("disabled", dt.GetDisabled()); err != nil {
 		return err
 	}
-	if err := d.Set("end", dt.GetEnd()); err != nil {
+	if err := d.Set("end", dt.GetEnd().Get()); err != nil {
 		return err
 	}
 	if err := d.Set("message", dt.GetMessage()); err != nil {
 		return err
 	}
-	if err := d.Set("monitor_id", dt.GetMonitorId()); err != nil {
+	if err := d.Set("monitor_id", dt.GetMonitorId().Get()); err != nil {
+		//TODO: Should we handle unset nullable? What should we do when attr.Get() is nil?
 		return err
 	}
 
@@ -390,10 +391,22 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 			recurrence["type"] = attr
 		}
 		if attr, ok := dt.GetUntilDateOk(); ok {
-			recurrence["until_date"] = strconv.FormatInt(*attr.Get(), 10)
+			if attr.Get() != nil {
+				recurrence["until_date"] = strconv.FormatInt(*attr.Get(), 10)
+			}
+			//else {
+			//	recurrence["until_date"] = nil
+			//}
+			//TODO: Should we handle unset nullable? What should we do when attr.Get() is nil?
 		}
 		if attr, ok := dt.GetUntilOccurrencesOk(); ok {
-			recurrence["until_occurrences"] = strconv.FormatInt(int64(*attr.Get()), 10)
+			if attr.Get() != nil {
+				recurrence["until_occurrences"] = strconv.FormatInt(int64(*attr.Get()), 10)
+			}
+			//else {
+			//	recurrence["until_occurrences"] = nil
+			//}
+			//TODO: Should we handle unset nullable? What should we do when attr.Get() is nil?
 		}
 		if dt.GetWeekDays() != nil {
 			weekDays := make([]string, 0, len(dt.GetWeekDays()))
