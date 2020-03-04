@@ -26,22 +26,22 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:15:48 GMT
+      - Wed, 04 Mar 2020 13:20:41 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:15:47 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:40 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - +6muH0vWWhHE6JfE/xHkdpoFSNgX/+wCvqEMuEDvglDKir3htwvCDYdHi0bPaPF0
+      - pEDVi2191MvoIMwusdL+COAxndBmcRhJtxAtWxDDnECWDI8Z99hIoBZbpR57tJKz
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -56,7 +56,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    body: '[{"automute":false,"project_id":"go_test-8345904","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go_test-8347313","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go_test-8350244","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -67,13 +67,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:15:49 GMT
+      - Wed, 04 Mar 2020 13:20:42 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:15:48 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:41 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -82,9 +82,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - ztq+F8HwxRthTKNo0l2MCEDK5uwvgQzF00nWu49lHsBM51hGZBm/pPILDqupy+Xd
+      - ErnxdXQi+pjNvJU00qnaaPgTN904IR+BI4NeCvSijs0uGcTaVMOpPOuObFW+gkC6
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -99,7 +99,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    body: '[{"automute":false,"project_id":"go_test-8345904","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go_test-8347313","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go_test-8350244","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -110,13 +110,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:15:49 GMT
+      - Wed, 04 Mar 2020 13:20:45 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:15:49 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:42 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -125,9 +125,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - wB7h0Rt2IYxDUBLtoJ4y0ZOq10ZaMdDZiRuFZ3d/FUUtC7gfBEZWTs0Y6dZhoLZS
+      - 0Ldh7zbvTvxG6fwW0tw8N7mZPnI2XNOUoKCE8H0O1+b4UJVtdo0G52qWoFveZXDz
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -142,7 +142,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    body: '[{"automute":false,"project_id":"go_test-8345904","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go_test-8347313","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go_test-8350244","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -153,13 +153,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:15:50 GMT
+      - Wed, 04 Mar 2020 13:20:46 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:15:50 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:45 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -168,9 +168,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 1/ye/L7/S9djtmh0CDbapYOAoYP2Xz5NE904aTai4cgQw/Kmmv343hpHqBIP3PC5
+      - fqgAnnBv1js3TBerHAS1jOASlx3n1xB+hOOrFOLO2ZaBfZ3rktA3gzUaBetB5haL
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -185,7 +185,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    body: '[{"automute":false,"project_id":"go_test-8345904","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go_test-8347313","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go_test-8350244","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -196,13 +196,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:15:51 GMT
+      - Wed, 04 Mar 2020 13:20:47 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:15:51 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:46 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -211,9 +211,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - wFmrQbB6wLDPf1aNlKcgRoMicVhPlX6qIVwwvniX5cF7oyd+90s5trfE73Pzpvml
+      - nfUJgEhoI/RZ8GJVApSQj6s2TfLYXQ1qvePMFw8ZmKB2iBVwiNegJAc5RNY4ZZbI
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -228,7 +228,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    body: '[{"automute":false,"project_id":"go_test-8345904","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go_test-8347313","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go_test-8350244","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -239,13 +239,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:15:54 GMT
+      - Wed, 04 Mar 2020 13:20:47 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:15:51 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:47 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -254,9 +254,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - j9H0Mt41m875GBjR2i9r831ZILGOU6+Jata5+JJkOQgIsO+SrMkmgWN80SCun0Sk
+      - 7/pC7B9bYAY6HGz006Bg+ZrYGMZFiH1gxYQ0jMSpdzevd2r/Iy3Bkt2FGvLL5qId
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -271,7 +271,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    body: '[{"automute":false,"project_id":"go_test-8345904","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go_test-8347313","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go_test-8350244","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -282,13 +282,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:15:54 GMT
+      - Wed, 04 Mar 2020 13:20:47 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:15:54 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:47 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -297,9 +297,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - nwn8Akm+cp12Jtby9xyfYjHWK2KZDWf5LxY+SMa+2NK6hVIBcKsVHXjynaTEG+o0
+      - F2g1vP9i37Cj4rH5vEufbSNzCmriMTDVzKKqVk/JOUesbIz8psR3R2945wO0PbTf
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -329,22 +329,22 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:15:54 GMT
+      - Wed, 04 Mar 2020 13:20:47 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:15:54 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:47 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - ucJMu0SEwqvJ36fqkYRsP+glKObktTtdBf6X17lKXJ4+xOn7nFKnx11beu1ycofn
+      - u2B27rQjtu8TuEjzrroc8ae3xeJMLmsxU6SiAszW1tH+EI3X0cOP819eGNRqlxzl
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -359,7 +359,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    body: '[{"automute":false,"project_id":"go_test-8345904","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go_test-8347313","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go_test-8350244","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -370,56 +370,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:15:55 GMT
+      - Wed, 04 Mar 2020 13:20:50 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:15:55 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - FGm8mbL/ixNS/zyX94m5xaWAxszhu9w68KL0QwTbLNqYgp2ZyX2W4rsoYLDoadr+
-      X-Dd-Version:
-      - "35.2232835"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-  response:
-    body: '[{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 02 Mar 2020 19:15:56 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:15:56 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:47 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -428,9 +385,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - yEcEaKqmSUfeSlQ/kN/c5E6EpIXbM1JPI9KV27pdsvBWWv3FI4tsqqRarYTS+fS+
+      - ns395qtajdi4vImLC5PhByq3vzX3KV9r4kOaLqZ3Kb42AGxxpM06vNzB/Pdubr1b
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -445,7 +402,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    body: '[{"automute":false,"project_id":"go_test-8345904","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go_test-8347313","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go_test-8350244","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -456,13 +413,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:15:58 GMT
+      - Wed, 04 Mar 2020 13:20:51 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:15:57 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:50 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -471,9 +428,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - IWbeot5NPPjwzkLRJwJSrhKxooUYWPiItYmeOu7MvfpEU9kI8879nM2EukYnEnom
+      - GG9N5JNk6zUo5YQ1gmfpF0kYcSj/kjDOsFItaODUS7qQCwsMrhI3QWJVQns7uvtI
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -488,7 +445,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    body: '[{"automute":false,"project_id":"go_test-8345904","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go_test-8347313","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go_test-8350244","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -499,56 +456,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:15:59 GMT
+      - Wed, 04 Mar 2020 13:20:52 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:15:58 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 2AZOmbSnS2o4jaTO55IoEgDi10r3ewUAnpo5XLuAFAThAxt0uvbRy8dZoSIDmBYA
-      X-Dd-Version:
-      - "35.2232835"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-  response:
-    body: '[{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 02 Mar 2020 19:16:00 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:15:59 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:51 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -559,7 +473,7 @@ interactions:
       X-Dd-Debug:
       - vLqqOLcWkbQm3aIBHfcEmIwzrJtjtqNdArlWt57BFwl8nfWymjIeK67csuZ1woEb
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -574,7 +488,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    body: '[{"automute":false,"project_id":"go_test-8345904","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go_test-8347313","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go_test-8350244","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -585,13 +499,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:16:01 GMT
+      - Wed, 04 Mar 2020 13:20:53 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:00 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:52 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -600,9 +514,95 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - RngFxOd8mVeT14auLfzsH/6kz142QLoKkYXZjfmXpXDkZ/eN6uoCM3cTScXuFEa0
+      - hABsPq9DIvV7yAEiU7rMxs7UCRuTbRH/kYpwue4a0q9qmwd4SUh9bBZ5SHPkBLc6
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.13)
+    url: https://api.datadoghq.com/api/v1/integration/gcp
+    method: GET
+  response:
+    body: '[{"automute":false,"project_id":"go_test-8345904","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go_test-8347313","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go_test-8350244","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 04 Mar 2020 13:20:53 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:53 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - LOVPYRkvxiVgJlSU7tTR5QW5I3IByFfoP5oRWZk6jukYFQiYGeCZXWoo6PiPBzrK
+      X-Dd-Version:
+      - "35.2240669"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.13)
+    url: https://api.datadoghq.com/api/v1/integration/gcp
+    method: GET
+  response:
+    body: '[{"automute":false,"project_id":"go_test-8345904","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go_test-8347313","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go_test-8350244","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 04 Mar 2020 13:20:54 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:54 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - x4pYHtiOW9rUeREgXmH2iIgBaXVGD7x1RIZUg56H0ghPppdtz0ZBEK6nMs8tuoqc
+      X-Dd-Version:
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -632,22 +632,22 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:16:02 GMT
+      - Wed, 04 Mar 2020 13:20:54 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:02 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:54 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - +UwwYRc+A5vkEib2s1YY/+OMx26FxXkDPMnhrpaIz/kTVseyL62lC12FdLJrU3nv
+      - hABsPq9DIvV7yAEiU7rMxs7UCRuTbRH/kYpwue4a0q9qmwd4SUh9bBZ5SHPkBLc6
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -662,35 +662,35 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[]'
+    body: '[{"automute":false,"project_id":"go_test-8345904","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go_test-8347313","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go_test-8350244","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"}]'
     headers:
       Cache-Control:
       - no-cache
       Connection:
       - keep-alive
-      Content-Length:
-      - "2"
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:16:02 GMT
+      - Wed, 04 Mar 2020 13:20:55 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:02 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:20:55 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
+      Vary:
+      - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - OxP+mFpjAbASiVhNf+t4MttAs95ZlMiGosIRnYJJGFoApNgv2oxtdzpnmNlMOki6
+      - RL7BSOiWXeq2P2iJbmiDo/2BPpcpoCDzQceVuBkp6yO348trcqTrfm/pm8rvZRoT
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

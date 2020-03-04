@@ -17,8 +17,8 @@ interactions:
   response:
     body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra},
       ''basic'', 3, direction=''above'', alert_window=''last_5m'', interval=20, count_default_zero=''true'')
-      >= 1","message":"some message Notify: @hipchat-channel","id":16176585,"multi":false,"name":"name
-      for monitor foo","created":"2020-03-02T19:16:57.832991+00:00","created_at":1583176617000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-03-02T19:16:57.832991+00:00","overall_state_modified":null,"overall_state":"No
+      >= 1","message":"some message Notify: @hipchat-channel","id":16226835,"multi":false,"name":"name
+      for monitor foo","created":"2020-03-04T13:21:43.750542+00:00","created_at":1583328103000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-03-04T13:21:43.750542+00:00","overall_state_modified":null,"overall_state":"No
       Data","type":"query alert","options":{"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"warning":0.5,"ok":0.0,"critical":1.0,"warning_recovery":0.25,"critical_recovery":0.5},"new_host_delay":300,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"escalation_message":"the
       situation has escalated @pagerduty","threshold_windows":{"recovery_window":"last_5m","trigger_window":"last_5m"}}}'
     headers:
@@ -31,13 +31,13 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Mon, 02 Mar 2020 19:16:57 GMT
+      - Wed, 04 Mar 2020 13:21:43 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:57 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:21:43 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -46,9 +46,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - IRAJ1mQ+c3epm0CLGtZoe/y8O4TCss3jYw+fwQOm7+eSKRCE+p3OtawVnIQ5ts76
+      - 6qTaw+brNWWnKD6ULH8747/TVkPK0wedRsruOmMITJcYBkJ/Eac9bUO9jP1Btfl5
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -56,9 +56,9 @@ interactions:
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "495"
+      - "497"
       X-Ratelimit-Reset:
-      - "3"
+      - "7"
     status: 200 OK
     code: 200
     duration: ""
@@ -68,13 +68,13 @@ interactions:
     headers:
       User-Agent:
       - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/monitor/16176585
+    url: https://api.datadoghq.com/api/v1/monitor/16226835
     method: GET
   response:
     body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra},
       ''basic'', 3, direction=''above'', alert_window=''last_5m'', interval=20, count_default_zero=''true'')
-      >= 1","message":"some message Notify: @hipchat-channel","id":16176585,"multi":false,"name":"name
-      for monitor foo","created":"2020-03-02T19:16:57.832991+00:00","created_at":1583176617000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-03-02T19:16:57.832991+00:00","overall_state_modified":null,"overall_state":"No
+      >= 1","message":"some message Notify: @hipchat-channel","id":16226835,"multi":false,"name":"name
+      for monitor foo","created":"2020-03-04T13:21:43.750542+00:00","created_at":1583328103000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-03-04T13:21:43.750542+00:00","overall_state_modified":null,"overall_state":"No
       Data","type":"query alert","options":{"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"warning":0.5,"ok":0.0,"critical":1.0,"warning_recovery":0.25,"critical_recovery":0.5},"new_host_delay":300,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"escalation_message":"the
       situation has escalated @pagerduty","threshold_windows":{"recovery_window":"last_5m","trigger_window":"last_5m"}}}'
     headers:
@@ -87,13 +87,13 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Mon, 02 Mar 2020 19:16:58 GMT
+      - Wed, 04 Mar 2020 13:21:43 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:58 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:21:43 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -102,9 +102,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - HTCsbjwqQM0jTFHFq9ukWObBv4f/yxvHIxzrANPhzJkr6s3+rN5uCN3TcZuK2V2B
+      - P2v7RkLoCWSKqMAo7HF484UAAT2/cQHsvX2DV8G10CAxYBcO25Cq9ZgfwOWpYGFP
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -112,9 +112,9 @@ interactions:
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "2964"
+      - "2984"
       X-Ratelimit-Reset:
-      - "2"
+      - "7"
     status: 200 OK
     code: 200
     duration: ""
@@ -124,13 +124,13 @@ interactions:
     headers:
       User-Agent:
       - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/monitor/16176585
+    url: https://api.datadoghq.com/api/v1/monitor/16226835
     method: GET
   response:
     body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra},
       ''basic'', 3, direction=''above'', alert_window=''last_5m'', interval=20, count_default_zero=''true'')
-      >= 1","message":"some message Notify: @hipchat-channel","id":16176585,"multi":false,"name":"name
-      for monitor foo","created":"2020-03-02T19:16:57.832991+00:00","created_at":1583176617000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-03-02T19:16:57.832991+00:00","overall_state_modified":null,"overall_state":"No
+      >= 1","message":"some message Notify: @hipchat-channel","id":16226835,"multi":false,"name":"name
+      for monitor foo","created":"2020-03-04T13:21:43.750542+00:00","created_at":1583328103000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-03-04T13:21:43.750542+00:00","overall_state_modified":null,"overall_state":"No
       Data","type":"query alert","options":{"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"warning":0.5,"ok":0.0,"critical":1.0,"warning_recovery":0.25,"critical_recovery":0.5},"new_host_delay":300,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"escalation_message":"the
       situation has escalated @pagerduty","threshold_windows":{"recovery_window":"last_5m","trigger_window":"last_5m"}}}'
     headers:
@@ -143,13 +143,13 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Mon, 02 Mar 2020 19:16:58 GMT
+      - Wed, 04 Mar 2020 13:21:44 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:58 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:21:44 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -158,9 +158,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - BsieYxalcMaIS+cTbK9YL1FxnAIiDF/6CFe3/lefzTTUruWB5XaSb08KP3lTATlu
+      - QO3HutZQjgMDp/HqClcLon+qq5lEghb3LRV+gXMIQ2Jivd1m1eEGCh0RxplUQMIV
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -168,9 +168,9 @@ interactions:
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "2963"
+      - "2983"
       X-Ratelimit-Reset:
-      - "2"
+      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -180,13 +180,13 @@ interactions:
     headers:
       User-Agent:
       - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/monitor/16176585
+    url: https://api.datadoghq.com/api/v1/monitor/16226835
     method: GET
   response:
     body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra},
       ''basic'', 3, direction=''above'', alert_window=''last_5m'', interval=20, count_default_zero=''true'')
-      >= 1","message":"some message Notify: @hipchat-channel","id":16176585,"multi":false,"name":"name
-      for monitor foo","created":"2020-03-02T19:16:57.832991+00:00","created_at":1583176617000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-03-02T19:16:57.832991+00:00","overall_state_modified":null,"overall_state":"No
+      >= 1","message":"some message Notify: @hipchat-channel","id":16226835,"multi":false,"name":"name
+      for monitor foo","created":"2020-03-04T13:21:43.750542+00:00","created_at":1583328103000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-03-04T13:21:43.750542+00:00","overall_state_modified":null,"overall_state":"No
       Data","type":"query alert","options":{"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"warning":0.5,"ok":0.0,"critical":1.0,"warning_recovery":0.25,"critical_recovery":0.5},"new_host_delay":300,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"escalation_message":"the
       situation has escalated @pagerduty","threshold_windows":{"recovery_window":"last_5m","trigger_window":"last_5m"}}}'
     headers:
@@ -199,13 +199,13 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Mon, 02 Mar 2020 19:16:58 GMT
+      - Wed, 04 Mar 2020 13:21:44 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:58 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:21:44 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -214,9 +214,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Xj/PwLDKe3Ll1QwGP2SdQuyUcOtG0YD60hQDJ9tPEhK9OEMHkSCPXdZRvPX0YYGO
+      - Jhz2Lh32XBCZ7PVSj7/lof8hXjgbtiexG4VIRWAEYHPFefqyYpXnVaeT62yBncrB
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -224,9 +224,9 @@ interactions:
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "2962"
+      - "2982"
       X-Ratelimit-Reset:
-      - "2"
+      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -236,13 +236,13 @@ interactions:
     headers:
       User-Agent:
       - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/monitor/16176585
+    url: https://api.datadoghq.com/api/v1/monitor/16226835
     method: GET
   response:
     body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra},
       ''basic'', 3, direction=''above'', alert_window=''last_5m'', interval=20, count_default_zero=''true'')
-      >= 1","message":"some message Notify: @hipchat-channel","id":16176585,"multi":false,"name":"name
-      for monitor foo","created":"2020-03-02T19:16:57.832991+00:00","created_at":1583176617000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-03-02T19:16:57.832991+00:00","overall_state_modified":null,"overall_state":"No
+      >= 1","message":"some message Notify: @hipchat-channel","id":16226835,"multi":false,"name":"name
+      for monitor foo","created":"2020-03-04T13:21:43.750542+00:00","created_at":1583328103000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-03-04T13:21:43.750542+00:00","overall_state_modified":null,"overall_state":"No
       Data","type":"query alert","options":{"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"warning":0.5,"ok":0.0,"critical":1.0,"warning_recovery":0.25,"critical_recovery":0.5},"new_host_delay":300,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"escalation_message":"the
       situation has escalated @pagerduty","threshold_windows":{"recovery_window":"last_5m","trigger_window":"last_5m"}}}'
     headers:
@@ -255,13 +255,13 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Mon, 02 Mar 2020 19:16:58 GMT
+      - Wed, 04 Mar 2020 13:21:44 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:58 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:21:44 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -270,9 +270,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - hABsPq9DIvV7yAEiU7rMxs7UCRuTbRH/kYpwue4a0q9qmwd4SUh9bBZ5SHPkBLc6
+      - v8lEj/pYmsavh1I0Db6FT/BAvLdOdAv91ctM9ImcmfZ/KHrCACXEdhuskTCPihd+
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -280,9 +280,9 @@ interactions:
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "2961"
+      - "2981"
       X-Ratelimit-Reset:
-      - "2"
+      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -292,13 +292,13 @@ interactions:
     headers:
       User-Agent:
       - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/monitor/16176585
+    url: https://api.datadoghq.com/api/v1/monitor/16226835
     method: GET
   response:
     body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra},
       ''basic'', 3, direction=''above'', alert_window=''last_5m'', interval=20, count_default_zero=''true'')
-      >= 1","message":"some message Notify: @hipchat-channel","id":16176585,"multi":false,"name":"name
-      for monitor foo","created":"2020-03-02T19:16:57.832991+00:00","created_at":1583176617000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-03-02T19:16:57.832991+00:00","overall_state_modified":null,"overall_state":"No
+      >= 1","message":"some message Notify: @hipchat-channel","id":16226835,"multi":false,"name":"name
+      for monitor foo","created":"2020-03-04T13:21:43.750542+00:00","created_at":1583328103000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-03-04T13:21:43.750542+00:00","overall_state_modified":null,"overall_state":"No
       Data","type":"query alert","options":{"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"warning":0.5,"ok":0.0,"critical":1.0,"warning_recovery":0.25,"critical_recovery":0.5},"new_host_delay":300,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"escalation_message":"the
       situation has escalated @pagerduty","threshold_windows":{"recovery_window":"last_5m","trigger_window":"last_5m"}}}'
     headers:
@@ -311,13 +311,13 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Mon, 02 Mar 2020 19:16:58 GMT
+      - Wed, 04 Mar 2020 13:21:44 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:58 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:21:44 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -326,9 +326,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - dPTJBBDv5jeY1gnH1FisDpda5Hi0boOGbsHxIOi4qkMt+QLOH7F7P7MeSr40vXZ0
+      - DNJM9d0LaQZJbuEjasKEmgCwDoiLnJW9mPQJm+yWIlQRbFhX4Vzx4uuDCt38dWhb
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -336,9 +336,9 @@ interactions:
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "2960"
+      - "2980"
       X-Ratelimit-Reset:
-      - "2"
+      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -348,13 +348,13 @@ interactions:
     headers:
       User-Agent:
       - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/monitor/16176585
+    url: https://api.datadoghq.com/api/v1/monitor/16226835
     method: GET
   response:
     body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra},
       ''basic'', 3, direction=''above'', alert_window=''last_5m'', interval=20, count_default_zero=''true'')
-      >= 1","message":"some message Notify: @hipchat-channel","id":16176585,"multi":false,"name":"name
-      for monitor foo","created":"2020-03-02T19:16:57.832991+00:00","created_at":1583176617000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-03-02T19:16:57.832991+00:00","overall_state_modified":null,"overall_state":"No
+      >= 1","message":"some message Notify: @hipchat-channel","id":16226835,"multi":false,"name":"name
+      for monitor foo","created":"2020-03-04T13:21:43.750542+00:00","created_at":1583328103000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-03-04T13:21:43.750542+00:00","overall_state_modified":null,"overall_state":"No
       Data","type":"query alert","options":{"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"warning":0.5,"ok":0.0,"critical":1.0,"warning_recovery":0.25,"critical_recovery":0.5},"new_host_delay":300,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"escalation_message":"the
       situation has escalated @pagerduty","threshold_windows":{"recovery_window":"last_5m","trigger_window":"last_5m"}}}'
     headers:
@@ -367,13 +367,13 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Mon, 02 Mar 2020 19:16:58 GMT
+      - Wed, 04 Mar 2020 13:21:44 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:58 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:21:44 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -382,9 +382,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - GG9N5JNk6zUo5YQ1gmfpF0kYcSj/kjDOsFItaODUS7qQCwsMrhI3QWJVQns7uvtI
+      - pNNj5PhODCVJlRBPEhZP3s9KL9kvFYv//TnGsiPp+3AqL7R5kIW2JlCWtfMcXeFn
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -392,9 +392,9 @@ interactions:
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "2959"
+      - "2979"
       X-Ratelimit-Reset:
-      - "2"
+      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -404,10 +404,10 @@ interactions:
     headers:
       User-Agent:
       - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/monitor/16176585
+    url: https://api.datadoghq.com/api/v1/monitor/16226835
     method: DELETE
   response:
-    body: '{"deleted_monitor_id":16176585}'
+    body: '{"deleted_monitor_id":16226835}'
     headers:
       Cache-Control:
       - no-cache
@@ -418,13 +418,13 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       Date:
-      - Mon, 02 Mar 2020 19:16:59 GMT
+      - Wed, 04 Mar 2020 13:21:44 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:59 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 11-Mar-2020 13:21:44 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -433,9 +433,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - xDB9TwFteerR1wCiwj8/TgXRHM8VsESQxiCQvltAxyn4fse47E64CquSvdpyvFXM
+      - hlZGwPPL87Cire+2SDWJrcKtg5ChXKBaVFmtHdrZS+BoDfdo10256wfXrEDRUv8c
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -447,7 +447,7 @@ interactions:
     headers:
       User-Agent:
       - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/monitor/16176585
+    url: https://api.datadoghq.com/api/v1/monitor/16226835
     method: GET
   response:
     body: '{"errors":["Monitor not found"]}'
@@ -461,7 +461,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:16:59 GMT
+      - Wed, 04 Mar 2020 13:21:44 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -473,7 +473,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2240669"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -481,9 +481,9 @@ interactions:
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "2958"
+      - "2978"
       X-Ratelimit-Reset:
-      - "1"
+      - "6"
     status: 404 Not Found
     code: 404
     duration: ""
