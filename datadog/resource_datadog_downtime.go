@@ -289,7 +289,7 @@ func buildDowntimeStruct(auth context.Context, d *schema.ResourceData, client *d
 	if attr, ok := d.GetOk("timezone"); ok {
 		dt.SetTimezone(attr.(string))
 	}
-
+	fmt.Println("DOWNTIME STRUCT CREATED")
 	return &dt, nil
 }
 
@@ -332,14 +332,18 @@ func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 	dt, _, err := client.DowntimesApi.CreateDowntime(auth).Body(*dts).Execute()
+	fmt.Println("Downtime Created!")
+	jdts, _ := dts.MarshalJSON()
+	fmt.Println("What is set to DD: " + string(jdts))
+	jdt, _ := dt.MarshalJSON()
+	fmt.Println("What we get back from DD: " + string(jdt))
 	if err != nil {
 		return translateClientError(err, "error updating downtime")
 	}
 
 	d.SetId(strconv.FormatInt(dt.GetId(), 10))
-
-	//return resourceDatadogDowntimeRead(d, meta)
-	return nil
+	fmt.Println("STATE \n" + d.State().String())
+	return resourceDatadogDowntimeRead(d, meta)
 }
 
 func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error {
@@ -424,7 +428,7 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 		d.Set("monitor_tags", dt.MonitorTags)
 	}
 	d.Set("start", dt.GetStart())
-
+	fmt.Println("DOWNTIME READ! \n" + d.State().String())
 	return nil
 }
 

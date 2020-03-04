@@ -153,7 +153,6 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 			}
 		}
 		datadogClient := datadog.NewAPIClient(config)
-
 		return &ProviderConfiguration{
 			CommunityClient: communityClient,
 			DatadogClientV1: datadogClient,
