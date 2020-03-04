@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 )
 
-func TestAccDatadogDowntime_Basic_(t *testing.T) {
+func TestAccDatadogDowntime_Basic(t *testing.T) {
 	accProviders, cleanup := testAccProviders(t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
@@ -385,7 +385,6 @@ func testAccCheckDatadogDowntimeExists(accProvider *schema.Provider, n string) r
 		if err := datadogDowntimeExistsHelper(auth, s, client); err != nil {
 			return err
 		}
-		fmt.Println("IN HERE")
 		return nil
 	}
 }
@@ -797,18 +796,15 @@ func datadogDowntimeDestroyHelper(auth context.Context, s *terraform.State, clie
 }
 
 func datadogDowntimeExistsHelper(auth context.Context, s *terraform.State, client *datadog.APIClient) error {
-	fmt.Println("TEST STATE:" + s.String())
 	for _, r := range s.RootModule().Resources {
 		if r.Type != "datadog_downtime" {
 			continue
 		}
 
-		fmt.Println("HELLO!")
 		id, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
 		if _, _, err := client.DowntimesApi.GetDowntime(auth, id).Execute(); err != nil {
 			return fmt.Errorf("Received an error retrieving downtime %s", err)
 		}
-		fmt.Println("DONE!")
 	}
 	return nil
 }

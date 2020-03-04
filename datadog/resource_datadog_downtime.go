@@ -241,8 +241,6 @@ func buildDowntimeStruct(auth context.Context, d *schema.ResourceData, client *d
 		dt.SetMonitorId(*datadog.NewNullableInt64(datadog.PtrInt64(int64(attr.(int)))))
 	}
 	if _, ok := d.GetOk("recurrence"); ok {
-		//recurrenceExists := len(r.([]interface{}))
-		//if recurrenceExists > 0 {
 		var recurrence datadog.DowntimeRecurrence
 
 		if attr, ok := d.GetOk("recurrence.0.period"); ok {
@@ -266,9 +264,6 @@ func buildDowntimeStruct(auth context.Context, d *schema.ResourceData, client *d
 		}
 
 		dt.SetRecurrence(*datadog.NewNullableDowntimeRecurrence(&recurrence))
-		//} else {
-		//	dt.SetRecurrence(*datadog.NewNullableDowntimeRecurrence(nil))
-		//}
 	}
 	scope := []string{}
 	for _, s := range d.Get("scope").([]interface{}) {
@@ -289,7 +284,7 @@ func buildDowntimeStruct(auth context.Context, d *schema.ResourceData, client *d
 	if attr, ok := d.GetOk("timezone"); ok {
 		dt.SetTimezone(attr.(string))
 	}
-	fmt.Println("DOWNTIME STRUCT CREATED")
+
 	return &dt, nil
 }
 
@@ -313,7 +308,8 @@ func resourceDatadogDowntimeExists(d *schema.ResourceData, meta interface{}) (b 
 		return false, translateClientError(err, "")
 	}
 
-	if _, ok := downtime.GetCanceledOk(); ok {
+	canceled, ok := downtime.GetCanceledOk()
+	if ok && canceled.Get() != nil {
 		// when the Downtime is deleted via UI, it is in fact still returned through API, it's just "canceled"
 		// in this case, we need to consider it deleted, as canceled downtimes can't be used again
 		return false, nil
@@ -332,17 +328,11 @@ func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 	dt, _, err := client.DowntimesApi.CreateDowntime(auth).Body(*dts).Execute()
-	fmt.Println("Downtime Created!")
-	jdts, _ := dts.MarshalJSON()
-	fmt.Println("What is set to DD: " + string(jdts))
-	jdt, _ := dt.MarshalJSON()
-	fmt.Println("What we get back from DD: " + string(jdt))
 	if err != nil {
 		return translateClientError(err, "error updating downtime")
 	}
 
 	d.SetId(strconv.FormatInt(dt.GetId(), 10))
-	fmt.Println("STATE \n" + d.State().String())
 	return resourceDatadogDowntimeRead(d, meta)
 }
 
@@ -376,7 +366,6 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 		return err
 	}
 	if err := d.Set("monitor_id", dt.GetMonitorId().Get()); err != nil {
-		//TODO: Should we handle unset nullable? What should we do when attr.Get() is nil?
 		return err
 	}
 
@@ -384,37 +373,25 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 		return err
 	}
 
-	if r, ok := dt.GetRecurrenceOk(); ok {
+	if r, ok := dt.GetRecurrenceOk(); ok && r.Get() != nil {
 		recurrence := make(map[string]interface{})
 		recurrenceList := make([]map[string]interface{}, 0, 1)
-		dt := r.Get()
-		if attr, ok := dt.GetPeriodOk(); ok {
+		dr := r.Get()
+		if attr, ok := dr.GetPeriodOk(); ok {
 			recurrence["period"] = strconv.FormatInt(int64(attr), 10)
 		}
-		if attr, ok := dt.GetTypeOk(); ok {
+		if attr, ok := dr.GetTypeOk(); ok {
 			recurrence["type"] = attr
 		}
-		if attr, ok := dt.GetUntilDateOk(); ok {
-			if attr.Get() != nil {
-				recurrence["until_date"] = strconv.FormatInt(*attr.Get(), 10)
-			}
-			//else {
-			//	recurrence["until_date"] = nil
-			//}
-			//TODO: Should we handle unset nullable? What should we do when attr.Get() is nil?
+		if attr, ok := dr.GetUntilDateOk(); ok && attr.Get() != nil {
+			recurrence["until_date"] = strconv.FormatInt(*attr.Get(), 10)
 		}
-		if attr, ok := dt.GetUntilOccurrencesOk(); ok {
-			if attr.Get() != nil {
-				recurrence["until_occurrences"] = strconv.FormatInt(int64(*attr.Get()), 10)
-			}
-			//else {
-			//	recurrence["until_occurrences"] = nil
-			//}
-			//TODO: Should we handle unset nullable? What should we do when attr.Get() is nil?
+		if attr, ok := dr.GetUntilOccurrencesOk(); ok && attr.Get() != nil {
+			recurrence["until_occurrences"] = strconv.FormatInt(int64(*attr.Get()), 10)
 		}
-		if dt.GetWeekDays() != nil {
-			weekDays := make([]string, 0, len(dt.GetWeekDays()))
-			for _, weekDay := range dt.GetWeekDays() {
+		if dr.GetWeekDays() != nil {
+			weekDays := make([]string, 0, len(dr.GetWeekDays()))
+			for _, weekDay := range dr.GetWeekDays() {
 				weekDays = append(weekDays, weekDay)
 			}
 			recurrence["week_days"] = weekDays
@@ -424,11 +401,11 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 	}
 	d.Set("scope", dt.Scope)
 	// See the comment for monitor_tags in the schema definition above
-	if !reflect.DeepEqual(dt.MonitorTags, []string{"*"}) {
-		d.Set("monitor_tags", dt.MonitorTags)
+	if !reflect.DeepEqual(dt.GetMonitorTags(), []string{"*"}) {
+		d.Set("monitor_tags", dt.GetMonitorTags())
 	}
 	d.Set("start", dt.GetStart())
-	fmt.Println("DOWNTIME READ! \n" + d.State().String())
+
 	return nil
 }
 
@@ -447,7 +424,7 @@ func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) err
 	}
 	dt.SetId(id)
 
-	if _, _, err = client.DowntimesApi.UpdateDowntime(auth, dt.GetId()).Execute(); err != nil {
+	if _, _, err = client.DowntimesApi.UpdateDowntime(auth, dt.GetId()).Body(*dt).Execute(); err != nil {
 		return translateClientError(err, "error updating downtime")
 	}
 	// handle the case when a downtime is replaced
