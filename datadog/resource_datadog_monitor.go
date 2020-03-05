@@ -1,7 +1,6 @@
 package datadog
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"sort"
@@ -9,8 +8,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/zorkian/go-datadog-api"
+	datadogCommunity "github.com/zorkian/go-datadog-api"
 )
 
 const logAlertMonitorType = "log alert"
@@ -197,76 +197,100 @@ func resourceDatadogMonitor() *schema.Resource {
 	}
 }
 
-func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
+func buildMonitorStruct(d *schema.ResourceData) (*datadog.Monitor, error) {
 
-	var thresholds datadog.ThresholdCount
+	var thresholds datadog.MonitorThresholds
 
 	if r, ok := d.GetOk("thresholds.ok"); ok {
-		thresholds.SetOk(json.Number(r.(string)))
+		v, err := strconv.ParseFloat(r.(string), 64)
+		if err != nil {
+			return nil, err
+		}
+		thresholds.SetOk(*datadog.NewNullableFloat64(datadog.PtrFloat64(v)))
 	}
 	if r, ok := d.GetOk("thresholds.warning"); ok {
-		thresholds.SetWarning(json.Number(r.(string)))
+		v, err := strconv.ParseFloat(r.(string), 64)
+		if err != nil {
+			return nil, err
+		}
+		thresholds.SetWarning(*datadog.NewNullableFloat64(datadog.PtrFloat64(v)))
 	}
 	if r, ok := d.GetOk("thresholds.unknown"); ok {
-		thresholds.SetUnknown(json.Number(r.(string)))
+		v, err := strconv.ParseFloat(r.(string), 64)
+		if err != nil {
+			return nil, err
+		}
+		thresholds.SetUnknown(*datadog.NewNullableFloat64(datadog.PtrFloat64(v)))
 	}
 	if r, ok := d.GetOk("thresholds.critical"); ok {
-		thresholds.SetCritical(json.Number(r.(string)))
+		v, err := strconv.ParseFloat(r.(string), 64)
+		if err != nil {
+			return nil, err
+		}
+		thresholds.SetCritical(v)
 	}
 	if r, ok := d.GetOk("thresholds.warning_recovery"); ok {
-		thresholds.SetWarningRecovery(json.Number(r.(string)))
+		v, err := strconv.ParseFloat(r.(string), 64)
+		if err != nil {
+			return nil, err
+		}
+		thresholds.SetWarningRecovery(*datadog.NewNullableFloat64(datadog.PtrFloat64(v)))
 	}
 	if r, ok := d.GetOk("thresholds.critical_recovery"); ok {
-		thresholds.SetCriticalRecovery(json.Number(r.(string)))
+		v, err := strconv.ParseFloat(r.(string), 64)
+		if err != nil {
+			return nil, err
+		}
+		thresholds.SetCriticalRecovery(*datadog.NewNullableFloat64(datadog.PtrFloat64(v)))
 	}
 
-	var thresholdWindows datadog.ThresholdWindows
+	var thresholdWindows datadog.MonitorThresholdWindowOptions
 
 	if r, ok := d.GetOk("threshold_windows.recovery_window"); ok {
-		thresholdWindows.SetRecoveryWindow(r.(string))
+		thresholdWindows.SetRecoveryWindow(*datadog.NewNullableString(datadog.PtrString(r.(string))))
 	}
 
 	if r, ok := d.GetOk("threshold_windows.trigger_window"); ok {
-		thresholdWindows.SetTriggerWindow(r.(string))
+		thresholdWindows.SetTriggerWindow(*datadog.NewNullableString(datadog.PtrString(r.(string))))
 	}
 
-	o := datadog.Options{
+	o := datadog.MonitorOptions{
 		Thresholds:        &thresholds,
-		NotifyNoData:      datadog.Bool(d.Get("notify_no_data").(bool)),
-		RequireFullWindow: datadog.Bool(d.Get("require_full_window").(bool)),
-		IncludeTags:       datadog.Bool(d.Get("include_tags").(bool)),
+		NotifyNoData:      datadog.PtrBool(d.Get("notify_no_data").(bool)),
+		RequireFullWindow: datadog.PtrBool(d.Get("require_full_window").(bool)),
+		IncludeTags:       datadog.PtrBool(d.Get("include_tags").(bool)),
 	}
 	if thresholdWindows.HasRecoveryWindow() || thresholdWindows.HasTriggerWindow() {
 		o.SetThresholdWindows(thresholdWindows)
 	}
 	if attr, ok := d.GetOk("silenced"); ok {
-		s := make(map[string]int)
+		s := make(map[string]int64)
 		// TODO: this is not very defensive, test if we can fail on non int input
 		for k, v := range attr.(map[string]interface{}) {
-			s[k] = v.(int)
+			s[k] = int64(v.(int))
 		}
-		o.Silenced = s
+		o.Silenced = &s
 	}
 	if attr, ok := d.GetOk("notify_no_data"); ok {
 		o.SetNotifyNoData(attr.(bool))
 	}
 	if attr, ok := d.GetOk("new_host_delay"); ok {
-		o.SetNewHostDelay(attr.(int))
+		o.SetNewHostDelay(*datadog.NewNullableInt64(datadog.PtrInt64(int64(attr.(int)))))
 	}
 	if attr, ok := d.GetOk("evaluation_delay"); ok {
-		o.SetEvaluationDelay(attr.(int))
+		o.SetEvaluationDelay(*datadog.NewNullableInt64(datadog.PtrInt64(int64(attr.(int)))))
 	}
 	if attr, ok := d.GetOk("no_data_timeframe"); ok {
-		o.NoDataTimeframe = datadog.NoDataTimeframe(attr.(int))
+		o.SetNoDataTimeframe(*datadog.NewNullableInt64(datadog.PtrInt64(int64(attr.(int)))))
 	}
 	if attr, ok := d.GetOk("renotify_interval"); ok {
-		o.SetRenotifyInterval(attr.(int))
+		o.SetRenotifyInterval(*datadog.NewNullableInt64(datadog.PtrInt64(int64(attr.(int)))))
 	}
 	if attr, ok := d.GetOk("notify_audit"); ok {
 		o.SetNotifyAudit(attr.(bool))
 	}
 	if attr, ok := d.GetOk("timeout_h"); ok {
-		o.SetTimeoutH(attr.(int))
+		o.SetTimeoutH(*datadog.NewNullableInt64(datadog.PtrInt64(int64(attr.(int)))))
 	}
 	if attr, ok := d.GetOk("escalation_message"); ok {
 		o.SetEscalationMessage(attr.(string))
@@ -276,10 +300,10 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 	}
 
 	m := datadog.Monitor{
-		Type:    datadog.String(d.Get("type").(string)),
-		Query:   datadog.String(d.Get("query").(string)),
-		Name:    datadog.String(d.Get("name").(string)),
-		Message: datadog.String(d.Get("message").(string)),
+		Type:    datadog.MonitorType(d.Get("type").(string)).Ptr(),
+		Query:   datadog.PtrString(d.Get("query").(string)),
+		Name:    datadog.PtrString(d.Get("name").(string)),
+		Message: datadog.PtrString(d.Get("message").(string)),
 		Options: &o,
 	}
 
@@ -291,30 +315,31 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 		}
 	}
 
+	tags := []string{}
 	if attr, ok := d.GetOk("tags"); ok {
-		tags := []string{}
 		for _, s := range attr.(*schema.Set).List() {
 			tags = append(tags, s.(string))
 		}
 		sort.Strings(tags)
-		m.Tags = tags
 	}
+	m.SetTags(tags)
 
-	return &m
+	return &m, nil
 }
 
 func resourceDatadogMonitorExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	i, err := strconv.Atoi(d.Id())
+	i, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return false, err
 	}
 
-	if _, err = client.GetMonitor(i); err != nil {
+	if _, _, err = client.MonitorsApi.GetMonitor(auth, i).Execute(); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
@@ -339,60 +364,68 @@ func getUnmutedScopes(d *schema.ResourceData) []string {
 
 func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	m := buildMonitorStruct(d)
-	m, err := client.CreateMonitor(m)
+	ms, err := buildMonitorStruct(d)
 	if err != nil {
-		return fmt.Errorf("error updating monitor: %s", err.Error())
+		return err
+	}
+	m, _, err := client.MonitorsApi.CreateMonitor(auth).Body(*ms).Execute()
+	if err != nil {
+		return translateClientError(err, "error updating monitor")
 	}
 
-	d.SetId(strconv.Itoa(m.GetId()))
+	d.SetId(strconv.FormatInt(m.GetId(), 10))
 
 	return resourceDatadogMonitorRead(d, meta)
 }
 
 func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	i, err := strconv.Atoi(d.Id())
+	id, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return err
 	}
 
-	m, err := client.GetMonitor(i)
+	m, _, err := client.MonitorsApi.GetMonitor(auth, id).Execute()
 	if err != nil {
 		return err
 	}
-
 	thresholds := make(map[string]string)
-	for k, v := range map[string]json.Number{
-		"ok":                m.Options.Thresholds.GetOk(),
-		"warning":           m.Options.Thresholds.GetWarning(),
-		"critical":          m.Options.Thresholds.GetCritical(),
-		"unknown":           m.Options.Thresholds.GetUnknown(),
-		"warning_recovery":  m.Options.Thresholds.GetWarningRecovery(),
-		"critical_recovery": m.Options.Thresholds.GetCriticalRecovery(),
+
+	for thresholdKey, thresholdGetFunc := range map[string]func() (datadog.NullableFloat64, bool){
+		"ok":                m.Options.Thresholds.GetOkOk,
+		"warning":           m.Options.Thresholds.GetWarningOk,
+		"unknown":           m.Options.Thresholds.GetUnknownOk,
+		"warning_recovery":  m.Options.Thresholds.GetWarningRecoveryOk,
+		"critical_recovery": m.Options.Thresholds.GetCriticalRecoveryOk,
 	} {
-		s := v.String()
-		if s != "" {
-			thresholds[k] = s
+		thresholdValue, ok := thresholdGetFunc()
+		if ok && thresholdValue.Get() != nil {
+			thresholds[thresholdKey] = strconv.FormatFloat(*thresholdValue.Get(), 'g', -1, 64)
 		}
+	}
+	if criticalValue, ok := m.Options.Thresholds.GetCriticalOk(); ok {
+		thresholds["critical"] = strconv.FormatFloat(criticalValue, 'g', -1, 64)
 	}
 
 	thresholdWindows := make(map[string]string)
-	for k, v := range map[string]string{
-		"recovery_window": m.Options.ThresholdWindows.GetRecoveryWindow(),
-		"trigger_window":  m.Options.ThresholdWindows.GetTriggerWindow(),
+	for thresholdWindowsKey, thresholdWindowsGetFunc := range map[string]func() (datadog.NullableString, bool){
+		"recovery_window": m.Options.ThresholdWindows.GetRecoveryWindowOk,
+		"trigger_window":  m.Options.ThresholdWindows.GetTriggerWindowOk,
 	} {
-		if v != "" {
-			thresholdWindows[k] = v
+		thresholdWindowsValue, ok := thresholdWindowsGetFunc()
+		if ok && thresholdWindowsValue.Get() != nil {
+			thresholdWindows[thresholdWindowsKey] = string(*thresholdWindowsValue.Get())
 		}
 	}
 
 	tags := []string{}
-	for _, s := range m.Tags {
+	for _, s := range m.GetTags() {
 		tags = append(tags, s)
 	}
 	sort.Strings(tags)
@@ -406,13 +439,23 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("thresholds", thresholds)
 	d.Set("threshold_windows", thresholdWindows)
 
-	d.Set("new_host_delay", m.Options.GetNewHostDelay())
-	d.Set("evaluation_delay", m.Options.GetEvaluationDelay())
+	if newHostDelay, ok := m.Options.GetNewHostDelayOk(); ok && newHostDelay.Get() != nil {
+		d.Set("new_host_delay", newHostDelay.Get())
+	}
+	if evaluationDelay, ok := m.Options.GetEvaluationDelayOk(); ok && evaluationDelay.Get() != nil {
+		d.Set("evaluation_delay", evaluationDelay.Get())
+	}
 	d.Set("notify_no_data", m.Options.GetNotifyNoData())
-	d.Set("no_data_timeframe", m.Options.NoDataTimeframe)
-	d.Set("renotify_interval", m.Options.GetRenotifyInterval())
+	if noDataTimeframe, ok := m.Options.GetNoDataTimeframeOk(); ok && noDataTimeframe.Get() != nil {
+		d.Set("no_data_timeframe", noDataTimeframe.Get())
+	}
+	if renotifyInterval, ok := m.Options.GetRenotifyIntervalOk(); ok && renotifyInterval.Get() != nil {
+		d.Set("renotify_interval", renotifyInterval.Get())
+	}
 	d.Set("notify_audit", m.Options.GetNotifyAudit())
-	d.Set("timeout_h", m.Options.GetTimeoutH())
+	if timeoutH, ok := m.Options.GetTimeoutHOk(); ok && timeoutH.Get() != nil {
+		d.Set("timeout_h", timeoutH.Get())
+	}
 	d.Set("escalation_message", m.Options.GetEscalationMessage())
 	d.Set("include_tags", m.Options.GetIncludeTags())
 	d.Set("tags", tags)
@@ -425,7 +468,8 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 
 	// The Datadog API doesn't return old timestamps or support a special value for unmuting scopes
 	// So we provide this functionality by saving values to the state
-	apiSilenced := m.Options.Silenced
+	apiSilenced := m.Options.GetSilenced()
+
 	configSilenced := d.Get("silenced").(map[string]interface{})
 
 	for _, scope := range getUnmutedScopes(d) {
@@ -438,7 +482,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	for k, v := range configSilenced {
 		if v.(int) < int(time.Now().Unix()) && v.(int) != 0 && v.(int) != -1 {
 			// sync the state with whats in the config so its ignored
-			apiSilenced[k] = v.(int)
+			apiSilenced[k] = int64(v.(int))
 		}
 	}
 	d.Set("silenced", apiSilenced)
@@ -448,124 +492,36 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 
 func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
 	m := &datadog.Monitor{}
 
-	i, err := strconv.Atoi(d.Id())
+	m, err := buildMonitorStruct(d)
+	if err != nil {
+		return fmt.Errorf("Error parsing parsing monitor definition: %v", err)
+	}
+
+	id, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return err
 	}
-
-	m.Id = datadog.Int(i)
-	if attr, ok := d.GetOk("name"); ok {
-		m.SetName(attr.(string))
-	}
-	if attr, ok := d.GetOk("message"); ok {
-		m.SetMessage(attr.(string))
-	}
-	if attr, ok := d.GetOk("query"); ok {
-		m.SetQuery(attr.(string))
-	}
-
-	if attr, ok := d.GetOk("tags"); ok {
-		s := make([]string, 0)
-		for _, v := range attr.(*schema.Set).List() {
-			s = append(s, v.(string))
-		}
-		sort.Strings(s)
-		m.Tags = s
-	}
-
-	o := datadog.Options{
-		NotifyNoData:      datadog.Bool(d.Get("notify_no_data").(bool)),
-		RequireFullWindow: datadog.Bool(d.Get("require_full_window").(bool)),
-		IncludeTags:       datadog.Bool(d.Get("include_tags").(bool)),
-	}
-	if attr, ok := d.GetOk("thresholds"); ok {
-		thresholds := attr.(map[string]interface{})
-		o.Thresholds = &datadog.ThresholdCount{} // TODO: This is a little annoying..
-		if thresholds["ok"] != nil {
-			o.Thresholds.SetOk(json.Number(thresholds["ok"].(string)))
-		}
-		if thresholds["warning"] != nil {
-			o.Thresholds.SetWarning(json.Number(thresholds["warning"].(string)))
-		}
-		if thresholds["critical"] != nil {
-			o.Thresholds.SetCritical(json.Number(thresholds["critical"].(string)))
-		}
-		if thresholds["unknown"] != nil {
-			o.Thresholds.SetUnknown(json.Number(thresholds["unknown"].(string)))
-		}
-		if thresholds["warning_recovery"] != nil {
-			o.Thresholds.SetWarningRecovery(json.Number(thresholds["warning_recovery"].(string)))
-		}
-		if thresholds["critical_recovery"] != nil {
-			o.Thresholds.SetCriticalRecovery(json.Number(thresholds["critical_recovery"].(string)))
-		}
-	}
-
-	if attr, ok := d.GetOk("threshold_windows"); ok {
-		thresholdWindows := attr.(map[string]interface{})
-		o.ThresholdWindows = &datadog.ThresholdWindows{}
-		if thresholdWindows["recovery_window"] != nil {
-			o.ThresholdWindows.SetRecoveryWindow(thresholdWindows["recovery_window"].(string))
-		}
-		if thresholdWindows["trigger_window"] != nil {
-			o.ThresholdWindows.SetTriggerWindow(thresholdWindows["trigger_window"].(string))
-		}
-	}
-
-	newHostDelay := d.Get("new_host_delay")
-	o.SetNewHostDelay(newHostDelay.(int))
-
-	if attr, ok := d.GetOk("evaluation_delay"); ok {
-		o.SetEvaluationDelay(attr.(int))
-	}
-	if attr, ok := d.GetOk("no_data_timeframe"); ok {
-		o.NoDataTimeframe = datadog.NoDataTimeframe(attr.(int))
-	}
-	if attr, ok := d.GetOk("renotify_interval"); ok {
-		o.SetRenotifyInterval(attr.(int))
-	}
-	if attr, ok := d.GetOk("notify_audit"); ok {
-		o.SetNotifyAudit(attr.(bool))
-	}
-	if attr, ok := d.GetOk("timeout_h"); ok {
-		o.SetTimeoutH(attr.(int))
-	}
-	if attr, ok := d.GetOk("escalation_message"); ok {
-		o.SetEscalationMessage(attr.(string))
-	}
+	m.Id = datadog.PtrInt64(id)
 
 	silenced := false
 	configuredSilenced := map[string]int{}
 	if attr, ok := d.GetOk("silenced"); ok {
 		// TODO: this is not very defensive, test if we can fail non int input
-		s := make(map[string]int)
+		s := make(map[string]int64)
 		for k, v := range attr.(map[string]interface{}) {
-			s[k] = v.(int)
+			s[k] = int64(v.(int))
 			configuredSilenced[k] = v.(int)
 		}
-		o.Silenced = s
 		silenced = true
 	}
-	if attr, ok := d.GetOk("locked"); ok {
-		o.SetLocked(attr.(bool))
-	}
-	// can't use m.GetType here, since it's not filled for purposes of updating
-	if d.Get("type") == logAlertMonitorType {
-		if attr, ok := d.GetOk("enable_logs_sample"); ok {
-			o.SetEnableLogsSample(attr.(bool))
-		} else {
-			o.SetEnableLogsSample(false)
-		}
-	}
 
-	m.Options = &o
-
-	if err = client.UpdateMonitor(m); err != nil {
-		return fmt.Errorf("error updating monitor: %s", err.Error())
+	if _, _, err = client.MonitorsApi.EditMonitor(auth, m.GetId()).Body(*m).Execute(); err != nil {
+		return translateClientError(err, "error updating monitor")
 	}
 
 	var retval error
@@ -580,7 +536,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	// they're "drift")
 	unmutedScopes := getUnmutedScopes(d)
 	if newSilenced, ok := d.GetOk("silenced"); ok && !silenced {
-		retval = client.UnmuteMonitorScopes(*m.Id, &datadog.UnmuteMonitorScopes{AllScopes: datadog.Bool(true)})
+		retval = providerConf.CommunityClient.UnmuteMonitorScopes(int(*m.Id), &datadogCommunity.UnmuteMonitorScopes{AllScopes: datadog.PtrBool(true)})
 		d.Set("silenced", map[string]int{})
 	} else {
 		for scope := range newSilenced.(map[string]interface{}) {
@@ -593,7 +549,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	// Similarly, if the silenced attribute is -1, lets unmute those scopes
 	if len(unmutedScopes) != 0 {
 		for _, scope := range unmutedScopes {
-			client.UnmuteMonitorScopes(*m.Id, &datadog.UnmuteMonitorScopes{Scope: &scope})
+			providerConf.CommunityClient.UnmuteMonitorScopes(int(*m.Id), &datadogCommunity.UnmuteMonitorScopes{Scope: &scope})
 		}
 	}
 
@@ -602,14 +558,15 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 
 func resourceDatadogMonitorDelete(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	i, err := strconv.Atoi(d.Id())
+	i, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return err
 	}
 
-	if err = client.DeleteMonitor(i); err != nil {
+	if _, _, err = client.MonitorsApi.DeleteMonitor(auth, i).Execute(); err != nil {
 		return err
 	}
 
