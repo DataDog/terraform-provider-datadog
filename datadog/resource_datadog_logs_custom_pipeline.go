@@ -470,12 +470,17 @@ func buildTerraformUrlParser(ddUrl datadog.UrlParser) map[string]interface{} {
 }
 
 func buildTerraformLookupProcessor(ddLookup datadog.LookupProcessor) map[string]interface{} {
-	return map[string]interface{}{
-		"source":         ddLookup.Source,
-		"target":         ddLookup.Target,
-		"lookup_table":   ddLookup.LookupTable,
-		"default_lookup": ddLookup.DefaultLookup,
+	tfProcessor := map[string]interface{}{
+		"source":       ddLookup.GetSource(),
+		"target":       ddLookup.GetTarget(),
+		"lookup_table": ddLookup.LookupTable,
 	}
+
+	if ddLookup.HasDefaultLookup() {
+		tfProcessor["default_lookup"] = ddLookup.GetDefaultLookup()
+	}
+
+	return tfProcessor
 }
 
 func buildTerraformNestedPipeline(ddNested datadog.NestedPipeline) (map[string]interface{}, error) {
@@ -689,7 +694,7 @@ func buildDatadogLookupProcessor(tfProcessor map[string]interface{}) datadog.Loo
 		}
 		ddLookupProcessor.LookupTable = ddLookupTable
 	}
-	if tfDefaultLookup, exists := tfProcessor["default_lookup"].(string); exists {
+	if tfDefaultLookup, exists := tfProcessor["default_lookup"].(string); exists && len(tfDefaultLookup) > 0 {
 		ddLookupProcessor.SetDefaultLookup(tfDefaultLookup)
 	}
 	return ddLookupProcessor

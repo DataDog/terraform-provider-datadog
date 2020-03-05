@@ -101,9 +101,16 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 	}
 	processor {
 		lookup_processor {
-			name = "lookup processor"
-			is_enabled = true
 			source = "ip1"
+			target = "ip.address"
+			lookup_table = ["key,value"]
+		}
+	}
+	processor {
+		lookup_processor {
+			name = "lookup processor with optional fields"
+			is_enabled = true
+			source = "ip2"
 			target = "ip.address"
 			lookup_table = ["key,value"]
 			default_lookup = "default"
@@ -174,9 +181,16 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 	}
 	processor {
 		lookup_processor {
-			name = "lookup processor"
-			is_enabled = true
 			source = "ip1"
+			target = "ip.address"
+			lookup_table = ["key,value", "key2,value2"]
+		}
+	}
+	processor {
+		lookup_processor {
+			name = "lookup processor with optional fields"
+			is_enabled = true
+			source = "ip2"
 			target = "ip.address"
 			lookup_table = ["key,value", "key2,value2"]
 			default_lookup = "default"
@@ -225,6 +239,8 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.5.geo_ip_parser.0.sources.#", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.6.lookup_processor.0.lookup_table.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.7.lookup_processor.0.lookup_table.#", "1"),
 				),
 			}, {
 				Config: pipelineConfigForUpdate,
@@ -246,6 +262,8 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.5.geo_ip_parser.0.sources.#", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.6.lookup_processor.0.lookup_table.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.7.lookup_processor.0.lookup_table.#", "2"),
 				),
 			},
 		},
