@@ -25,13 +25,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:16:25 GMT
+      - Fri, 06 Mar 2020 13:10:39 GMT
       Dd-Pool:
       - dogweb_events
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:25 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 13-Mar-2020 13:10:39 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -40,9 +40,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - o+WuHiSVQzQxZT/B0E4xU4YC2BeHGOP5N+DMDESGgVFLw2vnewyBuDRbRSGoHdGW
+      - LDh0l0PPMM0N51wVTSNB2BwZuZdxw/fmXmvxZe/TL7siehYGeV4KWNgbnb38s3yl
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2249222"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -52,12 +52,12 @@ interactions:
       X-Ratelimit-Remaining:
       - "1999"
       X-Ratelimit-Reset:
-      - "35"
+      - "21"
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"series":[{"metric":"foo","points":[[1583176585,1]]}]}'
+    body: '{"series":[{"metric":"foo","points":[[1583500239,1]]}]}'
     form: {}
     headers:
       Content-Type:
@@ -78,7 +78,7 @@ interactions:
       Content-Type:
       - text/json
       Date:
-      - Mon, 02 Mar 2020 19:16:26 GMT
+      - Fri, 06 Mar 2020 13:10:39 GMT
       Dd-Pool:
       - propjoe
       Strict-Transport-Security:
@@ -111,13 +111,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:16:26 GMT
+      - Fri, 06 Mar 2020 13:10:39 GMT
       Dd-Pool:
       - dogweb_events
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:26 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 13-Mar-2020 13:10:39 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -126,9 +126,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - vy+id1ptLCDGleg4rYlfrrMQAVdVTWcJ6yHeq5iF7KZDssFq0HMOope6Ew4kDzL4
+      - TOJ8EU/Z0l7vO3mGB6xZoJHKsRes/sigTytHkDjWxs5OSPKBGX/xh2ufITzyawaI
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2249222"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -155,13 +155,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:16:26 GMT
+      - Fri, 06 Mar 2020 13:10:39 GMT
       Dd-Pool:
       - dogweb_events
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:26 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 13-Mar-2020 13:10:39 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -170,9 +170,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Dpnx1d1iv2C+xU+nWMiUuUQYa4iZNEkuLizczftPu/8zzMD7oCxFC3KHam1GECgZ
+      - +zchwakmLCHxthSHEDXnGvSP1yrlqs7ERH6FsSIgdQHan219bhHY/kUDzjhyCCQx
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2249222"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -199,13 +199,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:16:26 GMT
+      - Fri, 06 Mar 2020 13:10:40 GMT
       Dd-Pool:
       - dogweb_events
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:26 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 13-Mar-2020 13:10:40 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -214,9 +214,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - o+WuHiSVQzQxZT/B0E4xU4YC2BeHGOP5N+DMDESGgVFLw2vnewyBuDRbRSGoHdGW
+      - 8aBQhv16LQbgEk45LoL5XJvaE747jsldDCKnzvAEhgxYsyT1g6pXb+yHLcV9n7/F
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2249222"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -243,13 +243,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:16:26 GMT
+      - Fri, 06 Mar 2020 13:10:40 GMT
       Dd-Pool:
       - dogweb_events
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:26 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 13-Mar-2020 13:10:40 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -258,9 +258,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 7ww9B05s8/23rG70QDOgH4cgOKMME+Ogw+jr9P64zMgoQHWjxgul1LOYkzWx/7o7
+      - 0f5hXO4dQnfqqoBjtowXx64sO9HbEx+n3BqkcLAS2Tq+w9Jngt3hMubepukZigvp
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2249222"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -287,13 +287,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:16:26 GMT
+      - Fri, 06 Mar 2020 13:10:40 GMT
       Dd-Pool:
       - dogweb_events
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 09-Mar-2020 19:16:26 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 13-Mar-2020 13:10:40 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -302,9 +302,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - cP94/MUNJlkd22yIuwhhnlRTtTM8gAGAbI+ErVugsJe0FRQZf13joB7+xy9gsc+Z
+      - t5z3BsV/lih0N4dtrCkF55OvN4Vp5QDP6tgeuJ2xEdnJAPk0S3cjdQwVmBEsbio6
       X-Dd-Version:
-      - "35.2232835"
+      - "35.2249222"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

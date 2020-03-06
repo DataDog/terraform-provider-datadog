@@ -5,9 +5,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://ip-ranges.datadoghq.com
+      - DataDog/0.1.0/go-experimental
+    url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
     body: |
@@ -896,7 +898,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:17:46 GMT
+      - Fri, 06 Mar 2020 13:11:58 GMT
       Last-Modified:
       - Wed, 13 Nov 2019 16:02:25 GMT
       Server:
@@ -904,9 +906,9 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 00828b9427382e6c3f2577388b5f26fe.cloudfront.net (CloudFront)
+      - 1.1 12b082104e9893409b9ae6386e88d351.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - O31k0Nl0kPlLpEsknl2C0mORqE1kAX0kUmjjBitrXu6ysLEpyopFNA==
+      - qKppczhPqqdMTxabMGyThQexLpqWyS8ygwpl58uOv-3K_w4vNntrKA==
       X-Amz-Cf-Pop:
       - CDG3-C2
       X-Cache:
@@ -918,9 +920,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://ip-ranges.datadoghq.com
+      - DataDog/0.1.0/go-experimental
+    url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
     body: |
@@ -1809,7 +1813,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:17:47 GMT
+      - Fri, 06 Mar 2020 13:11:59 GMT
       Last-Modified:
       - Wed, 13 Nov 2019 16:02:25 GMT
       Server:
@@ -1817,9 +1821,9 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 00828b9427382e6c3f2577388b5f26fe.cloudfront.net (CloudFront)
+      - 1.1 12b082104e9893409b9ae6386e88d351.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - DoOxg-rXZV31ODij7FNZ_DD3JreNDtLQq-Qntcc14ci05n7i_fUEIA==
+      - hs2PqUOkJiXAkJ_CRIqP0v3Pd5cXzV7cpE0zhIi5CqmXwvbUZRUhmg==
       X-Amz-Cf-Pop:
       - CDG3-C2
       X-Cache:
@@ -1831,9 +1835,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://ip-ranges.datadoghq.com
+      - DataDog/0.1.0/go-experimental
+    url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
     body: |
@@ -2722,7 +2728,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:17:47 GMT
+      - Fri, 06 Mar 2020 13:11:59 GMT
       Last-Modified:
       - Wed, 13 Nov 2019 16:02:25 GMT
       Server:
@@ -2730,9 +2736,9 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 00828b9427382e6c3f2577388b5f26fe.cloudfront.net (CloudFront)
+      - 1.1 12b082104e9893409b9ae6386e88d351.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - 6cyhx1qquGch7YLPvtuXLj-FEJkdp4NSNLfzA1qhuZyGqQIfrs7zjA==
+      - X6i5U3sZcPJ2lOCsOPCYdyZJMdSbxN4-P5m3ZnpGG6CorjHeiJEH6g==
       X-Amz-Cf-Pop:
       - CDG3-C2
       X-Cache:
@@ -2744,9 +2750,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://ip-ranges.datadoghq.com
+      - DataDog/0.1.0/go-experimental
+    url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
     body: |
@@ -3635,7 +3643,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 02 Mar 2020 19:17:47 GMT
+      - Fri, 06 Mar 2020 13:11:59 GMT
       Last-Modified:
       - Wed, 13 Nov 2019 16:02:25 GMT
       Server:
@@ -3643,9 +3651,9 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 00828b9427382e6c3f2577388b5f26fe.cloudfront.net (CloudFront)
+      - 1.1 12b082104e9893409b9ae6386e88d351.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - 0H2x2bsXYuEY-5Ijf5BdJdDQHPbt0uYxevXkvGAUH2Sbj5WP8MmP1Q==
+      - EF3RpVSjD2vcSyywNieLGfefXchFRO5s8Kt4sZB9rLqS_xQ-cazaDA==
       X-Amz-Cf-Pop:
       - CDG3-C2
       X-Cache:
