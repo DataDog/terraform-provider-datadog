@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/zorkian/go-datadog-api"
-
+	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -55,12 +54,12 @@ func resourceDatadogMetricMetadata() *schema.Resource {
 
 func buildMetricMetadataStruct(d *schema.ResourceData) (string, *datadog.MetricMetadata) {
 	return d.Get("metric").(string), &datadog.MetricMetadata{
-		Type:           datadog.String(d.Get("type").(string)),
-		Description:    datadog.String(d.Get("description").(string)),
-		ShortName:      datadog.String(d.Get("short_name").(string)),
-		Unit:           datadog.String(d.Get("unit").(string)),
-		PerUnit:        datadog.String(d.Get("per_unit").(string)),
-		StatsdInterval: datadog.Int(d.Get("statsd_interval").(int)),
+		Type:           d.Get("type").(string),
+		Description:    datadog.PtrString(d.Get("description").(string)),
+		ShortName:      datadog.PtrString(d.Get("short_name").(string)),
+		Unit:           datadog.PtrString(d.Get("unit").(string)),
+		PerUnit:        datadog.PtrString(d.Get("per_unit").(string)),
+		StatsdInterval: datadog.PtrInt64(int64(d.Get("statsd_interval").(int))),
 	}
 }
 
@@ -68,12 +67,12 @@ func resourceDatadogMetricMetadataExists(d *schema.ResourceData, meta interface{
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	id, _ := buildMetricMetadataStruct(d)
+	metricName, _ := buildMetricMetadataStruct(d)
 
-	if _, err := client.ViewMetricMetadata(id); err != nil {
-		fmt.Println("view:", err)
+	if _, _, err := client.MetricsApi.GetMetricMetadata(auth, metricName).Execute(); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
@@ -85,29 +84,31 @@ func resourceDatadogMetricMetadataExists(d *schema.ResourceData, meta interface{
 
 func resourceDatadogMetricMetadataCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	id, m := buildMetricMetadataStruct(d)
-	_, err := client.EditMetricMetadata(id, m)
+	metricName, m := buildMetricMetadataStruct(d)
+	_, _, err := client.MetricsApi.EditMetricMetadata(auth, metricName).Body(*m).Execute()
 	if err != nil {
 		fmt.Println("this si the err:", err)
-		return fmt.Errorf("error updating MetricMetadata: %s", err.Error())
+		return translateClientError(err, "error updating MetricMetadata")
 	}
 
-	d.SetId(id)
+	d.SetId(metricName)
 
-	return nil
+	return resourceDatadogMetricMetadataRead(d, meta)
 }
 
 func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	id, _ := buildMetricMetadataStruct(d)
+	metricName, _ := buildMetricMetadataStruct(d)
 
-	m, err := client.ViewMetricMetadata(id)
+	m, _, err := client.MetricsApi.GetMetricMetadata(auth, metricName).Execute()
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting MetricMetadata")
 	}
 
 	d.Set("type", m.GetType())
@@ -122,10 +123,11 @@ func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{})
 
 func resourceDatadogMetricMetadataUpdate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
 	m := &datadog.MetricMetadata{}
-	id := d.Get("metric").(string)
+	metricName := d.Get("metric").(string)
 
 	if attr, ok := d.GetOk("type"); ok {
 		m.SetType(attr.(string))
@@ -143,11 +145,11 @@ func resourceDatadogMetricMetadataUpdate(d *schema.ResourceData, meta interface{
 		m.SetPerUnit(attr.(string))
 	}
 	if attr, ok := d.GetOk("statsd_interval"); ok {
-		m.SetStatsdInterval(attr.(int))
+		m.SetStatsdInterval(int64(attr.(int)))
 	}
 
-	if _, err := client.EditMetricMetadata(id, m); err != nil {
-		return fmt.Errorf("error updating MetricMetadata: %s", err.Error())
+	if _, _, err := client.MetricsApi.EditMetricMetadata(auth, metricName).Body(*m).Execute(); err != nil {
+		return translateClientError(err, "error updating MetricMetadata")
 	}
 
 	return resourceDatadogMetricMetadataRead(d, meta)
