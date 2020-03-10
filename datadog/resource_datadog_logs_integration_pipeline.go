@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/zorkian/go-datadog-api"
+	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 )
 
 func resourceDatadogLogsIntegrationPipeline() *schema.Resource {
@@ -30,10 +30,12 @@ func resourceDatadogLogsIntegrationPipelineCreate(d *schema.ResourceData, meta i
 
 func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-	ddPipeline, err := client.GetLogsPipeline(d.Id())
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
+
+	ddPipeline, _, err := client.LogsPipelinesApi.GetLogsPipeline(auth, d.Id()).Execute()
 	if err != nil {
-		return err
+		return translateClientError(err,"error getting logs pipeline")
 	}
 	if err := d.Set("is_enabled", ddPipeline.GetIsEnabled()); err != nil {
 		return err
@@ -43,12 +45,14 @@ func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta int
 
 func resourceDatadogLogsIntegrationPipelineUpdate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
+
 	var ddPipeline datadog.LogsPipeline
 	ddPipeline.SetIsEnabled(d.Get("is_enabled").(bool))
-	updatedPipeline, err := client.UpdateLogsPipeline(d.Id(), &ddPipeline)
+	updatedPipeline, _, err := client.LogsPipelinesApi.UpdateLogsPipeline(auth, d.Id()).Body(ddPipeline).Execute()
 	if err != nil {
-		return fmt.Errorf("error updating logs pipeline: (%s)", err.Error())
+		return translateClientError(err,"error updating logs pipeline")
 	}
 	d.SetId(*updatedPipeline.Id)
 	return resourceDatadogLogsIntegrationPipelineRead(d, meta)
@@ -60,14 +64,16 @@ func resourceDatadogLogsIntegrationPipelineDelete(d *schema.ResourceData, meta i
 
 func resourceDatadogLogsIntegrationPipelineExists(d *schema.ResourceData, meta interface{}) (bool, error) {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-	ddPipeline, err := client.GetLogsPipeline(d.Id())
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
+
+	ddPipeline, _, err := client.LogsPipelinesApi.GetLogsPipeline(auth, d.Id()).Execute()
 	if err != nil {
 		// API returns 400 when the specific pipeline id doesn't exist through GET request.
 		if strings.Contains(err.Error(), "400 Bad Request") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err,"error getting logs pipeline")
 	}
 	return ddPipeline.GetIsReadOnly(), nil
 }

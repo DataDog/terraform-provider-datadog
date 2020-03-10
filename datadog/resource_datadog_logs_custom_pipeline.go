@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/zorkian/go-datadog-api"
+	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 )
 
 const (
@@ -26,20 +26,20 @@ const (
 )
 
 var tfProcessorTypes = map[string]string{
-	tfArithmeticProcessor:        datadog.ArithmeticProcessorType,
-	tfAttributeRemapperProcessor: datadog.AttributeRemapperType,
-	tfCategoryProcessor:          datadog.CategoryProcessorType,
-	tfDateRemapperProcessor:      datadog.DateRemapperType,
-	tfGeoIPParserProcessor:       datadog.GeoIPParserType,
-	tfGrokParserProcessor:        datadog.GrokParserType,
-	tfMessageRemapperProcessor:   datadog.MessageRemapperType,
-	tfNestedPipelineProcessor:    datadog.NestedPipelineType,
-	tfServiceRemapperProcessor:   datadog.ServiceRemapperType,
-	tfStatusRemapperProcessor:    datadog.StatusRemapperType,
-	tfStringBuilderProcessor:     datadog.StringBuilderProcessorType,
-	tfTraceIDRemapperProcessor:   datadog.TraceIdRemapperType,
-	tfURLParserProcessor:         datadog.UrlParserType,
-	tfUserAgentParserProcessor:   datadog.UserAgentParserType,
+	tfArithmeticProcessor:        datadog.NewLogsArithmeticProcessorWithDefaults().GetType(),
+	tfAttributeRemapperProcessor: datadog.NewLogsRemapperWithDefaults().GetType(),
+	tfCategoryProcessor:          datadog.NewLogsCategoryProcessorWithDefaults().GetType(),
+	tfDateRemapperProcessor:      datadog.NewLogsDateRemapperWithDefaults().GetType(),
+	tfGeoIPParserProcessor:       datadog.NewLogsGeoIPParserWithDefaults().GetType(),
+	tfGrokParserProcessor:        datadog.NewLogsGrokParserWithDefaults().GetType(),
+	tfMessageRemapperProcessor:   datadog.NewLogsMessageRemapperWithDefaults().GetType(),
+	tfNestedPipelineProcessor:    "pipeline",
+	tfServiceRemapperProcessor:   datadog.NewLogsServiceRemapperWithDefaults().GetType(),
+	tfStatusRemapperProcessor:    datadog.NewLogsStatusRemapperWithDefaults().GetType(),
+	tfStringBuilderProcessor:     datadog.NewLogsStringBuilderProcessorWithDefaults().GetType(),
+	tfTraceIDRemapperProcessor:   datadog.NewLogsTraceRemapperWithDefaults().GetType(),
+	tfURLParserProcessor:         datadog.NewLogsURLParserWithDefaults().GetType(),
+	tfUserAgentParserProcessor:   datadog.NewLogsUserAgentParserWithDefaults().GetType(),
 }
 
 var tfProcessors = map[string]*schema.Schema{
@@ -59,20 +59,20 @@ var tfProcessors = map[string]*schema.Schema{
 }
 
 var ddProcessorTypes = map[string]string{
-	datadog.ArithmeticProcessorType:    tfArithmeticProcessor,
-	datadog.AttributeRemapperType:      tfAttributeRemapperProcessor,
-	datadog.CategoryProcessorType:      tfCategoryProcessor,
-	datadog.DateRemapperType:           tfDateRemapperProcessor,
-	datadog.GeoIPParserType:            tfGeoIPParserProcessor,
-	datadog.GrokParserType:             tfGrokParserProcessor,
-	datadog.MessageRemapperType:        tfMessageRemapperProcessor,
-	datadog.NestedPipelineType:         tfNestedPipelineProcessor,
-	datadog.ServiceRemapperType:        tfServiceRemapperProcessor,
-	datadog.StatusRemapperType:         tfStatusRemapperProcessor,
-	datadog.StringBuilderProcessorType: tfStringBuilderProcessor,
-	datadog.TraceIdRemapperType:        tfTraceIDRemapperProcessor,
-	datadog.UrlParserType:              tfURLParserProcessor,
-	datadog.UserAgentParserType:        tfUserAgentParserProcessor,
+	datadog.NewLogsArithmeticProcessorWithDefaults().GetType():    	tfArithmeticProcessor,
+	datadog.NewLogsRemapperWithDefaults().GetType():      			tfAttributeRemapperProcessor,
+	datadog.NewLogsCategoryProcessorWithDefaults().GetType():      	tfCategoryProcessor,
+	datadog.NewLogsDateRemapperWithDefaults().GetType():           	tfDateRemapperProcessor,
+	datadog.NewLogsGeoIPParserWithDefaults().GetType():            	tfGeoIPParserProcessor,
+	datadog.NewLogsGrokParserWithDefaults().GetType():             	tfGrokParserProcessor,
+	datadog.NewLogsMessageRemapperWithDefaults().GetType():        	tfMessageRemapperProcessor,
+	"pipeline":         											tfNestedPipelineProcessor,
+	datadog.NewLogsServiceRemapperWithDefaults().GetType():        	tfServiceRemapperProcessor,
+	datadog.NewLogsStatusRemapperWithDefaults().GetType():         	tfStatusRemapperProcessor,
+	datadog.NewLogsStringBuilderProcessorWithDefaults().GetType(): 	tfStringBuilderProcessor,
+	datadog.NewLogsTraceRemapperWithDefaults().GetType():        	tfTraceIDRemapperProcessor,
+	datadog.NewLogsURLParserWithDefaults().GetType():              	tfURLParserProcessor,
+	datadog.NewLogsUserAgentParserWithDefaults().GetType():        	tfUserAgentParserProcessor,
 }
 
 var arithmeticProcessor = &schema.Schema{
@@ -290,14 +290,16 @@ func resourceDatadogLogsCustomPipeline() *schema.Resource {
 
 func resourceDatadogLogsPipelineCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
+
 	ddPipeline, err := buildDatadogPipeline(d)
 	if err != nil {
 		return err
 	}
-	createdPipeline, err := client.CreateLogsPipeline(ddPipeline)
+	createdPipeline, _, err := client.LogsPipelinesApi.CreateLogsPipeline(auth).Body(*ddPipeline).Execute()
 	if err != nil {
-		return fmt.Errorf("failed to create logs pipeline using Datadog API: %s", err.Error())
+		return translateClientError(err,"failed to create logs pipeline using Datadog API")
 	}
 	d.SetId(*createdPipeline.Id)
 	return resourceDatadogLogsPipelineRead(d, meta)
@@ -305,10 +307,12 @@ func resourceDatadogLogsPipelineCreate(d *schema.ResourceData, meta interface{})
 
 func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-	ddPipeline, err := client.GetLogsPipeline(d.Id())
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
+
+	ddPipeline, _, err := client.LogsPipelinesApi.GetLogsPipeline(auth, d.Id()).Execute()
 	if err != nil {
-		return err
+		return translateClientError(err,"failed to get logs pipeline using Datadog API")
 	}
 	if err = d.Set("name", ddPipeline.GetName()); err != nil {
 		return err
@@ -319,7 +323,7 @@ func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) e
 	if err := d.Set("filter", buildTerraformFilter(ddPipeline.Filter)); err != nil {
 		return err
 	}
-	tfProcessors, err := buildTerraformProcessors(ddPipeline.Processors)
+	tfProcessors, err := buildTerraformProcessors(ddPipeline.GetProcessors())
 	if err != nil {
 		return err
 	}
@@ -331,39 +335,45 @@ func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) e
 
 func resourceDatadogLogsPipelineUpdate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
+
 	ddPipeline, err := buildDatadogPipeline(d)
 	if err != nil {
 		return err
 	}
-	if _, err := client.UpdateLogsPipeline(d.Id(), ddPipeline); err != nil {
-		return fmt.Errorf("error updating logs pipeline: (%s)", err.Error())
+	if _, _, err := client.LogsPipelinesApi.UpdateLogsPipeline(auth, d.Id()).Body(*ddPipeline).Execute(); err != nil {
+		return translateClientError(err,"error updating logs pipeline")
 	}
 	return resourceDatadogLogsPipelineRead(d, meta)
 }
 
 func resourceDatadogLogsPipelineDelete(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-	if err := client.DeleteLogsPipeline(d.Id()); err != nil {
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
+
+	if  _, err := client.LogsPipelinesApi.DeleteLogsPipeline(auth, d.Id()).Execute(); err != nil {
 		// API returns 400 when the specific pipeline id doesn't exist through DELETE request.
 		if strings.Contains(err.Error(), "400 Bad Request") {
 			return nil
 		}
-		return err
+		return translateClientError(err,"error deleting logs pipeline")
 	}
 	return nil
 }
 
 func resourceDatadogLogsPipelineExists(d *schema.ResourceData, meta interface{}) (bool, error) {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-	if _, err := client.GetLogsPipeline(d.Id()); err != nil {
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
+
+	if _, _, err := client.LogsPipelinesApi.GetLogsPipeline(auth, d.Id()).Execute(); err != nil {
 		// API returns 400 when the specific pipeline id doesn't exist through GET request.
 		if strings.Contains(err.Error(), "400 Bad Request") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err,"error getting logs pipeline")
 	}
 	return true, nil
 }
@@ -384,116 +394,180 @@ func buildTerraformProcessors(ddProcessors []datadog.LogsProcessor) ([]map[strin
 func buildTerraformProcessor(ddProcessor datadog.LogsProcessor) (map[string]interface{}, error) {
 	tfProcessor := make(map[string]interface{})
 	var err error
-	switch *ddProcessor.Type {
-	case datadog.ArithmeticProcessorType:
-		tfProcessor = buildTerraformArithmeticProcessor(ddProcessor.Definition.(datadog.ArithmeticProcessor))
-	case datadog.AttributeRemapperType:
-		tfProcessor = buildTerraformAttributeRemapper(ddProcessor.Definition.(datadog.AttributeRemapper))
-	case datadog.CategoryProcessorType:
-		tfProcessor = buildTerraformCategoryProcessor(ddProcessor.Definition.(datadog.CategoryProcessor))
-	case datadog.DateRemapperType,
-		datadog.MessageRemapperType,
-		datadog.ServiceRemapperType,
-		datadog.StatusRemapperType,
-		datadog.TraceIdRemapperType:
-		tfProcessor = buildTerraformSourceRemapper(ddProcessor.Definition.(datadog.SourceRemapper))
-	case datadog.GeoIPParserType:
-		tfProcessor = buildTerraformGeoIPParser(ddProcessor.Definition.(datadog.GeoIPParser))
-	case datadog.GrokParserType:
-		tfProcessor = buildTerraformGrokParser(ddProcessor.Definition.(datadog.GrokParser))
-	case datadog.NestedPipelineType:
-		tfProcessor, err = buildTerraformNestedPipeline(ddProcessor.Definition.(datadog.NestedPipeline))
-	case datadog.StringBuilderProcessorType:
-		tfProcessor = buildTerraformStringBuilderProcessor(ddProcessor.Definition.(datadog.StringBuilderProcessor))
-	case datadog.UrlParserType:
-		tfProcessor = buildTerraformURLParser(ddProcessor.Definition.(datadog.UrlParser))
-	case datadog.UserAgentParserType:
-		tfProcessor = buildTerraformUserAgentParser(ddProcessor.Definition.(datadog.UserAgentParser))
+	switch ddProcessor.LogsProcessorInterface.GetType() {
+	case datadog.NewLogsArithmeticProcessorWithDefaults().GetType():
+		logsArithmeticProcessor := ddProcessor.LogsProcessorInterface.(*datadog.LogsArithmeticProcessor)
+		tfProcessor = buildTerraformArithmeticProcessor(logsArithmeticProcessor)
+	case datadog.NewLogsRemapperWithDefaults().GetType():
+		logsAttributeRemapper := ddProcessor.LogsProcessorInterface.(*datadog.LogsRemapper)
+		tfProcessor = buildTerraformAttributeRemapper(logsAttributeRemapper)
+	case datadog.NewLogsCategoryProcessorWithDefaults().GetType():
+		logsCategoryProcessor := ddProcessor.LogsProcessorInterface.(*datadog.LogsCategoryProcessor)
+		tfProcessor = buildTerraformCategoryProcessor(logsCategoryProcessor)
+	case datadog.NewLogsDateRemapperWithDefaults().GetType():
+		logsDateRemapper := ddProcessor.LogsProcessorInterface.(*datadog.LogsDateRemapper)
+		tfProcessor = buildTerraformDateRemapper(logsDateRemapper)
+	case datadog.NewLogsMessageRemapperWithDefaults().GetType():
+		logsMessageRemapper := ddProcessor.LogsProcessorInterface.(*datadog.LogsMessageRemapper)
+		tfProcessor = buildTerraformMessageRemapper(logsMessageRemapper)
+	case datadog.NewLogsServiceRemapperWithDefaults().GetType():
+		logsServiceRemapper := ddProcessor.LogsProcessorInterface.(*datadog.LogsServiceRemapper)
+		tfProcessor = buildTerraformServiceRemapper(logsServiceRemapper)
+	case datadog.NewLogsStatusRemapperWithDefaults().GetType():
+		logsStatusRemapper := ddProcessor.LogsProcessorInterface.(*datadog.LogsStatusRemapper)
+		tfProcessor = buildTerraformStatusRemapper(logsStatusRemapper)
+	case datadog.NewLogsTraceRemapperWithDefaults().GetType():
+		logsTraceRemapper := ddProcessor.LogsProcessorInterface.(*datadog.LogsTraceRemapper)
+		tfProcessor = buildTerraformTraceRemapper(logsTraceRemapper)
+	case datadog.NewLogsGeoIPParserWithDefaults().GetType():
+		logsGeoIPParser := ddProcessor.LogsProcessorInterface.(*datadog.LogsGeoIPParser)
+		tfProcessor = buildTerraformGeoIPParser(logsGeoIPParser)
+	case datadog.NewLogsGrokParserWithDefaults().GetType():
+		logsGrokParser := ddProcessor.LogsProcessorInterface.(*datadog.LogsGrokParser)
+		tfProcessor = buildTerraformGrokParser(logsGrokParser)
+	case "pipeline":
+		logsPipeline := ddProcessor.LogsProcessorInterface.(*datadog.LogsPipeline)
+		tfProcessor, err = buildTerraformNestedPipeline(logsPipeline)
+	case datadog.NewLogsStringBuilderProcessorWithDefaults().GetType():
+		logsStringBuilderProcessor := ddProcessor.LogsProcessorInterface.(*datadog.LogsStringBuilderProcessor)
+		tfProcessor = buildTerraformStringBuilderProcessor(logsStringBuilderProcessor)
+	case datadog.NewLogsURLParserWithDefaults().GetType():
+		logsURLParser := ddProcessor.LogsProcessorInterface.(*datadog.LogsURLParser)
+		tfProcessor = buildTerraformURLParser(logsURLParser)
+	case datadog.NewLogsUserAgentParserWithDefaults().GetType():
+		logsUserAgentParser := ddProcessor.LogsProcessorInterface.(*datadog.LogsUserAgentParser)
+		tfProcessor = buildTerraformUserAgentParser(logsUserAgentParser)
 	default:
-		err = fmt.Errorf("failed to support datadog processor type, %s", *ddProcessor.Type)
+		err = fmt.Errorf("failed to support datadog processor type, %s", ddProcessor.LogsProcessorInterface.GetType())
 	}
 	if err != nil {
 		return nil, err
 	}
-	tfProcessor["name"] = ddProcessor.GetName()
-	tfProcessor["is_enabled"] = ddProcessor.GetIsEnabled()
 	return map[string]interface{}{
-		ddProcessorTypes[*ddProcessor.Type]: []map[string]interface{}{tfProcessor},
+		ddProcessorTypes[ddProcessor.LogsProcessorInterface.GetType()]: []map[string]interface{}{tfProcessor},
 	}, nil
 }
 
-func buildTerraformUserAgentParser(ddUserAgent datadog.UserAgentParser) map[string]interface{} {
+func buildTerraformUserAgentParser(ddUserAgent *datadog.LogsUserAgentParser) map[string]interface{} {
 	return map[string]interface{}{
-		"sources":    ddUserAgent.Sources,
-		"target":     ddUserAgent.GetTarget(),
-		"is_encoded": ddUserAgent.GetIsEncoded(),
+		"sources":    	ddUserAgent.Sources,
+		"target":     	ddUserAgent.GetTarget(),
+		"is_encoded": 	ddUserAgent.GetIsEncoded(),
+		"name":			ddUserAgent.GetName(),
+		"is_enabled":	ddUserAgent.GetIsEnabled(),
 	}
 }
 
-func buildTerraformURLParser(ddURL datadog.UrlParser) map[string]interface{} {
+func buildTerraformURLParser(ddURL *datadog.LogsURLParser) map[string]interface{} {
 	return map[string]interface{}{
 		"sources":                  ddURL.Sources,
 		"target":                   ddURL.GetTarget(),
 		"normalize_ending_slashes": ddURL.GetNormalizeEndingSlashes(),
+		"name":						ddURL.GetName(),
+		"is_enabled":				ddURL.GetIsEnabled(),
 	}
 }
 
-func buildTerraformNestedPipeline(ddNested datadog.NestedPipeline) (map[string]interface{}, error) {
-	tfProcessors, err := buildTerraformProcessors(ddNested.Processors)
+func buildTerraformNestedPipeline(ddNested *datadog.LogsPipeline) (map[string]interface{}, error) {
+	tfProcessors, err := buildTerraformProcessors(ddNested.GetProcessors())
 	if err != nil {
 		return nil, err
 	}
 	return map[string]interface{}{
-		"filter":    buildTerraformFilter(ddNested.Filter),
-		"processor": tfProcessors,
+		"filter":    	buildTerraformFilter(ddNested.Filter),
+		"processor": 	tfProcessors,
+		"name":			ddNested.GetName(),
+		"is_enabled":	ddNested.GetIsEnabled(),
 	}, nil
 }
 
-func buildTerraformStringBuilderProcessor(ddStringBuilder datadog.StringBuilderProcessor) map[string]interface{} {
+func buildTerraformStringBuilderProcessor(ddStringBuilder *datadog.LogsStringBuilderProcessor) map[string]interface{} {
 	return map[string]interface{}{
-		"template":           ddStringBuilder.GetTemplate(),
-		"target":             ddStringBuilder.GetTarget(),
-		"is_replace_missing": ddStringBuilder.GetIsReplaceMissing(),
+		"template":           	ddStringBuilder.GetTemplate(),
+		"target":             	ddStringBuilder.GetTarget(),
+		"is_replace_missing": 	ddStringBuilder.GetIsReplaceMissing(),
+		"name":					ddStringBuilder.GetName(),
+		"is_enabled":			ddStringBuilder.GetIsEnabled(),
 	}
 }
 
-func buildTerraformGeoIPParser(ddGeoIPParser datadog.GeoIPParser) map[string]interface{} {
+func buildTerraformGeoIPParser(ddGeoIPParser *datadog.LogsGeoIPParser) map[string]interface{} {
 	return map[string]interface{}{
-		"sources": ddGeoIPParser.Sources,
-		"target":  ddGeoIPParser.GetTarget(),
+		"sources": 		ddGeoIPParser.Sources,
+		"target":  		ddGeoIPParser.GetTarget(),
+		"name":			ddGeoIPParser.GetName(),
+		"is_enabled":	ddGeoIPParser.GetIsEnabled(),
 	}
 }
 
-func buildTerraformGrokParser(ddGrok datadog.GrokParser) map[string]interface{} {
+func buildTerraformGrokParser(ddGrok *datadog.LogsGrokParser) map[string]interface{} {
 	return map[string]interface{}{
-		"samples": ddGrok.Samples,
-		"source":  ddGrok.GetSource(),
-		"grok":    buildTerraformGrokRule(ddGrok.GrokRule),
+		"samples": 		ddGrok.Samples,
+		"source":  		ddGrok.GetSource(),
+		"grok":    		buildTerraformGrokRule(&ddGrok.Grok),
+		"name":			ddGrok.GetName(),
+		"is_enabled":	ddGrok.GetIsEnabled(),
 	}
 }
 
-func buildTerraformGrokRule(ddGrokRule *datadog.GrokRule) []map[string]interface{} {
+func buildTerraformGrokRule(ddGrokRule *datadog.LogsGrokParserRules) []map[string]interface{} {
 	tfGrokRule := map[string]interface{}{
-		"support_rules": ddGrokRule.GetSupportRules(),
-		"match_rules":   ddGrokRule.GetMatchRules(),
+		"support_rules": 	ddGrokRule.GetSupportRules(),
+		"match_rules":   	ddGrokRule.GetMatchRules(),
 	}
 	return []map[string]interface{}{tfGrokRule}
 }
 
-func buildTerraformSourceRemapper(ddSource datadog.SourceRemapper) map[string]interface{} {
+func buildTerraformMessageRemapper(remapper *datadog.LogsMessageRemapper) map[string]interface{} {
 	return map[string]interface{}{
-		"sources": ddSource.Sources,
+		"sources": 		remapper.Sources,
+		"name":			remapper.GetName(),
+		"is_enabled":	remapper.GetIsEnabled(),
 	}
 }
 
-func buildTerraformCategoryProcessor(ddCategory datadog.CategoryProcessor) map[string]interface{} {
+func buildTerraformDateRemapper(remapper *datadog.LogsDateRemapper) map[string]interface{} {
 	return map[string]interface{}{
-		"target":   ddCategory.GetTarget(),
-		"category": buildTerraformCategories(ddCategory.Categories),
+		"sources": 		remapper.Sources,
+		"name":			remapper.GetName(),
+		"is_enabled":	remapper.GetIsEnabled(),
 	}
 }
 
-func buildTerraformCategories(ddCategories []datadog.Category) []map[string]interface{} {
+func buildTerraformServiceRemapper(remapper *datadog.LogsServiceRemapper) map[string]interface{} {
+	return map[string]interface{}{
+		"sources": 		remapper.Sources,
+		"name":			remapper.GetName(),
+		"is_enabled":	remapper.GetIsEnabled(),
+	}
+}
+
+func buildTerraformStatusRemapper(remapper *datadog.LogsStatusRemapper) map[string]interface{} {
+	return map[string]interface{}{
+		"sources": 		remapper.Sources,
+		"name":			remapper.GetName(),
+		"is_enabled":	remapper.GetIsEnabled(),
+	}
+}
+
+func buildTerraformTraceRemapper(remapper *datadog.LogsTraceRemapper) map[string]interface{} {
+	return map[string]interface{}{
+		"sources": 		remapper.Sources,
+		"name":			remapper.GetName(),
+		"is_enabled":	remapper.GetIsEnabled(),
+	}
+}
+
+func buildTerraformCategoryProcessor(ddCategory *datadog.LogsCategoryProcessor) map[string]interface{} {
+	return map[string]interface{}{
+		"target":   	ddCategory.GetTarget(),
+		"category": 	buildTerraformCategories(ddCategory.Categories),
+		"name":			ddCategory.GetName(),
+		"is_enabled":	ddCategory.GetIsEnabled(),
+	}
+}
+
+func buildTerraformCategories(ddCategories []datadog.LogsCategoryProcessorCategories) []map[string]interface{} {
 	tfCategories := make([]map[string]interface{}, len(ddCategories))
 	for i, ddCategory := range ddCategories {
 		tfCategories[i] = map[string]interface{}{
@@ -504,7 +578,7 @@ func buildTerraformCategories(ddCategories []datadog.Category) []map[string]inte
 	return tfCategories
 }
 
-func buildTerraformAttributeRemapper(ddAttribute datadog.AttributeRemapper) map[string]interface{} {
+func buildTerraformAttributeRemapper(ddAttribute *datadog.LogsRemapper) map[string]interface{} {
 	return map[string]interface{}{
 		"sources":              ddAttribute.Sources,
 		"source_type":          ddAttribute.GetSourceType(),
@@ -512,18 +586,23 @@ func buildTerraformAttributeRemapper(ddAttribute datadog.AttributeRemapper) map[
 		"target_type":          ddAttribute.GetTargetType(),
 		"preserve_source":      ddAttribute.GetPreserveSource(),
 		"override_on_conflict": ddAttribute.GetOverrideOnConflict(),
+		"name":				  	ddAttribute.GetName(),
+		"is_enabled":		  	ddAttribute.GetIsEnabled(),
 	}
 }
 
-func buildTerraformArithmeticProcessor(ddArithmetic datadog.ArithmeticProcessor) map[string]interface{} {
+func buildTerraformArithmeticProcessor(ddArithmetic *datadog.LogsArithmeticProcessor) map[string]interface{} {
+
 	return map[string]interface{}{
 		"target":             ddArithmetic.GetTarget(),
 		"is_replace_missing": ddArithmetic.GetIsReplaceMissing(),
 		"expression":         ddArithmetic.GetExpression(),
+		"name":				  ddArithmetic.GetName(),
+		"is_enabled":		  ddArithmetic.GetIsEnabled(),
 	}
 }
 
-func buildTerraformFilter(ddFilter *datadog.FilterConfiguration) []map[string]interface{} {
+func buildTerraformFilter(ddFilter *datadog.LogsFilter) []map[string]interface{} {
 	tfFilter := map[string]interface{}{
 		"query": ddFilter.GetQuery(),
 	}
@@ -545,7 +624,7 @@ func buildDatadogPipeline(d *schema.ResourceData) (*datadog.LogsPipeline, error)
 	return &ddPipeline, nil
 }
 
-func buildDatadogProcessors(tfProcessors []interface{}) ([]datadog.LogsProcessor, error) {
+func buildDatadogProcessors(tfProcessors []interface{}) (*[]datadog.LogsProcessor, error) {
 	ddProcessors := make([]datadog.LogsProcessor, len(tfProcessors))
 	for i, tfProcessor := range tfProcessors {
 		for tfProcessorType, ddProcessorType := range tfProcessorTypes {
@@ -560,66 +639,70 @@ func buildDatadogProcessors(tfProcessors []interface{}) ([]datadog.LogsProcessor
 			}
 		}
 	}
-	return ddProcessors, nil
+	return &ddProcessors, nil
 }
 
 func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interface{}) (datadog.LogsProcessor, error) {
 	var ddProcessor = datadog.LogsProcessor{}
 	var err error
 	switch ddProcessorType {
-	case datadog.ArithmeticProcessorType:
-		ddProcessor.Definition = buildDatadogArithmeticProcessor(tfProcessor)
-	case datadog.AttributeRemapperType:
-		ddProcessor.Definition = buildDatadogAttributeRemapper(tfProcessor)
-	case datadog.CategoryProcessorType:
-		ddProcessor.Definition = buildDatadogCategoryProcessor(tfProcessor)
-	case datadog.DateRemapperType,
-		datadog.MessageRemapperType,
-		datadog.ServiceRemapperType,
-		datadog.StatusRemapperType,
-		datadog.TraceIdRemapperType:
-		ddProcessor.Definition = buildDatadogSourceRemapper(tfProcessor)
-	case datadog.GeoIPParserType:
-		ddProcessor.Definition = buildDatadogGeoIPParser(tfProcessor)
-	case datadog.GrokParserType:
-		ddProcessor.Definition = buildDatadogGrokParser(tfProcessor)
-	case datadog.NestedPipelineType:
-		ddProcessor.Definition, err = buildDatadogNestedPipeline(tfProcessor)
-	case datadog.StringBuilderProcessorType:
-		ddProcessor.Definition = buildDatadogStringBuilderProcessor(tfProcessor)
-	case datadog.UrlParserType:
-		ddProcessor.Definition = buildDatadogURLParser(tfProcessor)
-	case datadog.UserAgentParserType:
-		ddProcessor.Definition = buildDatadogUserAgentParser(tfProcessor)
+	case datadog.NewLogsArithmeticProcessorWithDefaults().GetType():
+		ddProcessor.LogsProcessorInterface = buildDatadogArithmeticProcessor(tfProcessor)
+	case datadog.NewLogsRemapperWithDefaults().GetType():
+		ddProcessor.LogsProcessorInterface = buildDatadogAttributeRemapper(tfProcessor)
+	case datadog.NewLogsCategoryProcessorWithDefaults().GetType():
+		ddProcessor.LogsProcessorInterface = buildDatadogCategoryProcessor(tfProcessor)
+	case datadog.NewLogsDateRemapperWithDefaults().GetType():
+		ddProcessor.LogsProcessorInterface = buildDatadogAttributeRemapper(tfProcessor)
+	case datadog.NewLogsMessageRemapperWithDefaults().GetType():
+		ddProcessor.LogsProcessorInterface = buildDatadogMessageRemapper(tfProcessor)
+	case datadog.NewLogsServiceRemapperWithDefaults().GetType():
+		ddProcessor.LogsProcessorInterface = buildDatadogServiceRemapper(tfProcessor)
+	case datadog.NewLogsStatusRemapperWithDefaults().GetType():
+		ddProcessor.LogsProcessorInterface = buildDatadogStatusRemapper(tfProcessor)
+	case datadog.NewLogsTraceRemapperWithDefaults().GetType():
+		ddProcessor.LogsProcessorInterface = buildDatadogTraceRemapper(tfProcessor)
+	case datadog.NewLogsGeoIPParserWithDefaults().GetType():
+		ddProcessor.LogsProcessorInterface = buildDatadogGeoIPParser(tfProcessor)
+	case datadog.NewLogsGrokParserWithDefaults().GetType():
+		ddProcessor.LogsProcessorInterface = buildDatadogGrokParser(tfProcessor)
+	case datadog.NewLogsPipelineWithDefaults().GetType():
+		ddProcessor.LogsProcessorInterface, err = buildDatadogNestedPipeline(tfProcessor)
+	case "pipeline":
+		ddProcessor.LogsProcessorInterface = buildDatadogStringBuilderProcessor(tfProcessor)
+	case datadog.NewLogsURLParserWithDefaults().GetType():
+		ddProcessor.LogsProcessorInterface = buildDatadogURLParser(tfProcessor)
+	case datadog.NewLogsUserAgentParserWithDefaults().GetType():
+		ddProcessor.LogsProcessorInterface = buildDatadogUserAgentParser(tfProcessor)
 	default:
 		err = fmt.Errorf("failed to recoginize processor type: %s", ddProcessorType)
 	}
-	if tfName, exists := tfProcessor["name"].(string); exists {
-		ddProcessor.SetName(tfName)
-	}
-	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
-		ddProcessor.SetIsEnabled(tfIsEnabled)
-	}
-	ddProcessor.SetType(ddProcessorType)
+
 	return ddProcessor, err
 }
 
-func buildDatadogURLParser(tfProcessor map[string]interface{}) datadog.UrlParser {
-	ddURLParser := datadog.UrlParser{}
+func buildDatadogURLParser(tfProcessor map[string]interface{}) *datadog.LogsURLParser {
+	ddURLParser := datadog.LogsURLParser{}
 	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
 		ddURLParser.Sources = ddSources
 	}
 	if tfTarget, exists := tfProcessor["target"].(string); exists {
 		ddURLParser.SetTarget(tfTarget)
 	}
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddURLParser.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddURLParser.SetIsEnabled(tfIsEnabled)
+	}
 	if tfNormalizeEndingSlashes, exists := tfProcessor["normalize_ending_slashes"].(bool); exists {
 		ddURLParser.SetNormalizeEndingSlashes(tfNormalizeEndingSlashes)
 	}
-	return ddURLParser
+	return &ddURLParser
 }
 
-func buildDatadogUserAgentParser(tfProcessor map[string]interface{}) datadog.UserAgentParser {
-	ddUserAgentParser := datadog.UserAgentParser{}
+func buildDatadogUserAgentParser(tfProcessor map[string]interface{}) *datadog.LogsUserAgentParser {
+	ddUserAgentParser := datadog.LogsUserAgentParser{}
 	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
 		ddUserAgentParser.Sources = ddSources
 	}
@@ -629,26 +712,38 @@ func buildDatadogUserAgentParser(tfProcessor map[string]interface{}) datadog.Use
 	if tfIsEncoded, exists := tfProcessor["is_encoded"].(bool); exists {
 		ddUserAgentParser.SetIsEncoded(tfIsEncoded)
 	}
-	return ddUserAgentParser
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddUserAgentParser.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddUserAgentParser.SetIsEnabled(tfIsEnabled)
+	}
+	return &ddUserAgentParser
 }
 
-func buildDatadogNestedPipeline(tfProcessor map[string]interface{}) (datadog.NestedPipeline, error) {
-	ddNestedPipeline := datadog.NestedPipeline{}
+func buildDatadogNestedPipeline(tfProcessor map[string]interface{}) (*datadog.LogsPipeline, error) {
+	ddNestedPipeline := datadog.LogsPipeline{}
 	if tfFilter, exist := tfProcessor["filter"].([]interface{}); exist && len(tfFilter) > 0 {
 		ddNestedPipeline.SetFilter(buildDatadogFilter(tfFilter[0].(map[string]interface{})))
 	}
 	if tfProcessors, exists := tfProcessor["processor"].([]interface{}); exists && len(tfProcessors) > 0 {
 		ddProcessors, err := buildDatadogProcessors(tfProcessors)
 		if err != nil {
-			return ddNestedPipeline, err
+			return &ddNestedPipeline, err
 		}
 		ddNestedPipeline.Processors = ddProcessors
 	}
-	return ddNestedPipeline, nil
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddNestedPipeline.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddNestedPipeline.SetIsEnabled(tfIsEnabled)
+	}
+	return &ddNestedPipeline, nil
 }
 
-func buildDatadogStringBuilderProcessor(tfProcessor map[string]interface{}) datadog.StringBuilderProcessor {
-	ddStringBuilder := datadog.StringBuilderProcessor{}
+func buildDatadogStringBuilderProcessor(tfProcessor map[string]interface{}) *datadog.LogsStringBuilderProcessor {
+	ddStringBuilder := datadog.LogsStringBuilderProcessor{}
 	if tfTemplate, exists := tfProcessor["template"].(string); exists {
 		ddStringBuilder.SetTemplate(tfTemplate)
 	}
@@ -658,22 +753,34 @@ func buildDatadogStringBuilderProcessor(tfProcessor map[string]interface{}) data
 	if tfReplaceMissing, exists := tfProcessor["is_replace_missing"].(bool); exists {
 		ddStringBuilder.SetIsReplaceMissing(tfReplaceMissing)
 	}
-	return ddStringBuilder
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddStringBuilder.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddStringBuilder.SetIsEnabled(tfIsEnabled)
+	}
+	return &ddStringBuilder
 }
 
-func buildDatadogGeoIPParser(tfProcessor map[string]interface{}) datadog.GeoIPParser {
-	ddGeoIPParser := datadog.GeoIPParser{}
+func buildDatadogGeoIPParser(tfProcessor map[string]interface{}) *datadog.LogsGeoIPParser {
+	ddGeoIPParser := datadog.LogsGeoIPParser{}
 	if tfTarget, exists := tfProcessor["target"].(string); exists {
 		ddGeoIPParser.SetTarget(tfTarget)
 	}
 	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
 		ddGeoIPParser.Sources = ddSources
 	}
-	return ddGeoIPParser
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddGeoIPParser.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddGeoIPParser.SetIsEnabled(tfIsEnabled)
+	}
+	return &ddGeoIPParser
 }
 
-func buildDatadogGrokParser(tfProcessor map[string]interface{}) datadog.GrokParser {
-	ddGrokParser := datadog.GrokParser{}
+func buildDatadogGrokParser(tfProcessor map[string]interface{}) *datadog.LogsGrokParser {
+	ddGrokParser := datadog.LogsGrokParser{}
 	if tfSource, exists := tfProcessor["source"].(string); exists {
 		ddGrokParser.SetSource(tfSource)
 	}
@@ -682,10 +789,10 @@ func buildDatadogGrokParser(tfProcessor map[string]interface{}) datadog.GrokPars
 		for i, tfSample := range tfSamples {
 			ddSamples[i] = tfSample.(string)
 		}
-		ddGrokParser.Samples = ddSamples
+		ddGrokParser.Samples = &ddSamples
 	}
 	if tfGrok, exists := tfProcessor["grok"].([]interface{}); exists && len(tfGrok) > 0 {
-		ddGrok := datadog.GrokRule{}
+		ddGrok := datadog.LogsGrokParserRules{}
 		tfGrokRule := tfGrok[0].(map[string]interface{})
 		if tfSupportRule, exist := tfGrokRule["support_rules"].(string); exist {
 			ddGrok.SetSupportRules(tfSupportRule)
@@ -693,29 +800,83 @@ func buildDatadogGrokParser(tfProcessor map[string]interface{}) datadog.GrokPars
 		if tfMatchRule, exist := tfGrokRule["match_rules"].(string); exist {
 			ddGrok.SetMatchRules(tfMatchRule)
 		}
-		ddGrokParser.GrokRule = &ddGrok
+		ddGrokParser.SetGrok(ddGrok)
 	}
-	return ddGrokParser
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddGrokParser.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddGrokParser.SetIsEnabled(tfIsEnabled)
+	}
+	return &ddGrokParser
 }
 
-func buildDatadogSourceRemapper(tfProcessor map[string]interface{}) datadog.SourceRemapper {
-	ddSourceRemapper := datadog.SourceRemapper{}
+func buildDatadogMessageRemapper(tfProcessor map[string]interface{}) *datadog.LogsMessageRemapper {
+	ddRemapper := datadog.LogsMessageRemapper{}
 	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
-		ddSourceRemapper.Sources = ddSources
+		ddRemapper.Sources = ddSources
 	}
-	return ddSourceRemapper
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddRemapper.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddRemapper.SetIsEnabled(tfIsEnabled)
+	}
+	return &ddRemapper
 }
 
-func buildDatadogCategoryProcessor(tfProcessor map[string]interface{}) datadog.CategoryProcessor {
-	ddCategory := datadog.CategoryProcessor{}
+func buildDatadogServiceRemapper(tfProcessor map[string]interface{}) *datadog.LogsServiceRemapper {
+	ddRemapper := datadog.LogsServiceRemapper{}
+	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
+		ddRemapper.Sources = ddSources
+	}
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddRemapper.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddRemapper.SetIsEnabled(tfIsEnabled)
+	}
+	return &ddRemapper
+}
+
+func buildDatadogStatusRemapper(tfProcessor map[string]interface{}) *datadog.LogsStatusRemapper {
+	ddRemapper := datadog.LogsStatusRemapper{}
+	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
+		ddRemapper.Sources = ddSources
+	}
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddRemapper.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddRemapper.SetIsEnabled(tfIsEnabled)
+	}
+	return &ddRemapper
+}
+
+func buildDatadogTraceRemapper(tfProcessor map[string]interface{}) *datadog.LogsTraceRemapper {
+	ddRemapper := datadog.LogsTraceRemapper{}
+	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
+		ddRemapper.Sources = &ddSources
+	}
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddRemapper.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddRemapper.SetIsEnabled(tfIsEnabled)
+	}
+	return &ddRemapper
+}
+
+func buildDatadogCategoryProcessor(tfProcessor map[string]interface{}) *datadog.LogsCategoryProcessor {
+	ddCategory := datadog.LogsCategoryProcessor{}
 	if tfTarget, exists := tfProcessor["target"].(string); exists {
 		ddCategory.SetTarget(tfTarget)
 	}
 	if tfCategories, exists := tfProcessor["category"].([]interface{}); exists {
-		ddCategories := make([]datadog.Category, len(tfCategories))
+		ddCategories := make([]datadog.LogsCategoryProcessorCategories, len(tfCategories))
 		for i, tfC := range tfCategories {
 			tfCategory := tfC.(map[string]interface{})
-			ddCategory := datadog.Category{}
+			ddCategory := datadog.LogsCategoryProcessorCategories{}
 			if tfName, exist := tfCategory["name"].(string); exist {
 				ddCategory.SetName(tfName)
 			}
@@ -727,11 +888,17 @@ func buildDatadogCategoryProcessor(tfProcessor map[string]interface{}) datadog.C
 		}
 		ddCategory.Categories = ddCategories
 	}
-	return ddCategory
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddCategory.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddCategory.SetIsEnabled(tfIsEnabled)
+	}
+	return &ddCategory
 }
 
-func buildDatadogAttributeRemapper(tfProcessor map[string]interface{}) datadog.AttributeRemapper {
-	ddAttribute := datadog.AttributeRemapper{}
+func buildDatadogAttributeRemapper(tfProcessor map[string]interface{}) *datadog.LogsRemapper {
+	ddAttribute := datadog.LogsRemapper{}
 	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
 		ddAttribute.Sources = ddSources
 	}
@@ -750,7 +917,13 @@ func buildDatadogAttributeRemapper(tfProcessor map[string]interface{}) datadog.A
 	if tfOverrideOnConflict, exists := tfProcessor["override_on_conflict"].(bool); exists {
 		ddAttribute.SetOverrideOnConflict(tfOverrideOnConflict)
 	}
-	return ddAttribute
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddAttribute.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddAttribute.SetIsEnabled(tfIsEnabled)
+	}
+	return &ddAttribute
 }
 
 func buildDatadogSources(tfProcessor map[string]interface{}) []string {
@@ -764,8 +937,8 @@ func buildDatadogSources(tfProcessor map[string]interface{}) []string {
 	return nil
 }
 
-func buildDatadogArithmeticProcessor(tfProcessor map[string]interface{}) datadog.ArithmeticProcessor {
-	ddArithmetic := datadog.ArithmeticProcessor{}
+func buildDatadogArithmeticProcessor(tfProcessor map[string]interface{}) *datadog.LogsArithmeticProcessor {
+	ddArithmetic := datadog.LogsArithmeticProcessor{}
 	if tfTarget, exists := tfProcessor["target"].(string); exists {
 		ddArithmetic.SetTarget(tfTarget)
 	}
@@ -775,11 +948,17 @@ func buildDatadogArithmeticProcessor(tfProcessor map[string]interface{}) datadog
 	if tfIsReplaceMissing, exists := tfProcessor["is_replace_missing"].(bool); exists {
 		ddArithmetic.SetIsReplaceMissing(tfIsReplaceMissing)
 	}
-	return ddArithmetic
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddArithmetic.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddArithmetic.SetIsEnabled(tfIsEnabled)
+	}
+	return &ddArithmetic
 }
 
-func buildDatadogFilter(tfFilter map[string]interface{}) datadog.FilterConfiguration {
-	ddFilter := datadog.FilterConfiguration{}
+func buildDatadogFilter(tfFilter map[string]interface{}) datadog.LogsFilter {
+	ddFilter := datadog.LogsFilter{}
 	if tfQuery, exists := tfFilter["query"].(string); exists {
 		ddFilter.SetQuery(tfQuery)
 	}

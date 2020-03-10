@@ -8,7 +8,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"github.com/zorkian/go-datadog-api"
+	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"context"
 )
 
 const pipelineConfigForCreation = `
@@ -231,20 +232,21 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 func testAccCheckPipelineExists(accProvider *schema.Provider, name string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		client := providerConf.DatadogClientV1
+		auth := providerConf.Auth
 
-		if err := pipelineExistsChecker(s, client); err != nil {
+		if err := pipelineExistsChecker(auth, s, client); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func pipelineExistsChecker(s *terraform.State, client *datadog.Client) error {
+func pipelineExistsChecker(auth context.Context, s *terraform.State, client *datadog.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_custom_pipeline" {
 			id := r.Primary.ID
-			if _, err := client.GetLogsPipeline(id); err != nil {
+			if _, _, err := client.LogsPipelinesApi.GetLogsPipeline(auth, id).Execute(); err != nil {
 				return fmt.Errorf("received an error when retrieving pipeline, (%s)", err)
 			}
 		}
@@ -255,20 +257,21 @@ func pipelineExistsChecker(s *terraform.State, client *datadog.Client) error {
 func testAccCheckPipelineDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		client := providerConf.DatadogClientV1
+		auth := providerConf.Auth
 
-		if err := pipelineDestroyHelper(s, client); err != nil {
+		if err := pipelineDestroyHelper(auth, s, client); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func pipelineDestroyHelper(s *terraform.State, client *datadog.Client) error {
+func pipelineDestroyHelper(auth context.Context, s *terraform.State, client *datadog.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_custom_pipeline" {
 			id := r.Primary.ID
-			p, err := client.GetLogsPipeline(id)
+			p, _, err := client.LogsPipelinesApi.GetLogsPipeline(auth, id).Execute()
 
 			if err != nil {
 				if strings.Contains(err.Error(), "400 Bad Request") {
@@ -276,7 +279,7 @@ func pipelineDestroyHelper(s *terraform.State, client *datadog.Client) error {
 				}
 				return fmt.Errorf("received an error when retrieving pipeline, (%s)", err)
 			}
-			if p != nil {
+			if p.Id != nil {
 				return fmt.Errorf("pipeline still exists")
 			}
 		}
