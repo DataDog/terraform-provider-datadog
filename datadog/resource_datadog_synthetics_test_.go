@@ -517,16 +517,18 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 	if actualOptions.HasMonitorOptions() {
 		monitorOptions := actualOptions.GetMonitorOptions()
-		localOptions["monitor_options"] = map[string]interface{}{
+		actualMonitorOptions := map[string]interface{}{
 			"renotify_interval": convertToString(*monitorOptions.RenotifyInterval),
 		}
+		localOptions["monitor_options"] = actualMonitorOptions
 	}
 	if actualOptions.HasRetry() {
 		retry := actualOptions.GetRetry()
-		localOptions["retry"] = map[string]interface{}{
+		actualOptionsRetry := map[string]interface{}{
 			"count":    convertToString(*retry.Count),
 			"interval": convertToString(*retry.Interval),
 		}
+		localOptions["retry"] = actualOptionsRetry
 	}
 
 	d.Set("options", []interface{}{localOptions})

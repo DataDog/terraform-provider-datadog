@@ -13,7 +13,7 @@ import (
 
 // TODO: add options.retry and options.monitor_options tests once options become a TypeList on next Major version
 
-func testAccDatadogSyntheticsAPITestStateUpgradeV0(name string) resource.TestCheckFunc {
+func testAccDatadogSyntheticsAPITestStateUpgradeV0(name string, accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		resource, ok := s.RootModule().Resources[name]
 		if !ok {
@@ -29,7 +29,7 @@ func testAccDatadogSyntheticsAPITestStateUpgradeV0(name string) resource.TestChe
 			"options.tick_every":           resource.Primary.Attributes["options.tick_every"],
 			"options.accept_self_signed":   resource.Primary.Attributes["options.accept_self_signed"],
 		}
-		updatedRawState, err := resourceDatadogSyntheticsTestStateUpgradeV0(rawState, testAccProvider.Meta())
+		updatedRawState, err := resourceDatadogSyntheticsTestStateUpgradeV0(rawState, accProvider.Meta())
 		optionsKV := map[string]string{
 			"options.follow_redirects":     "options.0.follow_redirects",
 			"options.min_failure_duration": "options.0.min_failure_duration",
@@ -73,10 +73,14 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITestV0_importBasic(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testSyntheticsTestIsDestroyed,
+		Providers:    accProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: createSyntheticsAPITestConfigV0,
@@ -150,13 +154,17 @@ func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_StateUpgradeV0(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testSyntheticsTestIsDestroyed,
+		Providers:    accProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsAPITestStepV0,
-			updateSyntheticsAPITestStepV0,
+			createSyntheticsAPITestStepV0(accProvider),
+			updateSyntheticsAPITestStepV0(accProvider),
 		},
 	})
 }
@@ -239,73 +247,75 @@ func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
 	})
 }
 
-var createSyntheticsAPITestStepV0 = resource.TestStep{
-	Config: createSyntheticsAPITestConfigV0,
-	Check: resource.ComposeTestCheckFunc(
-		testSyntheticsTestExists(),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "type", "api"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "subtype", "http"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "request.method", "GET"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "request.url", "https://www.datadoghq.com"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.#", "4"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.0.type", "header"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.0.property", "content-type"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.0.operator", "contains"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.0.target", "application/json"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.1.type", "statusCode"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.1.operator", "is"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.1.target", "200"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.2.type", "responseTime"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.2.operator", "lessThan"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.2.target", "2000"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.3.type", "body"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.3.operator", "doesNotContain"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.3.target", "terraform"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "locations.#", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "locations.0", "aws:eu-central-1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "options.tick_every", "60"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "options.follow_redirects", "true"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "options.min_failure_duration", "0"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "options.min_location_failed", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "name", "name for synthetics test foo"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "message", "Notify @datadog.user"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "tags.#", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "tags.0", "foo:bar"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "tags.1", "baz"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "status", "paused"),
-		resource.TestCheckResourceAttrSet(
-			"datadog_synthetics_test_V0.pepito", "monitor_id"),
-	),
+func createSyntheticsAPITestStepV0(accProvider *schema.Provider) resource.TestStep {
+	return resource.TestStep{
+		Config: createSyntheticsAPITestConfigV0,
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "subtype", "http"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "request.method", "GET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "request.url", "https://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.#", "4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.0.type", "header"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.0.property", "content-type"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.0.operator", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.0.target", "application/json"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.1.type", "statusCode"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.1.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.1.target", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.2.type", "responseTime"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.2.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.2.target", "2000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.3.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.3.operator", "doesNotContain"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.3.target", "terraform"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "options.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "options.follow_redirects", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "options.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "options.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "name", "name for synthetics test foo"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test_V0.pepito", "monitor_id"),
+		),
+	}
 }
 
 const createSyntheticsAPITestConfigV0 = `
@@ -364,74 +374,76 @@ resource "datadog_synthetics_test_V0" "pepito" {
 }
 `
 
-var updateSyntheticsAPITestStepV0 = resource.TestStep{
-	Config: updateSyntheticsAPITestConfigV0,
-	Check: resource.ComposeTestCheckFunc(
-		testSyntheticsTestExists(),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "type", "api"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "subtype", "http"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "request.method", "GET"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "request.url", "https://www.datadoghq.com"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.#", "4"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.0.type", "header"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.0.property", "content-type"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.0.operator", "contains"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.0.target", "application/json"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.1.type", "statusCode"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.1.operator", "is"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.1.target", "200"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.2.type", "responseTime"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.2.operator", "lessThan"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.2.target", "2000"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.3.type", "body"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.3.operator", "doesNotContain"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "assertions.3.target", "terraform"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "locations.#", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "locations.0", "aws:eu-central-1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "options.tick_every", "300"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "options.follow_redirects", "true"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "options.min_failure_duration", "0"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "options.min_location_failed", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "name", "name for synthetics test foo"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "message", "Notify @datadog.user"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "tags.#", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "tags.0", "foo:bar"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "tags.1", "baz"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test_V0.pepito", "status", "paused"),
-		resource.TestCheckResourceAttrSet(
-			"datadog_synthetics_test_V0.pepito", "monitor_id"),
-		testAccDatadogSyntheticsAPITestStateUpgradeV0("datadog_synthetics_test_V0.pepito"),
-	),
+func updateSyntheticsAPITestStepV0(accProvider *schema.Provider) resource.TestStep {
+	return resource.TestStep{
+		Config: updateSyntheticsAPITestConfigV0,
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "subtype", "http"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "request.method", "GET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "request.url", "https://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.#", "4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.0.type", "header"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.0.property", "content-type"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.0.operator", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.0.target", "application/json"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.1.type", "statusCode"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.1.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.1.target", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.2.type", "responseTime"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.2.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.2.target", "2000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.3.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.3.operator", "doesNotContain"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "assertions.3.target", "terraform"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "options.tick_every", "300"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "options.follow_redirects", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "options.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "options.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "name", "name for synthetics test foo"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test_V0.pepito", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test_V0.pepito", "monitor_id"),
+			testAccDatadogSyntheticsAPITestStateUpgradeV0("datadog_synthetics_test_V0.pepito", accProvider),
+		),
+	}
 }
 
 const updateSyntheticsAPITestConfigV0 = `
@@ -490,81 +502,83 @@ resource "datadog_synthetics_test_V0" "pepito" {
 }
 `
 
-var createSyntheticsAPITestStep = resource.TestStep{
-	Config: createSyntheticsAPITestConfig,
-	Check: resource.ComposeTestCheckFunc(
-		testSyntheticsTestExists(),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "type", "api"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "subtype", "http"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "request.method", "GET"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "request.url", "https://www.datadoghq.com"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.#", "4"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.0.type", "header"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.0.property", "content-type"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.0.operator", "contains"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.0.target", "application/json"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.1.type", "statusCode"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.1.operator", "is"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.1.target", "200"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.2.type", "responseTime"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.2.operator", "lessThan"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.2.target", "2000"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.3.type", "body"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.3.operator", "doesNotContain"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.3.target", "terraform"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "locations.#", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "options.#", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "options.0.tick_every", "60"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "options.0.follow_redirects", "true"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "options.0.min_failure_duration", "0"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "options.0.min_location_failed", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "options.0.retry.%", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "options.0.retry.count", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "options.0.retry.interval", "100"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "name", "name for synthetics test foo"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "message", "Notify @datadog.user"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "tags.#", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "tags.0", "foo:bar"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "tags.1", "baz"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "status", "paused"),
-		resource.TestCheckResourceAttrSet(
-			"datadog_synthetics_test.foo", "monitor_id"),
-	),
+func createSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep {
+	return resource.TestStep{
+		Config: createSyntheticsAPITestConfig,
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "subtype", "http"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request.method", "GET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request.url", "https://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.#", "4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.0.type", "header"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.0.property", "content-type"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.0.operator", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.0.target", "application/json"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.1.type", "statusCode"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.1.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.1.target", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.2.type", "responseTime"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.2.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.2.target", "2000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.3.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.3.operator", "doesNotContain"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.3.target", "terraform"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.0.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.0.follow_redirects", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.0.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.0.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.0.retry.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.0.retry.count", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.0.retry.interval", "100"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "name", "name for synthetics test foo"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.foo", "monitor_id"),
+		),
+	}
 }
 
 const createSyntheticsAPITestConfig = `
@@ -629,63 +643,65 @@ resource "datadog_synthetics_test" "foo" {
 }
 `
 
-var updateSyntheticsAPITestStep = resource.TestStep{
-	Config: updateSyntheticsAPITestConfig,
-	Check: resource.ComposeTestCheckFunc(
-		testSyntheticsTestExists(),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "type", "api"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "subtype", "http"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "request.method", "GET"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "request.url", "https://docs.datadoghq.com"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "request.timeout", "60"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.#", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.0.type", "statusCode"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.0.operator", "isNot"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "assertions.0.target", "500"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "locations.#", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "options.#", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "options.0.tick_every", "900"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "options.0.follow_redirects", "false"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "options.0.min_failure_duration", "10"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "options.0.min_location_failed", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "options.0.monitor_options.%", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "options.0.monitor_options.renotify_interval", "88"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "name", "updated name"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "message", "Notify @pagerduty"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "tags.#", "3"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "tags.0", "foo:bar"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "tags.1", "foo"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "tags.2", "env:test"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.foo", "status", "live"),
-		resource.TestCheckResourceAttrSet(
-			"datadog_synthetics_test.foo", "monitor_id"),
-	),
+func updateSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep {
+	return resource.TestStep{
+		Config: updateSyntheticsAPITestConfig,
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "subtype", "http"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request.method", "GET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request.url", "https://docs.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request.timeout", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.0.type", "statusCode"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.0.operator", "isNot"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertions.0.target", "500"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.0.tick_every", "900"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.0.follow_redirects", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.0.min_failure_duration", "10"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.0.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.0.monitor_options.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.0.monitor_options.renotify_interval", "88"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "name", "updated name"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "message", "Notify @pagerduty"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "tags.#", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "tags.1", "foo"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "tags.2", "env:test"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "status", "live"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.foo", "monitor_id"),
+		),
+	}
 }
 
 const updateSyntheticsAPITestConfig = `
@@ -728,61 +744,63 @@ resource "datadog_synthetics_test" "foo" {
 }
 `
 
-var createSyntheticsSSLTestStep = resource.TestStep{
-	Config: createSyntheticsSSLTestConfig,
-	Check: resource.ComposeTestCheckFunc(
-		testSyntheticsTestExists(),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "type", "api"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "subtype", "ssl"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "request.host", "datadoghq.com"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "request.port", "443"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "assertions.#", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "assertions.0.type", "certificate"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "assertions.0.operator", "isInMoreThan"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "assertions.0.target", "30"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "locations.#", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "options.#", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "options.0.tick_every", "60"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "options.0.accept_self_signed", "true"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "options.0.retry.%", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "options.0.retry.count", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "options.0.retry.interval", "88"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "options.0.monitor_options.%", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "options.0.monitor_options.renotify_interval", "100"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "name", "name for synthetics test ssl"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "message", "Notify @datadog.user"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "tags.#", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "tags.0", "foo:bar"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "tags.1", "baz"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "status", "paused"),
-		resource.TestCheckResourceAttrSet(
-			"datadog_synthetics_test.ssl", "monitor_id"),
-	),
+func createSyntheticsSSLTestStep(accProvider *schema.Provider) resource.TestStep {
+	return resource.TestStep{
+		Config: createSyntheticsSSLTestConfig,
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "subtype", "ssl"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "request.host", "datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "request.port", "443"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.0.type", "certificate"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.0.operator", "isInMoreThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.0.target", "30"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.0.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.0.accept_self_signed", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.0.retry.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.0.retry.count", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.0.retry.interval", "88"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.0.monitor_options.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.0.monitor_options.renotify_interval", "100"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "name", "name for synthetics test ssl"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.ssl", "monitor_id"),
+		),
+	}
 }
 
 const createSyntheticsSSLTestConfig = `
@@ -825,61 +843,63 @@ resource "datadog_synthetics_test" "ssl" {
 }
 `
 
-var updateSyntheticsSSLTestStep = resource.TestStep{
-	Config: updateSyntheticsSSLTestConfig,
-	Check: resource.ComposeTestCheckFunc(
-		testSyntheticsTestExists(),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "type", "api"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "subtype", "ssl"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "request.host", "datadoghq.com"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "request.port", "443"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "assertions.#", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "assertions.0.type", "certificate"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "assertions.0.operator", "isInMoreThan"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "assertions.0.target", "60"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "locations.#", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "options.0.tick_every", "60"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "options.0.accept_self_signed", "false"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "options.0.retry.%", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "options.0.retry.count", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "options.0.retry.interval", "70"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "options.0.monitor_options.%", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "options.0.monitor_options.renotify_interval", "800"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "name", "updated name"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "message", "Notify @pagerduty"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "tags.#", "3"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "tags.0", "foo:bar"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "tags.1", "foo"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "tags.2", "env:test"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.ssl", "status", "live"),
-		resource.TestCheckResourceAttrSet(
-			"datadog_synthetics_test.ssl", "monitor_id"),
-	),
+func updateSyntheticsSSLTestStep(accProvider *schema.Provider) resource.TestStep {
+	return resource.TestStep{
+		Config: updateSyntheticsSSLTestConfig,
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "subtype", "ssl"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "request.host", "datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "request.port", "443"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.0.type", "certificate"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.0.operator", "isInMoreThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.0.target", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.0.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.0.accept_self_signed", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.0.retry.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.0.retry.count", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.0.retry.interval", "70"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.0.monitor_options.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.0.monitor_options.renotify_interval", "800"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "name", "updated name"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "message", "Notify @pagerduty"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "tags.#", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "tags.1", "foo"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "tags.2", "env:test"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "status", "live"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.ssl", "monitor_id"),
+		),
+	}
 }
 
 const updateSyntheticsSSLTestConfig = `
@@ -923,67 +943,69 @@ resource "datadog_synthetics_test" "ssl" {
 }
 `
 
-var createSyntheticsBrowserTestStep = resource.TestStep{
-	Config: createSyntheticsBrowserTestConfig,
-	Check: resource.ComposeTestCheckFunc(
-		testSyntheticsTestExists(),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "type", "browser"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "request.method", "GET"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "request.url", "https://www.datadoghq.com"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "request.body", "this is a body"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "request.timeout", "30"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "request_headers.%", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "request_headers.Accept", "application/json"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "request_headers.X-Datadog-Trace-ID", "123456789"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "device_ids.#", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "device_ids.0", "laptop_large"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "device_ids.1", "mobile_small"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "assertions.#", "0"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "locations.#", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.tick_every", "900"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.min_failure_duration", "0"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.min_location_failed", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.monitor_options.%", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.monitor_options.renotify_interval", "10"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.retry.%", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.retry.count", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.retry.interval", "100"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "name", "name for synthetics browser test bar"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "tags.#", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "tags.1", "baz"),
-		resource.TestCheckResourceAttrSet(
-			"datadog_synthetics_test.bar", "monitor_id"),
-	),
+func createSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.TestStep {
+	return resource.TestStep{
+		Config: createSyntheticsBrowserTestConfig,
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "type", "browser"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.method", "GET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.url", "https://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.body", "this is a body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.timeout", "30"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_headers.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_headers.Accept", "application/json"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_headers.X-Datadog-Trace-ID", "123456789"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "device_ids.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "device_ids.0", "laptop_large"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "device_ids.1", "mobile_small"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertions.#", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.tick_every", "900"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.monitor_options.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.monitor_options.renotify_interval", "10"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.retry.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.retry.count", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.retry.interval", "100"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "name", "name for synthetics browser test bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.1", "baz"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.bar", "monitor_id"),
+		),
+	}
 }
 
 const createSyntheticsBrowserTestConfig = `
@@ -1025,67 +1047,69 @@ resource "datadog_synthetics_test" "bar" {
 }
 `
 
-var updateSyntheticsBrowserTestStep = resource.TestStep{
-	Config: updateSyntheticsBrowserTestConfig,
-	Check: resource.ComposeTestCheckFunc(
-		testSyntheticsTestExists(),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "type", "browser"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "request.method", "PUT"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "request.url", "https://docs.datadoghq.com"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "request.body", "this is an updated body"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "request.timeout", "60"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "request_headers.%", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "request_headers.Accept", "application/xml"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "request_headers.X-Datadog-Trace-ID", "987654321"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "device_ids.#", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "device_ids.0", "laptop_large"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "device_ids.1", "tablet"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "assertions.#", "0"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "locations.#", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.tick_every", "1800"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.min_failure_duration", "10"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.min_location_failed", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.monitor_options.%", "1"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.monitor_options.renotify_interval", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.retry.%", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.retry.count", "0"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "options.0.retry.interval", "20"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "name", "updated name for synthetics browser test bar"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "message", "Notify @pagerduty"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "tags.#", "2"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
-		resource.TestCheckResourceAttr(
-			"datadog_synthetics_test.bar", "tags.1", "buz"),
-		resource.TestCheckResourceAttrSet(
-			"datadog_synthetics_test.bar", "monitor_id"),
-	),
+func updateSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.TestStep {
+	return resource.TestStep{
+		Config: updateSyntheticsBrowserTestConfig,
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "type", "browser"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.method", "PUT"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.url", "https://docs.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.body", "this is an updated body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.timeout", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_headers.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_headers.Accept", "application/xml"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_headers.X-Datadog-Trace-ID", "987654321"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "device_ids.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "device_ids.0", "laptop_large"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "device_ids.1", "tablet"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertions.#", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.tick_every", "1800"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.min_failure_duration", "10"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.monitor_options.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.monitor_options.renotify_interval", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.retry.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.retry.count", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.0.retry.interval", "20"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "name", "updated name for synthetics browser test bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "message", "Notify @pagerduty"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.1", "buz"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.bar", "monitor_id"),
+		),
+	}
 }
 
 const updateSyntheticsBrowserTestConfig = `
