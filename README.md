@@ -58,9 +58,24 @@ In order to test the provider, you can simply run `make test`.
 $ make test
 ```
 
+Note that the above command runs acceptance tests by replaying pre-recorded API responses
+(cassettes) stored in `datadog/cassettes/`. When tests are modified, the cassettes need
+to be re-recorded.
+
+*Note:* Recording cassettes creates/updates/destroys real resources. Never run this on
+a production Datadog organization.
+
+In order to re-record all cassettes you need to have `DATADOG_API_KEY` and `DATADOG_APP_KEY`
+for your testing organization in your environment. With that, run `make cassettes`. Do note
+that this would regenerate all cassettes and thus take a very long time; if you only need to
+re-record cassettes for one or two tests, you can run `make cassettes RUNTESTS=XXX` - this
+will effectively execute `go test -run=XXX`, which would run all testcases that contain
+`XXX` in their name.
+
 In order to run the full suite of Acceptance tests, run `make testacc`.
 
-*Note:* Acceptance tests create real resources, and often cost money to run.
+*Note:* Acceptance tests create/update/destroy real resources. Never run this on
+a production Datadog organization.
 
 ```sh
 $ make testacc
