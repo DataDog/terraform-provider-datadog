@@ -32,6 +32,9 @@ resource "datadog_dashboard_list" "new_list" {
 
 resource "datadog_dashboard" "time" {
 	title         = "TF Test Layout Dashboard"
+	# NOTE: this dependency is present to make sure the dashboards are created in
+	# a predictable order and thus the recorder test cassettes always work
+	depends_on    = ["datadog_dashboard.screen"]
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = true
