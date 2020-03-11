@@ -4,7 +4,6 @@ WEBSITE_REPO=github.com/hashicorp/terraform-website
 PKG_NAME=datadog
 DIR=~/.terraform.d/plugins
 GO_CLIENT_VERSION=master
-RUNTESTS?=""
 
 default: build
 
