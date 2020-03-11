@@ -62,6 +62,14 @@ Note that the above command runs acceptance tests by replaying pre-recorded API 
 (cassettes) stored in `datadog/cassettes/`. When tests are modified, the cassettes need
 to be re-recorded.
 
+In order to make tests cassette friendly, it's necessary to ensure that resources always get
+manipulated in a predictable order. When creating a testing Terraform config that defines multiple
+resources at the same time, you need to set inter-resource dependencies (using `depends_on`)
+in such a way that there is only one way for Terraform to manipulate them. For example, given
+resources A, B and C in the same config string, you can achieve this by making A depend on B
+and B depend on C. See [PR #442](https://github.com/terraform-providers/terraform-provider-datadog/pull/442)
+for an example of this.
+
 *Note:* Recording cassettes creates/updates/destroys real resources. Never run this on
 a production Datadog organization.
 
