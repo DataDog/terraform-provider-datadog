@@ -24,7 +24,7 @@ test: fmtcheck
 	DATADOG_API_KEY=fake DATADOG_APP_KEY=fake RECORD=false TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout=120s
 
 testacc: fmtcheck
-	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m -run=$(RUNTESTS)
+	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
 
 cassettes: fmtcheck
 	rm datadog/cassettes/*
