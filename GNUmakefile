@@ -27,7 +27,6 @@ testacc: fmtcheck
 	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
 
 cassettes: fmtcheck
-	rm datadog/cassettes/*
 	RECORD=true TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
 
 vet:
