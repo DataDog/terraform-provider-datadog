@@ -328,7 +328,7 @@ func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) err
 
 	d.SetId(strconv.Itoa(dt.GetId()))
 
-	return nil
+	return resourceDatadogDowntimeRead(d, meta)
 }
 
 func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error {

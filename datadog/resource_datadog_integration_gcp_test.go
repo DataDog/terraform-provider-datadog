@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	datadog "github.com/zorkian/go-datadog-api"
 )
@@ -30,15 +31,19 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
 `
 
 func TestAccDatadogIntegrationGCP(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: checkIntegrationGCPDestroy,
+		Providers:    accProviders,
+		CheckDestroy: checkIntegrationGCPDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationGCPConfig,
 				Check: resource.ComposeTestCheckFunc(
-					checkIntegrationGCPExists,
+					checkIntegrationGCPExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"project_id", "super-awesome-project-id"),
@@ -62,7 +67,7 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 			{
 				Config: testAccCheckDatadogIntegrationGCPEmptyHostFiltersConfig,
 				Check: resource.ComposeTestCheckFunc(
-					checkIntegrationGCPExists,
+					checkIntegrationGCPExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"project_id", "super-awesome-project-id"),
@@ -87,37 +92,41 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 	})
 }
 
-func checkIntegrationGCPExists(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
-	integrations, err := client.ListIntegrationGCP()
-	if err != nil {
-		return err
-	}
-	for _, r := range s.RootModule().Resources {
-		projectID := r.Primary.ID
-		for _, integration := range integrations {
-			if integration.GetProjectID() == projectID {
-				return nil
-			}
+func checkIntegrationGCPExists(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		client := accProvider.Meta().(*datadog.Client)
+		integrations, err := client.ListIntegrationGCP()
+		if err != nil {
+			return err
 		}
-		return fmt.Errorf("The Google Cloud Platform integration doesn't exist: projectID=%s", projectID)
+		for _, r := range s.RootModule().Resources {
+			projectID := r.Primary.ID
+			for _, integration := range integrations {
+				if integration.GetProjectID() == projectID {
+					return nil
+				}
+			}
+			return fmt.Errorf("The Google Cloud Platform integration doesn't exist: projectID=%s", projectID)
+		}
+		return nil
 	}
-	return nil
 }
 
-func checkIntegrationGCPDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
-	integrations, err := client.ListIntegrationGCP()
-	if err != nil {
-		return err
-	}
-	for _, r := range s.RootModule().Resources {
-		projectID := r.Primary.ID
-		for _, integration := range integrations {
-			if integration.GetProjectID() == projectID {
-				return fmt.Errorf("The Google Cloud Platform integration still exist: projectID=%s", projectID)
+func checkIntegrationGCPDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		client := accProvider.Meta().(*datadog.Client)
+		integrations, err := client.ListIntegrationGCP()
+		if err != nil {
+			return err
+		}
+		for _, r := range s.RootModule().Resources {
+			projectID := r.Primary.ID
+			for _, integration := range integrations {
+				if integration.GetProjectID() == projectID {
+					return fmt.Errorf("The Google Cloud Platform integration still exist: projectID=%s", projectID)
+				}
 			}
 		}
+		return nil
 	}
-	return nil
 }

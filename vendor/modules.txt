@@ -60,6 +60,9 @@ github.com/bgentry/speakeasy
 github.com/cenkalti/backoff
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
+# github.com/dnaeon/go-vcr v1.0.1
+github.com/dnaeon/go-vcr/cassette
+github.com/dnaeon/go-vcr/recorder
 # github.com/fatih/color v1.7.0
 github.com/fatih/color
 # github.com/golang/protobuf v1.3.2
@@ -178,6 +181,8 @@ github.com/hashicorp/terraform-svchost/disco
 github.com/hashicorp/yamux
 # github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af
 github.com/jmespath/go-jmespath
+# github.com/jonboulle/clockwork v0.1.0
+github.com/jonboulle/clockwork
 # github.com/kr/pretty v0.1.0
 github.com/kr/pretty
 # github.com/kr/text v0.1.0
@@ -231,7 +236,7 @@ github.com/zclconf/go-cty/cty/msgpack
 github.com/zclconf/go-cty/cty/set
 # github.com/zclconf/go-cty-yaml v1.0.1
 github.com/zclconf/go-cty-yaml
-# github.com/zorkian/go-datadog-api v2.27.0+incompatible
+# github.com/zorkian/go-datadog-api v2.28.0+incompatible
 github.com/zorkian/go-datadog-api
 # go.opencensus.io v0.22.0
 go.opencensus.io
@@ -350,3 +355,5 @@ google.golang.org/grpc/stats
 google.golang.org/grpc/status
 google.golang.org/grpc/tap
 google.golang.org/grpc/test/bufconn
+# gopkg.in/yaml.v2 v2.2.8
+gopkg.in/yaml.v2

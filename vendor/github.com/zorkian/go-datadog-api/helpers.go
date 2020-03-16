@@ -11,6 +11,7 @@ package datadog
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"math"
 	"strconv"
 )
@@ -121,4 +122,44 @@ func GetStringId(id interface{}) (string, error) {
 	default:
 		return "", errors.New("unsupported id type")
 	}
+}
+
+func GetFloatFromInterface(intf *interface{}) (*float64, bool, error) {
+	var result *float64
+	var auto bool
+
+	if intf != nil {
+		val := *intf
+		switch tp := val.(type) {
+		case float32:
+			fv := float64(val.(float32))
+			result = &fv
+		case float64:
+			fv := val.(float64)
+			result = &fv
+		case int:
+			fv := float64(val.(int))
+			result = &fv
+		case int32:
+			fv := float64(val.(int32))
+			result = &fv
+		case int64:
+			fv := float64(val.(int64))
+			result = &fv
+		case string:
+			fv := val.(string)
+			if fv == "auto" {
+				auto = true
+			} else {
+				f, err := strconv.ParseFloat(fv, 64)
+				if err != nil {
+					return nil, false, err
+				}
+				result = &f
+			}
+		default:
+			return nil, false, fmt.Errorf(`bad type "%v" for Yaxis.min, expected "auto" or a number`, tp)
+		}
+	}
+	return result, auto, nil
 }

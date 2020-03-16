@@ -197,6 +197,9 @@ type Widget struct {
 	// For EventTimeline, EventStream, Hostmap, LogStream widgets
 	Query *string `json:"query,omitempty"`
 
+	// For EventTimeline, EventStream
+	TagsExecution *string `json:"tags_execution,omitempty"`
+
 	// For Image, IFrame widgets
 	URL *string `json:"url,omitempty"`
 

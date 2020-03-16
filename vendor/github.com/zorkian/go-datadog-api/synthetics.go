@@ -153,7 +153,7 @@ func (client *Client) UpdateSyntheticsTest(publicId string, syntheticsTest *Synt
 	return &out, nil
 }
 
-// PauseSyntheticsTest set a test status to live
+// PauseSyntheticsTest set a test status to paused
 func (client *Client) PauseSyntheticsTest(publicId string) (*bool, error) {
 	payload := ToggleStatus{NewStatus: String("paused")}
 	out := Bool(false)
