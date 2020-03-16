@@ -94,7 +94,7 @@ func resourceDatadogMetricMetadataCreate(d *schema.ResourceData, meta interface{
 
 	d.SetId(id)
 
-	return nil
+	return resourceDatadogMetricMetadataRead(d, meta)
 }
 
 func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{}) error {
