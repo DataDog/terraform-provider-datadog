@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"strings"
 	"testing"
 
@@ -55,15 +56,19 @@ resource "datadog_integration_aws_lambda_arn" "main_collector" {
 `
 
 func TestAccDatadogIntegrationAWSLambdaArn(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: checkIntegrationAWSLambdaArnDestroy,
+		Providers:    accProviders,
+		CheckDestroy: checkIntegrationAWSLambdaArnDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatadogIntegrationAWSLambdaArnConfig,
 				Check: resource.ComposeTestCheckFunc(
-					checkIntegrationAWSLambdaArnExists,
+					checkIntegrationAWSLambdaArnExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_lambda_arn.main_collector",
 						"account_id", "1234567890"),
@@ -76,45 +81,49 @@ func TestAccDatadogIntegrationAWSLambdaArn(t *testing.T) {
 	})
 }
 
-func checkIntegrationAWSLambdaArnExists(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
-	logCollections, err := client.GetIntegrationAWSLogCollection()
-	if err != nil {
-		return err
+func checkIntegrationAWSLambdaArnExists(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		client := accProvider.Meta().(*datadog.Client)
+		logCollections, err := client.GetIntegrationAWSLogCollection()
+		if err != nil {
+			return err
+		}
+		for resourceType, r := range s.RootModule().Resources {
+			if strings.Contains(resourceType, "datadog_integration_aws_lambda_arn") {
+				accountId := r.Primary.Attributes["account_id"]
+				lambdaArn := r.Primary.Attributes["lambda_arn"]
+				for _, logCollection := range *logCollections {
+					for _, logCollectionLambdaArn := range logCollection.LambdaARNs {
+						if *logCollection.AccountID == accountId && *logCollectionLambdaArn.LambdaARN == lambdaArn {
+							return nil
+						}
+					}
+				}
+				return fmt.Errorf("The AWS Lambda ARN is not attached to the account: accountId=%s, lambdaArn=%s", accountId, lambdaArn)
+			}
+		}
+		return fmt.Errorf("Unable to find AWS Lambda ARN in any account")
 	}
-	for resourceType, r := range s.RootModule().Resources {
-		if strings.Contains(resourceType, "datadog_integration_aws_lambda_arn") {
+}
+
+func checkIntegrationAWSLambdaArnDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		client := accProvider.Meta().(*datadog.Client)
+		logCollections, err := client.GetIntegrationAWSLogCollection()
+		if err != nil {
+			return err
+		}
+		for _, r := range s.RootModule().Resources {
 			accountId := r.Primary.Attributes["account_id"]
 			lambdaArn := r.Primary.Attributes["lambda_arn"]
 			for _, logCollection := range *logCollections {
 				for _, logCollectionLambdaArn := range logCollection.LambdaARNs {
 					if *logCollection.AccountID == accountId && *logCollectionLambdaArn.LambdaARN == lambdaArn {
-						return nil
+						return fmt.Errorf("The AWS Lambda ARN is still attached to the account: accountId=%s, lambdaArn=%s", accountId, lambdaArn)
 					}
 				}
 			}
-			return fmt.Errorf("The AWS Lambda ARN is not attached to the account: accountId=%s, lambdaArn=%s", accountId, lambdaArn)
 		}
+		return nil
 	}
-	return fmt.Errorf("Unable to find AWS Lambda ARN in any account")
-}
-
-func checkIntegrationAWSLambdaArnDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
-	logCollections, err := client.GetIntegrationAWSLogCollection()
-	if err != nil {
-		return err
-	}
-	for _, r := range s.RootModule().Resources {
-		accountId := r.Primary.Attributes["account_id"]
-		lambdaArn := r.Primary.Attributes["lambda_arn"]
-		for _, logCollection := range *logCollections {
-			for _, logCollectionLambdaArn := range logCollection.LambdaARNs {
-				if *logCollection.AccountID == accountId && *logCollectionLambdaArn.LambdaARN == lambdaArn {
-					return fmt.Errorf("The AWS Lambda ARN is still attached to the account: accountId=%s, lambdaArn=%s", accountId, lambdaArn)
-				}
-			}
-		}
-	}
-	return nil
 }
