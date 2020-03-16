@@ -21,9 +21,13 @@ test: fmtcheck
 	go test -i $(TEST) || exit 1
 	echo $(TEST) | \
 		xargs -t -n4 go test $(TESTARGS) -timeout=30s -parallel=4
+	DATADOG_API_KEY=fake DATADOG_APP_KEY=fake RECORD=false TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout=120s
 
 testacc: fmtcheck
 	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
+
+cassettes: fmtcheck
+	RECORD=true TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
 
 vet:
 	@echo "go vet ."
@@ -71,4 +75,4 @@ update-go-client:
 	go mod vendor
 	go mod tidy
 
-.PHONY: build test testacc vet fmt fmtcheck errcheck test-compile website website-test
+.PHONY: build test testacc cassettes vet fmt fmtcheck errcheck test-compile website website-test

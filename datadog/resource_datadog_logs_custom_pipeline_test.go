@@ -2,11 +2,13 @@ package datadog
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"github.com/zorkian/go-datadog-api"
 	"strings"
 	"testing"
+
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/zorkian/go-datadog-api"
 )
 
 const pipelineConfigForCreation = `
@@ -39,13 +41,13 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			target = "redis.severity"
 			category {
 				filter {
-					query = "@severity: \"-\""  
+					query = "@severity: \"-\""
 				}
 				name = "verbose"
 			}
 			category {
 				filter {
-					query = "@severity: \".\""  
+					query = "@severity: \".\""
 				}
 				name = "debug"
 			}
@@ -164,15 +166,19 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 `
 
 func TestAccDatadogLogsPipeline_basic(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckPipelineDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckPipelineDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: pipelineConfigForCreation,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPipelineExists("datadog_logs_custom_pipeline.my_pipeline_test"),
+					testAccCheckPipelineExists(accProvider, "datadog_logs_custom_pipeline.my_pipeline_test"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "name", "my first pipeline"),
 					resource.TestCheckResourceAttr(
@@ -201,7 +207,7 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 			}, {
 				Config: pipelineConfigForUpdate,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPipelineExists("datadog_logs_custom_pipeline.my_pipeline_test"),
+					testAccCheckPipelineExists(accProvider, "datadog_logs_custom_pipeline.my_pipeline_test"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "name", "updated pipeline"),
 					resource.TestCheckResourceAttr(
@@ -222,9 +228,9 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 	})
 }
 
-func testAccCheckPipelineExists(name string) resource.TestCheckFunc {
+func testAccCheckPipelineExists(accProvider *schema.Provider, name string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := testAccProvider.Meta().(*datadog.Client)
+		client := accProvider.Meta().(*datadog.Client)
 		if err := pipelineExistsChecker(s, client); err != nil {
 			return err
 		}
@@ -244,12 +250,14 @@ func pipelineExistsChecker(s *terraform.State, client *datadog.Client) error {
 	return nil
 }
 
-func testAccCheckPipelineDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
-	if err := pipelineDestroyHelper(s, client); err != nil {
-		return err
+func testAccCheckPipelineDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		client := accProvider.Meta().(*datadog.Client)
+		if err := pipelineDestroyHelper(s, client); err != nil {
+			return err
+		}
+		return nil
 	}
-	return nil
 }
 
 func pipelineDestroyHelper(s *terraform.State, client *datadog.Client) error {

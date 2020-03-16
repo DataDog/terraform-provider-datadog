@@ -78,9 +78,7 @@ func resourceDatadogUserExists(d *schema.ResourceData, meta interface{}) (b bool
 	return true, nil
 }
 
-func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
-
+func buildDatadogUserStruct(d *schema.ResourceData) *datadog.User {
 	var u datadog.User
 	u.SetDisabled(d.Get("disabled").(bool))
 	u.SetEmail(d.Get("email").(string))
@@ -88,6 +86,14 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 	u.SetIsAdmin(d.Get("is_admin").(bool))
 	u.SetName(d.Get("name").(string))
 	u.SetAccessRole(d.Get("access_role").(string))
+
+	return &u
+}
+
+func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*datadog.Client)
+
+	u := buildDatadogUserStruct(d)
 
 	// Datadog does not actually delete users, so CreateUser might return a 409.
 	// We ignore that case and proceed, likely re-enabling the user.
@@ -98,7 +104,7 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 		log.Printf("[INFO] Updating existing Datadog user %s", *u.Handle)
 	}
 
-	if err := client.UpdateUser(u); err != nil {
+	if err := client.UpdateUser(*u); err != nil {
 		return fmt.Errorf("error creating user: %s", err.Error())
 	}
 
@@ -127,15 +133,11 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 
 func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
-	var u datadog.User
-	u.SetDisabled(d.Get("disabled").(bool))
-	u.SetEmail(d.Get("email").(string))
-	u.SetHandle(d.Id())
-	u.SetIsAdmin(d.Get("is_admin").(bool))
-	u.SetName(d.Get("name").(string))
-	u.SetAccessRole(d.Get("access_role").(string))
 
-	if err := client.UpdateUser(u); err != nil {
+	u := buildDatadogUserStruct(d)
+	u.SetHandle(d.Id())
+
+	if err := client.UpdateUser(*u); err != nil {
 		return fmt.Errorf("error updating user: %s", err.Error())
 	}
 

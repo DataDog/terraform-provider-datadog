@@ -202,6 +202,12 @@ func (client *Client) DeleteMonitor(id int) error {
 		nil, nil)
 }
 
+// ForceDeleteMonitor removes a monitor from the system, even if it's linked to SLOs or group monitors
+func (client *Client) ForceDeleteMonitor(id int) error {
+	return client.doJsonRequest("DELETE", fmt.Sprintf("/v1/monitor/%d?force=true", id),
+		nil, nil)
+}
+
 // GetMonitors returns a slice of all monitors
 func (client *Client) GetMonitors() ([]Monitor, error) {
 	return client.GetMonitorsWithOptions(MonitorQueryOpts{})

@@ -8,11 +8,14 @@ import (
 
 func TestDatadogIntegrationPagerduty_import(t *testing.T) {
 	resourceName := "datadog_integration_pagerduty.pd"
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationPagerdutyConfigImported,
