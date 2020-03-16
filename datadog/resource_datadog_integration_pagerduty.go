@@ -121,7 +121,7 @@ func resourceDatadogIntegrationPagerdutyCreate(d *schema.ResourceData, meta inte
 
 	d.SetId(pdIntegration.GetSubdomain())
 
-	return nil
+	return resourceDatadogIntegrationPagerdutyRead(d, meta)
 }
 
 func resourceDatadogIntegrationPagerdutyRead(d *schema.ResourceData, meta interface{}) error {

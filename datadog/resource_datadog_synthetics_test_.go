@@ -205,7 +205,7 @@ func syntheticsTestOptions() *schema.Schema {
 func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
 
-	syntheticsTest := newSyntheticsTestFromLocalState(d)
+	syntheticsTest := buildSyntheticsTestStruct(d)
 	createdSyntheticsTest, err := client.CreateSyntheticsTest(syntheticsTest)
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
@@ -241,7 +241,7 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*datadog.Client)
 
-	syntheticsTest := newSyntheticsTestFromLocalState(d)
+	syntheticsTest := buildSyntheticsTestStruct(d)
 	if _, err := client.UpdateSyntheticsTest(d.Id(), syntheticsTest); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
 		return err
@@ -272,7 +272,7 @@ func isTargetOfTypeInt(assertionType string) bool {
 	return false
 }
 
-func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.SyntheticsTest {
+func buildSyntheticsTestStruct(d *schema.ResourceData) *datadog.SyntheticsTest {
 	request := datadog.SyntheticsRequest{}
 	if attr, ok := d.GetOk("request.method"); ok {
 		request.SetMethod(attr.(string))
