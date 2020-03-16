@@ -11,7 +11,7 @@ import (
 func accountAndLambdaArnFromID(id string) (string, string, error) {
 	result := strings.Split(id, " ")
 	if len(result) != 2 {
-		return "", "", fmt.Errorf("error extracting account ID and lambda arn from an Amazon Web Services integration id: %s", id)
+		return "", "", fmt.Errorf("error extracting account ID and Lambda ARN from an AWS integration id: %s", id)
 	}
 	return result[0], result[1], nil
 }
@@ -81,7 +81,7 @@ func resourceDatadogIntegrationAwsLambdaArnCreate(d *schema.ResourceData, meta i
 	err := client.AttachLambdaARNIntegrationAWS(&attachLambdaArnRequest)
 
 	if err != nil {
-		return fmt.Errorf("error attaching lambda arn to Amazon Web Services integration account: %s", err.Error())
+		return fmt.Errorf("error attaching Lambda ARN to AWS integration account: %s", err.Error())
 	}
 
 	d.SetId(fmt.Sprintf("%s %s", accountID, lambdaArn))
@@ -112,7 +112,7 @@ func resourceDatadogIntegrationAwsLambdaArnRead(d *schema.ResourceData, meta int
 			}
 		}
 	}
-	return fmt.Errorf("error getting a Amazon Web Services log lambda: account_id=%s, lambda_arn=%s", accountID, lambdaArn)
+	return fmt.Errorf("error getting an AWS log Lambda: account_id=%s, lambda_arn=%s", accountID, lambdaArn)
 }
 
 func resourceDatadogIntegrationAwsLambdaArnDelete(d *schema.ResourceData, meta interface{}) error {
@@ -131,7 +131,7 @@ func resourceDatadogIntegrationAwsLambdaArnDelete(d *schema.ResourceData, meta i
 	err = client.DeleteAWSLogCollection(&attachLambdaArnRequest)
 
 	if err != nil {
-		return fmt.Errorf("error deleting a Amazon Web Services integration lambda arn: %s", err.Error())
+		return fmt.Errorf("error deleting an AWS integration Lambda ARN: %s", err.Error())
 	}
 
 	return nil
