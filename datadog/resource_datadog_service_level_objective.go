@@ -117,6 +117,9 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Description:   "A static set of monitor IDs to use as part of the SLO",
 				Elem:          &schema.Schema{Type: schema.TypeInt, MinItems: 1},
 			},
+			// NOTE: This feature was introduced but it never worked and then it was removed.
+			// We didn't trigger a major release since it never worked. However, this may be introduced later again.
+			// Keeping this here for now and we removed the related code.
 			"monitor_search": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -150,19 +153,13 @@ func ValidateServiceLevelObjectiveTypeString(v interface{}, k string) (ws []stri
 func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadog.ServiceLevelObjective {
 
 	slo := &datadog.ServiceLevelObjective{
-		ID: datadog.String(d.Id()),
-	}
-
-	if attr, ok := d.GetOk("name"); ok {
-		slo.SetName(attr.(string))
+		ID:   datadog.String(d.Id()),
+		Name: datadog.String(d.Get("name").(string)),
+		Type: datadog.String(d.Get("type").(string)),
 	}
 
 	if attr, ok := d.GetOk("description"); ok {
 		slo.SetDescription(attr.(string))
-	}
-
-	if attr, ok := d.GetOk("type"); ok {
-		slo.SetType(attr.(string))
 	}
 
 	switch slo.GetType() {
@@ -175,9 +172,6 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadog.ServiceLe
 			}
 			sort.Ints(s)
 			slo.MonitorIDs = s
-		}
-		if attr, ok := d.GetOk("monitor_search"); ok {
-			slo.SetMonitorSearch(attr.(string))
 		}
 		if attr, ok := d.GetOk("groups"); ok {
 			s := make([]string, 0)
@@ -357,9 +351,6 @@ func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta inter
 		if len(slo.MonitorIDs) > 0 {
 			sort.Ints(slo.MonitorIDs)
 			d.Set("monitor_ids", slo.MonitorIDs)
-		}
-		if ms, ok := slo.GetMonitorSearchOk(); ok {
-			d.Set("monitor_search", ms)
 		}
 		sort.Strings(slo.Groups)
 		d.Set("groups", slo.Groups)
