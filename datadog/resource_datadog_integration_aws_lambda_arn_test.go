@@ -2,10 +2,12 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
+	"testing"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"github.com/zorkian/go-datadog-api"
-	"testing"
+	datadog "github.com/zorkian/go-datadog-api"
 )
 
 func TestAccountAndLambdaArnFromID(t *testing.T) {
@@ -80,19 +82,21 @@ func checkIntegrationAWSLambdaArnExists(s *terraform.State) error {
 	if err != nil {
 		return err
 	}
-	for _, r := range s.RootModule().Resources {
-		accountId := r.Primary.Attributes["account_id"]
-		lambdaArn := r.Primary.Attributes["lambda_arn"]
-		for _, logCollection := range *logCollections {
-			for _, logCollectionLambdaArn := range logCollection.LambdaARNs {
-				if *logCollection.AccountID == accountId && *logCollectionLambdaArn.LambdaARN == lambdaArn {
-					return nil
+	for resourceType, r := range s.RootModule().Resources {
+		if strings.Contains(resourceType, "datadog_integration_aws_lambda_arn") {
+			accountId := r.Primary.Attributes["account_id"]
+			lambdaArn := r.Primary.Attributes["lambda_arn"]
+			for _, logCollection := range *logCollections {
+				for _, logCollectionLambdaArn := range logCollection.LambdaARNs {
+					if *logCollection.AccountID == accountId && *logCollectionLambdaArn.LambdaARN == lambdaArn {
+						return nil
+					}
 				}
 			}
+			return fmt.Errorf("The AWS Lambda ARN is not attached to the account: accountId=%s, lambdaArn=%s", accountId, lambdaArn)
 		}
-		return fmt.Errorf("The AWS Lambda ARN is not attached to the account: accountId=%s, lambdaArn=%s", accountId, lambdaArn)
 	}
-	return nil
+	return fmt.Errorf("Unable to find AWS Lambda ARN in any account")
 }
 
 func checkIntegrationAWSLambdaArnDestroy(s *terraform.State) error {
