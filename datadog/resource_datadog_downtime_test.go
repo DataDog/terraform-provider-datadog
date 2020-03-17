@@ -770,7 +770,6 @@ func TestResourceDatadogDowntimeRecurrenceWeekDaysValidation(t *testing.T) {
 
 func datadogDowntimeDestroyHelper(s *terraform.State, client *datadog.Client) error {
 	for n, r := range s.RootModule().Resources {
-		fmt.Printf("Resource %s, type = %s\n", n, r.Type)
 		if r.Type != "datadog_downtime" {
 			continue
 		}

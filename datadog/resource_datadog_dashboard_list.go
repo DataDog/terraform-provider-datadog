@@ -54,7 +54,7 @@ func resourceDatadogDashboardListCreate(d *schema.ResourceData, meta interface{}
 
 	dashboardList, err := buildDatadogDashboardList(d)
 	if err != nil {
-		fmt.Printf("Error building the dashboard list %s", err.Error())
+		return err
 	}
 	dashboardList, err = client.CreateDashboardList(dashboardList)
 	if err != nil {

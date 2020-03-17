@@ -73,7 +73,6 @@ func resourceDatadogMetricMetadataExists(d *schema.ResourceData, meta interface{
 	id, _ := buildMetricMetadataStruct(d)
 
 	if _, err := client.ViewMetricMetadata(id); err != nil {
-		fmt.Println("view:", err)
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
