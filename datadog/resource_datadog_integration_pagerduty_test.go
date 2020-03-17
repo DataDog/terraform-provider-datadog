@@ -130,7 +130,9 @@ func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
 
 func testAccCheckDatadogIntegrationPagerdutyExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
 		if err := datadogIntegrationPagerdutyExistsHelper(s, client); err != nil {
 			return err
 		}
@@ -147,7 +149,8 @@ func datadogIntegrationPagerdutyExistsHelper(s *terraform.State, client *datadog
 
 func testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 
 		_, err := client.GetIntegrationPD()
 		if err != nil {

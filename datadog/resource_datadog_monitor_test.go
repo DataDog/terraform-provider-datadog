@@ -691,7 +691,8 @@ func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
 
 func testAccCheckDatadogMonitorDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 
 		if err := destroyHelper(s, client); err != nil {
 			return err
@@ -702,7 +703,8 @@ func testAccCheckDatadogMonitorDestroy(accProvider *schema.Provider) func(*terra
 
 func testAccCheckDatadogMonitorExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 		if err := existsHelper(s, client); err != nil {
 			return err
 		}

@@ -824,7 +824,9 @@ func resourceDatadogTimeboardCreate(d *schema.ResourceData, meta interface{}) er
 	if err != nil {
 		return fmt.Errorf("Failed to parse resource configuration: %s", err.Error())
 	}
-	timeboard, err = meta.(*datadog.Client).CreateDashboard(timeboard)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	timeboard, err = client.CreateDashboard(timeboard)
 	if err != nil {
 		return fmt.Errorf("Failed to create timeboard using Datadog API: %s", err.Error())
 	}
@@ -837,7 +839,9 @@ func resourceDatadogTimeboardUpdate(d *schema.ResourceData, meta interface{}) er
 	if err != nil {
 		return fmt.Errorf("Failed to parse resource configuration: %s", err.Error())
 	}
-	if err = meta.(*datadog.Client).UpdateDashboard(timeboard); err != nil {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	if err = client.UpdateDashboard(timeboard); err != nil {
 		return fmt.Errorf("Failed to update timeboard using Datadog API: %s", err.Error())
 	}
 	return resourceDatadogTimeboardRead(d, meta)
@@ -1115,7 +1119,9 @@ func buildTerraformGraph(datadogGraph datadog.Graph) map[string]interface{} {
 
 func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) error {
 	id := d.Id()
-	timeboard, err := meta.(*datadog.Client).GetDashboard(id)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	timeboard, err := client.GetDashboard(id)
 	if err != nil {
 		return err
 	}
@@ -1164,7 +1170,9 @@ func resourceDatadogTimeboardDelete(d *schema.ResourceData, meta interface{}) er
 	if err != nil {
 		return err
 	}
-	if err = meta.(*datadog.Client).DeleteDashboard(id); err != nil {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	if err = client.DeleteDashboard(id); err != nil {
 		return err
 	}
 	return nil
@@ -1182,7 +1190,9 @@ func resourceDatadogTimeboardExists(d *schema.ResourceData, meta interface{}) (b
 	if err != nil {
 		return false, err
 	}
-	if _, err = meta.(*datadog.Client).GetDashboard(id); err != nil {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	if _, err = client.GetDashboard(id); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}

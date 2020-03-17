@@ -2,7 +2,6 @@ package datadog
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	datadog "github.com/zorkian/go-datadog-api"
 )
 
 func dataSourceDatadogIpRanges() *schema.Resource {
@@ -88,13 +87,12 @@ func dataSourceDatadogIpRanges() *schema.Resource {
 }
 
 func dataSourceDatadogIpRangesRead(d *schema.ResourceData, meta interface{}) error {
-
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	ipAddresses, err := client.GetIPRanges()
-
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting ip range")
 	}
 
 	// v4 and v6

@@ -66,7 +66,8 @@ func resourceDatadogUser() *schema.Resource {
 func resourceDatadogUserExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	if _, err := client.GetUser(d.Id()); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
@@ -91,7 +92,8 @@ func buildDatadogUserStruct(d *schema.ResourceData) *datadog.User {
 }
 
 func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	u := buildDatadogUserStruct(d)
 
@@ -114,7 +116,8 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 }
 
 func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	u, err := client.GetUser(d.Id())
 	if err != nil {
@@ -132,7 +135,8 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 }
 
 func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	u := buildDatadogUserStruct(d)
 	u.SetHandle(d.Id())
@@ -145,7 +149,8 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 }
 
 func resourceDatadogUserDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	// Datadog does not actually delete users, but instead marks them as disabled.
 	// Bypass DeleteUser if GetUser returns User.Disabled == true, otherwise it will 400.

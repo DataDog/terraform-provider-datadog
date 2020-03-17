@@ -8,7 +8,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	datadog "github.com/zorkian/go-datadog-api"
 )
 
 const datadogDashboardConfig = `
@@ -971,7 +970,9 @@ func TestAccDatadogDashboard_import(t *testing.T) {
 
 func checkDashboardExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
 		for _, r := range s.RootModule().Resources {
 			if _, err := client.GetBoard(r.Primary.ID); err != nil {
 				return fmt.Errorf("Received an error retrieving dashboard1 %s", err)
@@ -983,7 +984,9 @@ func checkDashboardExists(accProvider *schema.Provider) resource.TestCheckFunc {
 
 func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
 		for _, r := range s.RootModule().Resources {
 			if _, err := client.GetBoard(r.Primary.ID); err != nil {
 				if strings.Contains(err.Error(), "404 Not Found") {

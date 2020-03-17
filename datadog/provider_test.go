@@ -19,7 +19,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"github.com/jonboulle/clockwork"
 	"github.com/terraform-providers/terraform-provider-datadog/version"
-	datadog "github.com/zorkian/go-datadog-api"
+	datadogCommunity "github.com/zorkian/go-datadog-api"
 )
 
 func isRecording() bool {
@@ -114,17 +114,19 @@ func initAccProvider(t *testing.T) (*schema.Provider, func(t *testing.T)) {
 
 func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 	return func(d *schema.ResourceData) (interface{}, error) {
-
-		client := datadog.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
+		communityClient := datadogCommunity.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
 		if apiURL := d.Get("api_url").(string); apiURL != "" {
-			client.SetBaseUrl(apiURL)
+			communityClient.SetBaseUrl(apiURL)
 		}
 
 		c := cleanhttp.DefaultClient()
 		c.Transport = logging.NewTransport("Datadog", r)
-		client.HttpClient = c
-		client.ExtraHeader["User-Agent"] = fmt.Sprintf("Datadog/%s/terraform (%s)", version.ProviderVersion, runtime.Version())
-		return client, nil
+		communityClient.HttpClient = c
+		communityClient.ExtraHeader["User-Agent"] = fmt.Sprintf("Datadog/%s/terraform (%s)", version.ProviderVersion, runtime.Version())
+
+		return &ProviderConfiguration{
+			CommunityClient: communityClient,
+		}, nil
 	}
 }
 

@@ -28,9 +28,11 @@ func resourceDatadogLogsIntegrationPipelineCreate(d *schema.ResourceData, meta i
 }
 
 func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta interface{}) error {
-	ddPipeline, err := meta.(*datadog.Client).GetLogsPipeline(d.Id())
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	ddPipeline, err := client.GetLogsPipeline(d.Id())
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting logs integration pipeline")
 	}
 	if err := d.Set("is_enabled", ddPipeline.GetIsEnabled()); err != nil {
 		return err
@@ -41,10 +43,11 @@ func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta int
 func resourceDatadogLogsIntegrationPipelineUpdate(d *schema.ResourceData, meta interface{}) error {
 	var ddPipeline datadog.LogsPipeline
 	ddPipeline.SetIsEnabled(d.Get("is_enabled").(bool))
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	updatedPipeline, err := client.UpdateLogsPipeline(d.Id(), &ddPipeline)
 	if err != nil {
-		return fmt.Errorf("error updating logs pipeline: (%s)", err.Error())
+		return translateClientError(err, "error updating logs integration pipeline")
 	}
 	d.SetId(*updatedPipeline.Id)
 	return resourceDatadogLogsIntegrationPipelineRead(d, meta)
@@ -55,14 +58,15 @@ func resourceDatadogLogsIntegrationPipelineDelete(d *schema.ResourceData, meta i
 }
 
 func resourceDatadogLogsIntegrationPipelineExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	ddPipeline, err := client.GetLogsPipeline(d.Id())
 	if err != nil {
 		// API returns 400 when the specific pipeline id doesn't exist through GET request.
 		if strings.Contains(err.Error(), "400 Bad Request") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking logs integration pipeline exists")
 	}
 	return ddPipeline.GetIsReadOnly(), nil
 }

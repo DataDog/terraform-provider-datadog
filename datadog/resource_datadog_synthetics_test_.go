@@ -203,7 +203,8 @@ func syntheticsTestOptions() *schema.Schema {
 }
 
 func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	syntheticsTest := buildSyntheticsTestStruct(d)
 	createdSyntheticsTest, err := client.CreateSyntheticsTest(syntheticsTest)
@@ -221,7 +222,8 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	syntheticsTest, err := client.GetSyntheticsTest(d.Id())
 	if err != nil {
@@ -239,7 +241,8 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 }
 
 func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	syntheticsTest := buildSyntheticsTestStruct(d)
 	if _, err := client.UpdateSyntheticsTest(d.Id(), syntheticsTest); err != nil {
@@ -252,11 +255,12 @@ func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	if err := client.DeleteSyntheticsTests([]string{d.Id()}); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
-		return err
+		return translateClientError(err, "error deleting synthetics test")
 	}
 
 	// The resource is assumed to be destroyed, and all state is removed.

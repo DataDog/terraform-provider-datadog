@@ -94,7 +94,8 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 
 func checkMetricMetadataExists(accProvider *schema.Provider, name string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 		for _, r := range s.RootModule().Resources {
 			metric, ok := r.Primary.Attributes["metric"]
 			if !ok {
@@ -110,7 +111,8 @@ func checkMetricMetadataExists(accProvider *schema.Provider, name string) resour
 
 func checkPostEvent(t *testing.T, accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 		clock := testClock(t)
 		datapointUnixTime := float64(clock.Now().Unix())
 		datapointValue := float64(1)

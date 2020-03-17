@@ -78,34 +78,40 @@ func resourceDatadogDashboard() *schema.Resource {
 }
 
 func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	dashboard, err := buildDatadogDashboard(d)
 	if err != nil {
 		return fmt.Errorf("Failed to parse resource configuration: %s", err.Error())
 	}
-	dashboard, err = meta.(*datadog.Client).CreateBoard(dashboard)
+	dashboard, err = client.CreateBoard(dashboard)
 	if err != nil {
-		return fmt.Errorf("Failed to create dashboard using Datadog API: %s", err.Error())
+		return translateClientError(err, "error creating dashboard")
 	}
 	d.SetId(*dashboard.Id)
 	return resourceDatadogDashboardRead(d, meta)
 }
 
 func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	dashboard, err := buildDatadogDashboard(d)
 	if err != nil {
 		return fmt.Errorf("Failed to parse resource configuration: %s", err.Error())
 	}
-	if err = meta.(*datadog.Client).UpdateBoard(dashboard); err != nil {
-		return fmt.Errorf("Failed to update dashboard using Datadog API: %s", err.Error())
+	if err = client.UpdateBoard(dashboard); err != nil {
+		return translateClientError(err, "error updating dashboard")
 	}
 	return resourceDatadogDashboardRead(d, meta)
 }
 
 func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	id := d.Id()
-	dashboard, err := meta.(*datadog.Client).GetBoard(id)
+	dashboard, err := client.GetBoard(id)
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting dashboard")
 	}
 
 	if err = d.Set("title", dashboard.GetTitle()); err != nil {
@@ -152,9 +158,11 @@ func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) erro
 }
 
 func resourceDatadogDashboardDelete(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	id := d.Id()
-	if err := meta.(*datadog.Client).DeleteBoard(id); err != nil {
-		return err
+	if err := client.DeleteBoard(id); err != nil {
+		return translateClientError(err, "error deleting dashboard")
 	}
 	return nil
 }
@@ -167,12 +175,14 @@ func resourceDatadogDashboardImport(d *schema.ResourceData, meta interface{}) ([
 }
 
 func resourceDatadogDashboardExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	id := d.Id()
-	if _, err := meta.(*datadog.Client).GetBoard(id); err != nil {
+	if _, err := client.GetBoard(id); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking dashboard exists")
 	}
 	return true, nil
 }

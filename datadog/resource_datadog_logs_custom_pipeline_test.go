@@ -230,7 +230,9 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 
 func testAccCheckPipelineExists(accProvider *schema.Provider, name string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
 		if err := pipelineExistsChecker(s, client); err != nil {
 			return err
 		}
@@ -252,7 +254,9 @@ func pipelineExistsChecker(s *terraform.State, client *datadog.Client) error {
 
 func testAccCheckPipelineDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
 		if err := pipelineDestroyHelper(s, client); err != nil {
 			return err
 		}

@@ -1292,9 +1292,11 @@ func resourceDatadogScreenboardCreate(d *schema.ResourceData, meta interface{}) 
 	if err != nil {
 		return fmt.Errorf("Failed to parse resource configuration: %s", err.Error())
 	}
-	screenboard, err = meta.(*datadog.Client).CreateScreenboard(screenboard)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	screenboard, err = client.CreateScreenboard(screenboard)
 	if err != nil {
-		return fmt.Errorf("Failed to create screenboard using Datadog API: %s", err.Error())
+		return translateClientError(err, "error creating screenboard")
 	}
 	d.SetId(strconv.Itoa(screenboard.GetId()))
 
@@ -1759,9 +1761,11 @@ func buildTFWidget(dw datadog.Widget) map[string]interface{} {
 
 func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) error {
 	id := d.Id()
-	screenboard, err := meta.(*datadog.Client).GetScreenboard(id)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	screenboard, err := client.GetScreenboard(id)
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting screenboard")
 	}
 	log.Printf("[DataDog] screenboard: %v", pretty.Sprint(screenboard))
 	if err := d.Set("title", screenboard.GetTitle()); err != nil {
@@ -1826,8 +1830,10 @@ func resourceDatadogScreenboardUpdate(d *schema.ResourceData, meta interface{}) 
 	if err != nil {
 		return fmt.Errorf("Failed to parse resource configuration: %s", err.Error())
 	}
-	if err = meta.(*datadog.Client).UpdateScreenboard(screenboard); err != nil {
-		return fmt.Errorf("Failed to update screenboard using Datadog API: %s", err.Error())
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	if err = client.UpdateScreenboard(screenboard); err != nil {
+		return translateClientError(err, "error updating screenboard")
 	}
 	return resourceDatadogScreenboardRead(d, meta)
 }
@@ -1837,8 +1843,10 @@ func resourceDatadogScreenboardDelete(d *schema.ResourceData, meta interface{}) 
 	if err != nil {
 		return err
 	}
-	if err = meta.(*datadog.Client).DeleteScreenboard(id); err != nil {
-		return err
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	if err = client.DeleteScreenboard(id); err != nil {
+		return translateClientError(err, "error deleting screenboard")
 	}
 	return nil
 }
@@ -1855,11 +1863,13 @@ func resourceDatadogScreenboardExists(d *schema.ResourceData, meta interface{}) 
 	if err != nil {
 		return false, err
 	}
-	if _, err = meta.(*datadog.Client).GetScreenboard(id); err != nil {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	if _, err = client.GetScreenboard(id); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking screenboard exists")
 	}
 	return true, nil
 }

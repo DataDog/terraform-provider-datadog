@@ -62,7 +62,8 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 
 func testAccCheckDatadogUserDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 
 		if err := datadogUserDestroyHelper(s, client); err != nil {
 			return err
@@ -73,7 +74,9 @@ func testAccCheckDatadogUserDestroy(accProvider *schema.Provider) func(*terrafor
 
 func testAccCheckDatadogUserExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
 		if err := datadogUserExistsHelper(s, client); err != nil {
 			return err
 		}

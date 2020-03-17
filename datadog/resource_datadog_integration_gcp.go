@@ -51,11 +51,12 @@ func resourceDatadogIntegrationGcp() *schema.Resource {
 func resourceDatadogIntegrationGcpExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	integrations, err := client.ListIntegrationGCP()
 	if err != nil {
-		return false, err
+		return false, translateClientError(err, "error checking gcp integration exists")
 	}
 	projectID := d.Id()
 	for _, integration := range integrations {
@@ -75,7 +76,8 @@ const (
 )
 
 func resourceDatadogIntegrationGcpCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	projectID := d.Get("project_id").(string)
 
@@ -94,7 +96,7 @@ func resourceDatadogIntegrationGcpCreate(d *schema.ResourceData, meta interface{
 			HostFilters:             datadog.String(d.Get("host_filters").(string)),
 		},
 	); err != nil {
-		return fmt.Errorf("error creating a Google Cloud Platform integration: %s", err.Error())
+		return translateClientError(err, "error creating gcp integration")
 	}
 
 	d.SetId(projectID)
@@ -103,13 +105,14 @@ func resourceDatadogIntegrationGcpCreate(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogIntegrationGcpRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	projectID := d.Id()
 
 	integrations, err := client.ListIntegrationGCP()
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting gcp integration")
 	}
 	for _, integration := range integrations {
 		if integration.GetProjectID() == projectID {
@@ -123,7 +126,8 @@ func resourceDatadogIntegrationGcpRead(d *schema.ResourceData, meta interface{})
 }
 
 func resourceDatadogIntegrationGcpUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	if err := client.UpdateIntegrationGCP(
 		&datadog.IntegrationGCPUpdateRequest{
@@ -132,14 +136,15 @@ func resourceDatadogIntegrationGcpUpdate(d *schema.ResourceData, meta interface{
 			HostFilters: datadog.String(d.Get("host_filters").(string)),
 		},
 	); err != nil {
-		return fmt.Errorf("error updating a Google Cloud Platform integration: %s", err.Error())
+		return translateClientError(err, "error updating gcp integration")
 	}
 
 	return resourceDatadogIntegrationGcpRead(d, meta)
 }
 
 func resourceDatadogIntegrationGcpDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	if err := client.DeleteIntegrationGCP(
 		&datadog.IntegrationGCPDeleteRequest{
@@ -147,7 +152,7 @@ func resourceDatadogIntegrationGcpDelete(d *schema.ResourceData, meta interface{
 			ClientEmail: datadog.String(d.Get("client_email").(string)),
 		},
 	); err != nil {
-		return fmt.Errorf("error deleting a Google Cloud Platform integration: %s", err.Error())
+		return translateClientError(err, "error deleting gcp integration")
 	}
 
 	return nil

@@ -61,9 +61,12 @@ func resourceDatadogLogsIndexCreate(d *schema.ResourceData, meta interface{}) er
 }
 
 func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) error {
-	ddIndex, err := meta.(*datadog.Client).GetLogsIndex(d.Id())
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
+	ddIndex, err := client.GetLogsIndex(d.Id())
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting logs index")
 	}
 	if err = d.Set("name", ddIndex.GetName()); err != nil {
 		return err
@@ -82,13 +85,15 @@ func resourceDatadogLogsIndexUpdate(d *schema.ResourceData, meta interface{}) er
 	if err != nil {
 		return err
 	}
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
 	tfName := d.Get("name").(string)
 	if _, err := client.UpdateLogsIndex(tfName, ddIndex); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return fmt.Errorf("logs index creation is not allowed, index_name: %s", tfName)
 		}
-		return fmt.Errorf("error updating logs index: (%s)", err.Error())
+		return translateClientError(err, "error updating logs index")
 	}
 	d.SetId(tfName)
 	return resourceDatadogLogsIndexRead(d, meta)
@@ -99,12 +104,14 @@ func resourceDatadogLogsIndexDelete(d *schema.ResourceData, meta interface{}) er
 }
 
 func resourceDatadogLogsIndexExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
 	if _, err := client.GetLogsIndex(d.Id()); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking logs index exists")
 	}
 	return true, nil
 }

@@ -101,7 +101,9 @@ func buildIntegrationPagerduty(d *schema.ResourceData) (*datadog.IntegrationPDRe
 }
 
 func resourceDatadogIntegrationPagerdutyCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
 	integrationPdMutex.Lock()
 	defer integrationPdMutex.Unlock()
 
@@ -111,12 +113,12 @@ func resourceDatadogIntegrationPagerdutyCreate(d *schema.ResourceData, meta inte
 	}
 
 	if err := client.CreateIntegrationPD(pd); err != nil {
-		return fmt.Errorf("Failed to create integration pagerduty using Datadog API: %s", err.Error())
+		return translateClientError(err, "error creating pager duty integration")
 	}
 
 	pdIntegration, err := client.GetIntegrationPD()
 	if err != nil {
-		return fmt.Errorf("error retrieving integration pagerduty: %s", err.Error())
+		return translateClientError(err, "error getting pager duty integration")
 	}
 
 	d.SetId(pdIntegration.GetSubdomain())
@@ -125,11 +127,12 @@ func resourceDatadogIntegrationPagerdutyCreate(d *schema.ResourceData, meta inte
 }
 
 func resourceDatadogIntegrationPagerdutyRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	pd, err := client.GetIntegrationPD()
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting pager duty integration")
 	}
 
 	services := []map[string]string{}
@@ -153,21 +156,24 @@ func resourceDatadogIntegrationPagerdutyRead(d *schema.ResourceData, meta interf
 }
 
 func resourceDatadogIntegrationPagerdutyExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	_, err := client.GetIntegrationPD()
 	if err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error getting pager duty integration")
 	}
 
 	return true, nil
 }
 
 func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
 	integrationPdMutex.Lock()
 	defer integrationPdMutex.Unlock()
 
@@ -177,7 +183,7 @@ func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta inte
 	}
 
 	if err := client.UpdateIntegrationPD(pd); err != nil {
-		return fmt.Errorf("Failed to create integration pagerduty using Datadog API: %s", err.Error())
+		return translateClientError(err, "error updating pager duty integration")
 	}
 
 	// if there are none currently configured services, we actually
@@ -188,11 +194,11 @@ func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta inte
 		if len(currentServices) == 0 {
 			pd, err := client.GetIntegrationPD()
 			if err != nil {
-				return fmt.Errorf("Error while deleting Pagerduty integration service object: %v", err)
+				return translateClientError(err, "error getting pager duty integration")
 			}
 			for _, service := range pd.Services {
 				if err := client.DeleteIntegrationPDService(*service.ServiceName); err != nil {
-					return fmt.Errorf("Error while deleting Pagerduty integration service object: %v", err)
+					return translateClientError(err, "error deleting pager duty integration service")
 				}
 			}
 		}
@@ -201,12 +207,14 @@ func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta inte
 }
 
 func resourceDatadogIntegrationPagerdutyDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
 	integrationPdMutex.Lock()
 	defer integrationPdMutex.Unlock()
 
 	if err := client.DeleteIntegrationPD(); err != nil {
-		return fmt.Errorf("Error while deleting integration: %v", err)
+		return translateClientError(err, "error deleting pager duty integration")
 	}
 
 	return nil
