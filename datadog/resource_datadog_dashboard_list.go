@@ -1,7 +1,6 @@
 package datadog
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 

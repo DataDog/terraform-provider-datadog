@@ -1,12 +1,10 @@
 package datadog
 
 import (
-	"fmt"
 	"strings"
 
-	"github.com/zorkian/go-datadog-api"
-
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/zorkian/go-datadog-api"
 )
 
 func resourceDatadogMetricMetadata() *schema.Resource {
