@@ -512,7 +512,7 @@ func resourceDatadogMonitorDelete(d *schema.ResourceData, meta interface{}) erro
 		return err
 	}
 
-	if err = client.DeleteMonitor(i); err != nil {
+	if err = client.ForceDeleteMonitor(i); err != nil {
 		return err
 	}
 
