@@ -1,11 +1,12 @@
 package datadog
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	datadog "github.com/zorkian/go-datadog-api"
+	"github.com/zorkian/go-datadog-api"
 )
 
 func resourceDatadogDashboardList() *schema.Resource {
@@ -53,7 +54,7 @@ func resourceDatadogDashboardListCreate(d *schema.ResourceData, meta interface{}
 
 	dashboardList, err := buildDatadogDashboardList(d)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	dashboardList, err = client.CreateDashboardList(dashboardList)
 	if err != nil {
@@ -64,8 +65,11 @@ func resourceDatadogDashboardListCreate(d *schema.ResourceData, meta interface{}
 
 	// Add all the dash list items into the List
 	if len(d.Get("dash_item").(*schema.Set).List()) > 0 {
-		dashboardListV2Items, _ := buildDatadogDashboardListItemsV2(d)
-		_, err := client.UpdateDashboardListItemsV2(id, dashboardListV2Items)
+		dashboardListV2Items, err := buildDatadogDashboardListItemsV2(d)
+		if err != nil {
+			return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+		}
+		_, err = client.UpdateDashboardListItemsV2(id, dashboardListV2Items)
 		if err != nil {
 			return translateClientError(err, "error updating dashboard list item")
 		}
@@ -82,6 +86,9 @@ func resourceDatadogDashboardListUpdate(d *schema.ResourceData, meta interface{}
 
 	// Make any necessary updates to the Overall Dashboard List Object
 	dashList, err := buildDatadogDashboardList(d)
+	if err != nil {
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+	}
 	dashList.SetId(id)
 	dashList.SetName(d.Get("name").(string))
 	err = client.UpdateDashboardList(dashList)
@@ -99,8 +106,11 @@ func resourceDatadogDashboardListUpdate(d *schema.ResourceData, meta interface{}
 		return translateClientError(err, "error deleting dashboard list item")
 	}
 	if len(d.Get("dash_item").(*schema.Set).List()) > 0 {
-		dashboardListV2Items, _ := buildDatadogDashboardListItemsV2(d)
-		_, err := client.UpdateDashboardListItemsV2(id, dashboardListV2Items)
+		dashboardListV2Items, err := buildDatadogDashboardListItemsV2(d)
+		if err != nil {
+			return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+		}
+		_, err = client.UpdateDashboardListItemsV2(id, dashboardListV2Items)
 		if err != nil {
 			return translateClientError(err, "error updating dashboard list item")
 		}
@@ -128,7 +138,10 @@ func resourceDatadogDashboardListRead(d *schema.ResourceData, meta interface{}) 
 	if err != nil {
 		return translateClientError(err, "error getting dashboard list item")
 	}
-	dashItemListV2, err := buildTerraformDashboardListItemsV2(d, completeItemListV2)
+	dashItemListV2, err := buildTerraformDashboardListItemsV2(completeItemListV2)
+	if err != nil {
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+	}
 	d.Set("dash_item", dashItemListV2)
 	return err
 }
@@ -188,7 +201,7 @@ func buildDatadogDashboardListItemsV2(d *schema.ResourceData) ([]datadog.Dashboa
 	return dashboardListV2Items, nil
 }
 
-func buildTerraformDashboardListItemsV2(d *schema.ResourceData, completeItemListV2 []datadog.DashboardListItemV2) ([]map[string]interface{}, error) {
+func buildTerraformDashboardListItemsV2(completeItemListV2 []datadog.DashboardListItemV2) ([]map[string]interface{}, error) {
 	dashItemListV2 := make([]map[string]interface{}, 0, 1)
 	for _, item := range completeItemListV2 {
 		dashItem := make(map[string]interface{})

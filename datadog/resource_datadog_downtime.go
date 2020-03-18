@@ -10,7 +10,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
-	datadog "github.com/zorkian/go-datadog-api"
+	"github.com/zorkian/go-datadog-api"
 )
 
 func resourceDatadogDowntime() *schema.Resource {
@@ -50,7 +50,7 @@ func resourceDatadogDowntime() *schema.Resource {
 			},
 			"start_date": {
 				Type:          schema.TypeString,
-				ValidateFunc:  validation.ValidateRFC3339TimeString,
+				ValidateFunc:  validation.IsRFC3339Time,
 				ConflictsWith: []string{"start"},
 				Optional:      true,
 			},
@@ -65,7 +65,7 @@ func resourceDatadogDowntime() *schema.Resource {
 			},
 			"end_date": {
 				Type:          schema.TypeString,
-				ValidateFunc:  validation.ValidateRFC3339TimeString,
+				ValidateFunc:  validation.IsRFC3339Time,
 				ConflictsWith: []string{"end"},
 				Optional:      true,
 			},
@@ -264,12 +264,12 @@ func buildDowntimeStruct(d *schema.ResourceData, client *datadog.Client, updatin
 
 		dt.SetRecurrence(recurrence)
 	}
-	scope := []string{}
+	var scope []string
 	for _, s := range d.Get("scope").([]interface{}) {
 		scope = append(scope, s.(string))
 	}
 	dt.Scope = scope
-	tags := []string{}
+	var tags []string
 	for _, mt := range d.Get("monitor_tags").([]interface{}) {
 		tags = append(tags, mt.(string))
 	}
@@ -321,7 +321,7 @@ func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) err
 
 	dts, err := buildDowntimeStruct(d, client, false)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	dt, err := client.CreateDowntime(dts)
 	if err != nil {
@@ -411,7 +411,7 @@ func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) err
 
 	dt, err := buildDowntimeStruct(d, client, true)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {

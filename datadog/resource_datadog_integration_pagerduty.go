@@ -72,13 +72,13 @@ func buildIntegrationPagerduty(d *schema.ResourceData) (*datadog.IntegrationPDRe
 	pd.SetSubdomain(d.Get("subdomain").(string))
 	pd.SetAPIToken(d.Get("api_token").(string))
 
-	schedules := []string{}
+	var schedules []string
 	for _, s := range d.Get("schedules").([]interface{}) {
 		schedules = append(schedules, s.(string))
 	}
 	pd.Schedules = schedules
 
-	services := []datadog.ServicePDRequest{}
+	var services []datadog.ServicePDRequest
 	if value, ok := d.GetOk("individual_services"); ok && value.(bool) {
 		services = nil
 	} else {
@@ -109,16 +109,16 @@ func resourceDatadogIntegrationPagerdutyCreate(d *schema.ResourceData, meta inte
 
 	pd, err := buildIntegrationPagerduty(d)
 	if err != nil {
-		return fmt.Errorf("Failed to parse resource configuration: %s", err.Error())
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 
 	if err := client.CreateIntegrationPD(pd); err != nil {
-		return translateClientError(err, "error creating pager duty integration")
+		return translateClientError(err, "error creating PagerDuty integration")
 	}
 
 	pdIntegration, err := client.GetIntegrationPD()
 	if err != nil {
-		return translateClientError(err, "error getting pager duty integration")
+		return translateClientError(err, "error getting PagerDuty integration")
 	}
 
 	d.SetId(pdIntegration.GetSubdomain())
@@ -132,10 +132,10 @@ func resourceDatadogIntegrationPagerdutyRead(d *schema.ResourceData, meta interf
 
 	pd, err := client.GetIntegrationPD()
 	if err != nil {
-		return translateClientError(err, "error getting pager duty integration")
+		return translateClientError(err, "error getting PagerDuty integration")
 	}
 
-	services := []map[string]string{}
+	var services []map[string]string
 	if value, ok := d.GetOk("individual_services"); ok && value.(bool) {
 		services = nil
 	} else {
@@ -164,7 +164,7 @@ func resourceDatadogIntegrationPagerdutyExists(d *schema.ResourceData, meta inte
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
-		return false, translateClientError(err, "error getting pager duty integration")
+		return false, translateClientError(err, "error getting PagerDuty integration")
 	}
 
 	return true, nil
@@ -179,11 +179,11 @@ func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta inte
 
 	pd, err := buildIntegrationPagerduty(d)
 	if err != nil {
-		return fmt.Errorf("Failed to parse resource configuration: %s", err.Error())
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 
 	if err := client.UpdateIntegrationPD(pd); err != nil {
-		return translateClientError(err, "error updating pager duty integration")
+		return translateClientError(err, "error updating PagerDuty integration")
 	}
 
 	// if there are none currently configured services, we actually
@@ -194,11 +194,11 @@ func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta inte
 		if len(currentServices) == 0 {
 			pd, err := client.GetIntegrationPD()
 			if err != nil {
-				return translateClientError(err, "error getting pager duty integration")
+				return translateClientError(err, "error getting PagerDuty integration")
 			}
 			for _, service := range pd.Services {
 				if err := client.DeleteIntegrationPDService(*service.ServiceName); err != nil {
-					return translateClientError(err, "error deleting pager duty integration service")
+					return translateClientError(err, "error deleting PagerDuty integration service")
 				}
 			}
 		}
@@ -214,7 +214,7 @@ func resourceDatadogIntegrationPagerdutyDelete(d *schema.ResourceData, meta inte
 	defer integrationPdMutex.Unlock()
 
 	if err := client.DeleteIntegrationPD(); err != nil {
-		return translateClientError(err, "error deleting pager duty integration")
+		return translateClientError(err, "error deleting PagerDuty integration")
 	}
 
 	return nil

@@ -75,7 +75,7 @@ func resourceDatadogIntegrationAwsExists(d *schema.ResourceData, meta interface{
 
 	integrations, err := client.GetIntegrationAWS()
 	if err != nil {
-		return false, translateClientError(err, "error checking aws integration exists")
+		return false, translateClientError(err, "error checking AWS integration exists")
 	}
 	accountID, roleName, err := accountAndRoleFromID(d.Id())
 	if err != nil {
@@ -90,13 +90,12 @@ func resourceDatadogIntegrationAwsExists(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, accountID string, roleName string) datadog.IntegrationAWSAccount {
-
 	iaws := datadog.IntegrationAWSAccount{
 		AccountID: datadog.String(accountID),
 		RoleName:  datadog.String(roleName),
 	}
 
-	filterTags := []string{}
+	var filterTags []string
 
 	if attr, ok := d.GetOk("filter_tags"); ok {
 		for _, s := range attr.([]interface{}) {
@@ -104,7 +103,7 @@ func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, a
 		}
 	}
 
-	hostTags := []string{}
+	var hostTags []string
 
 	if attr, ok := d.GetOk("host_tags"); ok {
 		for _, s := range attr.([]interface{}) {
@@ -140,7 +139,7 @@ func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{
 	response, err := client.CreateIntegrationAWS(&iaws)
 
 	if err != nil {
-		return translateClientError(err, "error creating aws integration")
+		return translateClientError(err, "error creating AWS integration")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", accountID, roleName))
@@ -154,14 +153,13 @@ func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{})
 	client := providerConf.CommunityClient
 
 	accountID, roleName, err := accountAndRoleFromID(d.Id())
-
 	if err != nil {
 		return err
 	}
 
 	integrations, err := client.GetIntegrationAWS()
 	if err != nil {
-		return translateClientError(err, "error getting aws integration")
+		return translateClientError(err, "error getting AWS integration")
 	}
 	for _, integration := range *integrations {
 		if integration.GetAccountID() == accountID && integration.GetRoleName() == roleName {
@@ -205,7 +203,7 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 
 	_, err = client.CreateIntegrationAWS(&iaws)
 	if err != nil {
-		return translateClientError(err, "error creating aws integration")
+		return translateClientError(err, "error creating AWS integration")
 	}
 
 	return resourceDatadogIntegrationAwsRead(d, meta)
@@ -228,7 +226,7 @@ func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{
 			RoleName:  datadog.String(roleName),
 		},
 	); err != nil {
-		return translateClientError(err, "error deleting aws integration")
+		return translateClientError(err, "error deleting AWS integration")
 	}
 
 	return nil

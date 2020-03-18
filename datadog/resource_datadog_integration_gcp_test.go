@@ -107,7 +107,7 @@ func checkIntegrationGCPExists(accProvider *schema.Provider) func(*terraform.Sta
 					return nil
 				}
 			}
-			return fmt.Errorf("The Google Cloud Platform integration doesn't exist: projectID=%s", projectID)
+			return fmt.Errorf("the Google Cloud Platform integration doesn't exist: projectID=%s", projectID)
 		}
 		return nil
 	}
@@ -126,7 +126,7 @@ func checkIntegrationGCPDestroy(accProvider *schema.Provider) func(*terraform.St
 			projectID := r.Primary.ID
 			for _, integration := range integrations {
 				if integration.GetProjectID() == projectID {
-					return fmt.Errorf("The Google Cloud Platform integration still exist: projectID=%s", projectID)
+					return fmt.Errorf("the Google Cloud Platform integration still exist: projectID=%s", projectID)
 				}
 			}
 		}

@@ -56,7 +56,7 @@ func resourceDatadogIntegrationGcpExists(d *schema.ResourceData, meta interface{
 
 	integrations, err := client.ListIntegrationGCP()
 	if err != nil {
-		return false, translateClientError(err, "error checking gcp integration exists")
+		return false, translateClientError(err, "error checking GCP integration exists")
 	}
 	projectID := d.Id()
 	for _, integration := range integrations {
@@ -96,7 +96,7 @@ func resourceDatadogIntegrationGcpCreate(d *schema.ResourceData, meta interface{
 			HostFilters:             datadog.String(d.Get("host_filters").(string)),
 		},
 	); err != nil {
-		return translateClientError(err, "error creating gcp integration")
+		return translateClientError(err, "error creating GCP integration")
 	}
 
 	d.SetId(projectID)
@@ -112,7 +112,7 @@ func resourceDatadogIntegrationGcpRead(d *schema.ResourceData, meta interface{})
 
 	integrations, err := client.ListIntegrationGCP()
 	if err != nil {
-		return translateClientError(err, "error getting gcp integration")
+		return translateClientError(err, "error getting GCP integration")
 	}
 	for _, integration := range integrations {
 		if integration.GetProjectID() == projectID {
@@ -136,7 +136,7 @@ func resourceDatadogIntegrationGcpUpdate(d *schema.ResourceData, meta interface{
 			HostFilters: datadog.String(d.Get("host_filters").(string)),
 		},
 	); err != nil {
-		return translateClientError(err, "error updating gcp integration")
+		return translateClientError(err, "error updating GCP integration")
 	}
 
 	return resourceDatadogIntegrationGcpRead(d, meta)
@@ -152,7 +152,7 @@ func resourceDatadogIntegrationGcpDelete(d *schema.ResourceData, meta interface{
 			ClientEmail: datadog.String(d.Get("client_email").(string)),
 		},
 	); err != nil {
-		return translateClientError(err, "error deleting gcp integration")
+		return translateClientError(err, "error deleting GCP integration")
 	}
 
 	return nil

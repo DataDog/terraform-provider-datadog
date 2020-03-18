@@ -219,14 +219,14 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 		thresholds.SetCriticalRecovery(json.Number(r.(string)))
 	}
 
-	var threshold_windows datadog.ThresholdWindows
+	var thresholdWindows datadog.ThresholdWindows
 
 	if r, ok := d.GetOk("threshold_windows.recovery_window"); ok {
-		threshold_windows.SetRecoveryWindow(r.(string))
+		thresholdWindows.SetRecoveryWindow(r.(string))
 	}
 
 	if r, ok := d.GetOk("threshold_windows.trigger_window"); ok {
-		threshold_windows.SetTriggerWindow(r.(string))
+		thresholdWindows.SetTriggerWindow(r.(string))
 	}
 
 	o := datadog.Options{
@@ -235,8 +235,8 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 		RequireFullWindow: datadog.Bool(d.Get("require_full_window").(bool)),
 		IncludeTags:       datadog.Bool(d.Get("include_tags").(bool)),
 	}
-	if threshold_windows.HasRecoveryWindow() || threshold_windows.HasTriggerWindow() {
-		o.SetThresholdWindows(threshold_windows)
+	if thresholdWindows.HasRecoveryWindow() || thresholdWindows.HasTriggerWindow() {
+		o.SetThresholdWindows(thresholdWindows)
 	}
 	if attr, ok := d.GetOk("silenced"); ok {
 		s := make(map[string]int)
@@ -291,7 +291,7 @@ func buildMonitorStruct(d *schema.ResourceData) *datadog.Monitor {
 	}
 
 	if attr, ok := d.GetOk("tags"); ok {
-		tags := []string{}
+		var tags []string
 		for _, s := range attr.(*schema.Set).List() {
 			tags = append(tags, s.(string))
 		}
@@ -390,7 +390,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 		}
 	}
 
-	tags := []string{}
+	var tags []string
 	for _, s := range m.Tags {
 		tags = append(tags, s)
 	}

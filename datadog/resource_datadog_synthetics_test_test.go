@@ -723,7 +723,7 @@ func testSyntheticsTestExists(accProvider *schema.Provider) resource.TestCheckFu
 
 		for _, r := range s.RootModule().Resources {
 			if _, err := client.GetSyntheticsTest(r.Primary.ID); err != nil {
-				return fmt.Errorf("Received an error retrieving synthetics test %s", err)
+				return fmt.Errorf("received an error retrieving synthetics test %s", err)
 			}
 		}
 		return nil
@@ -740,9 +740,9 @@ func testSyntheticsTestIsDestroyed(accProvider *schema.Provider) resource.TestCh
 				if strings.Contains(err.Error(), "404 Not Found") {
 					continue
 				}
-				return fmt.Errorf("Received an error retrieving synthetics test %s", err)
+				return fmt.Errorf("received an error retrieving synthetics test %s", err)
 			}
-			return fmt.Errorf("Synthetics test still exists")
+			return fmt.Errorf("synthetics test still exists")
 		}
 		return nil
 	}

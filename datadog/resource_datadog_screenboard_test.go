@@ -1882,7 +1882,7 @@ func checkScreenboardExists(accProvider *schema.Provider) func(*terraform.State)
 		for _, r := range s.RootModule().Resources {
 			i, _ := strconv.Atoi(r.Primary.ID)
 			if _, err := client.GetScreenboard(i); err != nil {
-				return fmt.Errorf("Received an error retrieving screenboard %s", err)
+				return fmt.Errorf("received an error retrieving screenboard %s", err)
 			}
 		}
 		return nil
@@ -1899,9 +1899,9 @@ func checkScreenboardDestroy(accProvider *schema.Provider) func(*terraform.State
 				if strings.Contains(err.Error(), "404 Not Found") {
 					continue
 				}
-				return fmt.Errorf("Received an error retrieving screenboard %s", err)
+				return fmt.Errorf("received an error retrieving screenboard %s", err)
 			}
-			return fmt.Errorf("Screenboard still exists")
+			return fmt.Errorf("screenboard still exists")
 		}
 		return nil
 	}

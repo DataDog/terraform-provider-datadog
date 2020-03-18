@@ -2,9 +2,10 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/zorkian/go-datadog-api"
-	"strings"
 )
 
 const (
@@ -290,7 +291,7 @@ func resourceDatadogLogsCustomPipeline() *schema.Resource {
 func resourceDatadogLogsPipelineCreate(d *schema.ResourceData, meta interface{}) error {
 	ddPipeline, err := buildDatadogPipeline(d)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
@@ -333,7 +334,7 @@ func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) e
 func resourceDatadogLogsPipelineUpdate(d *schema.ResourceData, meta interface{}) error {
 	ddPipeline, err := buildDatadogPipeline(d)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient

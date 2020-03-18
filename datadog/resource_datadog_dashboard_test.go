@@ -975,7 +975,7 @@ func checkDashboardExists(accProvider *schema.Provider) resource.TestCheckFunc {
 
 		for _, r := range s.RootModule().Resources {
 			if _, err := client.GetBoard(r.Primary.ID); err != nil {
-				return fmt.Errorf("Received an error retrieving dashboard1 %s", err)
+				return fmt.Errorf("received an error retrieving dashboard1 %s", err)
 			}
 		}
 		return nil
@@ -992,9 +992,9 @@ func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc 
 				if strings.Contains(err.Error(), "404 Not Found") {
 					continue
 				}
-				return fmt.Errorf("Received an error retrieving dashboard2 %s", err)
+				return fmt.Errorf("received an error retrieving dashboard2 %s", err)
 			}
-			return fmt.Errorf("Dashboard still exists")
+			return fmt.Errorf("dashboard still exists")
 		}
 		return nil
 	}

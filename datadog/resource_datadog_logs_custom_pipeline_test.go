@@ -178,7 +178,7 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 			{
 				Config: pipelineConfigForCreation,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPipelineExists(accProvider, "datadog_logs_custom_pipeline.my_pipeline_test"),
+					testAccCheckPipelineExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "name", "my first pipeline"),
 					resource.TestCheckResourceAttr(
@@ -207,7 +207,7 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 			}, {
 				Config: pipelineConfigForUpdate,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPipelineExists(accProvider, "datadog_logs_custom_pipeline.my_pipeline_test"),
+					testAccCheckPipelineExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "name", "updated pipeline"),
 					resource.TestCheckResourceAttr(
@@ -228,7 +228,7 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 	})
 }
 
-func testAccCheckPipelineExists(accProvider *schema.Provider, name string) resource.TestCheckFunc {
+func testAccCheckPipelineExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
 		client := providerConf.CommunityClient

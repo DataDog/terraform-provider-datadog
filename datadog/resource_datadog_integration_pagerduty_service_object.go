@@ -57,7 +57,7 @@ func resourceDatadogIntegrationPagerdutySOCreate(d *schema.ResourceData, meta in
 
 	if err := client.CreateIntegrationPDService(so); err != nil {
 		// TODO: warn user that PD integration must be enabled to be able to create service objects
-		return translateClientError(err, "error creating pager duty integration service")
+		return translateClientError(err, "error creating PagerDuty integration service")
 	}
 	d.SetId(so.GetServiceName())
 
@@ -70,7 +70,7 @@ func resourceDatadogIntegrationPagerdutySORead(d *schema.ResourceData, meta inte
 
 	so, err := client.GetIntegrationPDService(d.Id())
 	if err != nil {
-		return translateClientError(err, "error getting pager duty integration service")
+		return translateClientError(err, "error getting PagerDuty integration service")
 	}
 
 	d.Set("service_name", so.GetServiceName())
@@ -92,7 +92,7 @@ func resourceDatadogIntegrationPagerdutySOExists(d *schema.ResourceData, meta in
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
-		return false, translateClientError(err, "error getting pager duty integration service")
+		return false, translateClientError(err, "error checking PagerDuty integration service exists")
 	}
 
 	return true, nil
@@ -108,7 +108,7 @@ func resourceDatadogIntegrationPagerdutySOUpdate(d *schema.ResourceData, meta in
 	so := buildIntegrationPagerdutySO(d)
 
 	if err := client.UpdateIntegrationPDService(so); err != nil {
-		return translateClientError(err, "error updating pager duty integration service")
+		return translateClientError(err, "error updating PagerDuty integration service")
 	}
 	d.SetId(so.GetServiceName())
 
@@ -123,7 +123,7 @@ func resourceDatadogIntegrationPagerdutySODelete(d *schema.ResourceData, meta in
 	defer integrationPdMutex.Unlock()
 
 	if err := client.DeleteIntegrationPDService(d.Id()); err != nil {
-		return translateClientError(err, "error deleting pager duty integration service")
+		return translateClientError(err, "error deleting PagerDuty integration service")
 	}
 
 	return nil

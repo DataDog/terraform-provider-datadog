@@ -23,7 +23,7 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
 					checkPostEvent(t, accProvider),
-					checkMetricMetadataExists(accProvider, "datadog_metric_metadata.foo"),
+					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
 					resource.TestCheckResourceAttr(
@@ -55,7 +55,7 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
 					checkPostEvent(t, accProvider),
-					checkMetricMetadataExists(accProvider, "datadog_metric_metadata.foo"),
+					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
 					resource.TestCheckResourceAttr(
@@ -73,7 +73,7 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMetricMetadataConfigUpdated,
 				Check: resource.ComposeTestCheckFunc(
-					checkMetricMetadataExists(accProvider, "datadog_metric_metadata.foo"),
+					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
 					resource.TestCheckResourceAttr(
@@ -92,7 +92,7 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 	})
 }
 
-func checkMetricMetadataExists(accProvider *schema.Provider, name string) resource.TestCheckFunc {
+func checkMetricMetadataExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
 		client := providerConf.CommunityClient
@@ -102,7 +102,7 @@ func checkMetricMetadataExists(accProvider *schema.Provider, name string) resour
 				continue
 			}
 			if _, err := client.ViewMetricMetadata(metric); err != nil {
-				return fmt.Errorf("Received an error retrieving metric_metadata %s", err)
+				return fmt.Errorf("received an error retrieving metric_metadata %s", err)
 			}
 		}
 		return nil

@@ -2,9 +2,10 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/zorkian/go-datadog-api"
-	"strings"
 )
 
 var indexSchema = map[string]*schema.Schema{
@@ -83,7 +84,7 @@ func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) erro
 func resourceDatadogLogsIndexUpdate(d *schema.ResourceData, meta interface{}) error {
 	ddIndex, err := buildDatadogIndex(d)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
