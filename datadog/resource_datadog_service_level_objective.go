@@ -278,12 +278,13 @@ func floatOk(val interface{}) (float64, bool) {
 }
 
 func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	slo := buildServiceLevelObjectiveStruct(d)
 	slo, err := client.CreateServiceLevelObjective(slo)
 	if err != nil {
-		return fmt.Errorf("error creating service level objective: %s", err.Error())
+		return translateClientError(err, "error creating service level objective")
 	}
 
 	d.SetId(slo.GetID())
@@ -294,25 +295,27 @@ func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta int
 func resourceDatadogServiceLevelObjectiveExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	if _, err := client.GetServiceLevelObjective(d.Id()); err != nil {
 		errStr := strings.ToLower(err.Error())
 		if strings.Contains(errStr, "not found") || strings.Contains(errStr, "no slo specified") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking service level objective exists")
 	}
 
 	return true, nil
 }
 
 func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	slo, err := client.GetServiceLevelObjective(d.Id())
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting service level objective")
 	}
 
 	thresholds := make([]map[string]interface{}, 0)
@@ -367,20 +370,27 @@ func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta inter
 }
 
 func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	slo := buildServiceLevelObjectiveStruct(d)
 
 	if _, err := client.UpdateServiceLevelObjective(slo); err != nil {
-		return fmt.Errorf("error updating service level objective: %s", err.Error())
+		return translateClientError(err, "error updating service level objective")
 	}
 
 	return resourceDatadogServiceLevelObjectiveRead(d, meta)
 }
 
 func resourceDatadogServiceLevelObjectiveDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
-	return client.DeleteServiceLevelObjective(d.Id())
+	err := client.DeleteServiceLevelObjective(d.Id())
+	if err != nil {
+		return translateClientError(err, "error deleting service level objective")
+	}
+	return nil
+
 }
 
 func resourceDatadogServiceLevelObjectiveImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {

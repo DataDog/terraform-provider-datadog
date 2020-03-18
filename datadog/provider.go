@@ -6,12 +6,12 @@ import (
 	"log"
 	"runtime"
 
-	cleanhttp "github.com/hashicorp/go-cleanhttp"
+	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"github.com/terraform-providers/terraform-provider-datadog/version"
-	"github.com/zorkian/go-datadog-api"
+	datadogCommunity "github.com/zorkian/go-datadog-api"
 )
 
 func Provider() terraform.ResourceProvider {
@@ -64,28 +64,45 @@ func Provider() terraform.ResourceProvider {
 	}
 }
 
+//ProviderConfiguration contains the initialized API clients to communicate with the Datadog API
+type ProviderConfiguration struct {
+	CommunityClient *datadogCommunity.Client
+}
+
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
-	client := datadog.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
+	// Initialize the community client
+	communityClient := datadogCommunity.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
+
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
-		client.SetBaseUrl(apiURL)
+		communityClient.SetBaseUrl(apiURL)
 	}
 
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", c.Transport)
-	client.HttpClient = c
-	client.ExtraHeader["User-Agent"] = fmt.Sprintf("Datadog/%s/terraform (%s)", version.ProviderVersion, runtime.Version())
+	communityClient.HttpClient = c
+	communityClient.ExtraHeader["User-Agent"] = fmt.Sprintf("Datadog/%s/terraform (%s)", version.ProviderVersion, runtime.Version())
 
 	log.Println("[INFO] Datadog client successfully initialized, now validating...")
-	ok, err := client.Validate()
+	ok, err := communityClient.Validate()
 	if err != nil {
 		log.Printf("[ERROR] Datadog Client validation error: %v", err)
-		return client, err
+		return communityClient, err
 	} else if !ok {
 		err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and see https://terraform.io/docs/providers/datadog/index.html for more information on providing credentials for the Datadog Provider`)
 		log.Printf("[ERROR] Datadog Client validation error: %v", err)
-		return client, err
+		return communityClient, err
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
-	return client, nil
+	return &ProviderConfiguration{
+		CommunityClient: communityClient,
+	}, nil
+}
+
+func translateClientError(err error, msg string) error {
+	if msg == "" {
+		msg = "an error occurred"
+	}
+
+	return fmt.Errorf(msg+": %s", err.Error())
 }

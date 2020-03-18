@@ -186,9 +186,9 @@ func destroyServiceLevelObjectiveHelper(s *terraform.State, client *datadog.Clie
 				if strings.Contains(strings.ToLower(err.Error()), "not found") {
 					continue
 				}
-				return fmt.Errorf("Received an error retrieving service level objective %s", err)
+				return fmt.Errorf("received an error retrieving service level objective %s", err)
 			}
-			return fmt.Errorf("Service Level Objective still exists")
+			return fmt.Errorf("service Level Objective still exists")
 		}
 	}
 	return nil
@@ -197,7 +197,7 @@ func destroyServiceLevelObjectiveHelper(s *terraform.State, client *datadog.Clie
 func existsServiceLevelObjectiveHelper(s *terraform.State, client *datadog.Client) error {
 	for _, r := range s.RootModule().Resources {
 		if _, err := client.GetServiceLevelObjective(r.Primary.ID); err != nil {
-			return fmt.Errorf("Received an error retrieving service level objective %s", err)
+			return fmt.Errorf("received an error retrieving service level objective %s", err)
 		}
 	}
 	return nil
@@ -205,8 +205,8 @@ func existsServiceLevelObjectiveHelper(s *terraform.State, client *datadog.Clien
 
 func testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
-
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 		if err := destroyServiceLevelObjectiveHelper(s, client); err != nil {
 			return err
 		}
@@ -216,7 +216,8 @@ func testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider *schema.Provide
 
 func testAccCheckDatadogServiceLevelObjectiveExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 		if err := existsServiceLevelObjectiveHelper(s, client); err != nil {
 			return err
 		}

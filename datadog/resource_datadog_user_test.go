@@ -62,7 +62,8 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 
 func testAccCheckDatadogUserDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 
 		if err := datadogUserDestroyHelper(s, client); err != nil {
 			return err
@@ -73,7 +74,9 @@ func testAccCheckDatadogUserDestroy(accProvider *schema.Provider) func(*terrafor
 
 func testAccCheckDatadogUserExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
 		if err := datadogUserExistsHelper(s, client); err != nil {
 			return err
 		}
@@ -110,14 +113,14 @@ func datadogUserDestroyHelper(s *terraform.State, client *datadog.Client) error 
 			if strings.Contains(err.Error(), "404 Not Found") {
 				continue
 			}
-			return fmt.Errorf("Received an error retrieving user %s", err)
+			return fmt.Errorf("received an error retrieving user %s", err)
 		}
 
 		// Datadog only disables user on DELETE
 		if u.GetDisabled() {
 			continue
 		}
-		return fmt.Errorf("User still exists")
+		return fmt.Errorf("user still exists")
 	}
 	return nil
 }
@@ -126,7 +129,7 @@ func datadogUserExistsHelper(s *terraform.State, client *datadog.Client) error {
 	for _, r := range s.RootModule().Resources {
 		id := r.Primary.ID
 		if _, err := client.GetUser(id); err != nil {
-			return fmt.Errorf("Received an error retrieving user %s", err)
+			return fmt.Errorf("received an error retrieving user %s", err)
 		}
 	}
 	return nil
