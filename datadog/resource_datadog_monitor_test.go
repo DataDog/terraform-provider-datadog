@@ -486,7 +486,7 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfig_ints,
+				Config: testAccCheckDatadogMonitorConfigInts,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
@@ -501,7 +501,7 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 			},
 
 			{
-				Config: testAccCheckDatadogMonitorConfig_ints_mixed,
+				Config: testAccCheckDatadogMonitorConfigIntsMixed,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
@@ -691,7 +691,8 @@ func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
 
 func testAccCheckDatadogMonitorDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 
 		if err := destroyHelper(s, client); err != nil {
 			return err
@@ -702,7 +703,8 @@ func testAccCheckDatadogMonitorDestroy(accProvider *schema.Provider) func(*terra
 
 func testAccCheckDatadogMonitorExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 		if err := existsHelper(s, client); err != nil {
 			return err
 		}
@@ -948,7 +950,7 @@ resource "datadog_monitor" "foo" {
 }
 `
 
-const testAccCheckDatadogMonitorConfig_ints = `
+const testAccCheckDatadogMonitorConfigInts = `
 resource "datadog_monitor" "foo" {
   name               = "name for monitor foo"
   type               = "query alert"
@@ -977,7 +979,7 @@ resource "datadog_monitor" "foo" {
 }
 `
 
-const testAccCheckDatadogMonitorConfig_ints_mixed = `
+const testAccCheckDatadogMonitorConfigIntsMixed = `
 resource "datadog_monitor" "foo" {
   name               = "name for monitor foo"
   type               = "query alert"
@@ -1296,9 +1298,9 @@ func destroyHelper(s *terraform.State, client *datadog.Client) error {
 			if strings.Contains(err.Error(), "404 Not Found") {
 				continue
 			}
-			return fmt.Errorf("Received an error retrieving monitor %s", err)
+			return fmt.Errorf("received an error retrieving monitor %s", err)
 		}
-		return fmt.Errorf("Monitor still exists")
+		return fmt.Errorf("monitor still exists")
 	}
 	return nil
 }
@@ -1307,7 +1309,7 @@ func existsHelper(s *terraform.State, client *datadog.Client) error {
 	for _, r := range s.RootModule().Resources {
 		i, _ := strconv.Atoi(r.Primary.ID)
 		if _, err := client.GetMonitor(i); err != nil {
-			return fmt.Errorf("Received an error retrieving monitor %s", err)
+			return fmt.Errorf("received an error retrieving monitor %s", err)
 		}
 	}
 	return nil

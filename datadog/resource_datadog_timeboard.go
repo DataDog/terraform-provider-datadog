@@ -23,7 +23,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Type:     schema.TypeString,
 					Required: true,
 				},
-				"compute": &schema.Schema{
+				"compute": {
 					Type:     schema.TypeList,
 					Required: true,
 					MaxItems: 1,
@@ -44,7 +44,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 						},
 					},
 				},
-				"search": &schema.Schema{
+				"search": {
 					Type:     schema.TypeList,
 					Optional: true,
 					MaxItems: 1,
@@ -57,7 +57,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 						},
 					},
 				},
-				"group_by": &schema.Schema{
+				"group_by": {
 					Type:     schema.TypeList,
 					Optional: true,
 					Elem: &schema.Resource{
@@ -147,7 +147,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Optional: true,
 					Default:  "line",
 				},
-				"aggregator": &schema.Schema{
+				"aggregator": {
 					Type:         schema.TypeString,
 					Optional:     true,
 					ValidateFunc: validateAggregatorMethod,
@@ -447,8 +447,8 @@ func resourceDatadogTimeboard() *schema.Resource {
 }
 
 func appendConditionalFormats(datadogRequest *datadog.GraphDefinitionRequest, terraformFormats *[]interface{}) {
-	for _, _t := range *terraformFormats {
-		t := _t.(map[string]interface{})
+	for _, tf := range *terraformFormats {
+		t := tf.(map[string]interface{})
 		d := datadog.DashboardConditionalFormat{
 			Comparator: datadog.String(t["comparator"].(string)),
 		}
@@ -475,8 +475,8 @@ func appendConditionalFormats(datadogRequest *datadog.GraphDefinitionRequest, te
 
 func buildTemplateVariables(terraformTemplateVariables *[]interface{}) *[]datadog.TemplateVariable {
 	datadogTemplateVariables := make([]datadog.TemplateVariable, len(*terraformTemplateVariables))
-	for i, _t := range *terraformTemplateVariables {
-		t := _t.(map[string]interface{})
+	for i, tpv := range *terraformTemplateVariables {
+		t := tpv.(map[string]interface{})
 		datadogTemplateVariables[i] = datadog.TemplateVariable{
 			Name:    datadog.String(t["name"].(string)),
 			Prefix:  datadog.String(t["prefix"].(string)),
@@ -517,8 +517,8 @@ func buildDatadogGraphApmOrLogQuery(source interface{}) *datadog.GraphApmOrLogQu
 	// GroupBy
 	if terraformGroupBys, ok := terraformLogOrApmQuery["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
 		datadogGroupBys := make([]datadog.GraphApmOrLogQueryGroupBy, len(terraformGroupBys))
-		for i, _groupBy := range terraformGroupBys {
-			groupBy := _groupBy.(map[string]interface{})
+		for i, g := range terraformGroupBys {
+			groupBy := g.(map[string]interface{})
 			// Facet
 			datadogGroupBy := datadog.GraphApmOrLogQueryGroupBy{
 				Facet: datadog.String(groupBy["facet"].(string)),
@@ -570,8 +570,8 @@ func buildDatadogGraphProcessQuery(terraformQuery map[string]interface{}) *datad
 }
 
 func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{}) error {
-	for _, _t := range *terraformRequests {
-		t := _t.(map[string]interface{})
+	for _, r := range *terraformRequests {
+		t := r.(map[string]interface{})
 		log.Printf("[DataDog] request: %v", pretty.Sprint(t))
 		d := datadog.GraphDefinitionRequest{
 			Type:       datadog.String(t["type"].(string)),
@@ -639,8 +639,8 @@ func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{
 		}
 
 		if v, ok := t["conditional_format"]; ok {
-			_v := v.([]interface{})
-			appendConditionalFormats(&d, &_v)
+			value := v.([]interface{})
+			appendConditionalFormats(&d, &value)
 		}
 		if v, ok := t["metadata_json"]; ok {
 			d.Metadata = map[string]datadog.GraphDefinitionMetadata{}
@@ -653,16 +653,16 @@ func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{
 }
 
 func appendEvents(datadogGraph *datadog.Graph, terraformEvents *[]interface{}) {
-	for _, _t := range *terraformEvents {
+	for _, e := range *terraformEvents {
 		datadogGraph.Definition.Events = append(datadogGraph.Definition.Events, datadog.GraphEvent{
-			Query: datadog.String(_t.(string)),
+			Query: datadog.String(e.(string)),
 		})
 	}
 }
 
 func appendMarkers(datadogGraph *datadog.Graph, terraformMarkers *[]interface{}) {
-	for _, _t := range *terraformMarkers {
-		t := _t.(map[string]interface{})
+	for _, m := range *terraformMarkers {
+		t := m.(map[string]interface{})
 		d := datadog.GraphDefinitionMarker{
 			Type:  datadog.String(t["type"].(string)),
 			Value: datadog.String(t["value"].(string)),
@@ -676,8 +676,8 @@ func appendMarkers(datadogGraph *datadog.Graph, terraformMarkers *[]interface{})
 
 func buildGraphs(terraformGraphs *[]interface{}) (*[]datadog.Graph, error) {
 	datadogGraphs := make([]datadog.Graph, len(*terraformGraphs))
-	for i, _t := range *terraformGraphs {
-		t := _t.(map[string]interface{})
+	for i, g := range *terraformGraphs {
+		t := g.(map[string]interface{})
 
 		datadogGraphs[i] = datadog.Graph{
 			Title: datadog.String(t["title"].(string)),
@@ -822,11 +822,13 @@ func buildTimeboard(d *schema.ResourceData) (*datadog.Dashboard, error) {
 func resourceDatadogTimeboardCreate(d *schema.ResourceData, meta interface{}) error {
 	timeboard, err := buildTimeboard(d)
 	if err != nil {
-		return fmt.Errorf("Failed to parse resource configuration: %s", err.Error())
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	timeboard, err = meta.(*datadog.Client).CreateDashboard(timeboard)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	timeboard, err = client.CreateDashboard(timeboard)
 	if err != nil {
-		return fmt.Errorf("Failed to create timeboard using Datadog API: %s", err.Error())
+		return translateClientError(err, "error creating timeboard")
 	}
 	d.SetId(strconv.Itoa(timeboard.GetId()))
 	return resourceDatadogTimeboardRead(d, meta)
@@ -835,10 +837,12 @@ func resourceDatadogTimeboardCreate(d *schema.ResourceData, meta interface{}) er
 func resourceDatadogTimeboardUpdate(d *schema.ResourceData, meta interface{}) error {
 	timeboard, err := buildTimeboard(d)
 	if err != nil {
-		return fmt.Errorf("Failed to parse resource configuration: %s", err.Error())
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	if err = meta.(*datadog.Client).UpdateDashboard(timeboard); err != nil {
-		return fmt.Errorf("Failed to update timeboard using Datadog API: %s", err.Error())
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	if err = client.UpdateDashboard(timeboard); err != nil {
+		return translateClientError(err, "error updating timeboard")
 	}
 	return resourceDatadogTimeboardRead(d, meta)
 }
@@ -953,7 +957,7 @@ func appendTerraformGraphRequests(datadogRequests []datadog.GraphDefinitionReque
 			}
 			request["style"] = style
 		}
-		conditionalFormats := []map[string]interface{}{}
+		var conditionalFormats []map[string]interface{}
 		for _, cf := range datadogRequest.ConditionalFormats {
 			conditionalFormat := map[string]interface{}{}
 			if v, ok := cf.GetPaletteOk(); ok {
@@ -1011,7 +1015,7 @@ func buildTerraformGraph(datadogGraph datadog.Graph) map[string]interface{} {
 	definition := datadogGraph.Definition
 	graph["viz"] = definition.GetViz()
 
-	events := []string{}
+	var events []string
 	for _, e := range definition.Events {
 		if v, ok := e.GetQueryOk(); ok {
 			events = append(events, v)
@@ -1021,7 +1025,7 @@ func buildTerraformGraph(datadogGraph datadog.Graph) map[string]interface{} {
 		graph["events"] = events
 	}
 
-	markers := []map[string]interface{}{}
+	var markers []map[string]interface{}
 	for _, datadogMarker := range definition.Markers {
 		marker := map[string]interface{}{}
 		if v, ok := datadogMarker.GetTypeOk(); ok {
@@ -1106,7 +1110,7 @@ func buildTerraformGraph(datadogGraph datadog.Graph) map[string]interface{} {
 		graph["node_type"] = v
 	}
 
-	requests := []map[string]interface{}{}
+	var requests []map[string]interface{}
 	appendTerraformGraphRequests(definition.Requests, &requests)
 	graph["request"] = requests
 
@@ -1115,7 +1119,9 @@ func buildTerraformGraph(datadogGraph datadog.Graph) map[string]interface{} {
 
 func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) error {
 	id := d.Id()
-	timeboard, err := meta.(*datadog.Client).GetDashboard(id)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	timeboard, err := client.GetDashboard(id)
 	if err != nil {
 		return err
 	}
@@ -1127,7 +1133,7 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 		return err
 	}
 
-	graphs := []map[string]interface{}{}
+	var graphs []map[string]interface{}
 	for _, datadogGraph := range timeboard.Graphs {
 		graphs = append(graphs, buildTerraformGraph(datadogGraph))
 	}
@@ -1136,7 +1142,7 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 		return err
 	}
 
-	templateVariables := []map[string]string{}
+	var templateVariables []map[string]string
 	for _, templateVariable := range timeboard.TemplateVariables {
 		tv := map[string]string{}
 		if v, ok := templateVariable.GetNameOk(); ok {
@@ -1164,8 +1170,10 @@ func resourceDatadogTimeboardDelete(d *schema.ResourceData, meta interface{}) er
 	if err != nil {
 		return err
 	}
-	if err = meta.(*datadog.Client).DeleteDashboard(id); err != nil {
-		return err
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	if err = client.DeleteDashboard(id); err != nil {
+		return translateClientError(err, "error deleting timeboard")
 	}
 	return nil
 }
@@ -1182,11 +1190,13 @@ func resourceDatadogTimeboardExists(d *schema.ResourceData, meta interface{}) (b
 	if err != nil {
 		return false, err
 	}
-	if _, err = meta.(*datadog.Client).GetDashboard(id); err != nil {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	if _, err = client.GetDashboard(id); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking timeboard exists")
 	}
 	return true, nil
 }

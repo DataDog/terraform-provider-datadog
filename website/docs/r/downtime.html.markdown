@@ -47,7 +47,7 @@ resource "datadog_downtime" "foo" {
 
 The following arguments are supported:
 
-* `scope` - (Required) A list of items to apply the downtime to, e.g. host:X
+* `scope` - (Required)  The scope(s) to which the downtime applies, e.g. host:app2. Provide multiple scopes as a comma-separated list, e.g. env:dev,env:prod. The resulting downtime applies to sources that matches ALL provided scopes (i.e. env:dev AND env:prod), NOT any of them.
 * `active` - (Optional) A flag indicating if the downtime is active now.
 * `disabled` - (Optional) A flag indicating if the downtime was disabled.
 * `start` - (Optional) POSIX timestamp to start the downtime.

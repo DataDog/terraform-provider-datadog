@@ -70,11 +70,12 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 func resourceDatadogIntegrationAwsExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	integrations, err := client.GetIntegrationAWS()
 	if err != nil {
-		return false, err
+		return false, translateClientError(err, "error checking AWS integration exists")
 	}
 	accountID, roleName, err := accountAndRoleFromID(d.Id())
 	if err != nil {
@@ -89,13 +90,12 @@ func resourceDatadogIntegrationAwsExists(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, accountID string, roleName string) datadog.IntegrationAWSAccount {
-
 	iaws := datadog.IntegrationAWSAccount{
 		AccountID: datadog.String(accountID),
 		RoleName:  datadog.String(roleName),
 	}
 
-	filterTags := []string{}
+	var filterTags []string
 
 	if attr, ok := d.GetOk("filter_tags"); ok {
 		for _, s := range attr.([]interface{}) {
@@ -103,7 +103,7 @@ func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, a
 		}
 	}
 
-	hostTags := []string{}
+	var hostTags []string
 
 	if attr, ok := d.GetOk("host_tags"); ok {
 		for _, s := range attr.([]interface{}) {
@@ -126,7 +126,9 @@ func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, a
 }
 
 func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
@@ -137,7 +139,7 @@ func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{
 	response, err := client.CreateIntegrationAWS(&iaws)
 
 	if err != nil {
-		return fmt.Errorf("error creating a Amazon Web Services integration: %s", err.Error())
+		return translateClientError(err, "error creating AWS integration")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", accountID, roleName))
@@ -147,17 +149,17 @@ func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	accountID, roleName, err := accountAndRoleFromID(d.Id())
-
 	if err != nil {
 		return err
 	}
 
 	integrations, err := client.GetIntegrationAWS()
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting AWS integration")
 	}
 	for _, integration := range *integrations {
 		if integration.GetAccountID() == accountID && integration.GetRoleName() == roleName {
@@ -187,7 +189,8 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 	// 	return &out, nil
 	// }
 
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
@@ -200,14 +203,15 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 
 	_, err = client.CreateIntegrationAWS(&iaws)
 	if err != nil {
-		return fmt.Errorf("error updating a Amazon Web Services integration: %s", err.Error())
+		return translateClientError(err, "error creating AWS integration")
 	}
 
 	return resourceDatadogIntegrationAwsRead(d, meta)
 }
 
 func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
@@ -222,7 +226,7 @@ func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{
 			RoleName:  datadog.String(roleName),
 		},
 	); err != nil {
-		return fmt.Errorf("error deleting a Amazon Web Services integration: %s", err.Error())
+		return translateClientError(err, "error deleting AWS integration")
 	}
 
 	return nil

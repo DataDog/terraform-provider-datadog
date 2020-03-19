@@ -2,9 +2,10 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/zorkian/go-datadog-api"
-	"strings"
 )
 
 const (
@@ -290,20 +291,26 @@ func resourceDatadogLogsCustomPipeline() *schema.Resource {
 func resourceDatadogLogsPipelineCreate(d *schema.ResourceData, meta interface{}) error {
 	ddPipeline, err := buildDatadogPipeline(d)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	createdPipeline, err := meta.(*datadog.Client).CreateLogsPipeline(ddPipeline)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
+	createdPipeline, err := client.CreateLogsPipeline(ddPipeline)
 	if err != nil {
-		return fmt.Errorf("failed to create logs pipeline using Datadog API: %s", err.Error())
+		return translateClientError(err, "error creating logs pipeline")
 	}
 	d.SetId(*createdPipeline.Id)
 	return resourceDatadogLogsPipelineRead(d, meta)
 }
 
 func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) error {
-	ddPipeline, err := meta.(*datadog.Client).GetLogsPipeline(d.Id())
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
+	ddPipeline, err := client.GetLogsPipeline(d.Id())
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting logs pipeline")
 	}
 	if err = d.Set("name", ddPipeline.GetName()); err != nil {
 		return err
@@ -327,34 +334,41 @@ func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) e
 func resourceDatadogLogsPipelineUpdate(d *schema.ResourceData, meta interface{}) error {
 	ddPipeline, err := buildDatadogPipeline(d)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
 	if _, err := client.UpdateLogsPipeline(d.Id(), ddPipeline); err != nil {
-		return fmt.Errorf("error updating logs pipeline: (%s)", err.Error())
+		return translateClientError(err, "error updating logs pipeline")
 	}
 	return resourceDatadogLogsPipelineRead(d, meta)
 }
 
 func resourceDatadogLogsPipelineDelete(d *schema.ResourceData, meta interface{}) error {
-	if err := meta.(*datadog.Client).DeleteLogsPipeline(d.Id()); err != nil {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
+	if err := client.DeleteLogsPipeline(d.Id()); err != nil {
 		// API returns 400 when the specific pipeline id doesn't exist through DELETE request.
 		if strings.Contains(err.Error(), "400 Bad Request") {
 			return nil
 		}
-		return err
+		return translateClientError(err, "error deleting logs pipeline")
 	}
 	return nil
 }
 
 func resourceDatadogLogsPipelineExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
 	if _, err := client.GetLogsPipeline(d.Id()); err != nil {
 		// API returns 400 when the specific pipeline id doesn't exist through GET request.
 		if strings.Contains(err.Error(), "400 Bad Request") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking logs pipeline exists")
 	}
 	return true, nil
 }

@@ -366,7 +366,8 @@ func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
 
 func testAccCheckDatadogDowntimeDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 
 		if err := datadogDowntimeDestroyHelper(s, client); err != nil {
 			return err
@@ -377,7 +378,9 @@ func testAccCheckDatadogDowntimeDestroy(accProvider *schema.Provider) func(*terr
 
 func testAccCheckDatadogDowntimeExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
 		if err := datadogDowntimeExistsHelper(s, client); err != nil {
 			return err
 		}
@@ -766,8 +769,7 @@ func TestResourceDatadogDowntimeRecurrenceWeekDaysValidation(t *testing.T) {
 }
 
 func datadogDowntimeDestroyHelper(s *terraform.State, client *datadog.Client) error {
-	for n, r := range s.RootModule().Resources {
-		fmt.Printf("Resource %s, type = %s\n", n, r.Type)
+	for _, r := range s.RootModule().Resources {
 		if r.Type != "datadog_downtime" {
 			continue
 		}
@@ -779,14 +781,14 @@ func datadogDowntimeDestroyHelper(s *terraform.State, client *datadog.Client) er
 			if strings.Contains(err.Error(), "404 Not Found") {
 				continue
 			}
-			return fmt.Errorf("Received an error retrieving downtime %s", err)
+			return fmt.Errorf("received an error retrieving downtime %s", err)
 		}
 
 		// Datadog only cancels downtime on DELETE
 		if !dt.GetActive() {
 			continue
 		}
-		return fmt.Errorf("Downtime still exists")
+		return fmt.Errorf("downtime still exists")
 	}
 	return nil
 }
@@ -799,7 +801,7 @@ func datadogDowntimeExistsHelper(s *terraform.State, client *datadog.Client) err
 
 		id, _ := strconv.Atoi(r.Primary.ID)
 		if _, err := client.GetDowntime(id); err != nil {
-			return fmt.Errorf("Received an error retrieving downtime %s", err)
+			return fmt.Errorf("received an error retrieving downtime %s", err)
 		}
 	}
 	return nil

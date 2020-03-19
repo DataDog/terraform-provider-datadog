@@ -140,7 +140,7 @@ func TestAccLogsCustomPipeline_importBasic(t *testing.T) {
 			{
 				Config: pipelineConfigForImport,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPipelineExists(accProvider, "datadog_logs_custom_pipeline.test_import"),
+					testAccCheckPipelineExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.test_import", "name", "imported pipeline"),
 				),
