@@ -9,13 +9,16 @@ import (
 	cleanhttp "github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/meta"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"github.com/terraform-providers/terraform-provider-datadog/version"
 	"github.com/zorkian/go-datadog-api"
 )
 
+var datadogProvider *schema.Provider
+
 func Provider() terraform.ResourceProvider {
-	return &schema.Provider{
+	datadogProvider = &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"api_key": {
 				Type:        schema.TypeString,
@@ -62,6 +65,8 @@ func Provider() terraform.ResourceProvider {
 
 		ConfigureFunc: providerConfigure,
 	}
+
+	return datadogProvider
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
@@ -73,7 +78,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", c.Transport)
 	client.HttpClient = c
-	client.ExtraHeader["User-Agent"] = fmt.Sprintf("Datadog/%s/terraform (%s)", version.ProviderVersion, runtime.Version())
+	client.ExtraHeader["User-Agent"] = fmt.Sprintf("Datadog/%s/terraform (%s)/terraform (%s)/terraform-cli (%s)", version.ProviderVersion, runtime.Version(), meta.SDKVersionString(), datadogProvider.TerraformVersion)
 
 	log.Println("[INFO] Datadog client successfully initialized, now validating...")
 	ok, err := client.Validate()
