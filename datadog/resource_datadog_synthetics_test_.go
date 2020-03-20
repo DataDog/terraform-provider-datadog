@@ -10,7 +10,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
-	datadog "github.com/zorkian/go-datadog-api"
+	"github.com/zorkian/go-datadog-api"
 )
 
 var syntheticsTypes = []string{"api", "browser"}
@@ -203,13 +203,14 @@ func syntheticsTestOptions() *schema.Schema {
 }
 
 func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
-	syntheticsTest := newSyntheticsTestFromLocalState(d)
+	syntheticsTest := buildSyntheticsTestStruct(d)
 	createdSyntheticsTest, err := client.CreateSyntheticsTest(syntheticsTest)
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
-		return fmt.Errorf("error creating synthetics test: %s", err.Error())
+		return translateClientError(err, "error creating synthetics test")
 	}
 
 	// If the Create callback returns with or without an error without an ID set using SetId,
@@ -221,7 +222,8 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	syntheticsTest, err := client.GetSyntheticsTest(d.Id())
 	if err != nil {
@@ -230,7 +232,7 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 			d.SetId("")
 			return nil
 		}
-		return err
+		return translateClientError(err, "error getting synthetics test")
 	}
 
 	updateSyntheticsTestLocalState(d, syntheticsTest)
@@ -239,12 +241,13 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 }
 
 func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
-	syntheticsTest := newSyntheticsTestFromLocalState(d)
+	syntheticsTest := buildSyntheticsTestStruct(d)
 	if _, err := client.UpdateSyntheticsTest(d.Id(), syntheticsTest); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
-		return err
+		translateClientError(err, "error updating synthetics test")
 	}
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
@@ -252,11 +255,12 @@ func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	if err := client.DeleteSyntheticsTests([]string{d.Id()}); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
-		return err
+		return translateClientError(err, "error deleting synthetics test")
 	}
 
 	// The resource is assumed to be destroyed, and all state is removed.
@@ -272,7 +276,7 @@ func isTargetOfTypeInt(assertionType string) bool {
 	return false
 }
 
-func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.SyntheticsTest {
+func buildSyntheticsTestStruct(d *schema.ResourceData) *datadog.SyntheticsTest {
 	request := datadog.SyntheticsRequest{}
 	if attr, ok := d.GetOk("request.method"); ok {
 		request.SetMethod(attr.(string))
@@ -366,7 +370,7 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 		options.SetAcceptSelfSigned(acceptSelfSigned)
 	}
 	if attr, ok := d.GetOk("device_ids"); ok {
-		deviceIds := []string{}
+		var deviceIds []string
 		for _, s := range attr.([]interface{}) {
 			deviceIds = append(deviceIds, s.(string))
 		}
@@ -383,14 +387,14 @@ func newSyntheticsTestFromLocalState(d *schema.ResourceData) *datadog.Synthetics
 	}
 
 	if attr, ok := d.GetOk("locations"); ok {
-		locations := []string{}
+		var locations []string
 		for _, s := range attr.([]interface{}) {
 			locations = append(locations, s.(string))
 		}
 		syntheticsTest.Locations = locations
 	}
 
-	tags := []string{}
+	var tags []string
 	if attr, ok := d.GetOk("tags"); ok {
 		for _, s := range attr.([]interface{}) {
 			tags = append(tags, s.(string))
@@ -440,7 +444,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("request_headers", actualRequest.Headers)
 
 	actualAssertions := syntheticsTest.GetConfig().Assertions
-	localAssertions := []map[string]string{}
+	var localAssertions []map[string]string
 	for _, assertion := range actualAssertions {
 		localAssertion := make(map[string]string)
 		if assertion.HasOperator() {

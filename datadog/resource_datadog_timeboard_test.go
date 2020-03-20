@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"github.com/zorkian/go-datadog-api"
 )
 
 const config1 = `
@@ -357,7 +356,8 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 
 func checkExists(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 		for _, r := range s.RootModule().Resources {
 			i, _ := strconv.Atoi(r.Primary.ID)
 			if _, err := client.GetDashboard(i); err != nil {
@@ -370,7 +370,8 @@ func checkExists(accProvider *schema.Provider) func(*terraform.State) error {
 
 func checkDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 		for _, r := range s.RootModule().Resources {
 			i, _ := strconv.Atoi(r.Primary.ID)
 			if _, err := client.GetDashboard(i); err != nil {

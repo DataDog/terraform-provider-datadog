@@ -6,7 +6,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://ip-ranges.datadoghq.com
     method: GET
   response:
@@ -896,7 +896,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:03:09 GMT
+      - Mon, 16 Mar 2020 13:06:39 GMT
       Last-Modified:
       - Wed, 13 Nov 2019 16:02:25 GMT
       Server:
@@ -904,11 +904,11 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 366c47f12008eb7cc950e42132b7422f.cloudfront.net (CloudFront)
+      - 1.1 4ba0e9deb9465045a3261b8712935964.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - AxhHr91YD_Wk39v_fhkcaQL1RnnaUVirKZgxxTscjy_ecIYsX-aZqg==
+      - QCBZTZhjgjW_j1-W3Z806f3lvOozeahgiwgOnLJwQFtXCQ29Vi743w==
       X-Amz-Cf-Pop:
-      - MAD50-C1
+      - FRA53
       X-Cache:
       - Miss from cloudfront
     status: 200 OK
@@ -919,7 +919,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://ip-ranges.datadoghq.com
     method: GET
   response:
@@ -1809,7 +1809,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:03:10 GMT
+      - Mon, 16 Mar 2020 13:06:39 GMT
       Last-Modified:
       - Wed, 13 Nov 2019 16:02:25 GMT
       Server:
@@ -1817,11 +1817,11 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 366c47f12008eb7cc950e42132b7422f.cloudfront.net (CloudFront)
+      - 1.1 4ba0e9deb9465045a3261b8712935964.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - 1tFhiMhhJewQ1D0v7Y4QHD8tjU9c6QAj3W0nwjRDAKORGMt29udIMw==
+      - fgQILALEBi6ihw8b2gcl8_pBQz-ZB4DbYe5g6PFk55OJfoiyxAu-bA==
       X-Amz-Cf-Pop:
-      - MAD50-C1
+      - FRA53
       X-Cache:
       - Miss from cloudfront
     status: 200 OK
@@ -1832,7 +1832,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://ip-ranges.datadoghq.com
     method: GET
   response:
@@ -2722,7 +2722,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:03:10 GMT
+      - Mon, 16 Mar 2020 13:06:39 GMT
       Last-Modified:
       - Wed, 13 Nov 2019 16:02:25 GMT
       Server:
@@ -2730,11 +2730,11 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 366c47f12008eb7cc950e42132b7422f.cloudfront.net (CloudFront)
+      - 1.1 4ba0e9deb9465045a3261b8712935964.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - Jb72GEzuOpFeIVJgRZ40yDugAuFhnQLXnV8l4U3mgfsbpY_gGEJPQA==
+      - 7lYx9adeiE6jQFQVdHr6b5vYDm5GZr94W7QJzNuW-b3KndllfWGphg==
       X-Amz-Cf-Pop:
-      - MAD50-C1
+      - FRA53
       X-Cache:
       - Hit from cloudfront
     status: 200 OK
@@ -2745,7 +2745,7 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - Datadog/dev/terraform (go1.14)
+      - Datadog/dev/terraform (go1.13)
     url: https://ip-ranges.datadoghq.com
     method: GET
   response:
@@ -3635,7 +3635,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 28 Feb 2020 17:03:10 GMT
+      - Mon, 16 Mar 2020 13:06:39 GMT
       Last-Modified:
       - Wed, 13 Nov 2019 16:02:25 GMT
       Server:
@@ -3643,11 +3643,11 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 366c47f12008eb7cc950e42132b7422f.cloudfront.net (CloudFront)
+      - 1.1 4ba0e9deb9465045a3261b8712935964.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - xVeQxBlJ9AqAhPlOGvvESDqYKEwTH_ACxdzxMhkw23wpOLhwaPaalQ==
+      - EkPmn1ya1Fe33hvopmAb4tx85OsUU7i--oC4ToUyJ6lWWkoFQDg-QQ==
       X-Amz-Cf-Pop:
-      - MAD50-C1
+      - FRA53
       X-Cache:
       - Hit from cloudfront
     status: 200 OK

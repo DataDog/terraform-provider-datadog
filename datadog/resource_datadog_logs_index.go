@@ -2,9 +2,10 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/zorkian/go-datadog-api"
-	"strings"
 )
 
 var indexSchema = map[string]*schema.Schema{
@@ -57,13 +58,22 @@ func resourceDatadogLogsIndex() *schema.Resource {
 }
 
 func resourceDatadogLogsIndexCreate(d *schema.ResourceData, meta interface{}) error {
+	// This is a bit of a hack to ensure we fail fast if an index is about to be created, and
+	// to ensure we provide a useful error message (and don't panic)
+	// Indexes can only be updated, and the id is only set in the state if it was already imported
+	if _, ok := d.GetOk("id"); !ok {
+		return fmt.Errorf("logs index creation is not allowed, please import the index first. index_name: %s", d.Get("name").(string))
+	}
 	return resourceDatadogLogsIndexUpdate(d, meta)
 }
 
 func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) error {
-	ddIndex, err := meta.(*datadog.Client).GetLogsIndex(d.Id())
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
+	ddIndex, err := client.GetLogsIndex(d.Id())
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting logs index")
 	}
 	if err = d.Set("name", ddIndex.GetName()); err != nil {
 		return err
@@ -80,15 +90,17 @@ func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) erro
 func resourceDatadogLogsIndexUpdate(d *schema.ResourceData, meta interface{}) error {
 	ddIndex, err := buildDatadogIndex(d)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
 	tfName := d.Get("name").(string)
 	if _, err := client.UpdateLogsIndex(tfName, ddIndex); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return fmt.Errorf("logs index creation is not allowed, index_name: %s", tfName)
 		}
-		return fmt.Errorf("error updating logs index: (%s)", err.Error())
+		return translateClientError(err, "error updating logs index")
 	}
 	d.SetId(tfName)
 	return resourceDatadogLogsIndexRead(d, meta)
@@ -99,12 +111,14 @@ func resourceDatadogLogsIndexDelete(d *schema.ResourceData, meta interface{}) er
 }
 
 func resourceDatadogLogsIndexExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
 	if _, err := client.GetLogsIndex(d.Id()); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking logs index exists")
 	}
 	return true, nil
 }

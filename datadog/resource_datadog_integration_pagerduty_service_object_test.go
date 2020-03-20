@@ -22,7 +22,7 @@ func TestAccDatadogIntegrationPagerdutyServiceObject_Basic(t *testing.T) {
 			{
 				Config: testAccCheckDatadogIntegrationPagerdutyServiceObjectConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogIntegrationPagerdutyExists(accProvider, "datadog_integration_pagerduty.foo"),
+					testAccCheckDatadogIntegrationPagerdutyExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "subdomain", "testdomain"),
 					resource.TestCheckResourceAttr(

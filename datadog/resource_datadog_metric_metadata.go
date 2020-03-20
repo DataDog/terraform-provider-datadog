@@ -1,12 +1,10 @@
 package datadog
 
 import (
-	"fmt"
 	"strings"
 
-	"github.com/zorkian/go-datadog-api"
-
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/zorkian/go-datadog-api"
 )
 
 func resourceDatadogMetricMetadata() *schema.Resource {
@@ -67,44 +65,45 @@ func buildMetricMetadataStruct(d *schema.ResourceData) (string, *datadog.MetricM
 func resourceDatadogMetricMetadataExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	id, _ := buildMetricMetadataStruct(d)
 
 	if _, err := client.ViewMetricMetadata(id); err != nil {
-		fmt.Println("view:", err)
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking metric metadata exists")
 	}
 
 	return true, nil
 }
 
 func resourceDatadogMetricMetadataCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	id, m := buildMetricMetadataStruct(d)
 	_, err := client.EditMetricMetadata(id, m)
 	if err != nil {
-		fmt.Println("this si the err:", err)
-		return fmt.Errorf("error updating MetricMetadata: %s", err.Error())
+		return translateClientError(err, "error creating metric metadata")
 	}
 
 	d.SetId(id)
 
-	return nil
+	return resourceDatadogMetricMetadataRead(d, meta)
 }
 
 func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	id, _ := buildMetricMetadataStruct(d)
 
 	m, err := client.ViewMetricMetadata(id)
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting metric metadata")
 	}
 
 	d.Set("type", m.GetType())
@@ -118,7 +117,8 @@ func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{})
 }
 
 func resourceDatadogMetricMetadataUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	m := &datadog.MetricMetadata{}
 	id := d.Get("metric").(string)
@@ -143,7 +143,7 @@ func resourceDatadogMetricMetadataUpdate(d *schema.ResourceData, meta interface{
 	}
 
 	if _, err := client.EditMetricMetadata(id, m); err != nil {
-		return fmt.Errorf("error updating MetricMetadata: %s", err.Error())
+		return translateClientError(err, "error updating metric metadata")
 	}
 
 	return resourceDatadogMetricMetadataRead(d, meta)

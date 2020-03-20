@@ -23,7 +23,7 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
 					checkPostEvent(t, accProvider),
-					checkMetricMetadataExists(accProvider, "datadog_metric_metadata.foo"),
+					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
 					resource.TestCheckResourceAttr(
@@ -55,7 +55,7 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
 					checkPostEvent(t, accProvider),
-					checkMetricMetadataExists(accProvider, "datadog_metric_metadata.foo"),
+					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
 					resource.TestCheckResourceAttr(
@@ -73,7 +73,7 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMetricMetadataConfigUpdated,
 				Check: resource.ComposeTestCheckFunc(
-					checkMetricMetadataExists(accProvider, "datadog_metric_metadata.foo"),
+					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
 					resource.TestCheckResourceAttr(
@@ -92,16 +92,17 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 	})
 }
 
-func checkMetricMetadataExists(accProvider *schema.Provider, name string) resource.TestCheckFunc {
+func checkMetricMetadataExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 		for _, r := range s.RootModule().Resources {
 			metric, ok := r.Primary.Attributes["metric"]
 			if !ok {
 				continue
 			}
 			if _, err := client.ViewMetricMetadata(metric); err != nil {
-				return fmt.Errorf("Received an error retrieving metric_metadata %s", err)
+				return fmt.Errorf("received an error retrieving metric_metadata %s", err)
 			}
 		}
 		return nil
@@ -110,7 +111,8 @@ func checkMetricMetadataExists(accProvider *schema.Provider, name string) resour
 
 func checkPostEvent(t *testing.T, accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 		clock := testClock(t)
 		datapointUnixTime := float64(clock.Now().Unix())
 		datapointValue := float64(1)
