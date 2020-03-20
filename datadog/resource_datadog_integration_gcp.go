@@ -3,8 +3,8 @@ package datadog
 import (
 	"fmt"
 
+	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/zorkian/go-datadog-api"
 )
 
 func resourceDatadogIntegrationGcp() *schema.Resource {
@@ -52,15 +52,16 @@ func resourceDatadogIntegrationGcpExists(d *schema.ResourceData, meta interface{
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	integrations, err := client.ListIntegrationGCP()
+	integrations, _, err := client.GCPIntegrationApi.ListGCPIntegration(auth).Execute()
 	if err != nil {
 		return false, translateClientError(err, "error checking GCP integration exists")
 	}
 	projectID := d.Id()
 	for _, integration := range integrations {
-		if integration.GetProjectID() == projectID {
+		if integration.GetProjectId() == projectID {
 			return true, nil
 		}
 	}
@@ -77,25 +78,26 @@ const (
 
 func resourceDatadogIntegrationGcpCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
 	projectID := d.Get("project_id").(string)
 
-	if err := client.CreateIntegrationGCP(
-		&datadog.IntegrationGCPCreateRequest{
-			Type:                    datadog.String(defaultType),
-			ProjectID:               datadog.String(projectID),
-			PrivateKeyID:            datadog.String(d.Get("private_key_id").(string)),
-			PrivateKey:              datadog.String(d.Get("private_key").(string)),
-			ClientEmail:             datadog.String(d.Get("client_email").(string)),
-			ClientID:                datadog.String(d.Get("client_id").(string)),
-			AuthURI:                 datadog.String(defaultAuthURI),
-			TokenURI:                datadog.String(defaultTokenURI),
-			AuthProviderX509CertURL: datadog.String(defaultAuthProviderX509CertURL),
-			ClientX509CertURL:       datadog.String(defaultClientX509CertURLPrefix + d.Get("client_email").(string)),
-			HostFilters:             datadog.String(d.Get("host_filters").(string)),
+	if _, _, err := client.GCPIntegrationApi.CreateGCPIntegration(auth).Body(
+		datadog.GCPAccount{
+			Type:                    datadog.PtrString(defaultType),
+			ProjectId:               datadog.PtrString(projectID),
+			PrivateKeyId:            datadog.PtrString(d.Get("private_key_id").(string)),
+			PrivateKey:              datadog.PtrString(d.Get("private_key").(string)),
+			ClientEmail:             datadog.PtrString(d.Get("client_email").(string)),
+			ClientId:                datadog.PtrString(d.Get("client_id").(string)),
+			AuthUri:                 datadog.PtrString(defaultAuthURI),
+			TokenUri:                datadog.PtrString(defaultTokenURI),
+			AuthProviderX509CertUrl: datadog.PtrString(defaultAuthProviderX509CertURL),
+			ClientX509CertUrl:       datadog.PtrString(defaultClientX509CertURLPrefix + d.Get("client_email").(string)),
+			HostFilters:             datadog.PtrString(d.Get("host_filters").(string)),
 		},
-	); err != nil {
+	).Execute(); err != nil {
 		return translateClientError(err, "error creating GCP integration")
 	}
 
@@ -106,17 +108,18 @@ func resourceDatadogIntegrationGcpCreate(d *schema.ResourceData, meta interface{
 
 func resourceDatadogIntegrationGcpRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
 	projectID := d.Id()
 
-	integrations, err := client.ListIntegrationGCP()
+	integrations, _, err := client.GCPIntegrationApi.ListGCPIntegration(auth).Execute()
 	if err != nil {
 		return translateClientError(err, "error getting GCP integration")
 	}
 	for _, integration := range integrations {
-		if integration.GetProjectID() == projectID {
-			d.Set("project_id", integration.GetProjectID())
+		if integration.GetProjectId() == projectID {
+			d.Set("project_id", integration.GetProjectId())
 			d.Set("client_email", integration.GetClientEmail())
 			d.Set("host_filters", integration.GetHostFilters())
 			return nil
@@ -127,15 +130,16 @@ func resourceDatadogIntegrationGcpRead(d *schema.ResourceData, meta interface{})
 
 func resourceDatadogIntegrationGcpUpdate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	if err := client.UpdateIntegrationGCP(
-		&datadog.IntegrationGCPUpdateRequest{
-			ProjectID:   datadog.String(d.Id()),
-			ClientEmail: datadog.String(d.Get("client_email").(string)),
-			HostFilters: datadog.String(d.Get("host_filters").(string)),
+	if _, _, err := client.GCPIntegrationApi.UpdateGCPIntegration(auth).Body(
+		datadog.GCPAccount{
+			ProjectId:   datadog.PtrString(d.Id()),
+			ClientEmail: datadog.PtrString(d.Get("client_email").(string)),
+			HostFilters: datadog.PtrString(d.Get("host_filters").(string)),
 		},
-	); err != nil {
+	).Execute(); err != nil {
 		return translateClientError(err, "error updating GCP integration")
 	}
 
@@ -144,14 +148,15 @@ func resourceDatadogIntegrationGcpUpdate(d *schema.ResourceData, meta interface{
 
 func resourceDatadogIntegrationGcpDelete(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.Auth
 
-	if err := client.DeleteIntegrationGCP(
-		&datadog.IntegrationGCPDeleteRequest{
-			ProjectID:   datadog.String(d.Id()),
-			ClientEmail: datadog.String(d.Get("client_email").(string)),
+	if _, _, err := client.GCPIntegrationApi.DeleteGCPIntegration(auth).Body(
+		datadog.GCPAccount{
+			ProjectId:   datadog.PtrString(d.Id()),
+			ClientEmail: datadog.PtrString(d.Get("client_email").(string)),
 		},
-	); err != nil {
+	).Execute(); err != nil {
 		return translateClientError(err, "error deleting GCP integration")
 	}
 
