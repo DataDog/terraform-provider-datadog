@@ -2,18 +2,21 @@
 version: 1
 interactions:
 - request:
-    body: '{"handle":"tftestuser@example.com","name":"Test User"}'
+    body: |
+      {"access_role":"st","disabled":false,"email":"tftestuser@example.com","handle":"tftestuser@example.com","name":"Test User"}
     form: {}
     headers:
+      Accept:
+      - application/json
       Content-Type:
       - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
+      - DataDog/0.1.0/go-experimental
     url: https://api.datadoghq.com/api/v1/user
     method: POST
   response:
     body: '{"user":{"disabled":true,"handle":"tftestuser@example.com","name":"Test
-      User","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":false,"email":"tftestuser@example.com","icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro"}}'
+      User","title":null,"is_admin":false,"role":null,"access_role":"st","verified":false,"email":"tftestuser@example.com","icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro"}}'
     headers:
       Cache-Control:
       - no-cache
@@ -24,13 +27,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:34 GMT
+      - Fri, 20 Mar 2020 14:21:57 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:34 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:21:57 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -39,23 +42,26 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - EbXB0e7cF4uDRViRvI+w6qPg1YzykoJqZiw5SbqL/81VRQW4a286h09eTGyIVvXJ
+      - fGPsEOteKPqWrypJlOWIRpMZD2l0VjpTiFY5o5e56+jFb+ShdPzcenDH6s8Ah62s
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"email":"tftestuser@example.com","name":"Test User","access_role":"st","disabled":false,"is_admin":false}'
+    body: |
+      {"access_role":"st","disabled":false,"email":"tftestuser@example.com","handle":"tftestuser@example.com","name":"Test User"}
     form: {}
     headers:
+      Accept:
+      - application/json
       Content-Type:
       - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
     method: PUT
   response:
     body: '{"user":{"disabled":false,"handle":"tftestuser@example.com","name":"Test
@@ -70,13 +76,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:34 GMT
+      - Fri, 20 Mar 2020 14:21:58 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:34 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:21:57 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -85,9 +91,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 1bzfAqb/6TIngEeU7r7YcGGp2+NaI+ne9J3bzgQrdB0qTrgVrMtd4iKXr1zCNOHr
+      - OxP+mFpjAbASiVhNf+t4MttAs95ZlMiGosIRnYJJGFoApNgv2oxtdzpnmNlMOki6
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -97,9 +103,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
     method: GET
   response:
     body: '{"user":{"handle":"tftestuser@example.com","access_role":"st","disabled":false,"is_admin":false,"icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro","verified":false,"name":"Test
@@ -142,13 +150,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:34 GMT
+      - Fri, 20 Mar 2020 14:21:58 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:34 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:21:58 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -157,9 +165,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 7TxqGOOndreg52igtXLKdvEB8M2Uby8upoxCr+mzZBPLwPuOVdJ4ujutF+9TQL1R
+      - qQjtInIx1/QKXFlq6Yoz4D/caW/S2oJqgJl91CEEpXrlxRmYHcLgIFCRCvW61KAy
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -169,9 +177,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
     method: GET
   response:
     body: '{"user":{"handle":"tftestuser@example.com","access_role":"st","disabled":false,"is_admin":false,"icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro","verified":false,"name":"Test
@@ -214,13 +224,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:34 GMT
+      - Fri, 20 Mar 2020 14:21:58 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:34 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:21:58 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -229,9 +239,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - aHo5LNOt81r33IYjVJvAW38EarOXxgJiaRes9P/xhrf7FT81LvjEnVLCvw9iPn7T
+      - FB5oGxuL9E/cplxahdQnU5Nw5E7KX0Smq18it9qYKIt8BXsSloE0IpDRA39tfQwn
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -241,9 +251,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
     method: GET
   response:
     body: '{"user":{"handle":"tftestuser@example.com","access_role":"st","disabled":false,"is_admin":false,"icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro","verified":false,"name":"Test
@@ -286,13 +298,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:35 GMT
+      - Fri, 20 Mar 2020 14:21:58 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:35 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:21:58 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -301,9 +313,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - HtltRxB6FWULKbr8JD/35HKWhI+dqAFQg/rNpMbjeMOPUq5j5iWk+nIs8OwDOqUR
+      - KHJbOoqp3I4BOBzIFnc/Ois3eg3Rjmudy0YalRpnXQEDXDoppykpDMDaJPIufi9t
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -313,9 +325,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
     method: GET
   response:
     body: '{"user":{"handle":"tftestuser@example.com","access_role":"st","disabled":false,"is_admin":false,"icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro","verified":false,"name":"Test
@@ -358,13 +372,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:35 GMT
+      - Fri, 20 Mar 2020 14:21:58 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:35 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:21:58 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -373,9 +387,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - kqXz3OvR7iajEJOdRFWpzJtcDHRumYwGfjdF12Vd65Xt1uV9T6lEO/K0lkxmcRvl
+      - 69kiClanS8NcBSsdd51HHifvhQSGoRbJJjhU9l40yqxQHVNrndFN9zVtFJW1OcSf
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -385,9 +399,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
     method: GET
   response:
     body: '{"user":{"handle":"tftestuser@example.com","access_role":"st","disabled":false,"is_admin":false,"icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro","verified":false,"name":"Test
@@ -430,13 +446,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:35 GMT
+      - Fri, 20 Mar 2020 14:21:58 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:35 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:21:58 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -445,9 +461,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - e8t0cvW5uVKXk1zUsTcAcDpqv28dgy+lCs/R2sCfbKW6stomFiq2a4ijzxRdPBn5
+      - 0pmBjL5vG2A5IkxC4OBtwgn929khTZGgUquRW20JC77zchR4jTrHgra/pB22jP66
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -457,9 +473,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
     method: GET
   response:
     body: '{"user":{"handle":"tftestuser@example.com","access_role":"st","disabled":false,"is_admin":false,"icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro","verified":false,"name":"Test
@@ -502,13 +520,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:35 GMT
+      - Fri, 20 Mar 2020 14:21:58 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:35 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:21:58 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -517,23 +535,26 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - ErnxdXQi+pjNvJU00qnaaPgTN904IR+BI4NeCvSijs0uGcTaVMOpPOuObFW+gkC6
+      - DAk/CQntZmry+u4cYsuVOELuKFo1I3NzKRNwPlY9WvlbH+rffk5VylB8tKDaSRWP
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"email":"tftestuser@example.com","name":"Updated User","access_role":"adm","disabled":true,"is_admin":true}'
+    body: |
+      {"access_role":"adm","disabled":true,"email":"tftestuser@example.com","handle":"tftestuser@example.com","name":"Updated User"}
     form: {}
     headers:
+      Accept:
+      - application/json
       Content-Type:
       - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
     method: PUT
   response:
     body: '{"user":{"disabled":true,"handle":"tftestuser@example.com","name":"Updated
@@ -548,13 +569,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:36 GMT
+      - Fri, 20 Mar 2020 14:21:59 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:36 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:21:59 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -563,9 +584,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - pxuY3ZnSwE+rCP/MLubWk3EuAMlxxciIsQ2EBSRxZafCu9H4+UEVULDCm144bb3W
+      - +24qoGfe5Pp4qbS1m8KO9qioq2P4fxuj80XQhtr/9vInDLECmYZT0VSsbqISZgqC
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -575,9 +596,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
     method: GET
   response:
     body: '{"user":{"handle":"tftestuser@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro","verified":false,"name":"Updated
@@ -620,13 +643,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:36 GMT
+      - Fri, 20 Mar 2020 14:21:59 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:36 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:21:59 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -635,9 +658,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - HIunaScoW4AWw8tnSbk8zc5V6c9XLV6++/KbgzaC4HIb212+evjUYL1yRLeLtS2T
+      - 562ySu37xnxKxbTr0NFd7oH3+L3JO3D7GcG/Lb1Dr0vgKuyocJBk1SrO7ogLRZuZ
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -647,9 +670,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
     method: GET
   response:
     body: '{"user":{"handle":"tftestuser@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro","verified":false,"name":"Updated
@@ -692,85 +717,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:36 GMT
+      - Fri, 20 Mar 2020 14:21:59 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:36 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - l+fZq7vW9gg1qInAzXkJZdt8f8e/094RDnN9pOEIlkXbx1jb6kpjgt1+syYCZyFC
-      X-Dd-Version:
-      - "35.2282030"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
-    method: GET
-  response:
-    body: '{"user":{"handle":"tftestuser@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro","verified":false,"name":"Updated
-      User","roles":[{"uuid":"94172442-be03-11e9-a77a-3b7612558ac1","created_at":"2019-08-13T19:50:19.022791","name":"Datadog
-      Admin Role","last_modified":"2019-08-13T19:50:19.022791","id":904115,"permissions":[{"display_name":"Monitors","description":"The
-      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Dashboards
-      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
-      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Monitors","description":"The
-      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards","description":"The
-      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors
-      Manage Downtimes","description":"The ability to set downtimes for your organization.
-      A user with this permission can suppress alerts from any monitor using a downtime,
-      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Log
-      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
-      Public Config API","description":"The ability to access and edit logs configurations
-      via the API.","restricted":false,"created_at":"2019-05-02T08:13:01.731092","name":"logs_public_config_api","uuid":"1a92ede2-6cb2-11e9-99c6-2b3a4a0cdf0a"},{"display_name":"Log
-      Write Archives","description":"The ability to add and edit log archive locations.","restricted":false,"created_at":"2018-10-31T13:40:29.040786","name":"logs_write_archives","uuid":"87b00304-dd12-11e8-9e59-cbeb5f71f72f"},{"display_name":"Logs
-      Write Pipelines","description":"The ability to add and change log pipeline configurations,
-      including the ability to grant the Logs Write Processors permission to other
-      roles, for some or all pipelines. This permission also grants global Log Processor
-      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
-      Live Tail Access","description":"The ability to view the live tail feed for
-      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
-      Modify Indexes","description":"The ability to read and modify all indexes in
-      your account. This includes the ability to grant the Logs Read Index Data and
-      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
-      This permission also grants global Log Index Read and Log Exclusion Filter Write
-      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Privileged
-      Access","description":"This permission gives you the ability to view and edit
-      everything in your Datadog organization that does not have an explicitly defined
-      permission. This includes billing and usage, user, key, and organization management.
-      This permission is inclusive of all Standard access permissions.","restricted":false,"created_at":"2018-10-19T15:35:23.734317","name":"admin","uuid":"984a2bd4-d3b4-11e8-a1ff-a7f660d43029"}]}],"title":null,"role":null,"email":"tftestuser@example.com"}}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 16 Mar 2020 13:06:36 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:36 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:21:59 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -781,7 +734,7 @@ interactions:
       X-Dd-Debug:
       - kg+/Cls6zaJcT2blJLlU62BwgGePGdpqSwWrJ0xEIvzmSMWHXxGNsiyEzBPJ1a96
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -791,9 +744,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
     method: GET
   response:
     body: '{"user":{"handle":"tftestuser@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro","verified":false,"name":"Updated
@@ -836,13 +791,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:37 GMT
+      - Fri, 20 Mar 2020 14:21:59 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:37 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:21:59 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -851,9 +806,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - em3KoJu1XYdqq1w4EpLi4L54svjYBxZahEDJ8c5gcdIOxnNafHMdF5LLysPLuNcH
+      - kg+/Cls6zaJcT2blJLlU62BwgGePGdpqSwWrJ0xEIvzmSMWHXxGNsiyEzBPJ1a96
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -863,9 +818,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
     method: GET
   response:
     body: '{"user":{"handle":"tftestuser@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro","verified":false,"name":"Updated
@@ -908,13 +865,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:37 GMT
+      - Fri, 20 Mar 2020 14:22:00 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:37 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:22:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -923,9 +880,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - e8t0cvW5uVKXk1zUsTcAcDpqv28dgy+lCs/R2sCfbKW6stomFiq2a4ijzxRdPBn5
+      - F2g1vP9i37Cj4rH5vEufbSNzCmriMTDVzKKqVk/JOUesbIz8psR3R2945wO0PbTf
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -935,9 +892,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
     method: GET
   response:
     body: '{"user":{"handle":"tftestuser@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro","verified":false,"name":"Updated
@@ -980,13 +939,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:37 GMT
+      - Fri, 20 Mar 2020 14:22:00 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:37 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:22:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -995,9 +954,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - gH++OYwf8a2QZXnzDsHHnXqPhHbI48oqNvFjE/0p0ObpMBY4290QCI5SB0tU0MAF
+      - A5a5htKhTUF1FdBQZRUZl4RVawKwk2RUtaZz3EDBmdXc0X6i0O7TBEBWn4bIBQ01
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1007,9 +966,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
     method: GET
   response:
     body: '{"user":{"handle":"tftestuser@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro","verified":false,"name":"Updated
@@ -1052,13 +1013,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:37 GMT
+      - Fri, 20 Mar 2020 14:22:00 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:37 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:22:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1067,9 +1028,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - vLqqOLcWkbQm3aIBHfcEmIwzrJtjtqNdArlWt57BFwl8nfWymjIeK67csuZ1woEb
+      - YKF8+1vTI0wiWlB3VWhiMVnZ1RLtV3h2yAW6/TGe9qIMWdYXxsNpy3J4QxfrJoDD
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1079,9 +1040,11 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
       User-Agent:
-      - Datadog/dev/terraform (go1.13)
-    url: https://api.datadoghq.com/api/v1/user/tftestuser@example.com
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
     method: GET
   response:
     body: '{"user":{"handle":"tftestuser@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro","verified":false,"name":"Updated
@@ -1124,13 +1087,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 16 Mar 2020 13:06:37 GMT
+      - Fri, 20 Mar 2020 14:22:00 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 23-Mar-2020 13:06:37 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:22:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1139,9 +1102,83 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - BQaWiIhDCyK3JbvyPZudxtMuoedbvOKE6tb5GJMfo6GT4EOQ8qx9lqgA4UCxp88q
+      - 0pmBjL5vG2A5IkxC4OBtwgn929khTZGgUquRW20JC77zchR4jTrHgra/pB22jP66
       X-Dd-Version:
-      - "35.2282030"
+      - "35.2300871"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - DataDog/0.1.0/go-experimental
+    url: https://api.datadoghq.com/api/v1/user/tftestuser%40example.com
+    method: GET
+  response:
+    body: '{"user":{"handle":"tftestuser@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/bda0bc2045f65f937cfc3ec984e87ed7?s=48&d=retro","verified":false,"name":"Updated
+      User","roles":[{"uuid":"94172442-be03-11e9-a77a-3b7612558ac1","created_at":"2019-08-13T19:50:19.022791","name":"Datadog
+      Admin Role","last_modified":"2019-08-13T19:50:19.022791","id":904115,"permissions":[{"display_name":"Monitors","description":"The
+      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Dashboards
+      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
+      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Monitors","description":"The
+      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards","description":"The
+      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors
+      Manage Downtimes","description":"The ability to set downtimes for your organization.
+      A user with this permission can suppress alerts from any monitor using a downtime,
+      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Log
+      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
+      Public Config API","description":"The ability to access and edit logs configurations
+      via the API.","restricted":false,"created_at":"2019-05-02T08:13:01.731092","name":"logs_public_config_api","uuid":"1a92ede2-6cb2-11e9-99c6-2b3a4a0cdf0a"},{"display_name":"Log
+      Write Archives","description":"The ability to add and edit log archive locations.","restricted":false,"created_at":"2018-10-31T13:40:29.040786","name":"logs_write_archives","uuid":"87b00304-dd12-11e8-9e59-cbeb5f71f72f"},{"display_name":"Logs
+      Write Pipelines","description":"The ability to add and change log pipeline configurations,
+      including the ability to grant the Logs Write Processors permission to other
+      roles, for some or all pipelines. This permission also grants global Log Processor
+      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
+      Live Tail Access","description":"The ability to view the live tail feed for
+      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
+      Modify Indexes","description":"The ability to read and modify all indexes in
+      your account. This includes the ability to grant the Logs Read Index Data and
+      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
+      This permission also grants global Log Index Read and Log Exclusion Filter Write
+      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Privileged
+      Access","description":"This permission gives you the ability to view and edit
+      everything in your Datadog organization that does not have an explicitly defined
+      permission. This includes billing and usage, user, key, and organization management.
+      This permission is inclusive of all Standard access permissions.","restricted":false,"created_at":"2018-10-19T15:35:23.734317","name":"admin","uuid":"984a2bd4-d3b4-11e8-a1ff-a7f660d43029"}]}],"title":null,"role":null,"email":"tftestuser@example.com"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 20 Mar 2020 14:22:00 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 27-Mar-2020 14:22:00 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - CPK+34LtKdL5YYX/NFOJUdMpxMoO80HISGpGpzDG5fENYSoZ2QNw1gEubOsJ9JNb
+      X-Dd-Version:
+      - "35.2300871"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
