@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -8,9 +9,11 @@ import (
 	"net/url"
 	"os"
 	"runtime"
+	"strings"
 	"testing"
 	"time"
 
+	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/dnaeon/go-vcr/cassette"
 	"github.com/dnaeon/go-vcr/recorder"
 	"github.com/hashicorp/go-cleanhttp"
@@ -124,8 +127,37 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 		communityClient.HttpClient = c
 		communityClient.ExtraHeader["User-Agent"] = fmt.Sprintf("Datadog/%s/terraform (%s)", version.ProviderVersion, runtime.Version())
 
+		// Initialize the official datadog client
+		auth := context.WithValue(
+			context.Background(),
+			datadog.ContextAPIKeys,
+			map[string]datadog.APIKey{
+				"apiKeyAuth": datadog.APIKey{
+					Key: d.Get("api_key").(string),
+				},
+				"appKeyAuth": datadog.APIKey{
+					Key: d.Get("app_key").(string),
+				},
+			},
+		)
+
+		//config.HTTPClient
+		config := datadog.NewConfiguration()
+		config.Debug = true
+		config.HTTPClient = c
+		if apiURL := d.Get("api_url").(string); apiURL != "" {
+			if strings.Contains(apiURL, "datadoghq.eu") {
+				auth = context.WithValue(auth, datadog.ContextServerVariables, map[string]string{
+					"site": "datadoghq.eu",
+				})
+			}
+		}
+		datadogClient := datadog.NewAPIClient(config)
+
 		return &ProviderConfiguration{
 			CommunityClient: communityClient,
+			DatadogClientV1: datadogClient,
+			Auth:            auth,
 		}, nil
 	}
 }
