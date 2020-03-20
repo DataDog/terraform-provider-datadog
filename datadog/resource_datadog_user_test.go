@@ -25,7 +25,7 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogUserConfigRequired,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogUserExists(accProvider, "datadog_user.foo"),
+					testAccCheckDatadogUserExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "email", "tftestuser@example.com"),
 					resource.TestCheckResourceAttr(
@@ -39,7 +39,7 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogUserConfigUpdated,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogUserExists(accProvider, "datadog_user.foo"),
+					testAccCheckDatadogUserExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "disabled", "true"),
 					// NOTE: it's not possible ATM to update email of another user
@@ -74,7 +74,7 @@ func testAccCheckDatadogUserDestroy(accProvider *schema.Provider) func(*terrafor
 	}
 }
 
-func testAccCheckDatadogUserExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
+func testAccCheckDatadogUserExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
 		client := providerConf.DatadogClientV1
