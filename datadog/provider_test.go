@@ -162,10 +162,10 @@ func testAccPreCheck(t *testing.T) {
 	if isReplaying() {
 		return
 	}
-	if v := os.Getenv("DATADOG_API_KEY"); v == "" {
-		t.Fatal("DATADOG_API_KEY must be set for acceptance tests")
+	if v := os.Getenv("DD_API_KEY"); v == "" {
+		t.Fatal("DD_API_KEY must be set for acceptance tests")
 	}
-	if v := os.Getenv("DATADOG_APP_KEY"); v == "" {
-		t.Fatal("DATADOG_APP_KEY must be set for acceptance tests")
+	if v := os.Getenv("DD_APP_KEY"); v == "" {
+		t.Fatal("DD_APP_KEY must be set for acceptance tests")
 	}
 }
