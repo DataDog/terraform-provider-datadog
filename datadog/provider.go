@@ -38,6 +38,8 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
+			"datadog_api_key":                              resourceDatadogAPIKey(),
+			"datadog_app_key":                              resourceDatadogAppKey(),
 			"datadog_dashboard":                            resourceDatadogDashboard(),
 			"datadog_dashboard_list":                       resourceDatadogDashboardList(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
