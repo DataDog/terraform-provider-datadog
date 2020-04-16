@@ -1,0 +1,629 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{"name":"foo"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key
+    method: POST
+  response:
+    body: '{"api_key":{"name":"foo","created":"2020-04-16 04:02:07","disabled_by":"","is_active":true,"created_by":"frog@datadoghq.com","disabled":"","key":"aec5892033f656759fcf471b7c3b769b"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "182"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:07 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Thu, 23-Apr-2020 04:02:07 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key/aec5892033f656759fcf471b7c3b769b
+    method: GET
+  response:
+    body: '{"api_key":{"name":"foo","created":"2020-04-16 04:02:07","disabled_by":"","is_active":true,"created_by":"frog@datadoghq.com","disabled":"","key":"aec5892033f656759fcf471b7c3b769b"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "182"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:07 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Thu, 23-Apr-2020 04:02:07 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key/aec5892033f656759fcf471b7c3b769b
+    method: GET
+  response:
+    body: '{"api_key":{"name":"foo","created":"2020-04-16 04:02:07","disabled_by":"","is_active":true,"created_by":"frog@datadoghq.com","disabled":"","key":"aec5892033f656759fcf471b7c3b769b"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "182"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:07 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Thu, 23-Apr-2020 04:02:07 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key/aec5892033f656759fcf471b7c3b769b
+    method: GET
+  response:
+    body: '{"api_key":{"name":"foo","created":"2020-04-16 04:02:07","disabled_by":"","is_active":true,"created_by":"frog@datadoghq.com","disabled":"","key":"aec5892033f656759fcf471b7c3b769b"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "182"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:07 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Thu, 23-Apr-2020 04:02:07 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key/aec5892033f656759fcf471b7c3b769b
+    method: GET
+  response:
+    body: '{"api_key":{"name":"foo","created":"2020-04-16 04:02:07","disabled_by":"","is_active":true,"created_by":"frog@datadoghq.com","disabled":"","key":"aec5892033f656759fcf471b7c3b769b"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "182"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:07 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Thu, 23-Apr-2020 04:02:07 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key/aec5892033f656759fcf471b7c3b769b
+    method: GET
+  response:
+    body: '{"api_key":{"name":"foo","created":"2020-04-16 04:02:07","disabled_by":"","is_active":true,"created_by":"frog@datadoghq.com","disabled":"","key":"aec5892033f656759fcf471b7c3b769b"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "182"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:08 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Thu, 23-Apr-2020 04:02:08 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key/aec5892033f656759fcf471b7c3b769b
+    method: GET
+  response:
+    body: '{"api_key":{"name":"foo","created":"2020-04-16 04:02:07","disabled_by":"","is_active":true,"created_by":"frog@datadoghq.com","disabled":"","key":"aec5892033f656759fcf471b7c3b769b"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "182"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:08 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Thu, 23-Apr-2020 04:02:08 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"name":"bar"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key/aec5892033f656759fcf471b7c3b769b
+    method: PUT
+  response:
+    body: '{"api_key":{"name":"bar","created":"2020-04-16 04:02:07","disabled_by":"","is_active":true,"created_by":"frog@datadoghq.com","disabled":"","key":"aec5892033f656759fcf471b7c3b769b"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "182"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:08 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Thu, 23-Apr-2020 04:02:08 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key/aec5892033f656759fcf471b7c3b769b
+    method: GET
+  response:
+    body: '{"api_key":{"name":"bar","created":"2020-04-16 04:02:07","disabled_by":"","is_active":true,"created_by":"frog@datadoghq.com","disabled":"","key":"aec5892033f656759fcf471b7c3b769b"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "182"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:08 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Thu, 23-Apr-2020 04:02:08 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key/aec5892033f656759fcf471b7c3b769b
+    method: GET
+  response:
+    body: '{"api_key":{"name":"bar","created":"2020-04-16 04:02:07","disabled_by":"","is_active":true,"created_by":"frog@datadoghq.com","disabled":"","key":"aec5892033f656759fcf471b7c3b769b"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "182"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:08 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Thu, 23-Apr-2020 04:02:08 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key/aec5892033f656759fcf471b7c3b769b
+    method: GET
+  response:
+    body: '{"api_key":{"name":"bar","created":"2020-04-16 04:02:07","disabled_by":"","is_active":true,"created_by":"frog@datadoghq.com","disabled":"","key":"aec5892033f656759fcf471b7c3b769b"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "182"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:08 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Thu, 23-Apr-2020 04:02:08 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key/aec5892033f656759fcf471b7c3b769b
+    method: GET
+  response:
+    body: '{"api_key":{"name":"bar","created":"2020-04-16 04:02:07","disabled_by":"","is_active":true,"created_by":"frog@datadoghq.com","disabled":"","key":"aec5892033f656759fcf471b7c3b769b"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "182"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:08 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Thu, 23-Apr-2020 04:02:08 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key/aec5892033f656759fcf471b7c3b769b
+    method: GET
+  response:
+    body: '{"api_key":{"name":"bar","created":"2020-04-16 04:02:07","disabled_by":"","is_active":true,"created_by":"frog@datadoghq.com","disabled":"","key":"aec5892033f656759fcf471b7c3b769b"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "182"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:09 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Thu, 23-Apr-2020 04:02:09 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key/aec5892033f656759fcf471b7c3b769b
+    method: GET
+  response:
+    body: '{"api_key":{"name":"bar","created":"2020-04-16 04:02:07","disabled_by":"","is_active":true,"created_by":"frog@datadoghq.com","disabled":"","key":"aec5892033f656759fcf471b7c3b769b"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "182"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:09 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Thu, 23-Apr-2020 04:02:09 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key/aec5892033f656759fcf471b7c3b769b
+    method: DELETE
+  response:
+    body: '{"api_key":{"name":"bar","created":"2020-04-16 04:02:07","disabled_by":"frog@datadoghq.com","is_active":false,"created_by":"frog@datadoghq.com","disabled":"2020-04-16
+      04:02:09","key":"aec5892033f656759fcf471b7c3b769b"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "221"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:09 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Thu, 23-Apr-2020 04:02:09 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14)
+    url: https://api.datadoghq.com/api/v1/api_key/aec5892033f656759fcf471b7c3b769b
+    method: GET
+  response:
+    body: '{"errors": ["API key not found"]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "33"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 16 Apr 2020 04:02:09 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2396352"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 404 Not Found
+    code: 404
+    duration: ""
