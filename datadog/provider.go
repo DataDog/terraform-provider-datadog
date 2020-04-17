@@ -23,17 +23,17 @@ func Provider() terraform.ResourceProvider {
 			"api_key": {
 				Type:        schema.TypeString,
 				Required:    true,
-				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DD_API_KEY", "DATADOG_API_KEY"}, nil),
+				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_API_KEY", "DD_API_KEY"}, nil),
 			},
 			"app_key": {
 				Type:        schema.TypeString,
 				Required:    true,
-				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DD_APP_KEY", "DATADOG_APP_KEY"}, nil),
+				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_APP_KEY", "DD_APP_KEY"}, nil),
 			},
 			"api_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DD_HOST", "DATADOG_HOST"}, nil),
+				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_HOST", "DD_HOST"}, nil),
 			},
 		},
 

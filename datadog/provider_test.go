@@ -30,6 +30,26 @@ func isReplaying() bool {
 	return os.Getenv("RECORD") == "false"
 }
 
+func isAPIKeySet() bool {
+	if os.Getenv("DATADOG_API_KEY") != "" {
+		return true
+	}
+	if os.Getenv("DD_API_KEY") != "" {
+		return true
+	}
+	return false
+}
+
+func isAPPKeySet() bool {
+	if os.Getenv("DATADOG_APP_KEY") != "" {
+		return true
+	}
+	if os.Getenv("DD_APP_KEY") != "" {
+		return true
+	}
+	return false
+}
+
 func setClock(t *testing.T) clockwork.FakeClock {
 	os.MkdirAll("cassettes", 0755)
 	f, err := os.Create(fmt.Sprintf("cassettes/%s.freeze", t.Name()))
@@ -162,10 +182,10 @@ func testAccPreCheck(t *testing.T) {
 	if isReplaying() {
 		return
 	}
-	if v := os.Getenv("DD_API_KEY"); v == "" {
+	if !isAPIKeySet() {
 		t.Fatal("DD_API_KEY must be set for acceptance tests")
 	}
-	if v := os.Getenv("DD_APP_KEY"); v == "" {
+	if !isAPPKeySet() {
 		t.Fatal("DD_APP_KEY must be set for acceptance tests")
 	}
 }
