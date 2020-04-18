@@ -35,6 +35,11 @@ func Provider() terraform.ResourceProvider {
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DATADOG_HOST", nil),
 			},
+			"validate": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
@@ -87,17 +92,19 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	communityClient.ExtraHeader["User-Agent"] = fmt.Sprintf("terraform-provider-datadog/%s (go %s; terraform %s; terraform-cli %s)", version.ProviderVersion, runtime.Version(), meta.SDKVersionString(), datadogProvider.TerraformVersion)
 	communityClient.HttpClient = c
 
-	log.Println("[INFO] Datadog client successfully initialized, now validating...")
-	ok, err := communityClient.Validate()
-	if err != nil {
-		log.Printf("[ERROR] Datadog Client validation error: %v", err)
-		return communityClient, err
-	} else if !ok {
-		err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
-		log.Printf("[ERROR] Datadog Client validation error: %v", err)
-		return communityClient, err
+	if d.Get("validate").(bool) {
+		log.Println("[INFO] Datadog client successfully initialized, now validating...")
+		ok, err := communityClient.Validate()
+		if err != nil {
+			log.Printf("[ERROR] Datadog Client validation error: %v", err)
+			return communityClient, err
+		} else if !ok {
+			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
+			log.Printf("[ERROR] Datadog Client validation error: %v", err)
+			return communityClient, err
+	} else {
+		log.Println("[INFO] Skipping key validation (validate_keys = false)")
 	}
-	log.Printf("[INFO] Datadog Client successfully validated.")
 
 	return &ProviderConfiguration{
 		CommunityClient: communityClient,
