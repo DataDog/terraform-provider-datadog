@@ -102,6 +102,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
 			log.Printf("[ERROR] Datadog Client validation error: %v", err)
 			return communityClient, err
+		}
 	} else {
 		log.Println("[INFO] Skipping key validation (validate = false)")
 	}
