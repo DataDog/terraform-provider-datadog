@@ -103,7 +103,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			log.Printf("[ERROR] Datadog Client validation error: %v", err)
 			return communityClient, err
 	} else {
-		log.Println("[INFO] Skipping key validation (validate_keys = false)")
+		log.Println("[INFO] Skipping key validation (validate = false)")
 	}
 
 	return &ProviderConfiguration{
