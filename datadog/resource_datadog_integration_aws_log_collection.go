@@ -35,11 +35,12 @@ func resourceDatadogIntegrationAwsLogCollection() *schema.Resource {
 func resourceDatadogIntegrationAwsLogCollectionExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	logCollections, err := client.GetIntegrationAWSLogCollection()
 	if err != nil {
-		return false, err
+		return false, translateClientError(err, "error getting aws integration log collection.")
 	}
 
 	accountID := d.Id()
@@ -52,7 +53,7 @@ func resourceDatadogIntegrationAwsLogCollectionExists(d *schema.ResourceData, me
 	return false, nil
 }
 
-func prepareDatadogIntegrationAwsLogCollectionRequest(d *schema.ResourceData) datadog.IntegrationAWSServicesLogCollection {
+func buildDatadogIntegrationAwsLogCollectionStruct(d *schema.ResourceData) datadog.IntegrationAWSServicesLogCollection {
 	accountID := d.Get("account_id").(string)
 	services := []string{}
 	if attr, ok := d.GetOk("services"); ok {
@@ -70,15 +71,16 @@ func prepareDatadogIntegrationAwsLogCollectionRequest(d *schema.ResourceData) da
 }
 
 func resourceDatadogIntegrationAwsLogCollectionCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	accountID := d.Get("account_id").(string)
 
-	enableLogCollectionServices := prepareDatadogIntegrationAwsLogCollectionRequest(d)
+	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
 	err := client.EnableLogCollectionAWSServices(&enableLogCollectionServices)
 
 	if err != nil {
-		return fmt.Errorf("error enabling log collection services for Amazon Web Services integration account: %s", err.Error())
+		return translateClientError(err, "error enabling log collection services for Amazon Web Services integration account")
 	}
 
 	d.SetId(accountID)
@@ -87,26 +89,28 @@ func resourceDatadogIntegrationAwsLogCollectionCreate(d *schema.ResourceData, me
 }
 
 func resourceDatadogIntegrationAwsLogCollectionUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
-	enableLogCollectionServices := prepareDatadogIntegrationAwsLogCollectionRequest(d)
+	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
 	err := client.EnableLogCollectionAWSServices(&enableLogCollectionServices)
 
 	if err != nil {
-		return fmt.Errorf("error updating log collection services for Amazon Web Services integration account: %s", err.Error())
+		return translateClientError(err, "error updating log collection services for Amazon Web Services integration account")
 	}
 
 	return resourceDatadogIntegrationAwsLogCollectionRead(d, meta)
 }
 
 func resourceDatadogIntegrationAwsLogCollectionRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	accountID := d.Id()
 
 	logCollections, err := client.GetIntegrationAWSLogCollection()
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting log collection for aws integration.")
 	}
 	for _, logCollection := range *logCollections {
 		if logCollection.GetAccountID() == accountID {
@@ -119,7 +123,8 @@ func resourceDatadogIntegrationAwsLogCollectionRead(d *schema.ResourceData, meta
 }
 
 func resourceDatadogIntegrationAwsLogCollectionDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	accountID := d.Id()
 	services := []string{}
@@ -131,7 +136,7 @@ func resourceDatadogIntegrationAwsLogCollectionDelete(d *schema.ResourceData, me
 	err := client.EnableLogCollectionAWSServices(&deleteLogCollectionServices)
 
 	if err != nil {
-		return fmt.Errorf("error disabling Amazon Web Services log collection: %s", err.Error())
+		return translateClientError(err, "error disabling Amazon Web Services log collection")
 	}
 
 	return nil
