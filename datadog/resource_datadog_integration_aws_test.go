@@ -5,7 +5,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	datadog "github.com/zorkian/go-datadog-api"
+	"github.com/zorkian/go-datadog-api"
 	"testing"
 )
 
@@ -75,39 +75,51 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 
 func checkIntegrationAWSExists(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
-		integrations, err := client.GetIntegrationAWS()
-		if err != nil {
-			return err
-		}
-		for _, r := range s.RootModule().Resources {
-			accountId := r.Primary.Attributes["account_id"]
-			for _, integration := range *integrations {
-				if *integration.AccountID == accountId {
-					return nil
-				}
-			}
-			return fmt.Errorf("The AWS integration does not exists for account: accountId=%s", accountId)
-		}
-		return nil
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
+		return checkIntegrationAWSExistsHelper(s, client)
 	}
+}
+
+func checkIntegrationAWSExistsHelper(s *terraform.State, client *datadog.Client) error {
+	integrations, err := client.GetIntegrationAWS()
+	if err != nil {
+		return err
+	}
+	for _, r := range s.RootModule().Resources {
+		accountId := r.Primary.Attributes["account_id"]
+		for _, integration := range *integrations {
+			if *integration.AccountID == accountId {
+				return nil
+			}
+		}
+		return fmt.Errorf("The AWS integration does not exists for account: accountId=%s", accountId)
+	}
+	return nil
 }
 
 func checkIntegrationAWSDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
-		integrations, err := client.GetIntegrationAWS()
-		if err != nil {
-			return err
-		}
-		for _, r := range s.RootModule().Resources {
-			accountId := r.Primary.Attributes["account_id"]
-			for _, integration := range *integrations {
-				if *integration.AccountID == accountId {
-					return fmt.Errorf("The AWS integration still exists for account: accountId=%s", accountId)
-				}
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
+		return checkIntegrationAWSDestroyHelper(s, client)
+	}
+}
+
+func checkIntegrationAWSDestroyHelper(s *terraform.State, client *datadog.Client) error {
+	integrations, err := client.GetIntegrationAWS()
+	if err != nil {
+		return err
+	}
+	for _, r := range s.RootModule().Resources {
+		accountId := r.Primary.Attributes["account_id"]
+		for _, integration := range *integrations {
+			if *integration.AccountID == accountId {
+				return fmt.Errorf("The AWS integration still exists for account: accountId=%s", accountId)
 			}
 		}
-		return nil
 	}
+	return nil
 }
