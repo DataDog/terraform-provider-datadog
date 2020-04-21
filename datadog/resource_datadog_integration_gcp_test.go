@@ -7,7 +7,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	datadog "github.com/zorkian/go-datadog-api"
 )
 
 const testAccCheckDatadogIntegrationGCPConfig = `
@@ -94,7 +93,9 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 
 func checkIntegrationGCPExists(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
 		integrations, err := client.ListIntegrationGCP()
 		if err != nil {
 			return err
@@ -106,7 +107,7 @@ func checkIntegrationGCPExists(accProvider *schema.Provider) func(*terraform.Sta
 					return nil
 				}
 			}
-			return fmt.Errorf("The Google Cloud Platform integration doesn't exist: projectID=%s", projectID)
+			return fmt.Errorf("the Google Cloud Platform integration doesn't exist: projectID=%s", projectID)
 		}
 		return nil
 	}
@@ -114,7 +115,9 @@ func checkIntegrationGCPExists(accProvider *schema.Provider) func(*terraform.Sta
 
 func checkIntegrationGCPDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
 		integrations, err := client.ListIntegrationGCP()
 		if err != nil {
 			return err
@@ -123,7 +126,7 @@ func checkIntegrationGCPDestroy(accProvider *schema.Provider) func(*terraform.St
 			projectID := r.Primary.ID
 			for _, integration := range integrations {
 				if integration.GetProjectID() == projectID {
-					return fmt.Errorf("The Google Cloud Platform integration still exist: projectID=%s", projectID)
+					return fmt.Errorf("the Google Cloud Platform integration still exist: projectID=%s", projectID)
 				}
 			}
 		}
