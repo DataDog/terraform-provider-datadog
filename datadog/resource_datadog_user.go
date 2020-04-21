@@ -1,7 +1,6 @@
 package datadog
 
 import (
-	"fmt"
 	"log"
 	"strings"
 
@@ -66,13 +65,14 @@ func resourceDatadogUser() *schema.Resource {
 func resourceDatadogUserExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	if _, err := client.GetUser(d.Id()); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking user exists")
 	}
 
 	return true, nil
@@ -91,7 +91,8 @@ func buildDatadogUserStruct(d *schema.ResourceData) *datadog.User {
 }
 
 func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	u := buildDatadogUserStruct(d)
 
@@ -99,13 +100,13 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 	// We ignore that case and proceed, likely re-enabling the user.
 	if _, err := client.CreateUser(u.Handle, u.Name); err != nil {
 		if !strings.Contains(err.Error(), "API error 409 Conflict") {
-			return fmt.Errorf("error creating user: %s", err.Error())
+			return translateClientError(err, "error creating user")
 		}
 		log.Printf("[INFO] Updating existing Datadog user %s", *u.Handle)
 	}
 
 	if err := client.UpdateUser(*u); err != nil {
-		return fmt.Errorf("error creating user: %s", err.Error())
+		return translateClientError(err, "error updating user")
 	}
 
 	d.SetId(u.GetHandle())
@@ -114,7 +115,8 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 }
 
 func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	u, err := client.GetUser(d.Id())
 	if err != nil {
@@ -132,20 +134,22 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 }
 
 func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	u := buildDatadogUserStruct(d)
 	u.SetHandle(d.Id())
 
 	if err := client.UpdateUser(*u); err != nil {
-		return fmt.Errorf("error updating user: %s", err.Error())
+		return translateClientError(err, "error updating user")
 	}
 
 	return resourceDatadogUserRead(d, meta)
 }
 
 func resourceDatadogUserDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	// Datadog does not actually delete users, but instead marks them as disabled.
 	// Bypass DeleteUser if GetUser returns User.Disabled == true, otherwise it will 400.
@@ -154,7 +158,7 @@ func resourceDatadogUserDelete(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	if err := client.DeleteUser(d.Id()); err != nil {
-		return err
+		return translateClientError(err, "error deleting user")
 	}
 
 	return nil

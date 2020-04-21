@@ -10,7 +10,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
-	datadog "github.com/zorkian/go-datadog-api"
+	"github.com/zorkian/go-datadog-api"
 )
 
 func resourceDatadogDowntime() *schema.Resource {
@@ -50,7 +50,7 @@ func resourceDatadogDowntime() *schema.Resource {
 			},
 			"start_date": {
 				Type:          schema.TypeString,
-				ValidateFunc:  validation.ValidateRFC3339TimeString,
+				ValidateFunc:  validation.IsRFC3339Time,
 				ConflictsWith: []string{"start"},
 				Optional:      true,
 			},
@@ -65,7 +65,7 @@ func resourceDatadogDowntime() *schema.Resource {
 			},
 			"end_date": {
 				Type:          schema.TypeString,
-				ValidateFunc:  validation.ValidateRFC3339TimeString,
+				ValidateFunc:  validation.IsRFC3339Time,
 				ConflictsWith: []string{"end"},
 				Optional:      true,
 			},
@@ -216,7 +216,7 @@ func buildDowntimeStruct(d *schema.ResourceData, client *datadog.Client, updatin
 		var currdt *datadog.Downtime
 		currdt, err = client.GetDowntime(id)
 		if err != nil {
-			return nil, err
+			return nil, translateClientError(err, "error getting downtime")
 		}
 		currentStart = currdt.GetStart()
 		currentEnd = currdt.GetEnd()
@@ -264,12 +264,12 @@ func buildDowntimeStruct(d *schema.ResourceData, client *datadog.Client, updatin
 
 		dt.SetRecurrence(recurrence)
 	}
-	scope := []string{}
+	var scope []string
 	for _, s := range d.Get("scope").([]interface{}) {
 		scope = append(scope, s.(string))
 	}
 	dt.Scope = scope
-	tags := []string{}
+	var tags []string
 	for _, mt := range d.Get("monitor_tags").([]interface{}) {
 		tags = append(tags, mt.(string))
 	}
@@ -290,7 +290,8 @@ func buildDowntimeStruct(d *schema.ResourceData, client *datadog.Client, updatin
 func resourceDatadogDowntimeExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
@@ -302,7 +303,7 @@ func resourceDatadogDowntimeExists(d *schema.ResourceData, meta interface{}) (b 
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking downtime exists")
 	}
 
 	if _, ok := downtime.GetCanceledOk(); ok {
@@ -315,15 +316,16 @@ func resourceDatadogDowntimeExists(d *schema.ResourceData, meta interface{}) (b 
 }
 
 func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	dts, err := buildDowntimeStruct(d, client, false)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	dt, err := client.CreateDowntime(dts)
 	if err != nil {
-		return fmt.Errorf("error updating downtime: %s", err.Error())
+		return translateClientError(err, "error creating downtime")
 	}
 
 	d.SetId(strconv.Itoa(dt.GetId()))
@@ -332,7 +334,8 @@ func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) err
 }
 
 func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
@@ -341,7 +344,7 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 
 	dt, err := client.GetDowntime(id)
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting downtime")
 	}
 
 	log.Printf("[DEBUG] downtime: %v", dt)
@@ -403,11 +406,12 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 }
 
 func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	dt, err := buildDowntimeStruct(d, client, true)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
@@ -416,7 +420,7 @@ func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) err
 	dt.SetId(id)
 
 	if err = client.UpdateDowntime(dt); err != nil {
-		return fmt.Errorf("error updating downtime: %s", err.Error())
+		return translateClientError(err, "error updating downtime")
 	}
 	// handle the case when a downtime is replaced
 	d.SetId(strconv.Itoa(dt.GetId()))
@@ -425,7 +429,8 @@ func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) err
 }
 
 func resourceDatadogDowntimeDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
 
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
@@ -433,7 +438,7 @@ func resourceDatadogDowntimeDelete(d *schema.ResourceData, meta interface{}) err
 	}
 
 	if err = client.DeleteDowntime(id); err != nil {
-		return err
+		return translateClientError(err, "error deleting downtime")
 	}
 
 	return nil

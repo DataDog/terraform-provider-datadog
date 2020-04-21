@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	datadog "github.com/zorkian/go-datadog-api"
+	"github.com/zorkian/go-datadog-api"
 )
 
 const testAccCheckDatadogDashListConfig = `
@@ -105,7 +105,9 @@ func TestDatadogDashListImport(t *testing.T) {
 
 func testAccCheckDatadogDashListDestroy(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
 		return datadogDashListDestroyHelper(s, client)
 	}
 }
@@ -121,17 +123,19 @@ func datadogDashListDestroyHelper(s *terraform.State, client *datadog.Client) er
 			if strings.Contains(errList.Error(), "not found") {
 				continue
 			}
-			return fmt.Errorf("Received an error retrieving Dash List %s", errList)
+			return fmt.Errorf("received an error retrieving Dash List %s", errList)
 		}
 
-		return fmt.Errorf("Dash List  still exists")
+		return fmt.Errorf("dashoard List still exists")
 	}
 	return nil
 }
 
 func testAccCheckDatadogDashListExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := accProvider.Meta().(*datadog.Client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
 		return datadogDashListExistsHelper(s, client)
 	}
 }
@@ -147,7 +151,7 @@ func datadogDashListExistsHelper(s *terraform.State, client *datadog.Client) err
 			if strings.Contains(errList.Error(), "not found") {
 				continue
 			}
-			return fmt.Errorf("Received an error retrieving Dash List %s", errList)
+			return fmt.Errorf("received an error retrieving Dash List %s", errList)
 		}
 
 		return nil

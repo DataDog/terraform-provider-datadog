@@ -10,7 +10,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/kr/pretty"
-	datadog "github.com/zorkian/go-datadog-api"
+	"github.com/zorkian/go-datadog-api"
 )
 
 func resourceDatadogScreenboard() *schema.Resource {
@@ -98,7 +98,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Type:     schema.TypeString,
 					Required: true,
 				},
-				"compute": &schema.Schema{
+				"compute": {
 					Type:     schema.TypeList,
 					Required: true,
 					MaxItems: 1,
@@ -119,7 +119,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 						},
 					},
 				},
-				"search": &schema.Schema{
+				"search": {
 					Type:     schema.TypeList,
 					Optional: true,
 					MaxItems: 1,
@@ -132,7 +132,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 						},
 					},
 				},
-				"group_by": &schema.Schema{
+				"group_by": {
 					Type:     schema.TypeList,
 					Optional: true,
 					Elem: &schema.Resource{
@@ -242,7 +242,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Optional: true,
 				},
 				"conditional_format": tileDefRequestConditionalFormat,
-				"aggregator": &schema.Schema{
+				"aggregator": {
 					Type:         schema.TypeString,
 					Optional:     true,
 					ValidateFunc: validateAggregatorMethod,
@@ -730,7 +730,7 @@ func getMetadataFromJSON(jsonBytes []byte, unmarshalled interface{}) error {
 	decoder.DisallowUnknownFields()
 	err := decoder.Decode(unmarshalled)
 	if err != nil {
-		return fmt.Errorf("Failed to unmarshal metadata_json: %s", err)
+		return fmt.Errorf("failed to unmarshal metadata_json: %s", err)
 	}
 	return nil
 }
@@ -856,7 +856,7 @@ func buildTileDefRequestsConditionalFormats(source interface{}) []datadog.Condit
 		return nil
 	}
 
-	r := []datadog.ConditionalFormat{}
+	var r []datadog.ConditionalFormat
 	for _, format := range formats {
 		formatMap := format.(map[string]interface{})
 		d := datadog.ConditionalFormat{}
@@ -883,7 +883,7 @@ func buildTileDefRequestsGroupBys(source interface{}) []datadog.TileDefApmOrLogQ
 		return nil
 	}
 
-	r := []datadog.TileDefApmOrLogQueryGroupBy{}
+	var r []datadog.TileDefApmOrLogQueryGroupBy
 	for _, groupBy := range groupBys {
 		groupByMap := groupBy.(map[string]interface{})
 		d := datadog.TileDefApmOrLogQueryGroupBy{}
@@ -975,7 +975,7 @@ func buildTileDefRequests(source interface{}) []datadog.TileDefRequest {
 		return nil
 	}
 
-	r := []datadog.TileDefRequest{}
+	var r []datadog.TileDefRequest
 	for _, request := range requests {
 		requestMap := request.(map[string]interface{})
 		metadata := map[string]datadog.TileDefMetadata{}
@@ -1041,7 +1041,7 @@ func buildTileDefEvents(source interface{}) []datadog.TileDefEvent {
 		return nil
 	}
 
-	r := []datadog.TileDefEvent{}
+	var r []datadog.TileDefEvent
 	for _, event := range events {
 		eventMap := event.(map[string]interface{})
 		d := datadog.TileDefEvent{}
@@ -1058,7 +1058,7 @@ func buildTileDefMarkers(source interface{}) []datadog.TileDefMarker {
 		return nil
 	}
 
-	r := []datadog.TileDefMarker{}
+	var r []datadog.TileDefMarker
 	for _, marker := range markers {
 		markerMap := marker.(map[string]interface{})
 		d := datadog.TileDefMarker{}
@@ -1290,11 +1290,13 @@ func buildScreenboard(d *schema.ResourceData) (*datadog.Screenboard, error) {
 func resourceDatadogScreenboardCreate(d *schema.ResourceData, meta interface{}) error {
 	screenboard, err := buildScreenboard(d)
 	if err != nil {
-		return fmt.Errorf("Failed to parse resource configuration: %s", err.Error())
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	screenboard, err = meta.(*datadog.Client).CreateScreenboard(screenboard)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	screenboard, err = client.CreateScreenboard(screenboard)
 	if err != nil {
-		return fmt.Errorf("Failed to create screenboard using Datadog API: %s", err.Error())
+		return translateClientError(err, "error creating screenboard")
 	}
 	d.SetId(strconv.Itoa(screenboard.GetId()))
 
@@ -1759,9 +1761,11 @@ func buildTFWidget(dw datadog.Widget) map[string]interface{} {
 
 func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) error {
 	id := d.Id()
-	screenboard, err := meta.(*datadog.Client).GetScreenboard(id)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	screenboard, err := client.GetScreenboard(id)
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting screenboard")
 	}
 	log.Printf("[DataDog] screenboard: %v", pretty.Sprint(screenboard))
 	if err := d.Set("title", screenboard.GetTitle()); err != nil {
@@ -1788,7 +1792,7 @@ func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) er
 		}
 	}
 
-	widgets := []map[string]interface{}{}
+	var widgets []map[string]interface{}
 	for _, datadogWidget := range screenboard.Widgets {
 		widgets = append(widgets, buildTFWidget(datadogWidget))
 	}
@@ -1797,7 +1801,7 @@ func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) er
 		return err
 	}
 
-	templateVariables := []map[string]string{}
+	var templateVariables []map[string]string
 	for _, templateVariable := range screenboard.TemplateVariables {
 		tv := map[string]string{}
 		if v, ok := templateVariable.GetNameOk(); ok {
@@ -1824,10 +1828,12 @@ func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) er
 func resourceDatadogScreenboardUpdate(d *schema.ResourceData, meta interface{}) error {
 	screenboard, err := buildScreenboard(d)
 	if err != nil {
-		return fmt.Errorf("Failed to parse resource configuration: %s", err.Error())
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	if err = meta.(*datadog.Client).UpdateScreenboard(screenboard); err != nil {
-		return fmt.Errorf("Failed to update screenboard using Datadog API: %s", err.Error())
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	if err = client.UpdateScreenboard(screenboard); err != nil {
+		return translateClientError(err, "error updating screenboard")
 	}
 	return resourceDatadogScreenboardRead(d, meta)
 }
@@ -1837,8 +1843,10 @@ func resourceDatadogScreenboardDelete(d *schema.ResourceData, meta interface{}) 
 	if err != nil {
 		return err
 	}
-	if err = meta.(*datadog.Client).DeleteScreenboard(id); err != nil {
-		return err
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	if err = client.DeleteScreenboard(id); err != nil {
+		return translateClientError(err, "error deleting screenboard")
 	}
 	return nil
 }
@@ -1855,11 +1863,13 @@ func resourceDatadogScreenboardExists(d *schema.ResourceData, meta interface{}) 
 	if err != nil {
 		return false, err
 	}
-	if _, err = meta.(*datadog.Client).GetScreenboard(id); err != nil {
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	if _, err = client.GetScreenboard(id); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking screenboard exists")
 	}
 	return true, nil
 }
