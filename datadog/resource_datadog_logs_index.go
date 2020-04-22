@@ -58,6 +58,12 @@ func resourceDatadogLogsIndex() *schema.Resource {
 }
 
 func resourceDatadogLogsIndexCreate(d *schema.ResourceData, meta interface{}) error {
+	// This is a bit of a hack to ensure we fail fast if an index is about to be created, and
+	// to ensure we provide a useful error message (and don't panic)
+	// Indexes can only be updated, and the id is only set in the state if it was already imported
+	if _, ok := d.GetOk("id"); !ok {
+		return fmt.Errorf("logs index creation is not allowed, please import the index first. index_name: %s", d.Get("name").(string))
+	}
 	return resourceDatadogLogsIndexUpdate(d, meta)
 }
 
