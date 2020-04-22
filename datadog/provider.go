@@ -139,7 +139,7 @@ func translateClientError(err error, msg string) error {
 		msg = "an error occurred"
 	}
 
-	if errBody, ok := err.(datadog.GenericOpenAPIError); ok {
+	if _, ok := err.(datadog.GenericOpenAPIError); ok {
 		return fmt.Errorf(msg+": %s", err.Error())
 	}
 	if errUrl, ok := err.(*url.Error); ok {
