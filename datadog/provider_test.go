@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/dnaeon/go-vcr/cassette"
 	"github.com/dnaeon/go-vcr/recorder"
 	"github.com/hashicorp/go-cleanhttp"
@@ -141,7 +142,21 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 			},
 		)
 
-		//config.HTTPClient
+		// Initialize the official datadog v2 API client
+		authV2 := context.WithValue(
+			context.Background(),
+			datadogV2.ContextAPIKeys,
+			map[string]datadogV2.APIKey{
+				"apiKeyAuth": datadogV2.APIKey{
+					Key: d.Get("api_key").(string),
+				},
+				"appKeyAuth": datadogV2.APIKey{
+					Key: d.Get("app_key").(string),
+				},
+			},
+		)
+
+		//Datadog V1 API config.HTTPClient
 		config := datadog.NewConfiguration()
 		config.Debug = true
 		config.HTTPClient = c
@@ -153,11 +168,25 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 			}
 		}
 		datadogClient := datadog.NewAPIClient(config)
+		//Datadog V1 API config.HTTPClient
+		configV2 := datadogV2.NewConfiguration()
+		configV2.Debug = true
+		configV2.HTTPClient = c
+		if apiURL := d.Get("api_url").(string); apiURL != "" {
+			if strings.Contains(apiURL, "datadoghq.eu") {
+				auth = context.WithValue(auth, datadogV2.ContextServerVariables, map[string]string{
+					"site": "datadoghq.eu",
+				})
+			}
+		}
+		datadogClientV2 := datadogV2.NewAPIClient(configV2)
 
 		return &ProviderConfiguration{
 			CommunityClient: communityClient,
 			DatadogClientV1: datadogClient,
+			DatadogClientV2: datadogClientV2,
 			Auth:            auth,
+			AuthV2:          authV2,
 		}, nil
 	}
 }

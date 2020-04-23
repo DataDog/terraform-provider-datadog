@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -77,7 +78,9 @@ func Provider() terraform.ResourceProvider {
 type ProviderConfiguration struct {
 	CommunityClient *datadogCommunity.Client
 	DatadogClientV1 *datadog.APIClient
+	DatadogClientV2 *datadogV2.APIClient
 	Auth            context.Context
+	AuthV2          context.Context
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
@@ -105,7 +108,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
-	// Initialize the official Datadog client
+	// Initialize the official Datadog V1 API client
 	auth := context.WithValue(
 		context.Background(),
 		datadog.ContextAPIKeys,
@@ -118,6 +121,22 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			},
 		},
 	)
+
+	// Initialize the official Datadog V2 API client
+	authV2 := context.WithValue(
+		context.Background(),
+		datadogV2.ContextAPIKeys,
+		map[string]datadogV2.APIKey{
+			"apiKeyAuth": {
+				Key: d.Get("api_key").(string),
+			},
+			"appKeyAuth": {
+				Key: d.Get("app_key").(string),
+			},
+		},
+	)
+
+	//Initialize Datadog V1 API Config
 	config := datadog.NewConfiguration()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		if strings.Contains(apiURL, "datadoghq.eu") {
@@ -127,10 +146,24 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		}
 	}
 	datadogClient := datadog.NewAPIClient(config)
+
+	//Initialize Datadog V2 API Config
+	configV2 := datadogV2.NewConfiguration()
+	if apiURL := d.Get("api_url").(string); apiURL != "" {
+		if strings.Contains(apiURL, "datadoghq.eu") {
+			authV2 = context.WithValue(authV2, datadogV2.ContextServerVariables, map[string]string{
+				"site": "datadoghq.eu",
+			})
+		}
+	}
+	datadogClientV2 := datadogV2.NewAPIClient(configV2)
+
 	return &ProviderConfiguration{
 		CommunityClient: communityClient,
 		DatadogClientV1: datadogClient,
+		DatadogClientV2: datadogClientV2,
 		Auth:            auth,
+		AuthV2:          authV2,
 	}, nil
 }
 
@@ -140,6 +173,21 @@ func translateClientError(err error, msg string) error {
 	}
 
 	if _, ok := err.(datadog.GenericOpenAPIError); ok {
+		return fmt.Errorf(msg+": %s", err.Error())
+	}
+	if errUrl, ok := err.(*url.Error); ok {
+		return fmt.Errorf(msg+" (url.Error): %s", errUrl)
+	}
+
+	return fmt.Errorf(msg+": %s", err.Error())
+}
+
+func translateClientErrorV2(err error, msg string) error {
+	if msg == "" {
+		msg = "an error occurred"
+	}
+
+	if _, ok := err.(datadogV2.GenericOpenAPIError); ok {
 		return fmt.Errorf(msg+": %s", err.Error())
 	}
 	if errUrl, ok := err.(*url.Error); ok {
