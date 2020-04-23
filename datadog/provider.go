@@ -121,6 +121,15 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			},
 		},
 	)
+	config := datadog.NewConfiguration()
+	if apiURL := d.Get("api_url").(string); apiURL != "" {
+		if strings.Contains(apiURL, "datadoghq.eu") {
+			auth = context.WithValue(auth, datadog.ContextServerVariables, map[string]string{
+				"site": "datadoghq.eu",
+			})
+		}
+	}
+	datadogClient := datadog.NewAPIClient(config)
 
 	// Initialize the official Datadog V2 API client
 	authV2 := context.WithValue(
@@ -135,19 +144,6 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			},
 		},
 	)
-
-	//Initialize Datadog V1 API Config
-	config := datadog.NewConfiguration()
-	if apiURL := d.Get("api_url").(string); apiURL != "" {
-		if strings.Contains(apiURL, "datadoghq.eu") {
-			auth = context.WithValue(auth, datadog.ContextServerVariables, map[string]string{
-				"site": "datadoghq.eu",
-			})
-		}
-	}
-	datadogClient := datadog.NewAPIClient(config)
-
-	//Initialize Datadog V2 API Config
 	configV2 := datadogV2.NewConfiguration()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		if strings.Contains(apiURL, "datadoghq.eu") {
