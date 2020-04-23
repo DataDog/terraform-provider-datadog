@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/dnaeon/go-vcr/cassette"
 	"github.com/dnaeon/go-vcr/recorder"
@@ -129,14 +129,14 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 		communityClient.ExtraHeader["User-Agent"] = fmt.Sprintf("Datadog/%s/terraform (%s)", version.ProviderVersion, runtime.Version())
 
 		// Initialize the official datadog client
-		auth := context.WithValue(
+		authV1 := context.WithValue(
 			context.Background(),
-			datadog.ContextAPIKeys,
-			map[string]datadog.APIKey{
-				"apiKeyAuth": datadog.APIKey{
+			datadogV1.ContextAPIKeys,
+			map[string]datadogV1.APIKey{
+				"apiKeyAuth": datadogV1.APIKey{
 					Key: d.Get("api_key").(string),
 				},
-				"appKeyAuth": datadog.APIKey{
+				"appKeyAuth": datadogV1.APIKey{
 					Key: d.Get("app_key").(string),
 				},
 			},
@@ -157,24 +157,25 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 		)
 
 		//Datadog V1 API config.HTTPClient
-		config := datadog.NewConfiguration()
-		config.Debug = true
-		config.HTTPClient = c
+		configV1 := datadogV1.NewConfiguration()
+		configV1.Debug = true
+		configV1.HTTPClient = c
 		if apiURL := d.Get("api_url").(string); apiURL != "" {
 			if strings.Contains(apiURL, "datadoghq.eu") {
-				auth = context.WithValue(auth, datadog.ContextServerVariables, map[string]string{
+				authV1 = context.WithValue(authV1, datadogV1.ContextServerVariables, map[string]string{
 					"site": "datadoghq.eu",
 				})
 			}
 		}
-		datadogClient := datadog.NewAPIClient(config)
+		datadogClientV1 := datadogV1.NewAPIClient(configV1)
+
 		//Datadog V2 API config.HTTPClient
 		configV2 := datadogV2.NewConfiguration()
 		configV2.Debug = true
 		configV2.HTTPClient = c
 		if apiURL := d.Get("api_url").(string); apiURL != "" {
 			if strings.Contains(apiURL, "datadoghq.eu") {
-				auth = context.WithValue(auth, datadogV2.ContextServerVariables, map[string]string{
+				authV2 = context.WithValue(authV2, datadogV2.ContextServerVariables, map[string]string{
 					"site": "datadoghq.eu",
 				})
 			}
@@ -183,9 +184,9 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 
 		return &ProviderConfiguration{
 			CommunityClient: communityClient,
-			DatadogClientV1: datadogClient,
+			DatadogClientV1: datadogClientV1,
 			DatadogClientV2: datadogClientV2,
-			Auth:            auth,
+			AuthV1:          authV1,
 			AuthV2:          authV2,
 		}, nil
 	}
