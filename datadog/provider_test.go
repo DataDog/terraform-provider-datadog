@@ -168,7 +168,7 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 			}
 		}
 		datadogClient := datadog.NewAPIClient(config)
-		//Datadog V1 API config.HTTPClient
+		//Datadog V2 API config.HTTPClient
 		configV2 := datadogV2.NewConfiguration()
 		configV2.Debug = true
 		configV2.HTTPClient = c
