@@ -18,7 +18,7 @@ uninstall:
 	@rm -vf $(DIR)/terraform-provider-datadog
 
 test: get-test-deps fmtcheck
-	gotestsum --format testname -- -i $(TEST) || exit 1
+	go test -i $(TEST) || exit 1
 	echo $(TEST) | \
 		xargs -t -n4 gotestsum --format testname -- $(TESTARGS) -timeout=30s -parallel=4
 	DATADOG_API_KEY=fake DATADOG_APP_KEY=fake RECORD=false TF_ACC=1 gotestsum --format testname -- $(TEST) -v $(TESTARGS) -timeout=120s
