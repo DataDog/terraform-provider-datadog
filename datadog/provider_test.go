@@ -140,21 +140,6 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 				},
 			},
 		)
-
-		// Initialize the official datadog v2 API client
-		authV2 := context.WithValue(
-			context.Background(),
-			datadogV2.ContextAPIKeys,
-			map[string]datadogV2.APIKey{
-				"apiKeyAuth": datadogV2.APIKey{
-					Key: d.Get("api_key").(string),
-				},
-				"appKeyAuth": datadogV2.APIKey{
-					Key: d.Get("app_key").(string),
-				},
-			},
-		)
-
 		//Datadog V1 API config.HTTPClient
 		configV1 := datadogV1.NewConfiguration()
 		configV1.Debug = true
@@ -183,6 +168,19 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 		}
 		datadogClientV1 := datadogV1.NewAPIClient(configV1)
 
+		// Initialize the official datadog v2 API client
+		authV2 := context.WithValue(
+			context.Background(),
+			datadogV2.ContextAPIKeys,
+			map[string]datadogV2.APIKey{
+				"apiKeyAuth": datadogV2.APIKey{
+					Key: d.Get("api_key").(string),
+				},
+				"appKeyAuth": datadogV2.APIKey{
+					Key: d.Get("app_key").(string),
+				},
+			},
+		)
 		//Datadog V2 API config.HTTPClient
 		configV2 := datadogV2.NewConfiguration()
 		configV2.Debug = true
