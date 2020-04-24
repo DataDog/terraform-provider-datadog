@@ -168,7 +168,7 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 				return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
 			}
 			// Set site to "datadoghq.eu" for ServerIndex{0} if Datadog EU API URL is passed.
-			// If custom api url (not datadoghq.eu or datadoghq.com) is passed, set the custom name and protocol on ServerIndex{-1}
+			// If custom api url (not datadoghq.eu or datadoghq.com) is passed, set the api name and protocol on ServerIndex{-1}
 			if parsedApiUrl.Host == "datadoghq.eu" {
 				authV1 = context.WithValue(authV1, datadogV1.ContextServerVariables, map[string]string{
 					"site": "datadoghq.eu",
@@ -197,7 +197,7 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 			}
 			// Set site to datadoghq.eu ServerIndex{0} if Datadog EU API URL is passed.
 			// If custom server api url (not https://api.datadoghq.eu or https://api.datadoghq.com) is passed,
-			// set the custom name and protocol on ServerIndex{-1}
+			// set the api name and protocol on ServerIndex{-1}
 			if parsedApiUrl.Host == "api.datadoghq.eu" {
 				authV2 = context.WithValue(authV2, datadogV2.ContextServerVariables, map[string]string{
 					"site": "datadoghq.eu",
