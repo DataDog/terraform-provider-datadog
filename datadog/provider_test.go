@@ -152,19 +152,12 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 			if parsedApiUrl.Host == "" || parsedApiUrl.Scheme == "" {
 				return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
 			}
-			// Set site to "datadoghq.eu" on ServerIndex{0} if Datadog EU API URL is passed.
-			// If custom api url (not datadoghq.eu or datadoghq.com) is passed, set the api name and protocol on ServerIndex{-1}
-			if parsedApiUrl.Host == "datadoghq.eu" {
-				authV1 = context.WithValue(authV1, datadogV1.ContextServerVariables, map[string]string{
-					"site": "datadoghq.eu",
-				})
-			} else if parsedApiUrl.Host != "datadoghq.com" {
-				authV1 = context.WithValue(authV1, datadogV1.ContextServerIndex, len(configV1.Servers)-1)
-				authV1 = context.WithValue(authV1, datadogV1.ContextServerVariables, map[string]string{
-					"name":     parsedApiUrl.Host,
-					"protocol": parsedApiUrl.Scheme,
-				})
-			}
+			// If api url is passed, set and use the api name and protocol on ServerIndex{1}
+			authV1 = context.WithValue(authV1, datadogV1.ContextServerIndex, 1)
+			authV1 = context.WithValue(authV1, datadogV1.ContextServerVariables, map[string]string{
+				"name":     parsedApiUrl.Host,
+				"protocol": parsedApiUrl.Scheme,
+			})
 		}
 		datadogClientV1 := datadogV1.NewAPIClient(configV1)
 
@@ -193,19 +186,12 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 			if parsedApiUrl.Host == "" || parsedApiUrl.Scheme == "" {
 				return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
 			}
-			// Set site to "datadoghq.eu" on ServerIndex{0} if Datadog EU API URL is passed.
-			// If custom api url (not datadoghq.eu or datadoghq.com) is passed, set the api name and protocol on ServerIndex{-1}
-			if parsedApiUrl.Host == "api.datadoghq.eu" {
-				authV2 = context.WithValue(authV2, datadogV2.ContextServerVariables, map[string]string{
-					"site": "datadoghq.eu",
-				})
-			} else if parsedApiUrl.Host != "api.datadoghq.com" {
-				authV2 = context.WithValue(authV2, datadogV2.ContextServerIndex, len(configV2.Servers)-1)
-				authV2 = context.WithValue(authV2, datadogV2.ContextServerVariables, map[string]string{
-					"name":     parsedApiUrl.Host,
-					"protocol": parsedApiUrl.Scheme,
-				})
-			}
+			// If api url is passed, set and use the api name and protocol on ServerIndex{1}
+			authV2 = context.WithValue(authV2, datadogV2.ContextServerIndex, 1)
+			authV2 = context.WithValue(authV2, datadogV2.ContextServerVariables, map[string]string{
+				"name":     parsedApiUrl.Host,
+				"protocol": parsedApiUrl.Scheme,
+			})
 		}
 		datadogClientV2 := datadogV2.NewAPIClient(configV2)
 
