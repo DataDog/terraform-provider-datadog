@@ -76,6 +76,6 @@ update-go-client:
 	go mod tidy
 
 get-test-deps:
-	cd `mktemp -d`;	GO111MODULE=on GOFLAGS='' go get -u gotest.tools/gotestsum@v0.4.1; cd -
+	cd `mktemp -d`;	GO111MODULE=auto GOFLAGS='' go get -u gotest.tools/gotestsum; cd -
 
 .PHONY: build test testacc cassettes vet fmt fmtcheck errcheck test-compile website website-test get-test-deps
