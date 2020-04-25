@@ -245,16 +245,16 @@ func buildDowntimeStruct(authV1 context.Context, d *schema.ResourceData, client 
 		var recurrence datadogV1.DowntimeRecurrence
 
 		if attr, ok := d.GetOk("recurrence.0.period"); ok {
-			recurrence.SetPeriod(attr.(int32))
+			recurrence.SetPeriod(int32(attr.(int)))
 		}
 		if attr, ok := d.GetOk("recurrence.0.type"); ok {
 			recurrence.SetType(attr.(string))
 		}
 		if attr, ok := d.GetOk("recurrence.0.until_date"); ok {
-			recurrence.SetUntilDate(attr.(int64))
+			recurrence.SetUntilDate(int64(attr.(int)))
 		}
 		if attr, ok := d.GetOk("recurrence.0.until_occurrences"); ok {
-			recurrence.SetUntilOccurrences(attr.(int32))
+			recurrence.SetUntilOccurrences(int32(attr.(int)))
 		}
 		if attr, ok := d.GetOk("recurrence.0.week_days"); ok {
 			weekDays := make([]string, 0, len(attr.([]interface{})))
@@ -402,8 +402,8 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 	}
 	d.Set("scope", dt.Scope)
 	// See the comment for monitor_tags in the schema definition above
-	if !reflect.DeepEqual(dt.MonitorTags, []string{"*"}) {
-		d.Set("monitor_tags", dt.MonitorTags)
+	if !reflect.DeepEqual(dt.GetMonitorTags(), []string{"*"}) {
+		d.Set("monitor_tags", dt.GetMonitorTags())
 	}
 	d.Set("start", dt.GetStart())
 
