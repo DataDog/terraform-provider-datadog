@@ -374,7 +374,7 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 		return err
 	}
 
-	if r, ok := dt.GetRecurrenceOk(); ok {
+	if r, ok := dt.GetRecurrenceOk(); ok && r != nil {
 		recurrence := make(map[string]interface{})
 		recurrenceList := make([]map[string]interface{}, 0, 1)
 
@@ -423,6 +423,9 @@ func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) err
 	if err != nil {
 		return err
 	}
+	// above downtimeStruct returns nil if downtime is not set. Hence, if we are handling the cases where downtime
+	// is replaced, the ID of the downtime will be set to 0.
+	dt.SetId(id)
 
 	if _, _, err = datadogClientV1.DowntimesApi.UpdateDowntime(authV1, id).Body(*dt).Execute(); err != nil {
 		return translateClientError(err, "error updating downtime")
