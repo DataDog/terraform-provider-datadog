@@ -481,7 +481,7 @@ resource "datadog_dashboard" "free_dashboard" {
 	}
 	widget {
 		log_stream_definition {
-			logset = "19"
+			indexes = ["main""]
 			query = "error"
 			columns = ["core_host", "core_service", "tag_source"]
 		}
@@ -873,7 +873,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.4.layout.x", "77"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.4.layout.y", "7"),
 					// Log Stream widget
-					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.logset", "19"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.indexes.0", "main"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.query", "error"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.columns.#", "3"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.columns.0", "core_host"),
