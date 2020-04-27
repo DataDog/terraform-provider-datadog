@@ -568,7 +568,6 @@ func resourceDatadogMonitorImport(d *schema.ResourceData, meta interface{}) ([]*
 // Ignore any diff that results from the mix of ints or floats returned from the
 // DataDog API.
 func suppressDataDogFloatIntDiff(k, old string, new string, d *schema.ResourceData) bool {
-	log.Println("Hello there 1", k, old, new, "done")
 	oF, err := strconv.ParseFloat(old, 64)
 	if err != nil {
 		log.Printf("Error parsing float of old value (%s): %s", old, err)
