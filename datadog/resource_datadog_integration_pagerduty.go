@@ -74,11 +74,11 @@ func buildIntegrationPagerduty(d *schema.ResourceData) (datadogV1.PagerDutyInteg
 
 	var schedules []string
 	if v, ok := d.GetOk("schedules"); ok {
-		var schedules []string
 		for _, s := range v.([]interface{}) {
 			schedules = append(schedules, s.(string))
 		}
 	} else {
+		// Explicitly return an empty array. The API will respond with a 400 if the value is null
 		schedules = []string{}
 	}
 	pd.SetSchedules(schedules)
@@ -98,47 +98,14 @@ func buildIntegrationPagerduty(d *schema.ResourceData) (datadogV1.PagerDutyInteg
 
 				services = append(services, service)
 			}
+		} else {
+			// Explicitly return an empty array. The API will respond with a 400 if the value is null
+			services = []datadogV1.PagerDutyService{}
 		}
 	}
 	pd.SetServices(services)
 
 	return *pd, nil
-}
-
-func buildServicesAndSchedulesPagerduty(d *schema.ResourceData) (datadogV1.PagerDutyServicesAndSchedules, error) {
-	pdServicesAndSchedules := &datadogV1.PagerDutyServicesAndSchedules{}
-
-	var schedules []string
-	if v, ok := d.GetOk("schedules"); ok {
-		var schedules []string
-		for _, s := range v.([]interface{}) {
-			schedules = append(schedules, s.(string))
-		}
-	} else {
-		schedules = []string{}
-	}
-	pdServicesAndSchedules.SetSchedules(schedules)
-
-	var services []datadogV1.PagerDutyService
-	if value, ok := d.GetOk("individual_services"); ok && value.(bool) {
-		services = []datadogV1.PagerDutyService{}
-	} else {
-		configServices, ok := d.GetOk("services")
-		if ok {
-			for _, sInterface := range configServices.([]interface{}) {
-				s := sInterface.(map[string]interface{})
-
-				service := datadogV1.PagerDutyService{}
-				service.SetServiceName(s["service_name"].(string))
-				service.SetServiceKey(s["service_key"].(string))
-
-				services = append(services, service)
-			}
-		}
-	}
-	pdServicesAndSchedules.SetServices(services)
-
-	return *pdServicesAndSchedules, nil
 }
 
 func resourceDatadogIntegrationPagerdutyCreate(d *schema.ResourceData, meta interface{}) error {
@@ -222,12 +189,12 @@ func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta inte
 	integrationPdMutex.Lock()
 	defer integrationPdMutex.Unlock()
 
-	pd, err := buildServicesAndSchedulesPagerduty(d)
+	pd, err := buildIntegrationPagerduty(d)
 	if err != nil {
 		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 
-	if _, err := datadogClientV1.PagerDutyIntegrationApi.UpdatePagerDutyIntegration(authV1).Body(pd).Execute(); err != nil {
+	if _, err := datadogClientV1.PagerDutyIntegrationApi.CreatePagerDutyIntegration(authV1).Body(pd).Execute(); err != nil {
 		return translateClientError(err, "error updating PagerDuty integration")
 	}
 
