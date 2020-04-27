@@ -123,6 +123,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	configV1 := datadogV1.NewConfiguration()
 	// Enable unstable operations
 	configV1.SetUnstableOperationEnabled("GetLogsIndex", true)
+	configV1.SetUnstableOperationEnabled("ListLogIndexes", true)
 	configV1.SetUnstableOperationEnabled("UpdateLogsIndex", true)
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedApiUrl, parseErr := url.Parse(apiURL)
