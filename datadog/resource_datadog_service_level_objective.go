@@ -208,7 +208,7 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 
 	if _, ok := d.GetOk("thresholds"); ok {
 		numThresholds := d.Get("thresholds.#").(int)
-		var sloThresholds []datadogV1.SLOThreshold
+		sloThresholds := make([]datadogV1.SLOThreshold, 0)
 		for i := 0; i < numThresholds; i++ {
 			prefix := fmt.Sprintf("thresholds.%d.", i)
 			t := datadogV1.SLOThreshold{}
