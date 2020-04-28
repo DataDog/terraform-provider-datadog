@@ -194,6 +194,8 @@ func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta inte
 		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 
+	// Use CreatePagerDutyIntegration method to update the test. UpdatePagerDutyIntegration() accepts type
+	// PagerDutyServicesAndSchedules which does does not have field to update subdomain and api_token
 	if _, err := datadogClientV1.PagerDutyIntegrationApi.CreatePagerDutyIntegration(authV1).Body(pd).Execute(); err != nil {
 		return translateClientError(err, "error updating PagerDuty integration")
 	}
