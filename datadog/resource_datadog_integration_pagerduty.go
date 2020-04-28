@@ -72,14 +72,11 @@ func buildIntegrationPagerduty(d *schema.ResourceData) (datadogV1.PagerDutyInteg
 	pd.SetSubdomain(d.Get("subdomain").(string))
 	pd.SetApiToken(d.Get("api_token").(string))
 
-	var schedules []string
+	schedules := make([]string, 0)
 	if v, ok := d.GetOk("schedules"); ok {
 		for _, s := range v.([]interface{}) {
 			schedules = append(schedules, s.(string))
 		}
-	} else {
-		// Explicitly return an empty array. The API will respond with a 400 if the value is null
-		schedules = []string{}
 	}
 	pd.SetSchedules(schedules)
 
@@ -194,6 +191,10 @@ func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta inte
 		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 
+	pdTest, _, err := datadogClientV1.PagerDutyIntegrationApi.GetPagerDutyIntegration(authV1).Execute()
+
+	pd.SetServices(pdTest.GetServices())
+	pd.SetSchedules(pdTest.GetSchedules())
 	// Use CreatePagerDutyIntegration method to update the test. UpdatePagerDutyIntegration() accepts type
 	// PagerDutyServicesAndSchedules which does does not have field to update subdomain and api_token
 	if _, err := datadogClientV1.PagerDutyIntegrationApi.CreatePagerDutyIntegration(authV1).Body(pd).Execute(); err != nil {
