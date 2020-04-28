@@ -510,8 +510,8 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	if newSilenced, ok := d.GetOk("silenced"); ok && !silenced {
 		mSilenced := m.Options.GetSilenced()
 		for k, _ := range mSilenced {
-			//The GO Client does not allow for empty []. So manually set the timestamp for the group to 1
-			mSilenced[k] = 1
+			//Set silenced endtime for each  of the groups to current timestamp
+			mSilenced[k] = time.Now().Unix()
 		}
 		*m, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
 		if err != nil {
