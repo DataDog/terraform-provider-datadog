@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"strings"
 
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
-	"github.com/zorkian/go-datadog-api"
 )
 
 var syntheticsTypes = []string{"api", "browser"}
@@ -204,10 +204,11 @@ func syntheticsTestOptions() *schema.Schema {
 
 func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
 	syntheticsTest := buildSyntheticsTestStruct(d)
-	createdSyntheticsTest, err := client.CreateSyntheticsTest(syntheticsTest)
+	createdSyntheticsTest, _, err := datadogClientV1.SyntheticsApi.CreateTest(authV1).Body(*syntheticsTest).Execute()
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
 		return translateClientError(err, "error creating synthetics test")
@@ -223,9 +224,10 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 
 func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	syntheticsTest, err := client.GetSyntheticsTest(d.Id())
+	syntheticsTest, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id()).Execute()
 	if err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			// Delete the resource from the local state since it doesn't exist anymore in the actual state
@@ -235,17 +237,18 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 		return translateClientError(err, "error getting synthetics test")
 	}
 
-	updateSyntheticsTestLocalState(d, syntheticsTest)
+	updateSyntheticsTestLocalState(d, &syntheticsTest)
 
 	return nil
 }
 
 func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
 	syntheticsTest := buildSyntheticsTestStruct(d)
-	if _, err := client.UpdateSyntheticsTest(d.Id(), syntheticsTest); err != nil {
+	if _, _, err := datadogClientV1.SyntheticsApi.UpdateTest(authV1, d.Id()).Body(*syntheticsTest).Execute(); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
 		translateClientError(err, "error updating synthetics test")
 	}
@@ -256,9 +259,10 @@ func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{
 
 func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	if err := client.DeleteSyntheticsTests([]string{d.Id()}); err != nil {
+	if _, _, err := datadogClientV1.SyntheticsApi.DeleteTests(authV1).Body(datadogV1.SyntheticsDeleteTestsPayload{PublicIds: &[]string{d.Id()}}).Execute(); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
 		return translateClientError(err, "error deleting synthetics test")
 	}
@@ -267,8 +271,8 @@ func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{
 	return nil
 }
 
-func isTargetOfTypeInt(assertionType string) bool {
-	for _, intTargetAssertionType := range []string{"responseTime", "statusCode", "certificate"} {
+func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType) bool {
+	for _, intTargetAssertionType := range []datadogV1.SyntheticsAssertionType{datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME, datadogV1.SYNTHETICSASSERTIONTYPE_STATUS_CODE, datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE} {
 		if assertionType == intTargetAssertionType {
 			return true
 		}
@@ -276,10 +280,10 @@ func isTargetOfTypeInt(assertionType string) bool {
 	return false
 }
 
-func buildSyntheticsTestStruct(d *schema.ResourceData) *datadog.SyntheticsTest {
-	request := datadog.SyntheticsRequest{}
+func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTestDetails {
+	request := datadogV1.SyntheticsTestRequest{}
 	if attr, ok := d.GetOk("request.method"); ok {
-		request.SetMethod(attr.(string))
+		request.SetMethod(datadogV1.HTTPMethod(attr.(string)))
 	}
 	if attr, ok := d.GetOk("request.url"); ok {
 		request.SetUrl(attr.(string))
@@ -289,64 +293,66 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadog.SyntheticsTest {
 	}
 	if attr, ok := d.GetOk("request.timeout"); ok {
 		timeoutInt, _ := strconv.Atoi(attr.(string))
-		request.SetTimeout(timeoutInt)
+		request.SetTimeout(float64(timeoutInt))
 	}
 	if attr, ok := d.GetOk("request.host"); ok {
 		request.SetHost(attr.(string))
 	}
 	if attr, ok := d.GetOk("request.port"); ok {
 		portInt, _ := strconv.Atoi(attr.(string))
-		request.SetPort(portInt)
+		request.SetPort(int64(portInt))
 	}
 	if attr, ok := d.GetOk("request_headers"); ok {
 		headers := attr.(map[string]interface{})
 		if len(headers) > 0 {
-			request.Headers = make(map[string]string)
+			request.SetHeaders(make(map[string]string))
 		}
 		for k, v := range headers {
-			request.Headers[k] = v.(string)
+			tHeaders := request.GetHeaders()
+			tHeaders[k] = v.(string)
+			request.SetHeaders(tHeaders)
 		}
 	}
 
-	config := datadog.SyntheticsConfig{
-		Request:   &request,
-		Variables: []interface{}{},
+	config := datadogV1.SyntheticsTestConfig{
+		Request:   request,
+		Variables: &[]datadogV1.SyntheticsBrowserVariable{},
 	}
 
 	if attr, ok := d.GetOk("assertions"); ok {
 		for _, attr := range attr.([]interface{}) {
-			assertion := datadog.SyntheticsAssertion{}
+			assertion := datadogV1.SyntheticsAssertion{}
 			assertionMap := attr.(map[string]interface{})
 			if v, ok := assertionMap["type"]; ok {
 				assertionType := v.(string)
-				assertion.Type = &assertionType
+				assertion.SetType(datadogV1.SyntheticsAssertionType(assertionType))
 			}
 			if v, ok := assertionMap["property"]; ok {
 				assertionProperty := v.(string)
-				assertion.Property = &assertionProperty
+				assertion.SetProperty(assertionProperty)
 			}
 			if v, ok := assertionMap["operator"]; ok {
 				assertionOperator := v.(string)
-				assertion.Operator = &assertionOperator
+				assertion.SetOperator(datadogV1.SyntheticsAssertionOperator(assertionOperator))
 			}
 			if v, ok := assertionMap["target"]; ok {
-				if isTargetOfTypeInt(*assertion.Type) {
+				if isTargetOfTypeInt(assertion.Type) {
 					assertionTargetInt, _ := strconv.Atoi(v.(string))
-					assertion.Target = assertionTargetInt
-				} else if *assertion.Operator == "validates" {
-					assertion.Target = json.RawMessage(v.(string))
+					assertion.SetTarget(assertionTargetInt)
+				} else if assertion.Operator == "validates" {
+					assertion.SetTarget(v.(string))
 				} else {
-					assertion.Target = v.(string)
+					assertion.SetTarget(v.(string))
 				}
 			}
 			config.Assertions = append(config.Assertions, assertion)
 		}
 	}
 
-	options := datadog.SyntheticsOptions{}
+	options := datadogV1.SyntheticsTestOptions{}
 	if attr, ok := d.GetOk("options.tick_every"); ok {
 		tickEvery, _ := strconv.Atoi(attr.(string))
-		options.SetTickEvery(tickEvery)
+		options.SetTickEvery(datadogV1.SyntheticsTickInterval(tickEvery))
 	}
 	if attr, ok := d.GetOk("options.follow_redirects"); ok {
 		// follow_redirects is a string ("true" or "false") in TF state
@@ -355,13 +361,13 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadog.SyntheticsTest {
 		followRedirects, _ := strconv.ParseBool(attr.(string))
 		options.SetFollowRedirects(followRedirects)
 	}
-	if attr, ok := d.GetOk("options.min_failure_duration"); ok {
-		minFailureDuration, _ := strconv.Atoi(attr.(string))
-		options.SetMinFailureDuration(minFailureDuration)
-	}
+	//if attr, ok := d.GetOk("options.min_failure_duration"); ok {
+	//	minFailureDuration, _ := strconv.Atoi(attr.(string))
+	//	options.SetMinFailureDuration(minFailureDuration)
+	//}
 	if attr, ok := d.GetOk("options.min_location_failed"); ok {
 		minLocationFailed, _ := strconv.Atoi(attr.(string))
-		options.SetMinLocationFailed(minLocationFailed)
+		options.SetMinLocationFailed(int64(minLocationFailed))
 	}
 	if attr, ok := d.GetOk("options.accept_self_signed"); ok {
 		// for some reason, attr is equal to "1" or "0" in TF 0.11
@@ -370,20 +376,20 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadog.SyntheticsTest {
 		options.SetAcceptSelfSigned(acceptSelfSigned)
 	}
 	if attr, ok := d.GetOk("device_ids"); ok {
-		var deviceIds []string
+		var deviceIds []datadogV1.SyntheticsDeviceID
 		for _, s := range attr.([]interface{}) {
-			deviceIds = append(deviceIds, s.(string))
+			deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
 		}
-		options.DeviceIds = deviceIds
+		options.DeviceIds = &deviceIds
 	}
 
-	syntheticsTest := datadog.SyntheticsTest{
-		Name:    datadog.String(d.Get("name").(string)),
-		Type:    datadog.String(d.Get("type").(string)),
+	syntheticsTest := datadogV1.SyntheticsTestDetails{
+		Name:    datadogV1.PtrString(d.Get("name").(string)),
+		Type:    datadogV1.SyntheticsTestDetailsType(d.Get("type").(string)).Ptr(),
 		Config:  &config,
 		Options: &options,
-		Message: datadog.String(d.Get("message").(string)),
-		Status:  datadog.String(d.Get("status").(string)),
+		Message: datadogV1.PtrString(d.Get("message").(string)),
+		Status:  datadogV1.SyntheticsTestPauseStatus(d.Get("status").(string)).Ptr(),
 	}
 
 	if attr, ok := d.GetOk("locations"); ok {
@@ -391,7 +397,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadog.SyntheticsTest {
 		for _, s := range attr.([]interface{}) {
 			locations = append(locations, s.(string))
 		}
-		syntheticsTest.Locations = locations
+		syntheticsTest.SetLocations(locations)
 	}
 
 	var tags []string
@@ -400,21 +406,21 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadog.SyntheticsTest {
 			tags = append(tags, s.(string))
 		}
 	}
-	syntheticsTest.Tags = tags
+	syntheticsTest.SetTags(tags)
 
 	if attr, ok := d.GetOk("subtype"); ok {
-		syntheticsTest.Subtype = datadog.String(attr.(string))
+		syntheticsTest.SetSubtype(datadogV1.SyntheticsTestDetailsSubType(attr.(string)))
 	} else {
 		if *syntheticsTest.Type == "api" {
 			// we want to default to "http" subtype when type is "api"
-			syntheticsTest.Subtype = datadog.String("http")
+			syntheticsTest.SetSubtype("http")
 		}
 	}
 
 	return &syntheticsTest
 }
 
-func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *datadog.SyntheticsTest) {
+func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsTestDetails) {
 	d.Set("type", syntheticsTest.GetType())
 	if syntheticsTest.HasSubtype() {
 		d.Set("subtype", syntheticsTest.GetSubtype())
@@ -425,13 +431,13 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	if actualRequest.HasBody() {
 		localRequest["body"] = actualRequest.GetBody()
 	}
-	if actualRequest.HasMethod() {
-		localRequest["method"] = actualRequest.GetMethod()
+	if _, ok := actualRequest.GetMethodOk(); ok {
+		localRequest["method"] = convertToString(actualRequest.GetMethod())
 	}
 	if actualRequest.HasTimeout() {
 		localRequest["timeout"] = convertToString(actualRequest.GetTimeout())
 	}
-	if actualRequest.HasUrl() {
+	if _, ok := actualRequest.GetUrlOk(); ok {
 		localRequest["url"] = actualRequest.GetUrl()
 	}
 	if actualRequest.HasHost() {
@@ -447,8 +453,8 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	var localAssertions []map[string]string
 	for _, assertion := range actualAssertions {
 		localAssertion := make(map[string]string)
-		if assertion.HasOperator() {
-			localAssertion["operator"] = assertion.GetOperator()
+		if _, ok := assertion.GetOperatorOk(); ok {
+			localAssertion["operator"] = convertToString(assertion.GetOperator())
 		}
 		if assertion.HasProperty() {
 			localAssertion["property"] = assertion.GetProperty()
@@ -456,8 +462,8 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		if target := assertion.Target; target != nil {
 			localAssertion["target"] = convertToString(target)
 		}
-		if assertion.HasType() {
-			localAssertion["type"] = assertion.GetType()
+		if _, ok := assertion.GetTypeOk(); ok {
+			localAssertion["type"] = convertToString(assertion.GetType())
 		}
 		localAssertions = append(localAssertions, localAssertion)
 	}
@@ -472,8 +478,8 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	if actualOptions.HasFollowRedirects() {
 		localOptions["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
 	}
-	if actualOptions.HasMinFailureDuration() {
-		localOptions["min_failure_duration"] = convertToString(actualOptions.GetMinFailureDuration())
+	if v, ok := actualOptions.GetMinLocationFailedOk(); ok {
+		localOptions["min_failure_duration"] = convertToString(v)
 	}
 	if actualOptions.HasMinLocationFailed() {
 		localOptions["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
@@ -491,7 +497,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("message", syntheticsTest.GetMessage())
 	d.Set("status", syntheticsTest.GetStatus())
 	d.Set("tags", syntheticsTest.Tags)
-	d.Set("monitor_id", syntheticsTest.MonitorId)
+	//d.Set("monitor_id", syntheticsTest.MonitorId)
 }
 
 func convertToString(i interface{}) string {
