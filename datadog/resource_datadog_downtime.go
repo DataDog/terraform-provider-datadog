@@ -207,7 +207,7 @@ func buildDowntimeStruct(authV1 context.Context, d *schema.ResourceData, client 
 	// in the future (this works thanks to the downtime API allowing not to send these
 	// values when they shouldn't be touched).
 	var dt datadogV1.Downtime
-	var currentStart int64 = 0
+	var currentStart = *datadogV1.PtrInt64(0)
 	var currentEnd = *datadogV1.PtrInt64(0)
 	if updating {
 		id, err := strconv.ParseInt(d.Id(), 10, 64)
@@ -232,7 +232,7 @@ func buildDowntimeStruct(authV1 context.Context, d *schema.ResourceData, client 
 	}
 	endValue, endAttrName := getDowntimeBoundaryTimestamp(d, "end_date", "end")
 	if downtimeBoundaryNeedsApply(d, endAttrName, currentEnd, endValue, updating) {
-		dt.SetEnd(int64(endValue))
+		dt.SetEnd(endValue)
 	}
 
 	if attr, ok := d.GetOk("message"); ok {
