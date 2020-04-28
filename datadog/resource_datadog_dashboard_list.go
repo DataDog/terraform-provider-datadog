@@ -89,40 +89,22 @@ func resourceDatadogDashboardListUpdate(d *schema.ResourceData, meta interface{}
 	authV1 := providerConf.AuthV1
 	authV2 := providerConf.AuthV2
 
-	id, err := strconv.Atoi(d.Id())
+	id, err := strconv.ParseInt(d.Id(), 10, 64)
 
 	// Make any necessary updates to the Overall Dashboard List Object
 	dashList, err := buildDatadogDashboardList(d)
 	if err != nil {
 		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	dashList.SetId(int64(id))
 	dashList.SetName(d.Get("name").(string))
-	_, _, err = datadogClientV1.DashboardListsApi.UpdateDashboardList(authV1, int64(id)).Execute()
+	_, _, err = datadogClientV1.DashboardListsApi.UpdateDashboardList(authV1, id).Body(dashList).Execute()
 	if err != nil {
 		return translateClientError(err, "error updating dashboard list")
 	}
 
-	// Delete all elements from the dash list and add back only the ones in the config
-	completeDashListV2, _, err := datadogClientV2.DashboardListsApi.GetDashboardListItems(authV2, int64(id)).Execute()
-	if err != nil {
-		return translateClientError(err, "error getting dashboard list item")
-	}
-	_, _, err = datadogClientV2.DashboardListsApi.DeleteDashboardListItems(authV2, int64(id)).Body(completeDashListV2).Execute()
-	if err != nil {
-		return translateClientError(err, "error deleting dashboard list item")
-	}
-	if len(d.Get("dash_item").(*schema.Set).List()) > 0 {
-		dashboardListV2Items, err := buildDatadogDashboardListItemsV2(d)
-		if err != nil {
-			return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
-		}
-		_, _, err = datadogClientV2.DashboardListsApi.UpdateDashboardListItems(authV2, int64(id)).Body(dashboardListV2Items).Execute()
-		if err != nil {
-			return translateClientError(err, "error updating dashboard list item")
-		}
-	}
-
+	// Update the dashboard list
+	dashListItems, err := buildDatadogDashboardListItemsV2(d)
+	_, _, err = datadogClientV2.DashboardListsApi.UpdateDashboardListItems(authV2, id).Body(dashListItems).Execute()
 	return resourceDatadogDashboardListRead(d, meta)
 }
 
@@ -202,7 +184,7 @@ func buildDatadogDashboardList(d *schema.ResourceData) (datadogV1.DashboardList,
 }
 
 func buildDatadogDashboardListItemsV2(d *schema.ResourceData) (datadogV2.DashboardListItems, error) {
-	var dashboardListV2ItemsArr []datadogV2.DashboardListItem
+	dashboardListV2ItemsArr := make([]datadogV2.DashboardListItem, 0)
 	for _, dashItem := range d.Get("dash_item").(*schema.Set).List() {
 		dashItemRaw := dashItem.(map[string]interface{})
 		dashType := datadogV2.DashboardType(dashItemRaw["type"].(string))
