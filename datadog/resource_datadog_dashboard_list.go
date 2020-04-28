@@ -90,6 +90,9 @@ func resourceDatadogDashboardListUpdate(d *schema.ResourceData, meta interface{}
 	authV2 := providerConf.AuthV2
 
 	id, err := strconv.ParseInt(d.Id(), 10, 64)
+	if err != nil {
+		return fmt.Errorf("failed to parse resource id: %s", err.Error())
+	}
 
 	// Make any necessary updates to the Overall Dashboard List Object
 	dashList, err := buildDatadogDashboardList(d)
@@ -115,18 +118,17 @@ func resourceDatadogDashboardListRead(d *schema.ResourceData, meta interface{}) 
 	authV1 := providerConf.AuthV1
 	authV2 := providerConf.AuthV2
 
-	id, err := strconv.Atoi(d.Id())
+	id, err := strconv.ParseInt(d.Id(), 10, 64)
 
 	//Read the overall Dashboard List object
-	dashList, _, err := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, int64(id)).Execute()
+	dashList, _, err := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, id).Execute()
 	if err != nil {
 		return translateClientError(err, "error getting dashboard list")
 	}
-	d.SetId(strconv.Itoa(id))
 	d.Set("name", dashList.GetName())
 
 	// Read and set all the dashboard list elements
-	completeItemListV2, _, err := datadogClientV2.DashboardListsApi.GetDashboardListItems(authV2, int64(id)).Execute()
+	completeItemListV2, _, err := datadogClientV2.DashboardListsApi.GetDashboardListItems(authV2, id).Execute()
 	if err != nil {
 		return translateClientError(err, "error getting dashboard list item")
 	}
@@ -143,11 +145,11 @@ func resourceDatadogDashboardListDelete(d *schema.ResourceData, meta interface{}
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	id, _ := strconv.Atoi(d.Id())
+	id, _ := strconv.ParseInt(d.Id(), 10, 64)
 	// Deleting the overall List will also take care of deleting its sub elements
 	// Deletion of individual dash items happens in the Update method
 	// Note this doesn't delete the actual dashboards, just removes them from the deleted list
-	_, _, err := datadogClientV1.DashboardListsApi.DeleteDashboardList(authV1, int64(id)).Execute()
+	_, _, err := datadogClientV1.DashboardListsApi.DeleteDashboardList(authV1, id).Execute()
 	if err != nil {
 		return translateClientError(err, "error deleting dashboard list")
 	}
@@ -159,9 +161,9 @@ func resourceDatadogDashboardListExists(d *schema.ResourceData, meta interface{}
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	id, _ := strconv.Atoi(d.Id())
+	id, _ := strconv.ParseInt(d.Id(), 10, 64)
 	// Only check existence of the overall Dash List, not its sub items
-	if _, _, err := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, int64(id)).Execute(); err != nil {
+	if _, _, err := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, id).Execute(); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
