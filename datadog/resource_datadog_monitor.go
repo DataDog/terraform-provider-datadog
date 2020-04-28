@@ -13,8 +13,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
-const logAlertMonitorType = "log alert"
-
 func resourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceDatadogMonitorCreate,
@@ -291,7 +289,7 @@ func buildMonitorStruct(d *schema.ResourceData) *datadogV1.Monitor {
 		Options: &o,
 	}
 
-	if m.GetType() == logAlertMonitorType {
+	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {
 		if attr, ok := d.GetOk("enable_logs_sample"); ok {
 			o.SetEnableLogsSample(attr.(bool))
 		} else {
@@ -299,16 +297,14 @@ func buildMonitorStruct(d *schema.ResourceData) *datadogV1.Monitor {
 		}
 	}
 
+	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
-		var tags []string
 		for _, s := range attr.(*schema.Set).List() {
 			tags = append(tags, s.(string))
 		}
 		sort.Strings(tags)
-		m.SetTags(tags)
-	} else {
-		m.SetTags([]string{})
 	}
+	m.SetTags(tags)
 
 	return &m
 }
@@ -439,7 +435,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("require_full_window", m.Options.GetRequireFullWindow()) // TODO Is this one of those options that we neeed to check?
 	d.Set("locked", m.Options.GetLocked())
 
-	if m.GetType() == logAlertMonitorType {
+	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {
 		d.Set("enable_logs_sample", m.Options.GetEnableLogsSample())
 	}
 
@@ -510,7 +506,8 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	if newSilenced, ok := d.GetOk("silenced"); ok && !silenced {
 		mSilenced := m.Options.GetSilenced()
 		for k, _ := range mSilenced {
-			//Set silenced endtime for each  of the groups to current timestamp
+			// Since the Datadog GO client doesn't support unmuting on all scopes, loop over GetSilenced() and set the
+			// end timestamp to time.Now().Unix()
 			mSilenced[k] = time.Now().Unix()
 		}
 		*m, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
