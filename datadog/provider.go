@@ -7,9 +7,9 @@ import (
 	"log"
 	"net/url"
 	"runtime"
-	"strings"
 
-	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -76,8 +76,10 @@ func Provider() terraform.ResourceProvider {
 //ProviderConfiguration contains the initialized API clients to communicate with the Datadog API
 type ProviderConfiguration struct {
 	CommunityClient *datadogCommunity.Client
-	DatadogClientV1 *datadog.APIClient
-	Auth            context.Context
+	DatadogClientV1 *datadogV1.APIClient
+	DatadogClientV2 *datadogV2.APIClient
+	AuthV1          context.Context
+	AuthV2          context.Context
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
@@ -105,11 +107,11 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
-	// Initialize the official Datadog client
-	auth := context.WithValue(
+	// Initialize the official Datadog V1 API client
+	authV1 := context.WithValue(
 		context.Background(),
-		datadog.ContextAPIKeys,
-		map[string]datadog.APIKey{
+		datadogV1.ContextAPIKeys,
+		map[string]datadogV1.APIKey{
 			"apiKeyAuth": {
 				Key: d.Get("api_key").(string),
 			},
@@ -118,19 +120,61 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			},
 		},
 	)
-	config := datadog.NewConfiguration()
+	configV1 := datadogV1.NewConfiguration()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
-		if strings.Contains(apiURL, "datadoghq.eu") {
-			auth = context.WithValue(auth, datadog.ContextServerVariables, map[string]string{
-				"site": "datadoghq.eu",
-			})
+		parsedApiUrl, parseErr := url.Parse(apiURL)
+		if parseErr != nil {
+			return nil, fmt.Errorf(`invalid API Url : %v`, parseErr)
 		}
+		if parsedApiUrl.Host == "" || parsedApiUrl.Scheme == "" {
+			return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
+		}
+		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
+		authV1 = context.WithValue(authV1, datadogV1.ContextServerIndex, 1)
+		authV1 = context.WithValue(authV1, datadogV1.ContextServerVariables, map[string]string{
+			"name":     parsedApiUrl.Host,
+			"protocol": parsedApiUrl.Scheme,
+		})
 	}
-	datadogClient := datadog.NewAPIClient(config)
+	datadogClientV1 := datadogV1.NewAPIClient(configV1)
+
+	// Initialize the official Datadog V2 API client
+	authV2 := context.WithValue(
+		context.Background(),
+		datadogV2.ContextAPIKeys,
+		map[string]datadogV2.APIKey{
+			"apiKeyAuth": {
+				Key: d.Get("api_key").(string),
+			},
+			"appKeyAuth": {
+				Key: d.Get("app_key").(string),
+			},
+		},
+	)
+	configV2 := datadogV2.NewConfiguration()
+	if apiURL := d.Get("api_url").(string); apiURL != "" {
+		parsedApiUrl, parseErr := url.Parse(apiURL)
+		if parseErr != nil {
+			return nil, fmt.Errorf(`invalid API Url : %v`, parseErr)
+		}
+		if parsedApiUrl.Host == "" || parsedApiUrl.Scheme == "" {
+			return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
+		}
+		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
+		authV2 = context.WithValue(authV2, datadogV2.ContextServerIndex, 1)
+		authV2 = context.WithValue(authV2, datadogV2.ContextServerVariables, map[string]string{
+			"name":     parsedApiUrl.Host,
+			"protocol": parsedApiUrl.Scheme,
+		})
+	}
+	datadogClientV2 := datadogV2.NewAPIClient(configV2)
+
 	return &ProviderConfiguration{
 		CommunityClient: communityClient,
-		DatadogClientV1: datadogClient,
-		Auth:            auth,
+		DatadogClientV1: datadogClientV1,
+		DatadogClientV2: datadogClientV2,
+		AuthV1:          authV1,
+		AuthV2:          authV2,
 	}, nil
 }
 
@@ -139,8 +183,11 @@ func translateClientError(err error, msg string) error {
 		msg = "an error occurred"
 	}
 
-	if _, ok := err.(datadog.GenericOpenAPIError); ok {
-		return fmt.Errorf(msg+": %s", err.Error())
+	if apiErr, ok := err.(datadogV1.GenericOpenAPIError); ok {
+		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
+	}
+	if apiErr, ok := err.(datadogV2.GenericOpenAPIError); ok {
+		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
 	}
 	if errUrl, ok := err.(*url.Error); ok {
 		return fmt.Errorf(msg+" (url.Error): %s", errUrl)

@@ -9,11 +9,11 @@ import (
 	"net/url"
 	"os"
 	"runtime"
-	"strings"
 	"testing"
 	"time"
 
-	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/dnaeon/go-vcr/cassette"
 	"github.com/dnaeon/go-vcr/recorder"
 	"github.com/hashicorp/go-cleanhttp"
@@ -128,36 +128,79 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 		communityClient.ExtraHeader["User-Agent"] = fmt.Sprintf("Datadog/%s/terraform (%s)", version.ProviderVersion, runtime.Version())
 
 		// Initialize the official datadog client
-		auth := context.WithValue(
+		authV1 := context.WithValue(
 			context.Background(),
-			datadog.ContextAPIKeys,
-			map[string]datadog.APIKey{
-				"apiKeyAuth": datadog.APIKey{
+			datadogV1.ContextAPIKeys,
+			map[string]datadogV1.APIKey{
+				"apiKeyAuth": datadogV1.APIKey{
 					Key: d.Get("api_key").(string),
 				},
-				"appKeyAuth": datadog.APIKey{
+				"appKeyAuth": datadogV1.APIKey{
 					Key: d.Get("app_key").(string),
 				},
 			},
 		)
-
-		//config.HTTPClient
-		config := datadog.NewConfiguration()
-		config.Debug = true
-		config.HTTPClient = c
+		//Datadog V1 API config.HTTPClient
+		configV1 := datadogV1.NewConfiguration()
+		configV1.Debug = true
+		configV1.HTTPClient = c
 		if apiURL := d.Get("api_url").(string); apiURL != "" {
-			if strings.Contains(apiURL, "datadoghq.eu") {
-				auth = context.WithValue(auth, datadog.ContextServerVariables, map[string]string{
-					"site": "datadoghq.eu",
-				})
+			parsedApiUrl, parseErr := url.Parse(apiURL)
+			if parseErr != nil {
+				return nil, fmt.Errorf(`invalid API Url : %v`, parseErr)
 			}
+			if parsedApiUrl.Host == "" || parsedApiUrl.Scheme == "" {
+				return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
+			}
+			// If api url is passed, set and use the api name and protocol on ServerIndex{1}
+			authV1 = context.WithValue(authV1, datadogV1.ContextServerIndex, 1)
+			authV1 = context.WithValue(authV1, datadogV1.ContextServerVariables, map[string]string{
+				"name":     parsedApiUrl.Host,
+				"protocol": parsedApiUrl.Scheme,
+			})
 		}
-		datadogClient := datadog.NewAPIClient(config)
+		datadogClientV1 := datadogV1.NewAPIClient(configV1)
+
+		// Initialize the official datadog v2 API client
+		authV2 := context.WithValue(
+			context.Background(),
+			datadogV2.ContextAPIKeys,
+			map[string]datadogV2.APIKey{
+				"apiKeyAuth": datadogV2.APIKey{
+					Key: d.Get("api_key").(string),
+				},
+				"appKeyAuth": datadogV2.APIKey{
+					Key: d.Get("app_key").(string),
+				},
+			},
+		)
+		//Datadog V2 API config.HTTPClient
+		configV2 := datadogV2.NewConfiguration()
+		configV2.Debug = true
+		configV2.HTTPClient = c
+		if apiURL := d.Get("api_url").(string); apiURL != "" {
+			parsedApiUrl, parseErr := url.Parse(apiURL)
+			if parseErr != nil {
+				return nil, fmt.Errorf(`invalid API Url : %v`, parseErr)
+			}
+			if parsedApiUrl.Host == "" || parsedApiUrl.Scheme == "" {
+				return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
+			}
+			// If api url is passed, set and use the api name and protocol on ServerIndex{1}
+			authV2 = context.WithValue(authV2, datadogV2.ContextServerIndex, 1)
+			authV2 = context.WithValue(authV2, datadogV2.ContextServerVariables, map[string]string{
+				"name":     parsedApiUrl.Host,
+				"protocol": parsedApiUrl.Scheme,
+			})
+		}
+		datadogClientV2 := datadogV2.NewAPIClient(configV2)
 
 		return &ProviderConfiguration{
 			CommunityClient: communityClient,
-			DatadogClientV1: datadogClient,
-			Auth:            auth,
+			DatadogClientV1: datadogClientV1,
+			DatadogClientV2: datadogClientV2,
+			AuthV1:          authV1,
+			AuthV2:          authV2,
 		}, nil
 	}
 }
