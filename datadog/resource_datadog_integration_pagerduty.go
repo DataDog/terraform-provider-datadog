@@ -96,7 +96,7 @@ func buildIntegrationPagerduty(d *schema.ResourceData) (datadogV1.PagerDutyInteg
 				services = append(services, service)
 			}
 		} else {
-			// Explicitly return an empty array. The API will respond with a 400 if the value is null
+			// Return an empty array. The API will respond with a 400 if the value is null
 			services = []datadogV1.PagerDutyService{}
 		}
 	}
@@ -142,7 +142,7 @@ func resourceDatadogIntegrationPagerdutyRead(d *schema.ResourceData, meta interf
 		return translateClientError(err, "error getting PagerDuty integration")
 	}
 
-	var services []map[string]string
+	services := make([]map[string]string, 0)
 	if value, ok := d.GetOk("individual_services"); ok && value.(bool) {
 		services = nil
 	} else {
@@ -191,12 +191,18 @@ func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta inte
 		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 
-	pdTest, _, err := datadogClientV1.PagerDutyIntegrationApi.GetPagerDutyIntegration(authV1).Execute()
-
-	pd.SetServices(pdTest.GetServices())
-	pd.SetSchedules(pdTest.GetSchedules())
 	// Use CreatePagerDutyIntegration method to update the test. UpdatePagerDutyIntegration() accepts type
-	// PagerDutyServicesAndSchedules which does does not have field to update subdomain and api_token
+	// PagerDutyServicesAndSchedules which does does not have field a to update subdomain and api_token.
+	// Additionally, if individual_services is set to true, we need to get the list of services and assign it to the pd construct.
+	// Otherwise, the api will respond with a 400. Setting it to an empty array will cause the services to be overwritten.
+	if value, ok := d.GetOk("individual_services"); ok && value.(bool) {
+		pdRes, _, err := datadogClientV1.PagerDutyIntegrationApi.GetPagerDutyIntegration(authV1).Execute()
+		if err != nil {
+			return translateClientError(err, "error deleting PagerDuty integration service")
+		}
+		pd.SetServices(pdRes.GetServices())
+	}
+
 	if _, err := datadogClientV1.PagerDutyIntegrationApi.CreatePagerDutyIntegration(authV1).Body(pd).Execute(); err != nil {
 		return translateClientError(err, "error updating PagerDuty integration")
 	}
