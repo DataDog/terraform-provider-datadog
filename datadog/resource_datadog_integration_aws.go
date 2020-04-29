@@ -6,8 +6,8 @@ import (
 	"strings"
 	"sync"
 
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/zorkian/go-datadog-api"
 )
 
 var integrationAwsMutex = sync.Mutex{}
@@ -71,9 +71,10 @@ func resourceDatadogIntegrationAwsExists(d *schema.ResourceData, meta interface{
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	integrations, err := client.GetIntegrationAWS()
+	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(authV1).Execute()
 	if err != nil {
 		return false, translateClientError(err, "error checking AWS integration exists")
 	}
@@ -81,18 +82,18 @@ func resourceDatadogIntegrationAwsExists(d *schema.ResourceData, meta interface{
 	if err != nil {
 		return false, err
 	}
-	for _, integration := range *integrations {
-		if integration.GetAccountID() == accountID && integration.GetRoleName() == roleName {
+	for _, integration := range integrations.GetAccounts() {
+		if integration.GetAccountId() == accountID && integration.GetRoleName() == roleName {
 			return true, nil
 		}
 	}
 	return false, nil
 }
 
-func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, accountID string, roleName string) datadog.IntegrationAWSAccount {
-	iaws := datadog.IntegrationAWSAccount{
-		AccountID: datadog.String(accountID),
-		RoleName:  datadog.String(roleName),
+func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, accountID string, roleName string) datadogV1.AWSAccount {
+	iaws := datadogV1.AWSAccount{
+		AccountId: &accountID,
+		RoleName:  &roleName,
 	}
 
 	var filterTags []string
@@ -119,15 +120,16 @@ func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, a
 			accountSpecificNamespaceRules[k] = v.(bool)
 		}
 	}
-	iaws.FilterTags = filterTags
-	iaws.HostTags = hostTags
-	iaws.AccountSpecificNamespaceRules = accountSpecificNamespaceRules
+	iaws.SetFilterTags(filterTags)
+	iaws.SetHostTags(hostTags)
+	iaws.SetAccountSpecificNamespaceRules(accountSpecificNamespaceRules)
 	return iaws
 }
 
 func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
@@ -136,37 +138,38 @@ func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{
 	roleName := d.Get("role_name").(string)
 
 	iaws := resourceDatadogIntegrationAwsPrepareCreateRequest(d, accountID, roleName)
-	response, err := client.CreateIntegrationAWS(&iaws)
+	response, _, err := datadogClientV1.AWSIntegrationApi.CreateAWSAccount(authV1).Body(iaws).Execute()
 
 	if err != nil {
 		return translateClientError(err, "error creating AWS integration")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", accountID, roleName))
-	d.Set("external_id", response.ExternalID)
+	d.Set("external_id", response.ExternalId)
 
 	return resourceDatadogIntegrationAwsRead(d, meta)
 }
 
 func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
 	accountID, roleName, err := accountAndRoleFromID(d.Id())
 	if err != nil {
 		return err
 	}
 
-	integrations, err := client.GetIntegrationAWS()
+	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(authV1).Execute()
 	if err != nil {
 		return translateClientError(err, "error getting AWS integration")
 	}
-	for _, integration := range *integrations {
-		if integration.GetAccountID() == accountID && integration.GetRoleName() == roleName {
-			d.Set("account_id", integration.GetAccountID())
+	for _, integration := range integrations.GetAccounts() {
+		if integration.GetAccountId() == accountID && integration.GetRoleName() == roleName {
+			d.Set("account_id", integration.GetAccountId())
 			d.Set("role_name", integration.GetRoleName())
-			d.Set("filter_tags", integration.FilterTags)
-			d.Set("host_tags", integration.HostTags)
+			d.Set("filter_tags", integration.GetFilterTags())
+			d.Set("host_tags", integration.GetHostTags())
 			d.Set("account_specific_namespace_rules", integration.AccountSpecificNamespaceRules)
 			return nil
 		}
@@ -190,7 +193,8 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 	// }
 
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
@@ -201,7 +205,7 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 
 	iaws := resourceDatadogIntegrationAwsPrepareCreateRequest(d, accountID, roleName)
 
-	_, err = client.CreateIntegrationAWS(&iaws)
+	_, _, err = datadogClientV1.AWSIntegrationApi.CreateAWSAccount(authV1).Body(iaws).Execute()
 	if err != nil {
 		return translateClientError(err, "error creating AWS integration")
 	}
@@ -211,7 +215,8 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 
 func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
@@ -219,13 +224,10 @@ func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{
 	if err != nil {
 		return err
 	}
+	iaws := resourceDatadogIntegrationAwsPrepareCreateRequest(d, accountID, roleName)
 
-	if err := client.DeleteIntegrationAWS(
-		&datadog.IntegrationAWSAccountDeleteRequest{
-			AccountID: datadog.String(accountID),
-			RoleName:  datadog.String(roleName),
-		},
-	); err != nil {
+	_, _, err = datadogClientV1.AWSIntegrationApi.DeleteAWSAccount(authV1).Body(iaws).Execute()
+	if err != nil {
 		return translateClientError(err, "error deleting AWS integration")
 	}
 
