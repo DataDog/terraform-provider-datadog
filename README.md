@@ -73,7 +73,7 @@ for an example of this.
 *Note:* Recording cassettes creates/updates/destroys real resources. Never run this on
 a production Datadog organization.
 
-In order to re-record all cassettes you need to have `DATADOG_API_KEY` and `DATADOG_APP_KEY`
+In order to re-record all cassettes you need to have `DD_API_KEY` and `DD_APP_KEY`
 for your testing organization in your environment. With that, run `make cassettes`. Do note
 that this would regenerate all cassettes and thus take a very long time; if you only need to
 re-record cassettes for one or two tests, you can run `make cassettes TESTARGS ="-run XXX"` - this

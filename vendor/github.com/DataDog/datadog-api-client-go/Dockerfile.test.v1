@@ -1,0 +1,11 @@
+FROM golang:latest
+ENTRYPOINT ["/datadog-api-client-go/run-tests.sh"]
+
+COPY go.mod go.sum /datadog-api-client-go/
+
+WORKDIR /datadog-api-client-go/
+RUN go mod download
+
+COPY . /datadog-api-client-go
+
+WORKDIR /datadog-api-client-go/

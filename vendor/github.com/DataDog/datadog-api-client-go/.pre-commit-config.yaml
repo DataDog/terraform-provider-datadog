@@ -1,0 +1,9 @@
+repos:
+- repo: local
+  hooks:
+  - id: generated
+    name: Do not commit generated files
+    language: fail
+    entry: Unstage generated files with 'git reset --' command
+    files: '^api/.*(?<!\_test.go)$'
+    verbose: true
