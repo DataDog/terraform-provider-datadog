@@ -138,9 +138,9 @@ type Schema struct {
 	Default     interface{}
 	DefaultFunc SchemaDefaultFunc
 
-	// Description is used as the description for docs or asking for user
-	// input. It should be relatively short (a few sentences max) and should
-	// be formatted to fit a CLI.
+	// Description is used as the description for docs, the language server and
+	// other user facing usage. It can be plain-text or markdown depending on the
+	// global DescriptionKind setting.
 	Description string
 
 	// InputDefault is the default value to use for when inputs are requested.
@@ -223,9 +223,12 @@ type Schema struct {
 	//
 	// AtLeastOneOf is a set of schema keys that, when set, at least one of
 	// the keys in that list must be specified.
+	//
+	// RequiredWith is a set of schema keys that must be set simultaneously.
 	ConflictsWith []string
 	ExactlyOneOf  []string
 	AtLeastOneOf  []string
+	RequiredWith  []string
 
 	// When Deprecated is set, this attribute is deprecated.
 	//
@@ -625,7 +628,7 @@ func (m schemaMap) Input(
 	input terraform.UIInput,
 	c *terraform.ResourceConfig) (*terraform.ResourceConfig, error) {
 	keys := make([]string, 0, len(m))
-	for k, _ := range m {
+	for k := range m {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
@@ -770,6 +773,13 @@ func (m schemaMap) internalValidate(topSchemaMap schemaMap, attrsOnly bool) erro
 			err := checkKeysAgainstSchemaFlags(k, v.ConflictsWith, topSchemaMap)
 			if err != nil {
 				return fmt.Errorf("ConflictsWith: %+v", err)
+			}
+		}
+
+		if len(v.RequiredWith) > 0 {
+			err := checkKeysAgainstSchemaFlags(k, v.RequiredWith, topSchemaMap)
+			if err != nil {
+				return fmt.Errorf("RequiredWith: %+v", err)
 			}
 		}
 
@@ -1414,6 +1424,11 @@ func (m schemaMap) validate(
 			"%q: this field cannot be set", k)}
 	}
 
+	err = validateRequiredWithAttribute(k, schema, c)
+	if err != nil {
+		return nil, []error{err}
+	}
+
 	// If the value is unknown then we can't validate it yet.
 	// In particular, this avoids spurious type errors where downstream
 	// validation code sees UnknownVariableValue as being just a string.
@@ -1492,6 +1507,27 @@ func removeDuplicates(elements []string) []string {
 	}
 
 	return result
+}
+
+func validateRequiredWithAttribute(
+	k string,
+	schema *Schema,
+	c *terraform.ResourceConfig) error {
+
+	if len(schema.RequiredWith) == 0 {
+		return nil
+	}
+
+	allKeys := removeDuplicates(append(schema.RequiredWith, k))
+	sort.Strings(allKeys)
+
+	for _, key := range allKeys {
+		if _, ok := c.Get(key); !ok {
+			return fmt.Errorf("%q: all of `%s` must be specified", k, strings.Join(allKeys, ","))
+		}
+	}
+
+	return nil
 }
 
 func validateExactlyOneAttribute(
@@ -1608,7 +1644,7 @@ func (m schemaMap) validateList(
 
 	// Now build the []interface{}
 	raws := make([]interface{}, rawV.Len())
-	for i, _ := range raws {
+	for i := range raws {
 		raws[i] = rawV.Index(i).Interface()
 	}
 
@@ -1694,7 +1730,7 @@ func (m schemaMap) validateMap(
 
 	// It is a slice, verify that all the elements are maps
 	raws := make([]interface{}, rawV.Len())
-	for i, _ := range raws {
+	for i := range raws {
 		raws[i] = rawV.Index(i).Interface()
 	}
 
@@ -1818,7 +1854,7 @@ func (m schemaMap) validateObject(
 
 	// Detect any extra/unknown keys and report those as errors.
 	if m, ok := raw.(map[string]interface{}); ok {
-		for subk, _ := range m {
+		for subk := range m {
 			if _, ok := schema[subk]; !ok {
 				if subk == TimeoutsConfigKey {
 					continue
