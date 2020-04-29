@@ -15,6 +15,7 @@ const (
 	tfDateRemapperProcessor      = "date_remapper"
 	tfGeoIPParserProcessor       = "geo_ip_parser"
 	tfGrokParserProcessor        = "grok_parser"
+	tfLookupProcessor            = "lookup_processor"
 	tfMessageRemapperProcessor   = "message_remapper"
 	tfNestedPipelineProcessor    = "pipeline"
 	tfServiceRemapperProcessor   = "service_remapper"
@@ -32,6 +33,7 @@ var tfProcessorTypes = map[string]string{
 	tfDateRemapperProcessor:      datadog.DateRemapperType,
 	tfGeoIPParserProcessor:       datadog.GeoIPParserType,
 	tfGrokParserProcessor:        datadog.GrokParserType,
+	tfLookupProcessor:            datadog.LookupProcessorType,
 	tfMessageRemapperProcessor:   datadog.MessageRemapperType,
 	tfNestedPipelineProcessor:    datadog.NestedPipelineType,
 	tfServiceRemapperProcessor:   datadog.ServiceRemapperType,
@@ -49,6 +51,7 @@ var tfProcessors = map[string]*schema.Schema{
 	tfDateRemapperProcessor:      dateRemapper,
 	tfGeoIPParserProcessor:       geoIPParser,
 	tfGrokParserProcessor:        grokParser,
+	tfLookupProcessor:            lookupProcessor,
 	tfMessageRemapperProcessor:   messageRemapper,
 	tfServiceRemapperProcessor:   serviceRemapper,
 	tfStatusRemapperProcessor:    statusRemmaper,
@@ -65,6 +68,7 @@ var ddProcessorTypes = map[string]string{
 	datadog.DateRemapperType:           tfDateRemapperProcessor,
 	datadog.GeoIPParserType:            tfGeoIPParserProcessor,
 	datadog.GrokParserType:             tfGrokParserProcessor,
+	datadog.LookupProcessorType:        tfLookupProcessor,
 	datadog.MessageRemapperType:        tfMessageRemapperProcessor,
 	datadog.NestedPipelineType:         tfNestedPipelineProcessor,
 	datadog.ServiceRemapperType:        tfServiceRemapperProcessor,
@@ -183,6 +187,26 @@ var grokParser = &schema.Schema{
 					},
 				},
 			},
+		},
+	},
+}
+
+var lookupProcessor = &schema.Schema{
+	Type:     schema.TypeList,
+	MaxItems: 1,
+	Optional: true,
+	Elem: &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"name":       {Type: schema.TypeString, Optional: true},
+			"is_enabled": {Type: schema.TypeBool, Optional: true},
+			"source":     {Type: schema.TypeString, Required: true},
+			"target":     {Type: schema.TypeString, Required: true},
+			"lookup_table": {
+				Type:     schema.TypeList,
+				Required: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
+			"default_lookup": {Type: schema.TypeString, Optional: true},
 		},
 	},
 }
@@ -406,6 +430,8 @@ func buildTerraformProcessor(ddProcessor datadog.LogsProcessor) (map[string]inte
 		tfProcessor = buildTerraformGeoIPParser(ddProcessor.Definition.(datadog.GeoIPParser))
 	case datadog.GrokParserType:
 		tfProcessor = buildTerraformGrokParser(ddProcessor.Definition.(datadog.GrokParser))
+	case datadog.LookupProcessorType:
+		tfProcessor = buildTerraformLookupProcessor(ddProcessor.Definition.(datadog.LookupProcessor))
 	case datadog.NestedPipelineType:
 		tfProcessor, err = buildTerraformNestedPipeline(ddProcessor.Definition.(datadog.NestedPipeline))
 	case datadog.StringBuilderProcessorType:
@@ -441,6 +467,20 @@ func buildTerraformUrlParser(ddUrl datadog.UrlParser) map[string]interface{} {
 		"target":                   ddUrl.GetTarget(),
 		"normalize_ending_slashes": ddUrl.GetNormalizeEndingSlashes(),
 	}
+}
+
+func buildTerraformLookupProcessor(ddLookup datadog.LookupProcessor) map[string]interface{} {
+	tfProcessor := map[string]interface{}{
+		"source":       ddLookup.GetSource(),
+		"target":       ddLookup.GetTarget(),
+		"lookup_table": ddLookup.LookupTable,
+	}
+
+	if ddLookup.HasDefaultLookup() {
+		tfProcessor["default_lookup"] = ddLookup.GetDefaultLookup()
+	}
+
+	return tfProcessor
 }
 
 func buildTerraformNestedPipeline(ddNested datadog.NestedPipeline) (map[string]interface{}, error) {
@@ -588,6 +628,8 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 		ddProcessor.Definition = buildDatadogGeoIPParser(tfProcessor)
 	case datadog.GrokParserType:
 		ddProcessor.Definition = buildDatadogGrokParser(tfProcessor)
+	case datadog.LookupProcessorType:
+		ddProcessor.Definition = buildDatadogLookupProcessor(tfProcessor)
 	case datadog.NestedPipelineType:
 		ddProcessor.Definition, err = buildDatadogNestedPipeline(tfProcessor)
 	case datadog.StringBuilderProcessorType:
@@ -635,6 +677,27 @@ func buildDatadogUserAgentParser(tfProcessor map[string]interface{}) datadog.Use
 		ddUserAgentParser.SetIsEncoded(tfIsEncoded)
 	}
 	return ddUserAgentParser
+}
+
+func buildDatadogLookupProcessor(tfProcessor map[string]interface{}) datadog.LookupProcessor {
+	ddLookupProcessor := datadog.LookupProcessor{}
+	if tfSource, exists := tfProcessor["source"].(string); exists {
+		ddLookupProcessor.SetSource(tfSource)
+	}
+	if tfTarget, exists := tfProcessor["target"].(string); exists {
+		ddLookupProcessor.SetTarget(tfTarget)
+	}
+	if tfLookupTable, exists := tfProcessor["lookup_table"].([]interface{}); exists && len(tfLookupTable) > 0 {
+		ddLookupTable := make([]string, len(tfLookupTable))
+		for i, tfLookupLine := range tfLookupTable {
+			ddLookupTable[i] = tfLookupLine.(string)
+		}
+		ddLookupProcessor.LookupTable = ddLookupTable
+	}
+	if tfDefaultLookup, exists := tfProcessor["default_lookup"].(string); exists && len(tfDefaultLookup) > 0 {
+		ddLookupProcessor.SetDefaultLookup(tfDefaultLookup)
+	}
+	return ddLookupProcessor
 }
 
 func buildDatadogNestedPipeline(tfProcessor map[string]interface{}) (datadog.NestedPipeline, error) {

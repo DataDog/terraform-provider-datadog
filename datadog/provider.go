@@ -27,17 +27,17 @@ func Provider() terraform.ResourceProvider {
 			"api_key": {
 				Type:        schema.TypeString,
 				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DATADOG_API_KEY", nil),
+				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_API_KEY", "DD_API_KEY"}, nil),
 			},
 			"app_key": {
 				Type:        schema.TypeString,
 				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DATADOG_APP_KEY", nil),
+				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_APP_KEY", "DD_APP_KEY"}, nil),
 			},
 			"api_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DATADOG_HOST", nil),
+				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_HOST", "DD_HOST"}, nil),
 			},
 		},
 
@@ -186,20 +186,8 @@ func translateClientError(err error, msg string) error {
 	if apiErr, ok := err.(datadogV1.GenericOpenAPIError); ok {
 		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
 	}
-	if errUrl, ok := err.(*url.Error); ok {
-		return fmt.Errorf(msg+" (url.Error): %s", errUrl)
-	}
-
-	return fmt.Errorf(msg+": %s", err.Error())
-}
-
-func translateClientErrorV2(err error, msg string) error {
-	if msg == "" {
-		msg = "an error occurred"
-	}
-
 	if apiErr, ok := err.(datadogV2.GenericOpenAPIError); ok {
-		fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
+		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
 	}
 	if errUrl, ok := err.(*url.Error); ok {
 		return fmt.Errorf(msg+" (url.Error): %s", errUrl)
