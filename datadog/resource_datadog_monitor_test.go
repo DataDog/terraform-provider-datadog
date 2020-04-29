@@ -43,11 +43,11 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1"),
+						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "2"),
+						"datadog_monitor.foo", "thresholds.critical", "2.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical_recovery", "1.5"),
 					resource.TestCheckResourceAttr(
@@ -201,11 +201,11 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1"),
+						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "2"),
+						"datadog_monitor.foo", "thresholds.critical", "2.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical_recovery", "1.5"),
 					resource.TestCheckResourceAttr(
@@ -252,13 +252,13 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "40"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.ok", "0"),
+						"datadog_monitor.foo", "thresholds.ok", "0.0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1"),
+						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "3"),
+						"datadog_monitor.foo", "thresholds.critical", "3.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical_recovery", "2.5"),
 					resource.TestCheckResourceAttr(
@@ -336,11 +336,11 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1"),
+						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "2"),
+						"datadog_monitor.foo", "thresholds.critical", "2.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical_recovery", "1.5"),
 					resource.TestCheckResourceAttr(
@@ -387,13 +387,13 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "40"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.ok", "0"),
+						"datadog_monitor.foo", "thresholds.ok", "0.0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1"),
+						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "3"),
+						"datadog_monitor.foo", "thresholds.critical", "3.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical_recovery", "2.5"),
 					resource.TestCheckResourceAttr(
@@ -460,13 +460,13 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.ok", "0"),
+						"datadog_monitor.foo", "thresholds.ok", "0.0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1"),
+						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "2"),
+						"datadog_monitor.foo", "thresholds.critical", "2.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical_recovery", "1.5"),
 				),
@@ -490,13 +490,13 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1"),
+						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning_recovery", "0"),
+						"datadog_monitor.foo", "thresholds.warning_recovery", "0.0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "2"),
+						"datadog_monitor.foo", "thresholds.critical", "2.0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical_recovery", "1"),
+						"datadog_monitor.foo", "thresholds.critical_recovery", "1.0"),
 				),
 			},
 
@@ -505,13 +505,13 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1"),
+						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "3"),
+						"datadog_monitor.foo", "thresholds.critical", "3.0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical_recovery", "2"),
+						"datadog_monitor.foo", "thresholds.critical_recovery", "2.0"),
 				),
 			},
 		},
@@ -545,9 +545,9 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1"),
+						"datadog_monitor.foo", "thresholds.warning", "1.0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "2"),
+						"datadog_monitor.foo", "thresholds.critical", "2.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "enable_logs_sample", "true"),
 				),
@@ -607,13 +607,13 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.ok", "0"),
+						"datadog_monitor.foo", "thresholds.ok", "0.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning", "0.5"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.25"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "1"),
+						"datadog_monitor.foo", "thresholds.critical", "1.0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
@@ -882,8 +882,8 @@ resource "datadog_monitor" "foo" {
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
 
   thresholds = {
-	warning = "1"
-	critical = "2"
+	warning = "1.0"
+	critical = "2.0"
 	warning_recovery = "0.5"
 	critical_recovery = "1.5"
   }
@@ -991,7 +991,7 @@ resource "datadog_monitor" "foo" {
   thresholds = {
 	warning           = 1
 	warning_recovery  = 0.5
-	critical          = 3
+	critical          = 3.0
 	critical_recovery = 2
   }
 
@@ -1018,10 +1018,10 @@ resource "datadog_monitor" "foo" {
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} > 3"
 
   thresholds = {
-	ok                = "0"
-	warning           = "1"
+	ok                = "0.0"
+	warning           = "1.0"
 	warning_recovery  = "0.5"
-	critical          = "3"
+	critical          = "3.0"
 	critical_recovery = "2.5"
   }
 
@@ -1052,10 +1052,10 @@ resource "datadog_monitor" "foo" {
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} > 3"
 
   thresholds = {
-	ok                = "0"
-	warning           = "1"
+	ok                = "0.0"
+	warning           = "1.0"
 	warning_recovery  = "0.5"
-	critical          = "3"
+	critical          = "3.0"
 	critical_recovery = "2.5"
   }
 
@@ -1109,10 +1109,10 @@ EOF
 avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2
 EOF
   thresholds = {
-	ok = "0"
-	warning = "1"
+	ok = "0.0"
+	warning = "1.0"
 	warning_recovery = "0.5"
-	critical = "2"
+	critical = "2.0"
 	critical_recovery = "1.5"
   }
 
@@ -1135,8 +1135,8 @@ resource "datadog_monitor" "foo" {
   query = "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") > 2"
 
   thresholds = {
-	warning = "1"
-	critical = "2"
+	warning = "1.0"
+	critical = "2.0"
   }
 
   renotify_interval = 60
@@ -1160,10 +1160,10 @@ resource "datadog_monitor" "foo" {
 	message = "test"
 	query = "avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') >= 1"
 	thresholds = {
-	  ok = "0"
+	  ok = "0.0"
 	  warning = "0.5"
 	  warning_recovery = "0.25"
-	  critical = "1"
+	  critical = "1.0"
 	  critical_recovery = "0.5"
 	}
 
@@ -1184,10 +1184,10 @@ resource "datadog_monitor" "foo" {
 	escalation_message = "the situation has escalated @pagerduty"
 	query = "avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 3, direction='above', alert_window='last_5m', interval=20, count_default_zero='true') >= 1"
 	thresholds = {
-	  ok = "0"
+	  ok = "0.0"
 	  warning = "0.5"
 	  warning_recovery = "0.25"
-	  critical = "1"
+	  critical = "1.0"
 	  critical_recovery = "0.5"
 	}
 
