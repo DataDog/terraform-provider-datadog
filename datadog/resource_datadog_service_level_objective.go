@@ -169,14 +169,14 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 			for _, v := range attr.(*schema.Set).List() {
 				s = append(s, int64(v.(int)))
 			}
-			slo.MonitorIds = &s
+			slo.SetMonitorIds(s)
 		}
 		if attr, ok := d.GetOk("groups"); ok {
 			s := make([]string, 0)
 			for _, v := range attr.(*schema.Set).List() {
 				s = append(s, v.(string))
 			}
-			slo.Groups = &s
+			slo.SetGroups(s)
 		}
 	default:
 		// metric type
@@ -203,7 +203,7 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 		for _, v := range attr.(*schema.Set).List() {
 			s = append(s, v.(string))
 		}
-		slo.Tags = &s
+		slo.SetTags(s)
 	}
 
 	if _, ok := d.GetOk("thresholds"); ok {
