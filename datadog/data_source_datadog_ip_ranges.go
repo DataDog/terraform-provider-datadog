@@ -6,7 +6,7 @@ import (
 
 func dataSourceDatadogIpRanges() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceDatadogIpRangesRead,
+		Read: dataSourceDatadogIPRangesRead,
 
 		// IP ranges are divided between ipv4 and ipv6
 		Schema: map[string]*schema.Schema{
@@ -86,112 +86,54 @@ func dataSourceDatadogIpRanges() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogIpRangesRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogIPRangesRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	client := providerConf.DatadogClientV1
+	auth := providerConf.AuthV1
 
-	ipAddresses, err := client.GetIPRanges()
+	ipAddresses, _, err := client.IPRangesApi.GetIPRanges(auth).Execute()
 	if err != nil {
-		return translateClientError(err, "error getting ip range")
+		return err
 	}
 
 	// v4 and v6
-	if len(ipAddresses.Agents["prefixes_ipv4"])+len(ipAddresses.API["prefixes_ipv4"])+
-		len(ipAddresses.Apm["prefixes_ipv4"])+len(ipAddresses.Logs["prefixes_ipv4"])+
-		len(ipAddresses.Process["prefixes_ipv4"])+len(ipAddresses.Synthetics["prefixes_ipv4"])+
-		len(ipAddresses.Webhooks["prefixes_ipv4"])+len(ipAddresses.Agents["prefixes_ipv6"])+
-		len(ipAddresses.API["prefixes_ipv6"])+len(ipAddresses.Apm["prefixes_ipv6"])+
-		len(ipAddresses.Logs["prefixes_ipv6"])+len(ipAddresses.Process["prefixes_ipv6"])+
-		len(ipAddresses.Synthetics["prefixes_ipv6"])+len(ipAddresses.Webhooks["prefixes_ipv6"]) > 0 {
+	ipAddressesPtr := &ipAddresses
+	agents := ipAddressesPtr.GetAgents()
+	api := ipAddressesPtr.GetAgents()
+	apm := ipAddressesPtr.GetAgents()
+	logs := ipAddressesPtr.GetAgents()
+	process := ipAddressesPtr.GetAgents()
+	synthetics := ipAddressesPtr.GetAgents()
+	webhook := ipAddressesPtr.GetAgents()
+
+	if len(agents.GetPrefixesIpv4())+len(api.GetPrefixesIpv4())+
+		len(apm.GetPrefixesIpv4())+len(logs.GetPrefixesIpv4())+
+		len(process.GetPrefixesIpv4())+len(synthetics.GetPrefixesIpv4())+
+		len(webhook.GetPrefixesIpv4())+len(agents.GetPrefixesIpv6())+
+		len(api.GetPrefixesIpv6())+len(apm.GetPrefixesIpv6())+
+		len(logs.GetPrefixesIpv6())+len(process.GetPrefixesIpv6())+
+		len(synthetics.GetPrefixesIpv6())+len(webhook.GetPrefixesIpv6()) > 0 {
 		d.SetId("datadog-ip-ranges")
 	}
 
 	// Set ranges when the list is not empty
 	// v4
-	if len(ipAddresses.Agents["prefixes_ipv4"]) > 0 {
-		d.Set("agents_ipv4", ipAddresses.Agents["prefixes_ipv4"])
-	} else {
-		d.Set("agents_ipv4", []string{})
-	}
-
-	if len(ipAddresses.API["prefixes_ipv4"]) > 0 {
-		d.Set("api_ipv4", ipAddresses.API["prefixes_ipv4"])
-	} else {
-		d.Set("api_ipv4", []string{})
-	}
-
-	if len(ipAddresses.Apm["prefixes_ipv4"]) > 0 {
-		d.Set("apm_ipv4", ipAddresses.Apm["prefixes_ipv4"])
-	} else {
-		d.Set("apm_ipv4", []string{})
-	}
-
-	if len(ipAddresses.Logs["prefixes_ipv4"]) > 0 {
-		d.Set("logs_ipv4", ipAddresses.Logs["prefixes_ipv4"])
-	} else {
-		d.Set("logs_ipv4", []string{})
-	}
-
-	if len(ipAddresses.Process["prefixes_ipv4"]) > 0 {
-		d.Set("process_ipv4", ipAddresses.Process["prefixes_ipv4"])
-	} else {
-		d.Set("process_ipv4", []string{})
-	}
-
-	if len(ipAddresses.Synthetics["prefixes_ipv4"]) > 0 {
-		d.Set("synthetics_ipv4", ipAddresses.Synthetics["prefixes_ipv4"])
-	} else {
-		d.Set("synthetics_ipv4", []string{})
-	}
-
-	if len(ipAddresses.Webhooks["prefixes_ipv4"]) > 0 {
-		d.Set("webhooks_ipv4", ipAddresses.Webhooks["prefixes_ipv4"])
-	} else {
-		d.Set("webhooks_ipv4", []string{})
-	}
+	d.Set("agents_ipv4", agents.GetPrefixesIpv4())
+	d.Set("api_ipv4", api.GetPrefixesIpv4())
+	d.Set("apm_ipv4", apm.GetPrefixesIpv4())
+	d.Set("logs_ipv4", logs.GetPrefixesIpv4())
+	d.Set("process_ipv4", process.GetPrefixesIpv4())
+	d.Set("synthetics_ipv4", synthetics.GetPrefixesIpv4())
+	d.Set("webhooks_ipv4", webhook.GetPrefixesIpv4())
 
 	// v6
-	if len(ipAddresses.Agents["prefixes_ipv6"]) > 0 {
-		d.Set("agents_ipv6", ipAddresses.Agents["prefixes_ipv6"])
-	} else {
-		d.Set("agents_ipv6", []string{})
-	}
-
-	if len(ipAddresses.API["prefixes_ipv6"]) > 0 {
-		d.Set("api_ipv6", ipAddresses.API["prefixes_ipv6"])
-	} else {
-		d.Set("api_ipv6", []string{})
-	}
-
-	if len(ipAddresses.Apm["prefixes_ipv6"]) > 0 {
-		d.Set("apm_ipv6", ipAddresses.Apm["prefixes_ipv6"])
-	} else {
-		d.Set("apm_ipv6", []string{})
-	}
-
-	if len(ipAddresses.Logs["prefixes_ipv6"]) > 0 {
-		d.Set("logs_ipv6", ipAddresses.Logs["prefixes_ipv6"])
-	} else {
-		d.Set("logs_ipv6", []string{})
-	}
-
-	if len(ipAddresses.Process["prefixes_ipv6"]) > 0 {
-		d.Set("process_ipv6", ipAddresses.Process["prefixes_ipv6"])
-	} else {
-		d.Set("process_ipv6", []string{})
-	}
-
-	if len(ipAddresses.Synthetics["prefixes_ipv6"]) > 0 {
-		d.Set("synthetics_ipv6", ipAddresses.Synthetics["prefixes_ipv6"])
-	} else {
-		d.Set("synthetics_ipv6", []string{})
-	}
-
-	if len(ipAddresses.Webhooks["prefixes_ipv6"]) > 0 {
-		d.Set("webhooks_ipv6", ipAddresses.Webhooks["prefixes_ipv6"])
-	} else {
-		d.Set("webhooks_ipv6", []string{})
-	}
+	d.Set("agents_ipv6", agents.GetPrefixesIpv6())
+	d.Set("api_ipv6", api.GetPrefixesIpv6())
+	d.Set("apm_ipv6", apm.GetPrefixesIpv6())
+	d.Set("logs_ipv6", logs.GetPrefixesIpv6())
+	d.Set("process_ipv6", process.GetPrefixesIpv6())
+	d.Set("synthetics_ipv6", synthetics.GetPrefixesIpv6())
+	d.Set("webhooks_ipv6", webhook.GetPrefixesIpv6())
 
 	return nil
 }
