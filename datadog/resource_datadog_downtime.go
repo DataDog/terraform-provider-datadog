@@ -261,7 +261,7 @@ func buildDowntimeStruct(authV1 context.Context, d *schema.ResourceData, client 
 			for _, weekDay := range attr.([]interface{}) {
 				weekDays = append(weekDays, weekDay.(string))
 			}
-			recurrence.WeekDays = &weekDays
+			recurrence.SetWeekDays(weekDays)
 		}
 
 		dt.SetRecurrence(recurrence)
@@ -270,12 +270,12 @@ func buildDowntimeStruct(authV1 context.Context, d *schema.ResourceData, client 
 	for _, s := range d.Get("scope").([]interface{}) {
 		scope = append(scope, s.(string))
 	}
-	dt.Scope = &scope
+	dt.SetScope(scope)
 	var tags []string
 	for _, mt := range d.Get("monitor_tags").([]interface{}) {
 		tags = append(tags, mt.(string))
 	}
-	dt.MonitorTags = &tags
+	dt.SetMonitorTags(tags)
 
 	startValue, startAttrName := getDowntimeBoundaryTimestamp(d, "start_date", "start")
 	if downtimeBoundaryNeedsApply(d, startAttrName, currentStart, startValue, updating) {
