@@ -137,6 +137,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			"protocol": parsedApiUrl.Scheme,
 		})
 	}
+	configV1.Debug = true
 	datadogClientV1 := datadogV1.NewAPIClient(configV1)
 
 	// Initialize the official Datadog V2 API client

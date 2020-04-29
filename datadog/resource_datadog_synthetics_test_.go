@@ -287,6 +287,8 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	}
 	if attr, ok := d.GetOk("request.url"); ok {
 		request.SetUrl(attr.(string))
+	} else {
+		request.Url = ""
 	}
 	if attr, ok := d.GetOk("request.body"); ok {
 		request.SetBody(attr.(string))
@@ -454,16 +456,16 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	for _, assertion := range actualAssertions {
 		localAssertion := make(map[string]string)
 		if _, ok := assertion.GetOperatorOk(); ok {
-			localAssertion["operator"] = convertToString(assertion.GetOperator())
+			localAssertion["operator"] = string(assertion.GetOperator())
 		}
 		if assertion.HasProperty() {
 			localAssertion["property"] = assertion.GetProperty()
 		}
-		if target := assertion.Target; target != nil {
+		if target := assertion.GetTarget(); target != nil {
 			localAssertion["target"] = convertToString(target)
 		}
 		if _, ok := assertion.GetTypeOk(); ok {
-			localAssertion["type"] = convertToString(assertion.GetType())
+			localAssertion["type"] = string(assertion.GetType())
 		}
 		localAssertions = append(localAssertions, localAssertion)
 	}
@@ -478,9 +480,9 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	if actualOptions.HasFollowRedirects() {
 		localOptions["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
 	}
-	if v, ok := actualOptions.GetMinLocationFailedOk(); ok {
-		localOptions["min_failure_duration"] = convertToString(v)
-	}
+	//if v, ok := actualOptions.GetMinLocationFailedOk(); ok {
+	//	localOptions["min_failure_duration"] = convertToString(v)
+	//}
 	if actualOptions.HasMinLocationFailed() {
 		localOptions["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
 	}
@@ -510,6 +512,8 @@ func convertToString(i interface{}) string {
 		return strconv.FormatFloat(v, 'f', -1, 64)
 	case string:
 		return v
+	case datadogV1.HTTPMethod:
+		return string(v)
 	default:
 		// TODO: manage target for JSON body assertions
 		valStrr, err := json.Marshal(v)

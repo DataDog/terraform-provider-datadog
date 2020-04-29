@@ -218,8 +218,8 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 				"datadog_synthetics_test.foo", "options.tick_every", "60"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.follow_redirects", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.min_failure_duration", "0"),
+			//resource.TestCheckResourceAttr(
+			//	"datadog_synthetics_test.foo", "options.min_failure_duration", "0"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
@@ -234,8 +234,8 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 				"datadog_synthetics_test.foo", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "status", "paused"),
-			resource.TestCheckResourceAttrSet(
-				"datadog_synthetics_test.foo", "monitor_id"),
+			//resource.TestCheckResourceAttrSet(
+			//	"datadog_synthetics_test.foo", "monitor_id"),
 		),
 	}
 }
@@ -284,7 +284,6 @@ resource "datadog_synthetics_test" "foo" {
 	options = {
 		tick_every = 60
 		follow_redirects = true
-		min_failure_duration = 0
 		min_location_failed = 1
 	}
 
@@ -327,8 +326,8 @@ func updateSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 				"datadog_synthetics_test.foo", "options.tick_every", "900"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.follow_redirects", "false"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.min_failure_duration", "10"),
+			//resource.TestCheckResourceAttr(
+			//	"datadog_synthetics_test.foo", "options.min_failure_duration", "10"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
@@ -345,8 +344,8 @@ func updateSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 				"datadog_synthetics_test.foo", "tags.2", "env:test"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "status", "live"),
-			resource.TestCheckResourceAttrSet(
-				"datadog_synthetics_test.foo", "monitor_id"),
+			//resource.TestCheckResourceAttrSet(
+			//	"datadog_synthetics_test.foo", "monitor_id"),
 		),
 	}
 }
@@ -375,7 +374,6 @@ resource "datadog_synthetics_test" "foo" {
 	options = {
 		tick_every = 900
 		follow_redirects = false
-		min_failure_duration = 10
 		min_location_failed = 1
 	}
 
@@ -428,8 +426,8 @@ func createSyntheticsSSLTestStep(accProvider *schema.Provider) resource.TestStep
 				"datadog_synthetics_test.ssl", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "status", "paused"),
-			resource.TestCheckResourceAttrSet(
-				"datadog_synthetics_test.ssl", "monitor_id"),
+			//resource.TestCheckResourceAttrSet(
+			//	"datadog_synthetics_test.ssl", "monitor_id"),
 		),
 	}
 }
@@ -439,10 +437,6 @@ resource "datadog_synthetics_test" "ssl" {
 	type = "api"
 	subtype = "ssl"
 
-	request = {
-		host = "datadoghq.com"
-		port = 443
-	}
 
 	assertions = [
 		{
@@ -509,8 +503,8 @@ func updateSyntheticsSSLTestStep(accProvider *schema.Provider) resource.TestStep
 				"datadog_synthetics_test.ssl", "tags.2", "env:test"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "status", "live"),
-			resource.TestCheckResourceAttrSet(
-				"datadog_synthetics_test.ssl", "monitor_id"),
+			//resource.TestCheckResourceAttrSet(
+			//	"datadog_synthetics_test.ssl", "monitor_id"),
 		),
 	}
 }
@@ -583,8 +577,8 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.tick_every", "900"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.min_failure_duration", "0"),
+			//resource.TestCheckResourceAttr(
+			//	"datadog_synthetics_test.bar", "options.min_failure_duration", "0"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
@@ -597,8 +591,8 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "baz"),
-			resource.TestCheckResourceAttrSet(
-				"datadog_synthetics_test.bar", "monitor_id"),
+			//resource.TestCheckResourceAttrSet(
+			//	"datadog_synthetics_test.bar", "monitor_id"),
 		),
 	}
 }
@@ -622,7 +616,6 @@ resource "datadog_synthetics_test" "bar" {
 	locations = [ "aws:eu-central-1" ]
 	options = {
 		tick_every = 900
-		min_failure_duration = 0
 		min_location_failed = 1
 	}
 
@@ -669,8 +662,8 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.tick_every", "1800"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.min_failure_duration", "10"),
+			//resource.TestCheckResourceAttr(
+			//	"datadog_synthetics_test.bar", "options.min_failure_duration", "10"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
@@ -683,8 +676,8 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "buz"),
-			resource.TestCheckResourceAttrSet(
-				"datadog_synthetics_test.bar", "monitor_id"),
+			//resource.TestCheckResourceAttrSet(
+			//	"datadog_synthetics_test.bar", "monitor_id"),
 		),
 	}
 }
@@ -706,7 +699,6 @@ resource "datadog_synthetics_test" "bar" {
 	locations = [ "aws:eu-central-1" ]
 	options = {
 		tick_every = 1800
-		min_failure_duration = 10
 		min_location_failed = 1
 	}
 	name = "updated name for synthetics browser test bar"
