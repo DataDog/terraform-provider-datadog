@@ -88,10 +88,10 @@ func dataSourceDatadogIpRanges() *schema.Resource {
 
 func dataSourceDatadogIPRangesRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.DatadogClientV1
-	auth := providerConf.AuthV1
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	ipAddresses, _, err := client.IPRangesApi.GetIPRanges(auth).Execute()
+	ipAddresses, _, err := datadogClientV1.IPRangesApi.GetIPRanges(authV1).Execute()
 	if err != nil {
 		return err
 	}
