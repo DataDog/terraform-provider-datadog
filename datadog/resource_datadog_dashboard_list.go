@@ -60,7 +60,7 @@ func resourceDatadogDashboardListCreate(d *schema.ResourceData, meta interface{}
 	if err != nil {
 		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	dashboardList, _, err := datadogClientV1.DashboardListsApi.CreateDashboardList(authV1).Body(dashboardListPayload).Execute()
+	dashboardList, _, err := datadogClientV1.DashboardListsApi.CreateDashboardList(authV1).Body(*dashboardListPayload).Execute()
 	if err != nil {
 		return translateClientError(err, "error creating dashboard list")
 	}
@@ -100,7 +100,7 @@ func resourceDatadogDashboardListUpdate(d *schema.ResourceData, meta interface{}
 		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	dashList.SetName(d.Get("name").(string))
-	_, _, err = datadogClientV1.DashboardListsApi.UpdateDashboardList(authV1, id).Body(dashList).Execute()
+	_, _, err = datadogClientV1.DashboardListsApi.UpdateDashboardList(authV1, id).Body(*dashList).Execute()
 	if err != nil {
 		return translateClientError(err, "error updating dashboard list")
 	}
@@ -179,10 +179,10 @@ func resourceDatadogDashboardListImport(d *schema.ResourceData, meta interface{}
 	return []*schema.ResourceData{d}, nil
 }
 
-func buildDatadogDashboardList(d *schema.ResourceData) (datadogV1.DashboardList, error) {
+func buildDatadogDashboardList(d *schema.ResourceData) (*datadogV1.DashboardList, error) {
 	var dashboardList datadogV1.DashboardList
 	dashboardList.SetName(d.Get("name").(string))
-	return dashboardList, nil
+	return &dashboardList, nil
 }
 
 func buildDatadogDashboardListItemsV2(d *schema.ResourceData) (datadogV2.DashboardListItems, error) {
@@ -201,7 +201,7 @@ func buildDatadogDashboardListItemsV2(d *schema.ResourceData) (datadogV2.Dashboa
 
 func buildTerraformDashboardListItemsV2(completeItemListV2 datadogV2.DashboardListItems) ([]map[string]interface{}, error) {
 	dashItemListV2 := make([]map[string]interface{}, 0, 1)
-	for _, item := range completeItemListV2.Dashboards {
+	for _, item := range completeItemListV2.GetDashboards() {
 		dashItem := make(map[string]interface{})
 		dashItem["type"] = item.GetType()
 		dashItem["dash_id"] = item.GetId()
