@@ -679,11 +679,11 @@ func resourceDatadogScreenboard() *schema.Resource {
 
 	return &schema.Resource{
 		DeprecationMessage: "This resource is deprecated. Instead use the Dashboard resource",
-		Create: resourceDatadogScreenboardCreate,
-		Read:   resourceDatadogScreenboardRead,
-		Update: resourceDatadogScreenboardUpdate,
-		Delete: resourceDatadogScreenboardDelete,
-		Exists: resourceDatadogScreenboardExists,
+		Create:             resourceDatadogScreenboardCreate,
+		Read:               resourceDatadogScreenboardRead,
+		Update:             resourceDatadogScreenboardUpdate,
+		Delete:             resourceDatadogScreenboardDelete,
+		Exists:             resourceDatadogScreenboardExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogScreenboardImport,
 		},
