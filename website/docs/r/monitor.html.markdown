@@ -154,7 +154,7 @@ Both of these actions add a new value to the `silenced` map. This can be problem
 
 ```
 lifecycle {
-  ignore_changes = ["silenced"]
+  ignore_changes = [silenced]
 }
 ```
 
