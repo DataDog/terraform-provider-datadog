@@ -22,12 +22,12 @@ func Provider() terraform.ResourceProvider {
 		Schema: map[string]*schema.Schema{
 			"api_key": {
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DATADOG_API_KEY", nil),
 			},
 			"app_key": {
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DATADOG_APP_KEY", nil),
 			},
 			"api_url": {
@@ -80,8 +80,20 @@ type ProviderConfiguration struct {
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
+	apiKey := d.Get("api_key").(string)
+	appKey := d.Get("app_key").(string)
+	validate := d.Get("validate").(bool)
+
+	if validate && (apiKey == "" || appKey == "") {
+		return nil, errors.New("api_key and app_key must be set unless validate = false")
+	}
+
+	if !validate && (apiKey != "" || appKey != "") {
+		return nil, errors.New("api_key and app_key must not be set when validate = false")
+	}
+
 	// Initialize the community client
-	communityClient := datadogCommunity.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
+	communityClient := datadogCommunity.NewClient(apiKey, appKey)
 
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		communityClient.SetBaseUrl(apiURL)
@@ -92,7 +104,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	communityClient.ExtraHeader["User-Agent"] = fmt.Sprintf("terraform-provider-datadog/%s (go %s; terraform %s; terraform-cli %s)", version.ProviderVersion, runtime.Version(), meta.SDKVersionString(), datadogProvider.TerraformVersion)
 	communityClient.HttpClient = c
 
-	if d.Get("validate").(bool) {
+	if validate {
 		log.Println("[INFO] Datadog client successfully initialized, now validating...")
 		ok, err := communityClient.Validate()
 		if err != nil {
