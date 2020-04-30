@@ -3502,8 +3502,9 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"legend_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			Optional:     true,
+			ValidateFunc: validateTimeseriesWidgetLegendSize,
 		},
 		"time": {
 			Type:     schema.TypeMap,
@@ -3548,6 +3549,9 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["show_legend"].(bool); ok {
 		datadogDefinition.ShowLegend = datadog.Bool(v)
 	}
+	if v, ok := terraformDefinition["legend_size"].(string); ok && len(v) != 0 {
+		datadogDefinition.LegendSize = datadog.String(v)
+	}
 	return datadogDefinition
 }
 
@@ -3580,6 +3584,9 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadog.TimeseriesDefi
 	}
 	if datadogDefinition.ShowLegend != nil {
 		terraformDefinition["show_legend"] = *datadogDefinition.ShowLegend
+	}
+	if datadogDefinition.LegendSize != nil {
+		terraformDefinition["legend_size"] = *datadogDefinition.LegendSize
 	}
 	return terraformDefinition
 }
@@ -4718,6 +4725,17 @@ func validateGroupWidgetLayoutType(val interface{}, key string) (warns []string,
 	default:
 		errs = append(errs, fmt.Errorf(
 			"%q contains an invalid value %q. Only `ordered` is a valid value", key, value))
+	}
+	return
+}
+func validateTimeseriesWidgetLegendSize(val interface{}, key string) (warns []string, errs []error) {
+	value := val.(string)
+	switch value {
+	case "2", "4", "8", "16", "auto":
+		break
+	default:
+		errs = append(errs, fmt.Errorf(
+			"%q contains an invalid value %q. Valud values are `2`, `4`, `8`, `16`, or `auto`", key, value))
 	}
 	return
 }

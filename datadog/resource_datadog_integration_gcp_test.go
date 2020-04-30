@@ -94,16 +94,17 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 func checkIntegrationGCPExists(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
-		integrations, err := client.ListIntegrationGCP()
+		integrations, _, err := datadogClientV1.GCPIntegrationApi.ListGCPIntegration(authV1).Execute()
 		if err != nil {
 			return err
 		}
 		for _, r := range s.RootModule().Resources {
 			projectID := r.Primary.ID
 			for _, integration := range integrations {
-				if integration.GetProjectID() == projectID {
+				if integration.GetProjectId() == projectID {
 					return nil
 				}
 			}
@@ -116,16 +117,17 @@ func checkIntegrationGCPExists(accProvider *schema.Provider) func(*terraform.Sta
 func checkIntegrationGCPDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
-		integrations, err := client.ListIntegrationGCP()
+		integrations, _, err := datadogClientV1.GCPIntegrationApi.ListGCPIntegration(authV1).Execute()
 		if err != nil {
 			return err
 		}
 		for _, r := range s.RootModule().Resources {
 			projectID := r.Primary.ID
 			for _, integration := range integrations {
-				if integration.GetProjectID() == projectID {
+				if integration.GetProjectId() == projectID {
 					return fmt.Errorf("the Google Cloud Platform integration still exist: projectID=%s", projectID)
 				}
 			}
