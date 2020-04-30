@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
@@ -418,6 +419,7 @@ func buildTerraformProcessors(ddProcessors []datadogV1.LogsProcessor) ([]map[str
 func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]interface{}, error) {
 	tfProcessor := make(map[string]interface{})
 	var err error
+	log.Println("YERRRR", ddProcessor.LogsProcessorInterface.GetType())
 	switch ddProcessor.LogsProcessorInterface.GetType() {
 	case datadogV1.NewLogsArithmeticProcessorWithDefaults().GetType():
 		logsArithmeticProcessor := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsArithmeticProcessor)
@@ -453,6 +455,7 @@ func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]in
 		logsLookupProcessor := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsLookupProcessor)
 		tfProcessor = buildTerraformLookupProcessor(logsLookupProcessor)
 	case "pipeline":
+		log.Println("YERRRR 2")
 		logsPipeline := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsPipeline)
 		tfProcessor, err = buildTerraformNestedPipeline(logsPipeline)
 	case datadogV1.NewLogsStringBuilderProcessorWithDefaults().GetType():
@@ -686,6 +689,7 @@ func buildDatadogProcessors(tfProcessors []interface{}) (*[]datadogV1.LogsProces
 func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interface{}) (datadogV1.LogsProcessor, error) {
 	var ddProcessor = datadogV1.LogsProcessor{}
 	var err error
+
 	switch ddProcessorType {
 	case datadogV1.NewLogsArithmeticProcessorWithDefaults().GetType():
 		ddProcessor.LogsProcessorInterface = buildDatadogArithmeticProcessor(tfProcessor)
@@ -709,10 +713,10 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 		ddProcessor.LogsProcessorInterface = buildDatadogGrokParser(tfProcessor)
 	case datadogV1.NewLogsLookupProcessorWithDefaults().GetType():
 		ddProcessor.LogsProcessorInterface = buildDatadogLookupProcessor(tfProcessor)
-	case datadogV1.NewLogsPipelineWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface, err = buildDatadogNestedPipeline(tfProcessor)
+	//case datadogV1.NewLogsPipelineWithDefaults().GetType():
+	//	ddProcessor.LogsProcessorInterface, err = buildDatadogNestedPipeline(tfProcessor)
 	case "pipeline":
-		ddProcessor.LogsProcessorInterface = buildDatadogStringBuilderProcessor(tfProcessor)
+		ddProcessor.LogsProcessorInterface, err = buildDatadogNestedPipeline(tfProcessor)
 	case datadogV1.NewLogsURLParserWithDefaults().GetType():
 		ddProcessor.LogsProcessorInterface = buildDatadogURLParser(tfProcessor)
 	case datadogV1.NewLogsUserAgentParserWithDefaults().GetType():
@@ -729,6 +733,8 @@ func buildDatadogURLParser(tfProcessor map[string]interface{}) *datadogV1.LogsUR
 	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
 		ddURLParser.Sources = ddSources
 	}
+	tfTarget, exists := tfProcessor["target"].(string)
+	log.Println("Hello my friends", tfTarget, exists)
 	if tfTarget, exists := tfProcessor["target"].(string); exists {
 		ddURLParser.SetTarget(tfTarget)
 	}
@@ -787,6 +793,7 @@ func buildDatadogLookupProcessor(tfProcessor map[string]interface{}) *datadogV1.
 
 func buildDatadogNestedPipeline(tfProcessor map[string]interface{}) (*datadogV1.LogsPipeline, error) {
 	ddNestedPipeline := datadogV1.LogsPipeline{}
+	ddNestedPipeline.SetType("pipeline")
 	if tfFilter, exist := tfProcessor["filter"].([]interface{}); exist && len(tfFilter) > 0 {
 		ddNestedPipeline.SetFilter(buildDatadogFilter(tfFilter[0].(map[string]interface{})))
 	}
@@ -1024,9 +1031,10 @@ func buildDatadogArithmeticProcessor(tfProcessor map[string]interface{}) *datado
 
 func buildDatadogDateRemapperProcessor(tfProcessor map[string]interface{}) *datadogV1.LogsDateRemapper {
 	ddDate := datadogV1.NewLogsDateRemapperWithDefaults()
-	if tfSources, exists := tfProcessor["sources"].([]string); exists {
-		ddDate.SetSources(tfSources)
+	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
+		ddDate.SetSources(ddSources)
 	}
+
 	if tfName, exists := tfProcessor["name"].(string); exists {
 		ddDate.SetName(tfName)
 	}
