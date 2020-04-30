@@ -39,11 +39,6 @@ func Provider() terraform.ResourceProvider {
 				Optional:    true,
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_HOST", "DD_HOST"}, nil),
 			},
-			"debug": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DEBUG", false),
-			},
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
@@ -142,7 +137,6 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			"protocol": parsedApiUrl.Scheme,
 		})
 	}
-	configV1.Debug = d.Get("debug").(bool)
 
 	datadogClientV1 := datadogV1.NewAPIClient(configV1)
 
@@ -175,7 +169,6 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			"protocol": parsedApiUrl.Scheme,
 		})
 	}
-	configV2.Debug = d.Get("debug").(bool)
 
 	datadogClientV2 := datadogV2.NewAPIClient(configV2)
 
