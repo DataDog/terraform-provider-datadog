@@ -2,7 +2,6 @@ package datadog
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
