@@ -89,7 +89,7 @@ func resourceDatadogIntegrationAwsLambdaArnCreate(d *schema.ResourceData, meta i
 		return translateClientError(err, "error attaching Lambda ARN to AWS integration account")
 	}
 
-	d.SetId(fmt.Sprintf("%s %s", attachLambdaArnRequest.AccountId, attachLambdaArnRequest.LambdaArn))
+	d.SetId(fmt.Sprintf("%s %s", attachLambdaArnRequest.GetAccountId(), attachLambdaArnRequest.GetLambdaArn()))
 
 	return resourceDatadogIntegrationAwsLambdaArnRead(d, meta)
 }
