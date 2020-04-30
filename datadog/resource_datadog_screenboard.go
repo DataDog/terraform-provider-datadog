@@ -678,6 +678,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 	}
 
 	return &schema.Resource{
+		DeprecationMessage: "This resource is deprecated. Instead use the Dashboard resource",
 		Create: resourceDatadogScreenboardCreate,
 		Read:   resourceDatadogScreenboardRead,
 		Update: resourceDatadogScreenboardUpdate,
