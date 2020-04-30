@@ -181,7 +181,7 @@ func resourceDatadogDashboardListExists(d *schema.ResourceData, meta interface{}
 	id, _ := strconv.ParseInt(d.Id(), 10, 64)
 	// Only check existence of the overall Dash List, not its sub items
 	if _, _, err := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, id).Execute(); err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
+		if strings.Contains(strings.ToLower(err.Error()), "not found") {
 			return false, nil
 		}
 		return false, translateClientError(err, "error checking dashboard list exists")
