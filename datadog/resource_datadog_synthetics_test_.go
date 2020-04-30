@@ -287,8 +287,6 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	}
 	if attr, ok := d.GetOk("request.url"); ok {
 		request.SetUrl(attr.(string))
-	} else {
-		request.Url = ""
 	}
 	if attr, ok := d.GetOk("request.body"); ok {
 		request.SetBody(attr.(string))
@@ -317,8 +315,8 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	}
 
 	config := datadogV1.SyntheticsTestConfig{
-		Request:   request,
-		Variables: &[]datadogV1.SyntheticsBrowserVariable{},
+		Request: request,
+		//Variables: &[]datadogV1.SyntheticsBrowserVariable{},
 	}
 
 	if attr, ok := d.GetOk("assertions"); ok {
@@ -363,10 +361,10 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		followRedirects, _ := strconv.ParseBool(attr.(string))
 		options.SetFollowRedirects(followRedirects)
 	}
-	//if attr, ok := d.GetOk("options.min_failure_duration"); ok {
-	//	minFailureDuration, _ := strconv.Atoi(attr.(string))
-	//	options.SetMinFailureDuration(minFailureDuration)
-	//}
+	if attr, ok := d.GetOk("options.min_failure_duration"); ok {
+		minFailureDuration, _ := strconv.Atoi(attr.(string))
+		options.SetMinFailureDuration(int64(minFailureDuration))
+	}
 	if attr, ok := d.GetOk("options.min_location_failed"); ok {
 		minLocationFailed, _ := strconv.Atoi(attr.(string))
 		options.SetMinLocationFailed(int64(minLocationFailed))
@@ -480,9 +478,9 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	if actualOptions.HasFollowRedirects() {
 		localOptions["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
 	}
-	//if v, ok := actualOptions.GetMinLocationFailedOk(); ok {
-	//	localOptions["min_failure_duration"] = convertToString(v)
-	//}
+	if v, ok := actualOptions.GetMinLocationFailedOk(); ok {
+		localOptions["min_failure_duration"] = convertToString(v)
+	}
 	if actualOptions.HasMinLocationFailed() {
 		localOptions["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
 	}
@@ -499,7 +497,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("message", syntheticsTest.GetMessage())
 	d.Set("status", syntheticsTest.GetStatus())
 	d.Set("tags", syntheticsTest.Tags)
-	//d.Set("monitor_id", syntheticsTest.MonitorId)
+	d.Set("monitor_id", syntheticsTest.MonitorId)
 }
 
 func convertToString(i interface{}) string {

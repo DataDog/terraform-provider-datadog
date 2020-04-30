@@ -218,8 +218,8 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 				"datadog_synthetics_test.foo", "options.tick_every", "60"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.follow_redirects", "true"),
-			//resource.TestCheckResourceAttr(
-			//	"datadog_synthetics_test.foo", "options.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.min_failure_duration", "0"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
@@ -234,8 +234,8 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 				"datadog_synthetics_test.foo", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "status", "paused"),
-			//resource.TestCheckResourceAttrSet(
-			//	"datadog_synthetics_test.foo", "monitor_id"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.foo", "monitor_id"),
 		),
 	}
 }
@@ -244,7 +244,6 @@ const createSyntheticsAPITestConfig = `
 resource "datadog_synthetics_test" "foo" {
 	type = "api"
 	subtype = "http"
-
 	request = {
 		method = "GET"
 		url = "https://www.datadoghq.com"
@@ -255,7 +254,6 @@ resource "datadog_synthetics_test" "foo" {
 		Accept = "application/json"
 		X-Datadog-Trace-ID = "1234566789"
 	}
-
 	assertions = [
 		{
 			type = "header"
@@ -279,18 +277,16 @@ resource "datadog_synthetics_test" "foo" {
 			target = "terraform"
 		}
 	]
-
 	locations = [ "aws:eu-central-1" ]
 	options = {
 		tick_every = 60
 		follow_redirects = true
+		min_failure_duration = 0
 		min_location_failed = 1
 	}
-
 	name = "name for synthetics test foo"
 	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
-
 	status = "paused"
 }
 `
@@ -326,8 +322,8 @@ func updateSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 				"datadog_synthetics_test.foo", "options.tick_every", "900"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.follow_redirects", "false"),
-			//resource.TestCheckResourceAttr(
-			//	"datadog_synthetics_test.foo", "options.min_failure_duration", "10"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.min_failure_duration", "10"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
@@ -344,8 +340,8 @@ func updateSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 				"datadog_synthetics_test.foo", "tags.2", "env:test"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "status", "live"),
-			//resource.TestCheckResourceAttrSet(
-			//	"datadog_synthetics_test.foo", "monitor_id"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.foo", "monitor_id"),
 		),
 	}
 }
@@ -354,13 +350,11 @@ const updateSyntheticsAPITestConfig = `
 resource "datadog_synthetics_test" "foo" {
 	type = "api"
 	subtype = "http"
-
 	request = {
 		method = "GET"
 		url = "https://docs.datadoghq.com"
 		timeout = 60
 	}
-
 	assertions = [
 		{
 			type = "statusCode"
@@ -368,19 +362,16 @@ resource "datadog_synthetics_test" "foo" {
 			target = "500"
 		}
 	]
-
 	locations = [ "aws:eu-central-1" ]
-
 	options = {
 		tick_every = 900
 		follow_redirects = false
+		min_failure_duration = 10
 		min_location_failed = 1
 	}
-
 	name = "updated name"
 	message = "Notify @pagerduty"
 	tags = ["foo:bar", "foo", "env:test"]
-
 	status = "live"
 }
 `
@@ -426,8 +417,8 @@ func createSyntheticsSSLTestStep(accProvider *schema.Provider) resource.TestStep
 				"datadog_synthetics_test.ssl", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "status", "paused"),
-			//resource.TestCheckResourceAttrSet(
-			//	"datadog_synthetics_test.ssl", "monitor_id"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.ssl", "monitor_id"),
 		),
 	}
 }
@@ -436,8 +427,10 @@ const createSyntheticsSSLTestConfig = `
 resource "datadog_synthetics_test" "ssl" {
 	type = "api"
 	subtype = "ssl"
-
-
+	request = {
+		host = "datadoghq.com"
+		port = 443
+	}
 	assertions = [
 		{
 			type = "certificate"
@@ -445,17 +438,14 @@ resource "datadog_synthetics_test" "ssl" {
 			target = 30
 		}
 	]
-
 	locations = [ "aws:eu-central-1" ]
 	options = {
 		tick_every = 60
 		accept_self_signed = true
 	}
-
 	name = "name for synthetics test ssl"
 	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
-
 	status = "paused"
 }
 `
@@ -503,8 +493,8 @@ func updateSyntheticsSSLTestStep(accProvider *schema.Provider) resource.TestStep
 				"datadog_synthetics_test.ssl", "tags.2", "env:test"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "status", "live"),
-			//resource.TestCheckResourceAttrSet(
-			//	"datadog_synthetics_test.ssl", "monitor_id"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.ssl", "monitor_id"),
 		),
 	}
 }
@@ -513,12 +503,10 @@ const updateSyntheticsSSLTestConfig = `
 resource "datadog_synthetics_test" "ssl" {
 	type = "api"
 	subtype = "ssl"
-
 	request = {
 		host = "datadoghq.com"
 		port = 443
 	}
-
 	assertions = [
 		{
 			type = "certificate"
@@ -526,18 +514,14 @@ resource "datadog_synthetics_test" "ssl" {
 			target = 60
 		}
 	]
-
 	locations = [ "aws:eu-central-1" ]
-
 	options = {
 		tick_every = 60
 		accept_self_signed = false
 	}
-
 	name = "updated name"
 	message = "Notify @pagerduty"
 	tags = ["foo:bar", "foo", "env:test"]
-
 	status = "live"
 }
 `
@@ -577,8 +561,8 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.tick_every", "900"),
-			//resource.TestCheckResourceAttr(
-			//	"datadog_synthetics_test.bar", "options.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.min_failure_duration", "0"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
@@ -591,8 +575,8 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "baz"),
-			//resource.TestCheckResourceAttrSet(
-			//	"datadog_synthetics_test.bar", "monitor_id"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.bar", "monitor_id"),
 		),
 	}
 }
@@ -600,7 +584,6 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 const createSyntheticsBrowserTestConfig = `
 resource "datadog_synthetics_test" "bar" {
 	type = "browser"
-
 	request = {
 		method = "GET"
 		url = "https://www.datadoghq.com"
@@ -611,18 +594,16 @@ resource "datadog_synthetics_test" "bar" {
 		Accept = "application/json"
 		X-Datadog-Trace-ID = "123456789"
 	}
-
 	device_ids = [ "laptop_large", "mobile_small" ]
 	locations = [ "aws:eu-central-1" ]
 	options = {
 		tick_every = 900
+		min_failure_duration = 0
 		min_location_failed = 1
 	}
-
 	name = "name for synthetics browser test bar"
 	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
-
 	status = "paused"
 }
 `
@@ -662,8 +643,8 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.tick_every", "1800"),
-			//resource.TestCheckResourceAttr(
-			//	"datadog_synthetics_test.bar", "options.min_failure_duration", "10"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.min_failure_duration", "10"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
@@ -676,8 +657,8 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "buz"),
-			//resource.TestCheckResourceAttrSet(
-			//	"datadog_synthetics_test.bar", "monitor_id"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.bar", "monitor_id"),
 		),
 	}
 }
@@ -699,6 +680,7 @@ resource "datadog_synthetics_test" "bar" {
 	locations = [ "aws:eu-central-1" ]
 	options = {
 		tick_every = 1800
+		min_failure_duration = 10
 		min_location_failed = 1
 	}
 	name = "updated name for synthetics browser test bar"
