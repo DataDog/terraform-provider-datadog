@@ -151,7 +151,7 @@ func datadogDashListExistsHelper(s *terraform.State, authV1 context.Context, dat
 		id, _ := strconv.Atoi(r.Primary.ID)
 		_, _, errList := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, int64(id)).Execute()
 		if errList != nil {
-			if strings.Contains(errList.Error(), "not found") {
+			if strings.Contains(errList.Error(), "Not Found") {
 				continue
 			}
 			return fmt.Errorf("received an error retrieving Dash List %s", errList)

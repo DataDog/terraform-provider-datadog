@@ -105,9 +105,26 @@ func resourceDatadogDashboardListUpdate(d *schema.ResourceData, meta interface{}
 		return translateClientError(err, "error updating dashboard list")
 	}
 
-	// Update the dashboard list
-	dashListItems, err := buildDatadogDashboardListItemsV2(d)
-	_, _, err = datadogClientV2.DashboardListsApi.UpdateDashboardListItems(authV2, id).Body(dashListItems).Execute()
+	// Delete all elements from the dash list and add back only the ones in the config
+	completeDashListV2, _, err := datadogClientV2.DashboardListsApi.GetDashboardListItems(authV2, id).Execute()
+	if err != nil {
+		return translateClientError(err, "error getting dashboard list item")
+	}
+	_, _, err = datadogClientV2.DashboardListsApi.DeleteDashboardListItems(authV2, id).Body(completeDashListV2).Execute()
+	if err != nil {
+		return translateClientError(err, "error deleting dashboard list item")
+	}
+	if len(d.Get("dash_item").(*schema.Set).List()) > 0 {
+		dashboardListV2Items, err := buildDatadogDashboardListItemsV2(d)
+		if err != nil {
+			return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+		}
+		_, _, err = datadogClientV2.DashboardListsApi.UpdateDashboardListItems(authV2, id).Body(dashboardListV2Items).Execute()
+		if err != nil {
+			return translateClientError(err, "error updating dashboard list item")
+		}
+	}
+
 	return resourceDatadogDashboardListRead(d, meta)
 }
 
