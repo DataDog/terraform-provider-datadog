@@ -128,6 +128,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	} else {
 		log.Println("[INFO] Skipping key validation (validate = false)")
 	}
+	log.Printf("[INFO] Datadog Client successfully validated.")
 
 	// Initialize the official Datadog V1 API client
 	authV1 := context.WithValue(
