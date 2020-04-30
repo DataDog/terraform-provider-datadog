@@ -135,10 +135,10 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		datadogV1.ContextAPIKeys,
 		map[string]datadogV1.APIKey{
 			"apiKeyAuth": {
-				Key: d.Get("api_key").(string),
+				Key: apiKey,
 			},
 			"appKeyAuth": {
-				Key: d.Get("app_key").(string),
+				Key: appKey,
 			},
 		},
 	)
