@@ -102,6 +102,7 @@ func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, a
 		for _, s := range attr.([]interface{}) {
 			filterTags = append(filterTags, s.(string))
 		}
+		iaws.SetFilterTags(filterTags)
 	}
 
 	var hostTags []string
@@ -110,6 +111,7 @@ func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, a
 		for _, s := range attr.([]interface{}) {
 			hostTags = append(hostTags, s.(string))
 		}
+		iaws.SetHostTags(hostTags)
 	}
 
 	accountSpecificNamespaceRules := make(map[string]bool)
@@ -120,8 +122,7 @@ func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, a
 			accountSpecificNamespaceRules[k] = v.(bool)
 		}
 	}
-	iaws.SetFilterTags(filterTags)
-	iaws.SetHostTags(hostTags)
+
 	iaws.SetAccountSpecificNamespaceRules(accountSpecificNamespaceRules)
 	return iaws
 }
