@@ -26,18 +26,23 @@ func Provider() terraform.ResourceProvider {
 		Schema: map[string]*schema.Schema{
 			"api_key": {
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_API_KEY", "DD_API_KEY"}, nil),
 			},
 			"app_key": {
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_APP_KEY", "DD_APP_KEY"}, nil),
 			},
 			"api_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_HOST", "DD_HOST"}, nil),
+			},
+			"validate": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
 			},
 		},
 
@@ -85,8 +90,20 @@ type ProviderConfiguration struct {
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
+	apiKey := d.Get("api_key").(string)
+	appKey := d.Get("app_key").(string)
+	validate := d.Get("validate").(bool)
+
+	if validate && (apiKey == "" || appKey == "") {
+		return nil, errors.New("api_key and app_key must be set unless validate = false")
+	}
+
+	if !validate && (apiKey != "" || appKey != "") {
+		return nil, errors.New("api_key and app_key must not be set when validate = false")
+	}
+
 	// Initialize the community client
-	communityClient := datadogCommunity.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
+	communityClient := datadogCommunity.NewClient(apiKey, appKey)
 
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		communityClient.SetBaseUrl(apiURL)
@@ -97,15 +114,19 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	communityClient.ExtraHeader["User-Agent"] = fmt.Sprintf("terraform-provider-datadog/%s (go %s; terraform %s; terraform-cli %s)", version.ProviderVersion, runtime.Version(), meta.SDKVersionString(), datadogProvider.TerraformVersion)
 	communityClient.HttpClient = c
 
-	log.Println("[INFO] Datadog client successfully initialized, now validating...")
-	ok, err := communityClient.Validate()
-	if err != nil {
-		log.Printf("[ERROR] Datadog Client validation error: %v", err)
-		return nil, err
-	} else if !ok {
-		err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
-		log.Printf("[ERROR] Datadog Client validation error: %v", err)
-		return nil, err
+	if validate {
+		log.Println("[INFO] Datadog client successfully initialized, now validating...")
+		ok, err := communityClient.Validate()
+		if err != nil {
+			log.Printf("[ERROR] Datadog Client validation error: %v", err)
+			return nil, err
+		} else if !ok {
+			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
+			log.Printf("[ERROR] Datadog Client validation error: %v", err)
+			return nil, err
+		}
+	} else {
+		log.Println("[INFO] Skipping key validation (validate = false)")
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
@@ -115,10 +136,10 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		datadogV1.ContextAPIKeys,
 		map[string]datadogV1.APIKey{
 			"apiKeyAuth": {
-				Key: d.Get("api_key").(string),
+				Key: apiKey,
 			},
 			"appKeyAuth": {
-				Key: d.Get("app_key").(string),
+				Key: appKey,
 			},
 		},
 	)
