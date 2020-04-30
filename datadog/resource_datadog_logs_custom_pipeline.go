@@ -419,7 +419,6 @@ func buildTerraformProcessors(ddProcessors []datadogV1.LogsProcessor) ([]map[str
 func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]interface{}, error) {
 	tfProcessor := make(map[string]interface{})
 	var err error
-	log.Println("YERRRR", ddProcessor.LogsProcessorInterface.GetType())
 	switch ddProcessor.LogsProcessorInterface.GetType() {
 	case datadogV1.NewLogsArithmeticProcessorWithDefaults().GetType():
 		logsArithmeticProcessor := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsArithmeticProcessor)
@@ -455,7 +454,6 @@ func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]in
 		logsLookupProcessor := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsLookupProcessor)
 		tfProcessor = buildTerraformLookupProcessor(logsLookupProcessor)
 	case "pipeline":
-		log.Println("YERRRR 2")
 		logsPipeline := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsPipeline)
 		tfProcessor, err = buildTerraformNestedPipeline(logsPipeline)
 	case datadogV1.NewLogsStringBuilderProcessorWithDefaults().GetType():
@@ -733,8 +731,6 @@ func buildDatadogURLParser(tfProcessor map[string]interface{}) *datadogV1.LogsUR
 	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
 		ddURLParser.Sources = ddSources
 	}
-	tfTarget, exists := tfProcessor["target"].(string)
-	log.Println("Hello my friends", tfTarget, exists)
 	if tfTarget, exists := tfProcessor["target"].(string); exists {
 		ddURLParser.SetTarget(tfTarget)
 	}
