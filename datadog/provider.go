@@ -142,6 +142,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			"protocol": parsedApiUrl.Scheme,
 		})
 	}
+
 	datadogClientV1 := datadogV1.NewAPIClient(configV1)
 
 	// Initialize the official Datadog V2 API client
@@ -173,6 +174,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			"protocol": parsedApiUrl.Scheme,
 		})
 	}
+
 	datadogClientV2 := datadogV2.NewAPIClient(configV2)
 
 	return &ProviderConfiguration{
