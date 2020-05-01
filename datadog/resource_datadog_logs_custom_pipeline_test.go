@@ -321,7 +321,7 @@ func pipelineDestroyHelper(s *terraform.State, authV1 context.Context, datadogCl
 				}
 				return fmt.Errorf("received an error when retrieving pipeline, (%s)", err)
 			}
-			if &p == nil {
+			if &p != nil {
 				return fmt.Errorf("pipeline still exists")
 			}
 		}
