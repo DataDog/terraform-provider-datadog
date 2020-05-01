@@ -2,8 +2,8 @@ package datadog
 
 import (
 	"fmt"
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/zorkian/go-datadog-api"
 )
 
 func resourceDatadogIntegrationAwsLogCollection() *schema.Resource {
@@ -36,24 +36,25 @@ func resourceDatadogIntegrationAwsLogCollectionExists(d *schema.ResourceData, me
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	logCollections, err := client.GetIntegrationAWSLogCollection()
+	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
 	if err != nil {
 		return false, translateClientError(err, "error getting aws integration log collection.")
 	}
 
 	accountID := d.Id()
 
-	for _, logCollection := range *logCollections {
-		if logCollection.GetAccountID() == accountID {
+	for _, logCollection := range logCollections {
+		if logCollection.GetAccountId() == accountID {
 			return true, nil
 		}
 	}
 	return false, nil
 }
 
-func buildDatadogIntegrationAwsLogCollectionStruct(d *schema.ResourceData) datadog.IntegrationAWSServicesLogCollection {
+func buildDatadogIntegrationAwsLogCollectionStruct(d *schema.ResourceData) datadogV1.AWSLogsServicesRequest {
 	accountID := d.Get("account_id").(string)
 	services := []string{}
 	if attr, ok := d.GetOk("services"); ok {
@@ -62,8 +63,8 @@ func buildDatadogIntegrationAwsLogCollectionStruct(d *schema.ResourceData) datad
 		}
 	}
 
-	enableLogCollectionServices := datadog.IntegrationAWSServicesLogCollection{
-		AccountID: &accountID,
+	enableLogCollectionServices := datadogV1.AWSLogsServicesRequest{
+		AccountId: accountID,
 		Services:  services,
 	}
 
@@ -72,12 +73,13 @@ func buildDatadogIntegrationAwsLogCollectionStruct(d *schema.ResourceData) datad
 
 func resourceDatadogIntegrationAwsLogCollectionCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
 	accountID := d.Get("account_id").(string)
 
 	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
-	err := client.EnableLogCollectionAWSServices(&enableLogCollectionServices)
+	_, _, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1).Body(enableLogCollectionServices).Execute()
 
 	if err != nil {
 		return translateClientError(err, "error enabling log collection services for Amazon Web Services integration account")
@@ -90,10 +92,11 @@ func resourceDatadogIntegrationAwsLogCollectionCreate(d *schema.ResourceData, me
 
 func resourceDatadogIntegrationAwsLogCollectionUpdate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
 	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
-	err := client.EnableLogCollectionAWSServices(&enableLogCollectionServices)
+	_, _, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1).Body(enableLogCollectionServices).Execute()
 
 	if err != nil {
 		return translateClientError(err, "error updating log collection services for Amazon Web Services integration account")
@@ -104,17 +107,18 @@ func resourceDatadogIntegrationAwsLogCollectionUpdate(d *schema.ResourceData, me
 
 func resourceDatadogIntegrationAwsLogCollectionRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
 	accountID := d.Id()
 
-	logCollections, err := client.GetIntegrationAWSLogCollection()
+	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
 	if err != nil {
 		return translateClientError(err, "error getting log collection for aws integration.")
 	}
-	for _, logCollection := range *logCollections {
-		if logCollection.GetAccountID() == accountID {
-			d.Set("account_id", logCollection.GetAccountID())
+	for _, logCollection := range logCollections {
+		if logCollection.GetAccountId() == accountID {
+			d.Set("account_id", logCollection.GetAccountId())
 			d.Set("services", logCollection.Services)
 			return nil
 		}
@@ -124,16 +128,17 @@ func resourceDatadogIntegrationAwsLogCollectionRead(d *schema.ResourceData, meta
 
 func resourceDatadogIntegrationAwsLogCollectionDelete(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
 	accountID := d.Id()
 	services := []string{}
 
-	deleteLogCollectionServices := datadog.IntegrationAWSServicesLogCollection{
-		AccountID: &accountID,
+	deleteLogCollectionServices := datadogV1.AWSLogsServicesRequest{
+		AccountId: accountID,
 		Services:  services,
 	}
-	err := client.EnableLogCollectionAWSServices(&deleteLogCollectionServices)
+	_, _, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1).Body(deleteLogCollectionServices).Execute()
 
 	if err != nil {
 		return translateClientError(err, "error disabling Amazon Web Services log collection")
