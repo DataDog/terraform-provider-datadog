@@ -274,6 +274,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			}
 			title = "Widget Title"
 			show_legend = true
+			legend_size = "2"
 			time = {
 				live_span = "1h"
 			}
@@ -481,7 +482,7 @@ resource "datadog_dashboard" "free_dashboard" {
 	}
 	widget {
 		log_stream_definition {
-			indexes = ["main"]
+			logset = "19"
 			query = "error"
 			columns = ["core_host", "core_service", "tag_source"]
 		}
@@ -495,11 +496,13 @@ resource "datadog_dashboard" "free_dashboard" {
 	widget {
 		manage_status_definition {
 			color_preference = "text"
+			count = 50
 			display_format = "countsAndList"
 			hide_zero_counts = true
 			query = "type:metric"
 			show_last_triggered = true
 			sort = "status,asc"
+			start = 0
 			summary_type = "monitors"
 			title = "Widget Title"
 			title_size = 16
@@ -745,6 +748,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.marker.1.value", "10 < y < 999"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.title", "Widget Title"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.show_legend", "true"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.legend_size", "2"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.time.live_span", "1h"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.event.0.q", "sources:test tags:1"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.event.1.q", "sources:test tags:2"),
@@ -871,7 +875,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.4.layout.x", "77"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.4.layout.y", "7"),
 					// Log Stream widget
-					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.indexes.0", "main"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.logset", "19"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.query", "error"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.columns.#", "3"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.columns.0", "core_host"),
@@ -883,13 +887,13 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.layout.y", "51"),
 					// Manage Status widget
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.color_preference", "text"),
-					//resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.count", "50"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.count", "50"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.display_format", "countsAndList"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.hide_zero_counts", "true"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.query", "type:metric"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.show_last_triggered", "true"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.sort", "status,asc"),
-					//resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.start", "0"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.start", "0"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.summary_type", "monitors"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.title", "Widget Title"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.6.manage_status_definition.0.title_align", "left"),

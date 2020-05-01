@@ -2392,7 +2392,7 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"indexes": {
 			Type:     schema.TypeList,
-			Required: true,
+			Optional: true,
 			Elem:     &schema.Schema{Type: schema.TypeString},
 		},
 		"logset": {
@@ -2504,7 +2504,6 @@ func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidg
 //
 // Manage Status Widget Definition helpers
 //
-
 func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"query": {
@@ -2627,13 +2626,13 @@ func buildTerraformManageStatusDefinition(datadogDefinition datadogV1.MonitorSum
 	if datadogDefinition.Sort != nil {
 		terraformDefinition["sort"] = *datadogDefinition.Sort
 	}
-	////Below fields are deprecated
-	//if datadogDefinition.Count != nil {
-	//	terraformDefinition["count"] = *datadogDefinition.Count
-	//}
-	//if datadogDefinition.Start != nil {
-	//	terraformDefinition["start"] = *datadogDefinition.Start
-	//}
+	//Below fields are deprecated
+	if datadogDefinition.Count != nil {
+		terraformDefinition["count"] = *datadogDefinition.Count
+	}
+	if datadogDefinition.Start != nil {
+		terraformDefinition["start"] = *datadogDefinition.Start
+	}
 	if datadogDefinition.DisplayFormat != nil {
 		terraformDefinition["display_format"] = *datadogDefinition.DisplayFormat
 	}
@@ -3553,7 +3552,7 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 		datadogDefinition.SetTitle(v)
 	}
 	if v, ok := terraformDefinition["title_size"].(string); ok && len(v) != 0 {
-		datadogDefinition.SetTitle(v)
+		datadogDefinition.SetTitleSize(v)
 	}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
@@ -3563,6 +3562,9 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	}
 	if v, ok := terraformDefinition["show_legend"].(bool); ok {
 		datadogDefinition.SetShowLegend(v)
+	}
+	if v, ok := terraformDefinition["legend_size"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetLegendSize(datadogV1.WidgetLegendSize(v))
 	}
 	return datadogDefinition
 }
@@ -3596,6 +3598,9 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 	}
 	if datadogDefinition.ShowLegend != nil {
 		terraformDefinition["show_legend"] = *datadogDefinition.ShowLegend
+	}
+	if datadogDefinition.LegendSize != nil {
+		terraformDefinition["legend_size"] = *datadogDefinition.LegendSize
 	}
 	return terraformDefinition
 }
