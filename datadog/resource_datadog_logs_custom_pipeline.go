@@ -536,7 +536,7 @@ func buildTerraformStringBuilderProcessor(ddStringBuilder *datadogV1.LogsStringB
 
 func buildTerraformGeoIPParser(ddGeoIPParser *datadogV1.LogsGeoIPParser) map[string]interface{} {
 	return map[string]interface{}{
-		"sources":    ddGeoIPParser.Sources,
+		"sources":    ddGeoIPParser.GetSources(),
 		"target":     ddGeoIPParser.GetTarget(),
 		"name":       ddGeoIPParser.GetName(),
 		"is_enabled": ddGeoIPParser.GetIsEnabled(),
@@ -563,7 +563,7 @@ func buildTerraformGrokRule(ddGrokRule *datadogV1.LogsGrokParserRules) []map[str
 
 func buildTerraformMessageRemapper(remapper *datadogV1.LogsMessageRemapper) map[string]interface{} {
 	return map[string]interface{}{
-		"sources":    remapper.Sources,
+		"sources":    remapper.GetSources(),
 		"name":       remapper.GetName(),
 		"is_enabled": remapper.GetIsEnabled(),
 	}
@@ -571,7 +571,7 @@ func buildTerraformMessageRemapper(remapper *datadogV1.LogsMessageRemapper) map[
 
 func buildTerraformDateRemapper(remapper *datadogV1.LogsDateRemapper) map[string]interface{} {
 	return map[string]interface{}{
-		"sources":    remapper.Sources,
+		"sources":    remapper.GetSources(),
 		"name":       remapper.GetName(),
 		"is_enabled": remapper.GetIsEnabled(),
 	}
@@ -579,7 +579,7 @@ func buildTerraformDateRemapper(remapper *datadogV1.LogsDateRemapper) map[string
 
 func buildTerraformServiceRemapper(remapper *datadogV1.LogsServiceRemapper) map[string]interface{} {
 	return map[string]interface{}{
-		"sources":    remapper.Sources,
+		"sources":    remapper.GetSources(),
 		"name":       remapper.GetName(),
 		"is_enabled": remapper.GetIsEnabled(),
 	}
@@ -587,7 +587,7 @@ func buildTerraformServiceRemapper(remapper *datadogV1.LogsServiceRemapper) map[
 
 func buildTerraformStatusRemapper(remapper *datadogV1.LogsStatusRemapper) map[string]interface{} {
 	return map[string]interface{}{
-		"sources":    remapper.Sources,
+		"sources":    remapper.GetSources(),
 		"name":       remapper.GetName(),
 		"is_enabled": remapper.GetIsEnabled(),
 	}
@@ -595,7 +595,7 @@ func buildTerraformStatusRemapper(remapper *datadogV1.LogsStatusRemapper) map[st
 
 func buildTerraformTraceRemapper(remapper *datadogV1.LogsTraceRemapper) map[string]interface{} {
 	return map[string]interface{}{
-		"sources":    remapper.Sources,
+		"sources":    remapper.GetSources(),
 		"name":       remapper.GetName(),
 		"is_enabled": remapper.GetIsEnabled(),
 	}
@@ -663,7 +663,7 @@ func buildDatadogPipeline(d *schema.ResourceData) (*datadogV1.LogsPipeline, erro
 	if err != nil {
 		return nil, err
 	}
-	ddPipeline.Processors = ddProcessors
+	ddPipeline.SetProcessors(ddProcessors)
 	return &ddPipeline, nil
 }
 
@@ -786,7 +786,7 @@ func buildDatadogLookupProcessor(tfProcessor map[string]interface{}) *datadogV1.
 		for i, tfLookupLine := range tfLookupTable {
 			ddLookupTable[i] = tfLookupLine.(string)
 		}
-		ddLookupProcessor.LookupTable = ddLookupTable
+		ddLookupProcessor.SetLookupTable(ddLookupTable)
 	}
 	if tfDefaultLookup, exists := tfProcessor["default_lookup"].(string); exists && len(tfDefaultLookup) > 0 {
 		ddLookupProcessor.SetDefaultLookup(tfDefaultLookup)
@@ -841,7 +841,7 @@ func buildDatadogGeoIPParser(tfProcessor map[string]interface{}) *datadogV1.Logs
 		ddGeoIPParser.SetTarget(tfTarget)
 	}
 	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
-		ddGeoIPParser.Sources = ddSources
+		ddGeoIPParser.SetSources(ddSources)
 	}
 	if tfName, exists := tfProcessor["name"].(string); exists {
 		ddGeoIPParser.SetName(tfName)
@@ -887,7 +887,7 @@ func buildDatadogGrokParser(tfProcessor map[string]interface{}) *datadogV1.LogsG
 func buildDatadogMessageRemapper(tfProcessor map[string]interface{}) *datadogV1.LogsMessageRemapper {
 	ddRemapper := datadogV1.NewLogsMessageRemapperWithDefaults()
 	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
-		ddRemapper.Sources = ddSources
+		ddRemapper.SetSources(ddSources)
 	}
 	if tfName, exists := tfProcessor["name"].(string); exists {
 		ddRemapper.SetName(tfName)
@@ -959,7 +959,7 @@ func buildDatadogCategoryProcessor(tfProcessor map[string]interface{}) *datadogV
 
 			ddCategories[i] = ddCategory
 		}
-		ddCategory.Categories = ddCategories
+		ddCategory.SetCategories(ddCategories)
 	}
 	if tfName, exists := tfProcessor["name"].(string); exists {
 		ddCategory.SetName(tfName)
