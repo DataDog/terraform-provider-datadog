@@ -973,11 +973,10 @@ func TestAccDatadogDashboard_import(t *testing.T) {
 func checkDashboardExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		client := providerConf.CommunityClient
 
 		for _, r := range s.RootModule().Resources {
-			if _, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID).Execute(); err != nil {
+			if _, err := client.GetBoard(r.Primary.ID); err != nil {
 				return fmt.Errorf("received an error retrieving dashboard1 %s", err)
 			}
 		}
@@ -988,11 +987,10 @@ func checkDashboardExists(accProvider *schema.Provider) resource.TestCheckFunc {
 func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		client := providerConf.CommunityClient
 
 		for _, r := range s.RootModule().Resources {
-			if _, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID).Execute(); err != nil {
+			if _, err := client.GetBoard(r.Primary.ID); err != nil {
 				if strings.Contains(err.Error(), "404 Not Found") {
 					continue
 				}
