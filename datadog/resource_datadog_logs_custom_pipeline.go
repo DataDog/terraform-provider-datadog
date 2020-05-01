@@ -453,8 +453,8 @@ func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]in
 		logsLookupProcessor := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsLookupProcessor)
 		tfProcessor = buildTerraformLookupProcessor(logsLookupProcessor)
 	case datadogV1.NewLogsPipelineProcessorWithDefaults().GetType():
-		logsPipeline := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsPipeline)
-		tfProcessor, err = buildTerraformNestedPipeline(logsPipeline)
+		logsPipelineProcessor := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsPipelineProcessor)
+		tfProcessor, err = buildTerraformNestedPipeline(logsPipelineProcessor)
 	case datadogV1.NewLogsStringBuilderProcessorWithDefaults().GetType():
 		logsStringBuilderProcessor := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsStringBuilderProcessor)
 		tfProcessor = buildTerraformStringBuilderProcessor(logsStringBuilderProcessor)
@@ -499,7 +499,9 @@ func buildTerraformLookupProcessor(ddLookup *datadogV1.LogsLookupProcessor) map[
 	tfProcessor := map[string]interface{}{
 		"source":       ddLookup.GetSource(),
 		"target":       ddLookup.GetTarget(),
-		"lookup_table": ddLookup.LookupTable,
+		"lookup_table": ddLookup.GetLookupTable(),
+		"name":         ddLookup.GetName(),
+		"is_enabled":   ddLookup.GetIsEnabled(),
 	}
 
 	if ddLookup.HasDefaultLookup() {
@@ -509,7 +511,7 @@ func buildTerraformLookupProcessor(ddLookup *datadogV1.LogsLookupProcessor) map[
 	return tfProcessor
 }
 
-func buildTerraformNestedPipeline(ddNested *datadogV1.LogsPipeline) (map[string]interface{}, error) {
+func buildTerraformNestedPipeline(ddNested *datadogV1.LogsPipelineProcessor) (map[string]interface{}, error) {
 	tfProcessors, err := buildTerraformProcessors(ddNested.GetProcessors())
 	if err != nil {
 		return nil, err
@@ -543,7 +545,7 @@ func buildTerraformGeoIPParser(ddGeoIPParser *datadogV1.LogsGeoIPParser) map[str
 
 func buildTerraformGrokParser(ddGrok *datadogV1.LogsGrokParser) map[string]interface{} {
 	return map[string]interface{}{
-		"samples":    ddGrok.Samples,
+		"samples":    ddGrok.GetSamples(),
 		"source":     ddGrok.GetSource(),
 		"grok":       buildTerraformGrokRule(&ddGrok.Grok),
 		"name":       ddGrok.GetName(),
@@ -712,6 +714,8 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 		ddProcessor.LogsProcessorInterface = buildDatadogLookupProcessor(tfProcessor)
 	case datadogV1.NewLogsPipelineProcessorWithDefaults().GetType():
 		ddProcessor.LogsProcessorInterface, err = buildDatadogNestedPipeline(tfProcessor)
+	case datadogV1.NewLogsStringBuilderProcessorWithDefaults().GetType():
+		ddProcessor.LogsProcessorInterface, err = buildDatadogStringBuilderProcessor(tfProcessor)
 	case datadogV1.NewLogsURLParserWithDefaults().GetType():
 		ddProcessor.LogsProcessorInterface = buildDatadogURLParser(tfProcessor)
 	case datadogV1.NewLogsUserAgentParserWithDefaults().GetType():
@@ -771,6 +775,12 @@ func buildDatadogLookupProcessor(tfProcessor map[string]interface{}) *datadogV1.
 	if tfTarget, exists := tfProcessor["target"].(string); exists {
 		ddLookupProcessor.SetTarget(tfTarget)
 	}
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddLookupProcessor.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddLookupProcessor.SetIsEnabled(tfIsEnabled)
+	}
 	if tfLookupTable, exists := tfProcessor["lookup_table"].([]interface{}); exists && len(tfLookupTable) > 0 {
 		ddLookupTable := make([]string, len(tfLookupTable))
 		for i, tfLookupLine := range tfLookupTable {
@@ -805,7 +815,7 @@ func buildDatadogNestedPipeline(tfProcessor map[string]interface{}) (*datadogV1.
 	return ddNestedPipeline, nil
 }
 
-func buildDatadogStringBuilderProcessor(tfProcessor map[string]interface{}) *datadogV1.LogsStringBuilderProcessor {
+func buildDatadogStringBuilderProcessor(tfProcessor map[string]interface{}) (*datadogV1.LogsStringBuilderProcessor, error) {
 	ddStringBuilder := datadogV1.NewLogsStringBuilderProcessorWithDefaults()
 	if tfTemplate, exists := tfProcessor["template"].(string); exists {
 		ddStringBuilder.SetTemplate(tfTemplate)
@@ -822,7 +832,7 @@ func buildDatadogStringBuilderProcessor(tfProcessor map[string]interface{}) *dat
 	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
 		ddStringBuilder.SetIsEnabled(tfIsEnabled)
 	}
-	return ddStringBuilder
+	return ddStringBuilder, nil
 }
 
 func buildDatadogGeoIPParser(tfProcessor map[string]interface{}) *datadogV1.LogsGeoIPParser {
@@ -852,7 +862,7 @@ func buildDatadogGrokParser(tfProcessor map[string]interface{}) *datadogV1.LogsG
 		for i, tfSample := range tfSamples {
 			ddSamples[i] = tfSample.(string)
 		}
-		ddGrokParser.Samples = &ddSamples
+		ddGrokParser.SetSamples(ddSamples)
 	}
 	if tfGrok, exists := tfProcessor["grok"].([]interface{}); exists && len(tfGrok) > 0 {
 		ddGrok := datadogV1.LogsGrokParserRules{}
