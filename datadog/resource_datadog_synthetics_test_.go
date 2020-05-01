@@ -308,18 +308,17 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 			request.SetHeaders(make(map[string]string))
 		}
 		for k, v := range headers {
-			tHeaders := request.GetHeaders()
-			tHeaders[k] = v.(string)
-			request.SetHeaders(tHeaders)
+			request.GetHeaders()[k] = v.(string)
 		}
 	}
 
 	config := datadogV1.SyntheticsTestConfig{
-		Request: request,
-		//Variables: &[]datadogV1.SyntheticsBrowserVariable{},
+		Request:    request,
+		Variables:  &[]datadogV1.SyntheticsBrowserVariable{},
+		Assertions: []datadogV1.SyntheticsAssertion{},
 	}
 
-	if attr, ok := d.GetOk("assertions"); ok {
+	if attr, ok := d.GetOk("assertions"); ok && attr != nil {
 		for _, attr := range attr.([]interface{}) {
 			assertion := datadogV1.SyntheticsAssertion{}
 			assertionMap := attr.(map[string]interface{})
@@ -336,10 +335,10 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 				assertion.SetOperator(datadogV1.SyntheticsAssertionOperator(assertionOperator))
 			}
 			if v, ok := assertionMap["target"]; ok {
-				if isTargetOfTypeInt(assertion.Type) {
+				if isTargetOfTypeInt(assertion.GetType()) {
 					assertionTargetInt, _ := strconv.Atoi(v.(string))
 					assertion.SetTarget(assertionTargetInt)
-				} else if assertion.Operator == "validates" {
+				} else if assertion.GetOperator() == datadogV1.SYNTHETICSASSERTIONOPERATOR_VALIDATES {
 					assertion.SetTarget(v.(string))
 				} else {
 					assertion.SetTarget(v.(string))
@@ -411,9 +410,9 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	if attr, ok := d.GetOk("subtype"); ok {
 		syntheticsTest.SetSubtype(datadogV1.SyntheticsTestDetailsSubType(attr.(string)))
 	} else {
-		if *syntheticsTest.Type == "api" {
+		if syntheticsTest.GetType() == "api" {
 			// we want to default to "http" subtype when type is "api"
-			syntheticsTest.SetSubtype("http")
+			syntheticsTest.SetSubtype(datadogV1.SYNTHETICSTESTDETAILSSUBTYPE_HTTP)
 		}
 	}
 
@@ -437,8 +436,8 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	if actualRequest.HasTimeout() {
 		localRequest["timeout"] = convertToString(actualRequest.GetTimeout())
 	}
-	if _, ok := actualRequest.GetUrlOk(); ok {
-		localRequest["url"] = actualRequest.GetUrl()
+	if v, ok := actualRequest.GetUrlOk(); ok {
+		localRequest["url"] = *v
 	}
 	if actualRequest.HasHost() {
 		localRequest["host"] = actualRequest.GetHost()
@@ -478,8 +477,8 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	if actualOptions.HasFollowRedirects() {
 		localOptions["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
 	}
-	if v, ok := actualOptions.GetMinLocationFailedOk(); ok {
-		localOptions["min_failure_duration"] = convertToString(v)
+	if actualOptions.HasMinFailureDuration() {
+		localOptions["min_failure_duration"] = convertToString(actualOptions.GetMinFailureDuration())
 	}
 	if actualOptions.HasMinLocationFailed() {
 		localOptions["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
