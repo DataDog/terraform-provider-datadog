@@ -162,9 +162,10 @@ func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) erro
 
 func resourceDatadogDashboardDelete(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 	id := d.Id()
-	if err := client.DeleteBoard(id); err != nil {
+	if _, _, err := datadogClientV1.DashboardsApi.DeleteDashboard(authV1, id).Execute(); err != nil {
 		return translateClientError(err, "error deleting dashboard")
 	}
 	return nil
@@ -179,9 +180,10 @@ func resourceDatadogDashboardImport(d *schema.ResourceData, meta interface{}) ([
 
 func resourceDatadogDashboardExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 	id := d.Id()
-	if _, err := client.GetBoard(id); err != nil {
+	if _, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, id).Execute(); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
@@ -2394,9 +2396,9 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			Elem:     &schema.Schema{Type: schema.TypeString},
 		},
 		"logset": {
-			Type:     schema.TypeString,
-			Removed:  "This parameter has been removed. Use 'indexes' instead",
-			Optional: true,
+			Type:       schema.TypeString,
+			Deprecated: "This parameter has been deprecated. Use 'indexes' instead",
+			Optional:   true,
 		},
 		"query": {
 			Type:     schema.TypeString,
@@ -2433,6 +2435,7 @@ func buildDatadogLogStreamDefinition(terraformDefinition map[string]interface{})
 	datadogDefinition := &datadogV1.LogStreamWidgetDefinition{}
 	// Required params
 	datadogDefinition.SetType("log_stream")
+	datadogDefinition.SetLogset(terraformDefinition["logset"].(string))
 	terraformIndexes := terraformDefinition["indexes"].([]interface{})
 	datadogIndexes := make([]string, len(terraformIndexes))
 	for i, index := range terraformIndexes {
@@ -2470,6 +2473,9 @@ func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidg
 	// Required params
 	terraformDefinition["indexes"] = *datadogDefinition.Indexes
 	// Optional params
+	if datadogDefinition.Logset != nil {
+		terraformDefinition["logset"] = *datadogDefinition.Logset
+	}
 	if datadogDefinition.Query != nil {
 		terraformDefinition["query"] = *datadogDefinition.Query
 	}
@@ -2527,15 +2533,15 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 		},
 		// The count param is deprecated
 		"count": {
-			Type:     schema.TypeInt,
-			Removed:  "This parameter has been removed",
-			Optional: true,
+			Type:       schema.TypeInt,
+			Deprecated: "This parameter has been deprecated",
+			Optional:   true,
 		},
 		// The start param is deprecated
 		"start": {
-			Type:     schema.TypeInt,
-			Removed:  "This parameter has been removed",
-			Optional: true,
+			Type:       schema.TypeInt,
+			Deprecated: "This parameter has been deprecated",
+			Optional:   true,
 		},
 		"display_format": {
 			Type:     schema.TypeString,
@@ -2580,13 +2586,12 @@ func buildDatadogManageStatusDefinition(terraformDefinition map[string]interface
 	if v, ok := terraformDefinition["sort"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetSort(datadogV1.WidgetSort(v))
 	}
-	////Deprecated and is Not part of the Datadog Go client
-	//if v, ok := terraformDefinition["count"].(int); ok {
-	//	datadogDefinition.SetCount(v)
-	//}
-	//if v, ok := terraformDefinition["start"].(int); ok {
-	//	datadogDefinition.SetStart(v)
-	//}
+	if v, ok := terraformDefinition["count"].(int); ok {
+		datadogDefinition.SetCount(int64(v))
+	}
+	if v, ok := terraformDefinition["start"].(int); ok {
+		datadogDefinition.SetStart(int64(v))
+	}
 	if v, ok := terraformDefinition["display_format"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetDisplayFormat(datadogV1.WidgetMonitorSummaryDisplayFormat(v))
 	}
