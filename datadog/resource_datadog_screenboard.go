@@ -685,7 +685,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 		Delete:             resourceDatadogScreenboardDelete,
 		Exists:             resourceDatadogScreenboardExists,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogScreenboardImport,
+			State: schema.ImportStatePassthrough,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -1850,13 +1850,6 @@ func resourceDatadogScreenboardDelete(d *schema.ResourceData, meta interface{}) 
 		return translateClientError(err, "error deleting screenboard")
 	}
 	return nil
-}
-
-func resourceDatadogScreenboardImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogScreenboardRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }
 
 func resourceDatadogScreenboardExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {

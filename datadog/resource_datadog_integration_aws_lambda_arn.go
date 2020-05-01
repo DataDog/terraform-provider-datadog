@@ -34,7 +34,7 @@ func resourceDatadogIntegrationAwsLambdaArn() *schema.Resource {
 		Delete: resourceDatadogIntegrationAwsLambdaArnDelete,
 		Exists: resourceDatadogIntegrationAwsLambdaArnExists,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogIntegrationAwsLambdaArnImport,
+			State: schema.ImportStatePassthrough,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -144,11 +144,4 @@ func resourceDatadogIntegrationAwsLambdaArnDelete(d *schema.ResourceData, meta i
 	}
 
 	return nil
-}
-
-func resourceDatadogIntegrationAwsLambdaArnImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogIntegrationAwsLambdaArnRead(d, meta); err != nil {
-		return nil, translateClientError(err, "error importing lambda arn resource.")
-	}
-	return []*schema.ResourceData{d}, nil
 }

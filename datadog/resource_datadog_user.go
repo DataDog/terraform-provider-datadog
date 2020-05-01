@@ -16,7 +16,7 @@ func resourceDatadogUser() *schema.Resource {
 		Delete: resourceDatadogUserDelete,
 		Exists: resourceDatadogUserExists,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogUserImport,
+			State: schema.ImportStatePassthrough,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -162,11 +162,4 @@ func resourceDatadogUserDelete(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	return nil
-}
-
-func resourceDatadogUserImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogUserRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }

@@ -17,7 +17,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 		Delete: resourceDatadogServiceLevelObjectiveDelete,
 		Exists: resourceDatadogServiceLevelObjectiveExists,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogServiceLevelObjectiveImport,
+			State: schema.ImportStatePassthrough,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -389,13 +389,6 @@ func resourceDatadogServiceLevelObjectiveDelete(d *schema.ResourceData, meta int
 	}
 	return nil
 
-}
-
-func resourceDatadogServiceLevelObjectiveImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogServiceLevelObjectiveRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }
 
 // Ignore any diff that results from the mix of *_display string values from the

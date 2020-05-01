@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/zorkian/go-datadog-api"
 )
@@ -14,7 +15,7 @@ func resourceDatadogIntegrationAwsLogCollection() *schema.Resource {
 		Delete: resourceDatadogIntegrationAwsLogCollectionDelete,
 		Exists: resourceDatadogIntegrationAwsLogCollectionExists,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogIntegrationAwsLogCollectionImport,
+			State: schema.ImportStatePassthrough,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -140,11 +141,4 @@ func resourceDatadogIntegrationAwsLogCollectionDelete(d *schema.ResourceData, me
 	}
 
 	return nil
-}
-
-func resourceDatadogIntegrationAwsLogCollectionImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogIntegrationAwsLogCollectionRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }

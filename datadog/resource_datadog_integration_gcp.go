@@ -15,7 +15,7 @@ func resourceDatadogIntegrationGcp() *schema.Resource {
 		Delete: resourceDatadogIntegrationGcpDelete,
 		Exists: resourceDatadogIntegrationGcpExists,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogIntegrationGcpImport,
+			State: schema.ImportStatePassthrough,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -161,11 +161,4 @@ func resourceDatadogIntegrationGcpDelete(d *schema.ResourceData, meta interface{
 	}
 
 	return nil
-}
-
-func resourceDatadogIntegrationGcpImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogIntegrationGcpRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }

@@ -15,7 +15,7 @@ func resourceDatadogMetricMetadata() *schema.Resource {
 		Delete: resourceDatadogMetricMetadataDelete,
 		Exists: resourceDatadogMetricMetadataExists,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogMetricMetadataImport,
+			State: schema.ImportStatePassthrough,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -155,11 +155,4 @@ func resourceDatadogMetricMetadataUpdate(d *schema.ResourceData, meta interface{
 
 func resourceDatadogMetricMetadataDelete(d *schema.ResourceData, meta interface{}) error {
 	return nil
-}
-
-func resourceDatadogMetricMetadataImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogMetricMetadataRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }

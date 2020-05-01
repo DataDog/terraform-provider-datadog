@@ -235,9 +235,6 @@ func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogIntegrationAwsImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogIntegrationAwsRead(d, meta); err != nil {
-		return nil, err
-	}
 	d.Set("external_id", os.Getenv("EXTERNAL_ID"))
 	return []*schema.ResourceData{d}, nil
 }

@@ -18,7 +18,7 @@ func resourceDatadogDashboardList() *schema.Resource {
 		Delete: resourceDatadogDashboardListDelete,
 		Exists: resourceDatadogDashboardListExists,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogDashboardListImport,
+			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -187,13 +187,6 @@ func resourceDatadogDashboardListExists(d *schema.ResourceData, meta interface{}
 		return false, translateClientError(err, "error checking dashboard list exists")
 	}
 	return true, nil
-}
-
-func resourceDatadogDashboardListImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogDashboardListRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }
 
 func buildDatadogDashboardList(d *schema.ResourceData) (*datadogV1.DashboardList, error) {

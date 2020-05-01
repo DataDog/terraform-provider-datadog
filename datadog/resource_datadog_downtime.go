@@ -22,7 +22,7 @@ func resourceDatadogDowntime() *schema.Resource {
 		Delete: resourceDatadogDowntimeDelete,
 		Exists: resourceDatadogDowntimeExists,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogDowntimeImport,
+			State: schema.ImportStatePassthrough,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -451,13 +451,6 @@ func resourceDatadogDowntimeDelete(d *schema.ResourceData, meta interface{}) err
 	}
 
 	return nil
-}
-
-func resourceDatadogDowntimeImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogDowntimeRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }
 
 func validateDatadogDowntimeRecurrenceType(v interface{}, k string) (ws []string, errors []error) {
