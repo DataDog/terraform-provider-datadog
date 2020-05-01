@@ -244,6 +244,7 @@ const createSyntheticsAPITestConfig = `
 resource "datadog_synthetics_test" "foo" {
 	type = "api"
 	subtype = "http"
+
 	request = {
 		method = "GET"
 		url = "https://www.datadoghq.com"
@@ -254,6 +255,7 @@ resource "datadog_synthetics_test" "foo" {
 		Accept = "application/json"
 		X-Datadog-Trace-ID = "1234566789"
 	}
+
 	assertions = [
 		{
 			type = "header"
@@ -277,6 +279,7 @@ resource "datadog_synthetics_test" "foo" {
 			target = "terraform"
 		}
 	]
+
 	locations = [ "aws:eu-central-1" ]
 	options = {
 		tick_every = 60
@@ -284,9 +287,11 @@ resource "datadog_synthetics_test" "foo" {
 		min_failure_duration = 0
 		min_location_failed = 1
 	}
+
 	name = "name for synthetics test foo"
 	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
+
 	status = "paused"
 }
 `
@@ -350,11 +355,13 @@ const updateSyntheticsAPITestConfig = `
 resource "datadog_synthetics_test" "foo" {
 	type = "api"
 	subtype = "http"
+
 	request = {
 		method = "GET"
 		url = "https://docs.datadoghq.com"
 		timeout = 60
 	}
+
 	assertions = [
 		{
 			type = "statusCode"
@@ -362,16 +369,20 @@ resource "datadog_synthetics_test" "foo" {
 			target = "500"
 		}
 	]
+
 	locations = [ "aws:eu-central-1" ]
+
 	options = {
 		tick_every = 900
 		follow_redirects = false
 		min_failure_duration = 10
 		min_location_failed = 1
 	}
+
 	name = "updated name"
 	message = "Notify @pagerduty"
 	tags = ["foo:bar", "foo", "env:test"]
+
 	status = "live"
 }
 `
@@ -427,10 +438,12 @@ const createSyntheticsSSLTestConfig = `
 resource "datadog_synthetics_test" "ssl" {
 	type = "api"
 	subtype = "ssl"
+
 	request = {
 		host = "datadoghq.com"
 		port = 443
 	}
+
 	assertions = [
 		{
 			type = "certificate"
@@ -438,14 +451,17 @@ resource "datadog_synthetics_test" "ssl" {
 			target = 30
 		}
 	]
+
 	locations = [ "aws:eu-central-1" ]
 	options = {
 		tick_every = 60
 		accept_self_signed = true
 	}
+
 	name = "name for synthetics test ssl"
 	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
+
 	status = "paused"
 }
 `
@@ -503,10 +519,12 @@ const updateSyntheticsSSLTestConfig = `
 resource "datadog_synthetics_test" "ssl" {
 	type = "api"
 	subtype = "ssl"
+
 	request = {
 		host = "datadoghq.com"
 		port = 443
 	}
+
 	assertions = [
 		{
 			type = "certificate"
@@ -514,14 +532,18 @@ resource "datadog_synthetics_test" "ssl" {
 			target = 60
 		}
 	]
+
 	locations = [ "aws:eu-central-1" ]
+
 	options = {
 		tick_every = 60
 		accept_self_signed = false
 	}
+
 	name = "updated name"
 	message = "Notify @pagerduty"
 	tags = ["foo:bar", "foo", "env:test"]
+
 	status = "live"
 }
 `
@@ -584,6 +606,7 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 const createSyntheticsBrowserTestConfig = `
 resource "datadog_synthetics_test" "bar" {
 	type = "browser"
+
 	request = {
 		method = "GET"
 		url = "https://www.datadoghq.com"
@@ -594,6 +617,7 @@ resource "datadog_synthetics_test" "bar" {
 		Accept = "application/json"
 		X-Datadog-Trace-ID = "123456789"
 	}
+
 	device_ids = [ "laptop_large", "mobile_small" ]
 	locations = [ "aws:eu-central-1" ]
 	options = {
@@ -601,9 +625,11 @@ resource "datadog_synthetics_test" "bar" {
 		min_failure_duration = 0
 		min_location_failed = 1
 	}
+
 	name = "name for synthetics browser test bar"
 	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
+
 	status = "paused"
 }
 `
@@ -693,10 +719,11 @@ resource "datadog_synthetics_test" "bar" {
 func testSyntheticsTestExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
 		for _, r := range s.RootModule().Resources {
-			if _, err := client.GetSyntheticsTest(r.Primary.ID); err != nil {
+			if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID).Execute(); err != nil {
 				return fmt.Errorf("received an error retrieving synthetics test %s", err)
 			}
 		}
@@ -707,10 +734,11 @@ func testSyntheticsTestExists(accProvider *schema.Provider) resource.TestCheckFu
 func testSyntheticsTestIsDestroyed(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
 		for _, r := range s.RootModule().Resources {
-			if _, err := client.GetSyntheticsTest(r.Primary.ID); err != nil {
+			if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID).Execute(); err != nil {
 				if strings.Contains(err.Error(), "404 Not Found") {
 					continue
 				}
