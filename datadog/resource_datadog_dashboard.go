@@ -1008,15 +1008,14 @@ func getGroupDefinitionSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogGroupDefinition(terraformGroupDefinition map[string]interface{}) (*datadogV1.GroupWidgetDefinition, error) {
-	datadogGroupDefinition := datadogV1.GroupWidgetDefinition{}
-	datadogGroupDefinition.SetType("group")
+	datadogGroupDefinition := datadogV1.NewGroupWidgetDefinitionWithDefaults()
 
 	if v, ok := terraformGroupDefinition["widget"].([]interface{}); ok && len(v) != 0 {
 		datadogWidgets, err := buildDatadogWidgets(&v)
 		if err != nil {
 			return nil, err
 		}
-		datadogGroupDefinition.Widgets = *datadogWidgets
+		datadogGroupDefinition.SetWidgets(*datadogWidgets)
 	}
 	if v, ok := terraformGroupDefinition["layout_type"].(string); ok && len(v) != 0 {
 		datadogGroupDefinition.SetLayoutType(datadogV1.WidgetLayoutType(v))
@@ -1025,7 +1024,7 @@ func buildDatadogGroupDefinition(terraformGroupDefinition map[string]interface{}
 		datadogGroupDefinition.SetTitle(v)
 	}
 
-	return &datadogGroupDefinition, nil
+	return datadogGroupDefinition, nil
 }
 
 func buildTerraformGroupDefinition(datadogGroupDefinition datadogV1.GroupWidgetDefinition) map[string]interface{} {
@@ -1085,9 +1084,8 @@ func getAlertGraphDefinitionSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogAlertGraphDefinition(terraformDefinition map[string]interface{}) *datadogV1.AlertGraphWidgetDefinition {
-	datadogDefinition := &datadogV1.AlertGraphWidgetDefinition{}
+	datadogDefinition := datadogV1.NewAlertGraphWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("alert_graph")
 	datadogDefinition.AlertId = terraformDefinition["alert_id"].(string)
 	datadogDefinition.VizType = datadogV1.WidgetVizType(terraformDefinition["viz_type"].(string))
 	// Optional params
@@ -1165,9 +1163,8 @@ func getAlertValueDefinitionSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogAlertValueDefinition(terraformDefinition map[string]interface{}) *datadogV1.AlertValueWidgetDefinition {
-	datadogDefinition := &datadogV1.AlertValueWidgetDefinition{}
+	datadogDefinition := datadogV1.NewAlertValueWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("alert_value")
 	datadogDefinition.AlertId = terraformDefinition["alert_id"].(string)
 	// Optional params
 	if v, ok := terraformDefinition["precision"].(int); ok && v != 0 {
@@ -1252,9 +1249,8 @@ func getChangeDefinitionSchema() map[string]*schema.Schema {
 	}
 }
 func buildDatadogChangeDefinition(terraformDefinition map[string]interface{}) *datadogV1.ChangeWidgetDefinition {
-	datadogDefinition := &datadogV1.ChangeWidgetDefinition{}
+	datadogDefinition := datadogV1.NewChangeWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("change")
 	terraformRequests := terraformDefinition["request"].([]interface{})
 	datadogDefinition.Requests = *buildDatadogChangeRequests(&terraformRequests)
 	// Optional params
@@ -1443,9 +1439,8 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 	}
 }
 func buildDatadogDistributionDefinition(terraformDefinition map[string]interface{}) *datadogV1.DistributionWidgetDefinition {
-	datadogDefinition := &datadogV1.DistributionWidgetDefinition{}
+	datadogDefinition := datadogV1.NewDistributionWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("distribution")
 	terraformRequests := terraformDefinition["request"].([]interface{})
 	datadogDefinition.Requests = *buildDatadogDistributionRequests(&terraformRequests)
 	// Optional params
@@ -1591,9 +1586,8 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogEventStreamDefinition(terraformDefinition map[string]interface{}) *datadogV1.EventStreamWidgetDefinition {
-	datadogDefinition := &datadogV1.EventStreamWidgetDefinition{}
+	datadogDefinition := datadogV1.NewEventStreamWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("event_stream")
 	datadogDefinition.SetQuery(terraformDefinition["query"].(string))
 	// Optional params
 	if v, ok := terraformDefinition["event_size"].(string); ok && len(v) != 0 {
@@ -1670,9 +1664,8 @@ func getEventTimelineDefinitionSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogEventTimelineDefinition(terraformDefinition map[string]interface{}) *datadogV1.EventTimelineWidgetDefinition {
-	datadogDefinition := &datadogV1.EventTimelineWidgetDefinition{}
+	datadogDefinition := datadogV1.NewEventTimelineWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("event_timeline")
 	datadogDefinition.SetQuery(terraformDefinition["query"].(string))
 	// Optional params
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
@@ -1761,9 +1754,8 @@ func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogCheckStatusDefinition(terraformDefinition map[string]interface{}) *datadogV1.CheckStatusWidgetDefinition {
-	datadogDefinition := &datadogV1.CheckStatusWidgetDefinition{}
+	datadogDefinition := datadogV1.NewCheckStatusWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("check_status")
 	datadogDefinition.SetCheck(terraformDefinition["check"].(string))
 	datadogDefinition.SetGrouping(datadogV1.WidgetGrouping(terraformDefinition["grouping"].(string)))
 	// Optional params
@@ -1802,8 +1794,8 @@ func buildDatadogCheckStatusDefinition(terraformDefinition map[string]interface{
 func buildTerraformCheckStatusDefinition(datadogDefinition datadogV1.CheckStatusWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-	terraformDefinition["check"] = datadogDefinition.Check
-	terraformDefinition["grouping"] = datadogDefinition.Grouping
+	terraformDefinition["check"] = datadogDefinition.GetCheck()
+	terraformDefinition["grouping"] = datadogDefinition.GetGrouping()
 	// Optional params
 	if v, ok := datadogDefinition.GetGroupOk(); ok {
 		terraformDefinition["group"] = *v
@@ -1863,9 +1855,8 @@ func getFreeTextDefinitionSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogFreeTextDefinition(terraformDefinition map[string]interface{}) *datadogV1.FreeTextWidgetDefinition {
-	datadogDefinition := &datadogV1.FreeTextWidgetDefinition{}
+	datadogDefinition := datadogV1.NewFreeTextWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("free_text")
 	datadogDefinition.SetText(terraformDefinition["text"].(string))
 	// Optional params
 	if v, ok := terraformDefinition["color"].(string); ok && len(v) != 0 {
@@ -1940,9 +1931,8 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 	}
 }
 func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *datadogV1.HeatMapWidgetDefinition {
-	datadogDefinition := &datadogV1.HeatMapWidgetDefinition{}
+	datadogDefinition := datadogV1.NewHeatMapWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("heatmap")
 	terraformRequests := terraformDefinition["request"].([]interface{})
 	datadogDefinition.Requests = *buildDatadogHeatmapRequests(&terraformRequests)
 	// Optional params
@@ -2153,8 +2143,7 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 func buildDatadogHostmapDefinition(terraformDefinition map[string]interface{}) *datadogV1.HostMapWidgetDefinition {
 
 	// Required params
-	datadogDefinition := &datadogV1.HostMapWidgetDefinition{}
-	datadogDefinition.SetType("hostmap")
+	datadogDefinition := datadogV1.NewHostMapWidgetDefinitionWithDefaults()
 	if v, ok := terraformDefinition["request"].([]interface{}); ok && len(v) > 0 {
 		terraformRequests := v[0].(map[string]interface{})
 		datadogRequests := datadogV1.HostMapWidgetDefinitionRequests{}
@@ -2320,9 +2309,8 @@ func getIframeDefinitionSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogIframeDefinition(terraformDefinition map[string]interface{}) *datadogV1.IFrameWidgetDefinition {
-	datadogDefinition := &datadogV1.IFrameWidgetDefinition{}
+	datadogDefinition := datadogV1.NewIFrameWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("iframe")
 	datadogDefinition.SetUrl(terraformDefinition["url"].(string))
 	return datadogDefinition
 }
@@ -2356,9 +2344,8 @@ func getImageDefinitionSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogImageDefinition(terraformDefinition map[string]interface{}) *datadogV1.ImageWidgetDefinition {
-	datadogDefinition := &datadogV1.ImageWidgetDefinition{}
+	datadogDefinition := datadogV1.NewImageWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("image")
 	datadogDefinition.SetUrl(terraformDefinition["url"].(string))
 	// Optional params
 	if v, ok := terraformDefinition["sizing"].(string); ok && len(v) != 0 {
@@ -2432,9 +2419,8 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogLogStreamDefinition(terraformDefinition map[string]interface{}) *datadogV1.LogStreamWidgetDefinition {
-	datadogDefinition := &datadogV1.LogStreamWidgetDefinition{}
+	datadogDefinition := datadogV1.NewLogStreamWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("log_stream")
 	datadogDefinition.SetLogset(terraformDefinition["logset"].(string))
 	terraformIndexes := terraformDefinition["indexes"].([]interface{})
 	datadogIndexes := make([]string, len(terraformIndexes))
@@ -2574,9 +2560,8 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogManageStatusDefinition(terraformDefinition map[string]interface{}) *datadogV1.MonitorSummaryWidgetDefinition {
-	datadogDefinition := &datadogV1.MonitorSummaryWidgetDefinition{}
+	datadogDefinition := datadogV1.NewMonitorSummaryWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("manage_status")
 	datadogDefinition.SetQuery(terraformDefinition["query"].(string))
 	// Optional params
 	if v, ok := terraformDefinition["summary_type"].(string); ok && len(v) != 0 {
@@ -2695,9 +2680,8 @@ func getNoteDefinitionSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogNoteDefinition(terraformDefinition map[string]interface{}) *datadogV1.NoteWidgetDefinition {
-	datadogDefinition := &datadogV1.NoteWidgetDefinition{}
+	datadogDefinition := datadogV1.NewNoteWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("note")
 	datadogDefinition.SetContent(terraformDefinition["content"].(string))
 	// Optional params
 	if v, ok := terraformDefinition["background_color"].(string); ok && len(v) != 0 {
@@ -2798,9 +2782,8 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 	}
 }
 func buildDatadogQueryValueDefinition(terraformDefinition map[string]interface{}) *datadogV1.QueryValueWidgetDefinition {
-	datadogDefinition := &datadogV1.QueryValueWidgetDefinition{}
+	datadogDefinition := datadogV1.NewQueryValueWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("query_value")
 	terraformRequests := terraformDefinition["request"].([]interface{})
 	datadogDefinition.Requests = *buildDatadogQueryValueRequests(&terraformRequests)
 	// Optional params
@@ -2977,9 +2960,8 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 	}
 }
 func buildDatadogQueryTableDefinition(terraformDefinition map[string]interface{}) *datadogV1.TableWidgetDefinition {
-	datadogDefinition := &datadogV1.TableWidgetDefinition{}
+	datadogDefinition := datadogV1.NewTableWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("query_table")
 	terraformRequests := terraformDefinition["request"].([]interface{})
 	datadogDefinition.Requests = *buildDatadogQueryTableRequests(&terraformRequests)
 	// Optional params
@@ -3201,8 +3183,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 	}
 }
 func buildDatadogScatterplotDefinition(terraformDefinition map[string]interface{}) *datadogV1.ScatterPlotWidgetDefinition {
-	datadogDefinition := &datadogV1.ScatterPlotWidgetDefinition{}
-	datadogDefinition.SetType("scatterplot")
+	datadogDefinition := datadogV1.NewScatterPlotWidgetDefinitionWithDefaults()
 	// Required params
 	if v, ok := terraformDefinition["request"].([]interface{}); ok && len(v) > 0 {
 		terraformRequests := v[0].(map[string]interface{})
@@ -3396,8 +3377,7 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogServiceLevelObjectiveDefinition(terraformDefinition map[string]interface{}) *datadogV1.SLOWidgetDefinition {
-	datadogDefinition := &datadogV1.SLOWidgetDefinition{}
-	datadogDefinition.SetType("slo")
+	datadogDefinition := datadogV1.NewSLOWidgetDefinitionWithDefaults()
 	// Optional params
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
@@ -3531,9 +3511,8 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}) *datadogV1.TimeseriesWidgetDefinition {
-	datadogDefinition := &datadogV1.TimeseriesWidgetDefinition{}
+	datadogDefinition := datadogV1.NewTimeseriesWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("timeseries")
 	terraformRequests := terraformDefinition["request"].([]interface{})
 	datadogDefinition.Requests = *buildDatadogTimeseriesRequests(&terraformRequests)
 	// Optional params
@@ -3783,9 +3762,8 @@ func getToplistDefinitionSchema() map[string]*schema.Schema {
 	}
 }
 func buildDatadogToplistDefinition(terraformDefinition map[string]interface{}) *datadogV1.ToplistWidgetDefinition {
-	datadogDefinition := &datadogV1.ToplistWidgetDefinition{}
+	datadogDefinition := datadogV1.NewToplistWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("toplist")
 	terraformRequests := terraformDefinition["request"].([]interface{})
 	datadogDefinition.Requests = *buildDatadogToplistRequests(&terraformRequests)
 	// Optional params
@@ -3981,9 +3959,8 @@ func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface{}) *datadogV1.ServiceSummaryWidgetDefinition {
-	datadogDefinition := &datadogV1.ServiceSummaryWidgetDefinition{}
+	datadogDefinition := datadogV1.NewServiceSummaryWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetType("trace_service")
 	datadogDefinition.SetEnv(terraformDefinition["env"].(string))
 	datadogDefinition.SetService(terraformDefinition["service"].(string))
 	datadogDefinition.SetSpanName(terraformDefinition["span_name"].(string))
