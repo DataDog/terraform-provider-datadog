@@ -276,7 +276,8 @@ func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	if _, _, err := datadogClientV1.SyntheticsApi.DeleteTests(authV1).Body(datadogV1.SyntheticsDeleteTestsPayload{PublicIds: &[]string{d.Id()}}).Execute(); err != nil {
+	syntheticsDeleteTestsPayload := datadogV1.SyntheticsDeleteTestsPayload{PublicIds: &[]string{d.Id()}}
+	if _, _, err := datadogClientV1.SyntheticsApi.DeleteTests(authV1).Body(syntheticsDeleteTestsPayload).Execute(); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
 		return translateClientError(err, "error deleting synthetics test")
 	}
@@ -450,14 +451,14 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	if actualRequest.HasBody() {
 		localRequest["body"] = actualRequest.GetBody()
 	}
-	if _, ok := actualRequest.GetMethodOk(); ok {
+	if actualRequest.HasMethod() {
 		localRequest["method"] = convertToString(actualRequest.GetMethod())
 	}
 	if actualRequest.HasTimeout() {
 		localRequest["timeout"] = convertToString(actualRequest.GetTimeout())
 	}
-	if v, ok := actualRequest.GetUrlOk(); ok {
-		localRequest["url"] = *v
+	if actualRequest.HasUrl() {
+		localRequest["url"] = actualRequest.GetUrl()
 	}
 	if actualRequest.HasHost() {
 		localRequest["host"] = actualRequest.GetHost()
@@ -472,8 +473,8 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	var localAssertions []map[string]string
 	for _, assertion := range actualAssertions {
 		localAssertion := make(map[string]string)
-		if _, ok := assertion.GetOperatorOk(); ok {
-			localAssertion["operator"] = string(assertion.GetOperator())
+		if v, ok := assertion.GetOperatorOk(); ok {
+			localAssertion["operator"] = string(*v)
 		}
 		if assertion.HasProperty() {
 			localAssertion["property"] = assertion.GetProperty()
@@ -481,8 +482,8 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		if target := assertion.GetTarget(); target != nil {
 			localAssertion["target"] = convertToString(target)
 		}
-		if _, ok := assertion.GetTypeOk(); ok {
-			localAssertion["type"] = string(assertion.GetType())
+		if v, ok := assertion.GetTypeOk(); ok {
+			localAssertion["type"] = string(*v)
 		}
 		localAssertions = append(localAssertions, localAssertion)
 	}
