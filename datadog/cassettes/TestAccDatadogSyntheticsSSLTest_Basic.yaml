@@ -17,8 +17,8 @@ interactions:
     url: https://api.datadoghq.com/api/v1/synthetics/tests
     method: POST
   response:
-    body: '{"status":"paused","public_id":"54g-9s4-uav","tags":["foo:bar","baz"],"org_id":242643,"locations":["aws:eu-central-1"],"message":"Notify
-      @datadog.user","deleted_at":null,"name":"name for synthetics test ssl","monitor_id":18158441,"type":"api","created_at":"2020-05-01T00:09:05.797108+00:00","modified_at":"2020-05-01T00:09:05.797108+00:00","subtype":"ssl","config":{"variables":[],"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"5bq-cui-e5t","tags":["foo:bar","baz"],"org_id":242643,"locations":["aws:eu-central-1"],"message":"Notify
+      @datadog.user","deleted_at":null,"name":"name for synthetics test ssl","monitor_id":18206934,"type":"api","created_at":"2020-05-04T01:26:31.103710+00:00","modified_at":"2020-05-04T01:26:31.103710+00:00","subtype":"ssl","config":{"variables":[],"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -29,13 +29,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 01 May 2020 00:09:05 GMT
+      - Mon, 04 May 2020 01:26:31 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=156; Max-Age=604800; Path=/; expires=Fri, 08-May-2020 00:09:05 GMT;
+      - DD-PSHARD=156; Max-Age=604800; Path=/; expires=Mon, 11-May-2020 01:26:30 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -44,9 +44,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - v8lEj/pYmsavh1I0Db6FT/BAvLdOdAv91ctM9ImcmfZ/KHrCACXEdhuskTCPihd+
+      - ztq+F8HwxRthTKNo0l2MCEDK5uwvgQzF00nWu49lHsBM51hGZBm/pPILDqupy+Xd
       X-Dd-Version:
-      - "35.2454383"
+      - "35.2457590"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -56,7 +56,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "117"
       X-Ratelimit-Reset:
-      - "55"
+      - "29"
     status: 200 OK
     code: 200
     duration: ""
@@ -70,12 +70,12 @@ interactions:
       - GetTest
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.1+dev.1 (go go1.13.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/54g-9s4-uav
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/5bq-cui-e5t
     method: GET
   response:
-    body: '{"status":"paused","public_id":"54g-9s4-uav","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
+    body: '{"status":"paused","public_id":"5bq-cui-e5t","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
       @datadog.user","modified_by":{"email":"sherzod.karimov@datadoghq.com","handle":"sherzod.karimov@datadoghq.com","id":1146666,"name":"Sherzod
-      Karimov"},"name":"name for synthetics test ssl","monitor_id":18158441,"type":"api","created_at":"2020-05-01T00:09:05.797108+00:00","modified_at":"2020-05-01T00:09:05.797108+00:00","created_by":{"email":"sherzod.karimov@datadoghq.com","handle":"sherzod.karimov@datadoghq.com","id":1146666,"name":"Sherzod
+      Karimov"},"name":"name for synthetics test ssl","monitor_id":18206934,"type":"api","created_at":"2020-05-04T01:26:31.103710+00:00","modified_at":"2020-05-04T01:26:31.103710+00:00","created_by":{"email":"sherzod.karimov@datadoghq.com","handle":"sherzod.karimov@datadoghq.com","id":1146666,"name":"Sherzod
       Karimov"},"subtype":"ssl","config":{"variables":[],"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
     headers:
       Cache-Control:
@@ -87,13 +87,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 01 May 2020 00:09:05 GMT
+      - Mon, 04 May 2020 01:26:31 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=156; Max-Age=604800; Path=/; expires=Fri, 08-May-2020 00:09:05 GMT;
+      - DD-PSHARD=156; Max-Age=604800; Path=/; expires=Mon, 11-May-2020 01:26:31 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -102,9 +102,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - FGm8mbL/ixNS/zyX94m5xaWAxszhu9w68KL0QwTbLNqYgp2ZyX2W4rsoYLDoadr+
+      - IWbeot5NPPjwzkLRJwJSrhKxooUYWPiItYmeOu7MvfpEU9kI8879nM2EukYnEnom
       X-Dd-Version:
-      - "35.2454383"
+      - "35.2457590"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -114,7 +114,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "985"
       X-Ratelimit-Reset:
-      - "55"
+      - "29"
     status: 200 OK
     code: 200
     duration: ""
@@ -128,12 +128,12 @@ interactions:
       - GetTest
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.1+dev.1 (go go1.13.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/54g-9s4-uav
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/5bq-cui-e5t
     method: GET
   response:
-    body: '{"status":"paused","public_id":"54g-9s4-uav","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
+    body: '{"status":"paused","public_id":"5bq-cui-e5t","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
       @datadog.user","modified_by":{"email":"sherzod.karimov@datadoghq.com","handle":"sherzod.karimov@datadoghq.com","id":1146666,"name":"Sherzod
-      Karimov"},"name":"name for synthetics test ssl","monitor_id":18158441,"type":"api","created_at":"2020-05-01T00:09:05.797108+00:00","modified_at":"2020-05-01T00:09:05.797108+00:00","created_by":{"email":"sherzod.karimov@datadoghq.com","handle":"sherzod.karimov@datadoghq.com","id":1146666,"name":"Sherzod
+      Karimov"},"name":"name for synthetics test ssl","monitor_id":18206934,"type":"api","created_at":"2020-05-04T01:26:31.103710+00:00","modified_at":"2020-05-04T01:26:31.103710+00:00","created_by":{"email":"sherzod.karimov@datadoghq.com","handle":"sherzod.karimov@datadoghq.com","id":1146666,"name":"Sherzod
       Karimov"},"subtype":"ssl","config":{"variables":[],"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
     headers:
       Cache-Control:
@@ -145,13 +145,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 01 May 2020 00:09:06 GMT
+      - Mon, 04 May 2020 01:26:31 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=156; Max-Age=604800; Path=/; expires=Fri, 08-May-2020 00:09:06 GMT;
+      - DD-PSHARD=156; Max-Age=604800; Path=/; expires=Mon, 11-May-2020 01:26:31 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -160,9 +160,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - TAg/qKywM5rz/AUGkmt8+wB4wzGMJfSiHOrBzxBctPLsV/erSD5TChi/uo5ZlVXK
+      - wFmrQbB6wLDPf1aNlKcgRoMicVhPlX6qIVwwvniX5cF7oyd+90s5trfE73Pzpvml
       X-Dd-Version:
-      - "35.2454383"
+      - "35.2457590"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -172,7 +172,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "984"
       X-Ratelimit-Reset:
-      - "54"
+      - "29"
     status: 200 OK
     code: 200
     duration: ""
@@ -186,13 +186,13 @@ interactions:
       - GetTest
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.1+dev.1 (go go1.13.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/54g-9s4-uav
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/5bq-cui-e5t
     method: GET
   response:
-    body: '{"status":"paused","public_id":"54g-9s4-uav","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
+    body: '{"status":"paused","public_id":"5bq-cui-e5t","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
       @datadog.user","modified_by":{"email":"sherzod.karimov@datadoghq.com","handle":"sherzod.karimov@datadoghq.com","id":1146666,"name":"Sherzod
-      Karimov"},"name":"name for synthetics test ssl","monitor_id":18158441,"type":"api","created_at":"2020-05-01T00:09:05.797108+00:00","modified_at":"2020-05-01T00:09:05.797108+00:00","created_by":{"email":"sherzod.karimov@datadoghq.com","handle":"sherzod.karimov@datadoghq.com","id":1146666,"name":"Sherzod
-      Karimov"},"subtype":"ssl","overall_state_modified":"2020-05-01T00:09:06.248582+00:00","overall_state":2,"config":{"variables":[],"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
+      Karimov"},"name":"name for synthetics test ssl","monitor_id":18206934,"type":"api","created_at":"2020-05-04T01:26:31.103710+00:00","modified_at":"2020-05-04T01:26:31.103710+00:00","created_by":{"email":"sherzod.karimov@datadoghq.com","handle":"sherzod.karimov@datadoghq.com","id":1146666,"name":"Sherzod
+      Karimov"},"subtype":"ssl","config":{"variables":[],"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -203,13 +203,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 01 May 2020 00:09:06 GMT
+      - Mon, 04 May 2020 01:26:31 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=156; Max-Age=604800; Path=/; expires=Fri, 08-May-2020 00:09:06 GMT;
+      - DD-PSHARD=156; Max-Age=604800; Path=/; expires=Mon, 11-May-2020 01:26:31 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -218,9 +218,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - vwiIwb5QepaQFIQrmPfIwwVWkQ/z0inFQwNEDjqDDy4v3CsF5qbv9dnyfb7UGzLf
+      - 6qTaw+brNWWnKD6ULH8747/TVkPK0wedRsruOmMITJcYBkJ/Eac9bUO9jP1Btfl5
       X-Dd-Version:
-      - "35.2454383"
+      - "35.2457590"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -230,7 +230,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "983"
       X-Ratelimit-Reset:
-      - "54"
+      - "29"
     status: 200 OK
     code: 200
     duration: ""
@@ -244,13 +244,13 @@ interactions:
       - GetTest
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.1+dev.1 (go go1.13.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/54g-9s4-uav
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/5bq-cui-e5t
     method: GET
   response:
-    body: '{"status":"paused","public_id":"54g-9s4-uav","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
+    body: '{"status":"paused","public_id":"5bq-cui-e5t","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
       @datadog.user","modified_by":{"email":"sherzod.karimov@datadoghq.com","handle":"sherzod.karimov@datadoghq.com","id":1146666,"name":"Sherzod
-      Karimov"},"name":"name for synthetics test ssl","monitor_id":18158441,"type":"api","created_at":"2020-05-01T00:09:05.797108+00:00","modified_at":"2020-05-01T00:09:05.797108+00:00","created_by":{"email":"sherzod.karimov@datadoghq.com","handle":"sherzod.karimov@datadoghq.com","id":1146666,"name":"Sherzod
-      Karimov"},"subtype":"ssl","overall_state_modified":"2020-05-01T00:09:06.380125+00:00","overall_state":2,"config":{"variables":[],"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
+      Karimov"},"name":"name for synthetics test ssl","monitor_id":18206934,"type":"api","created_at":"2020-05-04T01:26:31.103710+00:00","modified_at":"2020-05-04T01:26:31.103710+00:00","created_by":{"email":"sherzod.karimov@datadoghq.com","handle":"sherzod.karimov@datadoghq.com","id":1146666,"name":"Sherzod
+      Karimov"},"subtype":"ssl","config":{"variables":[],"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}]},"options":{"accept_self_signed":true,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -261,13 +261,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 01 May 2020 00:09:06 GMT
+      - Mon, 04 May 2020 01:26:31 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=156; Max-Age=604800; Path=/; expires=Fri, 08-May-2020 00:09:06 GMT;
+      - DD-PSHARD=156; Max-Age=604800; Path=/; expires=Mon, 11-May-2020 01:26:31 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -276,9 +276,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - aq7EAvMMXGdldXT5eVhOcqdveqp5VDY6MoO0A/xKTuSa7v4Cc6HWT9iWUnYD+m1F
+      - kqXz3OvR7iajEJOdRFWpzJtcDHRumYwGfjdF12Vd65Xt1uV9T6lEO/K0lkxmcRvl
       X-Dd-Version:
-      - "35.2454383"
+      - "35.2457590"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -288,13 +288,13 @@ interactions:
       X-Ratelimit-Remaining:
       - "982"
       X-Ratelimit-Reset:
-      - "54"
+      - "29"
     status: 200 OK
     code: 200
     duration: ""
 - request:
     body: |
-      {"public_ids":["54g-9s4-uav"]}
+      {"public_ids":["5bq-cui-e5t"]}
     form: {}
     headers:
       Accept:
@@ -308,7 +308,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
     method: POST
   response:
-    body: '{"deleted_tests":[{"deleted_at":"2020-05-01T00:09:06.502171+00:00","public_id":"54g-9s4-uav"}]}'
+    body: '{"deleted_tests":[{"deleted_at":"2020-05-04T01:26:31.816248+00:00","public_id":"5bq-cui-e5t"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -319,13 +319,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 01 May 2020 00:09:06 GMT
+      - Mon, 04 May 2020 01:26:32 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=156; Max-Age=604800; Path=/; expires=Fri, 08-May-2020 00:09:06 GMT;
+      - DD-PSHARD=156; Max-Age=604800; Path=/; expires=Mon, 11-May-2020 01:26:31 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -334,9 +334,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 0Ldh7zbvTvxG6fwW0tw8N7mZPnI2XNOUoKCE8H0O1+b4UJVtdo0G52qWoFveZXDz
+      - eORbNuNjI+uNwQ5fL4WiSFLQTO+rx/Fd8RRk0TnSyEY4gQIkjrXIuJ1XAoOa+8yj
       X-Dd-Version:
-      - "35.2454383"
+      - "35.2457590"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -346,7 +346,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "117"
       X-Ratelimit-Reset:
-      - "54"
+      - "29"
     status: 200 OK
     code: 200
     duration: ""
@@ -360,7 +360,7 @@ interactions:
       - GetTest
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.1+dev.1 (go go1.13.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/54g-9s4-uav
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/5bq-cui-e5t
     method: GET
   response:
     body: '{"errors": ["Synthetics test not found"]}'
@@ -374,7 +374,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 01 May 2020 00:09:06 GMT
+      - Mon, 04 May 2020 01:26:32 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -386,7 +386,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.2454383"
+      - "35.2457590"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -396,7 +396,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "981"
       X-Ratelimit-Reset:
-      - "54"
+      - "28"
     status: 404 Not Found
     code: 404
     duration: ""

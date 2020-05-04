@@ -135,9 +135,9 @@ func syntheticsTestOptions() *schema.Schema {
 	return &schema.Schema{
 		Type: schema.TypeMap,
 		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
-			if key == "options.follow_redirects" || key == "options.accept_self_signed" {
+			if key == "options.follow_redirects" || key == "options.accept_self_signed" || key == "options.allow_insecure" {
 				// TF nested schemas is limited to string values only
-				// follow_redirects and accept_self_signed being booleans in Datadog json api
+				// follow_redirects, accept_self_signed and allow_insecure being booleans in Datadog json api
 				// we need a sane way to convert from boolean to string
 				// and from string to boolean
 				oldValue, err1 := strconv.ParseBool(old)
@@ -172,6 +172,16 @@ func syntheticsTestOptions() *schema.Schema {
 					errs = append(errs, fmt.Errorf("%q.accept_self_signed must be either true or false, got: %s", key, acceptSelfSignedStr))
 				}
 			}
+			allowInsecureRaw, ok := val.(map[string]interface{})["allow_insecure"]
+			if ok {
+				allowInsecureStr := convertToString(allowInsecureRaw)
+				switch allowInsecureStr {
+				case "true", "false":
+					break
+				default:
+					errs = append(errs, fmt.Errorf("%q.allow_insecure must be either true or false, got: %s", key, allowInsecureStr))
+				}
+			}
 			return
 		},
 		Optional: true,
@@ -194,6 +204,10 @@ func syntheticsTestOptions() *schema.Schema {
 					Required: true,
 				},
 				"accept_self_signed": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"allow_insecure": {
 					Type:     schema.TypeBool,
 					Optional: true,
 				},
@@ -374,6 +388,12 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		acceptSelfSigned, _ := strconv.ParseBool(attr.(string))
 		options.SetAcceptSelfSigned(acceptSelfSigned)
 	}
+	if attr, ok := d.GetOk("options.allow_insecure"); ok {
+		// for some reason, attr is equal to "1" or "0" in TF 0.11
+		// so ParseBool is required for retro-compatibility
+		allowInsecure, _ := strconv.ParseBool(attr.(string))
+		options.SetAllowInsecure(allowInsecure)
+	}
 	if attr, ok := d.GetOk("device_ids"); ok {
 		var deviceIds []datadogV1.SyntheticsDeviceID
 		for _, s := range attr.([]interface{}) {
@@ -488,6 +508,9 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 	if actualOptions.HasAcceptSelfSigned() {
 		localOptions["accept_self_signed"] = convertToString(actualOptions.GetAcceptSelfSigned())
+	}
+	if actualOptions.HasAllowInsecure() {
+		localOptions["allow_insecure"] = convertToString(actualOptions.GetAllowInsecure())
 	}
 
 	d.Set("options", localOptions)
