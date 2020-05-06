@@ -8,7 +8,7 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk v1.10.0
 	github.com/jonboulle/clockwork v0.1.0
 	github.com/kr/pretty v0.1.0
-	github.com/zorkian/go-datadog-api v2.28.0+incompatible
+	github.com/zorkian/go-datadog-api v2.29.0+incompatible
 )
 
 go 1.13
