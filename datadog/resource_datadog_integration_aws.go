@@ -96,7 +96,7 @@ func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, a
 		RoleName:  &roleName,
 	}
 
-	var filterTags []string
+	filterTags := make([]string, 0)
 
 	if attr, ok := d.GetOk("filter_tags"); ok {
 		for _, s := range attr.([]interface{}) {
@@ -104,7 +104,7 @@ func resourceDatadogIntegrationAwsPrepareCreateRequest(d *schema.ResourceData, a
 		}
 	}
 
-	var hostTags []string
+	hostTags := make([]string, 0)
 
 	if attr, ok := d.GetOk("host_tags"); ok {
 		for _, s := range attr.([]interface{}) {
