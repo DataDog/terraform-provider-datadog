@@ -122,6 +122,7 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData, accountID string, 
 		}
 		iaws.SetAccountSpecificNamespaceRules(accountSpecificNamespaceRules)
 	}
+
 	return iaws
 }
 
