@@ -234,12 +234,12 @@ func buildMonitorStruct(d *schema.ResourceData) *datadogV1.Monitor {
 		thresholdWindows.SetTriggerWindow(r.(string))
 	}
 
-	o := datadogV1.MonitorOptions{
-		Thresholds:        &thresholds,
-		NotifyNoData:      datadogV1.PtrBool(d.Get("notify_no_data").(bool)),
-		RequireFullWindow: datadogV1.PtrBool(d.Get("require_full_window").(bool)),
-		IncludeTags:       datadogV1.PtrBool(d.Get("include_tags").(bool)),
-	}
+	o := datadogV1.MonitorOptions{}
+	o.SetThresholds(thresholds)
+	o.SetNotifyNoData(d.Get("notify_no_data").(bool))
+	o.SetRequireFullWindow(d.Get("require_full_window").(bool))
+	o.SetIncludeTags(d.Get("include_tags").(bool))
+
 	if thresholdWindows.HasRecoveryWindow() || thresholdWindows.HasTriggerWindow() {
 		o.SetThresholdWindows(thresholdWindows)
 	}
@@ -281,13 +281,12 @@ func buildMonitorStruct(d *schema.ResourceData) *datadogV1.Monitor {
 	}
 
 	monitorType := datadogV1.MonitorType(d.Get("type").(string))
-	m := datadogV1.Monitor{
-		Type:    &monitorType,
-		Query:   datadogV1.PtrString(d.Get("query").(string)),
-		Name:    datadogV1.PtrString(d.Get("name").(string)),
-		Message: datadogV1.PtrString(d.Get("message").(string)),
-		Options: &o,
-	}
+	m := datadogV1.NewMonitor()
+	m.SetType(monitorType)
+	m.SetQuery(d.Get("query").(string))
+	m.SetName(d.Get("name").(string))
+	m.SetMessage(d.Get("message").(string))
+	m.SetOptions(o)
 
 	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {
 		if attr, ok := d.GetOk("enable_logs_sample"); ok {
@@ -306,7 +305,7 @@ func buildMonitorStruct(d *schema.ResourceData) *datadogV1.Monitor {
 	}
 	m.SetTags(tags)
 
-	return &m
+	return m
 }
 
 func resourceDatadogMonitorExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
