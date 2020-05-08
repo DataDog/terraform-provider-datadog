@@ -13,22 +13,22 @@ import (
 	"time"
 )
 
-// DashboardList TODO.
+// DashboardList Your Datadog Dashboards.
 type DashboardList struct {
 	Author *Creator `json:"author,omitempty"`
-	// Date of creation of the dashboard list
+	// Date of creation of the dashboard list.
 	Created *time.Time `json:"created,omitempty"`
-	// The number of dashboards in the list
+	// The number of dashboards in the list.
 	DashboardCount *int64 `json:"dashboard_count,omitempty"`
-	// The ID of the dashboard list
+	// The ID of the dashboard list.
 	Id *int64 `json:"id,omitempty"`
-	// Whether or not the list is in the favorites
+	// Whether or not the list is in the favorites.
 	IsFavorite *bool `json:"is_favorite,omitempty"`
-	// Date of last edition of the dashboard list
+	// Date of last edition of the dashboard list.
 	Modified *time.Time `json:"modified,omitempty"`
-	// The name of the dashboard list
+	// The name of the dashboard list.
 	Name string `json:"name"`
-	// The type of dashboard list
+	// The type of dashboard list.
 	Type *string `json:"type,omitempty"`
 }
 

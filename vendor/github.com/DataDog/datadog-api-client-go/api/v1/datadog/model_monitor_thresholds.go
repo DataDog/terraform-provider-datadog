@@ -14,17 +14,17 @@ import (
 
 // MonitorThresholds List of the different monitor threshold available.
 type MonitorThresholds struct {
-	// The monitor CRITICAL threshold.
+	// The monitor `CRITICAL` threshold.
 	Critical *float64 `json:"critical,omitempty"`
-	// The monitor CRITICAL recovery threshold.
+	// The monitor `CRITICAL` recovery threshold.
 	CriticalRecovery NullableFloat64 `json:"critical_recovery,omitempty"`
-	// The monitor OK threshold.
+	// The monitor `OK` threshold.
 	Ok NullableFloat64 `json:"ok,omitempty"`
-	// TODO.
+	// The monitor UNKNOWN threshold.
 	Unknown NullableFloat64 `json:"unknown,omitempty"`
-	// The monitor WARNING threshold.
+	// The monitor `WARNING` threshold.
 	Warning NullableFloat64 `json:"warning,omitempty"`
-	// The monitor WARNING recovery threshold.
+	// The monitor `WARNING` recovery threshold.
 	WarningRecovery NullableFloat64 `json:"warning_recovery,omitempty"`
 }
 

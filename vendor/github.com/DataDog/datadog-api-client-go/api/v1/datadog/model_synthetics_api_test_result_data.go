@@ -12,22 +12,22 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsAPITestResultData TODO.
+// SyntheticsAPITestResultData Object containing results for your Synthetic API test.
 type SyntheticsAPITestResultData struct {
 	Cert      *SyntheticsSSLCertificate `json:"cert,omitempty"`
 	ErrorCode *SyntheticsErrorCode      `json:"errorCode,omitempty"`
-	// TODO.
+	// The API test error message.
 	ErrorMessage *string                      `json:"errorMessage,omitempty"`
 	EventType    *SyntheticsTestProcessStatus `json:"eventType,omitempty"`
-	// TODO.
+	// The API test HTTP status code.
 	HttpStatusCode *int64 `json:"httpStatusCode,omitempty"`
-	// TODO.
+	// Request header object used for the API test.
 	RequestHeaders *map[string]interface{} `json:"requestHeaders,omitempty"`
-	// TODO.
+	// Response body returned for the API test.
 	ResponseBody *string `json:"responseBody,omitempty"`
-	// TODO.
+	// Response headers returned for the API test.
 	ResponseHeaders *map[string]interface{} `json:"responseHeaders,omitempty"`
-	// TODO.
+	// Global size in byte of the API test response.
 	ResponseSize *int64            `json:"responseSize,omitempty"`
 	Timings      *SyntheticsTiming `json:"timings,omitempty"`
 }

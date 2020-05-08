@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// CancelDowntimesByScopeRequest TODO.
+// CancelDowntimesByScopeRequest Cancel downtimes according to scope.
 type CancelDowntimesByScopeRequest struct {
 	// The scope(s) to which the downtime applies. For example, `host:app2`. Provide multiple scopes as a comma-separated list like `env:dev,env:prod`. The resulting downtime applies to sources that matches ALL provided scopes (`env:dev` **AND** `env:prod`).
 	Scope string `json:"scope"`

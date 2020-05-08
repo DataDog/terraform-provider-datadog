@@ -21,7 +21,7 @@ type Organization struct {
 	Description *string `json:"description,omitempty"`
 	// The name of the new child-organization, limited to 32 characters.
 	Name *string `json:"name,omitempty"`
-	// The public_id of the org you are operating within.
+	// The `public_id` of the organization you are operating within.
 	PublicId     *string                   `json:"public_id,omitempty"`
 	Settings     *OrganizationSettings     `json:"settings,omitempty"`
 	Subscription *OrganizationSubscription `json:"subscription,omitempty"`

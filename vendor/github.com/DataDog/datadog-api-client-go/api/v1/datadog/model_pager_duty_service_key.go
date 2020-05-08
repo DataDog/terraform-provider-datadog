@@ -12,9 +12,9 @@ import (
 	"encoding/json"
 )
 
-// PagerDutyServiceKey PagerDuty service object Key.
+// PagerDutyServiceKey PagerDuty service object key.
 type PagerDutyServiceKey struct {
-	// Your Service key in PagerDuty.
+	// Your service key in PagerDuty.
 	ServiceKey string `json:"service_key"`
 }
 

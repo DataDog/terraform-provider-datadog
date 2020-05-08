@@ -12,11 +12,11 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsGetAPITestLatestResultsResponse TODO.
+// SyntheticsGetAPITestLatestResultsResponse Object with the latest Synthetic API test run.
 type SyntheticsGetAPITestLatestResultsResponse struct {
-	// TODO.
+	// Timestamp of the latest API test run.
 	LastTimestampFetched *int64 `json:"last_timestamp_fetched,omitempty"`
-	// TODO.
+	// Result of the latest API test run.
 	Results *[]SyntheticsAPITestResultShort `json:"results,omitempty"`
 }
 

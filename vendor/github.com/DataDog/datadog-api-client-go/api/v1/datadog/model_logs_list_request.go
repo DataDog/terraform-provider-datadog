@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// LogsListRequest TODO.
+// LogsListRequest Object to send with the request to retrieve a list of logs from your Organization.
 type LogsListRequest struct {
 	// For multi-index organizations, the log index in which the request is performed.
 	Index *string `json:"index,omitempty"`

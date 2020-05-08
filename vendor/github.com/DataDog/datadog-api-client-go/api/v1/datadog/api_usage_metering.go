@@ -44,7 +44,7 @@ func (r apiGetUsageFargateRequest) EndHr(endHr time.Time) apiGetUsageFargateRequ
 
 /*
 GetUsageFargate Get hourly usage for Fargate
-Get hourly usage for [fargate](https://docs.datadoghq.com/integrations/ecs_fargate/).
+Get hourly usage for [Fargate](https://docs.datadoghq.com/integrations/ecs_fargate/).
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiGetUsageFargateRequest
 */
@@ -1663,7 +1663,7 @@ func (r apiGetUsageSyntheticsRequest) EndHr(endHr time.Time) apiGetUsageSyntheti
 
 /*
 GetUsageSynthetics Get hourly usage for Synthetics API Checks
-Get hourly usage for [synthetics API checks](https://docs.datadoghq.com/synthetics/).
+Get hourly usage for [Synthetics API checks](https://docs.datadoghq.com/synthetics/).
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiGetUsageSyntheticsRequest
 */

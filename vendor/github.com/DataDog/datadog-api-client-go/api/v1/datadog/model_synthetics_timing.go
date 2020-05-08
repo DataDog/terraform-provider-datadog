@@ -12,25 +12,25 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsTiming TODO.
+// SyntheticsTiming Object containing all metrics and their values collected for a Synthetic API test. Learn more about those metrics in [Synthetics documentation](https://docs.datadoghq.com/synthetics/#metrics).
 type SyntheticsTiming struct {
-	// TODO.
+	// The duration in millisecond of the DNS lookup.
 	Dns *float64 `json:"dns,omitempty"`
-	// TODO.
+	// The time in millisecond to download the response.
 	Download *float64 `json:"download,omitempty"`
-	// TODO.
+	// The time in millisecond to first byte.
 	FirstByte *float64 `json:"firstByte,omitempty"`
-	// TODO.
+	// The duration in millisecond of the TLS handshake.
 	Handshake *float64 `json:"handshake,omitempty"`
-	// TODO.
+	// The time in millisecond spent during redirections.
 	Redirect *float64 `json:"redirect,omitempty"`
-	// TODO.
+	// The duration in millisecond of the TLS handshake.
 	Ssl *float64 `json:"ssl,omitempty"`
-	// TODO.
+	// Time in millisecond to establish the TCP connection.
 	Tcp *float64 `json:"tcp,omitempty"`
-	// TODO.
+	// The overall time in millisecond the request took to be processed.
 	Total *float64 `json:"total,omitempty"`
-	// TODO.
+	// Time spent in millisecond waiting for a response.
 	Wait *float64 `json:"wait,omitempty"`
 }
 

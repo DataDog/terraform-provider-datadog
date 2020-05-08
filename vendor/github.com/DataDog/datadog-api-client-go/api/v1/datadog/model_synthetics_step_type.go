@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsStepType TODO.
+// SyntheticsStepType Step type used in your Synthetic test.
 type SyntheticsStepType string
 
 // List of SyntheticsStepType

@@ -14,7 +14,7 @@ import (
 
 // WidgetAxis Axis controls for the widget.
 type WidgetAxis struct {
-	// TODO.
+	// True includes zero.
 	IncludeZero *bool `json:"include_zero,omitempty"`
 	// The label of the axis to display on the graph.
 	Label *string `json:"label,omitempty"`
@@ -22,7 +22,7 @@ type WidgetAxis struct {
 	Max *string `json:"max,omitempty"`
 	// Specifies minimum value to show on the y-axis. It takes a number, or auto for default behavior.
 	Min *string `json:"min,omitempty"`
-	// Specifies the scale type. Possible values are linear, log, sqrt, pow## (eg. pow2, pow0.5..).
+	// Specifies the scale type. Possible values are `linear`, `log`, `sqrt`, `pow##` (e.g. `pow2`, `pow0.5` etc.).
 	Scale *string `json:"scale,omitempty"`
 }
 

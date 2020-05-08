@@ -12,14 +12,14 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsBrowserTestResultShort TODO.
+// SyntheticsBrowserTestResultShort Object with the results of a single Synthetic browser test.
 type SyntheticsBrowserTestResultShort struct {
-	// TODO.
+	// Last time the browser test was performed.
 	CheckTime *float64 `json:"check_time,omitempty"`
-	// TODO.
+	// Location from which the Browser test was performed.
 	ProbeDc *string                                 `json:"probe_dc,omitempty"`
 	Result  *SyntheticsBrowserTestResultShortResult `json:"result,omitempty"`
-	// TODO.
+	// ID of the browser test result.
 	ResultId *string                      `json:"result_id,omitempty"`
 	Status   *SyntheticsTestMonitorStatus `json:"status,omitempty"`
 }

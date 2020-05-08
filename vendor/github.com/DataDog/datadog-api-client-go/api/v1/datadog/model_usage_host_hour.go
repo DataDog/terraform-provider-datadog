@@ -17,7 +17,7 @@ import (
 type UsageHostHour struct {
 	// Contains the total number of infrastructure hosts reporting during a given hour that were running the Datadog Agent.
 	AgentHostCount *int64 `json:"agent_host_count,omitempty"`
-	// Contains the total number of hosts that reported via Alibaba integration (and were NOT running the Datadog).
+	// Contains the total number of hosts that reported via Alibaba integration (and were NOT running the Datadog Agent).
 	AlibabaHostCount *int64 `json:"alibaba_host_count,omitempty"`
 	// Shows the total number of hosts using APM during the hour, these are counted as billable (except during trial periods).
 	ApmHostCount *int64 `json:"apm_host_count,omitempty"`

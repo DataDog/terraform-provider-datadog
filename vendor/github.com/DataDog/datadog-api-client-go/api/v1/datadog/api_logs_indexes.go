@@ -202,7 +202,7 @@ type apiGetLogsIndexOrderRequest struct {
 GetLogsIndexOrder Get indexes order
 Get the current order of your log indexes. This endpoint takes no JSON arguments.
 
-**Note**: This endpoint is in public beta.
+**Note: This endpoint is in public beta.**
 If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiGetLogsIndexOrderRequest
@@ -511,7 +511,8 @@ func (r apiUpdateLogsIndexRequest) Body(body LogsIndex) apiUpdateLogsIndexReques
 
 /*
 UpdateLogsIndex Update an index
-It returns the Index object passed in the request body when the request is successful.
+Update an index as identified by its name.
+Returns the Index object passed in the request body when the request is successful.
 
 Using the `PUT` method updates your index’s configuration by **replacing**
 your current configuration with the new one sent to your Datadog organization.
@@ -701,7 +702,7 @@ UpdateLogsIndexOrder Update indexes order
 This endpoint updates the index order of your organization.
 It returns the index order object passed in the request body when the request is successful.
 
-**Note**: This endpoint is in public beta.
+**Note: This endpoint is in public beta.**
 If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiUpdateLogsIndexOrderRequest

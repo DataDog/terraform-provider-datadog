@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-// UsageTimeseriesHour TODO.
+// UsageTimeseriesHour The hourly usage of timeseries.
 type UsageTimeseriesHour struct {
 	// The hour for the usage.
 	Hour *time.Time `json:"hour,omitempty"`

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/zorkian/go-datadog-api"
 )
 
 func resourceDatadogLogsPipelineOrder() *schema.Resource {
@@ -35,8 +35,9 @@ func resourceDatadogLogsPipelineOrderCreate(d *schema.ResourceData, meta interfa
 
 func resourceDatadogLogsPipelineOrderRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-	ddList, err := client.GetLogsPipelineList()
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+	ddList, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipelineOrder(authV1).Execute()
 	if err != nil {
 		return translateClientError(err, "error getting logs pipeline order")
 	}
@@ -49,7 +50,7 @@ func resourceDatadogLogsPipelineOrderRead(d *schema.ResourceData, meta interface
 }
 
 func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interface{}) error {
-	var ddPipelineList datadog.LogsPipelineList
+	var ddPipelineList datadogV1.LogsPipelinesOrder
 	tfList := d.Get("pipelines").([]interface{})
 	ddList := make([]string, len(tfList))
 	for i, id := range tfList {
@@ -61,11 +62,12 @@ func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interfa
 		tfId = name.(string)
 	}
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-	if _, err := client.UpdateLogsPipelineList(&ddPipelineList); err != nil {
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+	if _, _, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipelineOrder(authV1).Body(ddPipelineList).Execute(); err != nil {
 		// Cannot map pipelines to existing ones
 		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
-			ddPipelineOrder, getErr := client.GetLogsPipelineList()
+			ddPipelineOrder, _, getErr := datadogClientV1.LogsPipelinesApi.GetLogsPipelineOrder(authV1).Execute()
 			if getErr != nil {
 				return translateClientError(err, "error getting logs pipeline order")
 			}

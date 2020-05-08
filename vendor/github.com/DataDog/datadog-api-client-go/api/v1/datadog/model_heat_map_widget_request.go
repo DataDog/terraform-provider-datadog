@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// HeatMapWidgetRequest TODO.
+// HeatMapWidgetRequest Updated heat map widget.
 type HeatMapWidgetRequest struct {
 	ApmQuery     *LogQueryDefinition     `json:"apm_query,omitempty"`
 	EventQuery   *EventQueryDefinition   `json:"event_query,omitempty"`

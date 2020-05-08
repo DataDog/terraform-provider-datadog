@@ -12,11 +12,11 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsTestRequestBasicAuth TODO.
+// SyntheticsTestRequestBasicAuth Object to handle basic authentication when performing the test.
 type SyntheticsTestRequestBasicAuth struct {
-	// TODO.
+	// Password to use for the basic authentication.
 	Password string `json:"password"`
-	// TODO.
+	// Username to use for the basic authentication.
 	Username string `json:"username"`
 }
 

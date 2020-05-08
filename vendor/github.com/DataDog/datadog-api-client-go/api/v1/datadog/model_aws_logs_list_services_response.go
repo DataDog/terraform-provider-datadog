@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// AWSLogsListServicesResponse TODO.
+// AWSLogsListServicesResponse The list of current AWS services for which Datadog offers automatic log collection.
 type AWSLogsListServicesResponse struct {
 	// Key value in returned object.
 	Id *string `json:"id,omitempty"`

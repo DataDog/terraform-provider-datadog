@@ -14,11 +14,11 @@ import (
 
 // ApplicationKey An application key with its associated metadata.
 type ApplicationKey struct {
-	// TODO.
+	// Hash of an application key.
 	Hash *string `json:"hash,omitempty"`
-	// Name of your application key.
+	// Name of an application key.
 	Name *string `json:"name,omitempty"`
-	// TODO.
+	// Owner of an application key.
 	Owner *string `json:"owner,omitempty"`
 }
 

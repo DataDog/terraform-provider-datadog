@@ -23,7 +23,7 @@ type ScatterPlotWidgetDefinition struct {
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
 	// Size of the title.
 	TitleSize *string `json:"title_size,omitempty"`
-	// Type of the widget.
+	// Type of widget.
 	Type  string      `json:"type"`
 	Xaxis *WidgetAxis `json:"xaxis,omitempty"`
 	Yaxis *WidgetAxis `json:"yaxis,omitempty"`

@@ -14,11 +14,11 @@ import (
 
 // SLOWidgetDefinition Use the SLO and uptime widget to track your SLOs (Service Level Objectives) and uptime on screenboards and timeboards.
 type SLOWidgetDefinition struct {
-	// TODO.
+	// Defined error budget.
 	ShowErrorBudget *bool `json:"show_error_budget,omitempty"`
-	// TODO.
+	// ID of the SLO displayed.
 	SloId *string `json:"slo_id,omitempty"`
-	// TODO.
+	// Times being monitored.
 	TimeWindows *[]WidgetTimeWindows `json:"time_windows,omitempty"`
 	// Title of the widget.
 	Title      *string          `json:"title,omitempty"`
@@ -28,7 +28,7 @@ type SLOWidgetDefinition struct {
 	// Type of the widget.
 	Type     string          `json:"type"`
 	ViewMode *WidgetViewMode `json:"view_mode,omitempty"`
-	// TODO.
+	// Type of view displayed by the widget.
 	ViewType string `json:"view_type"`
 }
 

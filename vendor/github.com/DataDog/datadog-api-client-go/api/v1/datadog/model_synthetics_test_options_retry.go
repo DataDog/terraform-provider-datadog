@@ -12,11 +12,11 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsTestOptionsRetry TODO.
+// SyntheticsTestOptionsRetry Object describing the retry strategy to apply to a Synthetic test.
 type SyntheticsTestOptionsRetry struct {
-	// TODO.
+	// The amount of location that needs to fail for the test to be retried.
 	Count *int64 `json:"count,omitempty"`
-	// TODO.
+	// The interval over which the amount of location needed to fail for the test to be retried.
 	Interval *float64 `json:"interval,omitempty"`
 }
 

@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// AWSLogsListResponse TODO.
+// AWSLogsListResponse A list of all Datadog-AWS logs integrations available in your Datadog organization.
 type AWSLogsListResponse struct {
 	// Your AWS Account ID without dashes.
 	AccountId *string `json:"account_id,omitempty"`

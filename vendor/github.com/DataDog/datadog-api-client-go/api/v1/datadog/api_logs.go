@@ -39,8 +39,8 @@ ListLogs Get a list of logs
 List endpoint returns logs that match a log search query.
 [Results are paginated][1].
 
-**If you are thinking about archiving logs for your organization,
-consider using Datadog archive capabilities instead of the log list API.
+**If you are considering archiving logs for your organization,
+consider use of the Datadog archive capabilities instead of the log list API.
 See [Datadog Logs Archive documentation][2].**
 
 [1]: /logs/guide/collect-multiple-logs-with-pagination

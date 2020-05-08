@@ -95,6 +95,14 @@ func (s *LogsProcessor) UnmarshalJSON(src []byte) error {
 			}
 			s.LogsProcessorInterface = result
 			return nil
+		case "pipeline":
+			var result *LogsPipelineProcessor = &LogsPipelineProcessor{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
 		case "service-remapper":
 			var result *LogsServiceRemapper = &LogsServiceRemapper{}
 			err = json.Unmarshal(src, result)

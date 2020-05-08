@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsAssertionType TODO.
+// SyntheticsAssertionType Type of the assertion.
 type SyntheticsAssertionType string
 
 // List of SyntheticsAssertionType

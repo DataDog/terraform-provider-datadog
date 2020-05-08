@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsBrowserErrorType TODO.
+// SyntheticsBrowserErrorType Error type returned by a browser test.
 type SyntheticsBrowserErrorType string
 
 // List of SyntheticsBrowserErrorType

@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// QueryValueWidgetRequest TODO.
+// QueryValueWidgetRequest Updated query value widget.
 type QueryValueWidgetRequest struct {
 	Aggregator *WidgetAggregator   `json:"aggregator,omitempty"`
 	ApmQuery   *LogQueryDefinition `json:"apm_query,omitempty"`

@@ -37,8 +37,8 @@ func (r apiCheckCanDeleteSLORequest) Ids(ids string) apiCheckCanDeleteSLORequest
 
 /*
 CheckCanDeleteSLO Check if SLOs can be safely deleted
-Check if an SLO can be safely deleted without disrupting
-dashboardsfor example.
+Check if a SLO can be safely deleted. For example,
+assure an SLO can be deleted without disrupting a dashboard.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiCheckCanDeleteSLORequest
 */
@@ -385,7 +385,7 @@ Permanently delete the specified service level objective object.
 If an SLO is used in a dashboard, the `DELETE /v1/slo/` endpoint returns
 a 409 conflict error because the SLO is referenced in a dashboard.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param sloId The id of the service level objective.
+ * @param sloId The ID of the service level objective.
 @return apiDeleteSLORequest
 */
 func (a *ServiceLevelObjectivesApiService) DeleteSLO(ctx _context.Context, sloId string) apiDeleteSLORequest {
@@ -1225,6 +1225,16 @@ func (r apiListSLOsRequest) Execute() (SLOListResponse, *_nethttp.Response, erro
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
+			var v APIErrorResponse
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
 			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

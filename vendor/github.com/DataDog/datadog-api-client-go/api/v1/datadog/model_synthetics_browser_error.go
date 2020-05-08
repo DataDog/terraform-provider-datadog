@@ -12,13 +12,13 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsBrowserError TODO.
+// SyntheticsBrowserError Error response object for a browser test.
 type SyntheticsBrowserError struct {
-	// TODO.
+	// Description of the error.
 	Description string `json:"description"`
-	// TODO.
+	// Name of the error.
 	Name string `json:"name"`
-	// TODO.
+	// Status Code of the error.
 	StatusCode *int64                     `json:"statusCode,omitempty"`
 	Type       SyntheticsBrowserErrorType `json:"type"`
 }

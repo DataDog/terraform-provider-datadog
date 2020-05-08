@@ -12,9 +12,9 @@ import (
 	"encoding/json"
 )
 
-// AWSLogsListResponseLambdas TODO.
+// AWSLogsListResponseLambdas Description of the Lambdas.
 type AWSLogsListResponseLambdas struct {
-	// TODO.
+	// Available ARN IDs.
 	Arn *string `json:"arn,omitempty"`
 }
 

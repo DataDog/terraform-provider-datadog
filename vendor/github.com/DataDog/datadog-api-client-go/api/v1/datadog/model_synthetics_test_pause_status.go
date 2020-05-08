@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsTestPauseStatus TODO.
+// SyntheticsTestPauseStatus Define whether you want to start (`live`) or pause (`paused`) a Synthetic test.
 type SyntheticsTestPauseStatus string
 
 // List of SyntheticsTestPauseStatus

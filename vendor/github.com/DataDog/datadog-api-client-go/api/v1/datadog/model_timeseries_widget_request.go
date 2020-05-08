@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// TimeseriesWidgetRequest TODO.
+// TimeseriesWidgetRequest Updated timeseries widget.
 type TimeseriesWidgetRequest struct {
 	ApmQuery    *LogQueryDefinition   `json:"apm_query,omitempty"`
 	DisplayType *WidgetDisplayType    `json:"display_type,omitempty"`

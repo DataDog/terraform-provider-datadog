@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsAssertionOperator TODO.
+// SyntheticsAssertionOperator Assertion operator to apply.
 type SyntheticsAssertionOperator string
 
 // List of SyntheticsAssertionOperator

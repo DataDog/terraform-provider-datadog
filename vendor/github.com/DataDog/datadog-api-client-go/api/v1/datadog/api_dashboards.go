@@ -36,7 +36,7 @@ func (r apiCreateDashboardRequest) Body(body Dashboard) apiCreateDashboardReques
 }
 
 /*
-CreateDashboard Create a new Dashboard
+CreateDashboard Create a new dashboard
 Create a dashboard using the specified options.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiCreateDashboardRequest
@@ -200,7 +200,7 @@ type apiDeleteDashboardRequest struct {
 }
 
 /*
-DeleteDashboard Delete a Dashboard
+DeleteDashboard Delete a dashboard
 Delete a dashboard using the specified ID.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param dashboardId The ID of the dashboard.
@@ -361,7 +361,7 @@ type apiGetDashboardRequest struct {
 }
 
 /*
-GetDashboard Get a Dashboard
+GetDashboard Get a dashboard
 Get a dashboard using the specified ID.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param dashboardId The ID of the dashboard.
@@ -521,7 +521,7 @@ type apiListDashboardsRequest struct {
 }
 
 /*
-ListDashboards Get all Dashboards
+ListDashboards Get all dashboards
 Get all dashboards.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiListDashboardsRequest
@@ -675,7 +675,7 @@ func (r apiUpdateDashboardRequest) Body(body Dashboard) apiUpdateDashboardReques
 }
 
 /*
-UpdateDashboard Update a Dashboard
+UpdateDashboard Update a dashboard
 Update a dashboard using the specified ID.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param dashboardId The ID of the dashboard.

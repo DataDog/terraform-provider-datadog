@@ -12,38 +12,38 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsStepDetail TODO.
+// SyntheticsStepDetail Object describing a step for a Synthetic test.
 type SyntheticsStepDetail struct {
-	// TODO.
+	// Array of errors collected for a browser test.
 	BrowserErrors *[]SyntheticsBrowserError `json:"browserErrors,omitempty"`
 	CheckType     *SyntheticsCheckType      `json:"checkType,omitempty"`
-	// TODO.
+	// Description of the test.
 	Description *string `json:"description,omitempty"`
-	// TODO.
+	// Total duration in millisecond of the test.
 	Duration *float64 `json:"duration,omitempty"`
-	// TODO.
+	// Error returned by the test.
 	Error      *string               `json:"error,omitempty"`
 	PlayingTab *SyntheticsPlayingTab `json:"playingTab,omitempty"`
-	// TODO.
+	// Array of resources collected by the test.
 	Resources *[]SyntheticsResource `json:"resources,omitempty"`
-	// TODO.
+	// Whether or not screenshots where collected by the test.
 	ScreenshotBucketKey *bool `json:"screenshotBucketKey,omitempty"`
-	// TODO.
+	// Whether or not to skip this step.
 	Skipped *bool `json:"skipped,omitempty"`
-	// TODO.
+	// Whether or not snapshots where collected by the test.
 	SnapshotBucketKey *bool `json:"snapshotBucketKey,omitempty"`
-	// TODO.
+	// The step ID.
 	StepId *int64 `json:"stepId,omitempty"`
-	// TODO.
+	// If this steps include a sub-test. [Subtests documentation](https://docs.datadoghq.com/synthetics/browser_tests/advanced_options/#subtests).
 	SubTestStepDetails *[]SyntheticsStepDetail `json:"subTestStepDetails,omitempty"`
-	// TODO.
+	// Time before starting the step.
 	TimeToInteractive *float64            `json:"timeToInteractive,omitempty"`
 	Type              *SyntheticsStepType `json:"type,omitempty"`
-	// TODO.
+	// URL to perform the step against.
 	Url *string `json:"url,omitempty"`
-	// TODO.
+	// Value for the step.
 	Value *interface{} `json:"value,omitempty"`
-	// TODO.
+	// Warning collected that didn't failed the step.
 	Warnings *[]SyntheticsStepDetailWarnings `json:"warnings,omitempty"`
 }
 
