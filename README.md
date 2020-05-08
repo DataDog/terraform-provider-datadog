@@ -88,3 +88,13 @@ a production Datadog organization.
 ```sh
 $ make testacc
 ```
+
+In order to update the underlying API Clients that are used by this provider to interact with the Datadog API, run:
+
+```sh
+API_CLIENT_VERSION=vx.y.z ZORKIAN_VERSION=vx.y.z make update-go-client
+```
+
+where:
+* `API_CLIENT_VERSION` is the version or commit ref of the https://github.com/DataDog/datadog-api-client-go client.
+* `ZORKIAN_VERSION` is the version or commit ref of the https://github.com/zorkian/go-datadog-api client.

@@ -3,7 +3,8 @@ GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 WEBSITE_REPO=github.com/hashicorp/terraform-website
 PKG_NAME=datadog
 DIR=~/.terraform.d/plugins
-GO_CLIENT_VERSION=master
+ZORKIAN_VERSION=master
+API_CLIENT_VERSION=master
 
 default: build
 
@@ -71,7 +72,9 @@ endif
 	@$(MAKE) -C $(GOPATH)/src/$(WEBSITE_REPO) website-provider-test PROVIDER_PATH=$(shell pwd) PROVIDER_NAME=$(PKG_NAME)
 
 update-go-client:
-	go get github.com/zorkian/go-datadog-api@$(GO_CLIENT_VERSION)
+	echo "Updating the Zorkian client to ${ZORKIAN_VERSION} and the API Client to ${API_CLIENT_VERSION}"
+	go get github.com/zorkian/go-datadog-api@$(ZORKIAN_VERSION)
+	go get github.com/DataDog/datadog-api-client-go@${API_CLIENT_VERSION}
 	go mod vendor
 	go mod tidy
 
