@@ -26,9 +26,9 @@ type OrganizationSettings struct {
 	SamlIdpInitiatedLogin *OrganizationSettingsSamlIdpInitiatedLogin `json:"saml_idp_initiated_login,omitempty"`
 	// Whether or not a SAML identity provider metadata file was provided to the Datadog organization.
 	SamlIdpMetadataUploaded *bool `json:"saml_idp_metadata_uploaded,omitempty"`
-	// URL for SAML loging.
-	SamlLoginUrl   *string                                    `json:"saml_login_url,omitempty"`
-	SamlStrictMode *OrganizationSettingsSamlIdpInitiatedLogin `json:"saml_strict_mode,omitempty"`
+	// URL for SAML logging.
+	SamlLoginUrl   *string                             `json:"saml_login_url,omitempty"`
+	SamlStrictMode *OrganizationSettingsSamlStrictMode `json:"saml_strict_mode,omitempty"`
 }
 
 // NewOrganizationSettings instantiates a new OrganizationSettings object
@@ -341,9 +341,9 @@ func (o *OrganizationSettings) SetSamlLoginUrl(v string) {
 }
 
 // GetSamlStrictMode returns the SamlStrictMode field value if set, zero value otherwise.
-func (o *OrganizationSettings) GetSamlStrictMode() OrganizationSettingsSamlIdpInitiatedLogin {
+func (o *OrganizationSettings) GetSamlStrictMode() OrganizationSettingsSamlStrictMode {
 	if o == nil || o.SamlStrictMode == nil {
-		var ret OrganizationSettingsSamlIdpInitiatedLogin
+		var ret OrganizationSettingsSamlStrictMode
 		return ret
 	}
 	return *o.SamlStrictMode
@@ -351,7 +351,7 @@ func (o *OrganizationSettings) GetSamlStrictMode() OrganizationSettingsSamlIdpIn
 
 // GetSamlStrictModeOk returns a tuple with the SamlStrictMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *OrganizationSettings) GetSamlStrictModeOk() (*OrganizationSettingsSamlIdpInitiatedLogin, bool) {
+func (o *OrganizationSettings) GetSamlStrictModeOk() (*OrganizationSettingsSamlStrictMode, bool) {
 	if o == nil || o.SamlStrictMode == nil {
 		return nil, false
 	}
@@ -367,8 +367,8 @@ func (o *OrganizationSettings) HasSamlStrictMode() bool {
 	return false
 }
 
-// SetSamlStrictMode gets a reference to the given OrganizationSettingsSamlIdpInitiatedLogin and assigns it to the SamlStrictMode field.
-func (o *OrganizationSettings) SetSamlStrictMode(v OrganizationSettingsSamlIdpInitiatedLogin) {
+// SetSamlStrictMode gets a reference to the given OrganizationSettingsSamlStrictMode and assigns it to the SamlStrictMode field.
+func (o *OrganizationSettings) SetSamlStrictMode(v OrganizationSettingsSamlStrictMode) {
 	o.SamlStrictMode = &v
 }
 

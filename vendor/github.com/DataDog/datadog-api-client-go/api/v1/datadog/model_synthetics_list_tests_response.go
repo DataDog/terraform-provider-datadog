@@ -12,9 +12,9 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsListTestsResponse TODO.
+// SyntheticsListTestsResponse Object containing an array of Synthetic tests configuration.
 type SyntheticsListTestsResponse struct {
-	// TODO.
+	// Array of Synthetic tests configuration.
 	Tests *[]SyntheticsTestDetails `json:"tests,omitempty"`
 }
 

@@ -12,17 +12,17 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsBrowserTestResultFull TODO.
+// SyntheticsBrowserTestResultFull Object returned describing a browser test result.
 type SyntheticsBrowserTestResultFull struct {
-	Check *SyntheticsAPITestResultFullCheck `json:"check,omitempty"`
-	// TODO.
+	Check *SyntheticsBrowserTestResultFullCheck `json:"check,omitempty"`
+	// When the browser test was conducted.
 	CheckTime *float64 `json:"check_time,omitempty"`
-	// TODO.
+	// Version of the browser test used.
 	CheckVersion *int64 `json:"check_version,omitempty"`
-	// TODO.
+	// Location from which the browser test was performed.
 	ProbeDc *string                          `json:"probe_dc,omitempty"`
 	Result  *SyntheticsBrowserTestResultData `json:"result,omitempty"`
-	// TODO.
+	// ID of the browser test result.
 	ResultId *string                      `json:"result_id,omitempty"`
 	Status   *SyntheticsTestMonitorStatus `json:"status,omitempty"`
 }
@@ -45,9 +45,9 @@ func NewSyntheticsBrowserTestResultFullWithDefaults() *SyntheticsBrowserTestResu
 }
 
 // GetCheck returns the Check field value if set, zero value otherwise.
-func (o *SyntheticsBrowserTestResultFull) GetCheck() SyntheticsAPITestResultFullCheck {
+func (o *SyntheticsBrowserTestResultFull) GetCheck() SyntheticsBrowserTestResultFullCheck {
 	if o == nil || o.Check == nil {
-		var ret SyntheticsAPITestResultFullCheck
+		var ret SyntheticsBrowserTestResultFullCheck
 		return ret
 	}
 	return *o.Check
@@ -55,7 +55,7 @@ func (o *SyntheticsBrowserTestResultFull) GetCheck() SyntheticsAPITestResultFull
 
 // GetCheckOk returns a tuple with the Check field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SyntheticsBrowserTestResultFull) GetCheckOk() (*SyntheticsAPITestResultFullCheck, bool) {
+func (o *SyntheticsBrowserTestResultFull) GetCheckOk() (*SyntheticsBrowserTestResultFullCheck, bool) {
 	if o == nil || o.Check == nil {
 		return nil, false
 	}
@@ -71,8 +71,8 @@ func (o *SyntheticsBrowserTestResultFull) HasCheck() bool {
 	return false
 }
 
-// SetCheck gets a reference to the given SyntheticsAPITestResultFullCheck and assigns it to the Check field.
-func (o *SyntheticsBrowserTestResultFull) SetCheck(v SyntheticsAPITestResultFullCheck) {
+// SetCheck gets a reference to the given SyntheticsBrowserTestResultFullCheck and assigns it to the Check field.
+func (o *SyntheticsBrowserTestResultFull) SetCheck(v SyntheticsBrowserTestResultFullCheck) {
 	o.Check = &v
 }
 

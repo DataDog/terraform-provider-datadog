@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsPlayingTab TODO.
+// SyntheticsPlayingTab Navigate between different tabs for your browser test.
 type SyntheticsPlayingTab int64
 
 // List of SyntheticsPlayingTab

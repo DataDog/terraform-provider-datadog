@@ -12,27 +12,27 @@ import (
 	"encoding/json"
 )
 
-// ServiceLevelObjective A service level objective object includes a service level indicator, thresholds for one or more timeframes, and metadata (name, description, tags, etc.).
+// ServiceLevelObjective A service level objective object includes a service level indicator, thresholds for one or more timeframes, and metadata (`name`, `description`, `tags`, etc.).
 type ServiceLevelObjective struct {
-	// Creation timestamp (unix time in seconds)  Always included in service level objective responses.
+	// Creation timestamp (UNIX time in seconds)  Always included in service level objective responses.
 	CreatedAt *int64   `json:"created_at,omitempty"`
 	Creator   *Creator `json:"creator,omitempty"`
-	// A user-defined description of the service level objective.  Always included in service level objective responses (but may be null). Optional in create/update requests.
+	// A user-defined description of the service level objective.  Always included in service level objective responses (but may be `null`). Optional in create/update requests.
 	Description NullableString `json:"description,omitempty"`
-	// A list of (up to 20) monitor groups (e.g. [\"env:prod,role:mysql\"]) that narrows the scope of a monitor service level objective.  Included in service level objective responses if it is nonempty. Optional in create/update requests for monitor service level objectives, but may only be used when then length of the \"monitor_ids\" field is one.
+	// A list of (up to 20) monitor groups that narrow the scope of a monitor service level objective.  Included in service level objective responses if it is not empty. Optional in create/update requests for monitor service level objectives, but may only be used when then length of the `monitor_ids` field is one.
 	Groups *[]string `json:"groups,omitempty"`
 	// A unique identifier for the service level objective object.  Always included in service level objective responses.
 	Id *string `json:"id,omitempty"`
-	// Modification timestamp (unix time in seconds)  Always included in service level objective responses.
+	// Modification timestamp (UNIX time in seconds)  Always included in service level objective responses.
 	ModifiedAt *int64 `json:"modified_at,omitempty"`
-	// A list of monitor ids that defines the scope of a monitor service level objective.  Required if type is \"monitor\".
+	// A list of monitor ids that defines the scope of a monitor service level objective. **Required if type is `monitor`**.
 	MonitorIds *[]int64 `json:"monitor_ids,omitempty"`
-	// The union of monitor tags for all monitors referenced by the \"monitor_ids\" field.  Always included in service level objective responses for monitor service level objectives (but may be empty). Ignored in create/update requests. Does not affect which monitors are included in the service level objective (that is determined entirely by the monitor_ids field).
+	// The union of monitor tags for all monitors referenced by the `monitor_ids` field.  Always included in service level objective responses for monitor service level objectives (but may be empty). Ignored in create/update requests. Does not affect which monitors are included in the service level objective (that is determined entirely by the `monitor_ids` field).
 	MonitorTags *[]string `json:"monitor_tags,omitempty"`
 	// The name of the service level objective object.
 	Name  string                      `json:"name"`
 	Query *ServiceLevelObjectiveQuery `json:"query,omitempty"`
-	// A list of tags (e.g. \"env:prod\") associated with this service level objective.  Always included in service level objective responses (but may be empty). Optional in create/update requests.
+	// A list of tags associated with this service level objective. Always included in service level objective responses (but may be empty). Optional in create/update requests.
 	Tags *[]string `json:"tags,omitempty"`
 	// The thresholds (timeframes and associated targets) for this service level objective object.
 	Thresholds []SLOThreshold  `json:"thresholds"`

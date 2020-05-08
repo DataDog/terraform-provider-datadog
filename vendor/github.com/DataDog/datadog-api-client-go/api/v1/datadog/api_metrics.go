@@ -734,7 +734,7 @@ func (r apiUpdateMetricMetadataRequest) Body(body MetricMetadata) apiUpdateMetri
 
 /*
 UpdateMetricMetadata Edit metric metadata
-Edit metadata of a specific metric.
+Edit metadata of a specific metric. Find out more about [supported types](https://docs.datadoghq.com/developers/metrics).
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param metricName Name of the metric for which to edit metadata.
 @return apiUpdateMetricMetadataRequest

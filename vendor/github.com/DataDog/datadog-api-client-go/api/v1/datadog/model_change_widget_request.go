@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// ChangeWidgetRequest TODO.
+// ChangeWidgetRequest Updated change widget.
 type ChangeWidgetRequest struct {
 	ApmQuery   *LogQueryDefinition   `json:"apm_query,omitempty"`
 	ChangeType *WidgetChangeType     `json:"change_type,omitempty"`
@@ -25,7 +25,7 @@ type ChangeWidgetRequest struct {
 	OrderBy      *WidgetOrderBy          `json:"order_by,omitempty"`
 	OrderDir     *WidgetSort             `json:"order_dir,omitempty"`
 	ProcessQuery *ProcessQueryDefinition `json:"process_query,omitempty"`
-	// TODO.
+	// Query definition.
 	Q        *string             `json:"q,omitempty"`
 	RumQuery *LogQueryDefinition `json:"rum_query,omitempty"`
 	// Whether to show the present value.

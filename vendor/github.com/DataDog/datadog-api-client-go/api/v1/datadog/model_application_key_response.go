@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// ApplicationKeyResponse TODO.
+// ApplicationKeyResponse An application key response.
 type ApplicationKeyResponse struct {
 	ApplicationKey *ApplicationKey `json:"application_key,omitempty"`
 }

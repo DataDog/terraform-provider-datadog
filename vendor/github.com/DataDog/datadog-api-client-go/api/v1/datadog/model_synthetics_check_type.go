@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsCheckType TODO.
+// SyntheticsCheckType Type of assertion to apply in an API test.
 type SyntheticsCheckType string
 
 // List of SyntheticsCheckType

@@ -89,8 +89,8 @@ Class | Method | HTTP request | Description
 *RolesApi* | [**RemovePermissionFromRole**](docs/RolesApi.md#removepermissionfromrole) | **Delete** /api/v2/roles/{role_id}/permissions | Revoke permission
 *RolesApi* | [**RemoveUserFromRole**](docs/RolesApi.md#removeuserfromrole) | **Delete** /api/v2/roles/{role_id}/users | Remove a user from a role
 *RolesApi* | [**UpdateRole**](docs/RolesApi.md#updaterole) | **Patch** /api/v2/roles/{role_id} | Update a role
-*UsersApi* | [**CreateUser**](docs/UsersApi.md#createuser) | **Post** /api/v2/users | Create user
-*UsersApi* | [**DisableUser**](docs/UsersApi.md#disableuser) | **Delete** /api/v2/users/{user_id} | Disable user
+*UsersApi* | [**CreateUser**](docs/UsersApi.md#createuser) | **Post** /api/v2/users | Create a user
+*UsersApi* | [**DisableUser**](docs/UsersApi.md#disableuser) | **Delete** /api/v2/users/{user_id} | Disable a user
 *UsersApi* | [**GetInvitation**](docs/UsersApi.md#getinvitation) | **Get** /api/v2/user_invitations/{user_invitation_uuid} | Get a user invitation
 *UsersApi* | [**GetUser**](docs/UsersApi.md#getuser) | **Get** /api/v2/users/{user_id} | Get a user
 *UsersApi* | [**ListUserOrganizations**](docs/UsersApi.md#listuserorganizations) | **Get** /api/v2/users/{user_id}/orgs | Get a user organization

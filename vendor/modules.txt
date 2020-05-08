@@ -6,7 +6,7 @@ cloud.google.com/go/internal/optional
 cloud.google.com/go/internal/trace
 cloud.google.com/go/internal/version
 cloud.google.com/go/storage
-# github.com/DataDog/datadog-api-client-go v1.0.0-beta.1
+# github.com/DataDog/datadog-api-client-go v1.0.0-beta.2
 github.com/DataDog/datadog-api-client-go
 github.com/DataDog/datadog-api-client-go/api/v1/datadog
 github.com/DataDog/datadog-api-client-go/api/v2/datadog
@@ -289,7 +289,7 @@ golang.org/x/oauth2/google
 golang.org/x/oauth2/internal
 golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
-# golang.org/x/sys v0.0.0-20200302150141-5c8b2ff67527
+# golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.2
 golang.org/x/text/secure/bidirule

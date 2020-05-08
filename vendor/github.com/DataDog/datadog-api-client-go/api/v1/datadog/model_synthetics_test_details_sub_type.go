@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsTestDetailsSubType TODO.
+// SyntheticsTestDetailsSubType The sub-type of the Synthetic API test, either `http` or `ssl`.
 type SyntheticsTestDetailsSubType string
 
 // List of SyntheticsTestDetailsSubType

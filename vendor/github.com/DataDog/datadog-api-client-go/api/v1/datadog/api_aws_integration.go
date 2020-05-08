@@ -35,7 +35,7 @@ func (r apiCreateAWSAccountRequest) Body(body AWSAccount) apiCreateAWSAccountReq
 }
 
 /*
-CreateAWSAccount Create an AWS Integration
+CreateAWSAccount Create an AWS integration
 Create a Datadog-Amazon Web Services integration.
 Using the `POST` method updates your integration configuration
 by adding your new configuration to the existing one in your Datadog organization.
@@ -206,7 +206,7 @@ func (r apiCreateNewAWSExternalIDRequest) Body(body AWSAccount) apiCreateNewAWSE
 }
 
 /*
-CreateNewAWSExternalID Generate New External ID
+CreateNewAWSExternalID Generate a new external ID
 Generate a new AWS external ID for a given AWS account ID and role name pair.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiCreateNewAWSExternalIDRequest
@@ -375,8 +375,8 @@ func (r apiDeleteAWSAccountRequest) Body(body AWSAccount) apiDeleteAWSAccountReq
 }
 
 /*
-DeleteAWSAccount Delete an AWS Integration
-Delete a Datadog-AWS integration matching the specified account_id and role_name parameters.
+DeleteAWSAccount Delete an AWS integration
+Delete a Datadog-AWS integration matching the specified `account_id` and `role_name parameters`.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiDeleteAWSAccountRequest
 */
@@ -556,7 +556,7 @@ func (r apiListAWSAccountsRequest) AccessKeyId(accessKeyId string) apiListAWSAcc
 }
 
 /*
-ListAWSAccounts List all AWS Integrations
+ListAWSAccounts List all AWS integrations
 List all Datadog-AWS integrations available in your Datadog organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiListAWSAccountsRequest
@@ -893,7 +893,7 @@ func (r apiUpdateAWSAccountRequest) AccessKeyId(accessKeyId string) apiUpdateAWS
 }
 
 /*
-UpdateAWSAccount Update an AWS Integration
+UpdateAWSAccount Update an AWS integration
 Update a Datadog-Amazon Web Services integration.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiUpdateAWSAccountRequest

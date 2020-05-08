@@ -14,7 +14,7 @@ import (
 
 // HostMeta Metadata associated with your host.
 type HostMeta struct {
-	// TODO.
+	// Array of Unix versions.
 	NixV *[]string `json:"nixV,omitempty"`
 }
 

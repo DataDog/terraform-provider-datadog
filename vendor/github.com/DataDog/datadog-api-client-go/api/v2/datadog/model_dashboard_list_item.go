@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-// DashboardListItem TODO.
+// DashboardListItem A dashboard within a list.
 type DashboardListItem struct {
 	Author *Creator `json:"author,omitempty"`
 	// Date of creation of the dashboard.

@@ -12,15 +12,15 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsTestAuthor TODO.
+// SyntheticsTestAuthor Object describing the author or a Synthetic test.
 type SyntheticsTestAuthor struct {
-	// TODO.
+	// Email of the author.
 	Email *string `json:"email,omitempty"`
-	// TODO.
+	// Handle of the author.
 	Handle *string `json:"handle,omitempty"`
-	// TODO.
+	// Unique ID of the author.
 	Id *int64 `json:"id,omitempty"`
-	// TODO.
+	// Name of the author.
 	Name *string `json:"name,omitempty"`
 }
 

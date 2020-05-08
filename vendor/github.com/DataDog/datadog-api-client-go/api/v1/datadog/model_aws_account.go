@@ -18,13 +18,13 @@ type AWSAccount struct {
 	AccessKeyId *string `json:"access_key_id,omitempty"`
 	// Your AWS Account ID without dashes.
 	AccountId *string `json:"account_id,omitempty"`
-	// An object (in the form {\"namespace1\":true/false, \"namespace2\":true/false}) that enables or disables metric collection for specific AWS namespaces for this AWS account only. A list of namespaces can be found at the /v1/integration/aws/available_namespace_rules endpoint.
+	// An object, (in the form `{\"namespace1\":true/false, \"namespace2\":true/false}`), that enables or disables metric collection for specific AWS namespaces for this AWS account only.
 	AccountSpecificNamespaceRules *map[string]bool `json:"account_specific_namespace_rules,omitempty"`
 	// An array of AWS regions to exclude from metrics collection.
 	ExcludedRegions *[]string `json:"excluded_regions,omitempty"`
-	// The array of EC2 tags (in the form key:value) defines a filter that Datadog uses when collecting metrics from EC2. Wildcards, such as ? (for single characters) and * (for multiple characters) can also be used. Only hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. Host matching a given tag can also be excluded by adding ! before the tag. For example, `env:production,instance-type:c1.*,!region:us-east-1`
+	// The array of EC2 tags (in the form `key:value`) defines a filter that Datadog uses when collecting metrics from EC2. Wildcards, such as `?` (for single characters) and `*` (for multiple characters) can also be used. Only hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. Host matching a given tag can also be excluded by adding `!` before the tag. For example, `env:production,instance-type:c1.*,!region:us-east-1`
 	FilterTags *[]string `json:"filter_tags,omitempty"`
-	// Array of tags (in the form key:value) to add to all hosts and metrics reporting through this integration.
+	// Array of tags (in the form `key:value`) to add to all hosts and metrics reporting through this integration.
 	HostTags *[]string `json:"host_tags,omitempty"`
 	// Your Datadog role delegation name.
 	RoleName *string `json:"role_name,omitempty"`

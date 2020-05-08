@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// DashboardTemplateVariablePresetValue TODO.
+// DashboardTemplateVariablePresetValue Template variables saved views.
 type DashboardTemplateVariablePresetValue struct {
 	// The name of the variable.
 	Name *string `json:"name,omitempty"`

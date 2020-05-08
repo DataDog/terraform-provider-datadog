@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// OrganizationCreateResponse TODO.
+// OrganizationCreateResponse Response object for an organization creation.
 type OrganizationCreateResponse struct {
 	ApiKey         *ApiKey         `json:"api_key,omitempty"`
 	ApplicationKey *ApplicationKey `json:"application_key,omitempty"`

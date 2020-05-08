@@ -12,12 +12,12 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsTestConfig TODO.
+// SyntheticsTestConfig Configuration object for a Synthetic test.
 type SyntheticsTestConfig struct {
-	// TODO.
+	// Array of assertions used for the test.
 	Assertions []SyntheticsAssertion `json:"assertions"`
 	Request    SyntheticsTestRequest `json:"request"`
-	// TODO.
+	// Array of variables used for the test.
 	Variables *[]SyntheticsBrowserVariable `json:"variables,omitempty"`
 }
 

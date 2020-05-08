@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// DistributionWidgetRequest TODO.
+// DistributionWidgetRequest Updated distribution widget.
 type DistributionWidgetRequest struct {
 	ApmQuery     *LogQueryDefinition     `json:"apm_query,omitempty"`
 	EventQuery   *EventQueryDefinition   `json:"event_query,omitempty"`

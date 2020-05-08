@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// MetricsQueryResponseUnit TODO.
+// MetricsQueryResponseUnit Object containing the metric unit family, scale factor, name, and short name.
 type MetricsQueryResponseUnit struct {
 	// Unit family, allows for conversion between units of the same family, for scaling.
 	Family *string `json:"family,omitempty"`

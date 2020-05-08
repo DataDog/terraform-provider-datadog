@@ -15,7 +15,7 @@ import (
 // SLOHistoryResponse A service level objective history response.
 type SLOHistoryResponse struct {
 	Data *SLOHistoryResponseData `json:"data,omitempty"`
-	// A list of errors while querying the history data for the service level obective.
+	// A list of errors while querying the history data for the service level objective.
 	Errors *[]SLOHistoryResponseError `json:"errors,omitempty"`
 }
 

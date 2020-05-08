@@ -14,7 +14,7 @@ import (
 
 // RelationshipToRoles Relationship to roles.
 type RelationshipToRoles struct {
-	// TODO.
+	// An array containing type and ID of a role.
 	Data *[]RelationshipToRoleData `json:"data,omitempty"`
 }
 

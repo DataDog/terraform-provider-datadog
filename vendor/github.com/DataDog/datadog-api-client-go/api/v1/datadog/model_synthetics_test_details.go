@@ -12,27 +12,29 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsTestDetails TODO.
+// SyntheticsTestDetails Object containing details about your Synthetic test.
 type SyntheticsTestDetails struct {
 	Config *SyntheticsTestConfig `json:"config,omitempty"`
-	// TODO.
+	// The test creation date.
 	CreatedAt *string               `json:"created_at,omitempty"`
 	CreatedBy *SyntheticsTestAuthor `json:"created_by,omitempty"`
-	// TODO.
+	// Array of locations used to run the test.
 	Locations *[]string `json:"locations,omitempty"`
-	// TODO.
+	// Notification message associated with the test.
 	Message *string `json:"message,omitempty"`
-	// TODO.
+	// Last timestamp the test was modified.
 	ModifiedAt *string               `json:"modified_at,omitempty"`
 	ModifiedBy *SyntheticsTestAuthor `json:"modified_by,omitempty"`
-	// TODO.
+	// The associated monitor ID.
+	MonitorId *int64 `json:"monitor_id,omitempty"`
+	// Name of the test.
 	Name    *string                `json:"name,omitempty"`
 	Options *SyntheticsTestOptions `json:"options,omitempty"`
-	// TODO.
+	// The test public ID.
 	PublicId *string                       `json:"public_id,omitempty"`
 	Status   *SyntheticsTestPauseStatus    `json:"status,omitempty"`
 	Subtype  *SyntheticsTestDetailsSubType `json:"subtype,omitempty"`
-	// TODO.
+	// Array of tags attached to the test.
 	Tags *[]string                  `json:"tags,omitempty"`
 	Type *SyntheticsTestDetailsType `json:"type,omitempty"`
 }
@@ -276,6 +278,38 @@ func (o *SyntheticsTestDetails) HasModifiedBy() bool {
 // SetModifiedBy gets a reference to the given SyntheticsTestAuthor and assigns it to the ModifiedBy field.
 func (o *SyntheticsTestDetails) SetModifiedBy(v SyntheticsTestAuthor) {
 	o.ModifiedBy = &v
+}
+
+// GetMonitorId returns the MonitorId field value if set, zero value otherwise.
+func (o *SyntheticsTestDetails) GetMonitorId() int64 {
+	if o == nil || o.MonitorId == nil {
+		var ret int64
+		return ret
+	}
+	return *o.MonitorId
+}
+
+// GetMonitorIdOk returns a tuple with the MonitorId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsTestDetails) GetMonitorIdOk() (*int64, bool) {
+	if o == nil || o.MonitorId == nil {
+		return nil, false
+	}
+	return o.MonitorId, true
+}
+
+// HasMonitorId returns a boolean if a field has been set.
+func (o *SyntheticsTestDetails) HasMonitorId() bool {
+	if o != nil && o.MonitorId != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMonitorId gets a reference to the given int64 and assigns it to the MonitorId field.
+func (o *SyntheticsTestDetails) SetMonitorId(v int64) {
+	o.MonitorId = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -524,6 +558,9 @@ func (o SyntheticsTestDetails) MarshalJSON() ([]byte, error) {
 	}
 	if o.ModifiedBy != nil {
 		toSerialize["modified_by"] = o.ModifiedBy
+	}
+	if o.MonitorId != nil {
+		toSerialize["monitor_id"] = o.MonitorId
 	}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name

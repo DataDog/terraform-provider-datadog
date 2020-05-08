@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// AWSAccountAndLambdaRequest TODO.
+// AWSAccountAndLambdaRequest AWS account ID and Lambda ARN.
 type AWSAccountAndLambdaRequest struct {
 	// Your AWS Account ID without dashes.
 	AccountId string `json:"account_id"`

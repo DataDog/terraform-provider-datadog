@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// ScatterPlotWidgetDefinitionRequests TODO.
+// ScatterPlotWidgetDefinitionRequests Widget definition.
 type ScatterPlotWidgetDefinitionRequests struct {
 	X ScatterPlotRequest `json:"x"`
 	Y ScatterPlotRequest `json:"y"`

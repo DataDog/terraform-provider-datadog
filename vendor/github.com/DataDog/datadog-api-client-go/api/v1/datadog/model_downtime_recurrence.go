@@ -18,7 +18,7 @@ type DowntimeRecurrence struct {
 	Period *int32 `json:"period,omitempty"`
 	// The type of recurrence. Choose from `days`, `weeks`, `months`, `years`.
 	Type *string `json:"type,omitempty"`
-	// The date at which the recurrence should end as a POSIX timestmap. `until_occurences` and `until_date` are mutually exclusive.
+	// The date at which the recurrence should end as a POSIX timestamp. `until_occurences` and `until_date` are mutually exclusive.
 	UntilDate NullableInt64 `json:"until_date,omitempty"`
 	// How many times the downtime is rescheduled. `until_occurences` and `until_date` are mutually exclusive.
 	UntilOccurrences NullableInt32 `json:"until_occurrences,omitempty"`

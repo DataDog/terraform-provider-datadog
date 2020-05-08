@@ -20,7 +20,7 @@ type HostMuteResponse struct {
 	End *int64 `json:"end,omitempty"`
 	// The host name.
 	Hostname *string `json:"hostname,omitempty"`
-	// Message associated with the Mute.
+	// Message associated with the mute.
 	Message *string `json:"message,omitempty"`
 }
 

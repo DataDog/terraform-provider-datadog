@@ -12,13 +12,13 @@ import (
 	"encoding/json"
 )
 
-// Creator Creator of the object.
+// Creator Object describing the creator of the shared element.
 type Creator struct {
-	// TODO.
+	// Email of the creator.
 	Email *string `json:"email,omitempty"`
-	// TODO.
+	// Handle of the creator.
 	Handle *string `json:"handle,omitempty"`
-	// TODO.
+	// Name of the creator.
 	Name *string `json:"name,omitempty"`
 }
 

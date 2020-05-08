@@ -21,7 +21,7 @@ type HostMapWidgetDefinition struct {
 	// Whether to show the hosts with no metrics.
 	NoMetricHosts *bool           `json:"no_metric_hosts,omitempty"`
 	NodeType      *WidgetNodeType `json:"node_type,omitempty"`
-	// TODO.
+	// Notes on the title.
 	Notes    *string                         `json:"notes,omitempty"`
 	Requests HostMapWidgetDefinitionRequests `json:"requests"`
 	// List of tags used to filter the map.

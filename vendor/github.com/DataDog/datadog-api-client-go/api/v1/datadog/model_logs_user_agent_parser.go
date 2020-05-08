@@ -14,7 +14,7 @@ import (
 
 // LogsUserAgentParser The User-Agent parser takes a User-Agent attribute and extracts the OS, browser, device, and other user data. It recognizes major bots like the Google Bot, Yahoo Slurp, and Bing.
 type LogsUserAgentParser struct {
-	// Define if the source attribute is url encoded or not.
+	// Define if the source attribute is URL encoded or not.
 	IsEncoded *bool `json:"is_encoded,omitempty"`
 	// Array of source attributes.
 	Sources []string `json:"sources"`

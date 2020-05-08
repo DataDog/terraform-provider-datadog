@@ -15,7 +15,7 @@ import (
 // SLOBulkDeleteResponse The bulk partial delete service level objective object endpoint response.  This endpoint operates on multiple service level objective objects, so it may be partially successful. In such cases, the \"data\" and \"error\" fields in this response indicate which deletions succeeded and failed.
 type SLOBulkDeleteResponse struct {
 	Data *SLOBulkDeleteResponseData `json:"data,omitempty"`
-	// TODO.
+	// Array of errors object returned.
 	Errors *[]SLOBulkDeleteResponseErrors `json:"errors,omitempty"`
 }
 

@@ -12,13 +12,13 @@ import (
 	"encoding/json"
 )
 
-// TableWidgetRequest TODO.
+// TableWidgetRequest Updated table widget.
 type TableWidgetRequest struct {
 	Aggregator *WidgetAggregator `json:"aggregator,omitempty"`
 	// The column name (defaults to the metric name).
 	Alias    *string             `json:"alias,omitempty"`
 	ApmQuery *LogQueryDefinition `json:"apm_query,omitempty"`
-	// TODO.
+	// List of conditional formats.
 	ConditionalFormats *[]WidgetConditionalFormat `json:"conditional_formats,omitempty"`
 	EventQuery         *EventQueryDefinition      `json:"event_query,omitempty"`
 	// For metric queries, the number of lines to show in the table. Only one request should have this property.
@@ -27,7 +27,7 @@ type TableWidgetRequest struct {
 	NetworkQuery *LogQueryDefinition     `json:"network_query,omitempty"`
 	Order        *WidgetSort             `json:"order,omitempty"`
 	ProcessQuery *ProcessQueryDefinition `json:"process_query,omitempty"`
-	// TODO.
+	// Query definition.
 	Q        *string             `json:"q,omitempty"`
 	RumQuery *LogQueryDefinition `json:"rum_query,omitempty"`
 }
