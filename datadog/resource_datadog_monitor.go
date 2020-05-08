@@ -281,20 +281,20 @@ func buildMonitorStruct(d *schema.ResourceData) *datadogV1.Monitor {
 	}
 
 	monitorType := datadogV1.MonitorType(d.Get("type").(string))
-	m := datadogV1.NewMonitor()
-	m.SetType(monitorType)
-	m.SetQuery(d.Get("query").(string))
-	m.SetName(d.Get("name").(string))
-	m.SetMessage(d.Get("message").(string))
-	m.SetOptions(o)
-
-	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {
+	if monitorType == datadogV1.MONITORTYPE_LOG_ALERT {
 		if attr, ok := d.GetOk("enable_logs_sample"); ok {
 			o.SetEnableLogsSample(attr.(bool))
 		} else {
 			o.SetEnableLogsSample(false)
 		}
 	}
+
+	m := datadogV1.NewMonitor()
+	m.SetType(monitorType)
+	m.SetQuery(d.Get("query").(string))
+	m.SetName(d.Get("name").(string))
+	m.SetMessage(d.Get("message").(string))
+	m.SetOptions(o)
 
 	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
