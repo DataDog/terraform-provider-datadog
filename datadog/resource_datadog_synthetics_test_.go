@@ -296,7 +296,7 @@ func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType) bool {
 }
 
 func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTestDetails {
-	request := datadogV1.SyntheticsTestRequest{}
+	request := datadogV1.NewSyntheticsTestRequest()
 	if attr, ok := d.GetOk("request.method"); ok {
 		request.SetMethod(datadogV1.HTTPMethod(attr.(string)))
 	}
@@ -327,11 +327,8 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		}
 	}
 
-	config := datadogV1.SyntheticsTestConfig{
-		Request:    request,
-		Variables:  &[]datadogV1.SyntheticsBrowserVariable{},
-		Assertions: []datadogV1.SyntheticsAssertion{},
-	}
+	config := datadogV1.NewSyntheticsTestConfig([]datadogV1.SyntheticsAssertion{}, *request)
+	config.SetVariables([]datadogV1.SyntheticsBrowserVariable{})
 
 	if attr, ok := d.GetOk("assertions"); ok && attr != nil {
 		for _, attr := range attr.([]interface{}) {
@@ -363,7 +360,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		}
 	}
 
-	options := datadogV1.SyntheticsTestOptions{}
+	options := datadogV1.NewSyntheticsTestOptions()
 	if attr, ok := d.GetOk("options.tick_every"); ok {
 		tickEvery, _ := strconv.Atoi(attr.(string))
 		options.SetTickEvery(datadogV1.SyntheticsTickInterval(tickEvery))
@@ -403,14 +400,13 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		options.DeviceIds = &deviceIds
 	}
 
-	syntheticsTest := datadogV1.SyntheticsTestDetails{
-		Name:    datadogV1.PtrString(d.Get("name").(string)),
-		Type:    datadogV1.SyntheticsTestDetailsType(d.Get("type").(string)).Ptr(),
-		Config:  &config,
-		Options: &options,
-		Message: datadogV1.PtrString(d.Get("message").(string)),
-		Status:  datadogV1.SyntheticsTestPauseStatus(d.Get("status").(string)).Ptr(),
-	}
+	syntheticsTest := datadogV1.NewSyntheticsTestDetails()
+	syntheticsTest.SetName(d.Get("name").(string))
+	syntheticsTest.SetType(datadogV1.SyntheticsTestDetailsType(d.Get("type").(string)))
+	syntheticsTest.SetConfig(*config)
+	syntheticsTest.SetOptions(*options)
+	syntheticsTest.SetMessage(d.Get("message").(string))
+	syntheticsTest.SetStatus(datadogV1.SyntheticsTestPauseStatus(d.Get("status").(string)))
 
 	if attr, ok := d.GetOk("locations"); ok {
 		var locations []string
@@ -437,7 +433,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		}
 	}
 
-	return &syntheticsTest
+	return syntheticsTest
 }
 
 func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsTestDetails) {
