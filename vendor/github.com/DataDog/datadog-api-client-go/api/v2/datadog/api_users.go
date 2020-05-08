@@ -36,7 +36,7 @@ func (r apiCreateUserRequest) Body(body UserCreatePayload) apiCreateUserRequest 
 }
 
 /*
-CreateUser Create user
+CreateUser Create a user
 Create a user for your organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiCreateUserRequest
@@ -196,8 +196,8 @@ type apiDisableUserRequest struct {
 }
 
 /*
-DisableUser Disable user
-Disable user. Can only be used with an application key belonging to an administrator user.
+DisableUser Disable a user
+Disable a user. Can only be used with an application key belonging to an administrator user.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param userId The ID of the user.
 @return apiDisableUserRequest

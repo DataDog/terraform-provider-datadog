@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsTickInterval TODO.
+// SyntheticsTickInterval The frequency at which to run the Synthetic test.
 type SyntheticsTickInterval int64
 
 // List of SyntheticsTickInterval

@@ -12,10 +12,10 @@ import (
 	"encoding/json"
 )
 
-// ToplistWidgetRequest TODO.
+// ToplistWidgetRequest Updated top list widget.
 type ToplistWidgetRequest struct {
 	ApmQuery *LogQueryDefinition `json:"apm_query,omitempty"`
-	// TODO.
+	// List of conditional formats.
 	ConditionalFormats *[]WidgetConditionalFormat `json:"conditional_formats,omitempty"`
 	EventQuery         *EventQueryDefinition      `json:"event_query,omitempty"`
 	LogQuery           *LogQueryDefinition        `json:"log_query,omitempty"`

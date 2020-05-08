@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// Event TODO.
+// Event Object representing an event.
 type Event struct {
 	// An arbitrary string to use for aggregation. Limited to 100 characters. If you specify a key, all events using that key are grouped together in the Event Stream.
 	AggregationKey *string         `json:"aggregation_key,omitempty"`
@@ -23,9 +23,9 @@ type Event struct {
 	DeviceName *[]string `json:"device_name,omitempty"`
 	// Host name to associate with the event. Any tags associated with the host are also applied to this event.
 	Host *string `json:"host,omitempty"`
-	// TODO.
+	// Integer ID of the event.
 	Id *int64 `json:"id,omitempty"`
-	// TODO.
+	// Payload of the event.
 	Payload  *string        `json:"payload,omitempty"`
 	Priority *EventPriority `json:"priority,omitempty"`
 	// ID of the parent event. Must be sent as an integer (i.e. no quotes).
@@ -38,7 +38,7 @@ type Event struct {
 	Text string `json:"text"`
 	// The event title. Limited to 100 characters. Use `msg_title` with the Datadog Ruby library.
 	Title string `json:"title"`
-	// TODO.
+	// URL of the event.
 	Url *string `json:"url,omitempty"`
 }
 

@@ -36,11 +36,11 @@ func (r apiCreateUserRequest) Body(body User) apiCreateUserRequest {
 }
 
 /*
-CreateUser Create user
+CreateUser Create a user
 Create a user for your organization.
 
-**Note**: users can be created with admin access role
-only with application keys belonging to administrators.
+**Note**: Users can only be created with the admin access role
+if application keys belong to administrators.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiCreateUserRequest
 */
@@ -213,13 +213,13 @@ type apiDisableUserRequest struct {
 }
 
 /*
-DisableUser Disable user
+DisableUser Disable a user
 Delete a user from an organization.
 
 **Note**: This endpoint can only be used with application keys belonging to
 administrators.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param userHandle The handle of the user
+ * @param userHandle The handle of the user.
 @return apiDisableUserRequest
 */
 func (a *UsersApiService) DisableUser(ctx _context.Context, userHandle string) apiDisableUserRequest {
@@ -387,8 +387,8 @@ type apiGetUserRequest struct {
 }
 
 /*
-GetUser Get user
-Get a user details.
+GetUser Get user details
+Get a user's details.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param userHandle The ID of the user.
 @return apiGetUserRequest
@@ -701,8 +701,8 @@ func (r apiUpdateUserRequest) Body(body User) apiUpdateUserRequest {
 }
 
 /*
-UpdateUser Update user
-Update a user informations.
+UpdateUser Update a user
+Update a user information.
 
 **Note**: It can only be used with application keys belonging to administrators.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().

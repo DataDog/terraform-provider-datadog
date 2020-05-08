@@ -12,9 +12,9 @@ import (
 	"encoding/json"
 )
 
-// UsageLogsResponse TODO.
+// UsageLogsResponse Response containing the number of logs for each hour.
 type UsageLogsResponse struct {
-	// TODO.
+	// An array of objects regarding hourly usage of logs.
 	Usage *[]UsageLogsHour `json:"usage,omitempty"`
 }
 

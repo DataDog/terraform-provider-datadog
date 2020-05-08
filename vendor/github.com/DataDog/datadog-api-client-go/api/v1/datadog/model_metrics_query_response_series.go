@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// MetricsQueryResponseSeries TODO.
+// MetricsQueryResponseSeries Object containing all metric names returned and their associated metadata.
 type MetricsQueryResponseSeries struct {
 	// Aggregation type.
 	Aggr *string `json:"aggr,omitempty"`

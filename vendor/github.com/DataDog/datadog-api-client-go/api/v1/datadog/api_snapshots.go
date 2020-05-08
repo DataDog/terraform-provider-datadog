@@ -67,6 +67,7 @@ func (r apiGetGraphSnapshotRequest) Title(title string) apiGetGraphSnapshotReque
 /*
 GetGraphSnapshot Take graph snapshots
 Take graph snapshots.
+**Note**: When a snapshot is created, there is some delay before it is available.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiGetGraphSnapshotRequest
 */

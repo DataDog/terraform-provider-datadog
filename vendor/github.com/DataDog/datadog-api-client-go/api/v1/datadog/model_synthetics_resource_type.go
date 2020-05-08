@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsResourceType TODO.
+// SyntheticsResourceType Document type to apply an assertion against.
 type SyntheticsResourceType string
 
 // List of SyntheticsResourceType

@@ -12,10 +12,10 @@ import (
 	"encoding/json"
 )
 
-// EventResponse TODO.
+// EventResponse Object containing an event response.
 type EventResponse struct {
 	Event *Event `json:"event,omitempty"`
-	// TODO.
+	// A status.
 	Status *string `json:"status,omitempty"`
 }
 

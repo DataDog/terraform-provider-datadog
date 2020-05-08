@@ -24,7 +24,7 @@ type SLOHistorySLIData struct {
 	Preview *bool `json:"preview,omitempty"`
 	// The current SLI value of the SLO over the history window.
 	SliValue *float64 `json:"sli_value,omitempty"`
-	// The amount of decimal places the SLI value is accurate to for the given from and to timestamp.
+	// The amount of decimal places the SLI value is accurate to for the given from `&&` to timestamp.
 	SpanPrecision *float64 `json:"span_precision,omitempty"`
 	// Deprecated. Use `sli_value` instead.
 	Uptime *float64 `json:"uptime,omitempty"`

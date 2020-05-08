@@ -12,14 +12,14 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsAPITestResultShort TODO.
+// SyntheticsAPITestResultShort Object with the results of a single Synthetic API test.
 type SyntheticsAPITestResultShort struct {
-	// TODO.
+	// Last time the API test was performed.
 	CheckTime *float64 `json:"check_time,omitempty"`
-	// TODO.
+	// Location from which the API test was performed.
 	ProbeDc *string                             `json:"probe_dc,omitempty"`
 	Result  *SyntheticsAPITestResultShortResult `json:"result,omitempty"`
-	// TODO.
+	// ID of the API test result.
 	ResultId *string                      `json:"result_id,omitempty"`
 	Status   *SyntheticsTestMonitorStatus `json:"status,omitempty"`
 }

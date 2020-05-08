@@ -28,15 +28,15 @@ When moving this package from one major semver version to the next, there's a co
 - See changes ready for release by running `ddev release show changes .` at the root of this project. Add any missing labels to PRs if needed.
 - Run `ddev release changelog . <NEW_VERSION>` to update the `CHANGELOG.md` file at the root of this repository
 - Run `go mod tidy` to clean up the dependencies defined in `go.mod` and `go.sum`
+- Update the version in `version.go` you want to release, following semver. This file is used to know the version when sending telemetry.
 - Commit the changes to the repository in a release branch and get it approved/merged after you:
     - Make sure that all CIs are passing, as this is the commit we will be releasing!
     - Check the built godoc looks OK by running `godoc -http=:<PORT_NUM>` and opening in your browser.
-
-## Release
-After merging the above PR, create a release on the [releases page](https://github.com/DataDog/datadog-api-client-go/releases).
-- Specify the version you want to release, following semver.
-- Place the changelog contents into the description of the release.
-- Create/Publish the release, which will automatically create a tag on the `HEAD` commit. 
+- Merge the above PR and create a release on the [releases page](https://github.com/DataDog/datadog-api-client-go/releases).
+    - Specify the version you want to release, following semver.
+    - Place the changelog contents into the description of the release.
+    - Create/Publish the release, which will automatically create a tag on the `HEAD` commit.
+- Bump the version again in `version.go` to start the new release cycle.
 
 Check that the release is available by running:
 `go get github.com/Datadog/datadog-api-client-go@<VERSION>`

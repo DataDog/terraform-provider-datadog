@@ -14,7 +14,7 @@ import (
 
 // SLOHistoryResponseError A service level objective response containing the requested history.
 type SLOHistoryResponseError struct {
-	// human readable error
+	// Human readable error.
 	Error *string `json:"error,omitempty"`
 }
 

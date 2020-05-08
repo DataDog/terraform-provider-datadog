@@ -12,21 +12,21 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsSSLCertificateSubject TODO.
+// SyntheticsSSLCertificateSubject Object describing the SSL certificate used for the test.
 type SyntheticsSSLCertificateSubject struct {
-	// TODO.
+	// Country Name associated with the certificate.
 	C *string `json:"C,omitempty"`
-	// TODO.
+	// Common Name that associated with the certificate.
 	CN *string `json:"CN,omitempty"`
-	// TODO.
+	// Locality associated with the certificate.
 	L *string `json:"L,omitempty"`
-	// TODO.
+	// Organization associated with the certificate.
 	O *string `json:"O,omitempty"`
-	// TODO.
+	// Organizational Unit associated with the certificate.
 	OU *string `json:"OU,omitempty"`
-	// TODO.
+	// State Or Province Name associated with the certificate.
 	ST *string `json:"ST,omitempty"`
-	// TODO.
+	// Subject Alternative Name associated with the certificate.
 	AltName *string `json:"altName,omitempty"`
 }
 

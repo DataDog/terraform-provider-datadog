@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsTestDetailsType TODO.
+// SyntheticsTestDetailsType Type of the Synthetic test, either `api` or `browser`.
 type SyntheticsTestDetailsType string
 
 // List of SyntheticsTestDetailsType

@@ -14,7 +14,7 @@ import (
 
 // OrganizationSettingsSamlIdpInitiatedLogin Has one property enabled (boolean).
 type OrganizationSettingsSamlIdpInitiatedLogin struct {
-	// TODO.
+	// Whether SAML IdP initiated login is enabled, learn more in the [SAML documentation](https://docs.datadoghq.com/account_management/saml/#idp-initiated-login).
 	Enabled *bool `json:"enabled,omitempty"`
 }
 

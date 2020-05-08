@@ -14,13 +14,13 @@ import (
 
 // MonitorStateGroup Monitor state for a single group.
 type MonitorStateGroup struct {
-	// TODO.
+	// Latest timestamp the monitor was in NO_DATA state.
 	LastNodataTs *int64 `json:"last_nodata_ts,omitempty"`
-	// Timestamp of the last notification sent for this monitor group.
+	// Latest timestamp of the notification sent for this monitor group.
 	LastNotifiedTs *int64 `json:"last_notified_ts,omitempty"`
-	// Lastest timestamp the monitor group was resolved.
+	// Latest timestamp the monitor group was resolved.
 	LastResolvedTs *int64 `json:"last_resolved_ts,omitempty"`
-	// Last timestamp the monitor group triggered.
+	// Latest timestamp the monitor group triggered.
 	LastTriggeredTs *int64 `json:"last_triggered_ts,omitempty"`
 	// The name of the monitor.
 	Name   *string               `json:"name,omitempty"`

@@ -203,7 +203,7 @@ type apiDeleteDashboardListRequest struct {
 DeleteDashboardList Delete a dashboard list
 Delete a dashboard list.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param listId ID of the dashboard list to delete
+ * @param listId ID of the dashboard list to delete.
 @return apiDeleteDashboardListRequest
 */
 func (a *DashboardListsApiService) DeleteDashboardList(ctx _context.Context, listId int64) apiDeleteDashboardListRequest {
@@ -364,7 +364,7 @@ type apiGetDashboardListRequest struct {
 GetDashboardList Get a dashboard list
 Fetch an existing dashboard list's definition.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param listId ID of the dashboard list to fetch
+ * @param listId ID of the dashboard list to fetch.
 @return apiGetDashboardListRequest
 */
 func (a *DashboardListsApiService) GetDashboardList(ctx _context.Context, listId int64) apiGetDashboardListRequest {
@@ -678,7 +678,7 @@ func (r apiUpdateDashboardListRequest) Body(body DashboardList) apiUpdateDashboa
 UpdateDashboardList Update a dashboard list
 Update the name of a dashboard list.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param listId ID of the dashboard list to update
+ * @param listId ID of the dashboard list to update.
 @return apiUpdateDashboardListRequest
 */
 func (a *DashboardListsApiService) UpdateDashboardList(ctx _context.Context, listId int64) apiUpdateDashboardListRequest {

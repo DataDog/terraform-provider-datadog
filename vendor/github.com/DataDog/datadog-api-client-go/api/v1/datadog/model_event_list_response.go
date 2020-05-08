@@ -12,11 +12,11 @@ import (
 	"encoding/json"
 )
 
-// EventListResponse TODO.
+// EventListResponse An event list response.
 type EventListResponse struct {
-	// TODO.
+	// An array of events.
 	Events *[]Event `json:"events,omitempty"`
-	// TODO.
+	// A status.
 	Status *string `json:"status,omitempty"`
 }
 

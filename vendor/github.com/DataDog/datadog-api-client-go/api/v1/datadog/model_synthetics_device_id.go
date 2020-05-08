@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsDeviceID TODO.
+// SyntheticsDeviceID The device ID.
 type SyntheticsDeviceID string
 
 // List of SyntheticsDeviceID

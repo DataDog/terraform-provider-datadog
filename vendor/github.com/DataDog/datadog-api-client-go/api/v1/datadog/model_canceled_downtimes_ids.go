@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// CanceledDowntimesIds TODO.
+// CanceledDowntimesIds Object containing array of IDs of canceled downtimes.
 type CanceledDowntimesIds struct {
 	// ID of downtimes that were canceled.
 	CancelledIds *[]int64 `json:"cancelled_ids,omitempty"`

@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// UsageLambdaResponse Reponse containing the umber of lambda functions and sum of the invocations of all lambda functions for each hour for a given organization.
+// UsageLambdaResponse Response containing the number of lambda functions and sum of the invocations of all lambda functions for each hour for a given organization.
 type UsageLambdaResponse struct {
 	// Get hourly usage for Lambda.
 	Usage *[]UsageLambdaHour `json:"usage,omitempty"`

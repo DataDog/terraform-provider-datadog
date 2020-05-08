@@ -14,7 +14,7 @@ import (
 
 // TableWidgetDefinition The table visualization is available on timeboards and screenboards. It displays columns of metrics grouped by tag key.
 type TableWidgetDefinition struct {
-	// TODO.
+	// Widget definition.
 	Requests []TableWidgetRequest `json:"requests"`
 	Time     *WidgetTime          `json:"time,omitempty"`
 	// Title of your widget.

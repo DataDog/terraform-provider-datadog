@@ -17,9 +17,9 @@ type SLOHistoryMetricsSeries struct {
 	// Count of submitted metrics.
 	Count    int64                           `json:"count"`
 	Metadata SLOHistoryMetricsSeriesMetadata `json:"metadata"`
-	// Total Sum of the query.
+	// Total sum of the query.
 	Sum float64 `json:"sum"`
-	// The query values.
+	// The query values for each metric.
 	Values []float64 `json:"values"`
 }
 

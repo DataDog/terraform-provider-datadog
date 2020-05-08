@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// IPRanges TODO.
+// IPRanges IP ranges.
 type IPRanges struct {
 	Agents *IPPrefixesAgents `json:"agents,omitempty"`
 	Api    *IPPrefixesAPI    `json:"api,omitempty"`

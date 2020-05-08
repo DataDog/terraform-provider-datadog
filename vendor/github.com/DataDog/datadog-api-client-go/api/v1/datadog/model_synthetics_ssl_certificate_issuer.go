@@ -12,19 +12,19 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsSSLCertificateIssuer TODO.
+// SyntheticsSSLCertificateIssuer Object describing the issuer of a SSL certificate.
 type SyntheticsSSLCertificateIssuer struct {
-	// TODO.
+	// Country Name that issued the certificate.
 	C *string `json:"C,omitempty"`
-	// TODO.
+	// Common Name that issued certificate.
 	CN *string `json:"CN,omitempty"`
-	// TODO.
+	// Locality that issued the certificate.
 	L *string `json:"L,omitempty"`
-	// TODO.
+	// Organization that issued the certificate.
 	O *string `json:"O,omitempty"`
-	// TODO.
+	// Organizational Unit that issued the certificate.
 	OU *string `json:"OU,omitempty"`
-	// TODO.
+	// State Or Province Name that issued the certificate.
 	ST *string `json:"ST,omitempty"`
 }
 

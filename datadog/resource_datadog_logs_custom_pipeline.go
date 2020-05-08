@@ -663,7 +663,7 @@ func buildDatadogPipeline(d *schema.ResourceData) (*datadogV1.LogsPipeline, erro
 	if err != nil {
 		return nil, err
 	}
-	ddPipeline.SetProcessors(ddProcessors)
+	ddPipeline.SetProcessors(*ddProcessors)
 	return &ddPipeline, nil
 }
 
