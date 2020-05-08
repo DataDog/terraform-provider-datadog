@@ -43,11 +43,11 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1.0"),
+						"datadog_monitor.foo", "thresholds.warning", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "2.0"),
+						"datadog_monitor.foo", "thresholds.critical", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical_recovery", "1.5"),
 					resource.TestCheckResourceAttr(
@@ -201,11 +201,11 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1.0"),
+						"datadog_monitor.foo", "thresholds.warning", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "2.0"),
+						"datadog_monitor.foo", "thresholds.critical", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical_recovery", "1.5"),
 					resource.TestCheckResourceAttr(
@@ -252,13 +252,13 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "40"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.ok", "0.0"),
+						"datadog_monitor.foo", "thresholds.ok", "0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1.0"),
+						"datadog_monitor.foo", "thresholds.warning", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "3.0"),
+						"datadog_monitor.foo", "thresholds.critical", "3"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical_recovery", "2.5"),
 					resource.TestCheckResourceAttr(
@@ -336,11 +336,11 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1.0"),
+						"datadog_monitor.foo", "thresholds.warning", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "2.0"),
+						"datadog_monitor.foo", "thresholds.critical", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical_recovery", "1.5"),
 					resource.TestCheckResourceAttr(
@@ -387,13 +387,13 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "40"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.ok", "0.0"),
+						"datadog_monitor.foo", "thresholds.ok", "0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1.0"),
+						"datadog_monitor.foo", "thresholds.warning", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "3.0"),
+						"datadog_monitor.foo", "thresholds.critical", "3"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical_recovery", "2.5"),
 					resource.TestCheckResourceAttr(
@@ -460,13 +460,13 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.ok", "0.0"),
+						"datadog_monitor.foo", "thresholds.ok", "0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1.0"),
+						"datadog_monitor.foo", "thresholds.warning", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "2.0"),
+						"datadog_monitor.foo", "thresholds.critical", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical_recovery", "1.5"),
 				),
@@ -490,13 +490,13 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1.0"),
+						"datadog_monitor.foo", "thresholds.warning", "1"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning_recovery", "0.0"),
+						"datadog_monitor.foo", "thresholds.warning_recovery", "0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "2.0"),
+						"datadog_monitor.foo", "thresholds.critical", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical_recovery", "1.0"),
+						"datadog_monitor.foo", "thresholds.critical_recovery", "1"),
 				),
 			},
 
@@ -505,13 +505,13 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1.0"),
+						"datadog_monitor.foo", "thresholds.warning", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "3.0"),
+						"datadog_monitor.foo", "thresholds.critical", "3"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical_recovery", "2.0"),
+						"datadog_monitor.foo", "thresholds.critical_recovery", "2"),
 				),
 			},
 		},
@@ -545,9 +545,9 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "1.0"),
+						"datadog_monitor.foo", "thresholds.warning", "1"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "2.0"),
+						"datadog_monitor.foo", "thresholds.critical", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "enable_logs_sample", "true"),
 				),
@@ -607,13 +607,13 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.ok", "0.0"),
+						"datadog_monitor.foo", "thresholds.ok", "0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning", "0.5"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.warning_recovery", "0.25"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "1.0"),
+						"datadog_monitor.foo", "thresholds.critical", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "thresholds.critical_recovery", "0.5"),
 					resource.TestCheckResourceAttr(

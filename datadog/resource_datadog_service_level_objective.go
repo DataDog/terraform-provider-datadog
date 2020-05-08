@@ -190,10 +190,9 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 			}
 			if len(queries) >= 1 {
 				// only use the first defined query
-				slo.SetQuery(datadogV1.ServiceLevelObjectiveQuery{
-					Numerator:   queries[0]["numerator"].(string),
-					Denominator: queries[0]["denominator"].(string),
-				})
+				slo.SetQuery(*datadogV1.NewServiceLevelObjectiveQuery(
+					queries[0]["denominator"].(string),
+					queries[0]["numerator"].(string)))
 			}
 		}
 	}
@@ -211,7 +210,7 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 		sloThresholds := make([]datadogV1.SLOThreshold, 0)
 		for i := 0; i < numThresholds; i++ {
 			prefix := fmt.Sprintf("thresholds.%d.", i)
-			t := datadogV1.SLOThreshold{}
+			t := datadogV1.NewSLOThresholdWithDefaults()
 
 			if tf, ok := d.GetOk(prefix + "timeframe"); ok {
 				t.SetTimeframe(datadogV1.SLOTimeframe(tf.(string)))
@@ -240,7 +239,7 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 					t.SetWarningDisplay(strings.TrimSpace(warningDisplayValue.(string)))
 				}
 			}
-			sloThresholds = append(sloThresholds, t)
+			sloThresholds = append(sloThresholds, *t)
 		}
 		if len(sloThresholds) > 0 {
 			slo.SetThresholds(sloThresholds)
