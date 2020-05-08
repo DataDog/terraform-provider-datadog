@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsUpdateTestPauseStatusPayload TODO.
+// SyntheticsUpdateTestPauseStatusPayload Object to start or pause an existing Synthetic test.
 type SyntheticsUpdateTestPauseStatusPayload struct {
 	NewStatus *SyntheticsTestPauseStatus `json:"new_status,omitempty"`
 }

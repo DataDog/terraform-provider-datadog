@@ -16,19 +16,19 @@ import (
 type Downtime struct {
 	// If a scheduled downtime currently exists.
 	Active *bool `json:"active,omitempty"`
-	// If a scheduled downtime is cancelled.
+	// If a scheduled downtime is canceled.
 	Canceled NullableInt64 `json:"canceled,omitempty"`
 	// User ID of the downtime creator.
 	CreatorId *int32 `json:"creator_id,omitempty"`
 	// If a downtime has been disabled.
 	Disabled *bool `json:"disabled,omitempty"`
-	// 0 for a downtime applied on `*` or all; 1 when the downtime is only scoped to hosts; 2 when the downtime is scoped to anything but hosts.
+	// `0` for a downtime applied on `*` or all, `1` when the downtime is only scoped to hosts, or `2` when the downtime is scoped to anything but hosts.
 	DowntimeType *int32 `json:"downtime_type,omitempty"`
 	// POSIX timestamp to end the downtime. If not provided, the downtime is in effect indefinitely until you cancel it.
 	End NullableInt64 `json:"end,omitempty"`
 	// The downtime ID.
 	Id *int64 `json:"id,omitempty"`
-	// A message to include with notifications for this downtime. Email notifications can be sent to specific users by using the same ‘@username’ notation as events.
+	// A message to include with notifications for this downtime. Email notifications can be sent to specific users by using the same `@username` notation as events.
 	Message *string `json:"message,omitempty"`
 	// A single monitor to which the downtime applies. If not provided, the downtime applies to all monitors.
 	MonitorId NullableInt64 `json:"monitor_id,omitempty"`

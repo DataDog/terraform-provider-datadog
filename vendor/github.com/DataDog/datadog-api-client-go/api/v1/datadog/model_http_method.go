@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// HTTPMethod TODO.
+// HTTPMethod The HTTP method.
 type HTTPMethod string
 
 // List of HTTPMethod

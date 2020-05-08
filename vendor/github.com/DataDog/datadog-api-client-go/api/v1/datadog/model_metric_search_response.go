@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// MetricSearchResponse TODO.
+// MetricSearchResponse Object containing the list of metrics matching the search query.
 type MetricSearchResponse struct {
 	Results *MetricSearchResponseResults `json:"results,omitempty"`
 }

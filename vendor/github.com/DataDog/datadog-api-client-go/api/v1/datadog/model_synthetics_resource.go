@@ -12,22 +12,22 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsResource TODO.
+// SyntheticsResource Object describing a resource which is the combination of requests (fetch, XHR) and Assets (HTML, CSS, JS, images).
 type SyntheticsResource struct {
-	// TODO.
+	// Number of time the resource was collected.
 	Duration *float64 `json:"duration,omitempty"`
-	// TODO.
+	// HTTP method associated to the resource.
 	Method *string `json:"method,omitempty"`
-	// TODO.
+	// Size of the resource in bytes.
 	Size *int64 `json:"size,omitempty"`
-	// TODO.
+	// Status Code of the resource.
 	Status *int64 `json:"status,omitempty"`
-	// TODO.
+	// Timestamp of the resource collection.
 	Timestamp *float64 `json:"timestamp,omitempty"`
-	// TODO.
+	// Trace ID associated with the resource if any.
 	TraceId *string                 `json:"traceId,omitempty"`
 	Type    *SyntheticsResourceType `json:"type,omitempty"`
-	// TODO.
+	// URL of the resource.
 	Url *string `json:"url,omitempty"`
 }
 

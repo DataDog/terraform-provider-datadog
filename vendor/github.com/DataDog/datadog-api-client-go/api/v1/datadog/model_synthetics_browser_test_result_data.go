@@ -12,28 +12,28 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsBrowserTestResultData TODO.
+// SyntheticsBrowserTestResultData Object containing results for your Synthetic browser test.
 type SyntheticsBrowserTestResultData struct {
-	// TODO.
+	// Type of browser device used for the browser test.
 	BrowserType *string `json:"browserType,omitempty"`
-	// TODO.
+	// Browser version used for the browser test.
 	BrowserVersion *string           `json:"browserVersion,omitempty"`
 	Device         *SyntheticsDevice `json:"device,omitempty"`
-	// TODO.
+	// Global duration in second of the browser test.
 	Duration *float64 `json:"duration,omitempty"`
-	// TODO.
+	// Error returned for the browser test.
 	Error *string `json:"error,omitempty"`
-	// TODO.
+	// Whether or not the browser test was conducted.
 	Passed *bool `json:"passed,omitempty"`
-	// TODO.
+	// The amount of email received during the browser test.
 	ReceivedEmailCount *int64 `json:"receivedEmailCount,omitempty"`
-	// TODO.
+	// Starting URL for the browser test.
 	StartUrl *string `json:"startUrl,omitempty"`
-	// TODO.
+	// Array containing the different browser test steps.
 	StepDetails *[]SyntheticsStepDetail `json:"stepDetails,omitempty"`
-	// TODO.
+	// Whether or not a thumbnail is associated with the browser test.
 	ThumbnailsBucketKey *bool `json:"thumbnailsBucketKey,omitempty"`
-	// TODO.
+	// Time in second to wait before the browser test starts after reaching the start URL.
 	TimeToInteractive *float64 `json:"timeToInteractive,omitempty"`
 }
 

@@ -12,10 +12,10 @@ import (
 	"encoding/json"
 )
 
-// Log TODO.
+// Log Object describing a log after being processed and stored by Datadog.
 type Log struct {
 	Content *LogContent `json:"content,omitempty"`
-	// TODO.
+	// Unique ID of the Log.
 	Id *string `json:"id,omitempty"`
 }
 

@@ -14,9 +14,9 @@ import (
 
 // GCPAccount Your Google Cloud Platform Account.
 type GCPAccount struct {
-	// Should be https://www.googleapis.com/oauth2/v1/certs.
+	// Should be `https://www.googleapis.com/oauth2/v1/certs`.
 	AuthProviderX509CertUrl *string `json:"auth_provider_x509_cert_url,omitempty"`
-	// Should be https://accounts.google.com/o/oauth2/auth.
+	// Should be `https://accounts.google.com/o/oauth2/auth`.
 	AuthUri *string `json:"auth_uri,omitempty"`
 	// Silence monitors for expected GCE instance shutdowns.
 	Automute *bool `json:"automute,omitempty"`
@@ -24,9 +24,9 @@ type GCPAccount struct {
 	ClientEmail *string `json:"client_email,omitempty"`
 	// Your ID found in your JSON service account key.
 	ClientId *string `json:"client_id,omitempty"`
-	// Should be https://www.googleapis.com/robot/v1/metadata/x509/<CLIENT_EMAIL> where <CLIENT_EMAIL> is the email found in your JSON service account key.
+	// Should be `https://www.googleapis.com/robot/v1/metadata/x509/<CLIENT_EMAIL>` where `<CLIENT_EMAIL>` is the email found in your JSON service account key.
 	ClientX509CertUrl *string `json:"client_x509_cert_url,omitempty"`
-	// TODO.
+	// An array of errors.
 	Errors *[]string `json:"errors,omitempty"`
 	// Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.
 	HostFilters *string `json:"host_filters,omitempty"`
@@ -36,7 +36,7 @@ type GCPAccount struct {
 	PrivateKeyId *string `json:"private_key_id,omitempty"`
 	// Your Google Cloud project ID found in your JSON service account key.
 	ProjectId *string `json:"project_id,omitempty"`
-	// Should be https://accounts.google.com/o/oauth2/token.
+	// Should be `https://accounts.google.com/o/oauth2/token`.
 	TokenUri *string `json:"token_uri,omitempty"`
 	// The value for service_account found in your JSON service account key.
 	Type *string `json:"type,omitempty"`

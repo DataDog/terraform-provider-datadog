@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// WidgetLegendSize Available legent sizes for a widget.
+// WidgetLegendSize Available legend sizes for a widget.
 type WidgetLegendSize string
 
 // List of WidgetLegendSize

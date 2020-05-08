@@ -12,12 +12,12 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsAssertion TODO.
+// SyntheticsAssertion Object describing the assertions type, their associated operator, which property they apply , and upon which target.
 type SyntheticsAssertion struct {
 	Operator SyntheticsAssertionOperator `json:"operator"`
-	// TODO.
+	// The associated assertion property.
 	Property *string `json:"property,omitempty"`
-	// TODO.
+	// Target to apply the assertion to. It can be a string, a number, or a Date.
 	Target *interface{}            `json:"target,omitempty"`
 	Type   SyntheticsAssertionType `json:"type"`
 }

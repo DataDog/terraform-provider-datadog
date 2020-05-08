@@ -12,16 +12,16 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsBrowserTestResultShortResult TODO.
+// SyntheticsBrowserTestResultShortResult Object with the result of the last browser test run.
 type SyntheticsBrowserTestResultShortResult struct {
 	Device *SyntheticsDevice `json:"device,omitempty"`
-	// TODO.
+	// Length in second of the browser test run.
 	Duration *float64 `json:"duration,omitempty"`
-	// TODO.
+	// Amount of errors collected for a single browser test run.
 	ErrorCount *int64 `json:"errorCount,omitempty"`
-	// TODO.
+	// Amount of browser test steps completed before failing.
 	StepCountCompleted *int64 `json:"stepCountCompleted,omitempty"`
-	// TODO.
+	// Total amount of browser test steps.
 	StepCountTotal *int64 `json:"stepCountTotal,omitempty"`
 }
 

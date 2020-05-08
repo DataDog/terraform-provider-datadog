@@ -12,15 +12,15 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsBrowserVariable TODO.
+// SyntheticsBrowserVariable Object defining a variable that can be used in your browser test. Learn more in the [Browser test Actions documentation](https://docs.datadoghq.com/synthetics/browser_tests/actions#variable).
 type SyntheticsBrowserVariable struct {
-	// TODO.
+	// Example for the variable.
 	Example *string `json:"example,omitempty"`
-	// TODO.
+	// ID for the variable.
 	Id *string `json:"id,omitempty"`
-	// TODO.
+	// Name of the variable.
 	Name string `json:"name"`
-	// TODO.
+	// Pattern of the variable.
 	Pattern *string                       `json:"pattern,omitempty"`
 	Type    SyntheticsBrowserVariableType `json:"type"`
 }

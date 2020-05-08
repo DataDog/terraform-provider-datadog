@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// UsageTraceResponse TODO.
+// UsageTraceResponse A response containing trace usage.
 type UsageTraceResponse struct {
 	// Array with the number of hourly traces indexed for a given organization.
 	Usage *[]UsageTraceHour `json:"usage,omitempty"`

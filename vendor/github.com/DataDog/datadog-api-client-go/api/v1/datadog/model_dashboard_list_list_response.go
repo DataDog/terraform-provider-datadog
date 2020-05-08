@@ -12,9 +12,9 @@ import (
 	"encoding/json"
 )
 
-// DashboardListListResponse TODO.
+// DashboardListListResponse Information on your dashboard lists.
 type DashboardListListResponse struct {
-	// List of all your dashboard lists
+	// List of all your dashboard lists.
 	DashboardLists *[]DashboardList `json:"dashboard_lists,omitempty"`
 }
 

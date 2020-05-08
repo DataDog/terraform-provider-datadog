@@ -12,34 +12,32 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsTestRequest TODO.
+// SyntheticsTestRequest Object describing the Synthetic test request.
 type SyntheticsTestRequest struct {
 	BasicAuth *SyntheticsTestRequestBasicAuth `json:"basicAuth,omitempty"`
-	// TODO.
+	// Body to include in the test.
 	Body *string `json:"body,omitempty"`
-	// TODO.
+	// Headers to include when performing the test.
 	Headers *map[string]string `json:"headers,omitempty"`
-	// TODO.
-	Host   *string    `json:"host,omitempty"`
-	Method HTTPMethod `json:"method"`
-	// TODO.
+	// Host name to perform the test with.
+	Host   *string     `json:"host,omitempty"`
+	Method *HTTPMethod `json:"method,omitempty"`
+	// Port to use when performing the test.
 	Port *int64 `json:"port,omitempty"`
-	// TODO.
+	// Query to use for the test.
 	Query *interface{} `json:"query,omitempty"`
-	// TODO.
+	// Timeout in millisecond for the test.
 	Timeout *float64 `json:"timeout,omitempty"`
-	// TODO.
-	Url string `json:"url"`
+	// URL to perform the test with.
+	Url *string `json:"url,omitempty"`
 }
 
 // NewSyntheticsTestRequest instantiates a new SyntheticsTestRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSyntheticsTestRequest(method HTTPMethod, url string) *SyntheticsTestRequest {
+func NewSyntheticsTestRequest() *SyntheticsTestRequest {
 	this := SyntheticsTestRequest{}
-	this.Method = method
-	this.Url = url
 	return &this
 }
 
@@ -179,28 +177,36 @@ func (o *SyntheticsTestRequest) SetHost(v string) {
 	o.Host = &v
 }
 
-// GetMethod returns the Method field value
+// GetMethod returns the Method field value if set, zero value otherwise.
 func (o *SyntheticsTestRequest) GetMethod() HTTPMethod {
-	if o == nil {
+	if o == nil || o.Method == nil {
 		var ret HTTPMethod
 		return ret
 	}
-
-	return o.Method
+	return *o.Method
 }
 
-// GetMethodOk returns a tuple with the Method field value
+// GetMethodOk returns a tuple with the Method field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SyntheticsTestRequest) GetMethodOk() (*HTTPMethod, bool) {
-	if o == nil {
+	if o == nil || o.Method == nil {
 		return nil, false
 	}
-	return &o.Method, true
+	return o.Method, true
 }
 
-// SetMethod sets field value
+// HasMethod returns a boolean if a field has been set.
+func (o *SyntheticsTestRequest) HasMethod() bool {
+	if o != nil && o.Method != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMethod gets a reference to the given HTTPMethod and assigns it to the Method field.
 func (o *SyntheticsTestRequest) SetMethod(v HTTPMethod) {
-	o.Method = v
+	o.Method = &v
 }
 
 // GetPort returns the Port field value if set, zero value otherwise.
@@ -299,28 +305,36 @@ func (o *SyntheticsTestRequest) SetTimeout(v float64) {
 	o.Timeout = &v
 }
 
-// GetUrl returns the Url field value
+// GetUrl returns the Url field value if set, zero value otherwise.
 func (o *SyntheticsTestRequest) GetUrl() string {
-	if o == nil {
+	if o == nil || o.Url == nil {
 		var ret string
 		return ret
 	}
-
-	return o.Url
+	return *o.Url
 }
 
-// GetUrlOk returns a tuple with the Url field value
+// GetUrlOk returns a tuple with the Url field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SyntheticsTestRequest) GetUrlOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.Url == nil {
 		return nil, false
 	}
-	return &o.Url, true
+	return o.Url, true
 }
 
-// SetUrl sets field value
+// HasUrl returns a boolean if a field has been set.
+func (o *SyntheticsTestRequest) HasUrl() bool {
+	if o != nil && o.Url != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetUrl gets a reference to the given string and assigns it to the Url field.
 func (o *SyntheticsTestRequest) SetUrl(v string) {
-	o.Url = v
+	o.Url = &v
 }
 
 func (o SyntheticsTestRequest) MarshalJSON() ([]byte, error) {
@@ -337,7 +351,7 @@ func (o SyntheticsTestRequest) MarshalJSON() ([]byte, error) {
 	if o.Host != nil {
 		toSerialize["host"] = o.Host
 	}
-	if true {
+	if o.Method != nil {
 		toSerialize["method"] = o.Method
 	}
 	if o.Port != nil {
@@ -349,7 +363,7 @@ func (o SyntheticsTestRequest) MarshalJSON() ([]byte, error) {
 	if o.Timeout != nil {
 		toSerialize["timeout"] = o.Timeout
 	}
-	if true {
+	if o.Url != nil {
 		toSerialize["url"] = o.Url
 	}
 	return json.Marshal(toSerialize)

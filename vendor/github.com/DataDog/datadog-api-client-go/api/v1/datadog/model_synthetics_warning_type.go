@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsWarningType TODO.
+// SyntheticsWarningType User locator used.
 type SyntheticsWarningType string
 
 // List of SyntheticsWarningType

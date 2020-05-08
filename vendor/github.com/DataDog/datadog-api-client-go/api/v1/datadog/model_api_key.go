@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// ApiKey Manage your Datadog API and application keys.  You need an API and applications key with Admin rights to interact with this endpoint. The full list of keys can be seen on your [Datadog API page](https://app.datadoghq.com/account/login?next=%2Faccount%2Fsettings#api).
+// ApiKey Datadog API key.
 type ApiKey struct {
 	// Date of creation of the API key.
 	Created *string `json:"created,omitempty"`

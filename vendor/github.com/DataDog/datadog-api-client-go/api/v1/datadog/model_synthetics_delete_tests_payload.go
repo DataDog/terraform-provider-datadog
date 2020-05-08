@@ -12,9 +12,9 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsDeleteTestsPayload TODO.
+// SyntheticsDeleteTestsPayload A JSON list of the ID or IDs of the Synthetic tests that you want to delete.
 type SyntheticsDeleteTestsPayload struct {
-	// TODO.
+	// An array of Synthetic test IDs you want to delete.
 	PublicIds *[]string `json:"public_ids,omitempty"`
 }
 

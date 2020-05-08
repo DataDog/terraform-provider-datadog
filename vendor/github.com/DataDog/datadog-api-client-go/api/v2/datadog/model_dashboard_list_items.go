@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// DashboardListItems TODO.
+// DashboardListItems Dashboards within a list.
 type DashboardListItems struct {
 	// List of dashboards in the dashboard list.
 	Dashboards []DashboardListItem `json:"dashboards"`

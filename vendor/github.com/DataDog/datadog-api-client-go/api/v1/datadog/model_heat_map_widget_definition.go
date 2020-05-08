@@ -14,10 +14,10 @@ import (
 
 // HeatMapWidgetDefinition The heat map visualization shows metrics aggregated across many tags, such as hosts. The more hosts that have a particular value, the darker that square is.
 type HeatMapWidgetDefinition struct {
-	// TODO.
+	// List of widget events.
 	Events     *[]WidgetEvent    `json:"events,omitempty"`
 	LegendSize *WidgetLegendSize `json:"legend_size,omitempty"`
-	// TODO.
+	// List of widget types.
 	Requests []HeatMapWidgetRequest `json:"requests"`
 	// Whether or not to display the legend on this widget.
 	ShowLegend *bool       `json:"show_legend,omitempty"`

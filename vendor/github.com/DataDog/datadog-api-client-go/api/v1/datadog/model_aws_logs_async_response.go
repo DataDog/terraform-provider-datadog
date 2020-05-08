@@ -12,11 +12,11 @@ import (
 	"encoding/json"
 )
 
-// AWSLogsAsyncResponse TODO.
+// AWSLogsAsyncResponse A list of all Datadog-AWS logs integrations available in your Datadog organization.
 type AWSLogsAsyncResponse struct {
-	// TODO.
+	// List of errors.
 	Errors *[]AWSLogsAsyncResponseErrors `json:"errors,omitempty"`
-	// TODO.
+	// Status of the properties.
 	Status *string `json:"status,omitempty"`
 }
 

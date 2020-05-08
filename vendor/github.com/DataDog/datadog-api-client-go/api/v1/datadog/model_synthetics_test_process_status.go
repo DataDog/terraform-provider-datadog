@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsTestProcessStatus TODO.
+// SyntheticsTestProcessStatus Status of a Synthetic test.
 type SyntheticsTestProcessStatus string
 
 // List of SyntheticsTestProcessStatus

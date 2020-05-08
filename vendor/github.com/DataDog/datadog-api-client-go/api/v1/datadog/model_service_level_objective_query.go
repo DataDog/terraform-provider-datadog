@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// ServiceLevelObjectiveQuery A metric SLI query.  Required if type is \"metric\".
+// ServiceLevelObjectiveQuery A metric SLI query. **Required if type is `metric`**.
 type ServiceLevelObjectiveQuery struct {
 	// A Datadog metric query for total (valid) events.
 	Denominator string `json:"denominator"`

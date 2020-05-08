@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// RoleCreateData TODO
+// RoleCreateData Data related to the creation of a role.
 type RoleCreateData struct {
 	Attributes    *RoleCreateAttributes `json:"attributes,omitempty"`
 	Relationships *RoleRelationships    `json:"relationships,omitempty"`

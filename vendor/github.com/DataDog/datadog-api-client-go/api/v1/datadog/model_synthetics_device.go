@@ -12,16 +12,16 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsDevice TODO.
+// SyntheticsDevice Object describing the device used to perform the Synthetic test.
 type SyntheticsDevice struct {
-	// TODO.
+	// Screen height of the device.
 	Height int64              `json:"height"`
 	Id     SyntheticsDeviceID `json:"id"`
-	// TODO.
+	// Whether or not the device is a mobile.
 	IsMobile *bool `json:"isMobile,omitempty"`
-	// TODO.
+	// The device name.
 	Name string `json:"name"`
-	// TODO.
+	// Screen width of the device.
 	Width int64 `json:"width"`
 }
 

@@ -12,12 +12,12 @@ import (
 	"encoding/json"
 )
 
-// RoleUpdateData TODO
+// RoleUpdateData Data related to the update of a role.
 type RoleUpdateData struct {
 	Attributes *RoleUpdateAttributes `json:"attributes,omitempty"`
 	// ID of the role.
 	Id *string `json:"id,omitempty"`
-	// TODO
+	// Type of role.
 	Type *string `json:"type,omitempty"`
 }
 

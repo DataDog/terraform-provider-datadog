@@ -13,11 +13,11 @@ import (
 	"time"
 )
 
-// UsageFargateHour TODO.
+// UsageFargateHour Number of Fargate tasks run and hourly usage.
 type UsageFargateHour struct {
 	// The hour for the usage.
 	Hour *time.Time `json:"hour,omitempty"`
-	// Contains the number of Fargate tasks run.
+	// The number of Fargate tasks run.
 	TasksCount *int64 `json:"tasks_count,omitempty"`
 }
 

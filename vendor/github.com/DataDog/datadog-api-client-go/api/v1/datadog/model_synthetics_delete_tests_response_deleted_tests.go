@@ -13,11 +13,11 @@ import (
 	"time"
 )
 
-// SyntheticsDeleteTestsResponseDeletedTests TODO.
+// SyntheticsDeleteTestsResponseDeletedTests Object containing a deleted Synthetic test ID with the associated deletion timestamp.
 type SyntheticsDeleteTestsResponseDeletedTests struct {
-	// TODO.
+	// Deletion timestamp of the Synthetic test ID.
 	DeletedAt *time.Time `json:"deleted_at,omitempty"`
-	// TODO.
+	// The Synthetic test ID deleted.
 	PublicId *string `json:"public_id,omitempty"`
 }
 

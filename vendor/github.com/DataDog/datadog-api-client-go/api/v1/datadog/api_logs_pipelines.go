@@ -37,7 +37,7 @@ func (r apiCreateLogsPipelineRequest) Body(body LogsPipeline) apiCreateLogsPipel
 
 /*
 CreateLogsPipeline Create a pipeline
-Create a Pipeline in your organization.
+Create a pipeline in your organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiCreateLogsPipelineRequest
 */
@@ -503,7 +503,7 @@ type apiGetLogsPipelineOrderRequest struct {
 }
 
 /*
-GetLogsPipelineOrder Get Pipeline Order
+GetLogsPipelineOrder Get pipeline order
 Get the current order of your pipelines.
 This endpoint takes no JSON arguments.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -651,7 +651,7 @@ type apiListLogsPipelinesRequest struct {
 }
 
 /*
-ListLogsPipelines Get all Pipeline
+ListLogsPipelines Get all pipelines
 Get all pipelines from your organization.
 This endpoint takes no JSON arguments.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -981,7 +981,7 @@ func (r apiUpdateLogsPipelineOrderRequest) Body(body LogsPipelinesOrder) apiUpda
 }
 
 /*
-UpdateLogsPipelineOrder Update Pipeline Order
+UpdateLogsPipelineOrder Update pipeline order
 Update the order of your pipelines. Since logs are processed sequentially, reordering a pipeline may change
 the structure and content of the data processed by other pipelines and their processors.
 

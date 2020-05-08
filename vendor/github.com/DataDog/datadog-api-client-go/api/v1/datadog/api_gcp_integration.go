@@ -531,9 +531,9 @@ func (r apiUpdateGCPIntegrationRequest) Body(body GCPAccount) apiUpdateGCPIntegr
 
 /*
 UpdateGCPIntegration Update a GCP integration
-Update a Datadog-GCP integrations host_filters and/or automute.
+Update a Datadog-GCP integrations host_filters and/or auto-mute.
 Requires a `project_id` and `client_email`, however these fields cannot be updated.
-If you need to update these fields please delete and use the create (POST) endpoint.
+If you need to update these fields, delete and use the create (`POST`) endpoint.
 The unspecified fields will keep their original values.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiUpdateGCPIntegrationRequest

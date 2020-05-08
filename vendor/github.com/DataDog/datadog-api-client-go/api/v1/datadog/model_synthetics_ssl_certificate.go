@@ -13,29 +13,29 @@ import (
 	"time"
 )
 
-// SyntheticsSSLCertificate TODO.
+// SyntheticsSSLCertificate Object describing the SSL certificate used for a Synthetic test.
 type SyntheticsSSLCertificate struct {
-	// TODO.
+	// Cipher used for the connection.
 	Cipher *string `json:"cipher,omitempty"`
-	// TODO.
+	// Exponent associated to the certificate.
 	Exponent *float64 `json:"exponent,omitempty"`
-	// TODO.
+	// Array of extensions and details used for the certificate.
 	ExtKeyUsage *[]string `json:"extKeyUsage,omitempty"`
-	// TODO.
+	// MD5 digest of the DER-encoded Certificate information.
 	Fingerprint *string `json:"fingerprint,omitempty"`
-	// TODO.
+	// SHA-1 digest of the DER-encoded Certificate information.
 	Fingerprint256 *string                         `json:"fingerprint256,omitempty"`
 	Issuer         *SyntheticsSSLCertificateIssuer `json:"issuer,omitempty"`
-	// TODO.
+	// Modulus associated to the SSL certificate private key.
 	Modulus *string `json:"modulus,omitempty"`
-	// TODO.
+	// TLS protocol used for the test.
 	Protocol *string `json:"protocol,omitempty"`
-	// TODO.
+	// Serial Number assigned by Symantec to the SSL certificate.
 	SerialNumber *string                          `json:"serialNumber,omitempty"`
 	Subject      *SyntheticsSSLCertificateSubject `json:"subject,omitempty"`
-	// TODO.
+	// Date from which the SSL certificate is valid.
 	ValidFrom *time.Time `json:"validFrom,omitempty"`
-	// TODO.
+	// Date until which the SSL certificate is valid.
 	ValidTo *time.Time `json:"validTo,omitempty"`
 }
 

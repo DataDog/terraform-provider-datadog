@@ -14,7 +14,7 @@ import (
 
 // UserDisableResponse Array of user disabled for a given organization.
 type UserDisableResponse struct {
-	// TODO.
+	// Information pertaining to a user disabled for a given organization.
 	Message *string `json:"message,omitempty"`
 }
 

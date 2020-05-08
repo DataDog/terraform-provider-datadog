@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsErrorCode TODO.
+// SyntheticsErrorCode Error code that can be returned by a Synthetic test.
 type SyntheticsErrorCode string
 
 // List of SyntheticsErrorCode

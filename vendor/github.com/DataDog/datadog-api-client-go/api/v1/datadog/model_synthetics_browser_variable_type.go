@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsBrowserVariableType TODO.
+// SyntheticsBrowserVariableType Type of browser test variable.
 type SyntheticsBrowserVariableType string
 
 // List of SyntheticsBrowserVariableType

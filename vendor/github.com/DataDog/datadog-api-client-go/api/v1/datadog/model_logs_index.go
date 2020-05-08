@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// LogsIndex TODO.
+// LogsIndex Object describing a Datadog Log index.
 type LogsIndex struct {
 	// The number of log events you can send in this index per day before you are rate-limited.
 	DailyLimit *int64 `json:"daily_limit,omitempty"`

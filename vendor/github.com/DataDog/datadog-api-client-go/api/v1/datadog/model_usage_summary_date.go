@@ -13,53 +13,53 @@ import (
 	"time"
 )
 
-// UsageSummaryDate TODO.
+// UsageSummaryDate Response with hourly report of all data billed by Datadog all organizations.
 type UsageSummaryDate struct {
-	// Shows the 99th percentile of all agent hosts over all hours in the current date for all orgs.
+	// Shows the 99th percentile of all agent hosts over all hours in the current date for all organizations.
 	AgentHostTop99p *int64 `json:"agent_host_top99p,omitempty"`
-	// Shows the 99th percentile of all distinct APM hosts over all hours in the current date for all orgs.
+	// Shows the 99th percentile of all distinct APM hosts over all hours in the current date for all organizations.
 	ApmHostTop99p *int64 `json:"apm_host_top99p,omitempty"`
-	// Shows the 99th percentile of all AWS hosts over all hours in the current date for all orgs.
+	// Shows the 99th percentile of all AWS hosts over all hours in the current date for all organizations.
 	AwsHostTop99p *int64 `json:"aws_host_top99p,omitempty"`
-	// Shows the average of the number of functions that executed 1 or more times each hour in the current date for all orgs.
+	// Shows the average of the number of functions that executed 1 or more times each hour in the current date for all organizations.
 	AwsLambdaFuncCount *int64 `json:"aws_lambda_func_count,omitempty"`
-	// Shows the sum of all AWS Labmda invocations over all hours in the current date for all orgs.
+	// Shows the sum of all AWS Lambda invocations over all hours in the current date for all organizations.
 	AwsLambdaInvocationsSum *int64 `json:"aws_lambda_invocations_sum,omitempty"`
-	// Shows the sum of all log bytes ingested over all hours in the current date for all orgs.
+	// Shows the sum of all log bytes ingested over all hours in the current date for all organizations.
 	BillableIngestedBytesSum *int64 `json:"billable_ingested_bytes_sum,omitempty"`
-	// Shows the average of all distinct containers over all hours in the current date for all orgs.
+	// Shows the average of all distinct containers over all hours in the current date for all organizations.
 	ContainerAvg *int64 `json:"container_avg,omitempty"`
-	// Shows the high watermark of all distinct containers over all hours in the current date for all orgs.
+	// Shows the high watermark of all distinct containers over all hours in the current date for all organizations.
 	ContainerHwm *int64 `json:"container_hwm,omitempty"`
-	// Shows the average number of distinct custom metrics over all hours in the current date for all orgs.
+	// Shows the average number of distinct custom metrics over all hours in the current date for all organizations.
 	CustomTsAvg *int64 `json:"custom_ts_avg,omitempty"`
 	// The date for the usage.
 	Date *time.Time `json:"date,omitempty"`
-	// Shows the high watermark of all Fargate tasks over all hours in the current date for all orgs.
+	// Shows the high watermark of all Fargate tasks over all hours in the current date for all organizations.
 	FargateTasksCountAvg *int64 `json:"fargate_tasks_count_avg,omitempty"`
-	// Shows the average of all Fargate tasks over all hours in the current date for all orgs.
+	// Shows the average of all Fargate tasks over all hours in the current date for all organizations.
 	FargateTasksCountHwm *int64 `json:"fargate_tasks_count_hwm,omitempty"`
-	// Shows the 99th percentile of all GCP hosts over all hours in the current date for all orgs.
+	// Shows the 99th percentile of all GCP hosts over all hours in the current date for all organizations.
 	GcpHostTop99p *int64 `json:"gcp_host_top99p,omitempty"`
-	// Shows the sum of all log events indexed over all hours in the current date for all orgs.
+	// Shows the sum of all log events indexed over all hours in the current date for all organizations.
 	IndexedEventsCountSum *int64 `json:"indexed_events_count_sum,omitempty"`
-	// Shows the 99th percentile of all distinct infrastructure hosts over all hours in the current date for all orgs.
+	// Shows the 99th percentile of all distinct infrastructure hosts over all hours in the current date for all organizations.
 	InfraHostTop99p *int64 `json:"infra_host_top99p,omitempty"`
-	// Shows the sum of all log bytes ingested over all hours in the current date for all orgs.
+	// Shows the sum of all log bytes ingested over all hours in the current date for all organizations.
 	IngestedEventsBytesSum *int64 `json:"ingested_events_bytes_sum,omitempty"`
-	// Shows the sum of all Network flows indexed over all hours in the current date for all orgs.
+	// Shows the sum of all Network flows indexed over all hours in the current date for all organizations.
 	NetflowIndexedEventsCountSum *int64 `json:"netflow_indexed_events_count_sum,omitempty"`
-	// Shows the 99th percentile of all distinct Networks hosts over all hours in the current date for all orgs.
+	// Shows the 99th percentile of all distinct Networks hosts over all hours in the current date for all organizations.
 	NpmHostTop99p *int64 `json:"npm_host_top99p,omitempty"`
-	// TODO.
+	// Organizations associated with a user.
 	Orgs *[]UsageSummaryDateOrg `json:"orgs,omitempty"`
-	// Shows the sum of all RUM Sessions over all hours in the current date for all orgs
+	// Shows the sum of all RUM Sessions over all hours in the current date for all organizations
 	RumSessionCountSum *int64 `json:"rum_session_count_sum,omitempty"`
-	// Shows the sum of all Synthetic browser tests over all hours in the current date for all orgs.
+	// Shows the sum of all Synthetic browser tests over all hours in the current date for all organizations.
 	SyntheticsBrowserCheckCallsCountSum *int64 `json:"synthetics_browser_check_calls_count_sum,omitempty"`
-	// Shows the sum of all Synthetic API tests over all hours in the current date for all orgs.
+	// Shows the sum of all Synthetic API tests over all hours in the current date for all organizations.
 	SyntheticsCheckCallsCountSum *int64 `json:"synthetics_check_calls_count_sum,omitempty"`
-	// Shows the sum of all analyzed spans indexed over all hours in the current date for all orgs.
+	// Shows the sum of all analyzed spans indexed over all hours in the current date for all organizations.
 	TraceSearchIndexedEventsCountSum *int64 `json:"trace_search_indexed_events_count_sum,omitempty"`
 }
 

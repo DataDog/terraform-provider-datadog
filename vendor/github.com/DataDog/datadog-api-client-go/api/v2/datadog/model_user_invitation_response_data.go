@@ -15,7 +15,7 @@ import (
 // UserInvitationResponseData Object of a user invitation returned by the API.
 type UserInvitationResponseData struct {
 	Attributes *UserInvitationDataAttributes `json:"attributes,omitempty"`
-	// ID of the user invitiation.
+	// ID of the user invitation.
 	Id *string `json:"id,omitempty"`
 	// User invitations type.
 	Type *string `json:"type,omitempty"`

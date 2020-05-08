@@ -14,7 +14,7 @@ import (
 
 // ServiceMapWidgetDefinition This widget displays a map of a service to all of the services that call it, and all of the services that it calls.
 type ServiceMapWidgetDefinition struct {
-	// Your env and primary tag (or * if enabled for your account).
+	// Your environment and primary tag (or * if enabled for your account).
 	Filters []string `json:"filters"`
 	// The ID of the service you want to map.
 	Service string `json:"service"`

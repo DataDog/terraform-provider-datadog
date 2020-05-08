@@ -20,13 +20,13 @@ type SLOHistoryMetrics struct {
 	// Optional message if there are specific query issues/warnings.
 	Message   *string                 `json:"message,omitempty"`
 	Numerator SLOHistoryMetricsSeries `json:"numerator"`
-	// The combined numerator && denominator query CSV.
+	// The combined numerator and denominator query CSV.
 	Query string `json:"query"`
 	// The series result type. This mimics `batch_query` response type.
 	ResType string `json:"res_type"`
 	// The series response version type. This mimics `batch_query` response type.
 	RespVersion int64 `json:"resp_version"`
-	// The query timestamps in epoch milliseconds
+	// An array of query timestamps in EPOCH milliseconds
 	Times []float64 `json:"times"`
 }
 

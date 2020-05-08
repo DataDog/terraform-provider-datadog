@@ -20,9 +20,9 @@ type UsageSummaryDateOrg struct {
 	ApmHostTop99p *int64 `json:"apm_host_top99p,omitempty"`
 	// Shows the 99th percentile of all AWS hosts over all hours in the current date for the given org.
 	AwsHostTop99p *int64 `json:"aws_host_top99p,omitempty"`
-	// Shows the sum of all AWS Labmda invocations over all hours in the current date for the given org.
+	// Shows the sum of all AWS Lambda invocations over all hours in the current date for the given org.
 	AwsLambdaFuncCount *int64 `json:"aws_lambda_func_count,omitempty"`
-	// Shows the sum of all AWS Labmda invocations over all hours in the current date for the given org.
+	// Shows the sum of all AWS Lambda invocations over all hours in the current date for the given org.
 	AwsLambdaInvocationsSum *int64 `json:"aws_lambda_invocations_sum,omitempty"`
 	// Shows the sum of all log bytes ingested over all hours in the current date for the given org.
 	BillableIngestedBytesSum *int64 `json:"billable_ingested_bytes_sum,omitempty"`
@@ -32,7 +32,7 @@ type UsageSummaryDateOrg struct {
 	ContainerHwm *int64 `json:"container_hwm,omitempty"`
 	// Shows the average number of distinct custom metrics over all hours in the current date for the given org.
 	CustomTsAvg *int64 `json:"custom_ts_avg,omitempty"`
-	// TODO.
+	// The average task count for Fargate.
 	FargateTasksCountAvg *int64 `json:"fargate_tasks_count_avg,omitempty"`
 	// Shows the high watermark of all Fargate tasks over all hours in the current date for the given org.
 	FargateTasksCountHwm *int64 `json:"fargate_tasks_count_hwm,omitempty"`

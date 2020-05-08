@@ -14,7 +14,7 @@ import (
 
 // OrganizationSettingsSaml Set the boolean property enabled to enable or disable single sign on with SAML. See the SAML documentation for more information about all SAML settings.
 type OrganizationSettingsSaml struct {
-	// TODO.
+	// Whether or not SAML is enabled for this organization.
 	Enabled *bool `json:"enabled,omitempty"`
 }
 

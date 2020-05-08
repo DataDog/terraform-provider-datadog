@@ -12,17 +12,17 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsAPITestResultFull TODO.
+// SyntheticsAPITestResultFull Object returned describing a API test result.
 type SyntheticsAPITestResultFull struct {
 	Check *SyntheticsAPITestResultFullCheck `json:"check,omitempty"`
-	// TODO.
+	// When the API test was conducted.
 	CheckTime *float64 `json:"check_time,omitempty"`
-	// TODO.
+	// Version of the API test used.
 	CheckVersion *int64 `json:"check_version,omitempty"`
-	// TODO.
+	// Locations for which to query the API test results.
 	ProbeDc *string                      `json:"probe_dc,omitempty"`
 	Result  *SyntheticsAPITestResultData `json:"result,omitempty"`
-	// TODO.
+	// ID of the API test result.
 	ResultId *string                      `json:"result_id,omitempty"`
 	Status   *SyntheticsTestMonitorStatus `json:"status,omitempty"`
 }

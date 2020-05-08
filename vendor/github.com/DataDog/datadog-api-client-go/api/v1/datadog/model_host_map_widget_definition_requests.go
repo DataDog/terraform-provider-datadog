@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// HostMapWidgetDefinitionRequests TODO.
+// HostMapWidgetDefinitionRequests List of definitions.
 type HostMapWidgetDefinitionRequests struct {
 	Fill *HostMapRequest `json:"fill,omitempty"`
 	Size *HostMapRequest `json:"size,omitempty"`

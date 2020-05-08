@@ -12,9 +12,9 @@ import (
 	"encoding/json"
 )
 
-// LogsIndexListResponse TODO.
+// LogsIndexListResponse Object with all Index configurations for a given organization.
 type LogsIndexListResponse struct {
-	// TODO.
+	// Array of Log index configurations.
 	Indexes *[]LogsIndex `json:"indexes,omitempty"`
 }
 
