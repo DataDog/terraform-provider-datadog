@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// MonitorType The type of the monitor.
+// MonitorType The type of the monitor. For more information about `type`, see the [monitor options](https://docs.datadoghq.com/monitors/guide/monitor_api_options/) docs.
 type MonitorType string
 
 // List of MonitorType

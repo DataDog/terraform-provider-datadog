@@ -31,6 +31,126 @@ func (s *LogsProcessor) UnmarshalJSON(src []byte) error {
 	}
 	if v, ok := unmarshaled["type"]; ok {
 		switch v {
+		case "LogsArithmeticProcessor":
+			var result *LogsArithmeticProcessor = &LogsArithmeticProcessor{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
+		case "LogsAttributeRemapper":
+			var result *LogsAttributeRemapper = &LogsAttributeRemapper{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
+		case "LogsCategoryProcessor":
+			var result *LogsCategoryProcessor = &LogsCategoryProcessor{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
+		case "LogsDateRemapper":
+			var result *LogsDateRemapper = &LogsDateRemapper{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
+		case "LogsGeoIPParser":
+			var result *LogsGeoIPParser = &LogsGeoIPParser{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
+		case "LogsGrokParser":
+			var result *LogsGrokParser = &LogsGrokParser{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
+		case "LogsLookupProcessor":
+			var result *LogsLookupProcessor = &LogsLookupProcessor{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
+		case "LogsMessageRemapper":
+			var result *LogsMessageRemapper = &LogsMessageRemapper{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
+		case "LogsPipelineProcessor":
+			var result *LogsPipelineProcessor = &LogsPipelineProcessor{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
+		case "LogsServiceRemapper":
+			var result *LogsServiceRemapper = &LogsServiceRemapper{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
+		case "LogsStatusRemapper":
+			var result *LogsStatusRemapper = &LogsStatusRemapper{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
+		case "LogsStringBuilderProcessor":
+			var result *LogsStringBuilderProcessor = &LogsStringBuilderProcessor{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
+		case "LogsTraceRemapper":
+			var result *LogsTraceRemapper = &LogsTraceRemapper{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
+		case "LogsURLParser":
+			var result *LogsURLParser = &LogsURLParser{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
+		case "LogsUserAgentParser":
+			var result *LogsUserAgentParser = &LogsUserAgentParser{}
+			err = json.Unmarshal(src, result)
+			if err != nil {
+				return err
+			}
+			s.LogsProcessorInterface = result
+			return nil
 		case "arithmetic-processor":
 			var result *LogsArithmeticProcessor = &LogsArithmeticProcessor{}
 			err = json.Unmarshal(src, result)

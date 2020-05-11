@@ -4,10 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
-	"net/url"
-	"runtime"
-
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/go-cleanhttp"
@@ -17,6 +13,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"github.com/terraform-providers/terraform-provider-datadog/version"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
+	"log"
+	"net/url"
 )
 
 var datadogProvider *schema.Provider
@@ -111,7 +109,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", c.Transport)
-	communityClient.ExtraHeader["User-Agent"] = getUserAgent("")
+	communityClient.ExtraHeader["User-Agent"] = getUserAgent("go-datadog-api")
 	communityClient.HttpClient = c
 
 	if validate {
@@ -228,9 +226,8 @@ func translateClientError(err error, msg string) error {
 }
 
 func getUserAgent(clientUserAgent string) string {
-	return fmt.Sprintf("terraform-provider-datadog/%s (go %s; terraform %s; terraform-cli %s) %s",
+	return fmt.Sprintf("terraform-provider-datadog/%s (terraform %s; terraform-cli %s) %s",
 		version.ProviderVersion,
-		runtime.Version(),
 		meta.SDKVersionString(),
 		datadogProvider.TerraformVersion,
 		clientUserAgent)

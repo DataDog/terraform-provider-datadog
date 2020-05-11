@@ -3,7 +3,7 @@ GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 WEBSITE_REPO=github.com/hashicorp/terraform-website
 PKG_NAME=datadog
 DIR=~/.terraform.d/plugins
-ZORKIAN_VERSION=master
+ZORKIAN_VERSION=v2.29.0
 API_CLIENT_VERSION=master
 
 default: build

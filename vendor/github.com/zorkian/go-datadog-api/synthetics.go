@@ -58,6 +58,7 @@ type SyntheticsOptions struct {
 	MinLocationFailed  *int            `json:"min_location_failed,omitempty"`
 	DeviceIds          []string        `json:"device_ids,omitempty"`
 	AcceptSelfSigned   *bool           `json:"accept_self_signed,omitempty"`
+	AllowInsecure      *bool           `json:"allow_insecure,omitempty"`
 	Retry              *Retry          `json:"retry,omitempty"`
 	MonitorOptions     *MonitorOptions `json:"monitor_options,omitempty"`
 }

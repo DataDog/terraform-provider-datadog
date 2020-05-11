@@ -2061,7 +2061,7 @@ func (b *BoardLite) SetUrl(v string) {
 }
 
 // GetId returns the Id field if non-nil, zero value otherwise.
-func (b *BoardWidget) GetId() int {
+func (b *BoardWidget) GetId() int64 {
 	if b == nil || b.Id == nil {
 		return 0
 	}
@@ -2070,7 +2070,7 @@ func (b *BoardWidget) GetId() int {
 
 // GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
-func (b *BoardWidget) GetIdOk() (int, bool) {
+func (b *BoardWidget) GetIdOk() (int64, bool) {
 	if b == nil || b.Id == nil {
 		return 0, false
 	}
@@ -2087,7 +2087,7 @@ func (b *BoardWidget) HasId() bool {
 }
 
 // SetId allocates a new b.Id and returns the pointer to it.
-func (b *BoardWidget) SetId(v int) {
+func (b *BoardWidget) SetId(v int64) {
 	b.Id = &v
 }
 
@@ -12817,6 +12817,37 @@ func (l *LogStreamDefinition) SetLogset(v string) {
 	l.Logset = &v
 }
 
+// GetMessageDisplay returns the MessageDisplay field if non-nil, zero value otherwise.
+func (l *LogStreamDefinition) GetMessageDisplay() string {
+	if l == nil || l.MessageDisplay == nil {
+		return ""
+	}
+	return *l.MessageDisplay
+}
+
+// GetMessageDisplayOk returns a tuple with the MessageDisplay field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (l *LogStreamDefinition) GetMessageDisplayOk() (string, bool) {
+	if l == nil || l.MessageDisplay == nil {
+		return "", false
+	}
+	return *l.MessageDisplay, true
+}
+
+// HasMessageDisplay returns a boolean if a field has been set.
+func (l *LogStreamDefinition) HasMessageDisplay() bool {
+	if l != nil && l.MessageDisplay != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMessageDisplay allocates a new l.MessageDisplay and returns the pointer to it.
+func (l *LogStreamDefinition) SetMessageDisplay(v string) {
+	l.MessageDisplay = &v
+}
+
 // GetQuery returns the Query field if non-nil, zero value otherwise.
 func (l *LogStreamDefinition) GetQuery() string {
 	if l == nil || l.Query == nil {
@@ -12846,6 +12877,99 @@ func (l *LogStreamDefinition) HasQuery() bool {
 // SetQuery allocates a new l.Query and returns the pointer to it.
 func (l *LogStreamDefinition) SetQuery(v string) {
 	l.Query = &v
+}
+
+// GetShowDateColumn returns the ShowDateColumn field if non-nil, zero value otherwise.
+func (l *LogStreamDefinition) GetShowDateColumn() bool {
+	if l == nil || l.ShowDateColumn == nil {
+		return false
+	}
+	return *l.ShowDateColumn
+}
+
+// GetShowDateColumnOk returns a tuple with the ShowDateColumn field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (l *LogStreamDefinition) GetShowDateColumnOk() (bool, bool) {
+	if l == nil || l.ShowDateColumn == nil {
+		return false, false
+	}
+	return *l.ShowDateColumn, true
+}
+
+// HasShowDateColumn returns a boolean if a field has been set.
+func (l *LogStreamDefinition) HasShowDateColumn() bool {
+	if l != nil && l.ShowDateColumn != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetShowDateColumn allocates a new l.ShowDateColumn and returns the pointer to it.
+func (l *LogStreamDefinition) SetShowDateColumn(v bool) {
+	l.ShowDateColumn = &v
+}
+
+// GetShowMessageColumn returns the ShowMessageColumn field if non-nil, zero value otherwise.
+func (l *LogStreamDefinition) GetShowMessageColumn() bool {
+	if l == nil || l.ShowMessageColumn == nil {
+		return false
+	}
+	return *l.ShowMessageColumn
+}
+
+// GetShowMessageColumnOk returns a tuple with the ShowMessageColumn field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (l *LogStreamDefinition) GetShowMessageColumnOk() (bool, bool) {
+	if l == nil || l.ShowMessageColumn == nil {
+		return false, false
+	}
+	return *l.ShowMessageColumn, true
+}
+
+// HasShowMessageColumn returns a boolean if a field has been set.
+func (l *LogStreamDefinition) HasShowMessageColumn() bool {
+	if l != nil && l.ShowMessageColumn != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetShowMessageColumn allocates a new l.ShowMessageColumn and returns the pointer to it.
+func (l *LogStreamDefinition) SetShowMessageColumn(v bool) {
+	l.ShowMessageColumn = &v
+}
+
+// GetSort returns the Sort field if non-nil, zero value otherwise.
+func (l *LogStreamDefinition) GetSort() WidgetFieldSort {
+	if l == nil || l.Sort == nil {
+		return WidgetFieldSort{}
+	}
+	return *l.Sort
+}
+
+// GetSortOk returns a tuple with the Sort field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (l *LogStreamDefinition) GetSortOk() (WidgetFieldSort, bool) {
+	if l == nil || l.Sort == nil {
+		return WidgetFieldSort{}, false
+	}
+	return *l.Sort, true
+}
+
+// HasSort returns a boolean if a field has been set.
+func (l *LogStreamDefinition) HasSort() bool {
+	if l != nil && l.Sort != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSort allocates a new l.Sort and returns the pointer to it.
+func (l *LogStreamDefinition) SetSort(v WidgetFieldSort) {
+	l.Sort = &v
 }
 
 // GetTime returns the Time field if non-nil, zero value otherwise.
@@ -18211,6 +18335,37 @@ func (s *Series) SetMetric(v string) {
 	s.Metric = &v
 }
 
+// GetQueryIndex returns the QueryIndex field if non-nil, zero value otherwise.
+func (s *Series) GetQueryIndex() int {
+	if s == nil || s.QueryIndex == nil {
+		return 0
+	}
+	return *s.QueryIndex
+}
+
+// GetQueryIndexOk returns a tuple with the QueryIndex field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *Series) GetQueryIndexOk() (int, bool) {
+	if s == nil || s.QueryIndex == nil {
+		return 0, false
+	}
+	return *s.QueryIndex, true
+}
+
+// HasQueryIndex returns a boolean if a field has been set.
+func (s *Series) HasQueryIndex() bool {
+	if s != nil && s.QueryIndex != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetQueryIndex allocates a new s.QueryIndex and returns the pointer to it.
+func (s *Series) SetQueryIndex(v int) {
+	s.QueryIndex = &v
+}
+
 // GetScope returns the Scope field if non-nil, zero value otherwise.
 func (s *Series) GetScope() string {
 	if s == nil || s.Scope == nil {
@@ -20286,6 +20441,37 @@ func (s *SyntheticsOptions) HasAcceptSelfSigned() bool {
 // SetAcceptSelfSigned allocates a new s.AcceptSelfSigned and returns the pointer to it.
 func (s *SyntheticsOptions) SetAcceptSelfSigned(v bool) {
 	s.AcceptSelfSigned = &v
+}
+
+// GetAllowInsecure returns the AllowInsecure field if non-nil, zero value otherwise.
+func (s *SyntheticsOptions) GetAllowInsecure() bool {
+	if s == nil || s.AllowInsecure == nil {
+		return false
+	}
+	return *s.AllowInsecure
+}
+
+// GetAllowInsecureOk returns a tuple with the AllowInsecure field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *SyntheticsOptions) GetAllowInsecureOk() (bool, bool) {
+	if s == nil || s.AllowInsecure == nil {
+		return false, false
+	}
+	return *s.AllowInsecure, true
+}
+
+// HasAllowInsecure returns a boolean if a field has been set.
+func (s *SyntheticsOptions) HasAllowInsecure() bool {
+	if s != nil && s.AllowInsecure != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAllowInsecure allocates a new s.AllowInsecure and returns the pointer to it.
+func (s *SyntheticsOptions) SetAllowInsecure(v bool) {
+	s.AllowInsecure = &v
 }
 
 // GetFollowRedirects returns the FollowRedirects field if non-nil, zero value otherwise.
@@ -26550,6 +26736,37 @@ func (w *Widget) SetMargin(v string) {
 	w.Margin = &v
 }
 
+// GetMessageDisplay returns the MessageDisplay field if non-nil, zero value otherwise.
+func (w *Widget) GetMessageDisplay() string {
+	if w == nil || w.MessageDisplay == nil {
+		return ""
+	}
+	return *w.MessageDisplay
+}
+
+// GetMessageDisplayOk returns a tuple with the MessageDisplay field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *Widget) GetMessageDisplayOk() (string, bool) {
+	if w == nil || w.MessageDisplay == nil {
+		return "", false
+	}
+	return *w.MessageDisplay, true
+}
+
+// HasMessageDisplay returns a boolean if a field has been set.
+func (w *Widget) HasMessageDisplay() bool {
+	if w != nil && w.MessageDisplay != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMessageDisplay allocates a new w.MessageDisplay and returns the pointer to it.
+func (w *Widget) SetMessageDisplay(v string) {
+	w.MessageDisplay = &v
+}
+
 // GetMonitor returns the Monitor field if non-nil, zero value otherwise.
 func (w *Widget) GetMonitor() ScreenboardMonitor {
 	if w == nil || w.Monitor == nil {
@@ -26922,6 +27139,37 @@ func (w *Widget) SetServiceService(v string) {
 	w.ServiceService = &v
 }
 
+// GetShowDateColumn returns the ShowDateColumn field if non-nil, zero value otherwise.
+func (w *Widget) GetShowDateColumn() bool {
+	if w == nil || w.ShowDateColumn == nil {
+		return false
+	}
+	return *w.ShowDateColumn
+}
+
+// GetShowDateColumnOk returns a tuple with the ShowDateColumn field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *Widget) GetShowDateColumnOk() (bool, bool) {
+	if w == nil || w.ShowDateColumn == nil {
+		return false, false
+	}
+	return *w.ShowDateColumn, true
+}
+
+// HasShowDateColumn returns a boolean if a field has been set.
+func (w *Widget) HasShowDateColumn() bool {
+	if w != nil && w.ShowDateColumn != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetShowDateColumn allocates a new w.ShowDateColumn and returns the pointer to it.
+func (w *Widget) SetShowDateColumn(v bool) {
+	w.ShowDateColumn = &v
+}
+
 // GetShowLastTriggered returns the ShowLastTriggered field if non-nil, zero value otherwise.
 func (w *Widget) GetShowLastTriggered() bool {
 	if w == nil || w.ShowLastTriggered == nil {
@@ -26951,6 +27199,37 @@ func (w *Widget) HasShowLastTriggered() bool {
 // SetShowLastTriggered allocates a new w.ShowLastTriggered and returns the pointer to it.
 func (w *Widget) SetShowLastTriggered(v bool) {
 	w.ShowLastTriggered = &v
+}
+
+// GetShowMessageColumn returns the ShowMessageColumn field if non-nil, zero value otherwise.
+func (w *Widget) GetShowMessageColumn() bool {
+	if w == nil || w.ShowMessageColumn == nil {
+		return false
+	}
+	return *w.ShowMessageColumn
+}
+
+// GetShowMessageColumnOk returns a tuple with the ShowMessageColumn field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *Widget) GetShowMessageColumnOk() (bool, bool) {
+	if w == nil || w.ShowMessageColumn == nil {
+		return false, false
+	}
+	return *w.ShowMessageColumn, true
+}
+
+// HasShowMessageColumn returns a boolean if a field has been set.
+func (w *Widget) HasShowMessageColumn() bool {
+	if w != nil && w.ShowMessageColumn != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetShowMessageColumn allocates a new w.ShowMessageColumn and returns the pointer to it.
+func (w *Widget) SetShowMessageColumn(v bool) {
+	w.ShowMessageColumn = &v
 }
 
 // GetSizeVersion returns the SizeVersion field if non-nil, zero value otherwise.
@@ -27013,6 +27292,37 @@ func (w *Widget) HasSizing() bool {
 // SetSizing allocates a new w.Sizing and returns the pointer to it.
 func (w *Widget) SetSizing(v string) {
 	w.Sizing = &v
+}
+
+// GetSort returns the Sort field if non-nil, zero value otherwise.
+func (w *Widget) GetSort() WidgetFieldSort {
+	if w == nil || w.Sort == nil {
+		return WidgetFieldSort{}
+	}
+	return *w.Sort
+}
+
+// GetSortOk returns a tuple with the Sort field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *Widget) GetSortOk() (WidgetFieldSort, bool) {
+	if w == nil || w.Sort == nil {
+		return WidgetFieldSort{}, false
+	}
+	return *w.Sort, true
+}
+
+// HasSort returns a boolean if a field has been set.
+func (w *Widget) HasSort() bool {
+	if w != nil && w.Sort != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSort allocates a new w.Sort and returns the pointer to it.
+func (w *Widget) SetSort(v WidgetFieldSort) {
+	w.Sort = &v
 }
 
 // GetSummaryType returns the SummaryType field if non-nil, zero value otherwise.
@@ -28222,6 +28532,68 @@ func (w *WidgetEvent) HasQuery() bool {
 // SetQuery allocates a new w.Query and returns the pointer to it.
 func (w *WidgetEvent) SetQuery(v string) {
 	w.Query = &v
+}
+
+// GetColumn returns the Column field if non-nil, zero value otherwise.
+func (w *WidgetFieldSort) GetColumn() string {
+	if w == nil || w.Column == nil {
+		return ""
+	}
+	return *w.Column
+}
+
+// GetColumnOk returns a tuple with the Column field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *WidgetFieldSort) GetColumnOk() (string, bool) {
+	if w == nil || w.Column == nil {
+		return "", false
+	}
+	return *w.Column, true
+}
+
+// HasColumn returns a boolean if a field has been set.
+func (w *WidgetFieldSort) HasColumn() bool {
+	if w != nil && w.Column != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetColumn allocates a new w.Column and returns the pointer to it.
+func (w *WidgetFieldSort) SetColumn(v string) {
+	w.Column = &v
+}
+
+// GetOrder returns the Order field if non-nil, zero value otherwise.
+func (w *WidgetFieldSort) GetOrder() string {
+	if w == nil || w.Order == nil {
+		return ""
+	}
+	return *w.Order
+}
+
+// GetOrderOk returns a tuple with the Order field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *WidgetFieldSort) GetOrderOk() (string, bool) {
+	if w == nil || w.Order == nil {
+		return "", false
+	}
+	return *w.Order, true
+}
+
+// HasOrder returns a boolean if a field has been set.
+func (w *WidgetFieldSort) HasOrder() bool {
+	if w != nil && w.Order != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetOrder allocates a new w.Order and returns the pointer to it.
+func (w *WidgetFieldSort) SetOrder(v string) {
+	w.Order = &v
 }
 
 // GetHeight returns the Height field if non-nil, zero value otherwise.
