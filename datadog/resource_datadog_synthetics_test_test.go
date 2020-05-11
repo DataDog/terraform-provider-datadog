@@ -719,10 +719,11 @@ resource "datadog_synthetics_test" "bar" {
 func testSyntheticsTestExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
 		for _, r := range s.RootModule().Resources {
-			if _, err := client.GetSyntheticsTest(r.Primary.ID); err != nil {
+			if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID).Execute(); err != nil {
 				return fmt.Errorf("received an error retrieving synthetics test %s", err)
 			}
 		}
@@ -733,10 +734,11 @@ func testSyntheticsTestExists(accProvider *schema.Provider) resource.TestCheckFu
 func testSyntheticsTestIsDestroyed(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
 		for _, r := range s.RootModule().Resources {
-			if _, err := client.GetSyntheticsTest(r.Primary.ID); err != nil {
+			if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID).Execute(); err != nil {
 				if strings.Contains(err.Error(), "404 Not Found") {
 					continue
 				}
