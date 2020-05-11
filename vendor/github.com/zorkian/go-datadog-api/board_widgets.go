@@ -43,7 +43,7 @@ const (
 // different according to widget type.
 type BoardWidget struct {
 	Definition interface{}   `json:"definition"`
-	Id         *int64        `json:"id,omitempty"`
+	Id         *int          `json:"id,omitempty"`
 	Layout     *WidgetLayout `json:"layout,omitempty"`
 }
 
@@ -302,24 +302,14 @@ type ImageDefinition struct {
 
 // LogStreamDefinition represents the definition for a Log Stream widget
 type LogStreamDefinition struct {
-	Type              *string          `json:"type"`
-	Logset            *string          `json:"logset"`
-	Indexes           []string         `json:"indexes,omitempty"`
-	Query             *string          `json:"query,omitempty"`
-	Columns           []string         `json:"columns,omitempty"`
-	Title             *string          `json:"title,omitempty"`
-	TitleSize         *string          `json:"title_size,omitempty"`
-	TitleAlign        *string          `json:"title_align,omitempty"`
-	Time              *WidgetTime      `json:"time,omitempty"`
-	ShowDateColumn    *bool            `json:"show_date_column,omitempty"`
-	ShowMessageColumn *bool            `json:"show_message_column,omitempty"`
-	MessageDisplay    *string          `json:"message_display,omitempty"`
-	Sort              *WidgetFieldSort `json:"sort,omitempty"`
-}
-
-type WidgetFieldSort struct {
-	Column *string `json:"column"`
-	Order  *string `json:"order"`
+	Type       *string     `json:"type"`
+	Logset     *string     `json:"logset"`
+	Query      *string     `json:"query,omitempty"`
+	Columns    []string    `json:"columns,omitempty"`
+	Title      *string     `json:"title,omitempty"`
+	TitleSize  *string     `json:"title_size,omitempty"`
+	TitleAlign *string     `json:"title_align,omitempty"`
+	Time       *WidgetTime `json:"time,omitempty"`
 }
 
 // ManageStatusDefinition represents the definition for a Manage Status widget
@@ -525,7 +515,7 @@ func (widget *BoardWidget) UnmarshalJSON(data []byte) error {
 		Definition *struct {
 			Type *string `json:"type"`
 		} `json:"definition"`
-		Id     *int64        `json:"id,omitempty"`
+		Id     *int          `json:"id,omitempty"`
 		Layout *WidgetLayout `json:"layout,omitempty"`
 	}
 	if err := json.Unmarshal(data, &widgetHandler); err != nil {

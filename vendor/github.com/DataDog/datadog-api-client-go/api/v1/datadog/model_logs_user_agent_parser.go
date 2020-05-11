@@ -21,7 +21,7 @@ type LogsUserAgentParser struct {
 	// Name of the parent attribute that contains all the extracted details from the `sources`.
 	Target string `json:"target"`
 	// Type of processor.
-	Type string `json:"type"`
+	Type *string `json:"type,omitempty"`
 	// Whether or not the processor is enabled.
 	IsEnabled *bool `json:"is_enabled,omitempty"`
 	// Name of the processor.
@@ -32,13 +32,14 @@ type LogsUserAgentParser struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogsUserAgentParser(sources []string, target string, type_ string) *LogsUserAgentParser {
+func NewLogsUserAgentParser(sources []string, target string) *LogsUserAgentParser {
 	this := LogsUserAgentParser{}
 	var isEncoded bool = false
 	this.IsEncoded = &isEncoded
 	this.Sources = sources
 	this.Target = target
-	this.Type = type_
+	var type_ string = "user-agent-parser"
+	this.Type = &type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
 	return &this
@@ -54,7 +55,7 @@ func NewLogsUserAgentParserWithDefaults() *LogsUserAgentParser {
 	var target string = "http.useragent_details"
 	this.Target = target
 	var type_ string = "user-agent-parser"
-	this.Type = type_
+	this.Type = &type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
 	return &this
@@ -140,28 +141,36 @@ func (o *LogsUserAgentParser) SetTarget(v string) {
 	o.Target = v
 }
 
-// GetType returns the Type field value
+// GetType returns the Type field value if set, zero value otherwise.
 func (o *LogsUserAgentParser) GetType() string {
-	if o == nil {
+	if o == nil || o.Type == nil {
 		var ret string
 		return ret
 	}
-
-	return o.Type
+	return *o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LogsUserAgentParser) GetTypeOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.Type == nil {
 		return nil, false
 	}
-	return &o.Type, true
+	return o.Type, true
 }
 
-// SetType sets field value
+// HasType returns a boolean if a field has been set.
+func (o *LogsUserAgentParser) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
 func (o *LogsUserAgentParser) SetType(v string) {
-	o.Type = v
+	o.Type = &v
 }
 
 // GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
@@ -239,7 +248,7 @@ func (o LogsUserAgentParser) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["target"] = o.Target
 	}
-	if true {
+	if o.Type != nil {
 		toSerialize["type"] = o.Type
 	}
 	if o.IsEnabled != nil {

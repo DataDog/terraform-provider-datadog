@@ -21,7 +21,7 @@ type LogsStringBuilderProcessor struct {
 	// A formula with one or more attributes and raw text.
 	Template string `json:"template"`
 	// Type of processor.
-	Type string `json:"type"`
+	Type *string `json:"type,omitempty"`
 	// Whether or not the processor is enabled.
 	IsEnabled *bool `json:"is_enabled,omitempty"`
 	// Name of the processor.
@@ -32,13 +32,14 @@ type LogsStringBuilderProcessor struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogsStringBuilderProcessor(target string, template string, type_ string) *LogsStringBuilderProcessor {
+func NewLogsStringBuilderProcessor(target string, template string) *LogsStringBuilderProcessor {
 	this := LogsStringBuilderProcessor{}
 	var isReplaceMissing bool = false
 	this.IsReplaceMissing = &isReplaceMissing
 	this.Target = target
 	this.Template = template
-	this.Type = type_
+	var type_ string = "string-builder-processor"
+	this.Type = &type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
 	return &this
@@ -52,7 +53,7 @@ func NewLogsStringBuilderProcessorWithDefaults() *LogsStringBuilderProcessor {
 	var isReplaceMissing bool = false
 	this.IsReplaceMissing = &isReplaceMissing
 	var type_ string = "string-builder-processor"
-	this.Type = type_
+	this.Type = &type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
 	return &this
@@ -138,28 +139,36 @@ func (o *LogsStringBuilderProcessor) SetTemplate(v string) {
 	o.Template = v
 }
 
-// GetType returns the Type field value
+// GetType returns the Type field value if set, zero value otherwise.
 func (o *LogsStringBuilderProcessor) GetType() string {
-	if o == nil {
+	if o == nil || o.Type == nil {
 		var ret string
 		return ret
 	}
-
-	return o.Type
+	return *o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LogsStringBuilderProcessor) GetTypeOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.Type == nil {
 		return nil, false
 	}
-	return &o.Type, true
+	return o.Type, true
 }
 
-// SetType sets field value
+// HasType returns a boolean if a field has been set.
+func (o *LogsStringBuilderProcessor) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
 func (o *LogsStringBuilderProcessor) SetType(v string) {
-	o.Type = v
+	o.Type = &v
 }
 
 // GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
@@ -237,7 +246,7 @@ func (o LogsStringBuilderProcessor) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["template"] = o.Template
 	}
-	if true {
+	if o.Type != nil {
 		toSerialize["type"] = o.Type
 	}
 	if o.IsEnabled != nil {

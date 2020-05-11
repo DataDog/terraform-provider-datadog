@@ -27,7 +27,7 @@ type ServiceLevelObjective struct {
 	ModifiedAt *int64 `json:"modified_at,omitempty"`
 	// A list of monitor ids that defines the scope of a monitor service level objective. **Required if type is `monitor`**.
 	MonitorIds *[]int64 `json:"monitor_ids,omitempty"`
-	// The union of monitor tags for all monitors referenced by the `monitor_ids` field. Always included in service level objective responses for monitor service level objectives (but may be empty). Ignored in create/update requests. Does not affect which monitors are included in the service level objective (that is determined entirely by the `monitor_ids` field).
+	// The union of monitor tags for all monitors referenced by the `monitor_ids` field.  Always included in service level objective responses for monitor service level objectives (but may be empty). Ignored in create/update requests. Does not affect which monitors are included in the service level objective (that is determined entirely by the `monitor_ids` field).
 	MonitorTags *[]string `json:"monitor_tags,omitempty"`
 	// The name of the service level objective object.
 	Name  string                      `json:"name"`
@@ -35,8 +35,9 @@ type ServiceLevelObjective struct {
 	// A list of tags associated with this service level objective. Always included in service level objective responses (but may be empty). Optional in create/update requests.
 	Tags *[]string `json:"tags,omitempty"`
 	// The thresholds (timeframes and associated targets) for this service level objective object.
-	Thresholds []SLOThreshold `json:"thresholds"`
-	Type       SLOType        `json:"type"`
+	Thresholds []SLOThreshold  `json:"thresholds"`
+	Type       SLOType         `json:"type"`
+	TypeId     *SLOTypeNumeric `json:"type_id,omitempty"`
 }
 
 // NewServiceLevelObjective instantiates a new ServiceLevelObjective object
@@ -462,6 +463,38 @@ func (o *ServiceLevelObjective) SetType(v SLOType) {
 	o.Type = v
 }
 
+// GetTypeId returns the TypeId field value if set, zero value otherwise.
+func (o *ServiceLevelObjective) GetTypeId() SLOTypeNumeric {
+	if o == nil || o.TypeId == nil {
+		var ret SLOTypeNumeric
+		return ret
+	}
+	return *o.TypeId
+}
+
+// GetTypeIdOk returns a tuple with the TypeId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServiceLevelObjective) GetTypeIdOk() (*SLOTypeNumeric, bool) {
+	if o == nil || o.TypeId == nil {
+		return nil, false
+	}
+	return o.TypeId, true
+}
+
+// HasTypeId returns a boolean if a field has been set.
+func (o *ServiceLevelObjective) HasTypeId() bool {
+	if o != nil && o.TypeId != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTypeId gets a reference to the given SLOTypeNumeric and assigns it to the TypeId field.
+func (o *ServiceLevelObjective) SetTypeId(v SLOTypeNumeric) {
+	o.TypeId = &v
+}
+
 func (o ServiceLevelObjective) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.CreatedAt != nil {
@@ -502,6 +535,9 @@ func (o ServiceLevelObjective) MarshalJSON() ([]byte, error) {
 	}
 	if true {
 		toSerialize["type"] = o.Type
+	}
+	if o.TypeId != nil {
+		toSerialize["type_id"] = o.TypeId
 	}
 	return json.Marshal(toSerialize)
 }

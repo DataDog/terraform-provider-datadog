@@ -19,16 +19,17 @@ type Role struct {
 	Id            *string                    `json:"id,omitempty"`
 	Relationships *RoleResponseRelationships `json:"relationships,omitempty"`
 	// Roles type.
-	Type string `json:"type"`
+	Type *string `json:"type,omitempty"`
 }
 
 // NewRole instantiates a new Role object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRole(type_ string) *Role {
+func NewRole() *Role {
 	this := Role{}
-	this.Type = type_
+	var type_ string = "roles"
+	this.Type = &type_
 	return &this
 }
 
@@ -38,7 +39,7 @@ func NewRole(type_ string) *Role {
 func NewRoleWithDefaults() *Role {
 	this := Role{}
 	var type_ string = "roles"
-	this.Type = type_
+	this.Type = &type_
 	return &this
 }
 
@@ -138,28 +139,36 @@ func (o *Role) SetRelationships(v RoleResponseRelationships) {
 	o.Relationships = &v
 }
 
-// GetType returns the Type field value
+// GetType returns the Type field value if set, zero value otherwise.
 func (o *Role) GetType() string {
-	if o == nil {
+	if o == nil || o.Type == nil {
 		var ret string
 		return ret
 	}
-
-	return o.Type
+	return *o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Role) GetTypeOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.Type == nil {
 		return nil, false
 	}
-	return &o.Type, true
+	return o.Type, true
 }
 
-// SetType sets field value
+// HasType returns a boolean if a field has been set.
+func (o *Role) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
 func (o *Role) SetType(v string) {
-	o.Type = v
+	o.Type = &v
 }
 
 func (o Role) MarshalJSON() ([]byte, error) {
@@ -173,7 +182,7 @@ func (o Role) MarshalJSON() ([]byte, error) {
 	if o.Relationships != nil {
 		toSerialize["relationships"] = o.Relationships
 	}
-	if true {
+	if o.Type != nil {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)

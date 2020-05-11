@@ -149,6 +149,16 @@ func (r apiGetLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, error)
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
+		if localVarHTTPResponse.StatusCode == 200 {
+			var v LogsIndex
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
 			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -191,6 +201,9 @@ type apiGetLogsIndexOrderRequest struct {
 /*
 GetLogsIndexOrder Get indexes order
 Get the current order of your log indexes. This endpoint takes no JSON arguments.
+
+**Note: This endpoint is in public beta.**
+If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiGetLogsIndexOrderRequest
 */
@@ -214,12 +227,6 @@ func (r apiGetLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.Resp
 		localVarFileBytes    []byte
 		localVarReturnValue  LogsIndexesOrder
 	)
-	operationId := "GetLogsIndexOrder"
-	if r.apiService.client.cfg.IsUnstableOperationEnabled(operationId) {
-		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
-	} else {
-		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
-	}
 
 	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsIndexesApiService.GetLogsIndexOrder")
 	if err != nil {
@@ -301,6 +308,16 @@ func (r apiGetLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.Resp
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 200 {
+			var v LogsIndexesOrder
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
@@ -445,6 +462,16 @@ func (r apiListLogIndexesRequest) Execute() (LogsIndexListResponse, *_nethttp.Re
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 200 {
+			var v LogsIndexListResponse
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
@@ -605,6 +632,16 @@ func (r apiUpdateLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, err
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
+		if localVarHTTPResponse.StatusCode == 200 {
+			var v LogsIndex
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v LogsAPIErrorResponse
 			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -664,6 +701,9 @@ func (r apiUpdateLogsIndexOrderRequest) Body(body LogsIndexesOrder) apiUpdateLog
 UpdateLogsIndexOrder Update indexes order
 This endpoint updates the index order of your organization.
 It returns the index order object passed in the request body when the request is successful.
+
+**Note: This endpoint is in public beta.**
+If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiUpdateLogsIndexOrderRequest
 */
@@ -687,12 +727,6 @@ func (r apiUpdateLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.R
 		localVarFileBytes    []byte
 		localVarReturnValue  LogsIndexesOrder
 	)
-	operationId := "UpdateLogsIndexOrder"
-	if r.apiService.client.cfg.IsUnstableOperationEnabled(operationId) {
-		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
-	} else {
-		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
-	}
 
 	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsIndexesApiService.UpdateLogsIndexOrder")
 	if err != nil {
@@ -776,6 +810,16 @@ func (r apiUpdateLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.R
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 200 {
+			var v LogsIndexesOrder
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v LogsAPIErrorResponse

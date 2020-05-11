@@ -31,30 +31,6 @@ func (s *UserResponseIncludedItem) UnmarshalJSON(src []byte) error {
 	}
 	if v, ok := unmarshaled["type"]; ok {
 		switch v {
-		case "Organization":
-			var result *Organization = &Organization{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.UserResponseIncludedItemInterface = result
-			return nil
-		case "Permission":
-			var result *Permission = &Permission{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.UserResponseIncludedItemInterface = result
-			return nil
-		case "Role":
-			var result *Role = &Role{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.UserResponseIncludedItemInterface = result
-			return nil
 		case "orgs":
 			var result *Organization = &Organization{}
 			err = json.Unmarshal(src, result)

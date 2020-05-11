@@ -159,6 +159,16 @@ func (r apiCheckCanDeleteMonitorRequest) Execute() (CheckCanDeleteMonitorRespons
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
+		if localVarHTTPResponse.StatusCode == 200 {
+			var v CheckCanDeleteMonitorResponse
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
 			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -286,7 +296,7 @@ Example: `events('sources:nagios status:error,warning priority:normal tags: "str
 - **`tags`** event tags (comma-separated).
 - **`excluded_tags`** excluded event tags (comma-separated).
 - **`rollup`** the stats roll-up method. `count` is the only supported method now.
-- **`last`** the timeframe to roll up the counts. Examples: 60s, 4h. Supported timeframes: s, m, h and d. This value should not exceed 48 hours.
+- **`last`** the timeframe to roll up the counts. Examples: 60s, 4h. Supported timeframes: s, m, h and d.
 
 **Process Alert Query**
 
@@ -432,6 +442,16 @@ func (r apiCreateMonitorRequest) Execute() (Monitor, *_nethttp.Response, error) 
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
+		if localVarHTTPResponse.StatusCode == 200 {
+			var v Monitor
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
 			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -470,12 +490,6 @@ type apiDeleteMonitorRequest struct {
 	ctx        _context.Context
 	apiService *MonitorsApiService
 	monitorId  int64
-	force      *string
-}
-
-func (r apiDeleteMonitorRequest) Force(force string) apiDeleteMonitorRequest {
-	r.force = &force
-	return r
 }
 
 /*
@@ -519,9 +533,6 @@ func (r apiDeleteMonitorRequest) Execute() (DeletedMonitor, *_nethttp.Response, 
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
 
-	if r.force != nil {
-		localVarQueryParams.Add("force", parameterToString(*r.force, ""))
-	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -591,6 +602,16 @@ func (r apiDeleteMonitorRequest) Execute() (DeletedMonitor, *_nethttp.Response, 
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 200 {
+			var v DeletedMonitor
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
@@ -771,6 +792,16 @@ func (r apiGetMonitorRequest) Execute() (Monitor, *_nethttp.Response, error) {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 200 {
+			var v Monitor
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
@@ -1001,6 +1032,16 @@ func (r apiListMonitorsRequest) Execute() ([]Monitor, *_nethttp.Response, error)
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
+		if localVarHTTPResponse.StatusCode == 200 {
+			var v []Monitor
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
 			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -1039,10 +1080,10 @@ type apiUpdateMonitorRequest struct {
 	ctx        _context.Context
 	apiService *MonitorsApiService
 	monitorId  int64
-	body       *MonitorUpdateRequest
+	body       *Monitor
 }
 
-func (r apiUpdateMonitorRequest) Body(body MonitorUpdateRequest) apiUpdateMonitorRequest {
+func (r apiUpdateMonitorRequest) Body(body Monitor) apiUpdateMonitorRequest {
 	r.body = &body
 	return r
 }
@@ -1163,6 +1204,16 @@ func (r apiUpdateMonitorRequest) Execute() (Monitor, *_nethttp.Response, error) 
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 200 {
+			var v Monitor
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
@@ -1342,6 +1393,16 @@ func (r apiValidateMonitorRequest) Execute() (Monitor, *_nethttp.Response, error
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 200 {
+			var v Monitor
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse

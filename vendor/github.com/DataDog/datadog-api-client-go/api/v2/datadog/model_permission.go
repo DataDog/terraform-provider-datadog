@@ -18,16 +18,17 @@ type Permission struct {
 	// ID of the permission.
 	Id *string `json:"id,omitempty"`
 	// Permissions resource type.
-	Type string `json:"type"`
+	Type *string `json:"type,omitempty"`
 }
 
 // NewPermission instantiates a new Permission object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPermission(type_ string) *Permission {
+func NewPermission() *Permission {
 	this := Permission{}
-	this.Type = type_
+	var type_ string = "permissions"
+	this.Type = &type_
 	return &this
 }
 
@@ -37,7 +38,7 @@ func NewPermission(type_ string) *Permission {
 func NewPermissionWithDefaults() *Permission {
 	this := Permission{}
 	var type_ string = "permissions"
-	this.Type = type_
+	this.Type = &type_
 	return &this
 }
 
@@ -105,28 +106,36 @@ func (o *Permission) SetId(v string) {
 	o.Id = &v
 }
 
-// GetType returns the Type field value
+// GetType returns the Type field value if set, zero value otherwise.
 func (o *Permission) GetType() string {
-	if o == nil {
+	if o == nil || o.Type == nil {
 		var ret string
 		return ret
 	}
-
-	return o.Type
+	return *o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Permission) GetTypeOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.Type == nil {
 		return nil, false
 	}
-	return &o.Type, true
+	return o.Type, true
 }
 
-// SetType sets field value
+// HasType returns a boolean if a field has been set.
+func (o *Permission) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
 func (o *Permission) SetType(v string) {
-	o.Type = v
+	o.Type = &v
 }
 
 func (o Permission) MarshalJSON() ([]byte, error) {
@@ -137,7 +146,7 @@ func (o Permission) MarshalJSON() ([]byte, error) {
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
-	if true {
+	if o.Type != nil {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)

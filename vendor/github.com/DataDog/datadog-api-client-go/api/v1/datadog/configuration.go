@@ -177,12 +177,9 @@ func NewConfiguration() *Configuration {
 			},
 		},
 		unstableOperations: map[string]bool{
-			"GetLogsIndex":         false,
-			"GetLogsIndexOrder":    false,
-			"ListLogIndexes":       false,
-			"UpdateLogsIndex":      false,
-			"UpdateLogsIndexOrder": false,
-			"GetSLOHistory":        false,
+			"GetLogsIndex":    false,
+			"ListLogIndexes":  false,
+			"UpdateLogsIndex": false,
 		},
 	}
 	return cfg
