@@ -111,7 +111,12 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", c.Transport)
-	communityClient.ExtraHeader["User-Agent"] = fmt.Sprintf("terraform-provider-datadog/%s (go %s; terraform %s; terraform-cli %s)", version.ProviderVersion, runtime.Version(), meta.SDKVersionString(), datadogProvider.TerraformVersion)
+	communityClient.ExtraHeader["User-Agent"] = fmt.Sprintf(
+		"terraform-provider-datadog/%s (go %s; terraform %s; terraform-cli %s)",
+		version.ProviderVersion,
+		runtime.Version(),
+		meta.SDKVersionString(),
+		datadogProvider.TerraformVersion)
 	communityClient.HttpClient = c
 
 	if validate {
@@ -228,5 +233,10 @@ func translateClientError(err error, msg string) error {
 }
 
 func getUserAgent(clientUserAgent string) string {
-	return fmt.Sprintf("terraform-provider-datadog/%s (terraform %s) %s", version.ProviderVersion, meta.SDKVersionString(), clientUserAgent)
+	return fmt.Sprintf("terraform-provider-datadog/%s (go %s; terraform %s; terraform-cli %s) %s",
+		version.ProviderVersion,
+		runtime.Version(),
+		meta.SDKVersionString(),
+		datadogProvider.TerraformVersion,
+		clientUserAgent)
 }
