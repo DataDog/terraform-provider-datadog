@@ -228,5 +228,5 @@ func translateClientError(err error, msg string) error {
 }
 
 func getUserAgent(clientUserAgent string) string {
-	return fmt.Sprintf("terraform-provider-datadog/%s %s", version.ProviderVersion, clientUserAgent)
+	return return fmt.Sprintf("terraform-provider-datadog/%s (terraform %s) %s", version.ProviderVersion, meta.SDKVersion, clientUserAgent)
 }
