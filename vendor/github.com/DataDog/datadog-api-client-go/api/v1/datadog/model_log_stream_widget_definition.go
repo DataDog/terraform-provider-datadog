@@ -17,7 +17,9 @@ type LogStreamWidgetDefinition struct {
 	// Which columns to display on the widget.
 	Columns *[]string `json:"columns,omitempty"`
 	// An array of index names to query in the stream. Use [] to query all indexes at once.
-	Indexes        *[]string             `json:"indexes,omitempty"`
+	Indexes *[]string `json:"indexes,omitempty"`
+	// ID of the log set to use.
+	Logset         *string               `json:"logset,omitempty"`
 	MessageDisplay *WidgetMessageDisplay `json:"message_display,omitempty"`
 	// Query to filter the log stream with.
 	Query *string `json:"query,omitempty"`
@@ -118,6 +120,38 @@ func (o *LogStreamWidgetDefinition) HasIndexes() bool {
 // SetIndexes gets a reference to the given []string and assigns it to the Indexes field.
 func (o *LogStreamWidgetDefinition) SetIndexes(v []string) {
 	o.Indexes = &v
+}
+
+// GetLogset returns the Logset field value if set, zero value otherwise.
+func (o *LogStreamWidgetDefinition) GetLogset() string {
+	if o == nil || o.Logset == nil {
+		var ret string
+		return ret
+	}
+	return *o.Logset
+}
+
+// GetLogsetOk returns a tuple with the Logset field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogStreamWidgetDefinition) GetLogsetOk() (*string, bool) {
+	if o == nil || o.Logset == nil {
+		return nil, false
+	}
+	return o.Logset, true
+}
+
+// HasLogset returns a boolean if a field has been set.
+func (o *LogStreamWidgetDefinition) HasLogset() bool {
+	if o != nil && o.Logset != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetLogset gets a reference to the given string and assigns it to the Logset field.
+func (o *LogStreamWidgetDefinition) SetLogset(v string) {
+	o.Logset = &v
 }
 
 // GetMessageDisplay returns the MessageDisplay field value if set, zero value otherwise.
@@ -439,6 +473,9 @@ func (o LogStreamWidgetDefinition) MarshalJSON() ([]byte, error) {
 	}
 	if o.Indexes != nil {
 		toSerialize["indexes"] = o.Indexes
+	}
+	if o.Logset != nil {
+		toSerialize["logset"] = o.Logset
 	}
 	if o.MessageDisplay != nil {
 		toSerialize["message_display"] = o.MessageDisplay

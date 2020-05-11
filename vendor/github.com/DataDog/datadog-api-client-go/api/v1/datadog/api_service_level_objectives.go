@@ -10,7 +10,9 @@ package datadog
 
 import (
 	_context "context"
+	_fmt "fmt"
 	_ioutil "io/ioutil"
+	_log "log"
 	_nethttp "net/http"
 	_neturl "net/url"
 	"strings"
@@ -149,16 +151,6 @@ func (r apiCheckCanDeleteSLORequest) Execute() (CheckCanDeleteSLOResponse, *_net
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 200 {
-			var v CheckCanDeleteSLOResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
 			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -206,10 +198,10 @@ func (r apiCheckCanDeleteSLORequest) Execute() (CheckCanDeleteSLOResponse, *_net
 type apiCreateSLORequest struct {
 	ctx        _context.Context
 	apiService *ServiceLevelObjectivesApiService
-	body       *ServiceLevelObjective
+	body       *ServiceLevelObjectiveRequest
 }
 
-func (r apiCreateSLORequest) Body(body ServiceLevelObjective) apiCreateSLORequest {
+func (r apiCreateSLORequest) Body(body ServiceLevelObjectiveRequest) apiCreateSLORequest {
 	r.body = &body
 	return r
 }
@@ -328,16 +320,6 @@ func (r apiCreateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 200 {
-			var v SLOListResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
 			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -376,6 +358,12 @@ type apiDeleteSLORequest struct {
 	ctx        _context.Context
 	apiService *ServiceLevelObjectivesApiService
 	sloId      string
+	force      *string
+}
+
+func (r apiDeleteSLORequest) Force(force string) apiDeleteSLORequest {
+	r.force = &force
+	return r
 }
 
 /*
@@ -422,6 +410,9 @@ func (r apiDeleteSLORequest) Execute() (SLODeleteResponse, *_nethttp.Response, e
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
 
+	if r.force != nil {
+		localVarQueryParams.Add("force", parameterToString(*r.force, ""))
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -491,16 +482,6 @@ func (r apiDeleteSLORequest) Execute() (SLODeleteResponse, *_nethttp.Response, e
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 200 {
-			var v SLODeleteResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
@@ -675,16 +656,6 @@ func (r apiDeleteSLOTimeframeInBulkRequest) Execute() (SLOBulkDeleteResponse, *_
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 200 {
-			var v SLOBulkDeleteResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
 			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -836,16 +807,6 @@ func (r apiGetSLORequest) Execute() (SLOResponse, *_nethttp.Response, error) {
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 200 {
-			var v SLOResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
 			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -933,6 +894,12 @@ func (r apiGetSLOHistoryRequest) Execute() (SLOHistoryResponse, *_nethttp.Respon
 		localVarFileBytes    []byte
 		localVarReturnValue  SLOHistoryResponse
 	)
+	operationId := "GetSLOHistory"
+	if r.apiService.client.cfg.IsUnstableOperationEnabled(operationId) {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	} else {
+		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
 
 	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.GetSLOHistory")
 	if err != nil {
@@ -1025,16 +992,6 @@ func (r apiGetSLOHistoryRequest) Execute() (SLOHistoryResponse, *_nethttp.Respon
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 200 {
-			var v SLOHistoryResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
@@ -1203,16 +1160,6 @@ func (r apiListSLOsRequest) Execute() (SLOListResponse, *_nethttp.Response, erro
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 200 {
-			var v SLOListResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
@@ -1386,16 +1333,6 @@ func (r apiUpdateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 200 {
-			var v SLOListResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse

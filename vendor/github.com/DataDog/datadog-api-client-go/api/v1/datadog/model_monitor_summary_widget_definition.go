@@ -14,16 +14,20 @@ import (
 
 // MonitorSummaryWidgetDefinition The monitor summary widget displays a summary view of all your Datadog monitors, or a subset based on a query. Only available on FREE layout dashboards.
 type MonitorSummaryWidgetDefinition struct {
-	ColorPreference *WidgetColorPreference             `json:"color_preference,omitempty"`
-	DisplayFormat   *WidgetMonitorSummaryDisplayFormat `json:"display_format,omitempty"`
+	ColorPreference *WidgetColorPreference `json:"color_preference,omitempty"`
+	// The number of monitors to display.
+	Count         *int64                             `json:"count,omitempty"`
+	DisplayFormat *WidgetMonitorSummaryDisplayFormat `json:"display_format,omitempty"`
 	// Whether to show counts of 0 or not.
 	HideZeroCounts *bool `json:"hide_zero_counts,omitempty"`
 	// Query to filter the monitors with.
 	Query string `json:"query"`
 	// Whether to show the time that has elapsed since the monitor/group triggered.
-	ShowLastTriggered *bool              `json:"show_last_triggered,omitempty"`
-	Sort              *WidgetSort        `json:"sort,omitempty"`
-	SummaryType       *WidgetSummaryType `json:"summary_type,omitempty"`
+	ShowLastTriggered *bool       `json:"show_last_triggered,omitempty"`
+	Sort              *WidgetSort `json:"sort,omitempty"`
+	// The start of the list. Typically 0.
+	Start       *int64             `json:"start,omitempty"`
+	SummaryType *WidgetSummaryType `json:"summary_type,omitempty"`
 	// Title of the widget.
 	Title      *string          `json:"title,omitempty"`
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
@@ -84,6 +88,38 @@ func (o *MonitorSummaryWidgetDefinition) HasColorPreference() bool {
 // SetColorPreference gets a reference to the given WidgetColorPreference and assigns it to the ColorPreference field.
 func (o *MonitorSummaryWidgetDefinition) SetColorPreference(v WidgetColorPreference) {
 	o.ColorPreference = &v
+}
+
+// GetCount returns the Count field value if set, zero value otherwise.
+func (o *MonitorSummaryWidgetDefinition) GetCount() int64 {
+	if o == nil || o.Count == nil {
+		var ret int64
+		return ret
+	}
+	return *o.Count
+}
+
+// GetCountOk returns a tuple with the Count field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonitorSummaryWidgetDefinition) GetCountOk() (*int64, bool) {
+	if o == nil || o.Count == nil {
+		return nil, false
+	}
+	return o.Count, true
+}
+
+// HasCount returns a boolean if a field has been set.
+func (o *MonitorSummaryWidgetDefinition) HasCount() bool {
+	if o != nil && o.Count != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCount gets a reference to the given int64 and assigns it to the Count field.
+func (o *MonitorSummaryWidgetDefinition) SetCount(v int64) {
+	o.Count = &v
 }
 
 // GetDisplayFormat returns the DisplayFormat field value if set, zero value otherwise.
@@ -236,6 +272,38 @@ func (o *MonitorSummaryWidgetDefinition) HasSort() bool {
 // SetSort gets a reference to the given WidgetSort and assigns it to the Sort field.
 func (o *MonitorSummaryWidgetDefinition) SetSort(v WidgetSort) {
 	o.Sort = &v
+}
+
+// GetStart returns the Start field value if set, zero value otherwise.
+func (o *MonitorSummaryWidgetDefinition) GetStart() int64 {
+	if o == nil || o.Start == nil {
+		var ret int64
+		return ret
+	}
+	return *o.Start
+}
+
+// GetStartOk returns a tuple with the Start field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonitorSummaryWidgetDefinition) GetStartOk() (*int64, bool) {
+	if o == nil || o.Start == nil {
+		return nil, false
+	}
+	return o.Start, true
+}
+
+// HasStart returns a boolean if a field has been set.
+func (o *MonitorSummaryWidgetDefinition) HasStart() bool {
+	if o != nil && o.Start != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetStart gets a reference to the given int64 and assigns it to the Start field.
+func (o *MonitorSummaryWidgetDefinition) SetStart(v int64) {
+	o.Start = &v
 }
 
 // GetSummaryType returns the SummaryType field value if set, zero value otherwise.
@@ -395,6 +463,9 @@ func (o MonitorSummaryWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.ColorPreference != nil {
 		toSerialize["color_preference"] = o.ColorPreference
 	}
+	if o.Count != nil {
+		toSerialize["count"] = o.Count
+	}
 	if o.DisplayFormat != nil {
 		toSerialize["display_format"] = o.DisplayFormat
 	}
@@ -409,6 +480,9 @@ func (o MonitorSummaryWidgetDefinition) MarshalJSON() ([]byte, error) {
 	}
 	if o.Sort != nil {
 		toSerialize["sort"] = o.Sort
+	}
+	if o.Start != nil {
+		toSerialize["start"] = o.Start
 	}
 	if o.SummaryType != nil {
 		toSerialize["summary_type"] = o.SummaryType
