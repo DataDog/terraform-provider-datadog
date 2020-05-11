@@ -286,7 +286,6 @@ resource "datadog_synthetics_test" "foo" {
 		follow_redirects = true
 		min_failure_duration = 0
 		min_location_failed = 1
-		allow_insecure = true
 	}
 
 	name = "name for synthetics test foo"
@@ -378,7 +377,6 @@ resource "datadog_synthetics_test" "foo" {
 		follow_redirects = false
 		min_failure_duration = 10
 		min_location_failed = 1
-		allow_insecure = false
 	}
 
 	name = "updated name"
