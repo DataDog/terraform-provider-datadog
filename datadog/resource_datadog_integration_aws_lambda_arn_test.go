@@ -1,13 +1,14 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/zorkian/go-datadog-api"
 	"strings"
 	"testing"
 
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 )
 
@@ -84,14 +85,15 @@ func TestAccDatadogIntegrationAWSLambdaArn(t *testing.T) {
 func checkIntegrationAWSLambdaArnExists(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
-		return checkIntegrationAwsLambdaArnExistsHelper(s, client)
+		return checkIntegrationAwsLambdaArnExistsHelper(authV1, s, datadogClientV1)
 	}
 }
 
-func checkIntegrationAwsLambdaArnExistsHelper(s *terraform.State, client *datadog.Client) error {
-	logCollections, err := client.GetIntegrationAWSLogCollection()
+func checkIntegrationAwsLambdaArnExistsHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
 	if err != nil {
 		return err
 	}
@@ -100,9 +102,9 @@ func checkIntegrationAwsLambdaArnExistsHelper(s *terraform.State, client *datado
 		if strings.Contains(resourceType, "datadog_integration_aws_lambda_arn") {
 			accountId := r.Primary.Attributes["account_id"]
 			lambdaArn := r.Primary.Attributes["lambda_arn"]
-			for _, logCollection := range *logCollections {
-				for _, logCollectionLambdaArn := range logCollection.LambdaARNs {
-					if *logCollection.AccountID == accountId && *logCollectionLambdaArn.LambdaARN == lambdaArn {
+			for _, logCollection := range logCollections {
+				for _, logCollectionLambdaArn := range logCollection.GetLambdas() {
+					if logCollection.GetAccountId() == accountId && logCollectionLambdaArn.GetArn() == lambdaArn {
 						return nil
 					}
 				}
@@ -116,23 +118,24 @@ func checkIntegrationAwsLambdaArnExistsHelper(s *terraform.State, client *datado
 func checkIntegrationAWSLambdaArnDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
-		return checkIntegrationAWSLambdaArnDestroyHelper(s, client)
+		return checkIntegrationAWSLambdaArnDestroyHelper(authV1, s, datadogClientV1)
 	}
 }
 
-func checkIntegrationAWSLambdaArnDestroyHelper(s *terraform.State, client *datadog.Client) error {
-	logCollections, err := client.GetIntegrationAWSLogCollection()
+func checkIntegrationAWSLambdaArnDestroyHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
 	if err != nil {
 		return err
 	}
 	for _, r := range s.RootModule().Resources {
 		accountId := r.Primary.Attributes["account_id"]
 		lambdaArn := r.Primary.Attributes["lambda_arn"]
-		for _, logCollection := range *logCollections {
-			for _, logCollectionLambdaArn := range logCollection.LambdaARNs {
-				if *logCollection.AccountID == accountId && *logCollectionLambdaArn.LambdaARN == lambdaArn {
+		for _, logCollection := range logCollections {
+			for _, logCollectionLambdaArn := range logCollection.GetLambdas() {
+				if logCollection.GetAccountId() == accountId && logCollectionLambdaArn.GetArn() == lambdaArn {
 					return fmt.Errorf("The AWS Lambda ARN is still attached to the account: accountId=%s, lambdaArn=%s", accountId, lambdaArn)
 				}
 			}

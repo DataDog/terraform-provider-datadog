@@ -115,7 +115,7 @@ func resourceDatadogIntegrationAwsLogCollectionRead(d *schema.ResourceData, meta
 	for _, logCollection := range logCollections {
 		if logCollection.GetAccountId() == accountID {
 			d.Set("account_id", logCollection.GetAccountId())
-			d.Set("services", logCollection.Services)
+			d.Set("services", logCollection.GetServices())
 			return nil
 		}
 	}

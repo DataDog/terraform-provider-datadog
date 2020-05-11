@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/zorkian/go-datadog-api"
 )
 
 func accountAndLambdaArnFromID(id string) (string, string, error) {
@@ -16,15 +16,12 @@ func accountAndLambdaArnFromID(id string) (string, string, error) {
 	return result[0], result[1], nil
 }
 
-func buildDatadogIntegrationAwsLambdaArnStruct(d *schema.ResourceData) *datadog.IntegrationAWSLambdaARNRequest {
+func buildDatadogIntegrationAwsLambdaArnStruct(d *schema.ResourceData) *datadogV1.AWSAccountAndLambdaRequest {
 	accountID := d.Get("account_id").(string)
 	lambdaArn := d.Get("lambda_arn").(string)
 
-	attachLambdaArnRequest := datadog.IntegrationAWSLambdaARNRequest{
-		AccountID: &accountID,
-		LambdaARN: &lambdaArn,
-	}
-	return &attachLambdaArnRequest
+	attachLambdaArnRequest := datadogV1.NewAWSAccountAndLambdaRequest(accountID, lambdaArn)
+	return attachLambdaArnRequest
 }
 
 func resourceDatadogIntegrationAwsLambdaArn() *schema.Resource {
@@ -56,9 +53,10 @@ func resourceDatadogIntegrationAwsLambdaArnExists(d *schema.ResourceData, meta i
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	logCollections, err := client.GetIntegrationAWSLogCollection()
+	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
 	if err != nil {
 		return false, translateClientError(err, "error getting aws log integrations for datadog account.")
 	}
@@ -68,10 +66,10 @@ func resourceDatadogIntegrationAwsLambdaArnExists(d *schema.ResourceData, meta i
 		return false, translateClientError(err, fmt.Sprintf("error getting aws account ID and lambda ARN from id: %s", d.Id()))
 	}
 
-	for _, logCollection := range *logCollections {
-		if logCollection.GetAccountID() == accountID {
-			for _, logCollectionLambdaArn := range logCollection.LambdaARNs {
-				if lambdaArn == logCollectionLambdaArn.GetLambdaARN() {
+	for _, logCollection := range logCollections {
+		if logCollection.GetAccountId() == accountID {
+			for _, logCollectionLambdaArn := range logCollection.GetLambdas() {
+				if lambdaArn == logCollectionLambdaArn.GetArn() {
 					return true, nil
 				}
 			}
@@ -82,39 +80,40 @@ func resourceDatadogIntegrationAwsLambdaArnExists(d *schema.ResourceData, meta i
 
 func resourceDatadogIntegrationAwsLambdaArnCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
 	attachLambdaArnRequest := buildDatadogIntegrationAwsLambdaArnStruct(d)
-	err := client.AttachLambdaARNIntegrationAWS(attachLambdaArnRequest)
-
+	_, _, err := datadogClientV1.AWSLogsIntegrationApi.CreateAWSLambdaARN(authV1).Body(*attachLambdaArnRequest).Execute()
 	if err != nil {
 		return translateClientError(err, "error attaching Lambda ARN to AWS integration account")
 	}
 
-	d.SetId(fmt.Sprintf("%s %s", *attachLambdaArnRequest.AccountID, *attachLambdaArnRequest.LambdaARN))
+	d.SetId(fmt.Sprintf("%s %s", attachLambdaArnRequest.GetAccountId(), attachLambdaArnRequest.GetLambdaArn()))
 
 	return resourceDatadogIntegrationAwsLambdaArnRead(d, meta)
 }
 
 func resourceDatadogIntegrationAwsLambdaArnRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
 	accountID, lambdaArn, err := accountAndLambdaArnFromID(d.Id())
 	if err != nil {
 		return translateClientError(err, fmt.Sprintf("error getting aws account ID and lambda ARN from id: %s", d.Id()))
 	}
 
-	logCollections, err := client.GetIntegrationAWSLogCollection()
+	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
 	if err != nil {
 		return translateClientError(err, "error getting aws log integrations for datadog account.")
 	}
-	for _, logCollection := range *logCollections {
-		if logCollection.GetAccountID() == accountID {
-			for _, logCollectionLambdaArn := range logCollection.LambdaARNs {
-				if lambdaArn == logCollectionLambdaArn.GetLambdaARN() {
-					d.Set("account_id", logCollection.GetAccountID())
-					d.Set("lambda_arn", logCollectionLambdaArn.GetLambdaARN())
+	for _, logCollection := range logCollections {
+		if logCollection.GetAccountId() == accountID {
+			for _, logCollectionLambdaArn := range logCollection.GetLambdas() {
+				if lambdaArn == logCollectionLambdaArn.GetArn() {
+					d.Set("account_id", logCollection.GetAccountId())
+					d.Set("lambda_arn", logCollectionLambdaArn.GetArn())
 					return nil
 				}
 			}
@@ -125,20 +124,16 @@ func resourceDatadogIntegrationAwsLambdaArnRead(d *schema.ResourceData, meta int
 
 func resourceDatadogIntegrationAwsLambdaArnDelete(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
 	accountID, lambdaArn, err := accountAndLambdaArnFromID(d.Id())
 	if err != nil {
 		return translateClientError(err, fmt.Sprintf("error parsing account ID and lamdba ARN from ID: %s", d.Id()))
 	}
 
-	attachLambdaArnRequest := datadog.IntegrationAWSLambdaARNRequest{
-		AccountID: &accountID,
-		LambdaARN: &lambdaArn,
-	}
-
-	err = client.DeleteAWSLogCollection(&attachLambdaArnRequest)
-
+	attachLambdaArnRequest := datadogV1.NewAWSAccountAndLambdaRequest(accountID, lambdaArn)
+	_, _, err = datadogClientV1.AWSLogsIntegrationApi.DeleteAWSLambdaARN(authV1).Body(*attachLambdaArnRequest).Execute()
 	if err != nil {
 		return translateClientError(err, "error deleting an AWS integration Lambda ARN")
 	}

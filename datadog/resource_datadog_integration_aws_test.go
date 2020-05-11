@@ -1,12 +1,14 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
+	"testing"
+
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"github.com/zorkian/go-datadog-api"
-	"testing"
 )
 
 func TestAccountAndRoleFromID(t *testing.T) {
@@ -76,21 +78,22 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 func checkIntegrationAWSExists(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
-		return checkIntegrationAWSExistsHelper(s, client)
+		return checkIntegrationAWSExistsHelper(authV1, s, datadogClientV1)
 	}
 }
 
-func checkIntegrationAWSExistsHelper(s *terraform.State, client *datadog.Client) error {
-	integrations, err := client.GetIntegrationAWS()
+func checkIntegrationAWSExistsHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(authV1).Execute()
 	if err != nil {
 		return err
 	}
 	for _, r := range s.RootModule().Resources {
 		accountId := r.Primary.Attributes["account_id"]
-		for _, integration := range *integrations {
-			if *integration.AccountID == accountId {
+		for _, account := range integrations.GetAccounts() {
+			if account.GetAccountId() == accountId {
 				return nil
 			}
 		}
@@ -102,21 +105,22 @@ func checkIntegrationAWSExistsHelper(s *terraform.State, client *datadog.Client)
 func checkIntegrationAWSDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
-		return checkIntegrationAWSDestroyHelper(s, client)
+		return checkIntegrationAWSDestroyHelper(authV1, s, datadogClientV1)
 	}
 }
 
-func checkIntegrationAWSDestroyHelper(s *terraform.State, client *datadog.Client) error {
-	integrations, err := client.GetIntegrationAWS()
+func checkIntegrationAWSDestroyHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(authV1).Execute()
 	if err != nil {
 		return err
 	}
 	for _, r := range s.RootModule().Resources {
 		accountId := r.Primary.Attributes["account_id"]
-		for _, integration := range *integrations {
-			if *integration.AccountID == accountId {
+		for _, account := range integrations.GetAccounts() {
+			if account.GetAccountId() == accountId {
 				return fmt.Errorf("The AWS integration still exists for account: accountId=%s", accountId)
 			}
 		}
