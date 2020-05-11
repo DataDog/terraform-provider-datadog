@@ -600,7 +600,8 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		silenced = true
 	}
 
-	if _, _, err := datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute(); err != nil {
+	monitorResp, _, err := datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
+	if err != nil {
 		return translateClientError(err, "error updating monitor")
 	}
 
@@ -616,13 +617,14 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	// they're "drift")
 	unmutedScopes := getUnmutedScopes(d)
 	if newSilenced, ok := d.GetOk("silenced"); ok && !silenced {
+		m.Options.SetSilenced(monitorResp.Options.GetSilenced())
 		mSilenced := m.Options.GetSilenced()
 		for k, _ := range mSilenced {
 			// Since the Datadog GO client doesn't support unmuting on all scopes, loop over GetSilenced() and set the
 			// end timestamp to time.Now().Unix()
 			mSilenced[k] = time.Now().Unix()
 		}
-		_, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
+		monitorResp, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
 		if err != nil {
 			return translateClientError(err, "error updating monitor")
 		}
@@ -637,6 +639,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 
 	// Similarly, if the silenced attribute is -1, lets unmute those scopes
 	if len(unmutedScopes) != 0 {
+		m.Options.SetSilenced(monitorResp.Options.GetSilenced())
 		silencedList := m.Options.GetSilenced()
 		for _, scope := range unmutedScopes {
 			if _, ok := silencedList[scope]; ok {
