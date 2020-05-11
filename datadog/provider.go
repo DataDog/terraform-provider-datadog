@@ -148,6 +148,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	configV1.SetUnstableOperationEnabled("GetLogsIndex", true)
 	configV1.SetUnstableOperationEnabled("ListLogIndexes", true)
 	configV1.SetUnstableOperationEnabled("UpdateLogsIndex", true)
+	configV1.UserAgent = getUserAgent(configV1.UserAgent)
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedApiUrl, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
@@ -180,6 +181,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		},
 	)
 	configV2 := datadogV2.NewConfiguration()
+	configV2.UserAgent = getUserAgent(configV2.UserAgent)
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedApiUrl, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
@@ -223,4 +225,8 @@ func translateClientError(err error, msg string) error {
 	}
 
 	return fmt.Errorf(msg+": %s", err.Error())
+}
+
+func getUserAgent(clientUserAgent string) string {
+	return fmt.Sprintf("terraform-provider-datadog/%s %s", "1.0.0-beta.2", clientUserAgent)
 }
