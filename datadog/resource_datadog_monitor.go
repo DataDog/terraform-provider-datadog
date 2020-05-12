@@ -308,119 +308,6 @@ func buildMonitorStruct(d *schema.ResourceData) *datadogV1.Monitor {
 	return m
 }
 
-func buildMonitorUpdateRequestStruct(d *schema.ResourceData) *datadogV1.MonitorUpdateRequest {
-
-	var thresholds datadogV1.MonitorThresholds
-
-	if r, ok := d.GetOk("thresholds.ok"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetOk(v)
-	}
-	if r, ok := d.GetOk("thresholds.warning"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetWarning(v)
-	}
-	if r, ok := d.GetOk("thresholds.unknown"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetUnknown(v)
-	}
-	if r, ok := d.GetOk("thresholds.critical"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetCritical(v)
-	}
-	if r, ok := d.GetOk("thresholds.warning_recovery"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetWarningRecovery(v)
-	}
-	if r, ok := d.GetOk("thresholds.critical_recovery"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetCriticalRecovery(v)
-	}
-
-	var thresholdWindows datadogV1.MonitorThresholdWindowOptions
-
-	if r, ok := d.GetOk("threshold_windows.recovery_window"); ok {
-		thresholdWindows.SetRecoveryWindow(r.(string))
-	}
-
-	if r, ok := d.GetOk("threshold_windows.trigger_window"); ok {
-		thresholdWindows.SetTriggerWindow(r.(string))
-	}
-
-	o := datadogV1.MonitorOptions{}
-	o.SetThresholds(thresholds)
-	o.SetNotifyNoData(d.Get("notify_no_data").(bool))
-	o.SetRequireFullWindow(d.Get("require_full_window").(bool))
-	o.SetIncludeTags(d.Get("include_tags").(bool))
-
-	if thresholdWindows.HasRecoveryWindow() || thresholdWindows.HasTriggerWindow() {
-		o.SetThresholdWindows(thresholdWindows)
-	}
-
-	if attr, ok := d.GetOk("silenced"); ok {
-		s := make(map[string]int64)
-		// TODO: this is not very defensive, test if we can fail on non int input
-		for k, v := range attr.(map[string]interface{}) {
-			s[k] = int64(v.(int))
-		}
-		o.Silenced = &s
-	}
-	if attr, ok := d.GetOk("notify_no_data"); ok {
-		o.SetNotifyNoData(attr.(bool))
-	}
-	if attr, ok := d.GetOk("new_host_delay"); ok {
-		o.SetNewHostDelay(int64(attr.(int)))
-	}
-	if attr, ok := d.GetOk("evaluation_delay"); ok {
-		o.SetEvaluationDelay(int64(attr.(int)))
-	}
-	if attr, ok := d.GetOk("no_data_timeframe"); ok {
-		o.SetNoDataTimeframe(int64(attr.(int)))
-	}
-	if attr, ok := d.GetOk("renotify_interval"); ok {
-		o.SetRenotifyInterval(int64(attr.(int)))
-	}
-	if attr, ok := d.GetOk("notify_audit"); ok {
-		o.SetNotifyAudit(attr.(bool))
-	}
-	if attr, ok := d.GetOk("timeout_h"); ok {
-		o.SetTimeoutH(int64(attr.(int)))
-	}
-	if attr, ok := d.GetOk("escalation_message"); ok {
-		o.SetEscalationMessage(attr.(string))
-	}
-	if attr, ok := d.GetOk("locked"); ok {
-		o.SetLocked(attr.(bool))
-	}
-
-	monitorType := datadogV1.MonitorType(d.Get("type").(string))
-	if monitorType == datadogV1.MONITORTYPE_LOG_ALERT {
-		if attr, ok := d.GetOk("enable_logs_sample"); ok {
-			o.SetEnableLogsSample(attr.(bool))
-		} else {
-			o.SetEnableLogsSample(false)
-		}
-	}
-
-	m := datadogV1.NewMonitorUpdateRequest()
-	m.SetType(monitorType)
-	m.SetQuery(d.Get("query").(string))
-	m.SetName(d.Get("name").(string))
-	m.SetMessage(d.Get("message").(string))
-	m.SetOptions(o)
-
-	tags := make([]string, 0)
-	if attr, ok := d.GetOk("tags"); ok {
-		for _, s := range attr.(*schema.Set).List() {
-			tags = append(tags, s.(string))
-		}
-		sort.Strings(tags)
-	}
-	m.SetTags(tags)
-
-	return m
-}
-
 func resourceDatadogMonitorExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
@@ -579,8 +466,8 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	m := buildMonitorUpdateRequestStruct(d)
-
+	monitor := buildMonitorStruct(d)
+	m := datadogV1.MonitorUpdateRequest(*monitor)
 	i, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return err
@@ -600,7 +487,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		silenced = true
 	}
 
-	monitorResp, _, err := datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
+	monitorResp, _, err := datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(m).Execute()
 	if err != nil {
 		return translateClientError(err, "error updating monitor")
 	}
@@ -624,7 +511,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 			// end timestamp to time.Now().Unix()
 			mSilenced[k] = time.Now().Unix()
 		}
-		monitorResp, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
+		monitorResp, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(m).Execute()
 		if err != nil {
 			return translateClientError(err, "error updating monitor")
 		}
@@ -646,7 +533,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 				delete(silencedList, string(silencedList[scope]))
 			}
 		}
-		if _, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute(); err != nil {
+		if _, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(m).Execute(); err != nil {
 			return translateClientError(err, "error updating monitor")
 		}
 	}
