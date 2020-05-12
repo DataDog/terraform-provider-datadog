@@ -2518,6 +2518,7 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Type:       schema.TypeInt,
 			Deprecated: "This parameter may be removed from the dashboard API in the future",
 			Optional:   true,
+			Default:    50,
 		},
 		// The start param is deprecated
 		"start": {
