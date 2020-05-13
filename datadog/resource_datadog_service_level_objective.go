@@ -149,15 +149,21 @@ func ValidateServiceLevelObjectiveTypeString(v interface{}, k string) (ws []stri
 	return
 }
 
-func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.ServiceLevelObjective {
+func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.ServiceLevelObjective, *datadogV1.ServiceLevelObjectiveRequest) {
 
 	slo := datadogV1.NewServiceLevelObjectiveWithDefaults()
 	slo.SetName(d.Get("name").(string))
 	slo.SetType(datadogV1.SLOType(d.Get("type").(string)))
 	slo.SetId(d.Id())
 
+	slor := datadogV1.NewServiceLevelObjectiveRequestWithDefaults()
+	slor.SetName(d.Get("name").(string))
+	slor.SetType(datadogV1.SLOType(d.Get("type").(string)))
+	slor.SetId(d.Id())
+
 	if attr, ok := d.GetOk("description"); ok {
 		slo.SetDescription(attr.(string))
+		slor.SetDescription(attr.(string))
 	}
 
 	switch slo.GetType() {
@@ -169,6 +175,7 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 				s = append(s, int64(v.(int)))
 			}
 			slo.SetMonitorIds(s)
+			slor.SetMonitorIds(s)
 		}
 		if attr, ok := d.GetOk("groups"); ok {
 			s := make([]string, 0)
@@ -176,6 +183,7 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 				s = append(s, v.(string))
 			}
 			slo.SetGroups(s)
+			slor.SetGroups(s)
 		}
 	default:
 		// metric type
@@ -192,6 +200,9 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 				slo.SetQuery(*datadogV1.NewServiceLevelObjectiveQuery(
 					queries[0]["denominator"].(string),
 					queries[0]["numerator"].(string)))
+				slor.SetQuery(*datadogV1.NewServiceLevelObjectiveQuery(
+					queries[0]["denominator"].(string),
+					queries[0]["numerator"].(string)))
 			}
 		}
 	}
@@ -202,6 +213,7 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 			s = append(s, v.(string))
 		}
 		slo.SetTags(s)
+		slor.SetTags(s)
 	}
 
 	if _, ok := d.GetOk("thresholds"); ok {
@@ -242,109 +254,11 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 		}
 		if len(sloThresholds) > 0 {
 			slo.SetThresholds(sloThresholds)
+			slor.SetThresholds(sloThresholds)
 		}
 	}
 
-	return slo
-}
-
-func buildServiceLevelObjectiveRequestStruct(d *schema.ResourceData) *datadogV1.ServiceLevelObjectiveRequest {
-
-	slo := datadogV1.NewServiceLevelObjectiveRequestWithDefaults()
-	slo.SetName(d.Get("name").(string))
-	slo.SetType(datadogV1.SLOType(d.Get("type").(string)))
-	slo.SetId(d.Id())
-
-	if attr, ok := d.GetOk("description"); ok {
-		slo.SetDescription(attr.(string))
-	}
-
-	switch slo.GetType() {
-	case datadogV1.SLOTYPE_MONITOR:
-		// monitor type
-		if attr, ok := d.GetOk("monitor_ids"); ok {
-			s := make([]int64, 0)
-			for _, v := range attr.(*schema.Set).List() {
-				s = append(s, int64(v.(int)))
-			}
-			slo.SetMonitorIds(s)
-		}
-		if attr, ok := d.GetOk("groups"); ok {
-			s := make([]string, 0)
-			for _, v := range attr.(*schema.Set).List() {
-				s = append(s, v.(string))
-			}
-			slo.SetGroups(s)
-		}
-	default:
-		// metric type
-		if attr, ok := d.GetOk("query"); ok {
-			queries := make([]map[string]interface{}, 0)
-			raw := attr.([]interface{})
-			for _, rawQuery := range raw {
-				if query, ok := rawQuery.(map[string]interface{}); ok {
-					queries = append(queries, query)
-				}
-			}
-			if len(queries) >= 1 {
-				// only use the first defined query
-				slo.SetQuery(*datadogV1.NewServiceLevelObjectiveQuery(
-					queries[0]["denominator"].(string),
-					queries[0]["numerator"].(string)))
-			}
-		}
-	}
-
-	if attr, ok := d.GetOk("tags"); ok {
-		s := make([]string, 0)
-		for _, v := range attr.(*schema.Set).List() {
-			s = append(s, v.(string))
-		}
-		slo.SetTags(s)
-	}
-
-	if _, ok := d.GetOk("thresholds"); ok {
-		numThresholds := d.Get("thresholds.#").(int)
-		sloThresholds := make([]datadogV1.SLOThreshold, 0)
-		for i := 0; i < numThresholds; i++ {
-			prefix := fmt.Sprintf("thresholds.%d.", i)
-			t := datadogV1.NewSLOThresholdWithDefaults()
-
-			if tf, ok := d.GetOk(prefix + "timeframe"); ok {
-				t.SetTimeframe(datadogV1.SLOTimeframe(tf.(string)))
-			}
-
-			if targetValue, ok := d.GetOk(prefix + "target"); ok {
-				if f, ok := floatOk(targetValue); ok {
-					t.SetTarget(f)
-				}
-			}
-
-			if warningValue, ok := d.GetOk(prefix + "warning"); ok {
-				if f, ok := floatOk(warningValue); ok {
-					t.SetWarning(f)
-				}
-			}
-
-			if targetDisplayValue, ok := d.GetOk(prefix + "target_display"); ok {
-				if s, ok := targetDisplayValue.(string); ok && strings.TrimSpace(s) != "" {
-					t.SetTargetDisplay(strings.TrimSpace(targetDisplayValue.(string)))
-				}
-			}
-
-			if warningDisplayValue, ok := d.GetOk(prefix + "warning_display"); ok {
-				if s, ok := warningDisplayValue.(string); ok && strings.TrimSpace(s) != "" {
-					t.SetWarningDisplay(strings.TrimSpace(warningDisplayValue.(string)))
-				}
-			}
-			sloThresholds = append(sloThresholds, *t)
-		}
-		if len(sloThresholds) > 0 {
-			slo.SetThresholds(sloThresholds)
-		}
-	}
-
-	return slo
+	return slo, slor
 }
 
 func floatOk(val interface{}) (float64, bool) {
@@ -374,7 +288,7 @@ func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta int
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	slor := buildServiceLevelObjectiveRequestStruct(d)
+	_, slor := buildServiceLevelObjectiveStructs(d)
 	sloResp, _, err := datadogClientV1.ServiceLevelObjectivesApi.CreateSLO(authV1).Body(*slor).Execute()
 	if err != nil {
 		return translateClientError(err, "error creating service level objective")
@@ -466,7 +380,7 @@ func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta int
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
-	slo := buildServiceLevelObjectiveStruct(d)
+	slo, _ := buildServiceLevelObjectiveStructs(d)
 
 	if _, _, err := datadogClientV1.ServiceLevelObjectivesApi.UpdateSLO(authV1, d.Id()).Body(*slo).Execute(); err != nil {
 		return translateClientError(err, "error updating service level objective")

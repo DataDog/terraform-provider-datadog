@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"runtime"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -110,7 +111,13 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", c.Transport)
-	communityClient.ExtraHeader["User-Agent"] = getUserAgent("go-datadog-api")
+	communityClient.ExtraHeader["User-Agent"] = getUserAgent(fmt.Sprintf(
+		"datadog-api-client-go/%s (go %s; os %s; arch %s)",
+		"go-datadog-api",
+		runtime.Version(),
+		runtime.GOOS,
+		runtime.GOARCH,
+	))
 	communityClient.HttpClient = c
 
 	if validate {
