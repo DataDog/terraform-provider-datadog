@@ -17,7 +17,7 @@ type LogsMessageRemapper struct {
 	// Array of source attributes.
 	Sources []string `json:"sources"`
 	// Type of processor.
-	Type *string `json:"type,omitempty"`
+	Type string `json:"type"`
 	// Whether or not the processor is enabled.
 	IsEnabled *bool `json:"is_enabled,omitempty"`
 	// Name of the processor.
@@ -28,11 +28,10 @@ type LogsMessageRemapper struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogsMessageRemapper(sources []string) *LogsMessageRemapper {
+func NewLogsMessageRemapper(sources []string, type_ string) *LogsMessageRemapper {
 	this := LogsMessageRemapper{}
 	this.Sources = sources
-	var type_ string = "message-remapper"
-	this.Type = &type_
+	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
 	return &this
@@ -44,7 +43,7 @@ func NewLogsMessageRemapper(sources []string) *LogsMessageRemapper {
 func NewLogsMessageRemapperWithDefaults() *LogsMessageRemapper {
 	this := LogsMessageRemapper{}
 	var type_ string = "message-remapper"
-	this.Type = &type_
+	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
 	return &this
@@ -74,36 +73,28 @@ func (o *LogsMessageRemapper) SetSources(v []string) {
 	o.Sources = v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value
 func (o *LogsMessageRemapper) GetType() string {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Type
+
+	return o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *LogsMessageRemapper) GetTypeOk() (*string, bool) {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Type, true
+	return &o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *LogsMessageRemapper) HasType() bool {
-	if o != nil && o.Type != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the Type field.
+// SetType sets field value
 func (o *LogsMessageRemapper) SetType(v string) {
-	o.Type = &v
+	o.Type = v
 }
 
 // GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
@@ -175,7 +166,7 @@ func (o LogsMessageRemapper) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["sources"] = o.Sources
 	}
-	if o.Type != nil {
+	if true {
 		toSerialize["type"] = o.Type
 	}
 	if o.IsEnabled != nil {

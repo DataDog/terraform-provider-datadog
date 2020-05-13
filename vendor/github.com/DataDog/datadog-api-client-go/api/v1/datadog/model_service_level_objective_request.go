@@ -12,8 +12,8 @@ import (
 	"encoding/json"
 )
 
-// ServiceLevelObjective A service level objective object includes a service level indicator, thresholds for one or more timeframes, and metadata (`name`, `description`, `tags`, etc.).
-type ServiceLevelObjective struct {
+// ServiceLevelObjectiveRequest A service level objective object includes a service level indicator, thresholds for one or more timeframes, and metadata (`name`, `description`, `tags`, etc.).
+type ServiceLevelObjectiveRequest struct {
 	// Creation timestamp (UNIX time in seconds)  Always included in service level objective responses.
 	CreatedAt *int64   `json:"created_at,omitempty"`
 	Creator   *Creator `json:"creator,omitempty"`
@@ -27,8 +27,6 @@ type ServiceLevelObjective struct {
 	ModifiedAt *int64 `json:"modified_at,omitempty"`
 	// A list of monitor ids that defines the scope of a monitor service level objective. **Required if type is `monitor`**.
 	MonitorIds *[]int64 `json:"monitor_ids,omitempty"`
-	// The union of monitor tags for all monitors referenced by the `monitor_ids` field. Always included in service level objective responses for monitor service level objectives (but may be empty). Ignored in create/update requests. Does not affect which monitors are included in the service level objective (that is determined entirely by the `monitor_ids` field).
-	MonitorTags *[]string `json:"monitor_tags,omitempty"`
 	// The name of the service level objective object.
 	Name  string                      `json:"name"`
 	Query *ServiceLevelObjectiveQuery `json:"query,omitempty"`
@@ -39,28 +37,28 @@ type ServiceLevelObjective struct {
 	Type       SLOType        `json:"type"`
 }
 
-// NewServiceLevelObjective instantiates a new ServiceLevelObjective object
+// NewServiceLevelObjectiveRequest instantiates a new ServiceLevelObjectiveRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewServiceLevelObjective(name string, thresholds []SLOThreshold, type_ SLOType) *ServiceLevelObjective {
-	this := ServiceLevelObjective{}
+func NewServiceLevelObjectiveRequest(name string, thresholds []SLOThreshold, type_ SLOType) *ServiceLevelObjectiveRequest {
+	this := ServiceLevelObjectiveRequest{}
 	this.Name = name
 	this.Thresholds = thresholds
 	this.Type = type_
 	return &this
 }
 
-// NewServiceLevelObjectiveWithDefaults instantiates a new ServiceLevelObjective object
+// NewServiceLevelObjectiveRequestWithDefaults instantiates a new ServiceLevelObjectiveRequest object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewServiceLevelObjectiveWithDefaults() *ServiceLevelObjective {
-	this := ServiceLevelObjective{}
+func NewServiceLevelObjectiveRequestWithDefaults() *ServiceLevelObjectiveRequest {
+	this := ServiceLevelObjectiveRequest{}
 	return &this
 }
 
 // GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
-func (o *ServiceLevelObjective) GetCreatedAt() int64 {
+func (o *ServiceLevelObjectiveRequest) GetCreatedAt() int64 {
 	if o == nil || o.CreatedAt == nil {
 		var ret int64
 		return ret
@@ -70,7 +68,7 @@ func (o *ServiceLevelObjective) GetCreatedAt() int64 {
 
 // GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceLevelObjective) GetCreatedAtOk() (*int64, bool) {
+func (o *ServiceLevelObjectiveRequest) GetCreatedAtOk() (*int64, bool) {
 	if o == nil || o.CreatedAt == nil {
 		return nil, false
 	}
@@ -78,7 +76,7 @@ func (o *ServiceLevelObjective) GetCreatedAtOk() (*int64, bool) {
 }
 
 // HasCreatedAt returns a boolean if a field has been set.
-func (o *ServiceLevelObjective) HasCreatedAt() bool {
+func (o *ServiceLevelObjectiveRequest) HasCreatedAt() bool {
 	if o != nil && o.CreatedAt != nil {
 		return true
 	}
@@ -87,12 +85,12 @@ func (o *ServiceLevelObjective) HasCreatedAt() bool {
 }
 
 // SetCreatedAt gets a reference to the given int64 and assigns it to the CreatedAt field.
-func (o *ServiceLevelObjective) SetCreatedAt(v int64) {
+func (o *ServiceLevelObjectiveRequest) SetCreatedAt(v int64) {
 	o.CreatedAt = &v
 }
 
 // GetCreator returns the Creator field value if set, zero value otherwise.
-func (o *ServiceLevelObjective) GetCreator() Creator {
+func (o *ServiceLevelObjectiveRequest) GetCreator() Creator {
 	if o == nil || o.Creator == nil {
 		var ret Creator
 		return ret
@@ -102,7 +100,7 @@ func (o *ServiceLevelObjective) GetCreator() Creator {
 
 // GetCreatorOk returns a tuple with the Creator field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceLevelObjective) GetCreatorOk() (*Creator, bool) {
+func (o *ServiceLevelObjectiveRequest) GetCreatorOk() (*Creator, bool) {
 	if o == nil || o.Creator == nil {
 		return nil, false
 	}
@@ -110,7 +108,7 @@ func (o *ServiceLevelObjective) GetCreatorOk() (*Creator, bool) {
 }
 
 // HasCreator returns a boolean if a field has been set.
-func (o *ServiceLevelObjective) HasCreator() bool {
+func (o *ServiceLevelObjectiveRequest) HasCreator() bool {
 	if o != nil && o.Creator != nil {
 		return true
 	}
@@ -119,12 +117,12 @@ func (o *ServiceLevelObjective) HasCreator() bool {
 }
 
 // SetCreator gets a reference to the given Creator and assigns it to the Creator field.
-func (o *ServiceLevelObjective) SetCreator(v Creator) {
+func (o *ServiceLevelObjectiveRequest) SetCreator(v Creator) {
 	o.Creator = &v
 }
 
 // GetDescription returns the Description field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ServiceLevelObjective) GetDescription() string {
+func (o *ServiceLevelObjectiveRequest) GetDescription() string {
 	if o == nil || o.Description.Get() == nil {
 		var ret string
 		return ret
@@ -135,7 +133,7 @@ func (o *ServiceLevelObjective) GetDescription() string {
 // GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServiceLevelObjective) GetDescriptionOk() (*string, bool) {
+func (o *ServiceLevelObjectiveRequest) GetDescriptionOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -143,7 +141,7 @@ func (o *ServiceLevelObjective) GetDescriptionOk() (*string, bool) {
 }
 
 // HasDescription returns a boolean if a field has been set.
-func (o *ServiceLevelObjective) HasDescription() bool {
+func (o *ServiceLevelObjectiveRequest) HasDescription() bool {
 	if o != nil && o.Description.IsSet() {
 		return true
 	}
@@ -152,22 +150,22 @@ func (o *ServiceLevelObjective) HasDescription() bool {
 }
 
 // SetDescription gets a reference to the given NullableString and assigns it to the Description field.
-func (o *ServiceLevelObjective) SetDescription(v string) {
+func (o *ServiceLevelObjectiveRequest) SetDescription(v string) {
 	o.Description.Set(&v)
 }
 
 // SetDescriptionNil sets the value for Description to be an explicit nil
-func (o *ServiceLevelObjective) SetDescriptionNil() {
+func (o *ServiceLevelObjectiveRequest) SetDescriptionNil() {
 	o.Description.Set(nil)
 }
 
 // UnsetDescription ensures that no value is present for Description, not even an explicit nil
-func (o *ServiceLevelObjective) UnsetDescription() {
+func (o *ServiceLevelObjectiveRequest) UnsetDescription() {
 	o.Description.Unset()
 }
 
 // GetGroups returns the Groups field value if set, zero value otherwise.
-func (o *ServiceLevelObjective) GetGroups() []string {
+func (o *ServiceLevelObjectiveRequest) GetGroups() []string {
 	if o == nil || o.Groups == nil {
 		var ret []string
 		return ret
@@ -177,7 +175,7 @@ func (o *ServiceLevelObjective) GetGroups() []string {
 
 // GetGroupsOk returns a tuple with the Groups field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceLevelObjective) GetGroupsOk() (*[]string, bool) {
+func (o *ServiceLevelObjectiveRequest) GetGroupsOk() (*[]string, bool) {
 	if o == nil || o.Groups == nil {
 		return nil, false
 	}
@@ -185,7 +183,7 @@ func (o *ServiceLevelObjective) GetGroupsOk() (*[]string, bool) {
 }
 
 // HasGroups returns a boolean if a field has been set.
-func (o *ServiceLevelObjective) HasGroups() bool {
+func (o *ServiceLevelObjectiveRequest) HasGroups() bool {
 	if o != nil && o.Groups != nil {
 		return true
 	}
@@ -194,12 +192,12 @@ func (o *ServiceLevelObjective) HasGroups() bool {
 }
 
 // SetGroups gets a reference to the given []string and assigns it to the Groups field.
-func (o *ServiceLevelObjective) SetGroups(v []string) {
+func (o *ServiceLevelObjectiveRequest) SetGroups(v []string) {
 	o.Groups = &v
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
-func (o *ServiceLevelObjective) GetId() string {
+func (o *ServiceLevelObjectiveRequest) GetId() string {
 	if o == nil || o.Id == nil {
 		var ret string
 		return ret
@@ -209,7 +207,7 @@ func (o *ServiceLevelObjective) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceLevelObjective) GetIdOk() (*string, bool) {
+func (o *ServiceLevelObjectiveRequest) GetIdOk() (*string, bool) {
 	if o == nil || o.Id == nil {
 		return nil, false
 	}
@@ -217,7 +215,7 @@ func (o *ServiceLevelObjective) GetIdOk() (*string, bool) {
 }
 
 // HasId returns a boolean if a field has been set.
-func (o *ServiceLevelObjective) HasId() bool {
+func (o *ServiceLevelObjectiveRequest) HasId() bool {
 	if o != nil && o.Id != nil {
 		return true
 	}
@@ -226,12 +224,12 @@ func (o *ServiceLevelObjective) HasId() bool {
 }
 
 // SetId gets a reference to the given string and assigns it to the Id field.
-func (o *ServiceLevelObjective) SetId(v string) {
+func (o *ServiceLevelObjectiveRequest) SetId(v string) {
 	o.Id = &v
 }
 
 // GetModifiedAt returns the ModifiedAt field value if set, zero value otherwise.
-func (o *ServiceLevelObjective) GetModifiedAt() int64 {
+func (o *ServiceLevelObjectiveRequest) GetModifiedAt() int64 {
 	if o == nil || o.ModifiedAt == nil {
 		var ret int64
 		return ret
@@ -241,7 +239,7 @@ func (o *ServiceLevelObjective) GetModifiedAt() int64 {
 
 // GetModifiedAtOk returns a tuple with the ModifiedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceLevelObjective) GetModifiedAtOk() (*int64, bool) {
+func (o *ServiceLevelObjectiveRequest) GetModifiedAtOk() (*int64, bool) {
 	if o == nil || o.ModifiedAt == nil {
 		return nil, false
 	}
@@ -249,7 +247,7 @@ func (o *ServiceLevelObjective) GetModifiedAtOk() (*int64, bool) {
 }
 
 // HasModifiedAt returns a boolean if a field has been set.
-func (o *ServiceLevelObjective) HasModifiedAt() bool {
+func (o *ServiceLevelObjectiveRequest) HasModifiedAt() bool {
 	if o != nil && o.ModifiedAt != nil {
 		return true
 	}
@@ -258,12 +256,12 @@ func (o *ServiceLevelObjective) HasModifiedAt() bool {
 }
 
 // SetModifiedAt gets a reference to the given int64 and assigns it to the ModifiedAt field.
-func (o *ServiceLevelObjective) SetModifiedAt(v int64) {
+func (o *ServiceLevelObjectiveRequest) SetModifiedAt(v int64) {
 	o.ModifiedAt = &v
 }
 
 // GetMonitorIds returns the MonitorIds field value if set, zero value otherwise.
-func (o *ServiceLevelObjective) GetMonitorIds() []int64 {
+func (o *ServiceLevelObjectiveRequest) GetMonitorIds() []int64 {
 	if o == nil || o.MonitorIds == nil {
 		var ret []int64
 		return ret
@@ -273,7 +271,7 @@ func (o *ServiceLevelObjective) GetMonitorIds() []int64 {
 
 // GetMonitorIdsOk returns a tuple with the MonitorIds field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceLevelObjective) GetMonitorIdsOk() (*[]int64, bool) {
+func (o *ServiceLevelObjectiveRequest) GetMonitorIdsOk() (*[]int64, bool) {
 	if o == nil || o.MonitorIds == nil {
 		return nil, false
 	}
@@ -281,7 +279,7 @@ func (o *ServiceLevelObjective) GetMonitorIdsOk() (*[]int64, bool) {
 }
 
 // HasMonitorIds returns a boolean if a field has been set.
-func (o *ServiceLevelObjective) HasMonitorIds() bool {
+func (o *ServiceLevelObjectiveRequest) HasMonitorIds() bool {
 	if o != nil && o.MonitorIds != nil {
 		return true
 	}
@@ -290,44 +288,12 @@ func (o *ServiceLevelObjective) HasMonitorIds() bool {
 }
 
 // SetMonitorIds gets a reference to the given []int64 and assigns it to the MonitorIds field.
-func (o *ServiceLevelObjective) SetMonitorIds(v []int64) {
+func (o *ServiceLevelObjectiveRequest) SetMonitorIds(v []int64) {
 	o.MonitorIds = &v
 }
 
-// GetMonitorTags returns the MonitorTags field value if set, zero value otherwise.
-func (o *ServiceLevelObjective) GetMonitorTags() []string {
-	if o == nil || o.MonitorTags == nil {
-		var ret []string
-		return ret
-	}
-	return *o.MonitorTags
-}
-
-// GetMonitorTagsOk returns a tuple with the MonitorTags field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ServiceLevelObjective) GetMonitorTagsOk() (*[]string, bool) {
-	if o == nil || o.MonitorTags == nil {
-		return nil, false
-	}
-	return o.MonitorTags, true
-}
-
-// HasMonitorTags returns a boolean if a field has been set.
-func (o *ServiceLevelObjective) HasMonitorTags() bool {
-	if o != nil && o.MonitorTags != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetMonitorTags gets a reference to the given []string and assigns it to the MonitorTags field.
-func (o *ServiceLevelObjective) SetMonitorTags(v []string) {
-	o.MonitorTags = &v
-}
-
 // GetName returns the Name field value
-func (o *ServiceLevelObjective) GetName() string {
+func (o *ServiceLevelObjectiveRequest) GetName() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -338,7 +304,7 @@ func (o *ServiceLevelObjective) GetName() string {
 
 // GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
-func (o *ServiceLevelObjective) GetNameOk() (*string, bool) {
+func (o *ServiceLevelObjectiveRequest) GetNameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -346,12 +312,12 @@ func (o *ServiceLevelObjective) GetNameOk() (*string, bool) {
 }
 
 // SetName sets field value
-func (o *ServiceLevelObjective) SetName(v string) {
+func (o *ServiceLevelObjectiveRequest) SetName(v string) {
 	o.Name = v
 }
 
 // GetQuery returns the Query field value if set, zero value otherwise.
-func (o *ServiceLevelObjective) GetQuery() ServiceLevelObjectiveQuery {
+func (o *ServiceLevelObjectiveRequest) GetQuery() ServiceLevelObjectiveQuery {
 	if o == nil || o.Query == nil {
 		var ret ServiceLevelObjectiveQuery
 		return ret
@@ -361,7 +327,7 @@ func (o *ServiceLevelObjective) GetQuery() ServiceLevelObjectiveQuery {
 
 // GetQueryOk returns a tuple with the Query field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceLevelObjective) GetQueryOk() (*ServiceLevelObjectiveQuery, bool) {
+func (o *ServiceLevelObjectiveRequest) GetQueryOk() (*ServiceLevelObjectiveQuery, bool) {
 	if o == nil || o.Query == nil {
 		return nil, false
 	}
@@ -369,7 +335,7 @@ func (o *ServiceLevelObjective) GetQueryOk() (*ServiceLevelObjectiveQuery, bool)
 }
 
 // HasQuery returns a boolean if a field has been set.
-func (o *ServiceLevelObjective) HasQuery() bool {
+func (o *ServiceLevelObjectiveRequest) HasQuery() bool {
 	if o != nil && o.Query != nil {
 		return true
 	}
@@ -378,12 +344,12 @@ func (o *ServiceLevelObjective) HasQuery() bool {
 }
 
 // SetQuery gets a reference to the given ServiceLevelObjectiveQuery and assigns it to the Query field.
-func (o *ServiceLevelObjective) SetQuery(v ServiceLevelObjectiveQuery) {
+func (o *ServiceLevelObjectiveRequest) SetQuery(v ServiceLevelObjectiveQuery) {
 	o.Query = &v
 }
 
 // GetTags returns the Tags field value if set, zero value otherwise.
-func (o *ServiceLevelObjective) GetTags() []string {
+func (o *ServiceLevelObjectiveRequest) GetTags() []string {
 	if o == nil || o.Tags == nil {
 		var ret []string
 		return ret
@@ -393,7 +359,7 @@ func (o *ServiceLevelObjective) GetTags() []string {
 
 // GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceLevelObjective) GetTagsOk() (*[]string, bool) {
+func (o *ServiceLevelObjectiveRequest) GetTagsOk() (*[]string, bool) {
 	if o == nil || o.Tags == nil {
 		return nil, false
 	}
@@ -401,7 +367,7 @@ func (o *ServiceLevelObjective) GetTagsOk() (*[]string, bool) {
 }
 
 // HasTags returns a boolean if a field has been set.
-func (o *ServiceLevelObjective) HasTags() bool {
+func (o *ServiceLevelObjectiveRequest) HasTags() bool {
 	if o != nil && o.Tags != nil {
 		return true
 	}
@@ -410,12 +376,12 @@ func (o *ServiceLevelObjective) HasTags() bool {
 }
 
 // SetTags gets a reference to the given []string and assigns it to the Tags field.
-func (o *ServiceLevelObjective) SetTags(v []string) {
+func (o *ServiceLevelObjectiveRequest) SetTags(v []string) {
 	o.Tags = &v
 }
 
 // GetThresholds returns the Thresholds field value
-func (o *ServiceLevelObjective) GetThresholds() []SLOThreshold {
+func (o *ServiceLevelObjectiveRequest) GetThresholds() []SLOThreshold {
 	if o == nil {
 		var ret []SLOThreshold
 		return ret
@@ -426,7 +392,7 @@ func (o *ServiceLevelObjective) GetThresholds() []SLOThreshold {
 
 // GetThresholdsOk returns a tuple with the Thresholds field value
 // and a boolean to check if the value has been set.
-func (o *ServiceLevelObjective) GetThresholdsOk() (*[]SLOThreshold, bool) {
+func (o *ServiceLevelObjectiveRequest) GetThresholdsOk() (*[]SLOThreshold, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -434,12 +400,12 @@ func (o *ServiceLevelObjective) GetThresholdsOk() (*[]SLOThreshold, bool) {
 }
 
 // SetThresholds sets field value
-func (o *ServiceLevelObjective) SetThresholds(v []SLOThreshold) {
+func (o *ServiceLevelObjectiveRequest) SetThresholds(v []SLOThreshold) {
 	o.Thresholds = v
 }
 
 // GetType returns the Type field value
-func (o *ServiceLevelObjective) GetType() SLOType {
+func (o *ServiceLevelObjectiveRequest) GetType() SLOType {
 	if o == nil {
 		var ret SLOType
 		return ret
@@ -450,7 +416,7 @@ func (o *ServiceLevelObjective) GetType() SLOType {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *ServiceLevelObjective) GetTypeOk() (*SLOType, bool) {
+func (o *ServiceLevelObjectiveRequest) GetTypeOk() (*SLOType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -458,11 +424,11 @@ func (o *ServiceLevelObjective) GetTypeOk() (*SLOType, bool) {
 }
 
 // SetType sets field value
-func (o *ServiceLevelObjective) SetType(v SLOType) {
+func (o *ServiceLevelObjectiveRequest) SetType(v SLOType) {
 	o.Type = v
 }
 
-func (o ServiceLevelObjective) MarshalJSON() ([]byte, error) {
+func (o ServiceLevelObjectiveRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.CreatedAt != nil {
 		toSerialize["created_at"] = o.CreatedAt
@@ -485,9 +451,6 @@ func (o ServiceLevelObjective) MarshalJSON() ([]byte, error) {
 	if o.MonitorIds != nil {
 		toSerialize["monitor_ids"] = o.MonitorIds
 	}
-	if o.MonitorTags != nil {
-		toSerialize["monitor_tags"] = o.MonitorTags
-	}
 	if true {
 		toSerialize["name"] = o.Name
 	}
@@ -506,38 +469,38 @@ func (o ServiceLevelObjective) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableServiceLevelObjective struct {
-	value *ServiceLevelObjective
+type NullableServiceLevelObjectiveRequest struct {
+	value *ServiceLevelObjectiveRequest
 	isSet bool
 }
 
-func (v NullableServiceLevelObjective) Get() *ServiceLevelObjective {
+func (v NullableServiceLevelObjectiveRequest) Get() *ServiceLevelObjectiveRequest {
 	return v.value
 }
 
-func (v *NullableServiceLevelObjective) Set(val *ServiceLevelObjective) {
+func (v *NullableServiceLevelObjectiveRequest) Set(val *ServiceLevelObjectiveRequest) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableServiceLevelObjective) IsSet() bool {
+func (v NullableServiceLevelObjectiveRequest) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableServiceLevelObjective) Unset() {
+func (v *NullableServiceLevelObjectiveRequest) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableServiceLevelObjective(val *ServiceLevelObjective) *NullableServiceLevelObjective {
-	return &NullableServiceLevelObjective{value: val, isSet: true}
+func NewNullableServiceLevelObjectiveRequest(val *ServiceLevelObjectiveRequest) *NullableServiceLevelObjectiveRequest {
+	return &NullableServiceLevelObjectiveRequest{value: val, isSet: true}
 }
 
-func (v NullableServiceLevelObjective) MarshalJSON() ([]byte, error) {
+func (v NullableServiceLevelObjectiveRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableServiceLevelObjective) UnmarshalJSON(src []byte) error {
+func (v *NullableServiceLevelObjectiveRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

@@ -195,7 +195,7 @@ func resourceDatadogMonitor() *schema.Resource {
 	}
 }
 
-func buildMonitorStruct(d *schema.ResourceData) *datadogV1.Monitor {
+func buildMonitorStruct(d *schema.ResourceData) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
 
 	var thresholds datadogV1.MonitorThresholds
 
@@ -296,6 +296,13 @@ func buildMonitorStruct(d *schema.ResourceData) *datadogV1.Monitor {
 	m.SetMessage(d.Get("message").(string))
 	m.SetOptions(o)
 
+	u := datadogV1.NewMonitorUpdateRequest()
+	u.SetType(monitorType)
+	u.SetQuery(d.Get("query").(string))
+	u.SetName(d.Get("name").(string))
+	u.SetMessage(d.Get("message").(string))
+	u.SetOptions(o)
+
 	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
 		for _, s := range attr.(*schema.Set).List() {
@@ -304,8 +311,9 @@ func buildMonitorStruct(d *schema.ResourceData) *datadogV1.Monitor {
 		sort.Strings(tags)
 	}
 	m.SetTags(tags)
+	u.SetTags(tags)
 
-	return m
+	return m, u
 }
 
 func resourceDatadogMonitorExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
@@ -349,7 +357,7 @@ func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) erro
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	m := buildMonitorStruct(d)
+	m, _ := buildMonitorStruct(d)
 	mCreated, _, err := datadogClientV1.MonitorsApi.CreateMonitor(authV1).Body(*m).Execute()
 	if err != nil {
 		return translateClientError(err, "error creating monitor")
@@ -466,8 +474,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	m := buildMonitorStruct(d)
-
+	_, m := buildMonitorStruct(d)
 	i, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return err
@@ -487,7 +494,8 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		silenced = true
 	}
 
-	if *m, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute(); err != nil {
+	monitorResp, _, err := datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
+	if err != nil {
 		return translateClientError(err, "error updating monitor")
 	}
 
@@ -503,13 +511,16 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	// they're "drift")
 	unmutedScopes := getUnmutedScopes(d)
 	if newSilenced, ok := d.GetOk("silenced"); ok && !silenced {
+		// Because the Update method had a payload object which is not the same as the return result,
+		// we need to set this attribute from one to the other.
+		m.Options.SetSilenced(monitorResp.Options.GetSilenced())
 		mSilenced := m.Options.GetSilenced()
 		for k, _ := range mSilenced {
 			// Since the Datadog GO client doesn't support unmuting on all scopes, loop over GetSilenced() and set the
 			// end timestamp to time.Now().Unix()
 			mSilenced[k] = time.Now().Unix()
 		}
-		*m, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
+		monitorResp, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
 		if err != nil {
 			return translateClientError(err, "error updating monitor")
 		}
@@ -524,6 +535,9 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 
 	// Similarly, if the silenced attribute is -1, lets unmute those scopes
 	if len(unmutedScopes) != 0 {
+		// Because the Update method had a payload object which is not the same as the return result,
+		// we need to set this attribute from one to the other.
+		m.Options.SetSilenced(monitorResp.Options.GetSilenced())
 		silencedList := m.Options.GetSilenced()
 		for _, scope := range unmutedScopes {
 			if _, ok := silencedList[scope]; ok {

@@ -149,16 +149,21 @@ func ValidateServiceLevelObjectiveTypeString(v interface{}, k string) (ws []stri
 	return
 }
 
-func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.ServiceLevelObjective {
+func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.ServiceLevelObjective, *datadogV1.ServiceLevelObjectiveRequest) {
 
-	slo := &datadogV1.ServiceLevelObjective{
-		Id:   datadogV1.PtrString(d.Id()),
-		Name: d.Get("name").(string),
-		Type: datadogV1.SLOType(d.Get("type").(string)),
-	}
+	slo := datadogV1.NewServiceLevelObjectiveWithDefaults()
+	slo.SetName(d.Get("name").(string))
+	slo.SetType(datadogV1.SLOType(d.Get("type").(string)))
+	slo.SetId(d.Id())
+
+	slor := datadogV1.NewServiceLevelObjectiveRequestWithDefaults()
+	slor.SetName(d.Get("name").(string))
+	slor.SetType(datadogV1.SLOType(d.Get("type").(string)))
+	slor.SetId(d.Id())
 
 	if attr, ok := d.GetOk("description"); ok {
 		slo.SetDescription(attr.(string))
+		slor.SetDescription(attr.(string))
 	}
 
 	switch slo.GetType() {
@@ -170,6 +175,7 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 				s = append(s, int64(v.(int)))
 			}
 			slo.SetMonitorIds(s)
+			slor.SetMonitorIds(s)
 		}
 		if attr, ok := d.GetOk("groups"); ok {
 			s := make([]string, 0)
@@ -177,6 +183,7 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 				s = append(s, v.(string))
 			}
 			slo.SetGroups(s)
+			slor.SetGroups(s)
 		}
 	default:
 		// metric type
@@ -193,6 +200,9 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 				slo.SetQuery(*datadogV1.NewServiceLevelObjectiveQuery(
 					queries[0]["denominator"].(string),
 					queries[0]["numerator"].(string)))
+				slor.SetQuery(*datadogV1.NewServiceLevelObjectiveQuery(
+					queries[0]["denominator"].(string),
+					queries[0]["numerator"].(string)))
 			}
 		}
 	}
@@ -203,6 +213,7 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 			s = append(s, v.(string))
 		}
 		slo.SetTags(s)
+		slor.SetTags(s)
 	}
 
 	if _, ok := d.GetOk("thresholds"); ok {
@@ -243,10 +254,11 @@ func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadogV1.Service
 		}
 		if len(sloThresholds) > 0 {
 			slo.SetThresholds(sloThresholds)
+			slor.SetThresholds(sloThresholds)
 		}
 	}
 
-	return slo
+	return slo, slor
 }
 
 func floatOk(val interface{}) (float64, bool) {
@@ -276,13 +288,13 @@ func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta int
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	slo := buildServiceLevelObjectiveStruct(d)
-	sloResp, _, err := datadogClientV1.ServiceLevelObjectivesApi.CreateSLO(authV1).Body(*slo).Execute()
+	_, slor := buildServiceLevelObjectiveStructs(d)
+	sloResp, _, err := datadogClientV1.ServiceLevelObjectivesApi.CreateSLO(authV1).Body(*slor).Execute()
 	if err != nil {
 		return translateClientError(err, "error creating service level objective")
 	}
 
-	slo = &sloResp.GetData()[0]
+	slo := &sloResp.GetData()[0]
 	d.SetId(slo.GetId())
 
 	return resourceDatadogServiceLevelObjectiveRead(d, meta)
@@ -368,7 +380,7 @@ func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta int
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
-	slo := buildServiceLevelObjectiveStruct(d)
+	slo, _ := buildServiceLevelObjectiveStructs(d)
 
 	if _, _, err := datadogClientV1.ServiceLevelObjectivesApi.UpdateSLO(authV1, d.Id()).Body(*slo).Execute(); err != nil {
 		return translateClientError(err, "error updating service level objective")
