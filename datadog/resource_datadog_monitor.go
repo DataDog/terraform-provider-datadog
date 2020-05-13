@@ -504,6 +504,8 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	// they're "drift")
 	unmutedScopes := getUnmutedScopes(d)
 	if newSilenced, ok := d.GetOk("silenced"); ok && !silenced {
+		// Because the Update method had a payload object which is not the same as the return result,
+		// we need to set this attribute from one to the other.
 		m.Options.SetSilenced(monitorResp.Options.GetSilenced())
 		mSilenced := m.Options.GetSilenced()
 		for k, _ := range mSilenced {
@@ -526,6 +528,8 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 
 	// Similarly, if the silenced attribute is -1, lets unmute those scopes
 	if len(unmutedScopes) != 0 {
+		// Because the Update method had a payload object which is not the same as the return result,
+		// we need to set this attribute from one to the other.
 		m.Options.SetSilenced(monitorResp.Options.GetSilenced())
 		silencedList := m.Options.GetSilenced()
 		for _, scope := range unmutedScopes {
