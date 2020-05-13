@@ -1,15 +1,16 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
 	"testing"
 
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"github.com/zorkian/go-datadog-api"
 )
 
 const testAccCheckDatadogDashListConfig = `
@@ -106,21 +107,22 @@ func TestDatadogDashListImport(t *testing.T) {
 func testAccCheckDatadogDashListDestroy(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
-		return datadogDashListDestroyHelper(s, client)
+		return datadogDashListDestroyHelper(s, authV1, datadogClientV1)
 	}
 }
 
-func datadogDashListDestroyHelper(s *terraform.State, client *datadog.Client) error {
+func datadogDashListDestroyHelper(s *terraform.State, authV1 context.Context, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if !strings.Contains(r.Primary.Attributes["name"], "List") {
 			continue
 		}
 		id, _ := strconv.Atoi(r.Primary.ID)
-		_, errList := client.GetDashboardList(id)
+		_, _, errList := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, int64(id)).Execute()
 		if errList != nil {
-			if strings.Contains(errList.Error(), "not found") {
+			if strings.Contains(strings.ToLower(errList.Error()), "not found") {
 				continue
 			}
 			return fmt.Errorf("received an error retrieving Dash List %s", errList)
@@ -134,21 +136,22 @@ func datadogDashListDestroyHelper(s *terraform.State, client *datadog.Client) er
 func testAccCheckDatadogDashListExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
-		return datadogDashListExistsHelper(s, client)
+		return datadogDashListExistsHelper(s, authV1, datadogClientV1)
 	}
 }
 
-func datadogDashListExistsHelper(s *terraform.State, client *datadog.Client) error {
+func datadogDashListExistsHelper(s *terraform.State, authV1 context.Context, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if !strings.Contains(r.Primary.Attributes["name"], "List") {
 			continue
 		}
 		id, _ := strconv.Atoi(r.Primary.ID)
-		_, errList := client.GetDashboardList(id)
+		_, _, errList := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, int64(id)).Execute()
 		if errList != nil {
-			if strings.Contains(errList.Error(), "not found") {
+			if strings.Contains(strings.ToLower(errList.Error()), "not found") {
 				continue
 			}
 			return fmt.Errorf("received an error retrieving Dash List %s", errList)

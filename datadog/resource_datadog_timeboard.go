@@ -415,11 +415,12 @@ func resourceDatadogTimeboard() *schema.Resource {
 	}
 
 	return &schema.Resource{
-		Create: resourceDatadogTimeboardCreate,
-		Update: resourceDatadogTimeboardUpdate,
-		Read:   resourceDatadogTimeboardRead,
-		Delete: resourceDatadogTimeboardDelete,
-		Exists: resourceDatadogTimeboardExists,
+		DeprecationMessage: "This resource is deprecated. Instead use the Dashboard resource",
+		Create:             resourceDatadogTimeboardCreate,
+		Update:             resourceDatadogTimeboardUpdate,
+		Read:               resourceDatadogTimeboardRead,
+		Delete:             resourceDatadogTimeboardDelete,
+		Exists:             resourceDatadogTimeboardExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogTimeboardImport,
 		},

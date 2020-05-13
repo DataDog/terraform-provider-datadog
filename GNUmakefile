@@ -3,7 +3,8 @@ GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 WEBSITE_REPO=github.com/hashicorp/terraform-website
 PKG_NAME=datadog
 DIR=~/.terraform.d/plugins
-GO_CLIENT_VERSION=master
+ZORKIAN_VERSION=master
+API_CLIENT_VERSION=master
 
 default: build
 
@@ -21,7 +22,7 @@ test: fmtcheck
 	go test -i $(TEST) || exit 1
 	echo $(TEST) | \
 		xargs -t -n4 go test $(TESTARGS) -timeout=30s -parallel=4
-	DATADOG_API_KEY=fake DATADOG_APP_KEY=fake RECORD=false TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout=120s
+	DD_API_KEY=fake DD_APP_KEY=fake RECORD=false TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout=120s
 
 testacc: fmtcheck
 	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
@@ -71,7 +72,9 @@ endif
 	@$(MAKE) -C $(GOPATH)/src/$(WEBSITE_REPO) website-provider-test PROVIDER_PATH=$(shell pwd) PROVIDER_NAME=$(PKG_NAME)
 
 update-go-client:
-	go get github.com/zorkian/go-datadog-api@$(GO_CLIENT_VERSION)
+	echo "Updating the Zorkian client to ${ZORKIAN_VERSION} and the API Client to ${API_CLIENT_VERSION}"
+	go get github.com/zorkian/go-datadog-api@$(ZORKIAN_VERSION)
+	go get github.com/DataDog/datadog-api-client-go@${API_CLIENT_VERSION}
 	go mod vendor
 	go mod tidy
 

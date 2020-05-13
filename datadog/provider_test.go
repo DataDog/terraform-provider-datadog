@@ -33,6 +33,30 @@ func isReplaying() bool {
 	return os.Getenv("RECORD") == "false"
 }
 
+func isDebug() bool {
+	return os.Getenv("DEBUG") == "true"
+}
+
+func isAPIKeySet() bool {
+	if os.Getenv("DATADOG_API_KEY") != "" {
+		return true
+	}
+	if os.Getenv("DD_API_KEY") != "" {
+		return true
+	}
+	return false
+}
+
+func isAPPKeySet() bool {
+	if os.Getenv("DATADOG_APP_KEY") != "" {
+		return true
+	}
+	if os.Getenv("DD_APP_KEY") != "" {
+		return true
+	}
+	return false
+}
+
 func setClock(t *testing.T) clockwork.FakeClock {
 	os.MkdirAll("cassettes", 0755)
 	f, err := os.Create(fmt.Sprintf("cassettes/%s.freeze", t.Name()))
@@ -142,7 +166,7 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 		)
 		//Datadog V1 API config.HTTPClient
 		configV1 := datadogV1.NewConfiguration()
-		configV1.Debug = true
+		configV1.Debug = isDebug()
 		configV1.HTTPClient = c
 		if apiURL := d.Get("api_url").(string); apiURL != "" {
 			parsedApiUrl, parseErr := url.Parse(apiURL)
@@ -176,7 +200,7 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 		)
 		//Datadog V2 API config.HTTPClient
 		configV2 := datadogV2.NewConfiguration()
-		configV2.Debug = true
+		configV2.Debug = isDebug()
 		configV2.HTTPClient = c
 		if apiURL := d.Get("api_url").(string); apiURL != "" {
 			parsedApiUrl, parseErr := url.Parse(apiURL)
@@ -237,10 +261,10 @@ func testAccPreCheck(t *testing.T) {
 	if isReplaying() {
 		return
 	}
-	if v := os.Getenv("DATADOG_API_KEY"); v == "" {
-		t.Fatal("DATADOG_API_KEY must be set for acceptance tests")
+	if !isAPIKeySet() {
+		t.Fatal("DD_API_KEY must be set for acceptance tests")
 	}
-	if v := os.Getenv("DATADOG_APP_KEY"); v == "" {
-		t.Fatal("DATADOG_APP_KEY must be set for acceptance tests")
+	if !isAPPKeySet() {
+		t.Fatal("DD_APP_KEY must be set for acceptance tests")
 	}
 }

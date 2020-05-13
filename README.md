@@ -73,7 +73,7 @@ for an example of this.
 *Note:* Recording cassettes creates/updates/destroys real resources. Never run this on
 a production Datadog organization.
 
-In order to re-record all cassettes you need to have `DATADOG_API_KEY` and `DATADOG_APP_KEY`
+In order to re-record all cassettes you need to have `DD_API_KEY` and `DD_APP_KEY`
 for your testing organization in your environment. With that, run `make cassettes`. Do note
 that this would regenerate all cassettes and thus take a very long time; if you only need to
 re-record cassettes for one or two tests, you can run `make cassettes TESTARGS ="-run XXX"` - this
@@ -88,3 +88,13 @@ a production Datadog organization.
 ```sh
 $ make testacc
 ```
+
+In order to update the underlying API Clients that are used by this provider to interact with the Datadog API, run:
+
+```sh
+API_CLIENT_VERSION=vx.y.z ZORKIAN_VERSION=vx.y.z make update-go-client
+```
+
+where:
+* `API_CLIENT_VERSION` is the version or commit ref of the https://github.com/DataDog/datadog-api-client-go client.
+* `ZORKIAN_VERSION` is the version or commit ref of the https://github.com/zorkian/go-datadog-api client.

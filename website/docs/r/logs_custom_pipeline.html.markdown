@@ -90,6 +90,16 @@ resource "datadog_logs_custom_pipeline" "sample_pipeline" {
         }
     }
     processor {
+        lookup_processor {
+            source = "service_id"
+            target = "service_name"
+            lookup_table = ["1,my service"]
+            default_lookup = "unknown service"
+            name = "sample lookup processor"
+            is_enabled = true
+        }
+    }
+    processor {
         message_remapper {
             sources = ["msg"]
             name = "sample message remapper"
@@ -207,6 +217,13 @@ The following arguments are supported:
   * `grok`
     * `support_rules` - (Required) Support rules for your grok parser.
     * `match_rules` - (Required) Match rules for your grok parser.
+  * `name` - (Optional) Name of the processor.
+  * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
+* lookup_processor
+  * `source` - (Required) Name of the source attribute used to do the lookup.
+  * `target` - (Required) Name of the attribute that contains the result of the lookup.
+  * `lookup_table` - (Required) List of entries of the lookup table using `"key,value"` format.
+  * `default_lookup` - (Optional) Default lookup value to use if there is no entry in the lookup table for the value of the source attribute.
   * `name` - (Optional) Name of the processor.
   * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
 * message_remapper

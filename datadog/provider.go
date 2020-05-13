@@ -26,18 +26,23 @@ func Provider() terraform.ResourceProvider {
 		Schema: map[string]*schema.Schema{
 			"api_key": {
 				Type:        schema.TypeString,
-				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DATADOG_API_KEY", nil),
+				Optional:    true,
+				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_API_KEY", "DD_API_KEY"}, nil),
 			},
 			"app_key": {
 				Type:        schema.TypeString,
-				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DATADOG_APP_KEY", nil),
+				Optional:    true,
+				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_APP_KEY", "DD_APP_KEY"}, nil),
 			},
 			"api_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DATADOG_HOST", nil),
+				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_HOST", "DD_HOST"}, nil),
+			},
+			"validate": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
 			},
 		},
 
@@ -47,6 +52,8 @@ func Provider() terraform.ResourceProvider {
 			"datadog_downtime":                             resourceDatadogDowntime(),
 			"datadog_integration_gcp":                      resourceDatadogIntegrationGcp(),
 			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
+			"datadog_integration_aws_log_collection":       resourceDatadogIntegrationAwsLogCollection(),
+			"datadog_integration_aws_lambda_arn":           resourceDatadogIntegrationAwsLambdaArn(),
 			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
 			"datadog_integration_pagerduty_service_object": resourceDatadogIntegrationPagerdutySO(),
 			"datadog_logs_custom_pipeline":                 resourceDatadogLogsCustomPipeline(),
@@ -83,8 +90,20 @@ type ProviderConfiguration struct {
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
+	apiKey := d.Get("api_key").(string)
+	appKey := d.Get("app_key").(string)
+	validate := d.Get("validate").(bool)
+
+	if validate && (apiKey == "" || appKey == "") {
+		return nil, errors.New("api_key and app_key must be set unless validate = false")
+	}
+
+	if !validate && (apiKey != "" || appKey != "") {
+		return nil, errors.New("api_key and app_key must not be set when validate = false")
+	}
+
 	// Initialize the community client
-	communityClient := datadogCommunity.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
+	communityClient := datadogCommunity.NewClient(apiKey, appKey)
 
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		communityClient.SetBaseUrl(apiURL)
@@ -92,18 +111,28 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", c.Transport)
-	communityClient.ExtraHeader["User-Agent"] = fmt.Sprintf("terraform-provider-datadog/%s (go %s; terraform %s; terraform-cli %s)", version.ProviderVersion, runtime.Version(), meta.SDKVersionString(), datadogProvider.TerraformVersion)
+	communityClient.ExtraHeader["User-Agent"] = getUserAgent(fmt.Sprintf(
+		"datadog-api-client-go/%s (go %s; os %s; arch %s)",
+		"go-datadog-api",
+		runtime.Version(),
+		runtime.GOOS,
+		runtime.GOARCH,
+	))
 	communityClient.HttpClient = c
 
-	log.Println("[INFO] Datadog client successfully initialized, now validating...")
-	ok, err := communityClient.Validate()
-	if err != nil {
-		log.Printf("[ERROR] Datadog Client validation error: %v", err)
-		return nil, err
-	} else if !ok {
-		err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
-		log.Printf("[ERROR] Datadog Client validation error: %v", err)
-		return nil, err
+	if validate {
+		log.Println("[INFO] Datadog client successfully initialized, now validating...")
+		ok, err := communityClient.Validate()
+		if err != nil {
+			log.Printf("[ERROR] Datadog Client validation error: %v", err)
+			return nil, err
+		} else if !ok {
+			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
+			log.Printf("[ERROR] Datadog Client validation error: %v", err)
+			return nil, err
+		}
+	} else {
+		log.Println("[INFO] Skipping key validation (validate = false)")
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
@@ -113,14 +142,19 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		datadogV1.ContextAPIKeys,
 		map[string]datadogV1.APIKey{
 			"apiKeyAuth": {
-				Key: d.Get("api_key").(string),
+				Key: apiKey,
 			},
 			"appKeyAuth": {
-				Key: d.Get("app_key").(string),
+				Key: appKey,
 			},
 		},
 	)
 	configV1 := datadogV1.NewConfiguration()
+	// Enable unstable operations
+	configV1.SetUnstableOperationEnabled("GetLogsIndex", true)
+	configV1.SetUnstableOperationEnabled("ListLogIndexes", true)
+	configV1.SetUnstableOperationEnabled("UpdateLogsIndex", true)
+	configV1.UserAgent = getUserAgent(configV1.UserAgent)
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedApiUrl, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
@@ -136,6 +170,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			"protocol": parsedApiUrl.Scheme,
 		})
 	}
+
 	datadogClientV1 := datadogV1.NewAPIClient(configV1)
 
 	// Initialize the official Datadog V2 API client
@@ -152,6 +187,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		},
 	)
 	configV2 := datadogV2.NewConfiguration()
+	configV2.UserAgent = getUserAgent(configV2.UserAgent)
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedApiUrl, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
@@ -167,6 +203,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			"protocol": parsedApiUrl.Scheme,
 		})
 	}
+
 	datadogClientV2 := datadogV2.NewAPIClient(configV2)
 
 	return &ProviderConfiguration{
@@ -186,6 +223,9 @@ func translateClientError(err error, msg string) error {
 	if apiErr, ok := err.(datadogV1.GenericOpenAPIError); ok {
 		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
 	}
+	if apiErr, ok := err.(datadogV2.GenericOpenAPIError); ok {
+		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
+	}
 	if errUrl, ok := err.(*url.Error); ok {
 		return fmt.Errorf(msg+" (url.Error): %s", errUrl)
 	}
@@ -193,17 +233,10 @@ func translateClientError(err error, msg string) error {
 	return fmt.Errorf(msg+": %s", err.Error())
 }
 
-func translateClientErrorV2(err error, msg string) error {
-	if msg == "" {
-		msg = "an error occurred"
-	}
-
-	if apiErr, ok := err.(datadogV2.GenericOpenAPIError); ok {
-		fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
-	}
-	if errUrl, ok := err.(*url.Error); ok {
-		return fmt.Errorf(msg+" (url.Error): %s", errUrl)
-	}
-
-	return fmt.Errorf(msg+": %s", err.Error())
+func getUserAgent(clientUserAgent string) string {
+	return fmt.Sprintf("terraform-provider-datadog/%s (terraform %s; terraform-cli %s) %s",
+		version.ProviderVersion,
+		meta.SDKVersionString(),
+		datadogProvider.TerraformVersion,
+		clientUserAgent)
 }

@@ -1,14 +1,15 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testing"
 
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"github.com/zorkian/go-datadog-api"
 )
 
 const pipelineConfigForCreation = `
@@ -99,6 +100,23 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			sources = ["ip1"]
 		}
 	}
+	processor {
+		lookup_processor {
+			source = "ip1"
+			target = "ip.address"
+			lookup_table = ["key,value"]
+		}
+	}
+	processor {
+		lookup_processor {
+			name = "lookup processor with optional fields"
+			is_enabled = true
+			source = "ip2"
+			target = "ip.address"
+			lookup_table = ["key,value"]
+			default_lookup = "default"
+		}
+	}
 }
 `
 const pipelineConfigForUpdate = `
@@ -162,6 +180,23 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			sources = ["ip1", "ip2"]
 		}
 	}
+	processor {
+		lookup_processor {
+			source = "ip1"
+			target = "ip.address"
+			lookup_table = ["key,value", "key2,value2"]
+		}
+	}
+	processor {
+		lookup_processor {
+			name = "lookup processor with optional fields"
+			is_enabled = true
+			source = "ip2"
+			target = "ip.address"
+			lookup_table = ["key,value", "key2,value2"]
+			default_lookup = "default"
+		}
+	}
 }
 `
 
@@ -203,6 +238,10 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.pipeline.0.processor.1.user_agent_parser.0.target", "http_agent.details"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.5.geo_ip_parser.0.sources.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.6.lookup_processor.0.lookup_table.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.7.lookup_processor.0.lookup_table.#", "1"),
 				),
 			}, {
 				Config: pipelineConfigForUpdate,
@@ -222,6 +261,10 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.string_builder_processor.0.template", "%{user.name} is awesome"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.5.geo_ip_parser.0.sources.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.6.lookup_processor.0.lookup_table.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.7.lookup_processor.0.lookup_table.#", "2"),
 				),
 			},
 		},
@@ -231,20 +274,21 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 func testAccCheckPipelineExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
-		if err := pipelineExistsChecker(s, client); err != nil {
+		if err := pipelineExistsChecker(s, authV1, datadogClientV1); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func pipelineExistsChecker(s *terraform.State, client *datadog.Client) error {
+func pipelineExistsChecker(s *terraform.State, authV1 context.Context, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_custom_pipeline" {
 			id := r.Primary.ID
-			if _, err := client.GetLogsPipeline(id); err != nil {
+			if _, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, id).Execute(); err != nil {
 				return fmt.Errorf("received an error when retrieving pipeline, (%s)", err)
 			}
 		}
@@ -255,20 +299,21 @@ func pipelineExistsChecker(s *terraform.State, client *datadog.Client) error {
 func testAccCheckPipelineDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
-		if err := pipelineDestroyHelper(s, client); err != nil {
+		if err := pipelineDestroyHelper(s, authV1, datadogClientV1); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func pipelineDestroyHelper(s *terraform.State, client *datadog.Client) error {
+func pipelineDestroyHelper(s *terraform.State, authV1 context.Context, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_custom_pipeline" {
 			id := r.Primary.ID
-			p, err := client.GetLogsPipeline(id)
+			p, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, id).Execute()
 
 			if err != nil {
 				if strings.Contains(err.Error(), "400 Bad Request") {
@@ -276,7 +321,7 @@ func pipelineDestroyHelper(s *terraform.State, client *datadog.Client) error {
 				}
 				return fmt.Errorf("received an error when retrieving pipeline, (%s)", err)
 			}
-			if p != nil {
+			if &p != nil {
 				return fmt.Errorf("pipeline still exists")
 			}
 		}

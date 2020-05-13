@@ -2521,6 +2521,7 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Type:       schema.TypeInt,
 			Deprecated: "This parameter has been deprecated",
 			Optional:   true,
+			Default:    50,
 		},
 		// The start param is deprecated
 		"start": {
@@ -3497,8 +3498,9 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"legend_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			Optional:     true,
+			ValidateFunc: validateTimeseriesWidgetLegendSize,
 		},
 		"time": {
 			Type:     schema.TypeMap,
@@ -3580,6 +3582,9 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 	}
 	if v, ok := datadogDefinition.GetLegendSizeOk(); ok {
 		terraformDefinition["legend_size"] = *v
+	}
+	if datadogDefinition.LegendSize != nil {
+		terraformDefinition["legend_size"] = *datadogDefinition.LegendSize
 	}
 	return terraformDefinition
 }
@@ -4718,6 +4723,17 @@ func validateGroupWidgetLayoutType(val interface{}, key string) (warns []string,
 	default:
 		errs = append(errs, fmt.Errorf(
 			"%q contains an invalid value %q. Only `ordered` is a valid value", key, value))
+	}
+	return
+}
+func validateTimeseriesWidgetLegendSize(val interface{}, key string) (warns []string, errs []error) {
+	value := val.(string)
+	switch value {
+	case "2", "4", "8", "16", "auto":
+		break
+	default:
+		errs = append(errs, fmt.Errorf(
+			"%q contains an invalid value %q. Valud values are `2`, `4`, `8`, `16`, or `auto`", key, value))
 	}
 	return
 }
