@@ -483,7 +483,6 @@ resource "datadog_dashboard" "free_dashboard" {
 	widget {
 		log_stream_definition {
 			logset = "19"
-			indexes = ["main"]
 			query = "error"
 			columns = ["core_host", "core_service", "tag_source"]
 		}
