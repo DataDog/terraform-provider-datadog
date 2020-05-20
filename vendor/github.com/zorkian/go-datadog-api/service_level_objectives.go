@@ -525,7 +525,7 @@ type ServiceLevelObjectiveHistoryMetricSeries struct {
 
 // ServiceLevelObjectiveHistoryMonitorSeries defines the SLO history data response for `monitor` type SLOs
 type ServiceLevelObjectiveHistoryMonitorSeries struct {
-	Uptime        float32                                   `json:"uptime"`
+	SliValue      float32                                   `json:"sli_value"`
 	SpanPrecision json.Number                               `json:"span_precision"`
 	Name          string                                    `json:"name"`
 	Precision     map[string]json.Number                    `json:"precision"`
@@ -536,7 +536,7 @@ type ServiceLevelObjectiveHistoryMonitorSeries struct {
 // ServiceLevelObjectiveHistoryOverall defines the overall SLO history data response
 // for `monitor` type SLOs there is an additional `History` property that rolls up the overall state correctly.
 type ServiceLevelObjectiveHistoryOverall struct {
-	Uptime        float32                `json:"uptime"`
+	SliValue      float32                `json:"sli_value"`
 	SpanPrecision json.Number            `json:"span_precision"`
 	Name          string                 `json:"name"`
 	Precision     map[string]json.Number `json:"precision"`

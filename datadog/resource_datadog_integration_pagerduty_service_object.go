@@ -1,11 +1,10 @@
 package datadog
 
 import (
-	"fmt"
 	"strings"
 
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/zorkian/go-datadog-api"
 )
 
 const maskedSecret = "*****"
@@ -35,8 +34,8 @@ func resourceDatadogIntegrationPagerdutySO() *schema.Resource {
 	}
 }
 
-func buildIntegrationPagerdutySO(d *schema.ResourceData) *datadog.ServicePDRequest {
-	so := &datadog.ServicePDRequest{}
+func buildIntegrationPagerdutySO(d *schema.ResourceData) *datadogV1.PagerDutyService {
+	so := &datadogV1.PagerDutyService{}
 	if v, ok := d.GetOk("service_name"); ok {
 		so.SetServiceName(v.(string))
 	}
@@ -47,16 +46,27 @@ func buildIntegrationPagerdutySO(d *schema.ResourceData) *datadog.ServicePDReque
 	return so
 }
 
+func buildIntegrationPagerdutyServiceKey(d *schema.ResourceData) *datadogV1.PagerDutyServiceKey {
+	serviceKey := &datadogV1.PagerDutyServiceKey{}
+	if v, ok := d.GetOk("service_key"); ok {
+		serviceKey.SetServiceKey(v.(string))
+	}
+
+	return serviceKey
+}
+
 func resourceDatadogIntegrationPagerdutySOCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+
 	integrationPdMutex.Lock()
 	defer integrationPdMutex.Unlock()
 
 	so := buildIntegrationPagerdutySO(d)
-
-	if err := client.CreateIntegrationPDService(so); err != nil {
+	if _, _, err := datadogClientV1.PagerDutyIntegrationApi.CreatePagerDutyIntegrationService(authV1).Body(*so).Execute(); err != nil {
 		// TODO: warn user that PD integration must be enabled to be able to create service objects
-		return fmt.Errorf("Failed to create integration pagerduty using Datadog API: %s", err.Error())
+		return translateClientError(err, "error creating PagerDuty integration service")
 	}
 	d.SetId(so.GetServiceName())
 
@@ -64,11 +74,13 @@ func resourceDatadogIntegrationPagerdutySOCreate(d *schema.ResourceData, meta in
 }
 
 func resourceDatadogIntegrationPagerdutySORead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	so, err := client.GetIntegrationPDService(d.Id())
+	so, _, err := datadogClientV1.PagerDutyIntegrationApi.GetPagerDutyIntegrationService(authV1, d.Id()).Execute()
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting PagerDuty integration service")
 	}
 
 	d.Set("service_name", so.GetServiceName())
@@ -82,41 +94,47 @@ func resourceDatadogIntegrationPagerdutySORead(d *schema.ResourceData, meta inte
 }
 
 func resourceDatadogIntegrationPagerdutySOExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	_, err := client.GetIntegrationPDService(d.Id())
+	_, _, err := datadogClientV1.PagerDutyIntegrationApi.GetPagerDutyIntegrationService(authV1, d.Id()).Execute()
 	if err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking PagerDuty integration service exists")
 	}
 
 	return true, nil
 }
 
 func resourceDatadogIntegrationPagerdutySOUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+
 	integrationPdMutex.Lock()
 	defer integrationPdMutex.Unlock()
 
-	so := buildIntegrationPagerdutySO(d)
-
-	if err := client.UpdateIntegrationPDService(so); err != nil {
-		return fmt.Errorf("Failed to create integration pagerduty using Datadog API: %s", err.Error())
+	serviceKey := buildIntegrationPagerdutyServiceKey(d)
+	if _, err := datadogClientV1.PagerDutyIntegrationApi.UpdatePagerDutyIntegrationService(authV1, d.Id()).Body(*serviceKey).Execute(); err != nil {
+		return translateClientError(err, "error updating PagerDuty integration service")
 	}
-	d.SetId(so.GetServiceName())
 
 	return resourceDatadogIntegrationPagerdutySORead(d, meta)
 }
 
 func resourceDatadogIntegrationPagerdutySODelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+
 	integrationPdMutex.Lock()
 	defer integrationPdMutex.Unlock()
 
-	if err := client.DeleteIntegrationPDService(d.Id()); err != nil {
-		return fmt.Errorf("Error while deleting Pagerduty integration service object: %v", err)
+	if _, err := datadogClientV1.PagerDutyIntegrationApi.DeletePagerDutyIntegrationService(authV1, d.Id()).Execute(); err != nil {
+		return translateClientError(err, "error deleting PagerDuty integration service")
 	}
 
 	return nil

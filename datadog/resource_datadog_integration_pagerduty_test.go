@@ -6,22 +6,27 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	datadog "github.com/zorkian/go-datadog-api"
+	"github.com/zorkian/go-datadog-api"
 )
 
 // We're not testing for schedules because Datadog actively verifies it with Pagerduty
 
 func TestAccDatadogIntegrationPagerduty_Basic(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationPagerdutyConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogIntegrationPagerdutyExists("datadog_integration_pagerduty.foo"),
+					testAccCheckDatadogIntegrationPagerdutyExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "subdomain", "testdomain"),
 					resource.TestCheckResourceAttr(
@@ -37,15 +42,19 @@ func TestAccDatadogIntegrationPagerduty_Basic(t *testing.T) {
 }
 
 func TestAccDatadogIntegrationPagerduty_TwoServices(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogIntegrationPagerdutyConfig_TwoServices,
+				Config: testAccCheckDatadogIntegrationPagerdutyConfigTwoServices,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogIntegrationPagerdutyExists("datadog_integration_pagerduty.foo"),
+					testAccCheckDatadogIntegrationPagerdutyExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "subdomain", "testdomain"),
 					resource.TestCheckResourceAttr(
@@ -65,15 +74,19 @@ func TestAccDatadogIntegrationPagerduty_TwoServices(t *testing.T) {
 }
 
 func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationPagerdutyConfigBeforeMigration,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogIntegrationPagerdutyExists("datadog_integration_pagerduty.pd"),
+					testAccCheckDatadogIntegrationPagerdutyExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.pd", "subdomain", "ddog"),
 					resource.TestCheckResourceAttr(
@@ -96,7 +109,7 @@ func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
 			{
 				Config: testAccCheckDatadogIntegrationPagerdutyConfigAfterMigration,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogIntegrationPagerdutyExists("datadog_integration_pagerduty.pd"),
+					testAccCheckDatadogIntegrationPagerdutyExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.pd", "subdomain", "ddog"),
 					resource.TestCheckResourceAttr(
@@ -115,36 +128,41 @@ func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogIntegrationPagerdutyExists(n string) resource.TestCheckFunc {
+func testAccCheckDatadogIntegrationPagerdutyExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := testAccProvider.Meta().(*datadog.Client)
-		if err := datadogIntegrationPagerdutyExistsHelper(s, client); err != nil {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+
+		if err := datadogIntegrationPagerdutyExistsHelper(client); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func datadogIntegrationPagerdutyExistsHelper(s *terraform.State, client *datadog.Client) error {
+func datadogIntegrationPagerdutyExistsHelper(client *datadog.Client) error {
 	if _, err := client.GetIntegrationPD(); err != nil {
-		return fmt.Errorf("Received an error retrieving integration pagerduty %s", err)
+		return fmt.Errorf("received an error retrieving integration pagerduty %s", err)
 	}
 	return nil
 }
 
-func testAccCheckDatadogIntegrationPagerdutyDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
+func testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
 
-	_, err := client.GetIntegrationPD()
-	if err != nil {
-		if strings.Contains(err.Error(), "pagerduty not found") {
-			return nil
+		_, err := client.GetIntegrationPD()
+		if err != nil {
+			if strings.Contains(err.Error(), "pagerduty not found") {
+				return nil
+			}
+
+			return fmt.Errorf("received an error retrieving integration pagerduty %s", err)
 		}
 
-		return fmt.Errorf("Received an error retrieving integration pagerduty %s", err)
+		return fmt.Errorf("integration pagerduty is not properly destroyed")
 	}
-
-	return fmt.Errorf("Integration pagerduty is not properly destroyed")
 }
 
 const testAccCheckDatadogIntegrationPagerdutyConfig = `
@@ -159,7 +177,7 @@ const testAccCheckDatadogIntegrationPagerdutyConfig = `
  }
  `
 
-const testAccCheckDatadogIntegrationPagerdutyConfig_TwoServices = `
+const testAccCheckDatadogIntegrationPagerdutyConfigTwoServices = `
  locals {
 	 pd_services = {
 		 test_service = "*****"

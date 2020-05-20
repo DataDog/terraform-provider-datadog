@@ -58,10 +58,43 @@ In order to test the provider, you can simply run `make test`.
 $ make test
 ```
 
+Note that the above command runs acceptance tests by replaying pre-recorded API responses
+(cassettes) stored in `datadog/cassettes/`. When tests are modified, the cassettes need
+to be re-recorded.
+
+In order to make tests cassette friendly, it's necessary to ensure that resources always get
+manipulated in a predictable order. When creating a testing Terraform config that defines multiple
+resources at the same time, you need to set inter-resource dependencies (using `depends_on`)
+in such a way that there is only one way for Terraform to manipulate them. For example, given
+resources A, B and C in the same config string, you can achieve this by making A depend on B
+and B depend on C. See [PR #442](https://github.com/terraform-providers/terraform-provider-datadog/pull/442)
+for an example of this.
+
+*Note:* Recording cassettes creates/updates/destroys real resources. Never run this on
+a production Datadog organization.
+
+In order to re-record all cassettes you need to have `DD_API_KEY` and `DD_APP_KEY`
+for your testing organization in your environment. With that, run `make cassettes`. Do note
+that this would regenerate all cassettes and thus take a very long time; if you only need to
+re-record cassettes for one or two tests, you can run `make cassettes TESTARGS ="-run XXX"` - this
+will effectively execute `go test -run=XXX`, which would run all testcases that contain
+`XXX` in their name.
+
 In order to run the full suite of Acceptance tests, run `make testacc`.
 
-*Note:* Acceptance tests create real resources, and often cost money to run.
+*Note:* Acceptance tests create/update/destroy real resources. Never run this on
+a production Datadog organization.
 
 ```sh
 $ make testacc
 ```
+
+In order to update the underlying API Clients that are used by this provider to interact with the Datadog API, run:
+
+```sh
+API_CLIENT_VERSION=vx.y.z ZORKIAN_VERSION=vx.y.z make update-go-client
+```
+
+where:
+* `API_CLIENT_VERSION` is the version or commit ref of the https://github.com/DataDog/datadog-api-client-go client.
+* `ZORKIAN_VERSION` is the version or commit ref of the https://github.com/zorkian/go-datadog-api client.

@@ -2,9 +2,10 @@ package datadog
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/zorkian/go-datadog-api"
 	"strings"
+
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 var indexSchema = map[string]*schema.Schema{
@@ -57,21 +58,31 @@ func resourceDatadogLogsIndex() *schema.Resource {
 }
 
 func resourceDatadogLogsIndexCreate(d *schema.ResourceData, meta interface{}) error {
+	// This is a bit of a hack to ensure we fail fast if an index is about to be created, and
+	// to ensure we provide a useful error message (and don't panic)
+	// Indexes can only be updated, and the id is only set in the state if it was already imported
+	if _, ok := d.GetOk("id"); !ok {
+		return fmt.Errorf("logs index creation is not allowed, please import the index first. index_name: %s", d.Get("name").(string))
+	}
 	return resourceDatadogLogsIndexUpdate(d, meta)
 }
 
 func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) error {
-	ddIndex, err := meta.(*datadog.Client).GetLogsIndex(d.Id())
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+
+	ddIndex, _, err := datadogClientV1.LogsIndexesApi.GetLogsIndex(authV1, d.Id()).Execute()
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting logs index")
 	}
 	if err = d.Set("name", ddIndex.GetName()); err != nil {
 		return err
 	}
-	if err = d.Set("filter", buildTerraformFilter(ddIndex.Filter)); err != nil {
+	if err = d.Set("filter", buildTerraformIndexFilter(ddIndex.GetFilter())); err != nil {
 		return err
 	}
-	if err = d.Set("exclusion_filter", buildTerraformExclusionFilters(ddIndex.ExclusionFilters)); err != nil {
+	if err = d.Set("exclusion_filter", buildTerraformExclusionFilters(ddIndex.GetExclusionFilters())); err != nil {
 		return err
 	}
 	return nil
@@ -80,15 +91,18 @@ func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) erro
 func resourceDatadogLogsIndexUpdate(d *schema.ResourceData, meta interface{}) error {
 	ddIndex, err := buildDatadogIndex(d)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+
 	tfName := d.Get("name").(string)
-	if _, err := client.UpdateLogsIndex(tfName, ddIndex); err != nil {
+	if _, _, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndex(authV1, tfName).Body(*ddIndex).Execute(); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return fmt.Errorf("logs index creation is not allowed, index_name: %s", tfName)
 		}
-		return fmt.Errorf("error updating logs index: (%s)", err.Error())
+		return translateClientError(err, "error updating logs index")
 	}
 	d.SetId(tfName)
 	return resourceDatadogLogsIndexRead(d, meta)
@@ -99,36 +113,53 @@ func resourceDatadogLogsIndexDelete(d *schema.ResourceData, meta interface{}) er
 }
 
 func resourceDatadogLogsIndexExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+
 	if _, err := client.GetLogsIndex(d.Id()); err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking logs index exists")
 	}
 	return true, nil
 }
 
-func buildDatadogIndex(d *schema.ResourceData) (*datadog.LogsIndex, error) {
-	var ddIndex datadog.LogsIndex
+func buildDatadogIndex(d *schema.ResourceData) (*datadogV1.LogsIndex, error) {
+	var ddIndex datadogV1.LogsIndex
 	if tfFilter := d.Get("filter").([]interface{}); len(tfFilter) > 0 {
-		ddIndex.SetFilter(buildDatadogFilter(tfFilter[0].(map[string]interface{})))
+		ddIndex.SetFilter(*buildDatadogIndexFilter(tfFilter[0].(map[string]interface{})))
 	}
 
 	ddIndex.ExclusionFilters = buildDatadogExclusionFilters(d.Get("exclusion_filter").([]interface{}))
 	return &ddIndex, nil
 }
 
-func buildDatadogExclusionFilters(tfEFilters []interface{}) []datadog.ExclusionFilter {
-	ddEFilters := make([]datadog.ExclusionFilter, len(tfEFilters))
-	for i, tfEFilter := range tfEFilters {
-		ddEFilters[i] = buildDatadogExclusionFilter(tfEFilter.(map[string]interface{}))
+func buildDatadogIndexFilter(tfFilter map[string]interface{}) *datadogV1.LogsFilter {
+	ddFilter := datadogV1.NewLogsFilter()
+	if tfQuery, exists := tfFilter["query"].(string); exists {
+		ddFilter.SetQuery(tfQuery)
 	}
-	return ddEFilters
+	return ddFilter
 }
 
-func buildDatadogExclusionFilter(tfEFilter map[string]interface{}) datadog.ExclusionFilter {
-	ddEFilter := datadog.ExclusionFilter{}
+func buildTerraformIndexFilter(ddFilter datadogV1.LogsFilter) *[]map[string]interface{} {
+	tfFilter := map[string]interface{}{
+		"query": ddFilter.GetQuery(),
+	}
+	return &[]map[string]interface{}{tfFilter}
+}
+
+func buildDatadogExclusionFilters(tfEFilters []interface{}) *[]datadogV1.LogsExclusion {
+	ddEFilters := make([]datadogV1.LogsExclusion, len(tfEFilters))
+	for i, tfEFilter := range tfEFilters {
+		ddEFilters[i] = *buildDatadogExclusionFilter(tfEFilter.(map[string]interface{}))
+	}
+	return &ddEFilters
+}
+
+func buildDatadogExclusionFilter(tfEFilter map[string]interface{}) *datadogV1.LogsExclusion {
+	ddEFilter := datadogV1.NewLogsExclusionWithDefaults()
 	if tfName, exists := tfEFilter["name"].(string); exists {
 		ddEFilter.SetName(tfName)
 	}
@@ -137,27 +168,27 @@ func buildDatadogExclusionFilter(tfEFilter map[string]interface{}) datadog.Exclu
 	}
 	if tfFs, exists := tfEFilter["filter"].([]interface{}); exists && len(tfFs) > 0 {
 		tfFilter := tfFs[0].(map[string]interface{})
-		ddFilter := datadog.Filter{}
+		ddFilter := datadogV1.NewLogsExclusionFilterWithDefaults()
 		if tfQuery, exist := tfFilter["query"].(string); exist {
 			ddFilter.SetQuery(tfQuery)
 		}
 		if tfSampleRate, exist := tfFilter["sample_rate"].(float64); exist {
 			ddFilter.SetSampleRate(tfSampleRate)
 		}
-		ddEFilter.SetFilter(ddFilter)
+		ddEFilter.SetFilter(*ddFilter)
 	}
 	return ddEFilter
 }
 
-func buildTerraformExclusionFilters(ddEFilters []datadog.ExclusionFilter) []map[string]interface{} {
+func buildTerraformExclusionFilters(ddEFilters []datadogV1.LogsExclusion) *[]map[string]interface{} {
 	tfEFilters := make([]map[string]interface{}, len(ddEFilters))
 	for i, ddEFilter := range ddEFilters {
-		tfEFilters[i] = buildTerraformExclusionFilter(ddEFilter)
+		tfEFilters[i] = *buildTerraformExclusionFilter(ddEFilter)
 	}
-	return tfEFilters
+	return &tfEFilters
 }
 
-func buildTerraformExclusionFilter(ddEFilter datadog.ExclusionFilter) map[string]interface{} {
+func buildTerraformExclusionFilter(ddEFilter datadogV1.LogsExclusion) *map[string]interface{} {
 	tfEFilter := make(map[string]interface{})
 	ddFilter := ddEFilter.GetFilter()
 	tfFilter := map[string]interface{}{
@@ -167,5 +198,5 @@ func buildTerraformExclusionFilter(ddEFilter datadog.ExclusionFilter) map[string
 	tfEFilter["filter"] = []map[string]interface{}{tfFilter}
 	tfEFilter["name"] = ddEFilter.GetName()
 	tfEFilter["is_enabled"] = ddEFilter.GetIsEnabled()
-	return tfEFilter
+	return &tfEFilter
 }

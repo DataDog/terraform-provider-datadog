@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	datadog "github.com/zorkian/go-datadog-api"
 )
 
 const datadogDashboardConfig = `
@@ -274,6 +274,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			}
 			title = "Widget Title"
 			show_legend = true
+			legend_size = "2"
 			time = {
 				live_span = "1h"
 			}
@@ -346,6 +347,29 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			time_windows = ["7d", "previous_week"]
 		}
 	}
+	widget {
+		query_table_definition {
+		  request {
+			q = "avg:system.load.1{env:staging} by {account}"
+			aggregator = "sum"
+			limit = "10"
+			conditional_formats {
+				comparator = "<"
+				value = "2"
+				palette = "white_on_green"
+			}
+			conditional_formats {
+				comparator = ">"
+				value = "2.2"
+				palette = "white_on_red"
+			}
+		  }
+		  title = "Widget Title"
+		  time = {
+		    live_span = "1h"
+		  }
+		}
+	}
 	template_variable {
 		name   = "var_1"
 		prefix = "host"
@@ -355,6 +379,26 @@ resource "datadog_dashboard" "ordered_dashboard" {
 		name   = "var_2"
 		prefix = "service_name"
 		default = "autoscaling"
+	}
+	template_variable_preset {
+		name = "preset_1"
+
+		template_variable {
+			name = "var_1"
+			value = "var_1_value"
+		}
+		template_variable {
+			name = "var_2"
+			value = "var_2_value"
+		}
+	}
+	template_variable_preset {
+		name = "preset_2"
+
+		template_variable {
+			name = "var_1"
+			value = "var_1_value"
+		}
 	}
 }
 
@@ -508,20 +552,43 @@ resource "datadog_dashboard" "free_dashboard" {
 		prefix = "service_name"
 		default = "autoscaling"
 	}
+	template_variable_preset {
+		name = "preset_1"
+
+		template_variable {
+			name = "var_1"
+			value = "var_1_value"
+		}
+		template_variable {
+			name = "var_2"
+			value = "var_2_value"
+		}
+	}
+	template_variable_preset {
+		name = "preset_2"
+
+		template_variable {
+			name = "var_1"
+			value = "var_1_value"
+		}
+	}
 }
 `
 
 func TestAccDatadogDashboard_update(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: checkDashboardDestroy,
+		Providers:    accProviders,
+		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: datadogDashboardConfig,
 				Check: resource.ComposeTestCheckFunc(
-					checkDashboardExists,
+					checkDashboardExists(accProvider),
 					// Ordered layout dashboard
 
 					// Dashboard metadata
@@ -529,7 +596,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "description", "Created using the Datadog provider in Terraform"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "layout_type", "ordered"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "is_read_only", "true"),
-					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.#", "14"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.#", "15"),
 					// Alert Graph widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.0.alert_graph_definition.0.alert_id", "895605"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.0.alert_graph_definition.0.viz_type", "timeseries"),
@@ -599,7 +666,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.7.note_definition.0.show_tick", "true"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.7.note_definition.0.tick_edge", "left"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.7.note_definition.0.tick_pos", "50%"),
-					// Query valye widget
+					// Query Value widget
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_value_definition.0.request.0.q", "avg:system.load.1{env:staging} by {account}"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_value_definition.0.request.0.aggregator", "sum"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.8.query_value_definition.0.request.0.conditional_formats.#", "2"),
@@ -681,6 +748,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.marker.1.value", "10 < y < 999"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.title", "Widget Title"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.show_legend", "true"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.legend_size", "2"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.time.live_span", "1h"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.event.0.q", "sources:test tags:1"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.10.timeseries_definition.0.event.1.q", "sources:test tags:2"),
@@ -723,6 +791,19 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.13.service_level_objective_definition.0.time_windows.#", "2"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.13.service_level_objective_definition.0.time_windows.0", "7d"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.13.service_level_objective_definition.0.time_windows.1", "previous_week"),
+					// Query Table widget
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.q", "avg:system.load.1{env:staging} by {account}"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.conditional_formats.#", "2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.conditional_formats.0.comparator", "<"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.conditional_formats.0.value", "2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.conditional_formats.0.palette", "white_on_green"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.conditional_formats.1.comparator", ">"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.conditional_formats.1.value", "2.2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.conditional_formats.1.palette", "white_on_red"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.aggregator", "sum"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.request.0.limit", "10"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.title", "Widget Title"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "widget.14.query_table_definition.0.time.live_span", "1h"),
 					// Template Variables
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable.#", "2"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable.0.name", "var_1"),
@@ -732,6 +813,17 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable.1.prefix", "service_name"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable.1.default", "autoscaling"),
 					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "description", "Created using the Datadog provider in Terraform"),
+
+					// Template Variable Presets
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.#", "2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.0.name", "preset_1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.0.template_variable.0.name", "var_1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.0.template_variable.0.value", "var_1_value"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.0.template_variable.1.name", "var_2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.0.template_variable.1.value", "var_2_value"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.1.name", "preset_2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.1.template_variable.0.name", "var_1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.ordered_dashboard", "template_variable_preset.1.template_variable.0.value", "var_1_value"),
 
 					// Free layout dashboard
 
@@ -834,6 +926,17 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable.1.default", "autoscaling"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable.1.name", "var_2"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable.1.prefix", "service_name"),
+
+					// Template Variable Presets
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.#", "2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.0.name", "preset_1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.0.template_variable.0.name", "var_1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.0.template_variable.0.value", "var_1_value"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.0.template_variable.1.name", "var_2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.0.template_variable.1.value", "var_2_value"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.1.name", "preset_2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.1.template_variable.0.name", "var_1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "template_variable_preset.1.template_variable.0.value", "var_1_value"),
 				),
 			},
 		},
@@ -841,10 +944,14 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 }
 
 func TestAccDatadogDashboard_import(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: checkDashboardDestroy,
+		Providers:    accProviders,
+		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: datadogDashboardConfig,
@@ -863,26 +970,36 @@ func TestAccDatadogDashboard_import(t *testing.T) {
 	})
 }
 
-func checkDashboardExists(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
-	for _, r := range s.RootModule().Resources {
-		if _, err := client.GetBoard(r.Primary.ID); err != nil {
-			return fmt.Errorf("Received an error retrieving dashboard1 %s", err)
+func checkDashboardExists(accProvider *schema.Provider) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
+
+		for _, r := range s.RootModule().Resources {
+			if _, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID).Execute(); err != nil {
+				return fmt.Errorf("received an error retrieving dashboard1 %s", err)
+			}
 		}
+		return nil
 	}
-	return nil
 }
 
-func checkDashboardDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
-	for _, r := range s.RootModule().Resources {
-		if _, err := client.GetBoard(r.Primary.ID); err != nil {
-			if strings.Contains(err.Error(), "404 Not Found") {
-				continue
+func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
+
+		for _, r := range s.RootModule().Resources {
+			if _, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID).Execute(); err != nil {
+				if strings.Contains(err.Error(), "404 Not Found") {
+					continue
+				}
+				return fmt.Errorf("received an error retrieving dashboard2 %s", err)
 			}
-			return fmt.Errorf("Received an error retrieving dashboard2 %s", err)
+			return fmt.Errorf("dashboard still exists")
 		}
-		return fmt.Errorf("Dashboard still exists")
+		return nil
 	}
-	return nil
 }

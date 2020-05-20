@@ -1,14 +1,16 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
 	"testing"
 
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	datadog "github.com/zorkian/go-datadog-api"
 )
 
 const testAccCheckDatadogDashListConfig = `
@@ -31,6 +33,9 @@ resource "datadog_dashboard_list" "new_list" {
 
 resource "datadog_dashboard" "time" {
 	title         = "TF Test Layout Dashboard"
+	# NOTE: this dependency is present to make sure the dashboards are created in
+	# a predictable order and thus the recorder test cassettes always work
+	depends_on    = ["datadog_dashboard.screen"]
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = true
@@ -76,12 +81,16 @@ resource "datadog_dashboard" "screen" {
 
 func TestDatadogDashListImport(t *testing.T) {
 	resourceName := "datadog_dashboard_list.new_list"
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	// Getting the hash for a TypeSet element that has dynamic elements isn't possible
 	// So instead we use an import test to make sure the resource can be imported properly.
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogDashListDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDashListDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDashListConfig,
@@ -95,50 +104,57 @@ func TestDatadogDashListImport(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogDashListDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
+func testAccCheckDatadogDashListDestroy(accProvider *schema.Provider) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
-	return datadogDashListDestroyHelper(s, client)
+		return datadogDashListDestroyHelper(s, authV1, datadogClientV1)
+	}
 }
 
-func datadogDashListDestroyHelper(s *terraform.State, client *datadog.Client) error {
+func datadogDashListDestroyHelper(s *terraform.State, authV1 context.Context, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if !strings.Contains(r.Primary.Attributes["name"], "List") {
 			continue
 		}
 		id, _ := strconv.Atoi(r.Primary.ID)
-		_, errList := client.GetDashboardList(id)
+		_, _, errList := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, int64(id)).Execute()
 		if errList != nil {
-			if strings.Contains(errList.Error(), "not found") {
+			if strings.Contains(strings.ToLower(errList.Error()), "not found") {
 				continue
 			}
-			return fmt.Errorf("Received an error retrieving Dash List %s", errList)
+			return fmt.Errorf("received an error retrieving Dash List %s", errList)
 		}
 
-		return fmt.Errorf("Dash List  still exists")
+		return fmt.Errorf("dashoard List still exists")
 	}
 	return nil
 }
 
-func testAccCheckDatadogDashListExists(n string) resource.TestCheckFunc {
+func testAccCheckDatadogDashListExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := testAccProvider.Meta().(*datadog.Client)
-		return datadogDashListExistsHelper(s, client)
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
+
+		return datadogDashListExistsHelper(s, authV1, datadogClientV1)
 	}
 }
 
-func datadogDashListExistsHelper(s *terraform.State, client *datadog.Client) error {
+func datadogDashListExistsHelper(s *terraform.State, authV1 context.Context, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if !strings.Contains(r.Primary.Attributes["name"], "List") {
 			continue
 		}
 		id, _ := strconv.Atoi(r.Primary.ID)
-		_, errList := client.GetDashboardList(id)
+		_, _, errList := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, int64(id)).Execute()
 		if errList != nil {
-			if strings.Contains(errList.Error(), "not found") {
+			if strings.Contains(strings.ToLower(errList.Error()), "not found") {
 				continue
 			}
-			return fmt.Errorf("Received an error retrieving Dash List %s", errList)
+			return fmt.Errorf("received an error retrieving Dash List %s", errList)
 		}
 
 		return nil

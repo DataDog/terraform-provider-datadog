@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -8,21 +9,26 @@ import (
 	"testing"
 	"time"
 
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"github.com/zorkian/go-datadog-api"
 )
 
 func TestAccDatadogDowntime_Basic(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDowntimeConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
+					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "scope.0", "*"),
 					resource.TestCheckResourceAttr(
@@ -44,20 +50,25 @@ func TestAccDatadogDowntime_Basic(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicWithMonitor(t *testing.T) {
-	start := time.Now().Local().Add(time.Hour * time.Duration(3))
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	clock := testClock(t)
+	start := clock.Now().Local().Add(time.Hour * time.Duration(3))
 	end := start.Add(time.Hour * time.Duration(1))
 
 	config := testAccCheckDatadogDowntimeConfigWithMonitor(start.Unix(), end.Unix())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: config,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
+					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 				),
 			},
 		},
@@ -65,20 +76,25 @@ func TestAccDatadogDowntime_BasicWithMonitor(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicWithMonitorTags(t *testing.T) {
-	start := time.Now().Local().Add(time.Hour * time.Duration(3))
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	clock := testClock(t)
+	start := clock.Now().Local().Add(time.Hour * time.Duration(3))
 	end := start.Add(time.Hour * time.Duration(1))
 
 	config := testAccCheckDatadogDowntimeConfigWithMonitorTags(start.Unix(), end.Unix())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: config,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
+					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 				),
 			},
 		},
@@ -86,15 +102,19 @@ func TestAccDatadogDowntime_BasicWithMonitorTags(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicMultiScope(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDowntimeConfigMultiScope,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
+					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "scope.0", "host:A"),
 					resource.TestCheckResourceAttr(
@@ -118,15 +138,19 @@ func TestAccDatadogDowntime_BasicMultiScope(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicNoRecurrence(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDowntimeConfigNoRecurrence,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
+					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "scope.0", "host:NoRecurrence"),
 					resource.TestCheckResourceAttr(
@@ -144,15 +168,19 @@ func TestAccDatadogDowntime_BasicNoRecurrence(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicUntilDateRecurrence(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDowntimeConfigUntilDateRecurrence,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
+					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "scope.0", "host:UntilDateRecurrence"),
 					resource.TestCheckResourceAttr(
@@ -176,15 +204,19 @@ func TestAccDatadogDowntime_BasicUntilDateRecurrence(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDowntimeConfigUntilOccurrencesRecurrence,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
+					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "scope.0", "host:UntilOccurrencesRecurrence"),
 					resource.TestCheckResourceAttr(
@@ -208,15 +240,19 @@ func TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDowntimeConfigWeekDaysRecurrence,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
+					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "scope.0", "WeekDaysRecurrence"),
 					resource.TestCheckResourceAttr(
@@ -242,15 +278,19 @@ func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_Updated(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDowntimeConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
+					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "scope.0", "*"),
 					resource.TestCheckResourceAttr(
@@ -270,7 +310,7 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogDowntimeConfigUpdated,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
+					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "scope.0", "Updated"),
 					resource.TestCheckResourceAttr(
@@ -292,15 +332,19 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDowntimeConfigWhitespace,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
+					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "scope.0", "host:Whitespace"),
 					resource.TestCheckResourceAttr(
@@ -321,19 +365,26 @@ func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogDowntimeDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
+func testAccCheckDatadogDowntimeDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
 
-	if err := datadogDowntimeDestroyHelper(s, client); err != nil {
-		return err
+		if err := datadogDowntimeDestroyHelper(authV1, s, datadogClientV1); err != nil {
+			return err
+		}
+		return nil
 	}
-	return nil
 }
 
-func testAccCheckDatadogDowntimeExists(n string) resource.TestCheckFunc {
+func testAccCheckDatadogDowntimeExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		client := testAccProvider.Meta().(*datadog.Client)
-		if err := datadogDowntimeExistsHelper(s, client); err != nil {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
+
+		if err := datadogDowntimeExistsHelper(authV1, s, datadogClientV1); err != nil {
 			return err
 		}
 		return nil
@@ -341,15 +392,19 @@ func testAccCheckDatadogDowntimeExists(n string) resource.TestCheckFunc {
 }
 
 func TestAccDatadogDowntimeDates(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDowntimeConfigDates,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogDowntimeExists("datadog_downtime.foo"),
+					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "scope.0", "*"),
 					resource.TestCheckResourceAttr(
@@ -371,10 +426,14 @@ func TestAccDatadogDowntimeDates(t *testing.T) {
 }
 
 func TestAccDatadogDowntimeDatesConflict(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogDowntimeConfigDatesConflict,
@@ -712,41 +771,40 @@ func TestResourceDatadogDowntimeRecurrenceWeekDaysValidation(t *testing.T) {
 	}
 }
 
-func datadogDowntimeDestroyHelper(s *terraform.State, client *datadog.Client) error {
-	for n, r := range s.RootModule().Resources {
-		fmt.Printf("Resource %s, type = %s\n", n, r.Type)
-		if r.Type != "datadog_downtime" {
-			continue
-		}
-
-		id, _ := strconv.Atoi(r.Primary.ID)
-		dt, err := client.GetDowntime(id)
-
-		if err != nil {
-			if strings.Contains(err.Error(), "404 Not Found") {
-				continue
-			}
-			return fmt.Errorf("Received an error retrieving downtime %s", err)
-		}
-
-		// Datadog only cancels downtime on DELETE
-		if !dt.GetActive() {
-			continue
-		}
-		return fmt.Errorf("Downtime still exists")
-	}
-	return nil
-}
-
-func datadogDowntimeExistsHelper(s *terraform.State, client *datadog.Client) error {
+func datadogDowntimeDestroyHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type != "datadog_downtime" {
 			continue
 		}
 
 		id, _ := strconv.Atoi(r.Primary.ID)
-		if _, err := client.GetDowntime(id); err != nil {
-			return fmt.Errorf("Received an error retrieving downtime %s", err)
+		dt, _, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, int64(id)).Execute()
+
+		if err != nil {
+			if strings.Contains(err.Error(), "404 Not Found") {
+				continue
+			}
+			return fmt.Errorf("received an error retrieving downtime %s", err)
+		}
+
+		// Datadog only cancels downtime on DELETE
+		if !dt.GetActive() {
+			continue
+		}
+		return fmt.Errorf("downtime still exists")
+	}
+	return nil
+}
+
+func datadogDowntimeExistsHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	for _, r := range s.RootModule().Resources {
+		if r.Type != "datadog_downtime" {
+			continue
+		}
+
+		id, _ := strconv.Atoi(r.Primary.ID)
+		if _, _, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, int64(id)).Execute(); err != nil {
+			return fmt.Errorf("received an error retrieving downtime %s", err)
 		}
 	}
 	return nil

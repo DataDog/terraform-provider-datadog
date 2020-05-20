@@ -1,8 +1,9 @@
 package datadog
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"testing"
+
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
 const pipelineConfigForImport = `
@@ -123,19 +124,23 @@ resource "datadog_logs_custom_pipeline" "test_import" {
 			is_encoded = false
 		}
 	}
-}	
+}
 `
 
 func TestAccLogsCustomPipeline_importBasic(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckPipelineDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckPipelineDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: pipelineConfigForImport,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckPipelineExists("datadog_logs_custom_pipeline.test_import"),
+					testAccCheckPipelineExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.test_import", "name", "imported pipeline"),
 				),

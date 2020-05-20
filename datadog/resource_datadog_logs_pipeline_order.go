@@ -2,9 +2,10 @@ package datadog
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/zorkian/go-datadog-api"
 	"strings"
+
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourceDatadogLogsPipelineOrder() *schema.Resource {
@@ -33,9 +34,12 @@ func resourceDatadogLogsPipelineOrderCreate(d *schema.ResourceData, meta interfa
 }
 
 func resourceDatadogLogsPipelineOrderRead(d *schema.ResourceData, meta interface{}) error {
-	ddList, err := meta.(*datadog.Client).GetLogsPipelineList()
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+	ddList, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipelineOrder(authV1).Execute()
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting logs pipeline order")
 	}
 
 	if err = d.Set("pipelines", ddList.PipelineIds); err != nil {
@@ -46,7 +50,7 @@ func resourceDatadogLogsPipelineOrderRead(d *schema.ResourceData, meta interface
 }
 
 func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interface{}) error {
-	var ddPipelineList datadog.LogsPipelineList
+	var ddPipelineList datadogV1.LogsPipelinesOrder
 	tfList := d.Get("pipelines").([]interface{})
 	ddList := make([]string, len(tfList))
 	for i, id := range tfList {
@@ -57,18 +61,21 @@ func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interfa
 	if name, exists := d.GetOk("name"); exists {
 		tfId = name.(string)
 	}
-	if _, err := meta.(*datadog.Client).UpdateLogsPipelineList(&ddPipelineList); err != nil {
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+	if _, _, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipelineOrder(authV1).Body(ddPipelineList).Execute(); err != nil {
 		// Cannot map pipelines to existing ones
 		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
-			ddPipelineOrder, getErr := meta.(*datadog.Client).GetLogsPipelineList()
+			ddPipelineOrder, _, getErr := datadogClientV1.LogsPipelinesApi.GetLogsPipelineOrder(authV1).Execute()
 			if getErr != nil {
-				return fmt.Errorf("error updating logs pipeline list: (%s)", err.Error())
+				return translateClientError(err, "error getting logs pipeline order")
 			}
 			return fmt.Errorf("cannot map pipelines to existing ones\n existing pipelines: %s\n pipeline to be updated: %s",
 				ddPipelineOrder.PipelineIds,
 				ddList)
 		}
-		return fmt.Errorf("error updating logs pipeline list: (%s)", err.Error())
+		return translateClientError(err, "error updating logs pipeline order")
 	}
 	d.SetId(tfId)
 	return resourceDatadogLogsPipelineOrderRead(d, meta)
