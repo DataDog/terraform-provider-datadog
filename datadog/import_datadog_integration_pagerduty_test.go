@@ -46,6 +46,5 @@ resource "datadog_integration_pagerduty" "pd" {
 		}
 	}
   subdomain = "testdomain"
-  api_token = "*****"
 }
 `
