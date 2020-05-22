@@ -2398,6 +2398,37 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 			Elem:     &schema.Schema{Type: schema.TypeString},
 		},
+		"show_date_column": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
+		"show_message_column": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
+		"message_display": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "One of: ['inline', 'expanded-md', 'expanded-lg']",
+			ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+				value := val.(string)
+				switch value {
+				case "inline", "expanded-md", "expanded-lg":
+					break
+				default:
+					errs = append(errs, fmt.Errorf(
+						"%q contains an invalid value %q. Valid values are `inline`, `expanded-md`, or `expanded-lg`", key, value))
+				}
+				return
+			},
+		},
+		"sort": {
+			Type:     schema.TypeMap,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: getWidgetFieldSortSchema(),
+			},
+		},
 		"title": {
 			Type:     schema.TypeString,
 			Optional: true,
@@ -2415,6 +2446,30 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 			Elem: &schema.Resource{
 				Schema: getWidgetTimeSchema(),
+			},
+		},
+	}
+}
+
+func getWidgetFieldSortSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"column": {
+			Type:     schema.TypeString,
+			Required: true,
+		},
+		"order": {
+			Type:     schema.TypeString,
+			Required: true,
+			ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+				value := val.(string)
+				switch value {
+				case "asc", "desc":
+					break
+				default:
+					errs = append(errs, fmt.Errorf(
+						"%q contains an invalid value %q. Valid values are `asc`, or `desc`", key, value))
+				}
+				return
 			},
 		},
 	}
@@ -2441,6 +2496,18 @@ func buildDatadogLogStreamDefinition(terraformDefinition map[string]interface{})
 		}
 		datadogDefinition.SetColumns(datadogColumns)
 	}
+	if v, ok := terraformDefinition["show_date_column"].(bool); ok {
+		datadogDefinition.SetShowDateColumn(v)
+	}
+	if v, ok := terraformDefinition["show_message_column"].(bool); ok {
+		datadogDefinition.SetShowMessageColumn(v)
+	}
+	if v, ok := terraformDefinition["message_display"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetMessageDisplay(datadogV1.WidgetMessageDisplay(v))
+	}
+	if v, ok := terraformDefinition["sort"].(map[string]interface{}); ok && len(v) > 0 {
+		datadogDefinition.Sort = buildDatadogWidgetFieldSort(v)
+	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
 	}
@@ -2454,6 +2521,17 @@ func buildDatadogLogStreamDefinition(terraformDefinition map[string]interface{})
 		datadogDefinition.Time = buildDatadogWidgetTime(v)
 	}
 	return datadogDefinition
+}
+
+func buildDatadogWidgetFieldSort(terraformWidgetFieldSort map[string]interface{}) *datadogV1.WidgetFieldSort {
+	datadogWidgetFieldSort := &datadogV1.WidgetFieldSort{}
+	if v, ok := terraformWidgetFieldSort["column"].(string); ok && len(v) != 0 {
+		datadogWidgetFieldSort.SetColumn(v)
+	}
+	if v, ok := terraformWidgetFieldSort["order"].(string); ok && len(v) != 0 {
+		datadogWidgetFieldSort.SetOrder(datadogV1.WidgetSort(v))
+	}
+	return datadogWidgetFieldSort
 }
 
 func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidgetDefinition) map[string]interface{} {
@@ -2474,6 +2552,18 @@ func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidg
 		}
 		terraformDefinition["columns"] = terraformColumns
 	}
+	if v, ok := datadogDefinition.GetShowDateColumnOk(); ok {
+		terraformDefinition["show_date_column"] = *v
+	}
+	if v, ok := datadogDefinition.GetShowMessageColumnOk(); ok {
+		terraformDefinition["show_message_column"] = *v
+	}
+	if v, ok := datadogDefinition.GetMessageDisplayOk(); ok {
+		terraformDefinition["message_display"] = *v
+	}
+	if v, ok := datadogDefinition.GetSortOk(); ok {
+		terraformDefinition["sort"] = buildTerraformWidgetFieldSort(*v)
+	}
 	if v, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = *v
 	}
@@ -2487,6 +2577,17 @@ func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidg
 		terraformDefinition["time"] = buildTerraformWidgetTime(*v)
 	}
 	return terraformDefinition
+}
+
+func buildTerraformWidgetFieldSort(datadogWidgetFieldSort datadogV1.WidgetFieldSort) map[string]string {
+	terraformWidgetFieldSort := map[string]string{}
+	if v, ok := datadogWidgetFieldSort.GetColumnOk(); ok {
+		terraformWidgetFieldSort["column"] = string(*v)
+	}
+	if v, ok := datadogWidgetFieldSort.GetOrderOk(); ok {
+		terraformWidgetFieldSort["order"] = string(*v)
+	}
+	return terraformWidgetFieldSort
 }
 
 //
