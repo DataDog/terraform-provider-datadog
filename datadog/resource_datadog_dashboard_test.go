@@ -485,6 +485,13 @@ resource "datadog_dashboard" "free_dashboard" {
 			logset = "19"
 			query = "error"
 			columns = ["core_host", "core_service", "tag_source"]
+			show_date_column = true
+			show_message_column = true
+			message_display = "expanded-md"
+			sort = {
+				column = "time" 
+				order = "desc"
+			}
 		}
 		layout = {
 			height = 36
