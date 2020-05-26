@@ -54,7 +54,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
 			"datadog_integration_aws_log_collection":       resourceDatadogIntegrationAwsLogCollection(),
 			"datadog_integration_aws_lambda_arn":           resourceDatadogIntegrationAwsLambdaArn(),
-      "datadog_integration_slack":                    resourceDatadogIntegrationSlack(),
+			"datadog_integration_slack":                    resourceDatadogIntegrationSlack(),
 			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
 			"datadog_integration_pagerduty_service_object": resourceDatadogIntegrationPagerdutySO(),
 			"datadog_logs_custom_pipeline":                 resourceDatadogLogsCustomPipeline(),
