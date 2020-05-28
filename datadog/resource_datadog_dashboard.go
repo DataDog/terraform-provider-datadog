@@ -2423,7 +2423,8 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"sort": {
-			Type:     schema.TypeMap,
+			Type:     schema.TypeList,
+			MaxItems: 1,
 			Optional: true,
 			Elem: &schema.Resource{
 				Schema: getWidgetFieldSortSchema(),
@@ -2505,8 +2506,10 @@ func buildDatadogLogStreamDefinition(terraformDefinition map[string]interface{})
 	if v, ok := terraformDefinition["message_display"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetMessageDisplay(datadogV1.WidgetMessageDisplay(v))
 	}
-	if v, ok := terraformDefinition["sort"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Sort = buildDatadogWidgetFieldSort(v)
+	if v, ok := terraformDefinition["sort"].([]interface{}); ok && len(v) > 0 {
+		if v, ok := v[0].(map[string]interface{}); ok && len(v) > 0 {
+			datadogDefinition.Sort = buildDatadogWidgetFieldSort(v)
+		}
 	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
@@ -2562,7 +2565,8 @@ func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidg
 		terraformDefinition["message_display"] = *v
 	}
 	if v, ok := datadogDefinition.GetSortOk(); ok {
-		terraformDefinition["sort"] = buildTerraformWidgetFieldSort(*v)
+		sort := buildTerraformWidgetFieldSort(*v)
+		terraformDefinition["sort"] = []map[string]interface{}{sort}
 	}
 	if v, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = *v
@@ -2579,8 +2583,8 @@ func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidg
 	return terraformDefinition
 }
 
-func buildTerraformWidgetFieldSort(datadogWidgetFieldSort datadogV1.WidgetFieldSort) map[string]string {
-	terraformWidgetFieldSort := map[string]string{}
+func buildTerraformWidgetFieldSort(datadogWidgetFieldSort datadogV1.WidgetFieldSort) map[string]interface{} {
+	terraformWidgetFieldSort := map[string]interface{}{}
 	if v, ok := datadogWidgetFieldSort.GetColumnOk(); ok {
 		terraformWidgetFieldSort["column"] = string(*v)
 	}

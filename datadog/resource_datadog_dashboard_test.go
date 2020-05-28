@@ -488,7 +488,7 @@ resource "datadog_dashboard" "free_dashboard" {
 			show_date_column = true
 			show_message_column = true
 			message_display = "expanded-md"
-			sort = {
+			sort {
 				column = "time" 
 				order = "desc"
 			}
@@ -891,8 +891,8 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.show_date_column", "true"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.show_message_column", "true"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.message_display", "expanded-md"),
-					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.sort.column", "time"),
-					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.sort.order", "desc"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.sort.0.column", "time"),
+					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.log_stream_definition.0.sort.0.order", "desc"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.layout.height", "36"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.layout.width", "32"),
 					resource.TestCheckResourceAttr("datadog_dashboard.free_dashboard", "widget.5.layout.x", "5"),

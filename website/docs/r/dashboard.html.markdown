@@ -521,7 +521,7 @@ resource "datadog_dashboard" "free_dashboard" {
 			show_date_column = true
 			show_message_column = true
 			message_display = "expanded-md"
-			sort = {
+			sort {
 				column = "time" 
 				order = "desc"
 			}
