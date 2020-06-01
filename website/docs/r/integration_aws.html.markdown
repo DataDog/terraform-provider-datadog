@@ -10,8 +10,6 @@ description: |-
 
 Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.
 
-Update operations are currently not supported with datadog API so any change forces a new resource.
-
 ## Example Usage
 
 ```hcl
