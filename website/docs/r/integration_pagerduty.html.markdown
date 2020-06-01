@@ -181,4 +181,4 @@ The following arguments are supported:
 
 ### See also
 * [PagerDuty Integration Guide](https://www.pagerduty.com/docs/guides/datadog-integration-guide/)
-* [Datadog API Reference > Integrations > PagerDuty](https://docs.datadoghq.com/api/?lang=bash#pagerduty)
+* [Datadog API Reference > Integrations > PagerDuty](https://docs.datadoghq.com/api/v1/pagerduty-integration/)

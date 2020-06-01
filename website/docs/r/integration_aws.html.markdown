@@ -35,16 +35,16 @@ The following arguments are supported:
 * `account_id` - (Required) Your AWS Account ID without dashes.
 * `role_name` - (Required) Your Datadog role delegation name.
 * `filter_tags` - (Optional) Array of EC2 tags (in the form `key:value`) defines a filter that Datadog use when collecting metrics from EC2. Wildcards, such as `?` (for single characters) and `*` (for multiple characters) can also be used.
-  
+
   Only hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. Host matching a given tag can also be excluded by adding `!` before the tag.
-  
+
   e.x. `env:production,instance-type:c1.*,!region:us-east-1`
 
 * `host_tags` - (Optional) Array of tags (in the form key:value) to add to all hosts and metrics reporting through this integration.
-* `account_specific_namespace_rules` - (Optional) Enables or disables metric collection for specific AWS namespaces for this AWS account only. A list of namespaces can be found at the [available namespace rules API endpoint](https://docs.datadoghq.com/api/?lang=bash#list-namespace-rules).
+* `account_specific_namespace_rules` - (Optional) Enables or disables metric collection for specific AWS namespaces for this AWS account only. A list of namespaces can be found at the [available namespace rules API endpoint](https://docs.datadoghq.com/api/v1/aws-integration/#list-namespace-rules).
 
 ### See also
-* [Datadog API Reference > Integrations > AWS](https://docs.datadoghq.com/api/?lang=bash#aws)
+* [Datadog API Reference > Integrations > AWS](https://docs.datadoghq.com/api/v1/aws-integration/)
 
 ## Attributes Reference
 
