@@ -39,25 +39,21 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 			"role_name": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true, // waits for update API call support
 			},
 			"filter_tags": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
-				ForceNew: true, // waits for update API call support
 			},
 			"host_tags": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
-				ForceNew: true, // waits for update API call support
 			},
 			"account_specific_namespace_rules": {
 				Type:     schema.TypeMap,
 				Optional: true,
 				Elem:     schema.TypeBool,
-				ForceNew: true, // waits for update API call support
 			},
 			"external_id": {
 				Type:     schema.TypeString,
@@ -178,38 +174,26 @@ func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{})
 }
 
 func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{}) error {
-	// Unfortunately the PUT operation for updating the AWS configuration is not available at the moment.
-	// However this feature is one we have in our backlog. I don't know if it's scheduled for delivery short-term,
-	// however I will follow-up after reviewing with product management.
-	// ©
-
-	// UpdateIntegrationAWS function:
-	// func (client *Client) UpdateIntegrationAWS(awsAccount *IntegrationAWSAccount) (*IntegrationAWSAccountCreateResponse, error) {
-	// 	var out IntegrationAWSAccountCreateResponse
-	// 	if err := client.doJsonRequest("PUT", "/v1/integration/aws", awsAccount, &out); err != nil {
-	// 		return nil, err
-	// 	}
-	// 	return &out, nil
-	// }
-
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
-	accountID, roleName, err := accountAndRoleFromID(d.Id())
+	existingAccountID, existingRoleName, err := accountAndRoleFromID(d.Id())
 	if err != nil {
 		return err
 	}
+	newAccountID := d.Get("account_id").(string)
+	newRoleName := d.Get("role_name").(string)
 
-	iaws := buildDatadogIntegrationAwsStruct(d, accountID, roleName)
-
-	_, _, err = datadogClientV1.AWSIntegrationApi.CreateAWSAccount(authV1).Body(*iaws).Execute()
+	iaws := buildDatadogIntegrationAwsStruct(d, newAccountID, newRoleName)
+	_, _, err = datadogClientV1.AWSIntegrationApi.UpdateAWSAccount(authV1).
+		Body(*iaws).AccountId(existingAccountID).RoleName(existingRoleName).Execute()
 	if err != nil {
-		return translateClientError(err, "error creating AWS integration")
+		return translateClientError(err, "error updating AWS integration")
 	}
-
+	d.SetId(fmt.Sprintf("%s:%s", iaws.GetAccountId(), iaws.GetRoleName()))
 	return resourceDatadogIntegrationAwsRead(d, meta)
 }
 
