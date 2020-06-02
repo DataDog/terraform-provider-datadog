@@ -8,7 +8,7 @@ description: |-
 
 # datadog_logs_index_order
 
-Provides a Datadog [Logs Index API](https://docs.datadoghq.com/api/?lang=python#logs-indexes) resource. This can be used to manage the order of Datadog logs indexes.
+Provides a Datadog [Logs Index API](https://docs.datadoghq.com/api/v1/logs-indexes/) resource. This can be used to manage the order of Datadog logs indexes.
 
 ## Example Usage
 
@@ -28,11 +28,11 @@ resource "datadog_logs_index_order" "sample_index_order" {
 
 The following arguments are supported:
 
-* `name` - (Required) The unique name of the index order resource. 
+* `name` - (Required) The unique name of the index order resource.
 * `indexes` - (Required) The index resource list. Logs are tested against the query filter of each index one by one following the order of the list.
 
 ## Import
 
-The current Datadog Terraform provider version does not support the creation and deletion of index orders. 
+The current Datadog Terraform provider version does not support the creation and deletion of index orders.
 Do `terraform import <datadog_logs_index_order.name> <name>` to import index order to Terraform. There must be at
 most one `datadog_logs_index_order` resource.

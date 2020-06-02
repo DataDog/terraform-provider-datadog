@@ -37,7 +37,7 @@ The following arguments are supported:
 
 ### See also
 * [Google Cloud > Creating and Managing Service Account Keys](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
-* [Datadog API Reference > Integrations > Google Cloud Platform](https://docs.datadoghq.com/api/?lang=bash#google-cloud-platform)
+* [Datadog API Reference > Integrations > Google Cloud Platform](https://docs.datadoghq.com/api/v1/gcp-integration/)
 
 ## Attributes Reference
 

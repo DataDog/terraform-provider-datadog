@@ -10,7 +10,7 @@ description: |-
 
 Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.
 
-~> **Note:** This resource uses the new [Dashboard API](https://docs.datadoghq.com/api/#dashboards) which adds new features like better validation and support for the [Group widget](https://docs.datadoghq.com/graphing/widgets/group/). Additionally, this resource unifies [`datadog_timeboard`](timeboard.html) and [`datadog_screenboard`](screenboard.html) resources to allow you to manage all of your dashboards using a single format.
+~> **Note:** This resource uses the new [Dashboard API](https://docs.datadoghq.com/api/v1/dashboards/) which adds new features like better validation and support for the [Group widget](https://docs.datadoghq.com/graphing/widgets/group/). Additionally, this resource unifies [`datadog_timeboard`](timeboard.html) and [`datadog_screenboard`](screenboard.html) resources to allow you to manage all of your dashboards using a single format.
 
 
 ## Example Usage: Create a new Datadog dashboard - Ordered layout

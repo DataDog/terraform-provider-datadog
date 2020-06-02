@@ -3,13 +3,13 @@ layout: "datadog"
 page_title: "Datadog: datadog_integration_aws_lambda_arn"
 sidebar_current: "docs-datadog-resource-integration_aws_lambda_arn"
 description: |-
-  Provides a Datadog - Amazon Web Services integration Lambda ARN resource. This can be used to create and manage the 
+  Provides a Datadog - Amazon Web Services integration Lambda ARN resource. This can be used to create and manage the
   log collection Lambdas for an account.
 ---
 
 # datadog_integration_aws_lambda_arn
 
-Provides a Datadog - Amazon Web Services integration Lambda ARN resource. This can be used to create and manage the 
+Provides a Datadog - Amazon Web Services integration Lambda ARN resource. This can be used to create and manage the
 log collection Lambdas for an account.
 
 Update operations are currently not supported with datadog API so any change forces a new resource.
@@ -33,7 +33,7 @@ The following arguments are supported:
 * `lambda_arn` - (Required) The ARN of the Datadog forwarder Lambda.
 
 ### See also
-* [Datadog API Reference > Integrations > AWS](https://docs.datadoghq.com/api/?lang=bash#aws)
+* [Datadog API Reference > Integrations > AWS](https://docs.datadoghq.com/api/v1/aws-integration/)
 * [Datadog log forwarder](https://github.com/DataDog/datadog-serverless-functions/tree/master/aws/logs_monitoring)
 
 ## Attributes Reference
