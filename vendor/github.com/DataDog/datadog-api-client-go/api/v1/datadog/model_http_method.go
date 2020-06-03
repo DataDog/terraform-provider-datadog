@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // HTTPMethod The HTTP method.
@@ -25,6 +26,23 @@ const (
 	HTTPMETHOD_HEAD    HTTPMethod = "HEAD"
 	HTTPMETHOD_OPTIONS HTTPMethod = "OPTIONS"
 )
+
+func (v *HTTPMethod) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := HTTPMethod(value)
+	for _, existing := range []HTTPMethod{"GET", "POST", "PATCH", "PUT", "DELETE", "HEAD", "OPTIONS"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid HTTPMethod", *v)
+}
 
 // Ptr returns reference to HTTPMethod value
 func (v HTTPMethod) Ptr() *HTTPMethod {

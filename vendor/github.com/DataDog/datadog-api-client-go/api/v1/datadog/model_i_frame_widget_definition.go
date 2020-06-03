@@ -14,8 +14,7 @@ import (
 
 // IFrameWidgetDefinition The iframe widget allows you to embed a portion of any other web page on your dashboard. Only available on FREE layout dashboards.
 type IFrameWidgetDefinition struct {
-	// Type of the widget.
-	Type string `json:"type"`
+	Type IFrameWidgetDefinitionType `json:"type"`
 	// URL of the iframe.
 	Url string `json:"url"`
 }
@@ -24,7 +23,7 @@ type IFrameWidgetDefinition struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewIFrameWidgetDefinition(type_ string, url string) *IFrameWidgetDefinition {
+func NewIFrameWidgetDefinition(type_ IFrameWidgetDefinitionType, url string) *IFrameWidgetDefinition {
 	this := IFrameWidgetDefinition{}
 	this.Type = type_
 	this.Url = url
@@ -36,15 +35,15 @@ func NewIFrameWidgetDefinition(type_ string, url string) *IFrameWidgetDefinition
 // but it doesn't guarantee that properties required by API are set
 func NewIFrameWidgetDefinitionWithDefaults() *IFrameWidgetDefinition {
 	this := IFrameWidgetDefinition{}
-	var type_ string = "iframe"
+	var type_ IFrameWidgetDefinitionType = "iframe"
 	this.Type = type_
 	return &this
 }
 
 // GetType returns the Type field value
-func (o *IFrameWidgetDefinition) GetType() string {
+func (o *IFrameWidgetDefinition) GetType() IFrameWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret IFrameWidgetDefinitionType
 		return ret
 	}
 
@@ -53,7 +52,7 @@ func (o *IFrameWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *IFrameWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *IFrameWidgetDefinition) GetTypeOk() (*IFrameWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -61,7 +60,7 @@ func (o *IFrameWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *IFrameWidgetDefinition) SetType(v string) {
+func (o *IFrameWidgetDefinition) SetType(v IFrameWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -98,11 +97,6 @@ func (o IFrameWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["url"] = o.Url
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of IFrameWidgetDefinition in WidgetDefinition
-func (s *IFrameWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableIFrameWidgetDefinition struct {

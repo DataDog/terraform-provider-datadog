@@ -16,9 +16,8 @@ import (
 type UserInvitationResponseData struct {
 	Attributes *UserInvitationDataAttributes `json:"attributes,omitempty"`
 	// ID of the user invitation.
-	Id *string `json:"id,omitempty"`
-	// User invitations type.
-	Type *string `json:"type,omitempty"`
+	Id   *string              `json:"id,omitempty"`
+	Type *UserInvitationsType `json:"type,omitempty"`
 }
 
 // NewUserInvitationResponseData instantiates a new UserInvitationResponseData object
@@ -27,7 +26,7 @@ type UserInvitationResponseData struct {
 // will change when the set of required properties is changed
 func NewUserInvitationResponseData() *UserInvitationResponseData {
 	this := UserInvitationResponseData{}
-	var type_ string = "user_invitations"
+	var type_ UserInvitationsType = "user_invitations"
 	this.Type = &type_
 	return &this
 }
@@ -37,7 +36,7 @@ func NewUserInvitationResponseData() *UserInvitationResponseData {
 // but it doesn't guarantee that properties required by API are set
 func NewUserInvitationResponseDataWithDefaults() *UserInvitationResponseData {
 	this := UserInvitationResponseData{}
-	var type_ string = "user_invitations"
+	var type_ UserInvitationsType = "user_invitations"
 	this.Type = &type_
 	return &this
 }
@@ -107,9 +106,9 @@ func (o *UserInvitationResponseData) SetId(v string) {
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *UserInvitationResponseData) GetType() string {
+func (o *UserInvitationResponseData) GetType() UserInvitationsType {
 	if o == nil || o.Type == nil {
-		var ret string
+		var ret UserInvitationsType
 		return ret
 	}
 	return *o.Type
@@ -117,7 +116,7 @@ func (o *UserInvitationResponseData) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserInvitationResponseData) GetTypeOk() (*string, bool) {
+func (o *UserInvitationResponseData) GetTypeOk() (*UserInvitationsType, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -133,8 +132,8 @@ func (o *UserInvitationResponseData) HasType() bool {
 	return false
 }
 
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *UserInvitationResponseData) SetType(v string) {
+// SetType gets a reference to the given UserInvitationsType and assigns it to the Type field.
+func (o *UserInvitationResponseData) SetType(v UserInvitationsType) {
 	o.Type = &v
 }
 

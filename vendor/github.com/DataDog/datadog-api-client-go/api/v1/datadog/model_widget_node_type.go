@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // WidgetNodeType Which type of node to use in the map.
@@ -20,6 +21,23 @@ const (
 	WIDGETNODETYPE_HOST      WidgetNodeType = "host"
 	WIDGETNODETYPE_CONTAINER WidgetNodeType = "container"
 )
+
+func (v *WidgetNodeType) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := WidgetNodeType(value)
+	for _, existing := range []WidgetNodeType{"host", "container"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid WidgetNodeType", *v)
+}
 
 // Ptr returns reference to WidgetNodeType value
 func (v WidgetNodeType) Ptr() *WidgetNodeType {

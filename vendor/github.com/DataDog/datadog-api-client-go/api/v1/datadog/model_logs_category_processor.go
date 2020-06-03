@@ -16,27 +16,26 @@ import (
 type LogsCategoryProcessor struct {
 	// Array of filters to match or not a log and their corresponding `name`to assign a custom value to the log.
 	Categories []LogsCategoryProcessorCategories `json:"categories"`
-	// Name of the target attribute which value is defined by the matching category.
-	Target string `json:"target"`
-	// Type of processor.
-	Type string `json:"type"`
 	// Whether or not the processor is enabled.
 	IsEnabled *bool `json:"is_enabled,omitempty"`
 	// Name of the processor.
 	Name *string `json:"name,omitempty"`
+	// Name of the target attribute which value is defined by the matching category.
+	Target string                    `json:"target"`
+	Type   LogsCategoryProcessorType `json:"type"`
 }
 
 // NewLogsCategoryProcessor instantiates a new LogsCategoryProcessor object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogsCategoryProcessor(categories []LogsCategoryProcessorCategories, target string, type_ string) *LogsCategoryProcessor {
+func NewLogsCategoryProcessor(categories []LogsCategoryProcessorCategories, target string, type_ LogsCategoryProcessorType) *LogsCategoryProcessor {
 	this := LogsCategoryProcessor{}
 	this.Categories = categories
-	this.Target = target
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	this.Target = target
+	this.Type = type_
 	return &this
 }
 
@@ -45,10 +44,10 @@ func NewLogsCategoryProcessor(categories []LogsCategoryProcessorCategories, targ
 // but it doesn't guarantee that properties required by API are set
 func NewLogsCategoryProcessorWithDefaults() *LogsCategoryProcessor {
 	this := LogsCategoryProcessor{}
-	var type_ string = "category-processor"
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	var type_ LogsCategoryProcessorType = "category-processor"
+	this.Type = type_
 	return &this
 }
 
@@ -74,54 +73,6 @@ func (o *LogsCategoryProcessor) GetCategoriesOk() (*[]LogsCategoryProcessorCateg
 // SetCategories sets field value
 func (o *LogsCategoryProcessor) SetCategories(v []LogsCategoryProcessorCategories) {
 	o.Categories = v
-}
-
-// GetTarget returns the Target field value
-func (o *LogsCategoryProcessor) GetTarget() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Target
-}
-
-// GetTargetOk returns a tuple with the Target field value
-// and a boolean to check if the value has been set.
-func (o *LogsCategoryProcessor) GetTargetOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Target, true
-}
-
-// SetTarget sets field value
-func (o *LogsCategoryProcessor) SetTarget(v string) {
-	o.Target = v
-}
-
-// GetType returns the Type field value
-func (o *LogsCategoryProcessor) GetType() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value
-// and a boolean to check if the value has been set.
-func (o *LogsCategoryProcessor) GetTypeOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Type, true
-}
-
-// SetType sets field value
-func (o *LogsCategoryProcessor) SetType(v string) {
-	o.Type = v
 }
 
 // GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
@@ -188,16 +139,58 @@ func (o *LogsCategoryProcessor) SetName(v string) {
 	o.Name = &v
 }
 
+// GetTarget returns the Target field value
+func (o *LogsCategoryProcessor) GetTarget() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Target
+}
+
+// GetTargetOk returns a tuple with the Target field value
+// and a boolean to check if the value has been set.
+func (o *LogsCategoryProcessor) GetTargetOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Target, true
+}
+
+// SetTarget sets field value
+func (o *LogsCategoryProcessor) SetTarget(v string) {
+	o.Target = v
+}
+
+// GetType returns the Type field value
+func (o *LogsCategoryProcessor) GetType() LogsCategoryProcessorType {
+	if o == nil {
+		var ret LogsCategoryProcessorType
+		return ret
+	}
+
+	return o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *LogsCategoryProcessor) GetTypeOk() (*LogsCategoryProcessorType, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Type, true
+}
+
+// SetType sets field value
+func (o *LogsCategoryProcessor) SetType(v LogsCategoryProcessorType) {
+	o.Type = v
+}
+
 func (o LogsCategoryProcessor) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["categories"] = o.Categories
-	}
-	if true {
-		toSerialize["target"] = o.Target
-	}
-	if true {
-		toSerialize["type"] = o.Type
 	}
 	if o.IsEnabled != nil {
 		toSerialize["is_enabled"] = o.IsEnabled
@@ -205,12 +198,13 @@ func (o LogsCategoryProcessor) MarshalJSON() ([]byte, error) {
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
+	if true {
+		toSerialize["target"] = o.Target
+	}
+	if true {
+		toSerialize["type"] = o.Type
+	}
 	return json.Marshal(toSerialize)
-}
-
-// AsLogsProcessor wraps this instance of LogsCategoryProcessor in LogsProcessor
-func (s *LogsCategoryProcessor) AsLogsProcessor() LogsProcessor {
-	return LogsProcessor{LogsProcessorInterface: s}
 }
 
 type NullableLogsCategoryProcessor struct {

@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // SyntheticsTestPauseStatus Define whether you want to start (`live`) or pause (`paused`) a Synthetic test.
@@ -20,6 +21,23 @@ const (
 	SYNTHETICSTESTPAUSESTATUS_LIVE   SyntheticsTestPauseStatus = "live"
 	SYNTHETICSTESTPAUSESTATUS_PAUSED SyntheticsTestPauseStatus = "paused"
 )
+
+func (v *SyntheticsTestPauseStatus) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := SyntheticsTestPauseStatus(value)
+	for _, existing := range []SyntheticsTestPauseStatus{"live", "paused"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid SyntheticsTestPauseStatus", *v)
+}
 
 // Ptr returns reference to SyntheticsTestPauseStatus value
 func (v SyntheticsTestPauseStatus) Ptr() *SyntheticsTestPauseStatus {

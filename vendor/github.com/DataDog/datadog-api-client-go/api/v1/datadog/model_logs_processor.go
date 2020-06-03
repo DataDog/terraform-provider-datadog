@@ -13,270 +13,454 @@ import (
 	"fmt"
 )
 
-// LogsProcessor Definition of a logs processor.
+// LogsProcessor - Definition of a logs processor.
 type LogsProcessor struct {
-	LogsProcessorInterface interface{ GetType() string }
+	LogsArithmeticProcessor    *LogsArithmeticProcessor
+	LogsAttributeRemapper      *LogsAttributeRemapper
+	LogsCategoryProcessor      *LogsCategoryProcessor
+	LogsDateRemapper           *LogsDateRemapper
+	LogsGeoIPParser            *LogsGeoIPParser
+	LogsGrokParser             *LogsGrokParser
+	LogsLookupProcessor        *LogsLookupProcessor
+	LogsMessageRemapper        *LogsMessageRemapper
+	LogsPipelineProcessor      *LogsPipelineProcessor
+	LogsServiceRemapper        *LogsServiceRemapper
+	LogsStatusRemapper         *LogsStatusRemapper
+	LogsStringBuilderProcessor *LogsStringBuilderProcessor
+	LogsTraceRemapper          *LogsTraceRemapper
+	LogsURLParser              *LogsURLParser
+	LogsUserAgentParser        *LogsUserAgentParser
 }
 
-func (s LogsProcessor) MarshalJSON() ([]byte, error) {
-	return json.Marshal(s.LogsProcessorInterface)
+// LogsArithmeticProcessorAsLogsProcessor is a convenience function that returns LogsArithmeticProcessor wrapped in LogsProcessor
+func LogsArithmeticProcessorAsLogsProcessor(v *LogsArithmeticProcessor) LogsProcessor {
+	return LogsProcessor{LogsArithmeticProcessor: v}
 }
 
-func (s *LogsProcessor) UnmarshalJSON(src []byte) error {
+// LogsAttributeRemapperAsLogsProcessor is a convenience function that returns LogsAttributeRemapper wrapped in LogsProcessor
+func LogsAttributeRemapperAsLogsProcessor(v *LogsAttributeRemapper) LogsProcessor {
+	return LogsProcessor{LogsAttributeRemapper: v}
+}
+
+// LogsCategoryProcessorAsLogsProcessor is a convenience function that returns LogsCategoryProcessor wrapped in LogsProcessor
+func LogsCategoryProcessorAsLogsProcessor(v *LogsCategoryProcessor) LogsProcessor {
+	return LogsProcessor{LogsCategoryProcessor: v}
+}
+
+// LogsDateRemapperAsLogsProcessor is a convenience function that returns LogsDateRemapper wrapped in LogsProcessor
+func LogsDateRemapperAsLogsProcessor(v *LogsDateRemapper) LogsProcessor {
+	return LogsProcessor{LogsDateRemapper: v}
+}
+
+// LogsGeoIPParserAsLogsProcessor is a convenience function that returns LogsGeoIPParser wrapped in LogsProcessor
+func LogsGeoIPParserAsLogsProcessor(v *LogsGeoIPParser) LogsProcessor {
+	return LogsProcessor{LogsGeoIPParser: v}
+}
+
+// LogsGrokParserAsLogsProcessor is a convenience function that returns LogsGrokParser wrapped in LogsProcessor
+func LogsGrokParserAsLogsProcessor(v *LogsGrokParser) LogsProcessor {
+	return LogsProcessor{LogsGrokParser: v}
+}
+
+// LogsLookupProcessorAsLogsProcessor is a convenience function that returns LogsLookupProcessor wrapped in LogsProcessor
+func LogsLookupProcessorAsLogsProcessor(v *LogsLookupProcessor) LogsProcessor {
+	return LogsProcessor{LogsLookupProcessor: v}
+}
+
+// LogsMessageRemapperAsLogsProcessor is a convenience function that returns LogsMessageRemapper wrapped in LogsProcessor
+func LogsMessageRemapperAsLogsProcessor(v *LogsMessageRemapper) LogsProcessor {
+	return LogsProcessor{LogsMessageRemapper: v}
+}
+
+// LogsPipelineProcessorAsLogsProcessor is a convenience function that returns LogsPipelineProcessor wrapped in LogsProcessor
+func LogsPipelineProcessorAsLogsProcessor(v *LogsPipelineProcessor) LogsProcessor {
+	return LogsProcessor{LogsPipelineProcessor: v}
+}
+
+// LogsServiceRemapperAsLogsProcessor is a convenience function that returns LogsServiceRemapper wrapped in LogsProcessor
+func LogsServiceRemapperAsLogsProcessor(v *LogsServiceRemapper) LogsProcessor {
+	return LogsProcessor{LogsServiceRemapper: v}
+}
+
+// LogsStatusRemapperAsLogsProcessor is a convenience function that returns LogsStatusRemapper wrapped in LogsProcessor
+func LogsStatusRemapperAsLogsProcessor(v *LogsStatusRemapper) LogsProcessor {
+	return LogsProcessor{LogsStatusRemapper: v}
+}
+
+// LogsStringBuilderProcessorAsLogsProcessor is a convenience function that returns LogsStringBuilderProcessor wrapped in LogsProcessor
+func LogsStringBuilderProcessorAsLogsProcessor(v *LogsStringBuilderProcessor) LogsProcessor {
+	return LogsProcessor{LogsStringBuilderProcessor: v}
+}
+
+// LogsTraceRemapperAsLogsProcessor is a convenience function that returns LogsTraceRemapper wrapped in LogsProcessor
+func LogsTraceRemapperAsLogsProcessor(v *LogsTraceRemapper) LogsProcessor {
+	return LogsProcessor{LogsTraceRemapper: v}
+}
+
+// LogsURLParserAsLogsProcessor is a convenience function that returns LogsURLParser wrapped in LogsProcessor
+func LogsURLParserAsLogsProcessor(v *LogsURLParser) LogsProcessor {
+	return LogsProcessor{LogsURLParser: v}
+}
+
+// LogsUserAgentParserAsLogsProcessor is a convenience function that returns LogsUserAgentParser wrapped in LogsProcessor
+func LogsUserAgentParserAsLogsProcessor(v *LogsUserAgentParser) LogsProcessor {
+	return LogsProcessor{LogsUserAgentParser: v}
+}
+
+// Unmarshal JSON data into one of the pointers in the struct
+func (dst *LogsProcessor) UnmarshalJSON(data []byte) error {
 	var err error
-	var unmarshaled map[string]interface{}
-	err = json.Unmarshal(src, &unmarshaled)
-	if err != nil {
-		return err
-	}
-	if v, ok := unmarshaled["type"]; ok {
-		switch v {
-		case "LogsArithmeticProcessor":
-			var result *LogsArithmeticProcessor = &LogsArithmeticProcessor{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "LogsAttributeRemapper":
-			var result *LogsAttributeRemapper = &LogsAttributeRemapper{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "LogsCategoryProcessor":
-			var result *LogsCategoryProcessor = &LogsCategoryProcessor{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "LogsDateRemapper":
-			var result *LogsDateRemapper = &LogsDateRemapper{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "LogsGeoIPParser":
-			var result *LogsGeoIPParser = &LogsGeoIPParser{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "LogsGrokParser":
-			var result *LogsGrokParser = &LogsGrokParser{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "LogsLookupProcessor":
-			var result *LogsLookupProcessor = &LogsLookupProcessor{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "LogsMessageRemapper":
-			var result *LogsMessageRemapper = &LogsMessageRemapper{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "LogsPipelineProcessor":
-			var result *LogsPipelineProcessor = &LogsPipelineProcessor{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "LogsServiceRemapper":
-			var result *LogsServiceRemapper = &LogsServiceRemapper{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "LogsStatusRemapper":
-			var result *LogsStatusRemapper = &LogsStatusRemapper{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "LogsStringBuilderProcessor":
-			var result *LogsStringBuilderProcessor = &LogsStringBuilderProcessor{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "LogsTraceRemapper":
-			var result *LogsTraceRemapper = &LogsTraceRemapper{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "LogsURLParser":
-			var result *LogsURLParser = &LogsURLParser{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "LogsUserAgentParser":
-			var result *LogsUserAgentParser = &LogsUserAgentParser{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "arithmetic-processor":
-			var result *LogsArithmeticProcessor = &LogsArithmeticProcessor{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "attribute-remapper":
-			var result *LogsAttributeRemapper = &LogsAttributeRemapper{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "category-processor":
-			var result *LogsCategoryProcessor = &LogsCategoryProcessor{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "date-remapper":
-			var result *LogsDateRemapper = &LogsDateRemapper{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "geo-ip-parser":
-			var result *LogsGeoIPParser = &LogsGeoIPParser{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "grok-parser":
-			var result *LogsGrokParser = &LogsGrokParser{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "lookup-processor":
-			var result *LogsLookupProcessor = &LogsLookupProcessor{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "message-remapper":
-			var result *LogsMessageRemapper = &LogsMessageRemapper{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "pipeline":
-			var result *LogsPipelineProcessor = &LogsPipelineProcessor{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "service-remapper":
-			var result *LogsServiceRemapper = &LogsServiceRemapper{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "status-remapper":
-			var result *LogsStatusRemapper = &LogsStatusRemapper{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "string-builder-processor":
-			var result *LogsStringBuilderProcessor = &LogsStringBuilderProcessor{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "trace-id-remapper":
-			var result *LogsTraceRemapper = &LogsTraceRemapper{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "url-parser":
-			var result *LogsURLParser = &LogsURLParser{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		case "user-agent-parser":
-			var result *LogsUserAgentParser = &LogsUserAgentParser{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.LogsProcessorInterface = result
-			return nil
-		default:
-			return fmt.Errorf("No oneOf model has 'type' equal to %s", v)
+	match := 0
+	// try to unmarshal data into LogsArithmeticProcessor
+	err = json.Unmarshal(data, &dst.LogsArithmeticProcessor)
+	if err == nil {
+		jsonLogsArithmeticProcessor, _ := json.Marshal(dst.LogsArithmeticProcessor)
+		if string(jsonLogsArithmeticProcessor) == "{}" { // empty struct
+			dst.LogsArithmeticProcessor = nil
+		} else {
+			match++
 		}
 	} else {
-		return fmt.Errorf("Discriminator property 'type' not found in unmarshaled payload: %+v", unmarshaled)
+		dst.LogsArithmeticProcessor = nil
 	}
+
+	// try to unmarshal data into LogsAttributeRemapper
+	err = json.Unmarshal(data, &dst.LogsAttributeRemapper)
+	if err == nil {
+		jsonLogsAttributeRemapper, _ := json.Marshal(dst.LogsAttributeRemapper)
+		if string(jsonLogsAttributeRemapper) == "{}" { // empty struct
+			dst.LogsAttributeRemapper = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.LogsAttributeRemapper = nil
+	}
+
+	// try to unmarshal data into LogsCategoryProcessor
+	err = json.Unmarshal(data, &dst.LogsCategoryProcessor)
+	if err == nil {
+		jsonLogsCategoryProcessor, _ := json.Marshal(dst.LogsCategoryProcessor)
+		if string(jsonLogsCategoryProcessor) == "{}" { // empty struct
+			dst.LogsCategoryProcessor = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.LogsCategoryProcessor = nil
+	}
+
+	// try to unmarshal data into LogsDateRemapper
+	err = json.Unmarshal(data, &dst.LogsDateRemapper)
+	if err == nil {
+		jsonLogsDateRemapper, _ := json.Marshal(dst.LogsDateRemapper)
+		if string(jsonLogsDateRemapper) == "{}" { // empty struct
+			dst.LogsDateRemapper = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.LogsDateRemapper = nil
+	}
+
+	// try to unmarshal data into LogsGeoIPParser
+	err = json.Unmarshal(data, &dst.LogsGeoIPParser)
+	if err == nil {
+		jsonLogsGeoIPParser, _ := json.Marshal(dst.LogsGeoIPParser)
+		if string(jsonLogsGeoIPParser) == "{}" { // empty struct
+			dst.LogsGeoIPParser = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.LogsGeoIPParser = nil
+	}
+
+	// try to unmarshal data into LogsGrokParser
+	err = json.Unmarshal(data, &dst.LogsGrokParser)
+	if err == nil {
+		jsonLogsGrokParser, _ := json.Marshal(dst.LogsGrokParser)
+		if string(jsonLogsGrokParser) == "{}" { // empty struct
+			dst.LogsGrokParser = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.LogsGrokParser = nil
+	}
+
+	// try to unmarshal data into LogsLookupProcessor
+	err = json.Unmarshal(data, &dst.LogsLookupProcessor)
+	if err == nil {
+		jsonLogsLookupProcessor, _ := json.Marshal(dst.LogsLookupProcessor)
+		if string(jsonLogsLookupProcessor) == "{}" { // empty struct
+			dst.LogsLookupProcessor = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.LogsLookupProcessor = nil
+	}
+
+	// try to unmarshal data into LogsMessageRemapper
+	err = json.Unmarshal(data, &dst.LogsMessageRemapper)
+	if err == nil {
+		jsonLogsMessageRemapper, _ := json.Marshal(dst.LogsMessageRemapper)
+		if string(jsonLogsMessageRemapper) == "{}" { // empty struct
+			dst.LogsMessageRemapper = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.LogsMessageRemapper = nil
+	}
+
+	// try to unmarshal data into LogsPipelineProcessor
+	err = json.Unmarshal(data, &dst.LogsPipelineProcessor)
+	if err == nil {
+		jsonLogsPipelineProcessor, _ := json.Marshal(dst.LogsPipelineProcessor)
+		if string(jsonLogsPipelineProcessor) == "{}" { // empty struct
+			dst.LogsPipelineProcessor = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.LogsPipelineProcessor = nil
+	}
+
+	// try to unmarshal data into LogsServiceRemapper
+	err = json.Unmarshal(data, &dst.LogsServiceRemapper)
+	if err == nil {
+		jsonLogsServiceRemapper, _ := json.Marshal(dst.LogsServiceRemapper)
+		if string(jsonLogsServiceRemapper) == "{}" { // empty struct
+			dst.LogsServiceRemapper = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.LogsServiceRemapper = nil
+	}
+
+	// try to unmarshal data into LogsStatusRemapper
+	err = json.Unmarshal(data, &dst.LogsStatusRemapper)
+	if err == nil {
+		jsonLogsStatusRemapper, _ := json.Marshal(dst.LogsStatusRemapper)
+		if string(jsonLogsStatusRemapper) == "{}" { // empty struct
+			dst.LogsStatusRemapper = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.LogsStatusRemapper = nil
+	}
+
+	// try to unmarshal data into LogsStringBuilderProcessor
+	err = json.Unmarshal(data, &dst.LogsStringBuilderProcessor)
+	if err == nil {
+		jsonLogsStringBuilderProcessor, _ := json.Marshal(dst.LogsStringBuilderProcessor)
+		if string(jsonLogsStringBuilderProcessor) == "{}" { // empty struct
+			dst.LogsStringBuilderProcessor = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.LogsStringBuilderProcessor = nil
+	}
+
+	// try to unmarshal data into LogsTraceRemapper
+	err = json.Unmarshal(data, &dst.LogsTraceRemapper)
+	if err == nil {
+		jsonLogsTraceRemapper, _ := json.Marshal(dst.LogsTraceRemapper)
+		if string(jsonLogsTraceRemapper) == "{}" { // empty struct
+			dst.LogsTraceRemapper = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.LogsTraceRemapper = nil
+	}
+
+	// try to unmarshal data into LogsURLParser
+	err = json.Unmarshal(data, &dst.LogsURLParser)
+	if err == nil {
+		jsonLogsURLParser, _ := json.Marshal(dst.LogsURLParser)
+		if string(jsonLogsURLParser) == "{}" { // empty struct
+			dst.LogsURLParser = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.LogsURLParser = nil
+	}
+
+	// try to unmarshal data into LogsUserAgentParser
+	err = json.Unmarshal(data, &dst.LogsUserAgentParser)
+	if err == nil {
+		jsonLogsUserAgentParser, _ := json.Marshal(dst.LogsUserAgentParser)
+		if string(jsonLogsUserAgentParser) == "{}" { // empty struct
+			dst.LogsUserAgentParser = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.LogsUserAgentParser = nil
+	}
+
+	if match > 1 { // more than 1 match
+		// reset to nil
+		dst.LogsArithmeticProcessor = nil
+		dst.LogsAttributeRemapper = nil
+		dst.LogsCategoryProcessor = nil
+		dst.LogsDateRemapper = nil
+		dst.LogsGeoIPParser = nil
+		dst.LogsGrokParser = nil
+		dst.LogsLookupProcessor = nil
+		dst.LogsMessageRemapper = nil
+		dst.LogsPipelineProcessor = nil
+		dst.LogsServiceRemapper = nil
+		dst.LogsStatusRemapper = nil
+		dst.LogsStringBuilderProcessor = nil
+		dst.LogsTraceRemapper = nil
+		dst.LogsURLParser = nil
+		dst.LogsUserAgentParser = nil
+
+		return fmt.Errorf("Data matches more than one schema in oneOf(LogsProcessor)")
+	} else if match == 1 {
+		return nil // exactly one match
+	} else { // no match
+		return fmt.Errorf("Data failed to match schemas in oneOf(LogsProcessor)")
+	}
+}
+
+// Marshal data from the first non-nil pointers in the struct to JSON
+func (src LogsProcessor) MarshalJSON() ([]byte, error) {
+	if src.LogsArithmeticProcessor != nil {
+		return json.Marshal(&src.LogsArithmeticProcessor)
+	}
+
+	if src.LogsAttributeRemapper != nil {
+		return json.Marshal(&src.LogsAttributeRemapper)
+	}
+
+	if src.LogsCategoryProcessor != nil {
+		return json.Marshal(&src.LogsCategoryProcessor)
+	}
+
+	if src.LogsDateRemapper != nil {
+		return json.Marshal(&src.LogsDateRemapper)
+	}
+
+	if src.LogsGeoIPParser != nil {
+		return json.Marshal(&src.LogsGeoIPParser)
+	}
+
+	if src.LogsGrokParser != nil {
+		return json.Marshal(&src.LogsGrokParser)
+	}
+
+	if src.LogsLookupProcessor != nil {
+		return json.Marshal(&src.LogsLookupProcessor)
+	}
+
+	if src.LogsMessageRemapper != nil {
+		return json.Marshal(&src.LogsMessageRemapper)
+	}
+
+	if src.LogsPipelineProcessor != nil {
+		return json.Marshal(&src.LogsPipelineProcessor)
+	}
+
+	if src.LogsServiceRemapper != nil {
+		return json.Marshal(&src.LogsServiceRemapper)
+	}
+
+	if src.LogsStatusRemapper != nil {
+		return json.Marshal(&src.LogsStatusRemapper)
+	}
+
+	if src.LogsStringBuilderProcessor != nil {
+		return json.Marshal(&src.LogsStringBuilderProcessor)
+	}
+
+	if src.LogsTraceRemapper != nil {
+		return json.Marshal(&src.LogsTraceRemapper)
+	}
+
+	if src.LogsURLParser != nil {
+		return json.Marshal(&src.LogsURLParser)
+	}
+
+	if src.LogsUserAgentParser != nil {
+		return json.Marshal(&src.LogsUserAgentParser)
+	}
+
+	return nil, nil // no data in oneOf schemas
+}
+
+// Get the actual instance
+func (obj *LogsProcessor) GetActualInstance() interface{} {
+	if obj.LogsArithmeticProcessor != nil {
+		return obj.LogsArithmeticProcessor
+	}
+
+	if obj.LogsAttributeRemapper != nil {
+		return obj.LogsAttributeRemapper
+	}
+
+	if obj.LogsCategoryProcessor != nil {
+		return obj.LogsCategoryProcessor
+	}
+
+	if obj.LogsDateRemapper != nil {
+		return obj.LogsDateRemapper
+	}
+
+	if obj.LogsGeoIPParser != nil {
+		return obj.LogsGeoIPParser
+	}
+
+	if obj.LogsGrokParser != nil {
+		return obj.LogsGrokParser
+	}
+
+	if obj.LogsLookupProcessor != nil {
+		return obj.LogsLookupProcessor
+	}
+
+	if obj.LogsMessageRemapper != nil {
+		return obj.LogsMessageRemapper
+	}
+
+	if obj.LogsPipelineProcessor != nil {
+		return obj.LogsPipelineProcessor
+	}
+
+	if obj.LogsServiceRemapper != nil {
+		return obj.LogsServiceRemapper
+	}
+
+	if obj.LogsStatusRemapper != nil {
+		return obj.LogsStatusRemapper
+	}
+
+	if obj.LogsStringBuilderProcessor != nil {
+		return obj.LogsStringBuilderProcessor
+	}
+
+	if obj.LogsTraceRemapper != nil {
+		return obj.LogsTraceRemapper
+	}
+
+	if obj.LogsURLParser != nil {
+		return obj.LogsURLParser
+	}
+
+	if obj.LogsUserAgentParser != nil {
+		return obj.LogsUserAgentParser
+	}
+
+	// all schemas are nil
+	return nil
 }
 
 type NullableLogsProcessor struct {

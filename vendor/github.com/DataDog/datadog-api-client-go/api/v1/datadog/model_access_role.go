@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // AccessRole The access role of the user. Options are **st** (standard user), **adm** (admin user), or **ro** (read-only user).
@@ -22,6 +23,23 @@ const (
 	ACCESSROLE_READ_ONLY AccessRole = "ro"
 	ACCESSROLE_ERROR     AccessRole = "ERROR"
 )
+
+func (v *AccessRole) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := AccessRole(value)
+	for _, existing := range []AccessRole{"st", "adm", "ro", "ERROR"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid AccessRole", *v)
+}
 
 // Ptr returns reference to AccessRole value
 func (v AccessRole) Ptr() *AccessRole {

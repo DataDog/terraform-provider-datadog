@@ -18,8 +18,7 @@ type User struct {
 	// ID of the user.
 	Id            *string                    `json:"id,omitempty"`
 	Relationships *UserResponseRelationships `json:"relationships,omitempty"`
-	// Users type.
-	Type *string `json:"type,omitempty"`
+	Type          *UsersType                 `json:"type,omitempty"`
 }
 
 // NewUser instantiates a new User object
@@ -28,7 +27,7 @@ type User struct {
 // will change when the set of required properties is changed
 func NewUser() *User {
 	this := User{}
-	var type_ string = "users"
+	var type_ UsersType = "users"
 	this.Type = &type_
 	return &this
 }
@@ -38,7 +37,7 @@ func NewUser() *User {
 // but it doesn't guarantee that properties required by API are set
 func NewUserWithDefaults() *User {
 	this := User{}
-	var type_ string = "users"
+	var type_ UsersType = "users"
 	this.Type = &type_
 	return &this
 }
@@ -140,9 +139,9 @@ func (o *User) SetRelationships(v UserResponseRelationships) {
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *User) GetType() string {
+func (o *User) GetType() UsersType {
 	if o == nil || o.Type == nil {
-		var ret string
+		var ret UsersType
 		return ret
 	}
 	return *o.Type
@@ -150,7 +149,7 @@ func (o *User) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *User) GetTypeOk() (*string, bool) {
+func (o *User) GetTypeOk() (*UsersType, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -166,8 +165,8 @@ func (o *User) HasType() bool {
 	return false
 }
 
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *User) SetType(v string) {
+// SetType gets a reference to the given UsersType and assigns it to the Type field.
+func (o *User) SetType(v UsersType) {
 	o.Type = &v
 }
 

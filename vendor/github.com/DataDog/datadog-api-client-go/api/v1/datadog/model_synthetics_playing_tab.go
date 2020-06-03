@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // SyntheticsPlayingTab Navigate between different tabs for your browser test.
@@ -23,6 +24,23 @@ const (
 	SYNTHETICSPLAYINGTAB_TAB_2    SyntheticsPlayingTab = 2
 	SYNTHETICSPLAYINGTAB_TAB_3    SyntheticsPlayingTab = 3
 )
+
+func (v *SyntheticsPlayingTab) UnmarshalJSON(src []byte) error {
+	var value int64
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := SyntheticsPlayingTab(value)
+	for _, existing := range []SyntheticsPlayingTab{-1, 0, 1, 2, 3} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid SyntheticsPlayingTab", *v)
+}
 
 // Ptr returns reference to SyntheticsPlayingTab value
 func (v SyntheticsPlayingTab) Ptr() *SyntheticsPlayingTab {

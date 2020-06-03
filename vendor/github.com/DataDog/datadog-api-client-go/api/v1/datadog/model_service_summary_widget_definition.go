@@ -39,16 +39,15 @@ type ServiceSummaryWidgetDefinition struct {
 	Title      *string          `json:"title,omitempty"`
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
 	// Size of the title.
-	TitleSize *string `json:"title_size,omitempty"`
-	// Type of the widget.
-	Type string `json:"type"`
+	TitleSize *string                            `json:"title_size,omitempty"`
+	Type      ServiceSummaryWidgetDefinitionType `json:"type"`
 }
 
 // NewServiceSummaryWidgetDefinition instantiates a new ServiceSummaryWidgetDefinition object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewServiceSummaryWidgetDefinition(env string, service string, spanName string, type_ string) *ServiceSummaryWidgetDefinition {
+func NewServiceSummaryWidgetDefinition(env string, service string, spanName string, type_ ServiceSummaryWidgetDefinitionType) *ServiceSummaryWidgetDefinition {
 	this := ServiceSummaryWidgetDefinition{}
 	this.Env = env
 	this.Service = service
@@ -62,7 +61,7 @@ func NewServiceSummaryWidgetDefinition(env string, service string, spanName stri
 // but it doesn't guarantee that properties required by API are set
 func NewServiceSummaryWidgetDefinitionWithDefaults() *ServiceSummaryWidgetDefinition {
 	this := ServiceSummaryWidgetDefinition{}
-	var type_ string = "trace_service"
+	var type_ ServiceSummaryWidgetDefinitionType = "trace_service"
 	this.Type = type_
 	return &this
 }
@@ -524,9 +523,9 @@ func (o *ServiceSummaryWidgetDefinition) SetTitleSize(v string) {
 }
 
 // GetType returns the Type field value
-func (o *ServiceSummaryWidgetDefinition) GetType() string {
+func (o *ServiceSummaryWidgetDefinition) GetType() ServiceSummaryWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret ServiceSummaryWidgetDefinitionType
 		return ret
 	}
 
@@ -535,7 +534,7 @@ func (o *ServiceSummaryWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *ServiceSummaryWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *ServiceSummaryWidgetDefinition) GetTypeOk() (*ServiceSummaryWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -543,7 +542,7 @@ func (o *ServiceSummaryWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *ServiceSummaryWidgetDefinition) SetType(v string) {
+func (o *ServiceSummaryWidgetDefinition) SetType(v ServiceSummaryWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -598,11 +597,6 @@ func (o ServiceSummaryWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of ServiceSummaryWidgetDefinition in WidgetDefinition
-func (s *ServiceSummaryWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableServiceSummaryWidgetDefinition struct {

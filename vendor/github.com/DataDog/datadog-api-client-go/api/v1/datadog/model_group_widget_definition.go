@@ -16,9 +16,8 @@ import (
 type GroupWidgetDefinition struct {
 	LayoutType WidgetLayoutType `json:"layout_type"`
 	// Title of the widget.
-	Title *string `json:"title,omitempty"`
-	// Type of the widget.
-	Type string `json:"type"`
+	Title *string                   `json:"title,omitempty"`
+	Type  GroupWidgetDefinitionType `json:"type"`
 	// List of widget groups.
 	Widgets []Widget `json:"widgets"`
 }
@@ -27,7 +26,7 @@ type GroupWidgetDefinition struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGroupWidgetDefinition(layoutType WidgetLayoutType, type_ string, widgets []Widget) *GroupWidgetDefinition {
+func NewGroupWidgetDefinition(layoutType WidgetLayoutType, type_ GroupWidgetDefinitionType, widgets []Widget) *GroupWidgetDefinition {
 	this := GroupWidgetDefinition{}
 	this.LayoutType = layoutType
 	this.Type = type_
@@ -40,7 +39,7 @@ func NewGroupWidgetDefinition(layoutType WidgetLayoutType, type_ string, widgets
 // but it doesn't guarantee that properties required by API are set
 func NewGroupWidgetDefinitionWithDefaults() *GroupWidgetDefinition {
 	this := GroupWidgetDefinition{}
-	var type_ string = "group"
+	var type_ GroupWidgetDefinitionType = "group"
 	this.Type = type_
 	return &this
 }
@@ -102,9 +101,9 @@ func (o *GroupWidgetDefinition) SetTitle(v string) {
 }
 
 // GetType returns the Type field value
-func (o *GroupWidgetDefinition) GetType() string {
+func (o *GroupWidgetDefinition) GetType() GroupWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret GroupWidgetDefinitionType
 		return ret
 	}
 
@@ -113,7 +112,7 @@ func (o *GroupWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *GroupWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *GroupWidgetDefinition) GetTypeOk() (*GroupWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -121,7 +120,7 @@ func (o *GroupWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *GroupWidgetDefinition) SetType(v string) {
+func (o *GroupWidgetDefinition) SetType(v GroupWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -164,11 +163,6 @@ func (o GroupWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["widgets"] = o.Widgets
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of GroupWidgetDefinition in WidgetDefinition
-func (s *GroupWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableGroupWidgetDefinition struct {

@@ -13,78 +13,118 @@ import (
 	"fmt"
 )
 
-// UserResponseIncludedItem An object related to a user.
+// UserResponseIncludedItem - An object related to a user.
 type UserResponseIncludedItem struct {
-	UserResponseIncludedItemInterface interface{ GetType() string }
+	Organization *Organization
+	Permission   *Permission
+	Role         *Role
 }
 
-func (s UserResponseIncludedItem) MarshalJSON() ([]byte, error) {
-	return json.Marshal(s.UserResponseIncludedItemInterface)
+// OrganizationAsUserResponseIncludedItem is a convenience function that returns Organization wrapped in UserResponseIncludedItem
+func OrganizationAsUserResponseIncludedItem(v *Organization) UserResponseIncludedItem {
+	return UserResponseIncludedItem{Organization: v}
 }
 
-func (s *UserResponseIncludedItem) UnmarshalJSON(src []byte) error {
+// PermissionAsUserResponseIncludedItem is a convenience function that returns Permission wrapped in UserResponseIncludedItem
+func PermissionAsUserResponseIncludedItem(v *Permission) UserResponseIncludedItem {
+	return UserResponseIncludedItem{Permission: v}
+}
+
+// RoleAsUserResponseIncludedItem is a convenience function that returns Role wrapped in UserResponseIncludedItem
+func RoleAsUserResponseIncludedItem(v *Role) UserResponseIncludedItem {
+	return UserResponseIncludedItem{Role: v}
+}
+
+// Unmarshal JSON data into one of the pointers in the struct
+func (dst *UserResponseIncludedItem) UnmarshalJSON(data []byte) error {
 	var err error
-	var unmarshaled map[string]interface{}
-	err = json.Unmarshal(src, &unmarshaled)
-	if err != nil {
-		return err
-	}
-	if v, ok := unmarshaled["type"]; ok {
-		switch v {
-		case "Organization":
-			var result *Organization = &Organization{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.UserResponseIncludedItemInterface = result
-			return nil
-		case "Permission":
-			var result *Permission = &Permission{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.UserResponseIncludedItemInterface = result
-			return nil
-		case "Role":
-			var result *Role = &Role{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.UserResponseIncludedItemInterface = result
-			return nil
-		case "orgs":
-			var result *Organization = &Organization{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.UserResponseIncludedItemInterface = result
-			return nil
-		case "permissions":
-			var result *Permission = &Permission{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.UserResponseIncludedItemInterface = result
-			return nil
-		case "roles":
-			var result *Role = &Role{}
-			err = json.Unmarshal(src, result)
-			if err != nil {
-				return err
-			}
-			s.UserResponseIncludedItemInterface = result
-			return nil
-		default:
-			return fmt.Errorf("No oneOf model has 'type' equal to %s", v)
+	match := 0
+	// try to unmarshal data into Organization
+	err = json.Unmarshal(data, &dst.Organization)
+	if err == nil {
+		jsonOrganization, _ := json.Marshal(dst.Organization)
+		if string(jsonOrganization) == "{}" { // empty struct
+			dst.Organization = nil
+		} else {
+			match++
 		}
 	} else {
-		return fmt.Errorf("Discriminator property 'type' not found in unmarshaled payload: %+v", unmarshaled)
+		dst.Organization = nil
 	}
+
+	// try to unmarshal data into Permission
+	err = json.Unmarshal(data, &dst.Permission)
+	if err == nil {
+		jsonPermission, _ := json.Marshal(dst.Permission)
+		if string(jsonPermission) == "{}" { // empty struct
+			dst.Permission = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.Permission = nil
+	}
+
+	// try to unmarshal data into Role
+	err = json.Unmarshal(data, &dst.Role)
+	if err == nil {
+		jsonRole, _ := json.Marshal(dst.Role)
+		if string(jsonRole) == "{}" { // empty struct
+			dst.Role = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.Role = nil
+	}
+
+	if match > 1 { // more than 1 match
+		// reset to nil
+		dst.Organization = nil
+		dst.Permission = nil
+		dst.Role = nil
+
+		return fmt.Errorf("Data matches more than one schema in oneOf(UserResponseIncludedItem)")
+	} else if match == 1 {
+		return nil // exactly one match
+	} else { // no match
+		return fmt.Errorf("Data failed to match schemas in oneOf(UserResponseIncludedItem)")
+	}
+}
+
+// Marshal data from the first non-nil pointers in the struct to JSON
+func (src UserResponseIncludedItem) MarshalJSON() ([]byte, error) {
+	if src.Organization != nil {
+		return json.Marshal(&src.Organization)
+	}
+
+	if src.Permission != nil {
+		return json.Marshal(&src.Permission)
+	}
+
+	if src.Role != nil {
+		return json.Marshal(&src.Role)
+	}
+
+	return nil, nil // no data in oneOf schemas
+}
+
+// Get the actual instance
+func (obj *UserResponseIncludedItem) GetActualInstance() interface{} {
+	if obj.Organization != nil {
+		return obj.Organization
+	}
+
+	if obj.Permission != nil {
+		return obj.Permission
+	}
+
+	if obj.Role != nil {
+		return obj.Role
+	}
+
+	// all schemas are nil
+	return nil
 }
 
 type NullableUserResponseIncludedItem struct {

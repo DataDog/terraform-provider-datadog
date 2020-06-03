@@ -15,29 +15,28 @@ import (
 // LogsGrokParser Create custom grok rules to parse the full message or [a specific attribute of your raw event](https://docs.datadoghq.com/logs/processing/parsing/#advanced-settings). For more information, see the [parsing section](https://docs.datadoghq.com/logs/processing/parsing).
 type LogsGrokParser struct {
 	Grok LogsGrokParserRules `json:"grok"`
-	// List of sample logs to test this grok parser.
-	Samples *[]string `json:"samples,omitempty"`
-	// Name of the log attribute to parse.
-	Source string `json:"source"`
-	// Type of processor.
-	Type string `json:"type"`
 	// Whether or not the processor is enabled.
 	IsEnabled *bool `json:"is_enabled,omitempty"`
 	// Name of the processor.
 	Name *string `json:"name,omitempty"`
+	// List of sample logs to test this grok parser.
+	Samples *[]string `json:"samples,omitempty"`
+	// Name of the log attribute to parse.
+	Source string             `json:"source"`
+	Type   LogsGrokParserType `json:"type"`
 }
 
 // NewLogsGrokParser instantiates a new LogsGrokParser object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogsGrokParser(grok LogsGrokParserRules, source string, type_ string) *LogsGrokParser {
+func NewLogsGrokParser(grok LogsGrokParserRules, source string, type_ LogsGrokParserType) *LogsGrokParser {
 	this := LogsGrokParser{}
 	this.Grok = grok
-	this.Source = source
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	this.Source = source
+	this.Type = type_
 	return &this
 }
 
@@ -46,12 +45,12 @@ func NewLogsGrokParser(grok LogsGrokParserRules, source string, type_ string) *L
 // but it doesn't guarantee that properties required by API are set
 func NewLogsGrokParserWithDefaults() *LogsGrokParser {
 	this := LogsGrokParser{}
-	var source string = "message"
-	this.Source = source
-	var type_ string = "grok-parser"
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	var source string = "message"
+	this.Source = source
+	var type_ LogsGrokParserType = "grok-parser"
+	this.Type = type_
 	return &this
 }
 
@@ -77,86 +76,6 @@ func (o *LogsGrokParser) GetGrokOk() (*LogsGrokParserRules, bool) {
 // SetGrok sets field value
 func (o *LogsGrokParser) SetGrok(v LogsGrokParserRules) {
 	o.Grok = v
-}
-
-// GetSamples returns the Samples field value if set, zero value otherwise.
-func (o *LogsGrokParser) GetSamples() []string {
-	if o == nil || o.Samples == nil {
-		var ret []string
-		return ret
-	}
-	return *o.Samples
-}
-
-// GetSamplesOk returns a tuple with the Samples field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LogsGrokParser) GetSamplesOk() (*[]string, bool) {
-	if o == nil || o.Samples == nil {
-		return nil, false
-	}
-	return o.Samples, true
-}
-
-// HasSamples returns a boolean if a field has been set.
-func (o *LogsGrokParser) HasSamples() bool {
-	if o != nil && o.Samples != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetSamples gets a reference to the given []string and assigns it to the Samples field.
-func (o *LogsGrokParser) SetSamples(v []string) {
-	o.Samples = &v
-}
-
-// GetSource returns the Source field value
-func (o *LogsGrokParser) GetSource() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Source
-}
-
-// GetSourceOk returns a tuple with the Source field value
-// and a boolean to check if the value has been set.
-func (o *LogsGrokParser) GetSourceOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Source, true
-}
-
-// SetSource sets field value
-func (o *LogsGrokParser) SetSource(v string) {
-	o.Source = v
-}
-
-// GetType returns the Type field value
-func (o *LogsGrokParser) GetType() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value
-// and a boolean to check if the value has been set.
-func (o *LogsGrokParser) GetTypeOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Type, true
-}
-
-// SetType sets field value
-func (o *LogsGrokParser) SetType(v string) {
-	o.Type = v
 }
 
 // GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
@@ -223,10 +142,96 @@ func (o *LogsGrokParser) SetName(v string) {
 	o.Name = &v
 }
 
+// GetSamples returns the Samples field value if set, zero value otherwise.
+func (o *LogsGrokParser) GetSamples() []string {
+	if o == nil || o.Samples == nil {
+		var ret []string
+		return ret
+	}
+	return *o.Samples
+}
+
+// GetSamplesOk returns a tuple with the Samples field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogsGrokParser) GetSamplesOk() (*[]string, bool) {
+	if o == nil || o.Samples == nil {
+		return nil, false
+	}
+	return o.Samples, true
+}
+
+// HasSamples returns a boolean if a field has been set.
+func (o *LogsGrokParser) HasSamples() bool {
+	if o != nil && o.Samples != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSamples gets a reference to the given []string and assigns it to the Samples field.
+func (o *LogsGrokParser) SetSamples(v []string) {
+	o.Samples = &v
+}
+
+// GetSource returns the Source field value
+func (o *LogsGrokParser) GetSource() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Source
+}
+
+// GetSourceOk returns a tuple with the Source field value
+// and a boolean to check if the value has been set.
+func (o *LogsGrokParser) GetSourceOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Source, true
+}
+
+// SetSource sets field value
+func (o *LogsGrokParser) SetSource(v string) {
+	o.Source = v
+}
+
+// GetType returns the Type field value
+func (o *LogsGrokParser) GetType() LogsGrokParserType {
+	if o == nil {
+		var ret LogsGrokParserType
+		return ret
+	}
+
+	return o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *LogsGrokParser) GetTypeOk() (*LogsGrokParserType, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Type, true
+}
+
+// SetType sets field value
+func (o *LogsGrokParser) SetType(v LogsGrokParserType) {
+	o.Type = v
+}
+
 func (o LogsGrokParser) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["grok"] = o.Grok
+	}
+	if o.IsEnabled != nil {
+		toSerialize["is_enabled"] = o.IsEnabled
+	}
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
 	}
 	if o.Samples != nil {
 		toSerialize["samples"] = o.Samples
@@ -237,18 +242,7 @@ func (o LogsGrokParser) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["type"] = o.Type
 	}
-	if o.IsEnabled != nil {
-		toSerialize["is_enabled"] = o.IsEnabled
-	}
-	if o.Name != nil {
-		toSerialize["name"] = o.Name
-	}
 	return json.Marshal(toSerialize)
-}
-
-// AsLogsProcessor wraps this instance of LogsGrokParser in LogsProcessor
-func (s *LogsGrokParser) AsLogsProcessor() LogsProcessor {
-	return LogsProcessor{LogsProcessorInterface: s}
 }
 
 type NullableLogsGrokParser struct {

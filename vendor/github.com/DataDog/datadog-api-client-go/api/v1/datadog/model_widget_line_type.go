@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // WidgetLineType Type of lines displayed.
@@ -21,6 +22,23 @@ const (
 	WIDGETLINETYPE_DOTTED WidgetLineType = "dotted"
 	WIDGETLINETYPE_SOLID  WidgetLineType = "solid"
 )
+
+func (v *WidgetLineType) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := WidgetLineType(value)
+	for _, existing := range []WidgetLineType{"dashed", "dotted", "solid"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid WidgetLineType", *v)
+}
 
 // Ptr returns reference to WidgetLineType value
 func (v WidgetLineType) Ptr() *WidgetLineType {

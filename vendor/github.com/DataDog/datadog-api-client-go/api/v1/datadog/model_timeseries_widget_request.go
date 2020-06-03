@@ -23,9 +23,9 @@ type TimeseriesWidgetRequest struct {
 	NetworkQuery *LogQueryDefinition                `json:"network_query,omitempty"`
 	ProcessQuery *ProcessQueryDefinition            `json:"process_query,omitempty"`
 	// Widget query.
-	Q        *string                       `json:"q,omitempty"`
-	RumQuery *LogQueryDefinition           `json:"rum_query,omitempty"`
-	Style    *TimeseriesWidgetRequestStyle `json:"style,omitempty"`
+	Q        *string             `json:"q,omitempty"`
+	RumQuery *LogQueryDefinition `json:"rum_query,omitempty"`
+	Style    *WidgetRequestStyle `json:"style,omitempty"`
 }
 
 // NewTimeseriesWidgetRequest instantiates a new TimeseriesWidgetRequest object
@@ -334,9 +334,9 @@ func (o *TimeseriesWidgetRequest) SetRumQuery(v LogQueryDefinition) {
 }
 
 // GetStyle returns the Style field value if set, zero value otherwise.
-func (o *TimeseriesWidgetRequest) GetStyle() TimeseriesWidgetRequestStyle {
+func (o *TimeseriesWidgetRequest) GetStyle() WidgetRequestStyle {
 	if o == nil || o.Style == nil {
-		var ret TimeseriesWidgetRequestStyle
+		var ret WidgetRequestStyle
 		return ret
 	}
 	return *o.Style
@@ -344,7 +344,7 @@ func (o *TimeseriesWidgetRequest) GetStyle() TimeseriesWidgetRequestStyle {
 
 // GetStyleOk returns a tuple with the Style field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TimeseriesWidgetRequest) GetStyleOk() (*TimeseriesWidgetRequestStyle, bool) {
+func (o *TimeseriesWidgetRequest) GetStyleOk() (*WidgetRequestStyle, bool) {
 	if o == nil || o.Style == nil {
 		return nil, false
 	}
@@ -360,8 +360,8 @@ func (o *TimeseriesWidgetRequest) HasStyle() bool {
 	return false
 }
 
-// SetStyle gets a reference to the given TimeseriesWidgetRequestStyle and assigns it to the Style field.
-func (o *TimeseriesWidgetRequest) SetStyle(v TimeseriesWidgetRequestStyle) {
+// SetStyle gets a reference to the given WidgetRequestStyle and assigns it to the Style field.
+func (o *TimeseriesWidgetRequest) SetStyle(v WidgetRequestStyle) {
 	o.Style = &v
 }
 

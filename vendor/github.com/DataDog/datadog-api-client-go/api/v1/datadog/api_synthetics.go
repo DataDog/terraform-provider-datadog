@@ -29,7 +29,6 @@ type apiCreateTestRequest struct {
 	ctx        _context.Context
 	apiService *SyntheticsApiService
 	body       *SyntheticsTestDetails
-	fromTestId *string
 }
 
 func (r apiCreateTestRequest) Body(body SyntheticsTestDetails) apiCreateTestRequest {
@@ -37,14 +36,9 @@ func (r apiCreateTestRequest) Body(body SyntheticsTestDetails) apiCreateTestRequ
 	return r
 }
 
-func (r apiCreateTestRequest) FromTestId(fromTestId string) apiCreateTestRequest {
-	r.fromTestId = &fromTestId
-	return r
-}
-
 /*
-CreateTest Create or clone a test
-Create (or clone) a Synthetics test.
+CreateTest Create a test
+Create a Synthetic test.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiCreateTestRequest
 */
@@ -84,9 +78,6 @@ func (r apiCreateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
 
-	if r.fromTestId != nil {
-		localVarQueryParams.Add("from_test_id", parameterToString(*r.fromTestId, ""))
-	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}
 
@@ -215,7 +206,7 @@ func (r apiDeleteTestsRequest) Body(body SyntheticsDeleteTestsPayload) apiDelete
 }
 
 /*
-DeleteTests Delete multiple tests
+DeleteTests Delete tests
 Delete multiple Synthetic tests by ID.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiDeleteTestsRequest
@@ -397,8 +388,8 @@ func (r apiGetAPITestLatestResultsRequest) ProbeDc(probeDc []string) apiGetAPITe
 }
 
 /*
-GetAPITestLatestResults Get test latest results (as summaries)
-Get the latest results (as summaries) from a given API Synthetic test.
+GetAPITestLatestResults Get the test's latest results summaries (API)
+Get the last 50 test results summaries for a given Synthetics API test.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The public ID of the test for which to search results for.
 @return apiGetAPITestLatestResultsRequest
@@ -566,7 +557,7 @@ type apiGetAPITestResultRequest struct {
 }
 
 /*
-GetAPITestResult Get test result (API)
+GetAPITestResult Get a test result (API)
 Get a specific full result from a given (API) Synthetic test.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The public ID of the API test to which the target result belongs.
@@ -713,6 +704,157 @@ func (r apiGetAPITestResultRequest) Execute() (SyntheticsAPITestResultFull, *_ne
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type apiGetBrowserTestRequest struct {
+	ctx        _context.Context
+	apiService *SyntheticsApiService
+	publicId   string
+}
+
+/*
+GetBrowserTest Get a browser test configuration
+Get the detailed configuration (including steps) associated with a Synthetics browser test.
+ * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param publicId The public ID of the test to get details from.
+@return apiGetBrowserTestRequest
+*/
+func (a *SyntheticsApiService) GetBrowserTest(ctx _context.Context, publicId string) apiGetBrowserTestRequest {
+	return apiGetBrowserTestRequest{
+		apiService: a,
+		ctx:        ctx,
+		publicId:   publicId,
+	}
+}
+
+/*
+Execute executes the request
+ @return SyntheticsTestDetails
+*/
+func (r apiGetBrowserTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod   = _nethttp.MethodGet
+		localVarPostBody     interface{}
+		localVarFormFileName string
+		localVarFileName     string
+		localVarFileBytes    []byte
+		localVarReturnValue  SyntheticsTestDetails
+	)
+
+	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.GetBrowserTest")
+	if err != nil {
+		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/synthetics/tests/browser/{public_id}"
+	localVarPath = strings.Replace(localVarPath, "{"+"public_id"+"}", _neturl.QueryEscape(parameterToString(r.publicId, "")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+
+	// Set Operation-ID header for telemetry
+	localVarHeaderParams["DD-OPERATION-ID"] = "GetBrowserTest"
+
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if auth, ok := auth["apiKeyAuth"]; ok {
+				var key string
+				if auth.Prefix != "" {
+					key = auth.Prefix + " " + auth.Key
+				} else {
+					key = auth.Key
+				}
+				localVarHeaderParams["DD-API-KEY"] = key
+			}
+		}
+	}
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if auth, ok := auth["appKeyAuth"]; ok {
+				var key string
+				if auth.Prefix != "" {
+					key = auth.Prefix + " " + auth.Key
+				} else {
+					key = auth.Key
+				}
+				localVarHeaderParams["DD-APPLICATION-KEY"] = key
+			}
+		}
+	}
+	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v APIErrorResponse
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v APIErrorResponse
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type apiGetBrowserTestLatestResultsRequest struct {
 	ctx        _context.Context
 	apiService *SyntheticsApiService
@@ -738,8 +880,8 @@ func (r apiGetBrowserTestLatestResultsRequest) ProbeDc(probeDc []string) apiGetB
 }
 
 /*
-GetBrowserTestLatestResults Get test latest results (as summaries)
-Get the latest results (as summaries) from a given browser Synthetic test.
+GetBrowserTestLatestResults Get the test's latest results summaries (browser)
+Get the last 50 test results summaries for a given Synthetics Browser test.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The public ID of the browser test for which to search results for.
 @return apiGetBrowserTestLatestResultsRequest
@@ -907,7 +1049,7 @@ type apiGetBrowserTestResultRequest struct {
 }
 
 /*
-GetBrowserTestResult Get test result (browser)
+GetBrowserTestResult Get a test result (browser)
 Get a specific full result from a given (browser) Synthetic test.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The public ID of the browser test to which the target result belongs.
@@ -1061,8 +1203,8 @@ type apiGetTestRequest struct {
 }
 
 /*
-GetTest Get test
-Get the details of a specific Synthetic test.
+GetTest Get a test configuration
+Get the detailed configuration associated with a Synthetics test.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The public ID of the test to get details from.
 @return apiGetTestRequest
@@ -1217,7 +1359,7 @@ func (r apiListTestsRequest) CheckType(checkType string) apiListTestsRequest {
 }
 
 /*
-ListTests Get a list of all tests
+ListTests Get a list of tests
 Get the list of all Synthetic tests (can be filtered by type).
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiListTestsRequest
@@ -1374,8 +1516,8 @@ func (r apiUpdateTestRequest) Body(body SyntheticsTestDetails) apiUpdateTestRequ
 }
 
 /*
-UpdateTest Update test
-Update the details of a specific Synthetic test.
+UpdateTest Edit a test
+Edit the configuration of a Synthetic test.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The public ID of the test to get details from.
 @return apiUpdateTestRequest
@@ -1547,8 +1689,8 @@ func (r apiUpdateTestPauseStatusRequest) Body(body SyntheticsUpdateTestPauseStat
 }
 
 /*
-UpdateTestPauseStatus Change test pause/live status
-Change pause/live status of a given Synthetic test.
+UpdateTestPauseStatus Pause or start a test
+Pause or start a Synthetics test by changing the status.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The public ID of the Synthetic test to update.
 @return apiUpdateTestPauseStatusRequest

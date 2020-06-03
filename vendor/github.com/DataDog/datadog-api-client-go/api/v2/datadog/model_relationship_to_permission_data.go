@@ -15,9 +15,8 @@ import (
 // RelationshipToPermissionData Relationship to permission object.
 type RelationshipToPermissionData struct {
 	// ID of the permission.
-	Id *string `json:"id,omitempty"`
-	// Permissions resource type.
-	Type *string `json:"type,omitempty"`
+	Id   *string          `json:"id,omitempty"`
+	Type *PermissionsType `json:"type,omitempty"`
 }
 
 // NewRelationshipToPermissionData instantiates a new RelationshipToPermissionData object
@@ -26,7 +25,7 @@ type RelationshipToPermissionData struct {
 // will change when the set of required properties is changed
 func NewRelationshipToPermissionData() *RelationshipToPermissionData {
 	this := RelationshipToPermissionData{}
-	var type_ string = "permissions"
+	var type_ PermissionsType = "permissions"
 	this.Type = &type_
 	return &this
 }
@@ -36,7 +35,7 @@ func NewRelationshipToPermissionData() *RelationshipToPermissionData {
 // but it doesn't guarantee that properties required by API are set
 func NewRelationshipToPermissionDataWithDefaults() *RelationshipToPermissionData {
 	this := RelationshipToPermissionData{}
-	var type_ string = "permissions"
+	var type_ PermissionsType = "permissions"
 	this.Type = &type_
 	return &this
 }
@@ -74,9 +73,9 @@ func (o *RelationshipToPermissionData) SetId(v string) {
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *RelationshipToPermissionData) GetType() string {
+func (o *RelationshipToPermissionData) GetType() PermissionsType {
 	if o == nil || o.Type == nil {
-		var ret string
+		var ret PermissionsType
 		return ret
 	}
 	return *o.Type
@@ -84,7 +83,7 @@ func (o *RelationshipToPermissionData) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RelationshipToPermissionData) GetTypeOk() (*string, bool) {
+func (o *RelationshipToPermissionData) GetTypeOk() (*PermissionsType, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -100,8 +99,8 @@ func (o *RelationshipToPermissionData) HasType() bool {
 	return false
 }
 
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *RelationshipToPermissionData) SetType(v string) {
+// SetType gets a reference to the given PermissionsType and assigns it to the Type field.
+func (o *RelationshipToPermissionData) SetType(v PermissionsType) {
 	o.Type = &v
 }
 

@@ -16,8 +16,7 @@ import (
 type UserCreateData struct {
 	Attributes    *UserCreateAttributes `json:"attributes,omitempty"`
 	Relationships *UserRelationships    `json:"relationships,omitempty"`
-	// Users resource type.
-	Type *string `json:"type,omitempty"`
+	Type          *UsersType            `json:"type,omitempty"`
 }
 
 // NewUserCreateData instantiates a new UserCreateData object
@@ -26,7 +25,7 @@ type UserCreateData struct {
 // will change when the set of required properties is changed
 func NewUserCreateData() *UserCreateData {
 	this := UserCreateData{}
-	var type_ string = "users"
+	var type_ UsersType = "users"
 	this.Type = &type_
 	return &this
 }
@@ -36,7 +35,7 @@ func NewUserCreateData() *UserCreateData {
 // but it doesn't guarantee that properties required by API are set
 func NewUserCreateDataWithDefaults() *UserCreateData {
 	this := UserCreateData{}
-	var type_ string = "users"
+	var type_ UsersType = "users"
 	this.Type = &type_
 	return &this
 }
@@ -106,9 +105,9 @@ func (o *UserCreateData) SetRelationships(v UserRelationships) {
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *UserCreateData) GetType() string {
+func (o *UserCreateData) GetType() UsersType {
 	if o == nil || o.Type == nil {
-		var ret string
+		var ret UsersType
 		return ret
 	}
 	return *o.Type
@@ -116,7 +115,7 @@ func (o *UserCreateData) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserCreateData) GetTypeOk() (*string, bool) {
+func (o *UserCreateData) GetTypeOk() (*UsersType, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -132,8 +131,8 @@ func (o *UserCreateData) HasType() bool {
 	return false
 }
 
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *UserCreateData) SetType(v string) {
+// SetType gets a reference to the given UsersType and assigns it to the Type field.
+func (o *UserCreateData) SetType(v UsersType) {
 	o.Type = &v
 }
 

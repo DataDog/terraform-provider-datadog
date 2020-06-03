@@ -15,7 +15,7 @@ import (
 // DashboardListAddItemsResponse Response containing a list of added dashboards.
 type DashboardListAddItemsResponse struct {
 	// List of dashboards added to the dashboard list.
-	AddedDashboardsToList *[]DashboardListItem `json:"added_dashboards_to_list,omitempty"`
+	AddedDashboardsToList *[]DashboardListItemResponse `json:"added_dashboards_to_list,omitempty"`
 }
 
 // NewDashboardListAddItemsResponse instantiates a new DashboardListAddItemsResponse object
@@ -36,9 +36,9 @@ func NewDashboardListAddItemsResponseWithDefaults() *DashboardListAddItemsRespon
 }
 
 // GetAddedDashboardsToList returns the AddedDashboardsToList field value if set, zero value otherwise.
-func (o *DashboardListAddItemsResponse) GetAddedDashboardsToList() []DashboardListItem {
+func (o *DashboardListAddItemsResponse) GetAddedDashboardsToList() []DashboardListItemResponse {
 	if o == nil || o.AddedDashboardsToList == nil {
-		var ret []DashboardListItem
+		var ret []DashboardListItemResponse
 		return ret
 	}
 	return *o.AddedDashboardsToList
@@ -46,7 +46,7 @@ func (o *DashboardListAddItemsResponse) GetAddedDashboardsToList() []DashboardLi
 
 // GetAddedDashboardsToListOk returns a tuple with the AddedDashboardsToList field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DashboardListAddItemsResponse) GetAddedDashboardsToListOk() (*[]DashboardListItem, bool) {
+func (o *DashboardListAddItemsResponse) GetAddedDashboardsToListOk() (*[]DashboardListItemResponse, bool) {
 	if o == nil || o.AddedDashboardsToList == nil {
 		return nil, false
 	}
@@ -62,8 +62,8 @@ func (o *DashboardListAddItemsResponse) HasAddedDashboardsToList() bool {
 	return false
 }
 
-// SetAddedDashboardsToList gets a reference to the given []DashboardListItem and assigns it to the AddedDashboardsToList field.
-func (o *DashboardListAddItemsResponse) SetAddedDashboardsToList(v []DashboardListItem) {
+// SetAddedDashboardsToList gets a reference to the given []DashboardListItemResponse and assigns it to the AddedDashboardsToList field.
+func (o *DashboardListAddItemsResponse) SetAddedDashboardsToList(v []DashboardListItemResponse) {
 	o.AddedDashboardsToList = &v
 }
 

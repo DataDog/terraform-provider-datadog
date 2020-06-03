@@ -23,16 +23,15 @@ type EventTimelineWidgetDefinition struct {
 	Title      *string          `json:"title,omitempty"`
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
 	// Size of the title.
-	TitleSize *string `json:"title_size,omitempty"`
-	// Type of the widget.
-	Type string `json:"type"`
+	TitleSize *string                           `json:"title_size,omitempty"`
+	Type      EventTimelineWidgetDefinitionType `json:"type"`
 }
 
 // NewEventTimelineWidgetDefinition instantiates a new EventTimelineWidgetDefinition object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewEventTimelineWidgetDefinition(query string, type_ string) *EventTimelineWidgetDefinition {
+func NewEventTimelineWidgetDefinition(query string, type_ EventTimelineWidgetDefinitionType) *EventTimelineWidgetDefinition {
 	this := EventTimelineWidgetDefinition{}
 	this.Query = query
 	this.Type = type_
@@ -44,7 +43,7 @@ func NewEventTimelineWidgetDefinition(query string, type_ string) *EventTimeline
 // but it doesn't guarantee that properties required by API are set
 func NewEventTimelineWidgetDefinitionWithDefaults() *EventTimelineWidgetDefinition {
 	this := EventTimelineWidgetDefinition{}
-	var type_ string = "event_timeline"
+	var type_ EventTimelineWidgetDefinitionType = "event_timeline"
 	this.Type = type_
 	return &this
 }
@@ -234,9 +233,9 @@ func (o *EventTimelineWidgetDefinition) SetTitleSize(v string) {
 }
 
 // GetType returns the Type field value
-func (o *EventTimelineWidgetDefinition) GetType() string {
+func (o *EventTimelineWidgetDefinition) GetType() EventTimelineWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret EventTimelineWidgetDefinitionType
 		return ret
 	}
 
@@ -245,7 +244,7 @@ func (o *EventTimelineWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *EventTimelineWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *EventTimelineWidgetDefinition) GetTypeOk() (*EventTimelineWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -253,7 +252,7 @@ func (o *EventTimelineWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *EventTimelineWidgetDefinition) SetType(v string) {
+func (o *EventTimelineWidgetDefinition) SetType(v EventTimelineWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -281,11 +280,6 @@ func (o EventTimelineWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of EventTimelineWidgetDefinition in WidgetDefinition
-func (s *EventTimelineWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableEventTimelineWidgetDefinition struct {

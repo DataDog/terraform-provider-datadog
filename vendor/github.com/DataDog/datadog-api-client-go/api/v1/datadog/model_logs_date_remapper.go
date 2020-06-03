@@ -14,26 +14,25 @@ import (
 
 // LogsDateRemapper As Datadog receives logs, it timestamps them using the value(s) from any of these default attributes.    - `timestamp`   - `date`   - `_timestamp`   - `Timestamp`   - `eventTime`   - `published_date`    If your logs put their dates in an attribute not in this list,   use the log date Remapper Processor to define their date attribute as the official log timestamp.   The recognized date formats are ISO8601, UNIX (the milliseconds EPOCH format), and RFC3164.    **Note:** If your logs don’t contain any of the default attributes   and you haven’t defined your own date attribute, Datadog timestamps   the logs with the date it received them.    If multiple log date remapper processors can be applied to a given log,   only the first one (according to the pipelines order) is taken into account.
 type LogsDateRemapper struct {
-	// Array of source attributes.
-	Sources []string `json:"sources"`
-	// Type of processor.
-	Type string `json:"type"`
 	// Whether or not the processor is enabled.
 	IsEnabled *bool `json:"is_enabled,omitempty"`
 	// Name of the processor.
 	Name *string `json:"name,omitempty"`
+	// Array of source attributes.
+	Sources []string             `json:"sources"`
+	Type    LogsDateRemapperType `json:"type"`
 }
 
 // NewLogsDateRemapper instantiates a new LogsDateRemapper object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogsDateRemapper(sources []string, type_ string) *LogsDateRemapper {
+func NewLogsDateRemapper(sources []string, type_ LogsDateRemapperType) *LogsDateRemapper {
 	this := LogsDateRemapper{}
-	this.Sources = sources
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	this.Sources = sources
+	this.Type = type_
 	return &this
 }
 
@@ -42,59 +41,11 @@ func NewLogsDateRemapper(sources []string, type_ string) *LogsDateRemapper {
 // but it doesn't guarantee that properties required by API are set
 func NewLogsDateRemapperWithDefaults() *LogsDateRemapper {
 	this := LogsDateRemapper{}
-	var type_ string = "date-remapper"
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	var type_ LogsDateRemapperType = "date-remapper"
+	this.Type = type_
 	return &this
-}
-
-// GetSources returns the Sources field value
-func (o *LogsDateRemapper) GetSources() []string {
-	if o == nil {
-		var ret []string
-		return ret
-	}
-
-	return o.Sources
-}
-
-// GetSourcesOk returns a tuple with the Sources field value
-// and a boolean to check if the value has been set.
-func (o *LogsDateRemapper) GetSourcesOk() (*[]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Sources, true
-}
-
-// SetSources sets field value
-func (o *LogsDateRemapper) SetSources(v []string) {
-	o.Sources = v
-}
-
-// GetType returns the Type field value
-func (o *LogsDateRemapper) GetType() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value
-// and a boolean to check if the value has been set.
-func (o *LogsDateRemapper) GetTypeOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Type, true
-}
-
-// SetType sets field value
-func (o *LogsDateRemapper) SetType(v string) {
-	o.Type = v
 }
 
 // GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
@@ -161,26 +112,69 @@ func (o *LogsDateRemapper) SetName(v string) {
 	o.Name = &v
 }
 
+// GetSources returns the Sources field value
+func (o *LogsDateRemapper) GetSources() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+
+	return o.Sources
+}
+
+// GetSourcesOk returns a tuple with the Sources field value
+// and a boolean to check if the value has been set.
+func (o *LogsDateRemapper) GetSourcesOk() (*[]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Sources, true
+}
+
+// SetSources sets field value
+func (o *LogsDateRemapper) SetSources(v []string) {
+	o.Sources = v
+}
+
+// GetType returns the Type field value
+func (o *LogsDateRemapper) GetType() LogsDateRemapperType {
+	if o == nil {
+		var ret LogsDateRemapperType
+		return ret
+	}
+
+	return o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *LogsDateRemapper) GetTypeOk() (*LogsDateRemapperType, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Type, true
+}
+
+// SetType sets field value
+func (o *LogsDateRemapper) SetType(v LogsDateRemapperType) {
+	o.Type = v
+}
+
 func (o LogsDateRemapper) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if true {
-		toSerialize["sources"] = o.Sources
-	}
-	if true {
-		toSerialize["type"] = o.Type
-	}
 	if o.IsEnabled != nil {
 		toSerialize["is_enabled"] = o.IsEnabled
 	}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
+	if true {
+		toSerialize["sources"] = o.Sources
+	}
+	if true {
+		toSerialize["type"] = o.Type
+	}
 	return json.Marshal(toSerialize)
-}
-
-// AsLogsProcessor wraps this instance of LogsDateRemapper in LogsProcessor
-func (s *LogsDateRemapper) AsLogsProcessor() LogsProcessor {
-	return LogsProcessor{LogsProcessorInterface: s}
 }
 
 type NullableLogsDateRemapper struct {

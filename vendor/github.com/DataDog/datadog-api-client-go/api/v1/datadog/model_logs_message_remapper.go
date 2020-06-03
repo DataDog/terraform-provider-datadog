@@ -14,26 +14,25 @@ import (
 
 // LogsMessageRemapper The message is a key attribute in Datadog. It is displayed in the message column of the Log Explorer and you can do full string search on it. Use this Processor to define one or more attributes as the official log message.  **Note:** If multiple log message remapper processors can be applied to a given log, only the first one (according to the pipeline order) is taken into account.
 type LogsMessageRemapper struct {
-	// Array of source attributes.
-	Sources []string `json:"sources"`
-	// Type of processor.
-	Type string `json:"type"`
 	// Whether or not the processor is enabled.
 	IsEnabled *bool `json:"is_enabled,omitempty"`
 	// Name of the processor.
 	Name *string `json:"name,omitempty"`
+	// Array of source attributes.
+	Sources []string                `json:"sources"`
+	Type    LogsMessageRemapperType `json:"type"`
 }
 
 // NewLogsMessageRemapper instantiates a new LogsMessageRemapper object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogsMessageRemapper(sources []string, type_ string) *LogsMessageRemapper {
+func NewLogsMessageRemapper(sources []string, type_ LogsMessageRemapperType) *LogsMessageRemapper {
 	this := LogsMessageRemapper{}
-	this.Sources = sources
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	this.Sources = sources
+	this.Type = type_
 	return &this
 }
 
@@ -42,59 +41,11 @@ func NewLogsMessageRemapper(sources []string, type_ string) *LogsMessageRemapper
 // but it doesn't guarantee that properties required by API are set
 func NewLogsMessageRemapperWithDefaults() *LogsMessageRemapper {
 	this := LogsMessageRemapper{}
-	var type_ string = "message-remapper"
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	var type_ LogsMessageRemapperType = "message-remapper"
+	this.Type = type_
 	return &this
-}
-
-// GetSources returns the Sources field value
-func (o *LogsMessageRemapper) GetSources() []string {
-	if o == nil {
-		var ret []string
-		return ret
-	}
-
-	return o.Sources
-}
-
-// GetSourcesOk returns a tuple with the Sources field value
-// and a boolean to check if the value has been set.
-func (o *LogsMessageRemapper) GetSourcesOk() (*[]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Sources, true
-}
-
-// SetSources sets field value
-func (o *LogsMessageRemapper) SetSources(v []string) {
-	o.Sources = v
-}
-
-// GetType returns the Type field value
-func (o *LogsMessageRemapper) GetType() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value
-// and a boolean to check if the value has been set.
-func (o *LogsMessageRemapper) GetTypeOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Type, true
-}
-
-// SetType sets field value
-func (o *LogsMessageRemapper) SetType(v string) {
-	o.Type = v
 }
 
 // GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
@@ -161,26 +112,69 @@ func (o *LogsMessageRemapper) SetName(v string) {
 	o.Name = &v
 }
 
+// GetSources returns the Sources field value
+func (o *LogsMessageRemapper) GetSources() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+
+	return o.Sources
+}
+
+// GetSourcesOk returns a tuple with the Sources field value
+// and a boolean to check if the value has been set.
+func (o *LogsMessageRemapper) GetSourcesOk() (*[]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Sources, true
+}
+
+// SetSources sets field value
+func (o *LogsMessageRemapper) SetSources(v []string) {
+	o.Sources = v
+}
+
+// GetType returns the Type field value
+func (o *LogsMessageRemapper) GetType() LogsMessageRemapperType {
+	if o == nil {
+		var ret LogsMessageRemapperType
+		return ret
+	}
+
+	return o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *LogsMessageRemapper) GetTypeOk() (*LogsMessageRemapperType, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Type, true
+}
+
+// SetType sets field value
+func (o *LogsMessageRemapper) SetType(v LogsMessageRemapperType) {
+	o.Type = v
+}
+
 func (o LogsMessageRemapper) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if true {
-		toSerialize["sources"] = o.Sources
-	}
-	if true {
-		toSerialize["type"] = o.Type
-	}
 	if o.IsEnabled != nil {
 		toSerialize["is_enabled"] = o.IsEnabled
 	}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
+	if true {
+		toSerialize["sources"] = o.Sources
+	}
+	if true {
+		toSerialize["type"] = o.Type
+	}
 	return json.Marshal(toSerialize)
-}
-
-// AsLogsProcessor wraps this instance of LogsMessageRemapper in LogsProcessor
-func (s *LogsMessageRemapper) AsLogsProcessor() LogsProcessor {
-	return LogsProcessor{LogsProcessorInterface: s}
 }
 
 type NullableLogsMessageRemapper struct {

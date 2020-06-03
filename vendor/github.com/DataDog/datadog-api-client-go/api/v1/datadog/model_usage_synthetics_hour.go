@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-// UsageSyntheticsHour Number of Synthetics API tests run for each hour for a given organization.
+// UsageSyntheticsHour The number of synthetics tests run for each hour for a given organization.
 type UsageSyntheticsHour struct {
 	// Contains the number of Synthetics API tests run.
 	CheckCallsCount *int64 `json:"check_calls_count,omitempty"`

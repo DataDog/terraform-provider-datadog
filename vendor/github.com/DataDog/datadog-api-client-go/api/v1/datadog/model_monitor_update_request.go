@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-// MonitorUpdateRequest Object describing a monitor.
+// MonitorUpdateRequest Object describing a monitor update request.
 type MonitorUpdateRequest struct {
 	// Timestamp of the monitor creation.
 	Created *time.Time `json:"created,omitempty"`

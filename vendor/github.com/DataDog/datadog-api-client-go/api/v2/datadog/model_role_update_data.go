@@ -16,9 +16,8 @@ import (
 type RoleUpdateData struct {
 	Attributes *RoleUpdateAttributes `json:"attributes,omitempty"`
 	// ID of the role.
-	Id *string `json:"id,omitempty"`
-	// Type of role.
-	Type *string `json:"type,omitempty"`
+	Id   *string    `json:"id,omitempty"`
+	Type *RolesType `json:"type,omitempty"`
 }
 
 // NewRoleUpdateData instantiates a new RoleUpdateData object
@@ -27,7 +26,7 @@ type RoleUpdateData struct {
 // will change when the set of required properties is changed
 func NewRoleUpdateData() *RoleUpdateData {
 	this := RoleUpdateData{}
-	var type_ string = "roles"
+	var type_ RolesType = "roles"
 	this.Type = &type_
 	return &this
 }
@@ -37,7 +36,7 @@ func NewRoleUpdateData() *RoleUpdateData {
 // but it doesn't guarantee that properties required by API are set
 func NewRoleUpdateDataWithDefaults() *RoleUpdateData {
 	this := RoleUpdateData{}
-	var type_ string = "roles"
+	var type_ RolesType = "roles"
 	this.Type = &type_
 	return &this
 }
@@ -107,9 +106,9 @@ func (o *RoleUpdateData) SetId(v string) {
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *RoleUpdateData) GetType() string {
+func (o *RoleUpdateData) GetType() RolesType {
 	if o == nil || o.Type == nil {
-		var ret string
+		var ret RolesType
 		return ret
 	}
 	return *o.Type
@@ -117,7 +116,7 @@ func (o *RoleUpdateData) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RoleUpdateData) GetTypeOk() (*string, bool) {
+func (o *RoleUpdateData) GetTypeOk() (*RolesType, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -133,8 +132,8 @@ func (o *RoleUpdateData) HasType() bool {
 	return false
 }
 
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *RoleUpdateData) SetType(v string) {
+// SetType gets a reference to the given RolesType and assigns it to the Type field.
+func (o *RoleUpdateData) SetType(v RolesType) {
 	o.Type = &v
 }
 

@@ -14,33 +14,32 @@ import (
 
 // LogsStringBuilderProcessor Use the string builder processor to add a new attribute (without spaces or special characters) to a log with the result of the provided template. This enables aggregation of different attributes or raw strings into a single attribute.  The template is defined by both raw text and blocks with the syntax `%{attribute_path}`.  **Notes**:  - The processor only accepts attributes with values or an array of values in the blocks. - If an attribute cannot be used (object or array of object),   it is replaced by an empty string or the entire operation is skipped depending on your selection. - If the target attribute already exists, it is overwritten by the result of the template. - Results of the template cannot exceed 256 characters.
 type LogsStringBuilderProcessor struct {
+	// Whether or not the processor is enabled.
+	IsEnabled *bool `json:"is_enabled,omitempty"`
 	// If true, it replaces all missing attributes of `template` by an empty string. If `false` (default), skips the operation for missing attributes.
 	IsReplaceMissing *bool `json:"is_replace_missing,omitempty"`
+	// Name of the processor.
+	Name *string `json:"name,omitempty"`
 	// The name of the attribute that contains the result of the template.
 	Target string `json:"target"`
 	// A formula with one or more attributes and raw text.
-	Template string `json:"template"`
-	// Type of processor.
-	Type string `json:"type"`
-	// Whether or not the processor is enabled.
-	IsEnabled *bool `json:"is_enabled,omitempty"`
-	// Name of the processor.
-	Name *string `json:"name,omitempty"`
+	Template string                         `json:"template"`
+	Type     LogsStringBuilderProcessorType `json:"type"`
 }
 
 // NewLogsStringBuilderProcessor instantiates a new LogsStringBuilderProcessor object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogsStringBuilderProcessor(target string, template string, type_ string) *LogsStringBuilderProcessor {
+func NewLogsStringBuilderProcessor(target string, template string, type_ LogsStringBuilderProcessorType) *LogsStringBuilderProcessor {
 	this := LogsStringBuilderProcessor{}
+	var isEnabled bool = false
+	this.IsEnabled = &isEnabled
 	var isReplaceMissing bool = false
 	this.IsReplaceMissing = &isReplaceMissing
 	this.Target = target
 	this.Template = template
 	this.Type = type_
-	var isEnabled bool = false
-	this.IsEnabled = &isEnabled
 	return &this
 }
 
@@ -49,13 +48,45 @@ func NewLogsStringBuilderProcessor(target string, template string, type_ string)
 // but it doesn't guarantee that properties required by API are set
 func NewLogsStringBuilderProcessorWithDefaults() *LogsStringBuilderProcessor {
 	this := LogsStringBuilderProcessor{}
-	var isReplaceMissing bool = false
-	this.IsReplaceMissing = &isReplaceMissing
-	var type_ string = "string-builder-processor"
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	var isReplaceMissing bool = false
+	this.IsReplaceMissing = &isReplaceMissing
+	var type_ LogsStringBuilderProcessorType = "string-builder-processor"
+	this.Type = type_
 	return &this
+}
+
+// GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
+func (o *LogsStringBuilderProcessor) GetIsEnabled() bool {
+	if o == nil || o.IsEnabled == nil {
+		var ret bool
+		return ret
+	}
+	return *o.IsEnabled
+}
+
+// GetIsEnabledOk returns a tuple with the IsEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogsStringBuilderProcessor) GetIsEnabledOk() (*bool, bool) {
+	if o == nil || o.IsEnabled == nil {
+		return nil, false
+	}
+	return o.IsEnabled, true
+}
+
+// HasIsEnabled returns a boolean if a field has been set.
+func (o *LogsStringBuilderProcessor) HasIsEnabled() bool {
+	if o != nil && o.IsEnabled != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetIsEnabled gets a reference to the given bool and assigns it to the IsEnabled field.
+func (o *LogsStringBuilderProcessor) SetIsEnabled(v bool) {
+	o.IsEnabled = &v
 }
 
 // GetIsReplaceMissing returns the IsReplaceMissing field value if set, zero value otherwise.
@@ -88,6 +119,38 @@ func (o *LogsStringBuilderProcessor) HasIsReplaceMissing() bool {
 // SetIsReplaceMissing gets a reference to the given bool and assigns it to the IsReplaceMissing field.
 func (o *LogsStringBuilderProcessor) SetIsReplaceMissing(v bool) {
 	o.IsReplaceMissing = &v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *LogsStringBuilderProcessor) GetName() string {
+	if o == nil || o.Name == nil {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogsStringBuilderProcessor) GetNameOk() (*string, bool) {
+	if o == nil || o.Name == nil {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *LogsStringBuilderProcessor) HasName() bool {
+	if o != nil && o.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *LogsStringBuilderProcessor) SetName(v string) {
+	o.Name = &v
 }
 
 // GetTarget returns the Target field value
@@ -139,9 +202,9 @@ func (o *LogsStringBuilderProcessor) SetTemplate(v string) {
 }
 
 // GetType returns the Type field value
-func (o *LogsStringBuilderProcessor) GetType() string {
+func (o *LogsStringBuilderProcessor) GetType() LogsStringBuilderProcessorType {
 	if o == nil {
-		var ret string
+		var ret LogsStringBuilderProcessorType
 		return ret
 	}
 
@@ -150,7 +213,7 @@ func (o *LogsStringBuilderProcessor) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *LogsStringBuilderProcessor) GetTypeOk() (*string, bool) {
+func (o *LogsStringBuilderProcessor) GetTypeOk() (*LogsStringBuilderProcessorType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -158,78 +221,20 @@ func (o *LogsStringBuilderProcessor) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *LogsStringBuilderProcessor) SetType(v string) {
+func (o *LogsStringBuilderProcessor) SetType(v LogsStringBuilderProcessorType) {
 	o.Type = v
-}
-
-// GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
-func (o *LogsStringBuilderProcessor) GetIsEnabled() bool {
-	if o == nil || o.IsEnabled == nil {
-		var ret bool
-		return ret
-	}
-	return *o.IsEnabled
-}
-
-// GetIsEnabledOk returns a tuple with the IsEnabled field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LogsStringBuilderProcessor) GetIsEnabledOk() (*bool, bool) {
-	if o == nil || o.IsEnabled == nil {
-		return nil, false
-	}
-	return o.IsEnabled, true
-}
-
-// HasIsEnabled returns a boolean if a field has been set.
-func (o *LogsStringBuilderProcessor) HasIsEnabled() bool {
-	if o != nil && o.IsEnabled != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetIsEnabled gets a reference to the given bool and assigns it to the IsEnabled field.
-func (o *LogsStringBuilderProcessor) SetIsEnabled(v bool) {
-	o.IsEnabled = &v
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *LogsStringBuilderProcessor) GetName() string {
-	if o == nil || o.Name == nil {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LogsStringBuilderProcessor) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *LogsStringBuilderProcessor) HasName() bool {
-	if o != nil && o.Name != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *LogsStringBuilderProcessor) SetName(v string) {
-	o.Name = &v
 }
 
 func (o LogsStringBuilderProcessor) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.IsEnabled != nil {
+		toSerialize["is_enabled"] = o.IsEnabled
+	}
 	if o.IsReplaceMissing != nil {
 		toSerialize["is_replace_missing"] = o.IsReplaceMissing
+	}
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
 	}
 	if true {
 		toSerialize["target"] = o.Target
@@ -240,18 +245,7 @@ func (o LogsStringBuilderProcessor) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["type"] = o.Type
 	}
-	if o.IsEnabled != nil {
-		toSerialize["is_enabled"] = o.IsEnabled
-	}
-	if o.Name != nil {
-		toSerialize["name"] = o.Name
-	}
 	return json.Marshal(toSerialize)
-}
-
-// AsLogsProcessor wraps this instance of LogsStringBuilderProcessor in LogsProcessor
-func (s *LogsStringBuilderProcessor) AsLogsProcessor() LogsProcessor {
-	return LogsProcessor{LogsProcessorInterface: s}
 }
 
 type NullableLogsStringBuilderProcessor struct {

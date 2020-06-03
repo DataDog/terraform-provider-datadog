@@ -26,17 +26,16 @@ type HeatMapWidgetDefinition struct {
 	Title      *string          `json:"title,omitempty"`
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
 	// Size of the title.
-	TitleSize *string `json:"title_size,omitempty"`
-	// Type of the widget.
-	Type  string      `json:"type"`
-	Yaxis *WidgetAxis `json:"yaxis,omitempty"`
+	TitleSize *string                     `json:"title_size,omitempty"`
+	Type      HeatMapWidgetDefinitionType `json:"type"`
+	Yaxis     *WidgetAxis                 `json:"yaxis,omitempty"`
 }
 
 // NewHeatMapWidgetDefinition instantiates a new HeatMapWidgetDefinition object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewHeatMapWidgetDefinition(requests []HeatMapWidgetRequest, type_ string) *HeatMapWidgetDefinition {
+func NewHeatMapWidgetDefinition(requests []HeatMapWidgetRequest, type_ HeatMapWidgetDefinitionType) *HeatMapWidgetDefinition {
 	this := HeatMapWidgetDefinition{}
 	this.Requests = requests
 	this.Type = type_
@@ -48,7 +47,7 @@ func NewHeatMapWidgetDefinition(requests []HeatMapWidgetRequest, type_ string) *
 // but it doesn't guarantee that properties required by API are set
 func NewHeatMapWidgetDefinitionWithDefaults() *HeatMapWidgetDefinition {
 	this := HeatMapWidgetDefinition{}
-	var type_ string = "heatmap"
+	var type_ HeatMapWidgetDefinitionType = "heatmap"
 	this.Type = type_
 	return &this
 }
@@ -302,9 +301,9 @@ func (o *HeatMapWidgetDefinition) SetTitleSize(v string) {
 }
 
 // GetType returns the Type field value
-func (o *HeatMapWidgetDefinition) GetType() string {
+func (o *HeatMapWidgetDefinition) GetType() HeatMapWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret HeatMapWidgetDefinitionType
 		return ret
 	}
 
@@ -313,7 +312,7 @@ func (o *HeatMapWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *HeatMapWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *HeatMapWidgetDefinition) GetTypeOk() (*HeatMapWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -321,7 +320,7 @@ func (o *HeatMapWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *HeatMapWidgetDefinition) SetType(v string) {
+func (o *HeatMapWidgetDefinition) SetType(v HeatMapWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -390,11 +389,6 @@ func (o HeatMapWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["yaxis"] = o.Yaxis
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of HeatMapWidgetDefinition in WidgetDefinition
-func (s *HeatMapWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableHeatMapWidgetDefinition struct {

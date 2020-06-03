@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsDeleteTestsResponse Response object for deleting Synthetic test.
+// SyntheticsDeleteTestsResponse Response object for deleting Synthetic tests.
 type SyntheticsDeleteTestsResponse struct {
 	// Array of objects containing a deleted Synthetic test ID with the associated deletion timestamp.
 	DeletedTests *[]SyntheticsDeleteTestsResponseDeletedTests `json:"deleted_tests,omitempty"`

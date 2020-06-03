@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // WidgetLineWidth Width of line displayed.
@@ -21,6 +22,23 @@ const (
 	WIDGETLINEWIDTH_THICK  WidgetLineWidth = "thick"
 	WIDGETLINEWIDTH_THIN   WidgetLineWidth = "thin"
 )
+
+func (v *WidgetLineWidth) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := WidgetLineWidth(value)
+	for _, existing := range []WidgetLineWidth{"normal", "thick", "thin"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid WidgetLineWidth", *v)
+}
 
 // Ptr returns reference to WidgetLineWidth value
 func (v WidgetLineWidth) Ptr() *WidgetLineWidth {

@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // RolesSort Sorting options for roles.
@@ -24,6 +25,23 @@ const (
 	ROLESSORT_USER_COUNT_ASCENDING   RolesSort = "user_count"
 	ROLESSORT_USER_COUNT_DESCENDING  RolesSort = "-user_count"
 )
+
+func (v *RolesSort) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := RolesSort(value)
+	for _, existing := range []RolesSort{"name", "-name", "modified_at", "-modified_at", "user_count", "-user_count"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid RolesSort", *v)
+}
 
 // Ptr returns reference to RolesSort value
 func (v RolesSort) Ptr() *RolesSort {

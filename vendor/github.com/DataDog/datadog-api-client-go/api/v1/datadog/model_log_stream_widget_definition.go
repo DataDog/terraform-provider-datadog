@@ -33,16 +33,15 @@ type LogStreamWidgetDefinition struct {
 	Title      *string          `json:"title,omitempty"`
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
 	// Size of the title.
-	TitleSize *string `json:"title_size,omitempty"`
-	// Type of the widget.
-	Type string `json:"type"`
+	TitleSize *string                       `json:"title_size,omitempty"`
+	Type      LogStreamWidgetDefinitionType `json:"type"`
 }
 
 // NewLogStreamWidgetDefinition instantiates a new LogStreamWidgetDefinition object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogStreamWidgetDefinition(type_ string) *LogStreamWidgetDefinition {
+func NewLogStreamWidgetDefinition(type_ LogStreamWidgetDefinitionType) *LogStreamWidgetDefinition {
 	this := LogStreamWidgetDefinition{}
 	this.Type = type_
 	return &this
@@ -53,7 +52,7 @@ func NewLogStreamWidgetDefinition(type_ string) *LogStreamWidgetDefinition {
 // but it doesn't guarantee that properties required by API are set
 func NewLogStreamWidgetDefinitionWithDefaults() *LogStreamWidgetDefinition {
 	this := LogStreamWidgetDefinition{}
-	var type_ string = "log_stream"
+	var type_ LogStreamWidgetDefinitionType = "log_stream"
 	this.Type = type_
 	return &this
 }
@@ -443,9 +442,9 @@ func (o *LogStreamWidgetDefinition) SetTitleSize(v string) {
 }
 
 // GetType returns the Type field value
-func (o *LogStreamWidgetDefinition) GetType() string {
+func (o *LogStreamWidgetDefinition) GetType() LogStreamWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret LogStreamWidgetDefinitionType
 		return ret
 	}
 
@@ -454,7 +453,7 @@ func (o *LogStreamWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *LogStreamWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *LogStreamWidgetDefinition) GetTypeOk() (*LogStreamWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -462,7 +461,7 @@ func (o *LogStreamWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *LogStreamWidgetDefinition) SetType(v string) {
+func (o *LogStreamWidgetDefinition) SetType(v LogStreamWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -508,11 +507,6 @@ func (o LogStreamWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of LogStreamWidgetDefinition in WidgetDefinition
-func (s *LogStreamWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableLogStreamWidgetDefinition struct {

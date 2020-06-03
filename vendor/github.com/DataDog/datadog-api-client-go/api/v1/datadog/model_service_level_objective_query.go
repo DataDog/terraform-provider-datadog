@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// ServiceLevelObjectiveQuery A metric SLI query. **Required if type is `metric`**.
+// ServiceLevelObjectiveQuery A metric SLI query. **Required if type is `metric`**. Note that Datadog only allows the sum by aggregator to be used because this will sum up all request counts instead of averaging them, or taking the max or min of all of those requests.
 type ServiceLevelObjectiveQuery struct {
 	// A Datadog metric query for total (valid) events.
 	Denominator string `json:"denominator"`

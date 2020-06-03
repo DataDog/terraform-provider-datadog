@@ -27,21 +27,21 @@ const (
 )
 
 var tfProcessorTypes = map[string]string{
-	tfArithmeticProcessor:        datadogV1.NewLogsArithmeticProcessorWithDefaults().GetType(),
-	tfAttributeRemapperProcessor: datadogV1.NewLogsAttributeRemapperWithDefaults().GetType(),
-	tfCategoryProcessor:          datadogV1.NewLogsCategoryProcessorWithDefaults().GetType(),
-	tfDateRemapperProcessor:      datadogV1.NewLogsDateRemapperWithDefaults().GetType(),
-	tfGeoIPParserProcessor:       datadogV1.NewLogsGeoIPParserWithDefaults().GetType(),
-	tfGrokParserProcessor:        datadogV1.NewLogsGrokParserWithDefaults().GetType(),
-	tfLookupProcessor:            datadogV1.NewLogsLookupProcessorWithDefaults().GetType(),
-	tfMessageRemapperProcessor:   datadogV1.NewLogsMessageRemapperWithDefaults().GetType(),
-	tfNestedPipelineProcessor:    datadogV1.NewLogsPipelineProcessorWithDefaults().GetType(),
-	tfServiceRemapperProcessor:   datadogV1.NewLogsServiceRemapperWithDefaults().GetType(),
-	tfStatusRemapperProcessor:    datadogV1.NewLogsStatusRemapperWithDefaults().GetType(),
-	tfStringBuilderProcessor:     datadogV1.NewLogsStringBuilderProcessorWithDefaults().GetType(),
-	tfTraceIDRemapperProcessor:   datadogV1.NewLogsTraceRemapperWithDefaults().GetType(),
-	tfURLParserProcessor:         datadogV1.NewLogsURLParserWithDefaults().GetType(),
-	tfUserAgentParserProcessor:   datadogV1.NewLogsUserAgentParserWithDefaults().GetType(),
+	tfArithmeticProcessor:        string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR),
+	tfAttributeRemapperProcessor: string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER),
+	tfCategoryProcessor:          string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR),
+	tfDateRemapperProcessor:      string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER),
+	tfGeoIPParserProcessor:       string(datadogV1.LOGSGEOIPPARSERTYPE_GEO_IP_PARSER),
+	tfGrokParserProcessor:        string(datadogV1.LOGSGROKPARSERTYPE_GROK_PARSER),
+	tfLookupProcessor:            string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR),
+	tfMessageRemapperProcessor:   string(datadogV1.LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER),
+	tfNestedPipelineProcessor:    string(datadogV1.LOGSPIPELINEPROCESSORTYPE_PIPELINE),
+	tfServiceRemapperProcessor:   string(datadogV1.LOGSSERVICEREMAPPERTYPE_SERVICE_REMAPPER),
+	tfStatusRemapperProcessor:    string(datadogV1.LOGSSTATUSREMAPPERTYPE_STATUS_REMAPPER),
+	tfStringBuilderProcessor:     string(datadogV1.LOGSSTRINGBUILDERPROCESSORTYPE_STRING_BUILDER_PROCESSOR),
+	tfTraceIDRemapperProcessor:   string(datadogV1.LOGSTRACEREMAPPERTYPE_TRACE_ID_REMAPPER),
+	tfURLParserProcessor:         string(datadogV1.LOGSURLPARSERTYPE_URL_PARSER),
+	tfUserAgentParserProcessor:   string(datadogV1.LOGSUSERAGENTPARSERTYPE_USER_AGENT_PARSER),
 }
 
 var tfProcessors = map[string]*schema.Schema{
@@ -62,21 +62,21 @@ var tfProcessors = map[string]*schema.Schema{
 }
 
 var ddProcessorTypes = map[string]string{
-	datadogV1.NewLogsArithmeticProcessorWithDefaults().GetType():    tfArithmeticProcessor,
-	datadogV1.NewLogsAttributeRemapperWithDefaults().GetType():      tfAttributeRemapperProcessor,
-	datadogV1.NewLogsCategoryProcessorWithDefaults().GetType():      tfCategoryProcessor,
-	datadogV1.NewLogsDateRemapperWithDefaults().GetType():           tfDateRemapperProcessor,
-	datadogV1.NewLogsGeoIPParserWithDefaults().GetType():            tfGeoIPParserProcessor,
-	datadogV1.NewLogsGrokParserWithDefaults().GetType():             tfGrokParserProcessor,
-	datadogV1.NewLogsLookupProcessorWithDefaults().GetType():        tfLookupProcessor,
-	datadogV1.NewLogsMessageRemapperWithDefaults().GetType():        tfMessageRemapperProcessor,
-	datadogV1.NewLogsPipelineProcessorWithDefaults().GetType():      tfNestedPipelineProcessor,
-	datadogV1.NewLogsServiceRemapperWithDefaults().GetType():        tfServiceRemapperProcessor,
-	datadogV1.NewLogsStatusRemapperWithDefaults().GetType():         tfStatusRemapperProcessor,
-	datadogV1.NewLogsStringBuilderProcessorWithDefaults().GetType(): tfStringBuilderProcessor,
-	datadogV1.NewLogsTraceRemapperWithDefaults().GetType():          tfTraceIDRemapperProcessor,
-	datadogV1.NewLogsURLParserWithDefaults().GetType():              tfURLParserProcessor,
-	datadogV1.NewLogsUserAgentParserWithDefaults().GetType():        tfUserAgentParserProcessor,
+	string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR):        tfArithmeticProcessor,
+	string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER):            tfAttributeRemapperProcessor,
+	string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR):            tfCategoryProcessor,
+	string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER):                      tfDateRemapperProcessor,
+	string(datadogV1.LOGSGEOIPPARSERTYPE_GEO_IP_PARSER):                       tfGeoIPParserProcessor,
+	string(datadogV1.LOGSGROKPARSERTYPE_GROK_PARSER):                          tfGrokParserProcessor,
+	string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR):                tfLookupProcessor,
+	string(datadogV1.LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER):                tfMessageRemapperProcessor,
+	string(datadogV1.LOGSPIPELINEPROCESSORTYPE_PIPELINE):                      tfNestedPipelineProcessor,
+	string(datadogV1.LOGSSERVICEREMAPPERTYPE_SERVICE_REMAPPER):                tfServiceRemapperProcessor,
+	string(datadogV1.LOGSSTATUSREMAPPERTYPE_STATUS_REMAPPER):                  tfStatusRemapperProcessor,
+	string(datadogV1.LOGSSTRINGBUILDERPROCESSORTYPE_STRING_BUILDER_PROCESSOR): tfStringBuilderProcessor,
+	string(datadogV1.LOGSTRACEREMAPPERTYPE_TRACE_ID_REMAPPER):                 tfTraceIDRemapperProcessor,
+	string(datadogV1.LOGSURLPARSERTYPE_URL_PARSER):                            tfURLParserProcessor,
+	string(datadogV1.LOGSUSERAGENTPARSERTYPE_USER_AGENT_PARSER):               tfUserAgentParserProcessor,
 }
 
 var arithmeticProcessor = &schema.Schema{
@@ -417,61 +417,61 @@ func buildTerraformProcessors(ddProcessors []datadogV1.LogsProcessor) ([]map[str
 
 func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]interface{}, error) {
 	tfProcessor := make(map[string]interface{})
+	var processorType string
 	var err error
-	switch ddProcessor.LogsProcessorInterface.GetType() {
-	case datadogV1.NewLogsArithmeticProcessorWithDefaults().GetType():
-		logsArithmeticProcessor := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsArithmeticProcessor)
-		tfProcessor = buildTerraformArithmeticProcessor(logsArithmeticProcessor)
-	case datadogV1.NewLogsAttributeRemapperWithDefaults().GetType():
-		logsAttributeRemapper := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsAttributeRemapper)
-		tfProcessor = buildTerraformAttributeRemapper(logsAttributeRemapper)
-	case datadogV1.NewLogsCategoryProcessorWithDefaults().GetType():
-		logsCategoryProcessor := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsCategoryProcessor)
-		tfProcessor = buildTerraformCategoryProcessor(logsCategoryProcessor)
-	case datadogV1.NewLogsDateRemapperWithDefaults().GetType():
-		logsDateRemapper := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsDateRemapper)
-		tfProcessor = buildTerraformDateRemapper(logsDateRemapper)
-	case datadogV1.NewLogsMessageRemapperWithDefaults().GetType():
-		logsMessageRemapper := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsMessageRemapper)
-		tfProcessor = buildTerraformMessageRemapper(logsMessageRemapper)
-	case datadogV1.NewLogsServiceRemapperWithDefaults().GetType():
-		logsServiceRemapper := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsServiceRemapper)
-		tfProcessor = buildTerraformServiceRemapper(logsServiceRemapper)
-	case datadogV1.NewLogsStatusRemapperWithDefaults().GetType():
-		logsStatusRemapper := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsStatusRemapper)
-		tfProcessor = buildTerraformStatusRemapper(logsStatusRemapper)
-	case datadogV1.NewLogsTraceRemapperWithDefaults().GetType():
-		logsTraceRemapper := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsTraceRemapper)
-		tfProcessor = buildTerraformTraceRemapper(logsTraceRemapper)
-	case datadogV1.NewLogsGeoIPParserWithDefaults().GetType():
-		logsGeoIPParser := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsGeoIPParser)
-		tfProcessor = buildTerraformGeoIPParser(logsGeoIPParser)
-	case datadogV1.NewLogsGrokParserWithDefaults().GetType():
-		logsGrokParser := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsGrokParser)
-		tfProcessor = buildTerraformGrokParser(logsGrokParser)
-	case datadogV1.NewLogsLookupProcessorWithDefaults().GetType():
-		logsLookupProcessor := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsLookupProcessor)
-		tfProcessor = buildTerraformLookupProcessor(logsLookupProcessor)
-	case datadogV1.NewLogsPipelineProcessorWithDefaults().GetType():
-		logsPipelineProcessor := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsPipelineProcessor)
-		tfProcessor, err = buildTerraformNestedPipeline(logsPipelineProcessor)
-	case datadogV1.NewLogsStringBuilderProcessorWithDefaults().GetType():
-		logsStringBuilderProcessor := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsStringBuilderProcessor)
-		tfProcessor = buildTerraformStringBuilderProcessor(logsStringBuilderProcessor)
-	case datadogV1.NewLogsURLParserWithDefaults().GetType():
-		logsURLParser := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsURLParser)
-		tfProcessor = buildTerraformURLParser(logsURLParser)
-	case datadogV1.NewLogsUserAgentParserWithDefaults().GetType():
-		logsUserAgentParser := ddProcessor.LogsProcessorInterface.(*datadogV1.LogsUserAgentParser)
-		tfProcessor = buildTerraformUserAgentParser(logsUserAgentParser)
-	default:
-		err = fmt.Errorf("failed to support datadogV1 processor type, %s", ddProcessor.LogsProcessorInterface.GetType())
+	if ddProcessor.LogsArithmeticProcessor != nil {
+		tfProcessor = buildTerraformArithmeticProcessor(ddProcessor.LogsArithmeticProcessor)
+		processorType = string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR)
+	} else if ddProcessor.LogsAttributeRemapper != nil {
+		tfProcessor = buildTerraformAttributeRemapper(ddProcessor.LogsAttributeRemapper)
+		processorType = string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER)
+	} else if ddProcessor.LogsCategoryProcessor != nil {
+		tfProcessor = buildTerraformCategoryProcessor(ddProcessor.LogsCategoryProcessor)
+		processorType = string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR)
+	} else if ddProcessor.LogsDateRemapper != nil {
+		tfProcessor = buildTerraformDateRemapper(ddProcessor.LogsDateRemapper)
+		processorType = string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER)
+	} else if ddProcessor.LogsMessageRemapper != nil {
+		tfProcessor = buildTerraformMessageRemapper(ddProcessor.LogsMessageRemapper)
+		processorType = string(datadogV1.LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER)
+	} else if ddProcessor.LogsServiceRemapper != nil {
+		tfProcessor = buildTerraformServiceRemapper(ddProcessor.LogsServiceRemapper)
+		processorType = string(datadogV1.LOGSSERVICEREMAPPERTYPE_SERVICE_REMAPPER)
+	} else if ddProcessor.LogsStatusRemapper != nil {
+		tfProcessor = buildTerraformStatusRemapper(ddProcessor.LogsStatusRemapper)
+		processorType = string(datadogV1.LOGSSTATUSREMAPPERTYPE_STATUS_REMAPPER)
+	} else if ddProcessor.LogsTraceRemapper != nil {
+		tfProcessor = buildTerraformTraceRemapper(ddProcessor.LogsTraceRemapper)
+		processorType = string(datadogV1.LOGSTRACEREMAPPERTYPE_TRACE_ID_REMAPPER)
+	} else if ddProcessor.LogsGeoIPParser != nil {
+		tfProcessor = buildTerraformGeoIPParser(ddProcessor.LogsGeoIPParser)
+		processorType = string(datadogV1.LOGSGEOIPPARSERTYPE_GEO_IP_PARSER)
+	} else if ddProcessor.LogsGrokParser != nil {
+		tfProcessor = buildTerraformGrokParser(ddProcessor.LogsGrokParser)
+		processorType = string(datadogV1.LOGSGROKPARSERTYPE_GROK_PARSER)
+	} else if ddProcessor.LogsLookupProcessor != nil {
+		tfProcessor = buildTerraformLookupProcessor(ddProcessor.LogsLookupProcessor)
+		processorType = string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR)
+	} else if ddProcessor.LogsPipelineProcessor != nil {
+		tfProcessor, err = buildTerraformNestedPipeline(ddProcessor.LogsPipelineProcessor)
+		processorType = string(datadogV1.LOGSPIPELINEPROCESSORTYPE_PIPELINE)
+	} else if ddProcessor.LogsStringBuilderProcessor != nil {
+		tfProcessor = buildTerraformStringBuilderProcessor(ddProcessor.LogsStringBuilderProcessor)
+		processorType = string(datadogV1.LOGSSTRINGBUILDERPROCESSORTYPE_STRING_BUILDER_PROCESSOR)
+	} else if ddProcessor.LogsURLParser != nil {
+		tfProcessor = buildTerraformURLParser(ddProcessor.LogsURLParser)
+		processorType = string(datadogV1.LOGSURLPARSERTYPE_URL_PARSER)
+	} else if ddProcessor.LogsUserAgentParser != nil {
+		tfProcessor = buildTerraformUserAgentParser(ddProcessor.LogsUserAgentParser)
+		processorType = string(datadogV1.LOGSUSERAGENTPARSERTYPE_USER_AGENT_PARSER)
+	} else {
+		err = fmt.Errorf("failed to support datadogV1 processor type, %s", ddProcessor.GetActualInstance())
 	}
 	if err != nil {
 		return nil, err
 	}
 	return map[string]interface{}{
-		ddProcessorTypes[ddProcessor.LogsProcessorInterface.GetType()]: []map[string]interface{}{tfProcessor},
+		ddProcessorTypes[processorType]: []map[string]interface{}{tfProcessor},
 	}, nil
 }
 
@@ -688,39 +688,47 @@ func buildDatadogProcessors(tfProcessors []interface{}) (*[]datadogV1.LogsProces
 func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interface{}) (datadogV1.LogsProcessor, error) {
 	var ddProcessor = datadogV1.LogsProcessor{}
 	var err error
-
-	switch ddProcessorType {
-	case datadogV1.NewLogsArithmeticProcessorWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface = buildDatadogArithmeticProcessor(tfProcessor)
-	case datadogV1.NewLogsAttributeRemapperWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface = buildDatadogAttributeRemapper(tfProcessor)
-	case datadogV1.NewLogsCategoryProcessorWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface = buildDatadogCategoryProcessor(tfProcessor)
-	case datadogV1.NewLogsDateRemapperWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface = buildDatadogDateRemapperProcessor(tfProcessor)
-	case datadogV1.NewLogsMessageRemapperWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface = buildDatadogMessageRemapper(tfProcessor)
-	case datadogV1.NewLogsServiceRemapperWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface = buildDatadogServiceRemapper(tfProcessor)
-	case datadogV1.NewLogsStatusRemapperWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface = buildDatadogStatusRemapper(tfProcessor)
-	case datadogV1.NewLogsTraceRemapperWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface = buildDatadogTraceRemapper(tfProcessor)
-	case datadogV1.NewLogsGeoIPParserWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface = buildDatadogGeoIPParser(tfProcessor)
-	case datadogV1.NewLogsGrokParserWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface = buildDatadogGrokParser(tfProcessor)
-	case datadogV1.NewLogsLookupProcessorWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface = buildDatadogLookupProcessor(tfProcessor)
-	case datadogV1.NewLogsPipelineProcessorWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface, err = buildDatadogNestedPipeline(tfProcessor)
-	case datadogV1.NewLogsStringBuilderProcessorWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface, err = buildDatadogStringBuilderProcessor(tfProcessor)
-	case datadogV1.NewLogsURLParserWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface = buildDatadogURLParser(tfProcessor)
-	case datadogV1.NewLogsUserAgentParserWithDefaults().GetType():
-		ddProcessor.LogsProcessorInterface = buildDatadogUserAgentParser(tfProcessor)
-	default:
+	if ddProcessorType == string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR) {
+		ddProcessor = datadogV1.LogsArithmeticProcessorAsLogsProcessor(buildDatadogArithmeticProcessor(tfProcessor))
+	} else if ddProcessorType == string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER) {
+		ddProcessor = datadogV1.LogsAttributeRemapperAsLogsProcessor(buildDatadogAttributeRemapper(tfProcessor))
+	} else if ddProcessorType == string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR) {
+		ddProcessor = datadogV1.LogsCategoryProcessorAsLogsProcessor(buildDatadogCategoryProcessor(tfProcessor))
+	} else if ddProcessorType == string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER) {
+		ddProcessor = datadogV1.LogsDateRemapperAsLogsProcessor(buildDatadogDateRemapperProcessor(tfProcessor))
+	} else if ddProcessorType == string(datadogV1.LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER) {
+		ddProcessor = datadogV1.LogsMessageRemapperAsLogsProcessor(buildDatadogMessageRemapper(tfProcessor))
+	} else if ddProcessorType == string(datadogV1.LOGSSERVICEREMAPPERTYPE_SERVICE_REMAPPER) {
+		ddProcessor = datadogV1.LogsServiceRemapperAsLogsProcessor(buildDatadogServiceRemapper(tfProcessor))
+	} else if ddProcessorType == string(datadogV1.LOGSSTATUSREMAPPERTYPE_STATUS_REMAPPER) {
+		ddProcessor = datadogV1.LogsStatusRemapperAsLogsProcessor(buildDatadogStatusRemapper(tfProcessor))
+	} else if ddProcessorType == string(datadogV1.LOGSTRACEREMAPPERTYPE_TRACE_ID_REMAPPER) {
+		ddProcessor = datadogV1.LogsTraceRemapperAsLogsProcessor(buildDatadogTraceRemapper(tfProcessor))
+	} else if ddProcessorType == string(datadogV1.LOGSTRACEREMAPPERTYPE_TRACE_ID_REMAPPER) {
+		ddProcessor = datadogV1.LogsTraceRemapperAsLogsProcessor(buildDatadogTraceRemapper(tfProcessor))
+	} else if ddProcessorType == string(datadogV1.LOGSGEOIPPARSERTYPE_GEO_IP_PARSER) {
+		ddProcessor = datadogV1.LogsGeoIPParserAsLogsProcessor(buildDatadogGeoIPParser(tfProcessor))
+	} else if ddProcessorType == string(datadogV1.LOGSGROKPARSERTYPE_GROK_PARSER) {
+		ddProcessor = datadogV1.LogsGrokParserAsLogsProcessor(buildDatadogGrokParser(tfProcessor))
+	} else if ddProcessorType == string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR) {
+		ddProcessor = datadogV1.LogsLookupProcessorAsLogsProcessor(buildDatadogLookupProcessor(tfProcessor))
+	} else if ddProcessorType == string(datadogV1.LOGSPIPELINEPROCESSORTYPE_PIPELINE) {
+		ddNestedPipeline, err := buildDatadogNestedPipeline(tfProcessor)
+		if err != nil {
+			return ddProcessor, err
+		}
+		ddProcessor = datadogV1.LogsPipelineProcessorAsLogsProcessor(ddNestedPipeline)
+	} else if ddProcessorType == string(datadogV1.LOGSSTRINGBUILDERPROCESSORTYPE_STRING_BUILDER_PROCESSOR) {
+		ddStringBuilderProcessor, err := buildDatadogStringBuilderProcessor(tfProcessor)
+		if err != nil {
+			return ddProcessor, err
+		}
+		ddProcessor = datadogV1.LogsStringBuilderProcessorAsLogsProcessor(ddStringBuilderProcessor)
+	} else if ddProcessorType == string(datadogV1.LOGSURLPARSERTYPE_URL_PARSER) {
+		ddProcessor = datadogV1.LogsURLParserAsLogsProcessor(buildDatadogURLParser(tfProcessor))
+	} else if ddProcessorType == string(datadogV1.LOGSUSERAGENTPARSERTYPE_USER_AGENT_PARSER) {
+		ddProcessor = datadogV1.LogsUserAgentParserAsLogsProcessor(buildDatadogUserAgentParser(tfProcessor))
+	} else {
 		err = fmt.Errorf("failed to recoginize processor type: %s", ddProcessorType)
 	}
 

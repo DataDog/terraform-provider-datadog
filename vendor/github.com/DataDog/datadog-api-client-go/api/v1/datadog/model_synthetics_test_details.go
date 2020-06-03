@@ -15,25 +15,21 @@ import (
 // SyntheticsTestDetails Object containing details about your Synthetic test.
 type SyntheticsTestDetails struct {
 	Config *SyntheticsTestConfig `json:"config,omitempty"`
-	// The test creation date.
-	CreatedAt *string               `json:"created_at,omitempty"`
-	CreatedBy *SyntheticsTestAuthor `json:"created_by,omitempty"`
 	// Array of locations used to run the test.
 	Locations *[]string `json:"locations,omitempty"`
 	// Notification message associated with the test.
 	Message *string `json:"message,omitempty"`
-	// Last timestamp the test was modified.
-	ModifiedAt *string               `json:"modified_at,omitempty"`
-	ModifiedBy *SyntheticsTestAuthor `json:"modified_by,omitempty"`
 	// The associated monitor ID.
 	MonitorId *int64 `json:"monitor_id,omitempty"`
 	// Name of the test.
 	Name    *string                `json:"name,omitempty"`
 	Options *SyntheticsTestOptions `json:"options,omitempty"`
 	// The test public ID.
-	PublicId *string                       `json:"public_id,omitempty"`
-	Status   *SyntheticsTestPauseStatus    `json:"status,omitempty"`
-	Subtype  *SyntheticsTestDetailsSubType `json:"subtype,omitempty"`
+	PublicId *string                    `json:"public_id,omitempty"`
+	Status   *SyntheticsTestPauseStatus `json:"status,omitempty"`
+	// The steps of the test (only for browser tests).
+	Steps   *[]SyntheticsStep             `json:"steps,omitempty"`
+	Subtype *SyntheticsTestDetailsSubType `json:"subtype,omitempty"`
 	// Array of tags attached to the test.
 	Tags *[]string                  `json:"tags,omitempty"`
 	Type *SyntheticsTestDetailsType `json:"type,omitempty"`
@@ -86,70 +82,6 @@ func (o *SyntheticsTestDetails) HasConfig() bool {
 // SetConfig gets a reference to the given SyntheticsTestConfig and assigns it to the Config field.
 func (o *SyntheticsTestDetails) SetConfig(v SyntheticsTestConfig) {
 	o.Config = &v
-}
-
-// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
-func (o *SyntheticsTestDetails) GetCreatedAt() string {
-	if o == nil || o.CreatedAt == nil {
-		var ret string
-		return ret
-	}
-	return *o.CreatedAt
-}
-
-// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SyntheticsTestDetails) GetCreatedAtOk() (*string, bool) {
-	if o == nil || o.CreatedAt == nil {
-		return nil, false
-	}
-	return o.CreatedAt, true
-}
-
-// HasCreatedAt returns a boolean if a field has been set.
-func (o *SyntheticsTestDetails) HasCreatedAt() bool {
-	if o != nil && o.CreatedAt != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
-func (o *SyntheticsTestDetails) SetCreatedAt(v string) {
-	o.CreatedAt = &v
-}
-
-// GetCreatedBy returns the CreatedBy field value if set, zero value otherwise.
-func (o *SyntheticsTestDetails) GetCreatedBy() SyntheticsTestAuthor {
-	if o == nil || o.CreatedBy == nil {
-		var ret SyntheticsTestAuthor
-		return ret
-	}
-	return *o.CreatedBy
-}
-
-// GetCreatedByOk returns a tuple with the CreatedBy field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SyntheticsTestDetails) GetCreatedByOk() (*SyntheticsTestAuthor, bool) {
-	if o == nil || o.CreatedBy == nil {
-		return nil, false
-	}
-	return o.CreatedBy, true
-}
-
-// HasCreatedBy returns a boolean if a field has been set.
-func (o *SyntheticsTestDetails) HasCreatedBy() bool {
-	if o != nil && o.CreatedBy != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetCreatedBy gets a reference to the given SyntheticsTestAuthor and assigns it to the CreatedBy field.
-func (o *SyntheticsTestDetails) SetCreatedBy(v SyntheticsTestAuthor) {
-	o.CreatedBy = &v
 }
 
 // GetLocations returns the Locations field value if set, zero value otherwise.
@@ -214,70 +146,6 @@ func (o *SyntheticsTestDetails) HasMessage() bool {
 // SetMessage gets a reference to the given string and assigns it to the Message field.
 func (o *SyntheticsTestDetails) SetMessage(v string) {
 	o.Message = &v
-}
-
-// GetModifiedAt returns the ModifiedAt field value if set, zero value otherwise.
-func (o *SyntheticsTestDetails) GetModifiedAt() string {
-	if o == nil || o.ModifiedAt == nil {
-		var ret string
-		return ret
-	}
-	return *o.ModifiedAt
-}
-
-// GetModifiedAtOk returns a tuple with the ModifiedAt field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SyntheticsTestDetails) GetModifiedAtOk() (*string, bool) {
-	if o == nil || o.ModifiedAt == nil {
-		return nil, false
-	}
-	return o.ModifiedAt, true
-}
-
-// HasModifiedAt returns a boolean if a field has been set.
-func (o *SyntheticsTestDetails) HasModifiedAt() bool {
-	if o != nil && o.ModifiedAt != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetModifiedAt gets a reference to the given string and assigns it to the ModifiedAt field.
-func (o *SyntheticsTestDetails) SetModifiedAt(v string) {
-	o.ModifiedAt = &v
-}
-
-// GetModifiedBy returns the ModifiedBy field value if set, zero value otherwise.
-func (o *SyntheticsTestDetails) GetModifiedBy() SyntheticsTestAuthor {
-	if o == nil || o.ModifiedBy == nil {
-		var ret SyntheticsTestAuthor
-		return ret
-	}
-	return *o.ModifiedBy
-}
-
-// GetModifiedByOk returns a tuple with the ModifiedBy field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SyntheticsTestDetails) GetModifiedByOk() (*SyntheticsTestAuthor, bool) {
-	if o == nil || o.ModifiedBy == nil {
-		return nil, false
-	}
-	return o.ModifiedBy, true
-}
-
-// HasModifiedBy returns a boolean if a field has been set.
-func (o *SyntheticsTestDetails) HasModifiedBy() bool {
-	if o != nil && o.ModifiedBy != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetModifiedBy gets a reference to the given SyntheticsTestAuthor and assigns it to the ModifiedBy field.
-func (o *SyntheticsTestDetails) SetModifiedBy(v SyntheticsTestAuthor) {
-	o.ModifiedBy = &v
 }
 
 // GetMonitorId returns the MonitorId field value if set, zero value otherwise.
@@ -440,6 +308,38 @@ func (o *SyntheticsTestDetails) SetStatus(v SyntheticsTestPauseStatus) {
 	o.Status = &v
 }
 
+// GetSteps returns the Steps field value if set, zero value otherwise.
+func (o *SyntheticsTestDetails) GetSteps() []SyntheticsStep {
+	if o == nil || o.Steps == nil {
+		var ret []SyntheticsStep
+		return ret
+	}
+	return *o.Steps
+}
+
+// GetStepsOk returns a tuple with the Steps field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsTestDetails) GetStepsOk() (*[]SyntheticsStep, bool) {
+	if o == nil || o.Steps == nil {
+		return nil, false
+	}
+	return o.Steps, true
+}
+
+// HasSteps returns a boolean if a field has been set.
+func (o *SyntheticsTestDetails) HasSteps() bool {
+	if o != nil && o.Steps != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSteps gets a reference to the given []SyntheticsStep and assigns it to the Steps field.
+func (o *SyntheticsTestDetails) SetSteps(v []SyntheticsStep) {
+	o.Steps = &v
+}
+
 // GetSubtype returns the Subtype field value if set, zero value otherwise.
 func (o *SyntheticsTestDetails) GetSubtype() SyntheticsTestDetailsSubType {
 	if o == nil || o.Subtype == nil {
@@ -541,23 +441,11 @@ func (o SyntheticsTestDetails) MarshalJSON() ([]byte, error) {
 	if o.Config != nil {
 		toSerialize["config"] = o.Config
 	}
-	if o.CreatedAt != nil {
-		toSerialize["created_at"] = o.CreatedAt
-	}
-	if o.CreatedBy != nil {
-		toSerialize["created_by"] = o.CreatedBy
-	}
 	if o.Locations != nil {
 		toSerialize["locations"] = o.Locations
 	}
 	if o.Message != nil {
 		toSerialize["message"] = o.Message
-	}
-	if o.ModifiedAt != nil {
-		toSerialize["modified_at"] = o.ModifiedAt
-	}
-	if o.ModifiedBy != nil {
-		toSerialize["modified_by"] = o.ModifiedBy
 	}
 	if o.MonitorId != nil {
 		toSerialize["monitor_id"] = o.MonitorId
@@ -573,6 +461,9 @@ func (o SyntheticsTestDetails) MarshalJSON() ([]byte, error) {
 	}
 	if o.Status != nil {
 		toSerialize["status"] = o.Status
+	}
+	if o.Steps != nil {
+		toSerialize["steps"] = o.Steps
 	}
 	if o.Subtype != nil {
 		toSerialize["subtype"] = o.Subtype

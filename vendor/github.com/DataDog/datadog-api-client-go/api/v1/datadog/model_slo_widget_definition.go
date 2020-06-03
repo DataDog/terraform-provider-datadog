@@ -24,10 +24,9 @@ type SLOWidgetDefinition struct {
 	Title      *string          `json:"title,omitempty"`
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
 	// Size of the title.
-	TitleSize *string `json:"title_size,omitempty"`
-	// Type of the widget.
-	Type     string          `json:"type"`
-	ViewMode *WidgetViewMode `json:"view_mode,omitempty"`
+	TitleSize *string                 `json:"title_size,omitempty"`
+	Type      SLOWidgetDefinitionType `json:"type"`
+	ViewMode  *WidgetViewMode         `json:"view_mode,omitempty"`
 	// Type of view displayed by the widget.
 	ViewType string `json:"view_type"`
 }
@@ -36,7 +35,7 @@ type SLOWidgetDefinition struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSLOWidgetDefinition(type_ string, viewType string) *SLOWidgetDefinition {
+func NewSLOWidgetDefinition(type_ SLOWidgetDefinitionType, viewType string) *SLOWidgetDefinition {
 	this := SLOWidgetDefinition{}
 	this.Type = type_
 	this.ViewType = viewType
@@ -48,7 +47,7 @@ func NewSLOWidgetDefinition(type_ string, viewType string) *SLOWidgetDefinition 
 // but it doesn't guarantee that properties required by API are set
 func NewSLOWidgetDefinitionWithDefaults() *SLOWidgetDefinition {
 	this := SLOWidgetDefinition{}
-	var type_ string = "slo"
+	var type_ SLOWidgetDefinitionType = "slo"
 	this.Type = type_
 	var viewType string = "detail"
 	this.ViewType = viewType
@@ -248,9 +247,9 @@ func (o *SLOWidgetDefinition) SetTitleSize(v string) {
 }
 
 // GetType returns the Type field value
-func (o *SLOWidgetDefinition) GetType() string {
+func (o *SLOWidgetDefinition) GetType() SLOWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret SLOWidgetDefinitionType
 		return ret
 	}
 
@@ -259,7 +258,7 @@ func (o *SLOWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *SLOWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *SLOWidgetDefinition) GetTypeOk() (*SLOWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -267,7 +266,7 @@ func (o *SLOWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *SLOWidgetDefinition) SetType(v string) {
+func (o *SLOWidgetDefinition) SetType(v SLOWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -357,11 +356,6 @@ func (o SLOWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["view_type"] = o.ViewType
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of SLOWidgetDefinition in WidgetDefinition
-func (s *SLOWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableSLOWidgetDefinition struct {

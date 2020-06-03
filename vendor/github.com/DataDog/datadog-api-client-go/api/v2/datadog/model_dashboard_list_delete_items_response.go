@@ -15,7 +15,7 @@ import (
 // DashboardListDeleteItemsResponse Response containing a list of deleted dashboards.
 type DashboardListDeleteItemsResponse struct {
 	// List of dashboards deleted from the dashboard list.
-	DeletedDashboardsFromList *[]DashboardListItem `json:"deleted_dashboards_from_list,omitempty"`
+	DeletedDashboardsFromList *[]DashboardListItemResponse `json:"deleted_dashboards_from_list,omitempty"`
 }
 
 // NewDashboardListDeleteItemsResponse instantiates a new DashboardListDeleteItemsResponse object
@@ -36,9 +36,9 @@ func NewDashboardListDeleteItemsResponseWithDefaults() *DashboardListDeleteItems
 }
 
 // GetDeletedDashboardsFromList returns the DeletedDashboardsFromList field value if set, zero value otherwise.
-func (o *DashboardListDeleteItemsResponse) GetDeletedDashboardsFromList() []DashboardListItem {
+func (o *DashboardListDeleteItemsResponse) GetDeletedDashboardsFromList() []DashboardListItemResponse {
 	if o == nil || o.DeletedDashboardsFromList == nil {
-		var ret []DashboardListItem
+		var ret []DashboardListItemResponse
 		return ret
 	}
 	return *o.DeletedDashboardsFromList
@@ -46,7 +46,7 @@ func (o *DashboardListDeleteItemsResponse) GetDeletedDashboardsFromList() []Dash
 
 // GetDeletedDashboardsFromListOk returns a tuple with the DeletedDashboardsFromList field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DashboardListDeleteItemsResponse) GetDeletedDashboardsFromListOk() (*[]DashboardListItem, bool) {
+func (o *DashboardListDeleteItemsResponse) GetDeletedDashboardsFromListOk() (*[]DashboardListItemResponse, bool) {
 	if o == nil || o.DeletedDashboardsFromList == nil {
 		return nil, false
 	}
@@ -62,8 +62,8 @@ func (o *DashboardListDeleteItemsResponse) HasDeletedDashboardsFromList() bool {
 	return false
 }
 
-// SetDeletedDashboardsFromList gets a reference to the given []DashboardListItem and assigns it to the DeletedDashboardsFromList field.
-func (o *DashboardListDeleteItemsResponse) SetDeletedDashboardsFromList(v []DashboardListItem) {
+// SetDeletedDashboardsFromList gets a reference to the given []DashboardListItemResponse and assigns it to the DeletedDashboardsFromList field.
+func (o *DashboardListDeleteItemsResponse) SetDeletedDashboardsFromList(v []DashboardListItemResponse) {
 	o.DeletedDashboardsFromList = &v
 }
 

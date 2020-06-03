@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // WidgetLiveSpan The available timeframes depend on the widget you are using.
@@ -33,6 +34,23 @@ const (
 	WIDGETLIVESPAN_PAST_ONE_YEAR        WidgetLiveSpan = "1y"
 	WIDGETLIVESPAN_ALERT                WidgetLiveSpan = "alert"
 )
+
+func (v *WidgetLiveSpan) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := WidgetLiveSpan(value)
+	for _, existing := range []WidgetLiveSpan{"1m", "5m", "10m", "15m", "30m", "1h", "4h", "1d", "2d", "1w", "1mo", "3mo", "6mo", "1y", "alert"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid WidgetLiveSpan", *v)
+}
 
 // Ptr returns reference to WidgetLiveSpan value
 func (v WidgetLiveSpan) Ptr() *WidgetLiveSpan {

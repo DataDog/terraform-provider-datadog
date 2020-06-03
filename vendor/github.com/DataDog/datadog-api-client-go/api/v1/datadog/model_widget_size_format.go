@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // WidgetSizeFormat Size of the widget.
@@ -21,6 +22,23 @@ const (
 	WIDGETSIZEFORMAT_MEDIUM WidgetSizeFormat = "medium"
 	WIDGETSIZEFORMAT_LARGE  WidgetSizeFormat = "large"
 )
+
+func (v *WidgetSizeFormat) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := WidgetSizeFormat(value)
+	for _, existing := range []WidgetSizeFormat{"small", "medium", "large"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid WidgetSizeFormat", *v)
+}
 
 // Ptr returns reference to WidgetSizeFormat value
 func (v WidgetSizeFormat) Ptr() *WidgetSizeFormat {

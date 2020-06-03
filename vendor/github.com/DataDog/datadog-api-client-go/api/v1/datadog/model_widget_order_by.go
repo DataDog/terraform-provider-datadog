@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // WidgetOrderBy What to order by.
@@ -22,6 +23,23 @@ const (
 	WIDGETORDERBY_PRESENT WidgetOrderBy = "present"
 	WIDGETORDERBY_PAST    WidgetOrderBy = "past"
 )
+
+func (v *WidgetOrderBy) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := WidgetOrderBy(value)
+	for _, existing := range []WidgetOrderBy{"change", "name", "present", "past"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid WidgetOrderBy", *v)
+}
 
 // Ptr returns reference to WidgetOrderBy value
 func (v WidgetOrderBy) Ptr() *WidgetOrderBy {

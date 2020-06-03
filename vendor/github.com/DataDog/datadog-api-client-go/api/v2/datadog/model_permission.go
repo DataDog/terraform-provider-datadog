@@ -16,16 +16,15 @@ import (
 type Permission struct {
 	Attributes *PermissionAttributes `json:"attributes,omitempty"`
 	// ID of the permission.
-	Id *string `json:"id,omitempty"`
-	// Permissions resource type.
-	Type string `json:"type"`
+	Id   *string         `json:"id,omitempty"`
+	Type PermissionsType `json:"type"`
 }
 
 // NewPermission instantiates a new Permission object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPermission(type_ string) *Permission {
+func NewPermission(type_ PermissionsType) *Permission {
 	this := Permission{}
 	this.Type = type_
 	return &this
@@ -36,7 +35,7 @@ func NewPermission(type_ string) *Permission {
 // but it doesn't guarantee that properties required by API are set
 func NewPermissionWithDefaults() *Permission {
 	this := Permission{}
-	var type_ string = "permissions"
+	var type_ PermissionsType = "permissions"
 	this.Type = type_
 	return &this
 }
@@ -106,9 +105,9 @@ func (o *Permission) SetId(v string) {
 }
 
 // GetType returns the Type field value
-func (o *Permission) GetType() string {
+func (o *Permission) GetType() PermissionsType {
 	if o == nil {
-		var ret string
+		var ret PermissionsType
 		return ret
 	}
 
@@ -117,7 +116,7 @@ func (o *Permission) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *Permission) GetTypeOk() (*string, bool) {
+func (o *Permission) GetTypeOk() (*PermissionsType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -125,7 +124,7 @@ func (o *Permission) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *Permission) SetType(v string) {
+func (o *Permission) SetType(v PermissionsType) {
 	o.Type = v
 }
 
@@ -141,11 +140,6 @@ func (o Permission) MarshalJSON() ([]byte, error) {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsUserResponseIncludedItem wraps this instance of Permission in UserResponseIncludedItem
-func (s *Permission) AsUserResponseIncludedItem() UserResponseIncludedItem {
-	return UserResponseIncludedItem{UserResponseIncludedItemInterface: s}
 }
 
 type NullablePermission struct {

@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // WidgetImageSizing How to size the image on the widget.
@@ -21,6 +22,23 @@ const (
 	WIDGETIMAGESIZING_FIT    WidgetImageSizing = "fit"
 	WIDGETIMAGESIZING_CENTER WidgetImageSizing = "center"
 )
+
+func (v *WidgetImageSizing) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := WidgetImageSizing(value)
+	for _, existing := range []WidgetImageSizing{"zoom", "fit", "center"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid WidgetImageSizing", *v)
+}
 
 // Ptr returns reference to WidgetImageSizing value
 func (v WidgetImageSizing) Ptr() *WidgetImageSizing {
