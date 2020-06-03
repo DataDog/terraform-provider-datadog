@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"free","notify_list":[],"template_variable_presets":[{"name":"preset_1","template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}]},{"name":"preset_2","template_variables":[{"name":"var_1","value":"var_1_value"}]}],"template_variables":[{"default":"aws","name":"var_1","prefix":"host"},{"default":"autoscaling","name":"var_2","prefix":"service_name"}],"title":"Acceptance Test Free Dashboard","widgets":[{"definition":{"event_size":"l","query":"*","time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_stream"},"layout":{"height":43,"width":32,"x":5,"y":5}},{"definition":{"query":"*","time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_timeline"},"layout":{"height":9,"width":65,"x":42,"y":73}},{"definition":{"color":"#d00","font_size":"88","text":"free text content","text_align":"left","type":"free_text"},"layout":{"height":20,"width":30,"x":42,"y":5}},{"definition":{"type":"iframe","url":"http://google.com"},"layout":{"height":46,"width":39,"x":111,"y":8}},{"definition":{"margin":"small","sizing":"fit","type":"image","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress\u0026cs=tinysrgb\u0026h=350"},"layout":{"height":20,"width":30,"x":77,"y":7}},{"definition":{"columns":["core_host","core_service","tag_source"],"indexes":[],"logset":"19","query":"error","type":"log_stream"},"layout":{"height":36,"width":32,"x":5,"y":51}},{"definition":{"color_preference":"text","count":50,"display_format":"countsAndList","hide_zero_counts":true,"query":"type:metric","show_last_triggered":true,"sort":"status,asc","start":0,"summary_type":"monitors","title":"Widget Title","title_align":"left","title_size":"16","type":"manage_status"},"layout":{"height":40,"width":30,"x":112,"y":55}},{"definition":{"display_format":"three_column","env":"datad0g.com","service":"alerting-cassandra","show_breakdown":true,"show_distribution":true,"show_errors":true,"show_hits":true,"show_latency":false,"show_resource_list":false,"size_format":"large","span_name":"cassandra.query","time":{"live_span":"1h"},"title":"alerting-cassandra #env:datad0g.com","title_align":"center","title_size":"13","type":"trace_service"},"layout":{"height":38,"width":67,"x":40,"y":28}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"free","notify_list":[],"template_variable_presets":[{"name":"preset_1","template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}]},{"name":"preset_2","template_variables":[{"name":"var_1","value":"var_1_value"}]}],"template_variables":[{"default":"aws","name":"var_1","prefix":"host"},{"default":"autoscaling","name":"var_2","prefix":"service_name"}],"title":"Acceptance Test Free Dashboard","widgets":[{"definition":{"event_size":"l","query":"*","time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_stream"},"layout":{"height":43,"width":32,"x":5,"y":5}},{"definition":{"query":"*","time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_timeline"},"layout":{"height":9,"width":65,"x":42,"y":73}},{"definition":{"color":"#d00","font_size":"88","text":"free text content","text_align":"left","type":"free_text"},"layout":{"height":20,"width":30,"x":42,"y":5}},{"definition":{"type":"iframe","url":"http://google.com"},"layout":{"height":46,"width":39,"x":111,"y":8}},{"definition":{"margin":"small","sizing":"fit","type":"image","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress\u0026cs=tinysrgb\u0026h=350"},"layout":{"height":20,"width":30,"x":77,"y":7}},{"definition":{"columns":["core_host","core_service","tag_source"],"indexes":[],"logset":"19","message_display":"expanded-md","query":"error","show_date_column":true,"show_message_column":true,"sort":{"column":"time","order":"desc"},"type":"log_stream"},"layout":{"height":36,"width":32,"x":5,"y":51}},{"definition":{"color_preference":"text","count":50,"display_format":"countsAndList","hide_zero_counts":true,"query":"type:metric","show_last_triggered":true,"sort":"status,asc","start":0,"summary_type":"monitors","title":"Widget Title","title_align":"left","title_size":"16","type":"manage_status"},"layout":{"height":40,"width":30,"x":112,"y":55}},{"definition":{"display_format":"three_column","env":"datad0g.com","service":"alerting-cassandra","show_breakdown":true,"show_distribution":true,"show_errors":true,"show_hits":true,"show_latency":false,"show_resource_list":false,"size_format":"large","span_name":"cassandra.query","time":{"live_span":"1h"},"title":"alerting-cassandra #env:datad0g.com","title_align":"center","title_size":"13","type":"trace_service"},"layout":{"height":38,"width":67,"x":40,"y":28}}]}
     form: {}
     headers:
       Accept:
@@ -13,18 +13,18 @@ interactions:
       Dd-Operation-Id:
       - CreateDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"2d2-cvm-v8x","title":"Acceptance
-      Test Free Dashboard","url":"/dashboard/2d2-cvm-v8x/acceptance-test-free-dashboard","created_at":"2020-05-14T12:02:20.802603+00:00","modified_at":"2020-05-14T12:02:20.802612+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"x":5,"width":32,"height":43},"id":2809280372443498},{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"x":42,"width":65,"height":9},"id":5880994893335434},{"definition":{"color":"#d00","text":"free
-      text content","type":"free_text","font_size":"88","text_align":"left"},"layout":{"y":5,"x":42,"width":30,"height":20},"id":6946149556365942},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"x":111,"width":39,"height":46},"id":5743107349431427},{"definition":{"url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350","sizing":"fit","margin":"small","type":"image"},"layout":{"y":7,"x":77,"width":30,"height":20},"id":2067766826401599},{"definition":{"logset":"19","query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"],"indexes":[]},"layout":{"y":51,"x":5,"width":32,"height":36},"id":8864241383185473},{"definition":{"sort":"status,asc","count":50,"title_align":"left","title_size":"16","title":"Widget
-      Title","show_last_triggered":true,"hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","display_format":"countsAndList","type":"manage_status"},"layout":{"y":55,"x":112,"width":30,"height":40},"id":6728407839992550},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
-      #env:datad0g.com","size_format":"large","show_hits":true,"show_latency":false,"title_align":"center","show_errors":true,"show_breakdown":true,"env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","type":"trace_service","show_resource_list":false},"layout":{"y":28,"x":40,"width":67,"height":38},"id":1329801029157134}],"layout_type":"free"}'
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"5fz-wrw-8pv","title":"Acceptance
+      Test Free Dashboard","url":"/dashboard/5fz-wrw-8pv/acceptance-test-free-dashboard","created_at":"2020-05-25T14:28:37.284713+00:00","modified_at":"2020-05-25T14:28:37.284713+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":4587247619408795},{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":2518377564619468},{"definition":{"color":"#d00","text":"free
+      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6188800892631991},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":2218130789537731},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":3832799822046245},{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":[],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8743950690783847},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
+      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":8885766403805322},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
+      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":7314876105208338}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -35,13 +35,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 May 2020 12:02:20 GMT
+      - Mon, 25 May 2020 14:28:37 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:20 GMT;
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:37 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -50,9 +50,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 9KqlMq3gTLpkJSVJyvAwXe8+x8jjzLiadKiJ+urXt2iPIG7RDD8GegNJYYpRqZOo
+      - 7TxqGOOndreg52igtXLKdvEB8M2Uby8upoxCr+mzZBPLwPuOVdJ4ujutF+9TQL1R
       X-Dd-Version:
-      - "35.2502628"
+      - "35.2542167"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -67,18 +67,18 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/2d2-cvm-v8x
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5fz-wrw-8pv
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"2d2-cvm-v8x","title":"Acceptance
-      Test Free Dashboard","url":"/dashboard/2d2-cvm-v8x/acceptance-test-free-dashboard","created_at":"2020-05-14T12:02:20.829814+00:00","modified_at":"2020-05-14T12:02:20.829814+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":2809280372443498},{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":5880994893335434},{"definition":{"color":"#d00","text":"free
-      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6946149556365942},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":5743107349431427},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":2067766826401599},{"definition":{"logset":"19","query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"],"indexes":[]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8864241383185473},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
-      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":6728407839992550},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
-      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":1329801029157134}],"layout_type":"free"}'
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"5fz-wrw-8pv","title":"Acceptance
+      Test Free Dashboard","url":"/dashboard/5fz-wrw-8pv/acceptance-test-free-dashboard","created_at":"2020-05-25T14:28:37.284713+00:00","modified_at":"2020-05-25T14:28:37.284713+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":4587247619408795},{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":2518377564619468},{"definition":{"color":"#d00","text":"free
+      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6188800892631991},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":2218130789537731},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":3832799822046245},{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":[],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8743950690783847},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
+      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":8885766403805322},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
+      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":7314876105208338}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -89,13 +89,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 May 2020 12:02:21 GMT
+      - Mon, 25 May 2020 14:28:37 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:21 GMT;
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:37 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -104,9 +104,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - HtltRxB6FWULKbr8JD/35HKWhI+dqAFQg/rNpMbjeMOPUq5j5iWk+nIs8OwDOqUR
+      - fqgAnnBv1js3TBerHAS1jOASlx3n1xB+hOOrFOLO2ZaBfZ3rktA3gzUaBetB5haL
       X-Dd-Version:
-      - "35.2502628"
+      - "35.2542167"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -124,43 +124,43 @@ interactions:
       Dd-Operation-Id:
       - CreateDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"fpr-ik7-rxg","title":"Acceptance
-      Test Ordered Dashboard","url":"/dashboard/fpr-ik7-rxg/acceptance-test-ordered-dashboard","created_at":"2020-05-14T12:02:21.403671+00:00","modified_at":"2020-05-14T12:02:21.403671+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":1096633080297489},{"definition":{"title":"Widget
-      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7248635732083017},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"vh6-59t-nz8","title":"Acceptance
+      Test Ordered Dashboard","url":"/dashboard/vh6-59t-nz8/acceptance-test-ordered-dashboard","created_at":"2020-05-25T14:28:37.649593+00:00","modified_at":"2020-05-25T14:28:37.649593+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":4648781073755466},{"definition":{"title":"Widget
+      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7874127176864102},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
       by {account}","show_present":true,"increase_good":true,"order_by":"name"}],"title":"Widget
-      Title","type":"change","time":{"live_span":"1h"}},"id":2457546242298304},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":6280127245892326},{"definition":{"title":"Widget
-      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":7736923011688313},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
+      Title","type":"change","time":{"live_span":"1h"}},"id":942790631488629},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":2684157958708808},{"definition":{"title":"Widget
+      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":8406152675327241},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","style":{"palette":"warm"}}],"time":{"live_span":"1h"},"type":"heatmap","title":"Widget
-      Title"},"id":2451495695215044},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
+      Title"},"id":7915054128824189},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
       Title","node_type":"container","no_metric_hosts":true,"scope":["region:us-east-1","aws_account:727006795293"],"requests":{"size":{"q":"avg:memcache.uptime{*}
-      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":3035136625750891},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
-      text","show_tick":true,"background_color":"pink"},"id":1910884930859087},{"definition":{"autoscale":true,"title":"Widget
+      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":144747122580364},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
+      text","show_tick":true,"background_color":"pink"},"id":6303969929815808},{"definition":{"autoscale":true,"title":"Widget
       Title","text_align":"right","custom_unit":"xx","precision":4,"time":{"live_span":"1h"},"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":4317043434338601},{"definition":{"title":"Widget
+      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":5781409649056381},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"max":"2222","min":"5","scale":"log","label":"y"},"color_by_groups":["account","apm-role-group"],"xaxis":{"include_zero":true,"max":"2000","min":"1","scale":"pow","label":"x"},"time":{"live_span":"1h"},"requests":{"y":{"q":"avg:system.mem.used{*}
       by {service, account}","aggregator":"min"},"x":{"q":"avg:system.cpu.user{*}
-      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":4239206113749387},{"definition":{"title":"Widget
+      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":6975322979040689},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"scale":"log","max":"100"},"markers":[{"display_type":"error
       dashed","value":"y = 4","label":" z=6 "},{"display_type":"ok solid","value":"10
       < y < 999","label":" x=8 "}],"events":[{"q":"sources:test tags:1"},{"q":"sources:test
       tags:2"}],"show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","style":{"line_width":"thin","palette":"warm","line_type":"dashed"},"display_type":"line","metadata":[{"expression":"avg:system.cpu.user{app:general}
-      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":2871298819718496},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
+      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":6635179476894529},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"toplist","title":"Widget
-      Title"},"id":2679196852705},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
-      note widget","show_tick":false,"background_color":"yellow"},"id":8752227670264304},{"definition":{"alert_id":"123","title":"Alert
-      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":183666956227586}],"layout_type":"ordered","type":"group","title":"Group
-      Widget"},"id":7642564643656260},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
-      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":639089936476762},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      Title"},"id":8010041216375647},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
+      note widget","show_tick":false,"background_color":"yellow"},"id":2911396282345631},{"definition":{"alert_id":"123","title":"Alert
+      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":934946334882160}],"layout_type":"ordered","type":"group","title":"Group
+      Widget"},"id":8130308167969148},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
+      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":7345444060340866},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
-      Title","type":"query_table","time":{"live_span":"1h"}},"id":7415544838652275}],"layout_type":"ordered"}'
+      Title","type":"query_table","time":{"live_span":"1h"}},"id":4881121146173466}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -171,13 +171,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 May 2020 12:02:21 GMT
+      - Mon, 25 May 2020 14:28:37 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:21 GMT;
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:37 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -186,9 +186,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Wn01ZjXucAfzJfwvKAkpy0yFfNtHyWu4ZB2aA4ZDwwhXkyLHirYeUNsx208dZz9p
+      - 3GTZ6ImnvkiMOuKTP2ILv/2CbQJLb5wTjyX1KOTCD/aaxDS+HyYye1EH1uVK9Ajh
       X-Dd-Version:
-      - "35.2502628"
+      - "35.2542167"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -203,43 +203,43 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fpr-ik7-rxg
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/vh6-59t-nz8
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"fpr-ik7-rxg","title":"Acceptance
-      Test Ordered Dashboard","url":"/dashboard/fpr-ik7-rxg/acceptance-test-ordered-dashboard","created_at":"2020-05-14T12:02:21.403671+00:00","modified_at":"2020-05-14T12:02:21.403671+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":1096633080297489},{"definition":{"title":"Widget
-      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7248635732083017},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"vh6-59t-nz8","title":"Acceptance
+      Test Ordered Dashboard","url":"/dashboard/vh6-59t-nz8/acceptance-test-ordered-dashboard","created_at":"2020-05-25T14:28:37.649593+00:00","modified_at":"2020-05-25T14:28:37.649593+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":4648781073755466},{"definition":{"title":"Widget
+      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7874127176864102},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
       by {account}","show_present":true,"increase_good":true,"order_by":"name"}],"title":"Widget
-      Title","type":"change","time":{"live_span":"1h"}},"id":2457546242298304},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":6280127245892326},{"definition":{"title":"Widget
-      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":7736923011688313},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
+      Title","type":"change","time":{"live_span":"1h"}},"id":942790631488629},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":2684157958708808},{"definition":{"title":"Widget
+      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":8406152675327241},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","style":{"palette":"warm"}}],"time":{"live_span":"1h"},"type":"heatmap","title":"Widget
-      Title"},"id":2451495695215044},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
+      Title"},"id":7915054128824189},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
       Title","node_type":"container","no_metric_hosts":true,"scope":["region:us-east-1","aws_account:727006795293"],"requests":{"size":{"q":"avg:memcache.uptime{*}
-      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":3035136625750891},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
-      text","show_tick":true,"background_color":"pink"},"id":1910884930859087},{"definition":{"autoscale":true,"title":"Widget
+      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":144747122580364},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
+      text","show_tick":true,"background_color":"pink"},"id":6303969929815808},{"definition":{"autoscale":true,"title":"Widget
       Title","text_align":"right","custom_unit":"xx","precision":4,"time":{"live_span":"1h"},"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":4317043434338601},{"definition":{"title":"Widget
+      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":5781409649056381},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"max":"2222","min":"5","scale":"log","label":"y"},"color_by_groups":["account","apm-role-group"],"xaxis":{"include_zero":true,"max":"2000","min":"1","scale":"pow","label":"x"},"time":{"live_span":"1h"},"requests":{"y":{"q":"avg:system.mem.used{*}
       by {service, account}","aggregator":"min"},"x":{"q":"avg:system.cpu.user{*}
-      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":4239206113749387},{"definition":{"title":"Widget
+      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":6975322979040689},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"scale":"log","max":"100"},"markers":[{"display_type":"error
       dashed","value":"y = 4","label":" z=6 "},{"display_type":"ok solid","value":"10
       < y < 999","label":" x=8 "}],"events":[{"q":"sources:test tags:1"},{"q":"sources:test
       tags:2"}],"show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","style":{"line_width":"thin","palette":"warm","line_type":"dashed"},"display_type":"line","metadata":[{"expression":"avg:system.cpu.user{app:general}
-      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":2871298819718496},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
+      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":6635179476894529},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"toplist","title":"Widget
-      Title"},"id":2679196852705},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
-      note widget","show_tick":false,"background_color":"yellow"},"id":8752227670264304},{"definition":{"alert_id":"123","title":"Alert
-      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":183666956227586}],"layout_type":"ordered","type":"group","title":"Group
-      Widget"},"id":7642564643656260},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
-      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":639089936476762},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      Title"},"id":8010041216375647},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
+      note widget","show_tick":false,"background_color":"yellow"},"id":2911396282345631},{"definition":{"alert_id":"123","title":"Alert
+      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":934946334882160}],"layout_type":"ordered","type":"group","title":"Group
+      Widget"},"id":8130308167969148},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
+      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":7345444060340866},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
-      Title","type":"query_table","time":{"live_span":"1h"}},"id":7415544838652275}],"layout_type":"ordered"}'
+      Title","type":"query_table","time":{"live_span":"1h"}},"id":4881121146173466}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -250,13 +250,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 May 2020 12:02:22 GMT
+      - Mon, 25 May 2020 14:28:37 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:22 GMT;
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:37 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -265,9 +265,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 5gIeAyE850e1lqVwTAgwvudewR8EzuQd3qGaXsS2D0CKQVhFOIjBoeQYiH0qPohy
+      - em3KoJu1XYdqq1w4EpLi4L54svjYBxZahEDJ8c5gcdIOxnNafHMdF5LLysPLuNcH
       X-Dd-Version:
-      - "35.2502628"
+      - "35.2542167"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -282,18 +282,18 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/2d2-cvm-v8x
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5fz-wrw-8pv
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"2d2-cvm-v8x","title":"Acceptance
-      Test Free Dashboard","url":"/dashboard/2d2-cvm-v8x/acceptance-test-free-dashboard","created_at":"2020-05-14T12:02:20.829814+00:00","modified_at":"2020-05-14T12:02:20.829814+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":2809280372443498},{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":5880994893335434},{"definition":{"color":"#d00","text":"free
-      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6946149556365942},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":5743107349431427},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":2067766826401599},{"definition":{"logset":"19","query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"],"indexes":[]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8864241383185473},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
-      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":6728407839992550},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
-      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":1329801029157134}],"layout_type":"free"}'
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"5fz-wrw-8pv","title":"Acceptance
+      Test Free Dashboard","url":"/dashboard/5fz-wrw-8pv/acceptance-test-free-dashboard","created_at":"2020-05-25T14:28:37.284713+00:00","modified_at":"2020-05-25T14:28:37.284713+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":4587247619408795},{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":2518377564619468},{"definition":{"color":"#d00","text":"free
+      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6188800892631991},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":2218130789537731},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":3832799822046245},{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":[],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8743950690783847},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
+      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":8885766403805322},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
+      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":7314876105208338}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -304,13 +304,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 May 2020 12:02:28 GMT
+      - Mon, 25 May 2020 14:28:48 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:28 GMT;
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:48 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -319,9 +319,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - nRZqCODixwNZX0HLyT17WzYwenviVG0rmnZak57k5KsDWun3aWEsPedTsRpiFQxf
+      - 69kiClanS8NcBSsdd51HHifvhQSGoRbJJjhU9l40yqxQHVNrndFN9zVtFJW1OcSf
       X-Dd-Version:
-      - "35.2502628"
+      - "35.2542167"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -336,18 +336,18 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/2d2-cvm-v8x
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5fz-wrw-8pv
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"2d2-cvm-v8x","title":"Acceptance
-      Test Free Dashboard","url":"/dashboard/2d2-cvm-v8x/acceptance-test-free-dashboard","created_at":"2020-05-14T12:02:20.829814+00:00","modified_at":"2020-05-14T12:02:20.829814+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":2809280372443498},{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":5880994893335434},{"definition":{"color":"#d00","text":"free
-      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6946149556365942},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":5743107349431427},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":2067766826401599},{"definition":{"logset":"19","query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"],"indexes":[]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8864241383185473},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
-      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":6728407839992550},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
-      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":1329801029157134}],"layout_type":"free"}'
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"5fz-wrw-8pv","title":"Acceptance
+      Test Free Dashboard","url":"/dashboard/5fz-wrw-8pv/acceptance-test-free-dashboard","created_at":"2020-05-25T14:28:37.284713+00:00","modified_at":"2020-05-25T14:28:37.284713+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":4587247619408795},{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":2518377564619468},{"definition":{"color":"#d00","text":"free
+      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6188800892631991},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":2218130789537731},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":3832799822046245},{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":[],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8743950690783847},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
+      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":8885766403805322},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
+      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":7314876105208338}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -358,13 +358,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 May 2020 12:02:28 GMT
+      - Mon, 25 May 2020 14:28:49 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:28 GMT;
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:49 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -373,9 +373,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - J7vOWsxZd7Grxzg2TIaQpn2nGjrOScgI4Kwzur8V2oOTYInX6xbVT4leinNkGLPk
+      - Z91NUpPIZnIQ9h7lBFWBkEPGVUEsn4/i71imPPwrChu4RPI5uNM5HGuodISK1HBR
       X-Dd-Version:
-      - "35.2502628"
+      - "35.2542167"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -390,43 +390,43 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fpr-ik7-rxg
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/vh6-59t-nz8
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"fpr-ik7-rxg","title":"Acceptance
-      Test Ordered Dashboard","url":"/dashboard/fpr-ik7-rxg/acceptance-test-ordered-dashboard","created_at":"2020-05-14T12:02:21.403671+00:00","modified_at":"2020-05-14T12:02:21.403671+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":1096633080297489},{"definition":{"title":"Widget
-      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7248635732083017},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"vh6-59t-nz8","title":"Acceptance
+      Test Ordered Dashboard","url":"/dashboard/vh6-59t-nz8/acceptance-test-ordered-dashboard","created_at":"2020-05-25T14:28:37.649593+00:00","modified_at":"2020-05-25T14:28:37.649593+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":4648781073755466},{"definition":{"title":"Widget
+      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7874127176864102},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
       by {account}","show_present":true,"increase_good":true,"order_by":"name"}],"title":"Widget
-      Title","type":"change","time":{"live_span":"1h"}},"id":2457546242298304},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":6280127245892326},{"definition":{"title":"Widget
-      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":7736923011688313},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
+      Title","type":"change","time":{"live_span":"1h"}},"id":942790631488629},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":2684157958708808},{"definition":{"title":"Widget
+      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":8406152675327241},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","style":{"palette":"warm"}}],"time":{"live_span":"1h"},"type":"heatmap","title":"Widget
-      Title"},"id":2451495695215044},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
+      Title"},"id":7915054128824189},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
       Title","node_type":"container","no_metric_hosts":true,"scope":["region:us-east-1","aws_account:727006795293"],"requests":{"size":{"q":"avg:memcache.uptime{*}
-      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":3035136625750891},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
-      text","show_tick":true,"background_color":"pink"},"id":1910884930859087},{"definition":{"autoscale":true,"title":"Widget
+      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":144747122580364},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
+      text","show_tick":true,"background_color":"pink"},"id":6303969929815808},{"definition":{"autoscale":true,"title":"Widget
       Title","text_align":"right","custom_unit":"xx","precision":4,"time":{"live_span":"1h"},"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":4317043434338601},{"definition":{"title":"Widget
+      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":5781409649056381},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"max":"2222","min":"5","scale":"log","label":"y"},"color_by_groups":["account","apm-role-group"],"xaxis":{"include_zero":true,"max":"2000","min":"1","scale":"pow","label":"x"},"time":{"live_span":"1h"},"requests":{"y":{"q":"avg:system.mem.used{*}
       by {service, account}","aggregator":"min"},"x":{"q":"avg:system.cpu.user{*}
-      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":4239206113749387},{"definition":{"title":"Widget
+      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":6975322979040689},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"scale":"log","max":"100"},"markers":[{"display_type":"error
       dashed","value":"y = 4","label":" z=6 "},{"display_type":"ok solid","value":"10
       < y < 999","label":" x=8 "}],"events":[{"q":"sources:test tags:1"},{"q":"sources:test
       tags:2"}],"show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","style":{"line_width":"thin","palette":"warm","line_type":"dashed"},"display_type":"line","metadata":[{"expression":"avg:system.cpu.user{app:general}
-      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":2871298819718496},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
+      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":6635179476894529},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"toplist","title":"Widget
-      Title"},"id":2679196852705},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
-      note widget","show_tick":false,"background_color":"yellow"},"id":8752227670264304},{"definition":{"alert_id":"123","title":"Alert
-      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":183666956227586}],"layout_type":"ordered","type":"group","title":"Group
-      Widget"},"id":7642564643656260},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
-      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":639089936476762},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      Title"},"id":8010041216375647},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
+      note widget","show_tick":false,"background_color":"yellow"},"id":2911396282345631},{"definition":{"alert_id":"123","title":"Alert
+      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":934946334882160}],"layout_type":"ordered","type":"group","title":"Group
+      Widget"},"id":8130308167969148},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
+      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":7345444060340866},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
-      Title","type":"query_table","time":{"live_span":"1h"}},"id":7415544838652275}],"layout_type":"ordered"}'
+      Title","type":"query_table","time":{"live_span":"1h"}},"id":4881121146173466}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -437,13 +437,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 May 2020 12:02:29 GMT
+      - Mon, 25 May 2020 14:28:49 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:28 GMT;
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:49 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -452,9 +452,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Xj/PwLDKe3Ll1QwGP2SdQuyUcOtG0YD60hQDJ9tPEhK9OEMHkSCPXdZRvPX0YYGO
+      - 8jOW1djIgkdkj4STw+0pQ3G+kGKfu548DWINvnE6phacY0k9vgC3cU1LaI38XIYk
       X-Dd-Version:
-      - "35.2502628"
+      - "35.2542167"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -469,43 +469,43 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fpr-ik7-rxg
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/vh6-59t-nz8
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"fpr-ik7-rxg","title":"Acceptance
-      Test Ordered Dashboard","url":"/dashboard/fpr-ik7-rxg/acceptance-test-ordered-dashboard","created_at":"2020-05-14T12:02:21.403671+00:00","modified_at":"2020-05-14T12:02:21.403671+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":1096633080297489},{"definition":{"title":"Widget
-      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7248635732083017},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"vh6-59t-nz8","title":"Acceptance
+      Test Ordered Dashboard","url":"/dashboard/vh6-59t-nz8/acceptance-test-ordered-dashboard","created_at":"2020-05-25T14:28:37.649593+00:00","modified_at":"2020-05-25T14:28:37.649593+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":4648781073755466},{"definition":{"title":"Widget
+      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7874127176864102},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
       by {account}","show_present":true,"increase_good":true,"order_by":"name"}],"title":"Widget
-      Title","type":"change","time":{"live_span":"1h"}},"id":2457546242298304},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":6280127245892326},{"definition":{"title":"Widget
-      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":7736923011688313},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
+      Title","type":"change","time":{"live_span":"1h"}},"id":942790631488629},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":2684157958708808},{"definition":{"title":"Widget
+      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":8406152675327241},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","style":{"palette":"warm"}}],"time":{"live_span":"1h"},"type":"heatmap","title":"Widget
-      Title"},"id":2451495695215044},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
+      Title"},"id":7915054128824189},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
       Title","node_type":"container","no_metric_hosts":true,"scope":["region:us-east-1","aws_account:727006795293"],"requests":{"size":{"q":"avg:memcache.uptime{*}
-      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":3035136625750891},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
-      text","show_tick":true,"background_color":"pink"},"id":1910884930859087},{"definition":{"autoscale":true,"title":"Widget
+      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":144747122580364},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
+      text","show_tick":true,"background_color":"pink"},"id":6303969929815808},{"definition":{"autoscale":true,"title":"Widget
       Title","text_align":"right","custom_unit":"xx","precision":4,"time":{"live_span":"1h"},"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":4317043434338601},{"definition":{"title":"Widget
+      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":5781409649056381},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"max":"2222","min":"5","scale":"log","label":"y"},"color_by_groups":["account","apm-role-group"],"xaxis":{"include_zero":true,"max":"2000","min":"1","scale":"pow","label":"x"},"time":{"live_span":"1h"},"requests":{"y":{"q":"avg:system.mem.used{*}
       by {service, account}","aggregator":"min"},"x":{"q":"avg:system.cpu.user{*}
-      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":4239206113749387},{"definition":{"title":"Widget
+      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":6975322979040689},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"scale":"log","max":"100"},"markers":[{"display_type":"error
       dashed","value":"y = 4","label":" z=6 "},{"display_type":"ok solid","value":"10
       < y < 999","label":" x=8 "}],"events":[{"q":"sources:test tags:1"},{"q":"sources:test
       tags:2"}],"show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","style":{"line_width":"thin","palette":"warm","line_type":"dashed"},"display_type":"line","metadata":[{"expression":"avg:system.cpu.user{app:general}
-      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":2871298819718496},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
+      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":6635179476894529},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"toplist","title":"Widget
-      Title"},"id":2679196852705},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
-      note widget","show_tick":false,"background_color":"yellow"},"id":8752227670264304},{"definition":{"alert_id":"123","title":"Alert
-      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":183666956227586}],"layout_type":"ordered","type":"group","title":"Group
-      Widget"},"id":7642564643656260},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
-      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":639089936476762},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      Title"},"id":8010041216375647},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
+      note widget","show_tick":false,"background_color":"yellow"},"id":2911396282345631},{"definition":{"alert_id":"123","title":"Alert
+      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":934946334882160}],"layout_type":"ordered","type":"group","title":"Group
+      Widget"},"id":8130308167969148},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
+      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":7345444060340866},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
-      Title","type":"query_table","time":{"live_span":"1h"}},"id":7415544838652275}],"layout_type":"ordered"}'
+      Title","type":"query_table","time":{"live_span":"1h"}},"id":4881121146173466}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -516,13 +516,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 May 2020 12:02:29 GMT
+      - Mon, 25 May 2020 14:28:49 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:29 GMT;
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:49 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -531,9 +531,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - +0e88dcOoH2a7qrZ5zz4PnubdrAKvSl+k8YKr4bhBQyArPBFiYg3oXWqeVKLPB1I
+      - LOVPYRkvxiVgJlSU7tTR5QW5I3IByFfoP5oRWZk6jukYFQiYGeCZXWoo6PiPBzrK
       X-Dd-Version:
-      - "35.2502628"
+      - "35.2542167"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -548,43 +548,43 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fpr-ik7-rxg
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/vh6-59t-nz8
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"fpr-ik7-rxg","title":"Acceptance
-      Test Ordered Dashboard","url":"/dashboard/fpr-ik7-rxg/acceptance-test-ordered-dashboard","created_at":"2020-05-14T12:02:21.403671+00:00","modified_at":"2020-05-14T12:02:21.403671+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":1096633080297489},{"definition":{"title":"Widget
-      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7248635732083017},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"vh6-59t-nz8","title":"Acceptance
+      Test Ordered Dashboard","url":"/dashboard/vh6-59t-nz8/acceptance-test-ordered-dashboard","created_at":"2020-05-25T14:28:37.649593+00:00","modified_at":"2020-05-25T14:28:37.649593+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":4648781073755466},{"definition":{"title":"Widget
+      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7874127176864102},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
       by {account}","show_present":true,"increase_good":true,"order_by":"name"}],"title":"Widget
-      Title","type":"change","time":{"live_span":"1h"}},"id":2457546242298304},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":6280127245892326},{"definition":{"title":"Widget
-      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":7736923011688313},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
+      Title","type":"change","time":{"live_span":"1h"}},"id":942790631488629},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":2684157958708808},{"definition":{"title":"Widget
+      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":8406152675327241},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","style":{"palette":"warm"}}],"time":{"live_span":"1h"},"type":"heatmap","title":"Widget
-      Title"},"id":2451495695215044},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
+      Title"},"id":7915054128824189},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
       Title","node_type":"container","no_metric_hosts":true,"scope":["region:us-east-1","aws_account:727006795293"],"requests":{"size":{"q":"avg:memcache.uptime{*}
-      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":3035136625750891},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
-      text","show_tick":true,"background_color":"pink"},"id":1910884930859087},{"definition":{"autoscale":true,"title":"Widget
+      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":144747122580364},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
+      text","show_tick":true,"background_color":"pink"},"id":6303969929815808},{"definition":{"autoscale":true,"title":"Widget
       Title","text_align":"right","custom_unit":"xx","precision":4,"time":{"live_span":"1h"},"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":4317043434338601},{"definition":{"title":"Widget
+      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":5781409649056381},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"max":"2222","min":"5","scale":"log","label":"y"},"color_by_groups":["account","apm-role-group"],"xaxis":{"include_zero":true,"max":"2000","min":"1","scale":"pow","label":"x"},"time":{"live_span":"1h"},"requests":{"y":{"q":"avg:system.mem.used{*}
       by {service, account}","aggregator":"min"},"x":{"q":"avg:system.cpu.user{*}
-      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":4239206113749387},{"definition":{"title":"Widget
+      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":6975322979040689},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"scale":"log","max":"100"},"markers":[{"display_type":"error
       dashed","value":"y = 4","label":" z=6 "},{"display_type":"ok solid","value":"10
       < y < 999","label":" x=8 "}],"events":[{"q":"sources:test tags:1"},{"q":"sources:test
       tags:2"}],"show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","style":{"line_width":"thin","palette":"warm","line_type":"dashed"},"display_type":"line","metadata":[{"expression":"avg:system.cpu.user{app:general}
-      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":2871298819718496},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
+      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":6635179476894529},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"toplist","title":"Widget
-      Title"},"id":2679196852705},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
-      note widget","show_tick":false,"background_color":"yellow"},"id":8752227670264304},{"definition":{"alert_id":"123","title":"Alert
-      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":183666956227586}],"layout_type":"ordered","type":"group","title":"Group
-      Widget"},"id":7642564643656260},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
-      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":639089936476762},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      Title"},"id":8010041216375647},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
+      note widget","show_tick":false,"background_color":"yellow"},"id":2911396282345631},{"definition":{"alert_id":"123","title":"Alert
+      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":934946334882160}],"layout_type":"ordered","type":"group","title":"Group
+      Widget"},"id":8130308167969148},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
+      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":7345444060340866},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
-      Title","type":"query_table","time":{"live_span":"1h"}},"id":7415544838652275}],"layout_type":"ordered"}'
+      Title","type":"query_table","time":{"live_span":"1h"}},"id":4881121146173466}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -595,13 +595,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 May 2020 12:02:33 GMT
+      - Mon, 25 May 2020 14:28:56 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:33 GMT;
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:56 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -610,9 +610,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 6TICFxDFBNq65Lw6aA0hO1z7nxUSiTzUAT0k7ln4UasEU6/emXomwtYWMJdIuxUV
+      - fLh2Ki8TBaqqP7azNnKugW2P+FqYhl36RGg8m8syr+2I6kNse5gXxG00+xylWppT
       X-Dd-Version:
-      - "35.2502628"
+      - "35.2542167"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -627,43 +627,43 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fpr-ik7-rxg
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/vh6-59t-nz8
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"fpr-ik7-rxg","title":"Acceptance
-      Test Ordered Dashboard","url":"/dashboard/fpr-ik7-rxg/acceptance-test-ordered-dashboard","created_at":"2020-05-14T12:02:21.403671+00:00","modified_at":"2020-05-14T12:02:21.403671+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":1096633080297489},{"definition":{"title":"Widget
-      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7248635732083017},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"vh6-59t-nz8","title":"Acceptance
+      Test Ordered Dashboard","url":"/dashboard/vh6-59t-nz8/acceptance-test-ordered-dashboard","created_at":"2020-05-25T14:28:37.649593+00:00","modified_at":"2020-05-25T14:28:37.649593+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":4648781073755466},{"definition":{"title":"Widget
+      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7874127176864102},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
       by {account}","show_present":true,"increase_good":true,"order_by":"name"}],"title":"Widget
-      Title","type":"change","time":{"live_span":"1h"}},"id":2457546242298304},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":6280127245892326},{"definition":{"title":"Widget
-      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":7736923011688313},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
+      Title","type":"change","time":{"live_span":"1h"}},"id":942790631488629},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":2684157958708808},{"definition":{"title":"Widget
+      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":8406152675327241},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","style":{"palette":"warm"}}],"time":{"live_span":"1h"},"type":"heatmap","title":"Widget
-      Title"},"id":2451495695215044},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
+      Title"},"id":7915054128824189},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
       Title","node_type":"container","no_metric_hosts":true,"scope":["region:us-east-1","aws_account:727006795293"],"requests":{"size":{"q":"avg:memcache.uptime{*}
-      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":3035136625750891},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
-      text","show_tick":true,"background_color":"pink"},"id":1910884930859087},{"definition":{"autoscale":true,"title":"Widget
+      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":144747122580364},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
+      text","show_tick":true,"background_color":"pink"},"id":6303969929815808},{"definition":{"autoscale":true,"title":"Widget
       Title","text_align":"right","custom_unit":"xx","precision":4,"time":{"live_span":"1h"},"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":4317043434338601},{"definition":{"title":"Widget
+      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":5781409649056381},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"max":"2222","min":"5","scale":"log","label":"y"},"color_by_groups":["account","apm-role-group"],"xaxis":{"include_zero":true,"max":"2000","min":"1","scale":"pow","label":"x"},"time":{"live_span":"1h"},"requests":{"y":{"q":"avg:system.mem.used{*}
       by {service, account}","aggregator":"min"},"x":{"q":"avg:system.cpu.user{*}
-      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":4239206113749387},{"definition":{"title":"Widget
+      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":6975322979040689},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"scale":"log","max":"100"},"markers":[{"display_type":"error
       dashed","value":"y = 4","label":" z=6 "},{"display_type":"ok solid","value":"10
       < y < 999","label":" x=8 "}],"events":[{"q":"sources:test tags:1"},{"q":"sources:test
       tags:2"}],"show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","style":{"line_width":"thin","palette":"warm","line_type":"dashed"},"display_type":"line","metadata":[{"expression":"avg:system.cpu.user{app:general}
-      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":2871298819718496},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
+      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":6635179476894529},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"toplist","title":"Widget
-      Title"},"id":2679196852705},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
-      note widget","show_tick":false,"background_color":"yellow"},"id":8752227670264304},{"definition":{"alert_id":"123","title":"Alert
-      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":183666956227586}],"layout_type":"ordered","type":"group","title":"Group
-      Widget"},"id":7642564643656260},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
-      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":639089936476762},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      Title"},"id":8010041216375647},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
+      note widget","show_tick":false,"background_color":"yellow"},"id":2911396282345631},{"definition":{"alert_id":"123","title":"Alert
+      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":934946334882160}],"layout_type":"ordered","type":"group","title":"Group
+      Widget"},"id":8130308167969148},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
+      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":7345444060340866},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
-      Title","type":"query_table","time":{"live_span":"1h"}},"id":7415544838652275}],"layout_type":"ordered"}'
+      Title","type":"query_table","time":{"live_span":"1h"}},"id":4881121146173466}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -674,13 +674,200 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 May 2020 12:02:34 GMT
+      - Mon, 25 May 2020 14:28:57 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:34 GMT;
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:57 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 3OCRM/4FZbkllI4iloi1acHDABD1SJi2aj2fysEPLLsOVOk5Ki6mi6IOsVG7JIay
+      X-Dd-Version:
+      - "35.2542167"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/vh6-59t-nz8
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"vh6-59t-nz8","title":"Acceptance
+      Test Ordered Dashboard","url":"/dashboard/vh6-59t-nz8/acceptance-test-ordered-dashboard","created_at":"2020-05-25T14:28:37.649593+00:00","modified_at":"2020-05-25T14:28:37.649593+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":4648781073755466},{"definition":{"title":"Widget
+      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7874127176864102},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
+      by {account}","show_present":true,"increase_good":true,"order_by":"name"}],"title":"Widget
+      Title","type":"change","time":{"live_span":"1h"}},"id":942790631488629},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":2684157958708808},{"definition":{"title":"Widget
+      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":8406152675327241},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
+      by {account}","style":{"palette":"warm"}}],"time":{"live_span":"1h"},"type":"heatmap","title":"Widget
+      Title"},"id":7915054128824189},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
+      Title","node_type":"container","no_metric_hosts":true,"scope":["region:us-east-1","aws_account:727006795293"],"requests":{"size":{"q":"avg:memcache.uptime{*}
+      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":144747122580364},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
+      text","show_tick":true,"background_color":"pink"},"id":6303969929815808},{"definition":{"autoscale":true,"title":"Widget
+      Title","text_align":"right","custom_unit":"xx","precision":4,"time":{"live_span":"1h"},"requests":[{"q":"avg:system.load.1{env:staging}
+      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":5781409649056381},{"definition":{"title":"Widget
+      Title","yaxis":{"include_zero":false,"max":"2222","min":"5","scale":"log","label":"y"},"color_by_groups":["account","apm-role-group"],"xaxis":{"include_zero":true,"max":"2000","min":"1","scale":"pow","label":"x"},"time":{"live_span":"1h"},"requests":{"y":{"q":"avg:system.mem.used{*}
+      by {service, account}","aggregator":"min"},"x":{"q":"avg:system.cpu.user{*}
+      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":6975322979040689},{"definition":{"title":"Widget
+      Title","yaxis":{"include_zero":false,"scale":"log","max":"100"},"markers":[{"display_type":"error
+      dashed","value":"y = 4","label":" z=6 "},{"display_type":"ok solid","value":"10
+      < y < 999","label":" x=8 "}],"events":[{"q":"sources:test tags:1"},{"q":"sources:test
+      tags:2"}],"show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{app:general}
+      by {env}","style":{"line_width":"thin","palette":"warm","line_type":"dashed"},"display_type":"line","metadata":[{"expression":"avg:system.cpu.user{app:general}
+      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":6635179476894529},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
+      by {env}","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"toplist","title":"Widget
+      Title"},"id":8010041216375647},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
+      note widget","show_tick":false,"background_color":"yellow"},"id":2911396282345631},{"definition":{"alert_id":"123","title":"Alert
+      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":934946334882160}],"layout_type":"ordered","type":"group","title":"Group
+      Widget"},"id":8130308167969148},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
+      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":7345444060340866},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
+      Title","type":"query_table","time":{"live_span":"1h"}},"id":4881121146173466}],"layout_type":"ordered"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 25 May 2020 14:28:57 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:57 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - rK52fEhHKxisnKo2rembr3YValr4L+BG6/8tD9iNDc8Prg2mnV6DynBkS75++wh/
+      X-Dd-Version:
+      - "35.2542167"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5fz-wrw-8pv
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"5fz-wrw-8pv","title":"Acceptance
+      Test Free Dashboard","url":"/dashboard/5fz-wrw-8pv/acceptance-test-free-dashboard","created_at":"2020-05-25T14:28:37.284713+00:00","modified_at":"2020-05-25T14:28:37.284713+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":4587247619408795},{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":2518377564619468},{"definition":{"color":"#d00","text":"free
+      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6188800892631991},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":2218130789537731},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":3832799822046245},{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":[],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8743950690783847},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
+      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":8885766403805322},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
+      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":7314876105208338}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 25 May 2020 14:28:58 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:58 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - e8t0cvW5uVKXk1zUsTcAcDpqv28dgy+lCs/R2sCfbKW6stomFiq2a4ijzxRdPBn5
+      X-Dd-Version:
+      - "35.2542167"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5fz-wrw-8pv
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"5fz-wrw-8pv","title":"Acceptance
+      Test Free Dashboard","url":"/dashboard/5fz-wrw-8pv/acceptance-test-free-dashboard","created_at":"2020-05-25T14:28:37.284713+00:00","modified_at":"2020-05-25T14:28:37.284713+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":4587247619408795},{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":2518377564619468},{"definition":{"color":"#d00","text":"free
+      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6188800892631991},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":2218130789537731},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":3832799822046245},{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":[],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8743950690783847},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
+      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":8885766403805322},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
+      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":7314876105208338}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 25 May 2020 14:28:58 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:58 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -691,7 +878,7 @@ interactions:
       X-Dd-Debug:
       - CPK+34LtKdL5YYX/NFOJUdMpxMoO80HISGpGpzDG5fENYSoZ2QNw1gEubOsJ9JNb
       X-Dd-Version:
-      - "35.2502628"
+      - "35.2542167"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -706,43 +893,205 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fpr-ik7-rxg
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5fz-wrw-8pv
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"fpr-ik7-rxg","title":"Acceptance
-      Test Ordered Dashboard","url":"/dashboard/fpr-ik7-rxg/acceptance-test-ordered-dashboard","created_at":"2020-05-14T12:02:21.403671+00:00","modified_at":"2020-05-14T12:02:21.403671+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":1096633080297489},{"definition":{"title":"Widget
-      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7248635732083017},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"5fz-wrw-8pv","title":"Acceptance
+      Test Free Dashboard","url":"/dashboard/5fz-wrw-8pv/acceptance-test-free-dashboard","created_at":"2020-05-25T14:28:37.284713+00:00","modified_at":"2020-05-25T14:28:37.284713+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":4587247619408795},{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":2518377564619468},{"definition":{"color":"#d00","text":"free
+      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6188800892631991},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":2218130789537731},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":3832799822046245},{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":[],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8743950690783847},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
+      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":8885766403805322},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
+      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":7314876105208338}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 25 May 2020 14:28:58 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:58 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - jety+2H6BA1H4x31+wzy5BjqI2NDwh54fgbjSYyrLU0p2tWQPCCTKspX7sHO7u1n
+      X-Dd-Version:
+      - "35.2542167"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5fz-wrw-8pv
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"5fz-wrw-8pv","title":"Acceptance
+      Test Free Dashboard","url":"/dashboard/5fz-wrw-8pv/acceptance-test-free-dashboard","created_at":"2020-05-25T14:28:37.284713+00:00","modified_at":"2020-05-25T14:28:37.284713+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":4587247619408795},{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":2518377564619468},{"definition":{"color":"#d00","text":"free
+      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6188800892631991},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":2218130789537731},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":3832799822046245},{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":[],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8743950690783847},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
+      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":8885766403805322},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
+      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":7314876105208338}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 25 May 2020 14:28:59 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:59 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - skwclWwYkKW38qisoeAm0+G71HHbXaQZSRP+zaGh2pZ7dRVTlLXlAp6DZVg5jg4x
+      X-Dd-Version:
+      - "35.2542167"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5fz-wrw-8pv
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"5fz-wrw-8pv","title":"Acceptance
+      Test Free Dashboard","url":"/dashboard/5fz-wrw-8pv/acceptance-test-free-dashboard","created_at":"2020-05-25T14:28:37.284713+00:00","modified_at":"2020-05-25T14:28:37.284713+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":4587247619408795},{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":2518377564619468},{"definition":{"color":"#d00","text":"free
+      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6188800892631991},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":2218130789537731},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":3832799822046245},{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":[],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8743950690783847},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
+      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":8885766403805322},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
+      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":7314876105208338}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 25 May 2020 14:28:59 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:59 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - vlc9b/rJPByGsV/acj3ScS7B1lo9nEAbSgYCfkl0GH3egry4iXeiGBP0WX8DpJ/T
+      X-Dd-Version:
+      - "35.2542167"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/vh6-59t-nz8
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"vh6-59t-nz8","title":"Acceptance
+      Test Ordered Dashboard","url":"/dashboard/vh6-59t-nz8/acceptance-test-ordered-dashboard","created_at":"2020-05-25T14:28:37.649593+00:00","modified_at":"2020-05-25T14:28:37.649593+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":4648781073755466},{"definition":{"title":"Widget
+      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7874127176864102},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
       by {account}","show_present":true,"increase_good":true,"order_by":"name"}],"title":"Widget
-      Title","type":"change","time":{"live_span":"1h"}},"id":2457546242298304},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":6280127245892326},{"definition":{"title":"Widget
-      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":7736923011688313},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
+      Title","type":"change","time":{"live_span":"1h"}},"id":942790631488629},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":2684157958708808},{"definition":{"title":"Widget
+      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":8406152675327241},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","style":{"palette":"warm"}}],"time":{"live_span":"1h"},"type":"heatmap","title":"Widget
-      Title"},"id":2451495695215044},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
+      Title"},"id":7915054128824189},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
       Title","node_type":"container","no_metric_hosts":true,"scope":["region:us-east-1","aws_account:727006795293"],"requests":{"size":{"q":"avg:memcache.uptime{*}
-      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":3035136625750891},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
-      text","show_tick":true,"background_color":"pink"},"id":1910884930859087},{"definition":{"autoscale":true,"title":"Widget
+      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":144747122580364},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
+      text","show_tick":true,"background_color":"pink"},"id":6303969929815808},{"definition":{"autoscale":true,"title":"Widget
       Title","text_align":"right","custom_unit":"xx","precision":4,"time":{"live_span":"1h"},"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":4317043434338601},{"definition":{"title":"Widget
+      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":5781409649056381},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"max":"2222","min":"5","scale":"log","label":"y"},"color_by_groups":["account","apm-role-group"],"xaxis":{"include_zero":true,"max":"2000","min":"1","scale":"pow","label":"x"},"time":{"live_span":"1h"},"requests":{"y":{"q":"avg:system.mem.used{*}
       by {service, account}","aggregator":"min"},"x":{"q":"avg:system.cpu.user{*}
-      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":4239206113749387},{"definition":{"title":"Widget
+      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":6975322979040689},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"scale":"log","max":"100"},"markers":[{"display_type":"error
       dashed","value":"y = 4","label":" z=6 "},{"display_type":"ok solid","value":"10
       < y < 999","label":" x=8 "}],"events":[{"q":"sources:test tags:1"},{"q":"sources:test
       tags:2"}],"show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","style":{"line_width":"thin","palette":"warm","line_type":"dashed"},"display_type":"line","metadata":[{"expression":"avg:system.cpu.user{app:general}
-      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":2871298819718496},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
+      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":6635179476894529},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"toplist","title":"Widget
-      Title"},"id":2679196852705},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
-      note widget","show_tick":false,"background_color":"yellow"},"id":8752227670264304},{"definition":{"alert_id":"123","title":"Alert
-      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":183666956227586}],"layout_type":"ordered","type":"group","title":"Group
-      Widget"},"id":7642564643656260},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
-      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":639089936476762},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      Title"},"id":8010041216375647},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
+      note widget","show_tick":false,"background_color":"yellow"},"id":2911396282345631},{"definition":{"alert_id":"123","title":"Alert
+      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":934946334882160}],"layout_type":"ordered","type":"group","title":"Group
+      Widget"},"id":8130308167969148},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
+      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":7345444060340866},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
-      Title","type":"query_table","time":{"live_span":"1h"}},"id":7415544838652275}],"layout_type":"ordered"}'
+      Title","type":"query_table","time":{"live_span":"1h"}},"id":4881121146173466}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -753,13 +1102,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 May 2020 12:02:34 GMT
+      - Mon, 25 May 2020 14:29:00 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:34 GMT;
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:28:59 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -768,9 +1117,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - PKDIrz8Hcluof9oNzY3q1BouPTowe6nlZ4slm6KLsMEc/9DaK1hteKVCh6mza/IQ
+      - Lo9psmCk9egobltaxBGqrQFhgCcgUTQoFZpr2xiSR+6tucB/owychJvFjr9YMWzu
       X-Dd-Version:
-      - "35.2502628"
+      - "35.2542167"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -785,259 +1134,43 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/2d2-cvm-v8x
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/vh6-59t-nz8
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"2d2-cvm-v8x","title":"Acceptance
-      Test Free Dashboard","url":"/dashboard/2d2-cvm-v8x/acceptance-test-free-dashboard","created_at":"2020-05-14T12:02:20.829814+00:00","modified_at":"2020-05-14T12:02:20.829814+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":2809280372443498},{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":5880994893335434},{"definition":{"color":"#d00","text":"free
-      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6946149556365942},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":5743107349431427},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":2067766826401599},{"definition":{"logset":"19","query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"],"indexes":[]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8864241383185473},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
-      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":6728407839992550},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
-      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":1329801029157134}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 14 May 2020 12:02:34 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:34 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - F2g1vP9i37Cj4rH5vEufbSNzCmriMTDVzKKqVk/JOUesbIz8psR3R2945wO0PbTf
-      X-Dd-Version:
-      - "35.2502628"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/2d2-cvm-v8x
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"2d2-cvm-v8x","title":"Acceptance
-      Test Free Dashboard","url":"/dashboard/2d2-cvm-v8x/acceptance-test-free-dashboard","created_at":"2020-05-14T12:02:20.829814+00:00","modified_at":"2020-05-14T12:02:20.829814+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":2809280372443498},{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":5880994893335434},{"definition":{"color":"#d00","text":"free
-      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6946149556365942},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":5743107349431427},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":2067766826401599},{"definition":{"logset":"19","query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"],"indexes":[]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8864241383185473},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
-      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":6728407839992550},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
-      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":1329801029157134}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 14 May 2020 12:02:35 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:35 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - YNGrI7M9aLfuf6Npp7n/51e6xDtYCO9Rm/LB+HGbX4I6A/e7rnC+cgQxIZnsU+fj
-      X-Dd-Version:
-      - "35.2502628"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/2d2-cvm-v8x
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"2d2-cvm-v8x","title":"Acceptance
-      Test Free Dashboard","url":"/dashboard/2d2-cvm-v8x/acceptance-test-free-dashboard","created_at":"2020-05-14T12:02:20.829814+00:00","modified_at":"2020-05-14T12:02:20.829814+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":2809280372443498},{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":5880994893335434},{"definition":{"color":"#d00","text":"free
-      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6946149556365942},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":5743107349431427},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":2067766826401599},{"definition":{"logset":"19","query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"],"indexes":[]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8864241383185473},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
-      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":6728407839992550},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
-      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":1329801029157134}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 14 May 2020 12:02:35 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:35 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 2AZOmbSnS2o4jaTO55IoEgDi10r3ewUAnpo5XLuAFAThAxt0uvbRy8dZoSIDmBYA
-      X-Dd-Version:
-      - "35.2502628"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/2d2-cvm-v8x
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"2d2-cvm-v8x","title":"Acceptance
-      Test Free Dashboard","url":"/dashboard/2d2-cvm-v8x/acceptance-test-free-dashboard","created_at":"2020-05-14T12:02:20.829814+00:00","modified_at":"2020-05-14T12:02:20.829814+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":2809280372443498},{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":5880994893335434},{"definition":{"color":"#d00","text":"free
-      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6946149556365942},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":5743107349431427},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":2067766826401599},{"definition":{"logset":"19","query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"],"indexes":[]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8864241383185473},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
-      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":6728407839992550},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
-      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":1329801029157134}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 14 May 2020 12:02:36 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:36 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - xWBl6EQ7zJ83bRwMRX5o/d34f1JMs+KyihhH9fua7krbgQkOsGFusXhvqkH02q3L
-      X-Dd-Version:
-      - "35.2502628"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fpr-ik7-rxg
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"fpr-ik7-rxg","title":"Acceptance
-      Test Ordered Dashboard","url":"/dashboard/fpr-ik7-rxg/acceptance-test-ordered-dashboard","created_at":"2020-05-14T12:02:21.403671+00:00","modified_at":"2020-05-14T12:02:21.403671+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":1096633080297489},{"definition":{"title":"Widget
-      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7248635732083017},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
+      Terraform","author_name":"Andreas Frendorf","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"vh6-59t-nz8","title":"Acceptance
+      Test Ordered Dashboard","url":"/dashboard/vh6-59t-nz8/acceptance-test-ordered-dashboard","created_at":"2020-05-25T14:28:37.649593+00:00","modified_at":"2020-05-25T14:28:37.649593+00:00","author_handle":"andreas.frendorf@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":4648781073755466},{"definition":{"title":"Widget
+      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7874127176864102},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
       by {account}","show_present":true,"increase_good":true,"order_by":"name"}],"title":"Widget
-      Title","type":"change","time":{"live_span":"1h"}},"id":2457546242298304},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":6280127245892326},{"definition":{"title":"Widget
-      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":7736923011688313},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
+      Title","type":"change","time":{"live_span":"1h"}},"id":942790631488629},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":2684157958708808},{"definition":{"title":"Widget
+      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":8406152675327241},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","style":{"palette":"warm"}}],"time":{"live_span":"1h"},"type":"heatmap","title":"Widget
-      Title"},"id":2451495695215044},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
+      Title"},"id":7915054128824189},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
       Title","node_type":"container","no_metric_hosts":true,"scope":["region:us-east-1","aws_account:727006795293"],"requests":{"size":{"q":"avg:memcache.uptime{*}
-      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":3035136625750891},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
-      text","show_tick":true,"background_color":"pink"},"id":1910884930859087},{"definition":{"autoscale":true,"title":"Widget
+      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":144747122580364},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
+      text","show_tick":true,"background_color":"pink"},"id":6303969929815808},{"definition":{"autoscale":true,"title":"Widget
       Title","text_align":"right","custom_unit":"xx","precision":4,"time":{"live_span":"1h"},"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":4317043434338601},{"definition":{"title":"Widget
+      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":5781409649056381},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"max":"2222","min":"5","scale":"log","label":"y"},"color_by_groups":["account","apm-role-group"],"xaxis":{"include_zero":true,"max":"2000","min":"1","scale":"pow","label":"x"},"time":{"live_span":"1h"},"requests":{"y":{"q":"avg:system.mem.used{*}
       by {service, account}","aggregator":"min"},"x":{"q":"avg:system.cpu.user{*}
-      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":4239206113749387},{"definition":{"title":"Widget
+      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":6975322979040689},{"definition":{"title":"Widget
       Title","yaxis":{"include_zero":false,"scale":"log","max":"100"},"markers":[{"display_type":"error
       dashed","value":"y = 4","label":" z=6 "},{"display_type":"ok solid","value":"10
       < y < 999","label":" x=8 "}],"events":[{"q":"sources:test tags:1"},{"q":"sources:test
       tags:2"}],"show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","style":{"line_width":"thin","palette":"warm","line_type":"dashed"},"display_type":"line","metadata":[{"expression":"avg:system.cpu.user{app:general}
-      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":2871298819718496},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
+      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":6635179476894529},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
       by {env}","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"toplist","title":"Widget
-      Title"},"id":2679196852705},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
-      note widget","show_tick":false,"background_color":"yellow"},"id":8752227670264304},{"definition":{"alert_id":"123","title":"Alert
-      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":183666956227586}],"layout_type":"ordered","type":"group","title":"Group
-      Widget"},"id":7642564643656260},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
-      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":639089936476762},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
+      Title"},"id":8010041216375647},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
+      note widget","show_tick":false,"background_color":"yellow"},"id":2911396282345631},{"definition":{"alert_id":"123","title":"Alert
+      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":934946334882160}],"layout_type":"ordered","type":"group","title":"Group
+      Widget"},"id":8130308167969148},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
+      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":7345444060340866},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
       by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
-      Title","type":"query_table","time":{"live_span":"1h"}},"id":7415544838652275}],"layout_type":"ordered"}'
+      Title","type":"query_table","time":{"live_span":"1h"}},"id":4881121146173466}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -1048,13 +1181,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 May 2020 12:02:36 GMT
+      - Mon, 25 May 2020 14:29:00 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:36 GMT;
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:29:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1063,9 +1196,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - yEcEaKqmSUfeSlQ/kN/c5E6EpIXbM1JPI9KV27pdsvBWWv3FI4tsqqRarYTS+fS+
+      - xuqj9hdWDkSD9EtpcqPe+eGtJAYYHPEMbUsHJUlu4ckBMffeXAIJAOyY354PYCG0
       X-Dd-Version:
-      - "35.2502628"
+      - "35.2542167"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1078,20 +1211,13 @@ interactions:
       Accept:
       - application/json
       Dd-Operation-Id:
-      - GetDashboard
+      - DeleteDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/2d2-cvm-v8x
-    method: GET
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5fz-wrw-8pv
+    method: DELETE
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"2d2-cvm-v8x","title":"Acceptance
-      Test Free Dashboard","url":"/dashboard/2d2-cvm-v8x/acceptance-test-free-dashboard","created_at":"2020-05-14T12:02:20.829814+00:00","modified_at":"2020-05-14T12:02:20.829814+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":2809280372443498},{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":5880994893335434},{"definition":{"color":"#d00","text":"free
-      text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6946149556365942},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":5743107349431427},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":2067766826401599},{"definition":{"logset":"19","query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"],"indexes":[]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":8864241383185473},{"definition":{"count":50,"sort":"status,asc","title_size":"16","title":"Widget
-      Title","title_align":"left","hide_zero_counts":true,"start":0,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":6728407839992550},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra
-      #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":1329801029157134}],"layout_type":"free"}'
+    body: '{"deleted_dashboard_id":"5fz-wrw-8pv"}'
     headers:
       Cache-Control:
       - no-cache
@@ -1102,13 +1228,60 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 May 2020 12:02:36 GMT
+      - Mon, 25 May 2020 14:29:01 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:36 GMT;
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:29:01 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - og1WGdy+2nV+rkkclmd3Cf2I26XhV3/6yjBeQCP8aHbH2k2cKwC+X9WmhIghcJ94
+      X-Dd-Version:
+      - "35.2542167"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - DeleteDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/vh6-59t-nz8
+    method: DELETE
+  response:
+    body: '{"deleted_dashboard_id":"vh6-59t-nz8"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 25 May 2020 14:29:02 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=154; Max-Age=604800; Path=/; expires=Mon, 01-Jun-2020 14:29:01 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1119,7 +1292,7 @@ interactions:
       X-Dd-Debug:
       - fFk0sZgwwse+ZeEmqVGZPgcNG+SDXdM7Y74n6iOGuvoZenvaYEqZOvpOSMu1XDXx
       X-Dd-Version:
-      - "35.2502628"
+      - "35.2542167"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1134,43 +1307,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fpr-ik7-rxg
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5fz-wrw-8pv
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"fpr-ik7-rxg","title":"Acceptance
-      Test Ordered Dashboard","url":"/dashboard/fpr-ik7-rxg/acceptance-test-ordered-dashboard","created_at":"2020-05-14T12:02:21.403671+00:00","modified_at":"2020-05-14T12:02:21.403671+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":1096633080297489},{"definition":{"title":"Widget
-      Title","text_align":"center","precision":3,"alert_id":"895605","type":"alert_value","unit":"b"},"id":7248635732083017},{"definition":{"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"week_before","q":"avg:system.load.1{env:staging}
-      by {account}","show_present":true,"increase_good":true,"order_by":"name"}],"title":"Widget
-      Title","type":"change","time":{"live_span":"1h"}},"id":2457546242298304},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","style":{"palette":"warm"}}],"title":"Widget Title","type":"distribution","time":{"live_span":"1h"}},"id":6280127245892326},{"definition":{"title":"Widget
-      Title","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"group_by":["account","cluster"],"time":{"live_span":"1h"},"type":"check_status","check":"aws.ecs.agent_connected","grouping":"cluster"},"id":7736923011688313},{"definition":{"yaxis":{"include_zero":true,"scale":"sqrt","min":"1","max":"2"},"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","style":{"palette":"warm"}}],"time":{"live_span":"1h"},"type":"heatmap","title":"Widget
-      Title"},"id":2451495695215044},{"definition":{"style":{"fill_min":"10","fill_max":"20","palette":"yellow_to_green","palette_flip":true},"group":["host","region"],"title":"Widget
-      Title","node_type":"container","no_metric_hosts":true,"scope":["region:us-east-1","aws_account:727006795293"],"requests":{"size":{"q":"avg:memcache.uptime{*}
-      by {host}"},"fill":{"q":"avg:system.load.1{*} by {host}"}},"no_group_hosts":true,"type":"hostmap"},"id":3035136625750891},{"definition":{"tick_pos":"50%","font_size":"14","type":"note","tick_edge":"left","text_align":"center","content":"note
-      text","show_tick":true,"background_color":"pink"},"id":1910884930859087},{"definition":{"autoscale":true,"title":"Widget
-      Title","text_align":"right","custom_unit":"xx","precision":4,"time":{"live_span":"1h"},"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"query_value"},"id":4317043434338601},{"definition":{"title":"Widget
-      Title","yaxis":{"include_zero":false,"max":"2222","min":"5","scale":"log","label":"y"},"color_by_groups":["account","apm-role-group"],"xaxis":{"include_zero":true,"max":"2000","min":"1","scale":"pow","label":"x"},"time":{"live_span":"1h"},"requests":{"y":{"q":"avg:system.mem.used{*}
-      by {service, account}","aggregator":"min"},"x":{"q":"avg:system.cpu.user{*}
-      by {service, account}","aggregator":"max"}},"type":"scatterplot"},"id":4239206113749387},{"definition":{"title":"Widget
-      Title","yaxis":{"include_zero":false,"scale":"log","max":"100"},"markers":[{"display_type":"error
-      dashed","value":"y = 4","label":" z=6 "},{"display_type":"ok solid","value":"10
-      < y < 999","label":" x=8 "}],"events":[{"q":"sources:test tags:1"},{"q":"sources:test
-      tags:2"}],"show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{app:general}
-      by {env}","style":{"line_width":"thin","palette":"warm","line_type":"dashed"},"display_type":"line","metadata":[{"expression":"avg:system.cpu.user{app:general}
-      by {env}","alias_name":"Alpha"}]},{"display_type":"area","log_query":{"index":"mcnulty","search":{"query":"status:info"},"group_by":[{"facet":"host","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}}},{"apm_query":{"index":"apm-search","search":{"query":"type:web"},"group_by":[{"facet":"resource_name","sort":{"facet":"@string_query.interval","aggregation":"avg","order":"desc"},"limit":50}],"compute":{"facet":"@duration","interval":5000,"aggregation":"count"}},"display_type":"bars"},{"process_query":{"search_by":"error","metric":"process.stat.cpu.total_pct","limit":50,"filter_by":["active"]},"display_type":"area"}]},"id":2871298819718496},{"definition":{"requests":[{"q":"avg:system.cpu.user{app:general}
-      by {env}","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}]}],"type":"toplist","title":"Widget
-      Title"},"id":2679196852705},{"definition":{"widgets":[{"definition":{"tick_pos":"50%","font_size":"16","type":"note","tick_edge":"left","text_align":"left","content":"cluster
-      note widget","show_tick":false,"background_color":"yellow"},"id":8752227670264304},{"definition":{"alert_id":"123","title":"Alert
-      Graph","type":"alert_graph","viz_type":"toplist","time":{"live_span":"1h"}},"id":183666956227586}],"layout_type":"ordered","type":"group","title":"Group
-      Widget"},"id":7642564643656260},{"definition":{"time_windows":["7d","previous_week"],"show_error_budget":true,"title":"Widget
-      Title","view_type":"detail","slo_id":"56789","view_mode":"overall","type":"slo"},"id":639089936476762},{"definition":{"requests":[{"q":"avg:system.load.1{env:staging}
-      by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
-      Title","type":"query_table","time":{"live_span":"1h"}},"id":7415544838652275}],"layout_type":"ordered"}'
+    body: '{"errors": ["Dashboard with ID 5fz-wrw-8pv not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -1181,148 +1322,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 May 2020 12:02:36 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:36 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - gCSZ7BDMU1GjNFaR6hO6ZgwcgG3iOVugDLAlbR+YVBEuMFHhC330JIFkvjLveHm3
-      X-Dd-Version:
-      - "35.2502628"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - DeleteDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fpr-ik7-rxg
-    method: DELETE
-  response:
-    body: '{"deleted_dashboard_id":"fpr-ik7-rxg"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 14 May 2020 12:02:45 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:39 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - x4pYHtiOW9rUeREgXmH2iIgBaXVGD7x1RIZUg56H0ghPppdtz0ZBEK6nMs8tuoqc
-      X-Dd-Version:
-      - "35.2502628"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - DeleteDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/2d2-cvm-v8x
-    method: DELETE
-  response:
-    body: '{"deleted_dashboard_id":"2d2-cvm-v8x"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 14 May 2020 12:02:48 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 21-May-2020 12:02:39 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - yEcEaKqmSUfeSlQ/kN/c5E6EpIXbM1JPI9KV27pdsvBWWv3FI4tsqqRarYTS+fS+
-      X-Dd-Version:
-      - "35.2502628"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fpr-ik7-rxg
-    method: GET
-  response:
-    body: '{"errors": ["Dashboard with ID fpr-ik7-rxg not found"]}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 14 May 2020 12:02:48 GMT
+      - Mon, 25 May 2020 14:29:02 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -1334,7 +1334,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.2502628"
+      - "35.2542167"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found
@@ -1349,11 +1349,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.2 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/2d2-cvm-v8x
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.13.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/vh6-59t-nz8
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID 2d2-cvm-v8x not found"]}'
+    body: '{"errors": ["Dashboard with ID vh6-59t-nz8 not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -1364,7 +1364,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 May 2020 12:02:48 GMT
+      - Mon, 25 May 2020 14:29:02 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -1376,7 +1376,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.2502628"
+      - "35.2542167"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found

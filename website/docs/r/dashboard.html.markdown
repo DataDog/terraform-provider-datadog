@@ -518,6 +518,13 @@ resource "datadog_dashboard" "free_dashboard" {
       logset = "19"
       query = "error"
       columns = ["core_host", "core_service", "tag_source"]
+      show_date_column = true
+      show_message_column = true
+      message_display = "expanded-md"
+      sort {
+        column = "time" 
+        order = "desc"
+      }
     }
     layout = {
       height = 36
@@ -726,6 +733,10 @@ Nested `widget` blocks have the following structure:
       - `logset` - (Required) ID of the logset to use.
       - `query`: (Optional) The query to use in the widget.
       - `columns` - (Optional) Stringified list of columns to use. Example: `"["column1","column2","column3"]"`.
+      - `show_date_column` - (Optional) If the date column should be displayed.
+      - `show_message_column` - (Optional) If the message column should be displayed.
+      - `message_display` - (Optional) The amount of lines the message column should display. One of: `inline`, `expanded-md`, and `expanded-lg`.
+      - `sort` - (Optional) The facet and order to sort the data based upon. Example: `"{"column": "time", "order": "desc"}"`.
       - `title`: (Optional) The title of the widget.
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
       - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
