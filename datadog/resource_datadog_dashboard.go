@@ -1558,6 +1558,10 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 				Schema: getWidgetTimeSchema(),
 			},
 		},
+		"tags_execution": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
 	}
 }
 
@@ -1581,6 +1585,9 @@ func buildDatadogEventStreamDefinition(terraformDefinition map[string]interface{
 	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetTime(*buildDatadogWidgetTime(v))
 	}
+	if v, ok := terraformDefinition["tags_execution"].(string); ok && len(v) > 0 {
+		datadogDefinition.SetTagsExecution(v)
+	}
 	return datadogDefinition
 }
 
@@ -1603,6 +1610,9 @@ func buildTerraformEventStreamDefinition(datadogDefinition datadogV1.EventStream
 	}
 	if datadogDefinition.Time != nil {
 		terraformDefinition["time"] = buildTerraformWidgetTime(*datadogDefinition.Time)
+	}
+	if datadogDefinition.TagsExecution != nil {
+		terraformDefinition["tags_execution"] = *datadogDefinition.TagsExecution
 	}
 	return terraformDefinition
 }
@@ -1636,6 +1646,10 @@ func getEventTimelineDefinitionSchema() map[string]*schema.Schema {
 				Schema: getWidgetTimeSchema(),
 			},
 		},
+		"tags_execution": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
 	}
 }
 
@@ -1656,6 +1670,9 @@ func buildDatadogEventTimelineDefinition(terraformDefinition map[string]interfac
 	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetTime(*buildDatadogWidgetTime(v))
 	}
+	if v, ok := terraformDefinition["tags_execution"].(string); ok && len(v) > 0 {
+		datadogDefinition.SetTagsExecution(v)
+	}
 	return datadogDefinition
 }
 
@@ -1675,6 +1692,9 @@ func buildTerraformEventTimelineDefinition(datadogDefinition datadogV1.EventTime
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+	}
+	if v, ok := datadogDefinition.GetTagsExecutionOk(); ok {
+		terraformDefinition["tags_execution"] = *v
 	}
 	return terraformDefinition
 }
@@ -4236,6 +4256,10 @@ func getWidgetEventSchema() map[string]*schema.Schema {
 			Type:     schema.TypeString,
 			Required: true,
 		},
+		"tags_execution": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
 	}
 }
 func buildDatadogWidgetEvents(terraformWidgetEvents *[]interface{}) *[]datadogV1.WidgetEvent {
@@ -4243,6 +4267,9 @@ func buildDatadogWidgetEvents(terraformWidgetEvents *[]interface{}) *[]datadogV1
 	for i, event := range *terraformWidgetEvents {
 		terraformEvent := event.(map[string]interface{})
 		datadogWidgetEvent := datadogV1.NewWidgetEvent(terraformEvent["q"].(string))
+		if v, ok := terraformEvent["tags_execution"].(string); ok && len(v) > 0 {
+			datadogWidgetEvent.SetTagsExecution(v)
+		}
 		datadogWidgetEvents[i] = *datadogWidgetEvent
 	}
 
@@ -4254,6 +4281,11 @@ func buildTerraformWidgetEvents(datadogWidgetEvents *[]datadogV1.WidgetEvent) *[
 		terraformWidget := map[string]string{}
 		// Required params
 		terraformWidget["q"] = datadogWidget.GetQ()
+		// Optional params
+		if v, ok := datadogWidget.GetTagsExecutionOk(); ok {
+			terraformWidget["tags_execution"] = *v
+		}
+
 		terraformWidgetEvents[i] = terraformWidget
 	}
 	return &terraformWidgetEvents
