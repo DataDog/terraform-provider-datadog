@@ -329,7 +329,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
         live_span = "1h"
       }
       event {
-        q = "sources:test tags:1"     
+        q = "sources:test tags:1"
       }
       event {
         q = "sources:test tags:2"
