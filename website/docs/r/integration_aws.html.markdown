@@ -50,6 +50,8 @@ The following attributes are exported:
 
 * `external_id` - AWS External ID
 
+**NOTE** This provider will not be able to detect changes made to the `external_id` field from outside Terraform. 
+
 ## Import
 
 Amazon Web Services integrations can be imported using their `account ID` and `role name` separated with a colon (`:`), while the `external_id` should be passed by setting an environment variable called `EXTERNAL_ID`
