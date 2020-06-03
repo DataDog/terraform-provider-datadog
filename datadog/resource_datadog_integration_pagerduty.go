@@ -151,7 +151,6 @@ func resourceDatadogIntegrationPagerdutyRead(d *schema.ResourceData, meta interf
 	d.Set("services", services)
 	d.Set("subdomain", pd.GetSubdomain())
 	d.Set("schedules", pd.Schedules)
-	d.Set("api_token", pd.GetAPIToken())
 
 	return nil
 }

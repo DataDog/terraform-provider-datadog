@@ -30,7 +30,7 @@ func TestAccDatadogIntegrationPagerduty_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "subdomain", "testdomain"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty.foo", "api_token", "*****"),
+						"datadog_integration_pagerduty.foo", "api_token", "secret"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "services.0.service_name", "test_service"),
 					resource.TestCheckResourceAttr(
@@ -58,7 +58,7 @@ func TestAccDatadogIntegrationPagerduty_TwoServices(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "subdomain", "testdomain"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty.foo", "api_token", "*****"),
+						"datadog_integration_pagerduty.foo", "api_token", "secret"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "services.0.service_name", "test_service"),
 					resource.TestCheckResourceAttr(
@@ -90,7 +90,7 @@ func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.pd", "subdomain", "ddog"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty.pd", "api_token", "*****"),
+						"datadog_integration_pagerduty.pd", "api_token", "secret"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.pd", "services.0.service_name", "testing_bar"),
 					resource.TestCheckResourceAttr(
@@ -113,7 +113,7 @@ func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.pd", "subdomain", "ddog"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty.pd", "api_token", "*****"),
+						"datadog_integration_pagerduty.pd", "api_token", "secret"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty_service_object.testing_foo", "service_name", "testing_foo"),
 					resource.TestCheckResourceAttr(
@@ -173,7 +173,7 @@ const testAccCheckDatadogIntegrationPagerdutyConfig = `
     }
 
    subdomain = "testdomain"
-   api_token = "*****"
+   api_token = "secret"
  }
  `
 
@@ -194,7 +194,7 @@ const testAccCheckDatadogIntegrationPagerdutyConfigTwoServices = `
 	}
 
    subdomain = "testdomain"
-   api_token = "*****"
+   api_token = "secret"
 }
 `
 
@@ -220,7 +220,7 @@ resource "datadog_integration_pagerduty" "pd" {
 	  "https://ddog.pagerduty.com/schedules/X321XX"
 	]
   subdomain = "ddog"
-  api_token = "*****"
+  api_token = "secret"
 }`
 
 const testAccCheckDatadogIntegrationPagerdutyConfigDuringMigration = `
@@ -230,7 +230,7 @@ resource "datadog_integration_pagerduty" "pd" {
 	  "https://ddog.pagerduty.com/schedules/X321XX"
 	]
   subdomain = "ddog"
-  api_token = "*****"
+  api_token = "secret"
 }`
 
 const testAccCheckDatadogIntegrationPagerdutyConfigAfterMigration = `
@@ -241,7 +241,7 @@ resource "datadog_integration_pagerduty" "pd" {
 	  "https://ddog.pagerduty.com/schedules/X321XX"
 	]
   subdomain = "ddog"
-  api_token = "*****"
+  api_token = "secret"
 }
 
 resource "datadog_integration_pagerduty_service_object" "testing_foo" {
