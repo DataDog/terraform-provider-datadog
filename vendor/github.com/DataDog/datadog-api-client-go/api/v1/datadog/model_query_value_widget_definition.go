@@ -28,16 +28,15 @@ type QueryValueWidgetDefinition struct {
 	Title      *string          `json:"title,omitempty"`
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
 	// Size of the title.
-	TitleSize *string `json:"title_size,omitempty"`
-	// Type of widget.
-	Type string `json:"type"`
+	TitleSize *string                        `json:"title_size,omitempty"`
+	Type      QueryValueWidgetDefinitionType `json:"type"`
 }
 
 // NewQueryValueWidgetDefinition instantiates a new QueryValueWidgetDefinition object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewQueryValueWidgetDefinition(requests []QueryValueWidgetRequest, type_ string) *QueryValueWidgetDefinition {
+func NewQueryValueWidgetDefinition(requests []QueryValueWidgetRequest, type_ QueryValueWidgetDefinitionType) *QueryValueWidgetDefinition {
 	this := QueryValueWidgetDefinition{}
 	this.Requests = requests
 	this.Type = type_
@@ -49,7 +48,7 @@ func NewQueryValueWidgetDefinition(requests []QueryValueWidgetRequest, type_ str
 // but it doesn't guarantee that properties required by API are set
 func NewQueryValueWidgetDefinitionWithDefaults() *QueryValueWidgetDefinition {
 	this := QueryValueWidgetDefinition{}
-	var type_ string = "query_value"
+	var type_ QueryValueWidgetDefinitionType = "query_value"
 	this.Type = type_
 	return &this
 }
@@ -335,9 +334,9 @@ func (o *QueryValueWidgetDefinition) SetTitleSize(v string) {
 }
 
 // GetType returns the Type field value
-func (o *QueryValueWidgetDefinition) GetType() string {
+func (o *QueryValueWidgetDefinition) GetType() QueryValueWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret QueryValueWidgetDefinitionType
 		return ret
 	}
 
@@ -346,7 +345,7 @@ func (o *QueryValueWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *QueryValueWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *QueryValueWidgetDefinition) GetTypeOk() (*QueryValueWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -354,7 +353,7 @@ func (o *QueryValueWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *QueryValueWidgetDefinition) SetType(v string) {
+func (o *QueryValueWidgetDefinition) SetType(v QueryValueWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -391,11 +390,6 @@ func (o QueryValueWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of QueryValueWidgetDefinition in WidgetDefinition
-func (s *QueryValueWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableQueryValueWidgetDefinition struct {

@@ -21,16 +21,15 @@ type TableWidgetDefinition struct {
 	Title      *string          `json:"title,omitempty"`
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
 	// Size of the title.
-	TitleSize *string `json:"title_size,omitempty"`
-	// Type of the widget.
-	Type string `json:"type"`
+	TitleSize *string                   `json:"title_size,omitempty"`
+	Type      TableWidgetDefinitionType `json:"type"`
 }
 
 // NewTableWidgetDefinition instantiates a new TableWidgetDefinition object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewTableWidgetDefinition(requests []TableWidgetRequest, type_ string) *TableWidgetDefinition {
+func NewTableWidgetDefinition(requests []TableWidgetRequest, type_ TableWidgetDefinitionType) *TableWidgetDefinition {
 	this := TableWidgetDefinition{}
 	this.Requests = requests
 	this.Type = type_
@@ -42,7 +41,7 @@ func NewTableWidgetDefinition(requests []TableWidgetRequest, type_ string) *Tabl
 // but it doesn't guarantee that properties required by API are set
 func NewTableWidgetDefinitionWithDefaults() *TableWidgetDefinition {
 	this := TableWidgetDefinition{}
-	var type_ string = "query_table"
+	var type_ TableWidgetDefinitionType = "query_table"
 	this.Type = type_
 	return &this
 }
@@ -200,9 +199,9 @@ func (o *TableWidgetDefinition) SetTitleSize(v string) {
 }
 
 // GetType returns the Type field value
-func (o *TableWidgetDefinition) GetType() string {
+func (o *TableWidgetDefinition) GetType() TableWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret TableWidgetDefinitionType
 		return ret
 	}
 
@@ -211,7 +210,7 @@ func (o *TableWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *TableWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *TableWidgetDefinition) GetTypeOk() (*TableWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -219,7 +218,7 @@ func (o *TableWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *TableWidgetDefinition) SetType(v string) {
+func (o *TableWidgetDefinition) SetType(v TableWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -244,11 +243,6 @@ func (o TableWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of TableWidgetDefinition in WidgetDefinition
-func (s *TableWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableTableWidgetDefinition struct {

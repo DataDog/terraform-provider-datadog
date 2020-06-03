@@ -23,8 +23,8 @@ type MonitorSummaryWidgetDefinition struct {
 	// Query to filter the monitors with.
 	Query string `json:"query"`
 	// Whether to show the time that has elapsed since the monitor/group triggered.
-	ShowLastTriggered *bool       `json:"show_last_triggered,omitempty"`
-	Sort              *WidgetSort `json:"sort,omitempty"`
+	ShowLastTriggered *bool                     `json:"show_last_triggered,omitempty"`
+	Sort              *WidgetMonitorSummarySort `json:"sort,omitempty"`
 	// The start of the list. Typically 0.
 	Start       *int64             `json:"start,omitempty"`
 	SummaryType *WidgetSummaryType `json:"summary_type,omitempty"`
@@ -32,16 +32,15 @@ type MonitorSummaryWidgetDefinition struct {
 	Title      *string          `json:"title,omitempty"`
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
 	// Size of the title.
-	TitleSize *string `json:"title_size,omitempty"`
-	// Type of the widget.
-	Type string `json:"type"`
+	TitleSize *string                            `json:"title_size,omitempty"`
+	Type      MonitorSummaryWidgetDefinitionType `json:"type"`
 }
 
 // NewMonitorSummaryWidgetDefinition instantiates a new MonitorSummaryWidgetDefinition object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewMonitorSummaryWidgetDefinition(query string, type_ string) *MonitorSummaryWidgetDefinition {
+func NewMonitorSummaryWidgetDefinition(query string, type_ MonitorSummaryWidgetDefinitionType) *MonitorSummaryWidgetDefinition {
 	this := MonitorSummaryWidgetDefinition{}
 	this.Query = query
 	this.Type = type_
@@ -53,7 +52,7 @@ func NewMonitorSummaryWidgetDefinition(query string, type_ string) *MonitorSumma
 // but it doesn't guarantee that properties required by API are set
 func NewMonitorSummaryWidgetDefinitionWithDefaults() *MonitorSummaryWidgetDefinition {
 	this := MonitorSummaryWidgetDefinition{}
-	var type_ string = "manage_status"
+	var type_ MonitorSummaryWidgetDefinitionType = "manage_status"
 	this.Type = type_
 	return &this
 }
@@ -243,9 +242,9 @@ func (o *MonitorSummaryWidgetDefinition) SetShowLastTriggered(v bool) {
 }
 
 // GetSort returns the Sort field value if set, zero value otherwise.
-func (o *MonitorSummaryWidgetDefinition) GetSort() WidgetSort {
+func (o *MonitorSummaryWidgetDefinition) GetSort() WidgetMonitorSummarySort {
 	if o == nil || o.Sort == nil {
-		var ret WidgetSort
+		var ret WidgetMonitorSummarySort
 		return ret
 	}
 	return *o.Sort
@@ -253,7 +252,7 @@ func (o *MonitorSummaryWidgetDefinition) GetSort() WidgetSort {
 
 // GetSortOk returns a tuple with the Sort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *MonitorSummaryWidgetDefinition) GetSortOk() (*WidgetSort, bool) {
+func (o *MonitorSummaryWidgetDefinition) GetSortOk() (*WidgetMonitorSummarySort, bool) {
 	if o == nil || o.Sort == nil {
 		return nil, false
 	}
@@ -269,8 +268,8 @@ func (o *MonitorSummaryWidgetDefinition) HasSort() bool {
 	return false
 }
 
-// SetSort gets a reference to the given WidgetSort and assigns it to the Sort field.
-func (o *MonitorSummaryWidgetDefinition) SetSort(v WidgetSort) {
+// SetSort gets a reference to the given WidgetMonitorSummarySort and assigns it to the Sort field.
+func (o *MonitorSummaryWidgetDefinition) SetSort(v WidgetMonitorSummarySort) {
 	o.Sort = &v
 }
 
@@ -435,9 +434,9 @@ func (o *MonitorSummaryWidgetDefinition) SetTitleSize(v string) {
 }
 
 // GetType returns the Type field value
-func (o *MonitorSummaryWidgetDefinition) GetType() string {
+func (o *MonitorSummaryWidgetDefinition) GetType() MonitorSummaryWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret MonitorSummaryWidgetDefinitionType
 		return ret
 	}
 
@@ -446,7 +445,7 @@ func (o *MonitorSummaryWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *MonitorSummaryWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *MonitorSummaryWidgetDefinition) GetTypeOk() (*MonitorSummaryWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -454,7 +453,7 @@ func (o *MonitorSummaryWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *MonitorSummaryWidgetDefinition) SetType(v string) {
+func (o *MonitorSummaryWidgetDefinition) SetType(v MonitorSummaryWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -500,11 +499,6 @@ func (o MonitorSummaryWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of MonitorSummaryWidgetDefinition in WidgetDefinition
-func (s *MonitorSummaryWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableMonitorSummaryWidgetDefinition struct {

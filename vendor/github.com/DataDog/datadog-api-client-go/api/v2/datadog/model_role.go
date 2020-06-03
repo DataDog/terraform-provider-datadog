@@ -18,15 +18,14 @@ type Role struct {
 	// ID of the role.
 	Id            *string                    `json:"id,omitempty"`
 	Relationships *RoleResponseRelationships `json:"relationships,omitempty"`
-	// Roles type.
-	Type string `json:"type"`
+	Type          RolesType                  `json:"type"`
 }
 
 // NewRole instantiates a new Role object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRole(type_ string) *Role {
+func NewRole(type_ RolesType) *Role {
 	this := Role{}
 	this.Type = type_
 	return &this
@@ -37,7 +36,7 @@ func NewRole(type_ string) *Role {
 // but it doesn't guarantee that properties required by API are set
 func NewRoleWithDefaults() *Role {
 	this := Role{}
-	var type_ string = "roles"
+	var type_ RolesType = "roles"
 	this.Type = type_
 	return &this
 }
@@ -139,9 +138,9 @@ func (o *Role) SetRelationships(v RoleResponseRelationships) {
 }
 
 // GetType returns the Type field value
-func (o *Role) GetType() string {
+func (o *Role) GetType() RolesType {
 	if o == nil {
-		var ret string
+		var ret RolesType
 		return ret
 	}
 
@@ -150,7 +149,7 @@ func (o *Role) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *Role) GetTypeOk() (*string, bool) {
+func (o *Role) GetTypeOk() (*RolesType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -158,7 +157,7 @@ func (o *Role) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *Role) SetType(v string) {
+func (o *Role) SetType(v RolesType) {
 	o.Type = v
 }
 
@@ -177,11 +176,6 @@ func (o Role) MarshalJSON() ([]byte, error) {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsUserResponseIncludedItem wraps this instance of Role in UserResponseIncludedItem
-func (s *Role) AsUserResponseIncludedItem() UserResponseIncludedItem {
-	return UserResponseIncludedItem{UserResponseIncludedItemInterface: s}
 }
 
 type NullableRole struct {

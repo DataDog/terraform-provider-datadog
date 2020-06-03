@@ -9,8 +9,8 @@ cloud.google.com/go/bigquery v1.0.1/go.mod h1:i/xbL2UlR5RvWAURpBYZTtm/cXjCha9lbf
 cloud.google.com/go/datastore v1.0.0/go.mod h1:LXYbyblFSglQ5pkeyhO+Qmw7ukd3C+pD7TKLgZqpHYE=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/DataDog/datadog-api-client-go v1.0.0-beta.2.0.20200507190510-3fade721dd1a h1:g0K3y0DSRd53VChY1NzCMZT+Bi2UbZf2e8JoKUT+EaY=
-github.com/DataDog/datadog-api-client-go v1.0.0-beta.2.0.20200507190510-3fade721dd1a/go.mod h1:ZIerq9SI/pcS9fBjSAe1k68EfexOJrzcp9uiOpJQhrA=
+github.com/DataDog/datadog-api-client-go v1.0.0-beta.3.0.20200603073053-964e00d1a213 h1:xPTffFi9IOi6rA7dk/ihHTUXCUPRifJG0oZgfoXKWy0=
+github.com/DataDog/datadog-api-client-go v1.0.0-beta.3.0.20200603073053-964e00d1a213/go.mod h1:ZuO6dfc8NYoBnrl4Hv093e2f4R3oxSil0/OpAblUjG8=
 github.com/DataDog/datadog-go v3.6.0+incompatible h1:ILg7c5Y1KvZFDOaVS0higGmJ5Fal5O1KQrkrT9j6dSM=
 github.com/DataDog/datadog-go v3.6.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/agext/levenshtein v1.2.1/go.mod h1:JEDfjyjHDjOF/1e4FlBE/PkbqA9OfWu2ki2W0IB5558=
@@ -313,8 +313,8 @@ google.golang.org/grpc v1.23.0/go.mod h1:Y5yQAOtifL1yxbo5wqy6BxZv8vAUGQwXBOALyac
 google.golang.org/grpc v1.27.0/go.mod h1:qbnxyOmOxrQa7FizSgH+ReBfzJrCY1pSN7KXBS8abTk=
 google.golang.org/grpc v1.27.1 h1:zvIju4sqAGvwKspUQOhwnpcqSbzi7/H6QomNNjTL4sk=
 google.golang.org/grpc v1.27.1/go.mod h1:qbnxyOmOxrQa7FizSgH+ReBfzJrCY1pSN7KXBS8abTk=
-gopkg.in/DataDog/dd-trace-go.v1 v1.23.1 h1:WwxQG9Sk+kcW/vepd1zFrRZUTzJHoYL/Cl0ArmMlVXo=
-gopkg.in/DataDog/dd-trace-go.v1 v1.23.1/go.mod h1:DVp8HmDh8PuTu2Z0fVVlBsyWaC++fzwVCaGWylTe3tg=
+gopkg.in/DataDog/dd-trace-go.v1 v1.24.1 h1:CGQIcKZxAsFtMTUiXw0TxBWwj+l+b2bS2V8l1bIsfk4=
+gopkg.in/DataDog/dd-trace-go.v1 v1.24.1/go.mod h1:DVp8HmDh8PuTu2Z0fVVlBsyWaC++fzwVCaGWylTe3tg=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/cheggaaa/pb.v1 v1.0.27/go.mod h1:V/YB90LKu/1FcN3WVnfiiE5oMCibMjukxqG/qStrOgw=

@@ -15,25 +15,24 @@ import (
 // LogsPipelineProcessor Nested Pipelines are pipelines within a pipeline. Use Nested Pipelines to split the processing into two steps. For example, first use a high-level filtering such as team and then a second level of filtering based on the integration, service, or any other tag or attribute.  A pipeline can contain Nested Pipelines and Processors whereas a Nested Pipeline can only contain Processors.
 type LogsPipelineProcessor struct {
 	Filter *LogsFilter `json:"filter,omitempty"`
-	// Ordered list of processors in this pipeline.
-	Processors *[]LogsProcessor `json:"processors,omitempty"`
-	// Type of processor.
-	Type string `json:"type"`
 	// Whether or not the processor is enabled.
 	IsEnabled *bool `json:"is_enabled,omitempty"`
 	// Name of the processor.
 	Name *string `json:"name,omitempty"`
+	// Ordered list of processors in this pipeline.
+	Processors *[]LogsProcessor          `json:"processors,omitempty"`
+	Type       LogsPipelineProcessorType `json:"type"`
 }
 
 // NewLogsPipelineProcessor instantiates a new LogsPipelineProcessor object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogsPipelineProcessor(type_ string) *LogsPipelineProcessor {
+func NewLogsPipelineProcessor(type_ LogsPipelineProcessorType) *LogsPipelineProcessor {
 	this := LogsPipelineProcessor{}
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	this.Type = type_
 	return &this
 }
 
@@ -42,10 +41,10 @@ func NewLogsPipelineProcessor(type_ string) *LogsPipelineProcessor {
 // but it doesn't guarantee that properties required by API are set
 func NewLogsPipelineProcessorWithDefaults() *LogsPipelineProcessor {
 	this := LogsPipelineProcessor{}
-	var type_ string = "pipeline"
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	var type_ LogsPipelineProcessorType = "pipeline"
+	this.Type = type_
 	return &this
 }
 
@@ -79,62 +78,6 @@ func (o *LogsPipelineProcessor) HasFilter() bool {
 // SetFilter gets a reference to the given LogsFilter and assigns it to the Filter field.
 func (o *LogsPipelineProcessor) SetFilter(v LogsFilter) {
 	o.Filter = &v
-}
-
-// GetProcessors returns the Processors field value if set, zero value otherwise.
-func (o *LogsPipelineProcessor) GetProcessors() []LogsProcessor {
-	if o == nil || o.Processors == nil {
-		var ret []LogsProcessor
-		return ret
-	}
-	return *o.Processors
-}
-
-// GetProcessorsOk returns a tuple with the Processors field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LogsPipelineProcessor) GetProcessorsOk() (*[]LogsProcessor, bool) {
-	if o == nil || o.Processors == nil {
-		return nil, false
-	}
-	return o.Processors, true
-}
-
-// HasProcessors returns a boolean if a field has been set.
-func (o *LogsPipelineProcessor) HasProcessors() bool {
-	if o != nil && o.Processors != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetProcessors gets a reference to the given []LogsProcessor and assigns it to the Processors field.
-func (o *LogsPipelineProcessor) SetProcessors(v []LogsProcessor) {
-	o.Processors = &v
-}
-
-// GetType returns the Type field value
-func (o *LogsPipelineProcessor) GetType() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value
-// and a boolean to check if the value has been set.
-func (o *LogsPipelineProcessor) GetTypeOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Type, true
-}
-
-// SetType sets field value
-func (o *LogsPipelineProcessor) SetType(v string) {
-	o.Type = v
 }
 
 // GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
@@ -201,16 +144,66 @@ func (o *LogsPipelineProcessor) SetName(v string) {
 	o.Name = &v
 }
 
+// GetProcessors returns the Processors field value if set, zero value otherwise.
+func (o *LogsPipelineProcessor) GetProcessors() []LogsProcessor {
+	if o == nil || o.Processors == nil {
+		var ret []LogsProcessor
+		return ret
+	}
+	return *o.Processors
+}
+
+// GetProcessorsOk returns a tuple with the Processors field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogsPipelineProcessor) GetProcessorsOk() (*[]LogsProcessor, bool) {
+	if o == nil || o.Processors == nil {
+		return nil, false
+	}
+	return o.Processors, true
+}
+
+// HasProcessors returns a boolean if a field has been set.
+func (o *LogsPipelineProcessor) HasProcessors() bool {
+	if o != nil && o.Processors != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetProcessors gets a reference to the given []LogsProcessor and assigns it to the Processors field.
+func (o *LogsPipelineProcessor) SetProcessors(v []LogsProcessor) {
+	o.Processors = &v
+}
+
+// GetType returns the Type field value
+func (o *LogsPipelineProcessor) GetType() LogsPipelineProcessorType {
+	if o == nil {
+		var ret LogsPipelineProcessorType
+		return ret
+	}
+
+	return o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *LogsPipelineProcessor) GetTypeOk() (*LogsPipelineProcessorType, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Type, true
+}
+
+// SetType sets field value
+func (o *LogsPipelineProcessor) SetType(v LogsPipelineProcessorType) {
+	o.Type = v
+}
+
 func (o LogsPipelineProcessor) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Filter != nil {
 		toSerialize["filter"] = o.Filter
-	}
-	if o.Processors != nil {
-		toSerialize["processors"] = o.Processors
-	}
-	if true {
-		toSerialize["type"] = o.Type
 	}
 	if o.IsEnabled != nil {
 		toSerialize["is_enabled"] = o.IsEnabled
@@ -218,12 +211,13 @@ func (o LogsPipelineProcessor) MarshalJSON() ([]byte, error) {
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
+	if o.Processors != nil {
+		toSerialize["processors"] = o.Processors
+	}
+	if true {
+		toSerialize["type"] = o.Type
+	}
 	return json.Marshal(toSerialize)
-}
-
-// AsLogsProcessor wraps this instance of LogsPipelineProcessor in LogsProcessor
-func (s *LogsPipelineProcessor) AsLogsProcessor() LogsProcessor {
-	return LogsProcessor{LogsProcessorInterface: s}
 }
 
 type NullableLogsPipelineProcessor struct {

@@ -16,32 +16,31 @@ import (
 type LogsLookupProcessor struct {
 	// Value to set the target attribute if the source value is not found in the list.
 	DefaultLookup *string `json:"default_lookup,omitempty"`
+	// Whether or not the processor is enabled.
+	IsEnabled *bool `json:"is_enabled,omitempty"`
 	// Mapping table of values for the source attribute and their associated target attribute values, formatted as `[\"source_key1,target_value1\", \"source_key2,target_value2\"]`
 	LookupTable []string `json:"lookup_table"`
+	// Name of the processor.
+	Name *string `json:"name,omitempty"`
 	// Source attribute used to perform the lookup.
 	Source string `json:"source"`
 	// Name of the attribute that contains the corresponding value in the mapping list or the `default_lookup` if not found in the mapping list.
-	Target string `json:"target"`
-	// Type of processor.
-	Type string `json:"type"`
-	// Whether or not the processor is enabled.
-	IsEnabled *bool `json:"is_enabled,omitempty"`
-	// Name of the processor.
-	Name *string `json:"name,omitempty"`
+	Target string                  `json:"target"`
+	Type   LogsLookupProcessorType `json:"type"`
 }
 
 // NewLogsLookupProcessor instantiates a new LogsLookupProcessor object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogsLookupProcessor(lookupTable []string, source string, target string, type_ string) *LogsLookupProcessor {
+func NewLogsLookupProcessor(lookupTable []string, source string, target string, type_ LogsLookupProcessorType) *LogsLookupProcessor {
 	this := LogsLookupProcessor{}
+	var isEnabled bool = false
+	this.IsEnabled = &isEnabled
 	this.LookupTable = lookupTable
 	this.Source = source
 	this.Target = target
 	this.Type = type_
-	var isEnabled bool = false
-	this.IsEnabled = &isEnabled
 	return &this
 }
 
@@ -50,10 +49,10 @@ func NewLogsLookupProcessor(lookupTable []string, source string, target string, 
 // but it doesn't guarantee that properties required by API are set
 func NewLogsLookupProcessorWithDefaults() *LogsLookupProcessor {
 	this := LogsLookupProcessor{}
-	var type_ string = "lookup-processor"
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	var type_ LogsLookupProcessorType = "lookup-processor"
+	this.Type = type_
 	return &this
 }
 
@@ -89,6 +88,38 @@ func (o *LogsLookupProcessor) SetDefaultLookup(v string) {
 	o.DefaultLookup = &v
 }
 
+// GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
+func (o *LogsLookupProcessor) GetIsEnabled() bool {
+	if o == nil || o.IsEnabled == nil {
+		var ret bool
+		return ret
+	}
+	return *o.IsEnabled
+}
+
+// GetIsEnabledOk returns a tuple with the IsEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogsLookupProcessor) GetIsEnabledOk() (*bool, bool) {
+	if o == nil || o.IsEnabled == nil {
+		return nil, false
+	}
+	return o.IsEnabled, true
+}
+
+// HasIsEnabled returns a boolean if a field has been set.
+func (o *LogsLookupProcessor) HasIsEnabled() bool {
+	if o != nil && o.IsEnabled != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetIsEnabled gets a reference to the given bool and assigns it to the IsEnabled field.
+func (o *LogsLookupProcessor) SetIsEnabled(v bool) {
+	o.IsEnabled = &v
+}
+
 // GetLookupTable returns the LookupTable field value
 func (o *LogsLookupProcessor) GetLookupTable() []string {
 	if o == nil {
@@ -111,6 +142,38 @@ func (o *LogsLookupProcessor) GetLookupTableOk() (*[]string, bool) {
 // SetLookupTable sets field value
 func (o *LogsLookupProcessor) SetLookupTable(v []string) {
 	o.LookupTable = v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *LogsLookupProcessor) GetName() string {
+	if o == nil || o.Name == nil {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogsLookupProcessor) GetNameOk() (*string, bool) {
+	if o == nil || o.Name == nil {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *LogsLookupProcessor) HasName() bool {
+	if o != nil && o.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *LogsLookupProcessor) SetName(v string) {
+	o.Name = &v
 }
 
 // GetSource returns the Source field value
@@ -162,9 +225,9 @@ func (o *LogsLookupProcessor) SetTarget(v string) {
 }
 
 // GetType returns the Type field value
-func (o *LogsLookupProcessor) GetType() string {
+func (o *LogsLookupProcessor) GetType() LogsLookupProcessorType {
 	if o == nil {
-		var ret string
+		var ret LogsLookupProcessorType
 		return ret
 	}
 
@@ -173,7 +236,7 @@ func (o *LogsLookupProcessor) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *LogsLookupProcessor) GetTypeOk() (*string, bool) {
+func (o *LogsLookupProcessor) GetTypeOk() (*LogsLookupProcessorType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -181,72 +244,8 @@ func (o *LogsLookupProcessor) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *LogsLookupProcessor) SetType(v string) {
+func (o *LogsLookupProcessor) SetType(v LogsLookupProcessorType) {
 	o.Type = v
-}
-
-// GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
-func (o *LogsLookupProcessor) GetIsEnabled() bool {
-	if o == nil || o.IsEnabled == nil {
-		var ret bool
-		return ret
-	}
-	return *o.IsEnabled
-}
-
-// GetIsEnabledOk returns a tuple with the IsEnabled field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LogsLookupProcessor) GetIsEnabledOk() (*bool, bool) {
-	if o == nil || o.IsEnabled == nil {
-		return nil, false
-	}
-	return o.IsEnabled, true
-}
-
-// HasIsEnabled returns a boolean if a field has been set.
-func (o *LogsLookupProcessor) HasIsEnabled() bool {
-	if o != nil && o.IsEnabled != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetIsEnabled gets a reference to the given bool and assigns it to the IsEnabled field.
-func (o *LogsLookupProcessor) SetIsEnabled(v bool) {
-	o.IsEnabled = &v
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *LogsLookupProcessor) GetName() string {
-	if o == nil || o.Name == nil {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LogsLookupProcessor) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *LogsLookupProcessor) HasName() bool {
-	if o != nil && o.Name != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *LogsLookupProcessor) SetName(v string) {
-	o.Name = &v
 }
 
 func (o LogsLookupProcessor) MarshalJSON() ([]byte, error) {
@@ -254,8 +253,14 @@ func (o LogsLookupProcessor) MarshalJSON() ([]byte, error) {
 	if o.DefaultLookup != nil {
 		toSerialize["default_lookup"] = o.DefaultLookup
 	}
+	if o.IsEnabled != nil {
+		toSerialize["is_enabled"] = o.IsEnabled
+	}
 	if true {
 		toSerialize["lookup_table"] = o.LookupTable
+	}
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
 	}
 	if true {
 		toSerialize["source"] = o.Source
@@ -266,18 +271,7 @@ func (o LogsLookupProcessor) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["type"] = o.Type
 	}
-	if o.IsEnabled != nil {
-		toSerialize["is_enabled"] = o.IsEnabled
-	}
-	if o.Name != nil {
-		toSerialize["name"] = o.Name
-	}
 	return json.Marshal(toSerialize)
-}
-
-// AsLogsProcessor wraps this instance of LogsLookupProcessor in LogsProcessor
-func (s *LogsLookupProcessor) AsLogsProcessor() LogsProcessor {
-	return LogsProcessor{LogsProcessorInterface: s}
 }
 
 type NullableLogsLookupProcessor struct {

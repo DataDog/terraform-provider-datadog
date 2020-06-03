@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // MonitorType The type of the monitor. For more information about `type`, see the [monitor options](https://docs.datadoghq.com/monitors/guide/monitor_api_options/) docs.
@@ -28,6 +29,23 @@ const (
 	MONITORTYPE_SYNTHETICS_ALERT      MonitorType = "synthetics alert"
 	MONITORTYPE_TRACE_ANALYTICS_ALERT MonitorType = "trace-analytics alert"
 )
+
+func (v *MonitorType) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := MonitorType(value)
+	for _, existing := range []MonitorType{"composite", "event alert", "log alert", "metric alert", "process alert", "query alert", "rum alert", "service check", "synthetics alert", "trace-analytics alert"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid MonitorType", *v)
+}
 
 // Ptr returns reference to MonitorType value
 func (v MonitorType) Ptr() *MonitorType {

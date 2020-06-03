@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // LogsSort Time-ascending `asc` or time-descending `desc`results.
@@ -20,6 +21,23 @@ const (
 	LOGSSORT_TIME_ASCENDING  LogsSort = "asc"
 	LOGSSORT_TIME_DESCENDING LogsSort = "desc"
 )
+
+func (v *LogsSort) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := LogsSort(value)
+	for _, existing := range []LogsSort{"asc", "desc"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid LogsSort", *v)
+}
 
 // Ptr returns reference to LogsSort value
 func (v LogsSort) Ptr() *LogsSort {

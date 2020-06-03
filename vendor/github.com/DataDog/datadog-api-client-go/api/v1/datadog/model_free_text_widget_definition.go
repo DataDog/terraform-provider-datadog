@@ -19,17 +19,16 @@ type FreeTextWidgetDefinition struct {
 	// Size of the text.
 	FontSize *string `json:"font_size,omitempty"`
 	// Text to display.
-	Text      string           `json:"text"`
-	TextAlign *WidgetTextAlign `json:"text_align,omitempty"`
-	// Type of the widget.
-	Type string `json:"type"`
+	Text      string                       `json:"text"`
+	TextAlign *WidgetTextAlign             `json:"text_align,omitempty"`
+	Type      FreeTextWidgetDefinitionType `json:"type"`
 }
 
 // NewFreeTextWidgetDefinition instantiates a new FreeTextWidgetDefinition object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewFreeTextWidgetDefinition(text string, type_ string) *FreeTextWidgetDefinition {
+func NewFreeTextWidgetDefinition(text string, type_ FreeTextWidgetDefinitionType) *FreeTextWidgetDefinition {
 	this := FreeTextWidgetDefinition{}
 	this.Text = text
 	this.Type = type_
@@ -41,7 +40,7 @@ func NewFreeTextWidgetDefinition(text string, type_ string) *FreeTextWidgetDefin
 // but it doesn't guarantee that properties required by API are set
 func NewFreeTextWidgetDefinitionWithDefaults() *FreeTextWidgetDefinition {
 	this := FreeTextWidgetDefinition{}
-	var type_ string = "free_text"
+	var type_ FreeTextWidgetDefinitionType = "free_text"
 	this.Type = type_
 	return &this
 }
@@ -167,9 +166,9 @@ func (o *FreeTextWidgetDefinition) SetTextAlign(v WidgetTextAlign) {
 }
 
 // GetType returns the Type field value
-func (o *FreeTextWidgetDefinition) GetType() string {
+func (o *FreeTextWidgetDefinition) GetType() FreeTextWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret FreeTextWidgetDefinitionType
 		return ret
 	}
 
@@ -178,7 +177,7 @@ func (o *FreeTextWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *FreeTextWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *FreeTextWidgetDefinition) GetTypeOk() (*FreeTextWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -186,7 +185,7 @@ func (o *FreeTextWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *FreeTextWidgetDefinition) SetType(v string) {
+func (o *FreeTextWidgetDefinition) SetType(v FreeTextWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -208,11 +207,6 @@ func (o FreeTextWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of FreeTextWidgetDefinition in WidgetDefinition
-func (s *FreeTextWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableFreeTextWidgetDefinition struct {

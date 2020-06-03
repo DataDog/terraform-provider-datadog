@@ -21,17 +21,16 @@ type AlertGraphWidgetDefinition struct {
 	Title      *string          `json:"title,omitempty"`
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
 	// Size of the title.
-	TitleSize *string `json:"title_size,omitempty"`
-	// Type of the widget.
-	Type    string        `json:"type"`
-	VizType WidgetVizType `json:"viz_type"`
+	TitleSize *string                        `json:"title_size,omitempty"`
+	Type      AlertGraphWidgetDefinitionType `json:"type"`
+	VizType   WidgetVizType                  `json:"viz_type"`
 }
 
 // NewAlertGraphWidgetDefinition instantiates a new AlertGraphWidgetDefinition object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAlertGraphWidgetDefinition(alertId string, type_ string, vizType WidgetVizType) *AlertGraphWidgetDefinition {
+func NewAlertGraphWidgetDefinition(alertId string, type_ AlertGraphWidgetDefinitionType, vizType WidgetVizType) *AlertGraphWidgetDefinition {
 	this := AlertGraphWidgetDefinition{}
 	this.AlertId = alertId
 	this.Type = type_
@@ -44,7 +43,7 @@ func NewAlertGraphWidgetDefinition(alertId string, type_ string, vizType WidgetV
 // but it doesn't guarantee that properties required by API are set
 func NewAlertGraphWidgetDefinitionWithDefaults() *AlertGraphWidgetDefinition {
 	this := AlertGraphWidgetDefinition{}
-	var type_ string = "alert_graph"
+	var type_ AlertGraphWidgetDefinitionType = "alert_graph"
 	this.Type = type_
 	return &this
 }
@@ -202,9 +201,9 @@ func (o *AlertGraphWidgetDefinition) SetTitleSize(v string) {
 }
 
 // GetType returns the Type field value
-func (o *AlertGraphWidgetDefinition) GetType() string {
+func (o *AlertGraphWidgetDefinition) GetType() AlertGraphWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret AlertGraphWidgetDefinitionType
 		return ret
 	}
 
@@ -213,7 +212,7 @@ func (o *AlertGraphWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *AlertGraphWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *AlertGraphWidgetDefinition) GetTypeOk() (*AlertGraphWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -221,7 +220,7 @@ func (o *AlertGraphWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *AlertGraphWidgetDefinition) SetType(v string) {
+func (o *AlertGraphWidgetDefinition) SetType(v AlertGraphWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -273,11 +272,6 @@ func (o AlertGraphWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["viz_type"] = o.VizType
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of AlertGraphWidgetDefinition in WidgetDefinition
-func (s *AlertGraphWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableAlertGraphWidgetDefinition struct {

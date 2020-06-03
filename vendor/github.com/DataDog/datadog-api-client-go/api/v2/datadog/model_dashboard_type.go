@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // DashboardType The type of the dashboard.
@@ -23,6 +24,23 @@ const (
 	DASHBOARDTYPE_INTEGRATION_TIMEBOARD   DashboardType = "integration_timeboard"
 	DASHBOARDTYPE_HOST_TIMEBOARD          DashboardType = "host_timeboard"
 )
+
+func (v *DashboardType) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := DashboardType(value)
+	for _, existing := range []DashboardType{"custom_timeboard", "custom_screenboard", "integration_screenboard", "integration_timeboard", "host_timeboard"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid DashboardType", *v)
+}
 
 // Ptr returns reference to DashboardType value
 func (v DashboardType) Ptr() *DashboardType {

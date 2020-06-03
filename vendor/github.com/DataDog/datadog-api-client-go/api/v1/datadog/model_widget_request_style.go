@@ -12,33 +12,33 @@ import (
 	"encoding/json"
 )
 
-// TimeseriesWidgetRequestStyle Define widget style.
-type TimeseriesWidgetRequestStyle struct {
+// WidgetRequestStyle Define request widget style.
+type WidgetRequestStyle struct {
 	LineType  *WidgetLineType  `json:"line_type,omitempty"`
 	LineWidth *WidgetLineWidth `json:"line_width,omitempty"`
 	// Color palette to apply to the widget.
 	Palette *string `json:"palette,omitempty"`
 }
 
-// NewTimeseriesWidgetRequestStyle instantiates a new TimeseriesWidgetRequestStyle object
+// NewWidgetRequestStyle instantiates a new WidgetRequestStyle object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewTimeseriesWidgetRequestStyle() *TimeseriesWidgetRequestStyle {
-	this := TimeseriesWidgetRequestStyle{}
+func NewWidgetRequestStyle() *WidgetRequestStyle {
+	this := WidgetRequestStyle{}
 	return &this
 }
 
-// NewTimeseriesWidgetRequestStyleWithDefaults instantiates a new TimeseriesWidgetRequestStyle object
+// NewWidgetRequestStyleWithDefaults instantiates a new WidgetRequestStyle object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewTimeseriesWidgetRequestStyleWithDefaults() *TimeseriesWidgetRequestStyle {
-	this := TimeseriesWidgetRequestStyle{}
+func NewWidgetRequestStyleWithDefaults() *WidgetRequestStyle {
+	this := WidgetRequestStyle{}
 	return &this
 }
 
 // GetLineType returns the LineType field value if set, zero value otherwise.
-func (o *TimeseriesWidgetRequestStyle) GetLineType() WidgetLineType {
+func (o *WidgetRequestStyle) GetLineType() WidgetLineType {
 	if o == nil || o.LineType == nil {
 		var ret WidgetLineType
 		return ret
@@ -48,7 +48,7 @@ func (o *TimeseriesWidgetRequestStyle) GetLineType() WidgetLineType {
 
 // GetLineTypeOk returns a tuple with the LineType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TimeseriesWidgetRequestStyle) GetLineTypeOk() (*WidgetLineType, bool) {
+func (o *WidgetRequestStyle) GetLineTypeOk() (*WidgetLineType, bool) {
 	if o == nil || o.LineType == nil {
 		return nil, false
 	}
@@ -56,7 +56,7 @@ func (o *TimeseriesWidgetRequestStyle) GetLineTypeOk() (*WidgetLineType, bool) {
 }
 
 // HasLineType returns a boolean if a field has been set.
-func (o *TimeseriesWidgetRequestStyle) HasLineType() bool {
+func (o *WidgetRequestStyle) HasLineType() bool {
 	if o != nil && o.LineType != nil {
 		return true
 	}
@@ -65,12 +65,12 @@ func (o *TimeseriesWidgetRequestStyle) HasLineType() bool {
 }
 
 // SetLineType gets a reference to the given WidgetLineType and assigns it to the LineType field.
-func (o *TimeseriesWidgetRequestStyle) SetLineType(v WidgetLineType) {
+func (o *WidgetRequestStyle) SetLineType(v WidgetLineType) {
 	o.LineType = &v
 }
 
 // GetLineWidth returns the LineWidth field value if set, zero value otherwise.
-func (o *TimeseriesWidgetRequestStyle) GetLineWidth() WidgetLineWidth {
+func (o *WidgetRequestStyle) GetLineWidth() WidgetLineWidth {
 	if o == nil || o.LineWidth == nil {
 		var ret WidgetLineWidth
 		return ret
@@ -80,7 +80,7 @@ func (o *TimeseriesWidgetRequestStyle) GetLineWidth() WidgetLineWidth {
 
 // GetLineWidthOk returns a tuple with the LineWidth field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TimeseriesWidgetRequestStyle) GetLineWidthOk() (*WidgetLineWidth, bool) {
+func (o *WidgetRequestStyle) GetLineWidthOk() (*WidgetLineWidth, bool) {
 	if o == nil || o.LineWidth == nil {
 		return nil, false
 	}
@@ -88,7 +88,7 @@ func (o *TimeseriesWidgetRequestStyle) GetLineWidthOk() (*WidgetLineWidth, bool)
 }
 
 // HasLineWidth returns a boolean if a field has been set.
-func (o *TimeseriesWidgetRequestStyle) HasLineWidth() bool {
+func (o *WidgetRequestStyle) HasLineWidth() bool {
 	if o != nil && o.LineWidth != nil {
 		return true
 	}
@@ -97,12 +97,12 @@ func (o *TimeseriesWidgetRequestStyle) HasLineWidth() bool {
 }
 
 // SetLineWidth gets a reference to the given WidgetLineWidth and assigns it to the LineWidth field.
-func (o *TimeseriesWidgetRequestStyle) SetLineWidth(v WidgetLineWidth) {
+func (o *WidgetRequestStyle) SetLineWidth(v WidgetLineWidth) {
 	o.LineWidth = &v
 }
 
 // GetPalette returns the Palette field value if set, zero value otherwise.
-func (o *TimeseriesWidgetRequestStyle) GetPalette() string {
+func (o *WidgetRequestStyle) GetPalette() string {
 	if o == nil || o.Palette == nil {
 		var ret string
 		return ret
@@ -112,7 +112,7 @@ func (o *TimeseriesWidgetRequestStyle) GetPalette() string {
 
 // GetPaletteOk returns a tuple with the Palette field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TimeseriesWidgetRequestStyle) GetPaletteOk() (*string, bool) {
+func (o *WidgetRequestStyle) GetPaletteOk() (*string, bool) {
 	if o == nil || o.Palette == nil {
 		return nil, false
 	}
@@ -120,7 +120,7 @@ func (o *TimeseriesWidgetRequestStyle) GetPaletteOk() (*string, bool) {
 }
 
 // HasPalette returns a boolean if a field has been set.
-func (o *TimeseriesWidgetRequestStyle) HasPalette() bool {
+func (o *WidgetRequestStyle) HasPalette() bool {
 	if o != nil && o.Palette != nil {
 		return true
 	}
@@ -129,11 +129,11 @@ func (o *TimeseriesWidgetRequestStyle) HasPalette() bool {
 }
 
 // SetPalette gets a reference to the given string and assigns it to the Palette field.
-func (o *TimeseriesWidgetRequestStyle) SetPalette(v string) {
+func (o *WidgetRequestStyle) SetPalette(v string) {
 	o.Palette = &v
 }
 
-func (o TimeseriesWidgetRequestStyle) MarshalJSON() ([]byte, error) {
+func (o WidgetRequestStyle) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.LineType != nil {
 		toSerialize["line_type"] = o.LineType
@@ -147,38 +147,38 @@ func (o TimeseriesWidgetRequestStyle) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableTimeseriesWidgetRequestStyle struct {
-	value *TimeseriesWidgetRequestStyle
+type NullableWidgetRequestStyle struct {
+	value *WidgetRequestStyle
 	isSet bool
 }
 
-func (v NullableTimeseriesWidgetRequestStyle) Get() *TimeseriesWidgetRequestStyle {
+func (v NullableWidgetRequestStyle) Get() *WidgetRequestStyle {
 	return v.value
 }
 
-func (v *NullableTimeseriesWidgetRequestStyle) Set(val *TimeseriesWidgetRequestStyle) {
+func (v *NullableWidgetRequestStyle) Set(val *WidgetRequestStyle) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableTimeseriesWidgetRequestStyle) IsSet() bool {
+func (v NullableWidgetRequestStyle) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableTimeseriesWidgetRequestStyle) Unset() {
+func (v *NullableWidgetRequestStyle) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableTimeseriesWidgetRequestStyle(val *TimeseriesWidgetRequestStyle) *NullableTimeseriesWidgetRequestStyle {
-	return &NullableTimeseriesWidgetRequestStyle{value: val, isSet: true}
+func NewNullableWidgetRequestStyle(val *WidgetRequestStyle) *NullableWidgetRequestStyle {
+	return &NullableWidgetRequestStyle{value: val, isSet: true}
 }
 
-func (v NullableTimeseriesWidgetRequestStyle) MarshalJSON() ([]byte, error) {
+func (v NullableWidgetRequestStyle) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableTimeseriesWidgetRequestStyle) UnmarshalJSON(src []byte) error {
+func (v *NullableWidgetRequestStyle) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

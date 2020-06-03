@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // WidgetPalette Color palette to apply.
@@ -34,6 +35,23 @@ const (
 	WIDGETPALETTE_WHITE_ON_YELLOW   WidgetPalette = "white_on_yellow"
 	WIDGETPALETTE_YELLOW_ON_WHITE   WidgetPalette = "yellow_on_white"
 )
+
+func (v *WidgetPalette) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := WidgetPalette(value)
+	for _, existing := range []WidgetPalette{"blue", "custom_bg", "custom_image", "custom_text", "gray_on_white", "grey", "green", "orange", "red", "red_on_white", "white_on_gray", "white_on_green", "green_on_white", "white_on_red", "white_on_yellow", "yellow_on_white"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid WidgetPalette", *v)
+}
 
 // Ptr returns reference to WidgetPalette value
 func (v WidgetPalette) Ptr() *WidgetPalette {

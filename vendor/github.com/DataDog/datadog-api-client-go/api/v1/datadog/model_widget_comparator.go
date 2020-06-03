@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // WidgetComparator Comparator to apply.
@@ -22,6 +23,23 @@ const (
 	WIDGETCOMPARATOR_LESS_THAN                WidgetComparator = "<"
 	WIDGETCOMPARATOR_LESS_THAN_OR_EQUAL_TO    WidgetComparator = "<="
 )
+
+func (v *WidgetComparator) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := WidgetComparator(value)
+	for _, existing := range []WidgetComparator{">", ">=", "<", "<="} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid WidgetComparator", *v)
+}
 
 // Ptr returns reference to WidgetComparator value
 func (v WidgetComparator) Ptr() *WidgetComparator {

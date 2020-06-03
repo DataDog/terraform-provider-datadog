@@ -1,6 +1,7 @@
 .travis.yml
 git_push.sh
 coverage.txt
+.env*
 
 # Created by https://www.gitignore.io/api/go,vim,linux,macos,windows,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=go,vim,linux,macos,windows,visualstudiocode

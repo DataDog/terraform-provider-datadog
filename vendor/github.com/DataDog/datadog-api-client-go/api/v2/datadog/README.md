@@ -89,6 +89,11 @@ Class | Method | HTTP request | Description
 *RolesApi* | [**RemovePermissionFromRole**](docs/RolesApi.md#removepermissionfromrole) | **Delete** /api/v2/roles/{role_id}/permissions | Revoke permission
 *RolesApi* | [**RemoveUserFromRole**](docs/RolesApi.md#removeuserfromrole) | **Delete** /api/v2/roles/{role_id}/users | Remove a user from a role
 *RolesApi* | [**UpdateRole**](docs/RolesApi.md#updaterole) | **Patch** /api/v2/roles/{role_id} | Update a role
+*SecurityMonitoringApi* | [**CreateSecurityMonitoringRule**](docs/SecurityMonitoringApi.md#createsecuritymonitoringrule) | **Post** /api/v2/security_monitoring/rules | Create a detection rule
+*SecurityMonitoringApi* | [**DeleteSecurityMonitoringRule**](docs/SecurityMonitoringApi.md#deletesecuritymonitoringrule) | **Delete** /api/v2/security_monitoring/rules/{rule_id} | Delete an existing rule
+*SecurityMonitoringApi* | [**GetSecurityMonitoringRule**](docs/SecurityMonitoringApi.md#getsecuritymonitoringrule) | **Get** /api/v2/security_monitoring/rules/{rule_id} | Get a rule&#39;s details
+*SecurityMonitoringApi* | [**ListSecurityMonitoringRules**](docs/SecurityMonitoringApi.md#listsecuritymonitoringrules) | **Get** /api/v2/security_monitoring/rules | List rules
+*SecurityMonitoringApi* | [**UpdateSecurityMonitoringRule**](docs/SecurityMonitoringApi.md#updatesecuritymonitoringrule) | **Put** /api/v2/security_monitoring/rules/{rule_id} | Update an existing rule
 *UsersApi* | [**CreateUser**](docs/UsersApi.md#createuser) | **Post** /api/v2/users | Create a user
 *UsersApi* | [**DisableUser**](docs/UsersApi.md#disableuser) | **Delete** /api/v2/users/{user_id} | Disable a user
 *UsersApi* | [**GetInvitation**](docs/UsersApi.md#getinvitation) | **Get** /api/v2/user_invitations/{user_invitation_uuid} | Get a user invitation
@@ -104,17 +109,25 @@ Class | Method | HTTP request | Description
 
  - [APIErrorResponse](docs/APIErrorResponse.md)
  - [Creator](docs/Creator.md)
+ - [DashboardListAddItemsRequest](docs/DashboardListAddItemsRequest.md)
  - [DashboardListAddItemsResponse](docs/DashboardListAddItemsResponse.md)
+ - [DashboardListDeleteItemsRequest](docs/DashboardListDeleteItemsRequest.md)
  - [DashboardListDeleteItemsResponse](docs/DashboardListDeleteItemsResponse.md)
  - [DashboardListItem](docs/DashboardListItem.md)
+ - [DashboardListItemRequest](docs/DashboardListItemRequest.md)
+ - [DashboardListItemResponse](docs/DashboardListItemResponse.md)
  - [DashboardListItems](docs/DashboardListItems.md)
+ - [DashboardListUpdateItemsRequest](docs/DashboardListUpdateItemsRequest.md)
+ - [DashboardListUpdateItemsResponse](docs/DashboardListUpdateItemsResponse.md)
  - [DashboardType](docs/DashboardType.md)
  - [Organization](docs/Organization.md)
  - [OrganizationAttributes](docs/OrganizationAttributes.md)
+ - [OrganizationsType](docs/OrganizationsType.md)
  - [Pagination](docs/Pagination.md)
  - [Permission](docs/Permission.md)
  - [PermissionAttributes](docs/PermissionAttributes.md)
  - [PermissionsResponse](docs/PermissionsResponse.md)
+ - [PermissionsType](docs/PermissionsType.md)
  - [QuerySortOrder](docs/QuerySortOrder.md)
  - [RelationshipToOrganization](docs/RelationshipToOrganization.md)
  - [RelationshipToOrganizationData](docs/RelationshipToOrganizationData.md)
@@ -141,6 +154,18 @@ Class | Method | HTTP request | Description
  - [RoleUpdatePayload](docs/RoleUpdatePayload.md)
  - [RolesResponse](docs/RolesResponse.md)
  - [RolesSort](docs/RolesSort.md)
+ - [RolesType](docs/RolesType.md)
+ - [SecurityMonitoringListRulesResponse](docs/SecurityMonitoringListRulesResponse.md)
+ - [SecurityMonitoringRuleCase](docs/SecurityMonitoringRuleCase.md)
+ - [SecurityMonitoringRuleCreatePayload](docs/SecurityMonitoringRuleCreatePayload.md)
+ - [SecurityMonitoringRuleEvaluationWindow](docs/SecurityMonitoringRuleEvaluationWindow.md)
+ - [SecurityMonitoringRuleKeepAlive](docs/SecurityMonitoringRuleKeepAlive.md)
+ - [SecurityMonitoringRuleMaxSignalDuration](docs/SecurityMonitoringRuleMaxSignalDuration.md)
+ - [SecurityMonitoringRuleOptions](docs/SecurityMonitoringRuleOptions.md)
+ - [SecurityMonitoringRuleQuery](docs/SecurityMonitoringRuleQuery.md)
+ - [SecurityMonitoringRuleResponse](docs/SecurityMonitoringRuleResponse.md)
+ - [SecurityMonitoringRuleSeverity](docs/SecurityMonitoringRuleSeverity.md)
+ - [SecurityMonitoringRuleUpdatePayload](docs/SecurityMonitoringRuleUpdatePayload.md)
  - [User](docs/User.md)
  - [UserAttributes](docs/UserAttributes.md)
  - [UserCreateAttributes](docs/UserCreateAttributes.md)
@@ -153,6 +178,7 @@ Class | Method | HTTP request | Description
  - [UserInvitationResponse](docs/UserInvitationResponse.md)
  - [UserInvitationResponseData](docs/UserInvitationResponseData.md)
  - [UserInvitationsResponse](docs/UserInvitationsResponse.md)
+ - [UserInvitationsType](docs/UserInvitationsType.md)
  - [UserRelationships](docs/UserRelationships.md)
  - [UserResponse](docs/UserResponse.md)
  - [UserResponseIncludedItem](docs/UserResponseIncludedItem.md)
@@ -161,6 +187,7 @@ Class | Method | HTTP request | Description
  - [UserUpdateData](docs/UserUpdateData.md)
  - [UserUpdatePayload](docs/UserUpdatePayload.md)
  - [UsersResponse](docs/UsersResponse.md)
+ - [UsersType](docs/UsersType.md)
 
 
 ## Documentation For Authorization

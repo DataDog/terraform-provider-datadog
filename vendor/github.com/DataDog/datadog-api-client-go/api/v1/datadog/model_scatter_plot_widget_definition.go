@@ -22,18 +22,17 @@ type ScatterPlotWidgetDefinition struct {
 	Title      *string          `json:"title,omitempty"`
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
 	// Size of the title.
-	TitleSize *string `json:"title_size,omitempty"`
-	// Type of widget.
-	Type  string      `json:"type"`
-	Xaxis *WidgetAxis `json:"xaxis,omitempty"`
-	Yaxis *WidgetAxis `json:"yaxis,omitempty"`
+	TitleSize *string                         `json:"title_size,omitempty"`
+	Type      ScatterPlotWidgetDefinitionType `json:"type"`
+	Xaxis     *WidgetAxis                     `json:"xaxis,omitempty"`
+	Yaxis     *WidgetAxis                     `json:"yaxis,omitempty"`
 }
 
 // NewScatterPlotWidgetDefinition instantiates a new ScatterPlotWidgetDefinition object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewScatterPlotWidgetDefinition(requests ScatterPlotWidgetDefinitionRequests, type_ string) *ScatterPlotWidgetDefinition {
+func NewScatterPlotWidgetDefinition(requests ScatterPlotWidgetDefinitionRequests, type_ ScatterPlotWidgetDefinitionType) *ScatterPlotWidgetDefinition {
 	this := ScatterPlotWidgetDefinition{}
 	this.Requests = requests
 	this.Type = type_
@@ -45,7 +44,7 @@ func NewScatterPlotWidgetDefinition(requests ScatterPlotWidgetDefinitionRequests
 // but it doesn't guarantee that properties required by API are set
 func NewScatterPlotWidgetDefinitionWithDefaults() *ScatterPlotWidgetDefinition {
 	this := ScatterPlotWidgetDefinition{}
-	var type_ string = "scatterplot"
+	var type_ ScatterPlotWidgetDefinitionType = "scatterplot"
 	this.Type = type_
 	return &this
 }
@@ -235,9 +234,9 @@ func (o *ScatterPlotWidgetDefinition) SetTitleSize(v string) {
 }
 
 // GetType returns the Type field value
-func (o *ScatterPlotWidgetDefinition) GetType() string {
+func (o *ScatterPlotWidgetDefinition) GetType() ScatterPlotWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret ScatterPlotWidgetDefinitionType
 		return ret
 	}
 
@@ -246,7 +245,7 @@ func (o *ScatterPlotWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *ScatterPlotWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *ScatterPlotWidgetDefinition) GetTypeOk() (*ScatterPlotWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -254,7 +253,7 @@ func (o *ScatterPlotWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *ScatterPlotWidgetDefinition) SetType(v string) {
+func (o *ScatterPlotWidgetDefinition) SetType(v ScatterPlotWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -352,11 +351,6 @@ func (o ScatterPlotWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["yaxis"] = o.Yaxis
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of ScatterPlotWidgetDefinition in WidgetDefinition
-func (s *ScatterPlotWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableScatterPlotWidgetDefinition struct {

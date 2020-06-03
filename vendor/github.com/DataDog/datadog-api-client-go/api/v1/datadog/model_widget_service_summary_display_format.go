@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // WidgetServiceSummaryDisplayFormat Number of columns to display.
@@ -17,9 +18,27 @@ type WidgetServiceSummaryDisplayFormat string
 
 // List of WidgetServiceSummaryDisplayFormat
 const (
-	WIDGETSERVICESUMMARYDISPLAYFORMAT_ONE_COLUMN WidgetServiceSummaryDisplayFormat = "one_column"
-	WIDGETSERVICESUMMARYDISPLAYFORMAT_TWO_COLUMN WidgetServiceSummaryDisplayFormat = "two_column"
+	WIDGETSERVICESUMMARYDISPLAYFORMAT_ONE_COLUMN   WidgetServiceSummaryDisplayFormat = "one_column"
+	WIDGETSERVICESUMMARYDISPLAYFORMAT_TWO_COLUMN   WidgetServiceSummaryDisplayFormat = "two_column"
+	WIDGETSERVICESUMMARYDISPLAYFORMAT_THREE_COLUMN WidgetServiceSummaryDisplayFormat = "three_column"
 )
+
+func (v *WidgetServiceSummaryDisplayFormat) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := WidgetServiceSummaryDisplayFormat(value)
+	for _, existing := range []WidgetServiceSummaryDisplayFormat{"one_column", "two_column", "three_column"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid WidgetServiceSummaryDisplayFormat", *v)
+}
 
 // Ptr returns reference to WidgetServiceSummaryDisplayFormat value
 func (v WidgetServiceSummaryDisplayFormat) Ptr() *WidgetServiceSummaryDisplayFormat {

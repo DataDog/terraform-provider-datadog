@@ -16,8 +16,7 @@ import (
 type RoleCreateData struct {
 	Attributes    *RoleCreateAttributes `json:"attributes,omitempty"`
 	Relationships *RoleRelationships    `json:"relationships,omitempty"`
-	// Roles resource type.
-	Type *string `json:"type,omitempty"`
+	Type          *RolesType            `json:"type,omitempty"`
 }
 
 // NewRoleCreateData instantiates a new RoleCreateData object
@@ -26,7 +25,7 @@ type RoleCreateData struct {
 // will change when the set of required properties is changed
 func NewRoleCreateData() *RoleCreateData {
 	this := RoleCreateData{}
-	var type_ string = "roles"
+	var type_ RolesType = "roles"
 	this.Type = &type_
 	return &this
 }
@@ -36,7 +35,7 @@ func NewRoleCreateData() *RoleCreateData {
 // but it doesn't guarantee that properties required by API are set
 func NewRoleCreateDataWithDefaults() *RoleCreateData {
 	this := RoleCreateData{}
-	var type_ string = "roles"
+	var type_ RolesType = "roles"
 	this.Type = &type_
 	return &this
 }
@@ -106,9 +105,9 @@ func (o *RoleCreateData) SetRelationships(v RoleRelationships) {
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *RoleCreateData) GetType() string {
+func (o *RoleCreateData) GetType() RolesType {
 	if o == nil || o.Type == nil {
-		var ret string
+		var ret RolesType
 		return ret
 	}
 	return *o.Type
@@ -116,7 +115,7 @@ func (o *RoleCreateData) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RoleCreateData) GetTypeOk() (*string, bool) {
+func (o *RoleCreateData) GetTypeOk() (*RolesType, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -132,8 +131,8 @@ func (o *RoleCreateData) HasType() bool {
 	return false
 }
 
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *RoleCreateData) SetType(v string) {
+// SetType gets a reference to the given RolesType and assigns it to the Type field.
+func (o *RoleCreateData) SetType(v RolesType) {
 	o.Type = &v
 }
 

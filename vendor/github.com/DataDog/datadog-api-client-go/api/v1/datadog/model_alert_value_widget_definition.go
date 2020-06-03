@@ -23,9 +23,8 @@ type AlertValueWidgetDefinition struct {
 	Title      *string          `json:"title,omitempty"`
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
 	// Size of value in the widget.
-	TitleSize *string `json:"title_size,omitempty"`
-	// Type of the widget.
-	Type string `json:"type"`
+	TitleSize *string                        `json:"title_size,omitempty"`
+	Type      AlertValueWidgetDefinitionType `json:"type"`
 	// Unit to display with the value.
 	Unit *string `json:"unit,omitempty"`
 }
@@ -34,7 +33,7 @@ type AlertValueWidgetDefinition struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAlertValueWidgetDefinition(alertId string, type_ string) *AlertValueWidgetDefinition {
+func NewAlertValueWidgetDefinition(alertId string, type_ AlertValueWidgetDefinitionType) *AlertValueWidgetDefinition {
 	this := AlertValueWidgetDefinition{}
 	this.AlertId = alertId
 	this.Type = type_
@@ -46,7 +45,7 @@ func NewAlertValueWidgetDefinition(alertId string, type_ string) *AlertValueWidg
 // but it doesn't guarantee that properties required by API are set
 func NewAlertValueWidgetDefinitionWithDefaults() *AlertValueWidgetDefinition {
 	this := AlertValueWidgetDefinition{}
-	var type_ string = "alert_value"
+	var type_ AlertValueWidgetDefinitionType = "alert_value"
 	this.Type = type_
 	return &this
 }
@@ -236,9 +235,9 @@ func (o *AlertValueWidgetDefinition) SetTitleSize(v string) {
 }
 
 // GetType returns the Type field value
-func (o *AlertValueWidgetDefinition) GetType() string {
+func (o *AlertValueWidgetDefinition) GetType() AlertValueWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret AlertValueWidgetDefinitionType
 		return ret
 	}
 
@@ -247,7 +246,7 @@ func (o *AlertValueWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *AlertValueWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *AlertValueWidgetDefinition) GetTypeOk() (*AlertValueWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -255,7 +254,7 @@ func (o *AlertValueWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *AlertValueWidgetDefinition) SetType(v string) {
+func (o *AlertValueWidgetDefinition) SetType(v AlertValueWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -318,11 +317,6 @@ func (o AlertValueWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["unit"] = o.Unit
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of AlertValueWidgetDefinition in WidgetDefinition
-func (s *AlertValueWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableAlertValueWidgetDefinition struct {

@@ -15,9 +15,8 @@ import (
 // RelationshipToRoleData Relationship to role object.
 type RelationshipToRoleData struct {
 	// ID of the role.
-	Id *string `json:"id,omitempty"`
-	// Type of role.
-	Type *string `json:"type,omitempty"`
+	Id   *string    `json:"id,omitempty"`
+	Type *RolesType `json:"type,omitempty"`
 }
 
 // NewRelationshipToRoleData instantiates a new RelationshipToRoleData object
@@ -26,7 +25,7 @@ type RelationshipToRoleData struct {
 // will change when the set of required properties is changed
 func NewRelationshipToRoleData() *RelationshipToRoleData {
 	this := RelationshipToRoleData{}
-	var type_ string = "roles"
+	var type_ RolesType = "roles"
 	this.Type = &type_
 	return &this
 }
@@ -36,7 +35,7 @@ func NewRelationshipToRoleData() *RelationshipToRoleData {
 // but it doesn't guarantee that properties required by API are set
 func NewRelationshipToRoleDataWithDefaults() *RelationshipToRoleData {
 	this := RelationshipToRoleData{}
-	var type_ string = "roles"
+	var type_ RolesType = "roles"
 	this.Type = &type_
 	return &this
 }
@@ -74,9 +73,9 @@ func (o *RelationshipToRoleData) SetId(v string) {
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *RelationshipToRoleData) GetType() string {
+func (o *RelationshipToRoleData) GetType() RolesType {
 	if o == nil || o.Type == nil {
-		var ret string
+		var ret RolesType
 		return ret
 	}
 	return *o.Type
@@ -84,7 +83,7 @@ func (o *RelationshipToRoleData) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RelationshipToRoleData) GetTypeOk() (*string, bool) {
+func (o *RelationshipToRoleData) GetTypeOk() (*RolesType, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -100,8 +99,8 @@ func (o *RelationshipToRoleData) HasType() bool {
 	return false
 }
 
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *RelationshipToRoleData) SetType(v string) {
+// SetType gets a reference to the given RolesType and assigns it to the Type field.
+func (o *RelationshipToRoleData) SetType(v RolesType) {
 	o.Type = &v
 }
 

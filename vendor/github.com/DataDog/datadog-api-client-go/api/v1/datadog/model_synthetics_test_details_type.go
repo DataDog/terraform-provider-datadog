@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // SyntheticsTestDetailsType Type of the Synthetic test, either `api` or `browser`.
@@ -20,6 +21,23 @@ const (
 	SYNTHETICSTESTDETAILSTYPE_API     SyntheticsTestDetailsType = "api"
 	SYNTHETICSTESTDETAILSTYPE_BROWSER SyntheticsTestDetailsType = "browser"
 )
+
+func (v *SyntheticsTestDetailsType) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := SyntheticsTestDetailsType(value)
+	for _, existing := range []SyntheticsTestDetailsType{"api", "browser"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid SyntheticsTestDetailsType", *v)
+}
 
 // Ptr returns reference to SyntheticsTestDetailsType value
 func (v SyntheticsTestDetailsType) Ptr() *SyntheticsTestDetailsType {

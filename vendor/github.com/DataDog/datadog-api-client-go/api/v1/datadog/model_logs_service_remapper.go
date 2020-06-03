@@ -14,26 +14,25 @@ import (
 
 // LogsServiceRemapper Use this processor if you want to assign one or more attributes as the official service.  **Note:** If multiple service remapper processors can be applied to a given log, only the first one (according to the pipeline order) is taken into account.
 type LogsServiceRemapper struct {
-	// Array of source attributes.
-	Sources []string `json:"sources"`
-	// Type of processor.
-	Type string `json:"type"`
 	// Whether or not the processor is enabled.
 	IsEnabled *bool `json:"is_enabled,omitempty"`
 	// Name of the processor.
 	Name *string `json:"name,omitempty"`
+	// Array of source attributes.
+	Sources []string                `json:"sources"`
+	Type    LogsServiceRemapperType `json:"type"`
 }
 
 // NewLogsServiceRemapper instantiates a new LogsServiceRemapper object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogsServiceRemapper(sources []string, type_ string) *LogsServiceRemapper {
+func NewLogsServiceRemapper(sources []string, type_ LogsServiceRemapperType) *LogsServiceRemapper {
 	this := LogsServiceRemapper{}
-	this.Sources = sources
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	this.Sources = sources
+	this.Type = type_
 	return &this
 }
 
@@ -42,59 +41,11 @@ func NewLogsServiceRemapper(sources []string, type_ string) *LogsServiceRemapper
 // but it doesn't guarantee that properties required by API are set
 func NewLogsServiceRemapperWithDefaults() *LogsServiceRemapper {
 	this := LogsServiceRemapper{}
-	var type_ string = "service-remapper"
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	var type_ LogsServiceRemapperType = "service-remapper"
+	this.Type = type_
 	return &this
-}
-
-// GetSources returns the Sources field value
-func (o *LogsServiceRemapper) GetSources() []string {
-	if o == nil {
-		var ret []string
-		return ret
-	}
-
-	return o.Sources
-}
-
-// GetSourcesOk returns a tuple with the Sources field value
-// and a boolean to check if the value has been set.
-func (o *LogsServiceRemapper) GetSourcesOk() (*[]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Sources, true
-}
-
-// SetSources sets field value
-func (o *LogsServiceRemapper) SetSources(v []string) {
-	o.Sources = v
-}
-
-// GetType returns the Type field value
-func (o *LogsServiceRemapper) GetType() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value
-// and a boolean to check if the value has been set.
-func (o *LogsServiceRemapper) GetTypeOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Type, true
-}
-
-// SetType sets field value
-func (o *LogsServiceRemapper) SetType(v string) {
-	o.Type = v
 }
 
 // GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
@@ -161,26 +112,69 @@ func (o *LogsServiceRemapper) SetName(v string) {
 	o.Name = &v
 }
 
+// GetSources returns the Sources field value
+func (o *LogsServiceRemapper) GetSources() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+
+	return o.Sources
+}
+
+// GetSourcesOk returns a tuple with the Sources field value
+// and a boolean to check if the value has been set.
+func (o *LogsServiceRemapper) GetSourcesOk() (*[]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Sources, true
+}
+
+// SetSources sets field value
+func (o *LogsServiceRemapper) SetSources(v []string) {
+	o.Sources = v
+}
+
+// GetType returns the Type field value
+func (o *LogsServiceRemapper) GetType() LogsServiceRemapperType {
+	if o == nil {
+		var ret LogsServiceRemapperType
+		return ret
+	}
+
+	return o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *LogsServiceRemapper) GetTypeOk() (*LogsServiceRemapperType, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Type, true
+}
+
+// SetType sets field value
+func (o *LogsServiceRemapper) SetType(v LogsServiceRemapperType) {
+	o.Type = v
+}
+
 func (o LogsServiceRemapper) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if true {
-		toSerialize["sources"] = o.Sources
-	}
-	if true {
-		toSerialize["type"] = o.Type
-	}
 	if o.IsEnabled != nil {
 		toSerialize["is_enabled"] = o.IsEnabled
 	}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
+	if true {
+		toSerialize["sources"] = o.Sources
+	}
+	if true {
+		toSerialize["type"] = o.Type
+	}
 	return json.Marshal(toSerialize)
-}
-
-// AsLogsProcessor wraps this instance of LogsServiceRemapper in LogsProcessor
-func (s *LogsServiceRemapper) AsLogsProcessor() LogsProcessor {
-	return LogsProcessor{LogsProcessorInterface: s}
 }
 
 type NullableLogsServiceRemapper struct {

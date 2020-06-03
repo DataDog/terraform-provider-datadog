@@ -14,25 +14,24 @@ import (
 
 // LogsTraceRemapper There are two ways to improve correlation between application traces and logs.    1. Follow the documentation on [how to inject a trace ID in the application logs](https://docs.datadoghq.com/tracing/connect_logs_and_traces)   and by default log integrations take care of all the rest of the setup.    2. Use the Trace remapper processor to define a log attribute as its associated trace ID.
 type LogsTraceRemapper struct {
-	// Array of source attributes.
-	Sources *[]string `json:"sources,omitempty"`
-	// Type of processor.
-	Type string `json:"type"`
 	// Whether or not the processor is enabled.
 	IsEnabled *bool `json:"is_enabled,omitempty"`
 	// Name of the processor.
 	Name *string `json:"name,omitempty"`
+	// Array of source attributes.
+	Sources *[]string             `json:"sources,omitempty"`
+	Type    LogsTraceRemapperType `json:"type"`
 }
 
 // NewLogsTraceRemapper instantiates a new LogsTraceRemapper object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogsTraceRemapper(type_ string) *LogsTraceRemapper {
+func NewLogsTraceRemapper(type_ LogsTraceRemapperType) *LogsTraceRemapper {
 	this := LogsTraceRemapper{}
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	this.Type = type_
 	return &this
 }
 
@@ -41,67 +40,11 @@ func NewLogsTraceRemapper(type_ string) *LogsTraceRemapper {
 // but it doesn't guarantee that properties required by API are set
 func NewLogsTraceRemapperWithDefaults() *LogsTraceRemapper {
 	this := LogsTraceRemapper{}
-	var type_ string = "trace-id-remapper"
-	this.Type = type_
 	var isEnabled bool = false
 	this.IsEnabled = &isEnabled
+	var type_ LogsTraceRemapperType = "trace-id-remapper"
+	this.Type = type_
 	return &this
-}
-
-// GetSources returns the Sources field value if set, zero value otherwise.
-func (o *LogsTraceRemapper) GetSources() []string {
-	if o == nil || o.Sources == nil {
-		var ret []string
-		return ret
-	}
-	return *o.Sources
-}
-
-// GetSourcesOk returns a tuple with the Sources field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LogsTraceRemapper) GetSourcesOk() (*[]string, bool) {
-	if o == nil || o.Sources == nil {
-		return nil, false
-	}
-	return o.Sources, true
-}
-
-// HasSources returns a boolean if a field has been set.
-func (o *LogsTraceRemapper) HasSources() bool {
-	if o != nil && o.Sources != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetSources gets a reference to the given []string and assigns it to the Sources field.
-func (o *LogsTraceRemapper) SetSources(v []string) {
-	o.Sources = &v
-}
-
-// GetType returns the Type field value
-func (o *LogsTraceRemapper) GetType() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value
-// and a boolean to check if the value has been set.
-func (o *LogsTraceRemapper) GetTypeOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Type, true
-}
-
-// SetType sets field value
-func (o *LogsTraceRemapper) SetType(v string) {
-	o.Type = v
 }
 
 // GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
@@ -168,26 +111,77 @@ func (o *LogsTraceRemapper) SetName(v string) {
 	o.Name = &v
 }
 
+// GetSources returns the Sources field value if set, zero value otherwise.
+func (o *LogsTraceRemapper) GetSources() []string {
+	if o == nil || o.Sources == nil {
+		var ret []string
+		return ret
+	}
+	return *o.Sources
+}
+
+// GetSourcesOk returns a tuple with the Sources field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogsTraceRemapper) GetSourcesOk() (*[]string, bool) {
+	if o == nil || o.Sources == nil {
+		return nil, false
+	}
+	return o.Sources, true
+}
+
+// HasSources returns a boolean if a field has been set.
+func (o *LogsTraceRemapper) HasSources() bool {
+	if o != nil && o.Sources != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSources gets a reference to the given []string and assigns it to the Sources field.
+func (o *LogsTraceRemapper) SetSources(v []string) {
+	o.Sources = &v
+}
+
+// GetType returns the Type field value
+func (o *LogsTraceRemapper) GetType() LogsTraceRemapperType {
+	if o == nil {
+		var ret LogsTraceRemapperType
+		return ret
+	}
+
+	return o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *LogsTraceRemapper) GetTypeOk() (*LogsTraceRemapperType, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Type, true
+}
+
+// SetType sets field value
+func (o *LogsTraceRemapper) SetType(v LogsTraceRemapperType) {
+	o.Type = v
+}
+
 func (o LogsTraceRemapper) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Sources != nil {
-		toSerialize["sources"] = o.Sources
-	}
-	if true {
-		toSerialize["type"] = o.Type
-	}
 	if o.IsEnabled != nil {
 		toSerialize["is_enabled"] = o.IsEnabled
 	}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
+	if o.Sources != nil {
+		toSerialize["sources"] = o.Sources
+	}
+	if true {
+		toSerialize["type"] = o.Type
+	}
 	return json.Marshal(toSerialize)
-}
-
-// AsLogsProcessor wraps this instance of LogsTraceRemapper in LogsProcessor
-func (s *LogsTraceRemapper) AsLogsProcessor() LogsProcessor {
-	return LogsProcessor{LogsProcessorInterface: s}
 }
 
 type NullableLogsTraceRemapper struct {

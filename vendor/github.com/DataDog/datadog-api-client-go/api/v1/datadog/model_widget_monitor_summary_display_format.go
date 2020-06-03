@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // WidgetMonitorSummaryDisplayFormat What to display on the widget.
@@ -21,6 +22,23 @@ const (
 	WIDGETMONITORSUMMARYDISPLAYFORMAT_COUNTS_AND_LIST WidgetMonitorSummaryDisplayFormat = "countsAndList"
 	WIDGETMONITORSUMMARYDISPLAYFORMAT_LIST            WidgetMonitorSummaryDisplayFormat = "list"
 )
+
+func (v *WidgetMonitorSummaryDisplayFormat) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := WidgetMonitorSummaryDisplayFormat(value)
+	for _, existing := range []WidgetMonitorSummaryDisplayFormat{"counts", "countsAndList", "list"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid WidgetMonitorSummaryDisplayFormat", *v)
+}
 
 // Ptr returns reference to WidgetMonitorSummaryDisplayFormat value
 func (v WidgetMonitorSummaryDisplayFormat) Ptr() *WidgetMonitorSummaryDisplayFormat {

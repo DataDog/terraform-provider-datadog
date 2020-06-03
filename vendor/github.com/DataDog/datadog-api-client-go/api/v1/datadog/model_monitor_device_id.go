@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // MonitorDeviceID ID of the device the Synthetics monitor is running on. Same as `SyntheticsDeviceID`.
@@ -21,6 +22,23 @@ const (
 	MONITORDEVICEID_TABLET       MonitorDeviceID = "tablet"
 	MONITORDEVICEID_MOBILE_SMALL MonitorDeviceID = "mobile_small"
 )
+
+func (v *MonitorDeviceID) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := MonitorDeviceID(value)
+	for _, existing := range []MonitorDeviceID{"laptop_large", "tablet", "mobile_small"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid MonitorDeviceID", *v)
+}
 
 // Ptr returns reference to MonitorDeviceID value
 func (v MonitorDeviceID) Ptr() *MonitorDeviceID {

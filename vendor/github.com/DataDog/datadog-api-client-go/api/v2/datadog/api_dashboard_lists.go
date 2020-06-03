@@ -28,10 +28,10 @@ type apiCreateDashboardListItemsRequest struct {
 	ctx             _context.Context
 	apiService      *DashboardListsApiService
 	dashboardListId int64
-	body            *DashboardListItems
+	body            *DashboardListAddItemsRequest
 }
 
-func (r apiCreateDashboardListItemsRequest) Body(body DashboardListItems) apiCreateDashboardListItemsRequest {
+func (r apiCreateDashboardListItemsRequest) Body(body DashboardListAddItemsRequest) apiCreateDashboardListItemsRequest {
 	r.body = &body
 	return r
 }
@@ -201,10 +201,10 @@ type apiDeleteDashboardListItemsRequest struct {
 	ctx             _context.Context
 	apiService      *DashboardListsApiService
 	dashboardListId int64
-	body            *DashboardListItems
+	body            *DashboardListDeleteItemsRequest
 }
 
-func (r apiDeleteDashboardListItemsRequest) Body(body DashboardListItems) apiDeleteDashboardListItemsRequest {
+func (r apiDeleteDashboardListItemsRequest) Body(body DashboardListDeleteItemsRequest) apiDeleteDashboardListItemsRequest {
 	r.body = &body
 	return r
 }
@@ -525,10 +525,10 @@ type apiUpdateDashboardListItemsRequest struct {
 	ctx             _context.Context
 	apiService      *DashboardListsApiService
 	dashboardListId int64
-	body            *DashboardListItems
+	body            *DashboardListUpdateItemsRequest
 }
 
-func (r apiUpdateDashboardListItemsRequest) Body(body DashboardListItems) apiUpdateDashboardListItemsRequest {
+func (r apiUpdateDashboardListItemsRequest) Body(body DashboardListUpdateItemsRequest) apiUpdateDashboardListItemsRequest {
 	r.body = &body
 	return r
 }
@@ -550,16 +550,16 @@ func (a *DashboardListsApiService) UpdateDashboardListItems(ctx _context.Context
 
 /*
 Execute executes the request
- @return DashboardListItems
+ @return DashboardListUpdateItemsResponse
 */
-func (r apiUpdateDashboardListItemsRequest) Execute() (DashboardListItems, *_nethttp.Response, error) {
+func (r apiUpdateDashboardListItemsRequest) Execute() (DashboardListUpdateItemsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  DashboardListItems
+		localVarReturnValue  DashboardListUpdateItemsResponse
 	)
 
 	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "DashboardListsApiService.UpdateDashboardListItems")

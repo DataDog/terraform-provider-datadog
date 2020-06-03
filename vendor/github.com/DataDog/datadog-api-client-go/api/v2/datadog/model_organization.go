@@ -16,16 +16,15 @@ import (
 type Organization struct {
 	Attributes *OrganizationAttributes `json:"attributes,omitempty"`
 	// ID of the organization.
-	Id *string `json:"id,omitempty"`
-	// Organizations resource type.
-	Type string `json:"type"`
+	Id   *string           `json:"id,omitempty"`
+	Type OrganizationsType `json:"type"`
 }
 
 // NewOrganization instantiates a new Organization object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewOrganization(type_ string) *Organization {
+func NewOrganization(type_ OrganizationsType) *Organization {
 	this := Organization{}
 	this.Type = type_
 	return &this
@@ -36,7 +35,7 @@ func NewOrganization(type_ string) *Organization {
 // but it doesn't guarantee that properties required by API are set
 func NewOrganizationWithDefaults() *Organization {
 	this := Organization{}
-	var type_ string = "orgs"
+	var type_ OrganizationsType = "orgs"
 	this.Type = type_
 	return &this
 }
@@ -106,9 +105,9 @@ func (o *Organization) SetId(v string) {
 }
 
 // GetType returns the Type field value
-func (o *Organization) GetType() string {
+func (o *Organization) GetType() OrganizationsType {
 	if o == nil {
-		var ret string
+		var ret OrganizationsType
 		return ret
 	}
 
@@ -117,7 +116,7 @@ func (o *Organization) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *Organization) GetTypeOk() (*string, bool) {
+func (o *Organization) GetTypeOk() (*OrganizationsType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -125,7 +124,7 @@ func (o *Organization) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *Organization) SetType(v string) {
+func (o *Organization) SetType(v OrganizationsType) {
 	o.Type = v
 }
 
@@ -141,11 +140,6 @@ func (o Organization) MarshalJSON() ([]byte, error) {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsUserResponseIncludedItem wraps this instance of Organization in UserResponseIncludedItem
-func (s *Organization) AsUserResponseIncludedItem() UserResponseIncludedItem {
-	return UserResponseIncludedItem{UserResponseIncludedItemInterface: s}
 }
 
 type NullableOrganization struct {

@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // EventAlertType If an alert event is enabled, set its type. For example, `error`, `warning`, `info`, and `success`.
@@ -22,6 +23,23 @@ const (
 	EVENTALERTTYPE_INFO    EventAlertType = "info"
 	EVENTALERTTYPE_SUCCESS EventAlertType = "success"
 )
+
+func (v *EventAlertType) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := EventAlertType(value)
+	for _, existing := range []EventAlertType{"error", "warning", "info", "success"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid EventAlertType", *v)
+}
 
 // Ptr returns reference to EventAlertType value
 func (v EventAlertType) Ptr() *EventAlertType {

@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // SyntheticsTestMonitorStatus The status of your Synthetic monitor. * `O` for not triggered * `1` for triggered * `2` for no data
@@ -21,6 +22,23 @@ const (
 	SYNTHETICSTESTMONITORSTATUS_TRIGGERED   SyntheticsTestMonitorStatus = 1
 	SYNTHETICSTESTMONITORSTATUS_NO_DATA     SyntheticsTestMonitorStatus = 2
 )
+
+func (v *SyntheticsTestMonitorStatus) UnmarshalJSON(src []byte) error {
+	var value int64
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := SyntheticsTestMonitorStatus(value)
+	for _, existing := range []SyntheticsTestMonitorStatus{0, 1, 2} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid SyntheticsTestMonitorStatus", *v)
+}
 
 // Ptr returns reference to SyntheticsTestMonitorStatus value
 func (v SyntheticsTestMonitorStatus) Ptr() *SyntheticsTestMonitorStatus {

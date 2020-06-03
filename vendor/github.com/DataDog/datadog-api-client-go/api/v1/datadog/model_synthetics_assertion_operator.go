@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // SyntheticsAssertionOperator Assertion operator to apply.
@@ -27,6 +28,23 @@ const (
 	SYNTHETICSASSERTIONOPERATOR_VALIDATES            SyntheticsAssertionOperator = "validates"
 	SYNTHETICSASSERTIONOPERATOR_IS_IN_MORE_DAYS_THAN SyntheticsAssertionOperator = "isInMoreThan"
 )
+
+func (v *SyntheticsAssertionOperator) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := SyntheticsAssertionOperator(value)
+	for _, existing := range []SyntheticsAssertionOperator{"contains", "doesNotContain", "is", "isNot", "lessThan", "matches", "doesNotMatch", "validates", "isInMoreThan"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid SyntheticsAssertionOperator", *v)
+}
 
 // Ptr returns reference to SyntheticsAssertionOperator value
 func (v SyntheticsAssertionOperator) Ptr() *SyntheticsAssertionOperator {

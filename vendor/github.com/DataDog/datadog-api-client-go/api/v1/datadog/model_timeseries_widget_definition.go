@@ -28,17 +28,16 @@ type TimeseriesWidgetDefinition struct {
 	Title      *string          `json:"title,omitempty"`
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
 	// Size of the title.
-	TitleSize *string `json:"title_size,omitempty"`
-	// Type of the widget.
-	Type  string      `json:"type"`
-	Yaxis *WidgetAxis `json:"yaxis,omitempty"`
+	TitleSize *string                        `json:"title_size,omitempty"`
+	Type      TimeseriesWidgetDefinitionType `json:"type"`
+	Yaxis     *WidgetAxis                    `json:"yaxis,omitempty"`
 }
 
 // NewTimeseriesWidgetDefinition instantiates a new TimeseriesWidgetDefinition object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewTimeseriesWidgetDefinition(requests []TimeseriesWidgetRequest, type_ string) *TimeseriesWidgetDefinition {
+func NewTimeseriesWidgetDefinition(requests []TimeseriesWidgetRequest, type_ TimeseriesWidgetDefinitionType) *TimeseriesWidgetDefinition {
 	this := TimeseriesWidgetDefinition{}
 	this.Requests = requests
 	this.Type = type_
@@ -50,7 +49,7 @@ func NewTimeseriesWidgetDefinition(requests []TimeseriesWidgetRequest, type_ str
 // but it doesn't guarantee that properties required by API are set
 func NewTimeseriesWidgetDefinitionWithDefaults() *TimeseriesWidgetDefinition {
 	this := TimeseriesWidgetDefinition{}
-	var type_ string = "timeseries"
+	var type_ TimeseriesWidgetDefinitionType = "timeseries"
 	this.Type = type_
 	return &this
 }
@@ -336,9 +335,9 @@ func (o *TimeseriesWidgetDefinition) SetTitleSize(v string) {
 }
 
 // GetType returns the Type field value
-func (o *TimeseriesWidgetDefinition) GetType() string {
+func (o *TimeseriesWidgetDefinition) GetType() TimeseriesWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret TimeseriesWidgetDefinitionType
 		return ret
 	}
 
@@ -347,7 +346,7 @@ func (o *TimeseriesWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *TimeseriesWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *TimeseriesWidgetDefinition) GetTypeOk() (*TimeseriesWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -355,7 +354,7 @@ func (o *TimeseriesWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *TimeseriesWidgetDefinition) SetType(v string) {
+func (o *TimeseriesWidgetDefinition) SetType(v TimeseriesWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -427,11 +426,6 @@ func (o TimeseriesWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["yaxis"] = o.Yaxis
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of TimeseriesWidgetDefinition in WidgetDefinition
-func (s *TimeseriesWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableTimeseriesWidgetDefinition struct {

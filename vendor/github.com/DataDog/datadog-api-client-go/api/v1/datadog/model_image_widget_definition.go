@@ -14,10 +14,9 @@ import (
 
 // ImageWidgetDefinition The image widget allows you to embed an image on your dashboard. An image can be a PNG, JPG, or animated GIF. Only available on FREE layout dashboards.
 type ImageWidgetDefinition struct {
-	Margin *WidgetMargin      `json:"margin,omitempty"`
-	Sizing *WidgetImageSizing `json:"sizing,omitempty"`
-	// Type of the widget.
-	Type string `json:"type"`
+	Margin *WidgetMargin             `json:"margin,omitempty"`
+	Sizing *WidgetImageSizing        `json:"sizing,omitempty"`
+	Type   ImageWidgetDefinitionType `json:"type"`
 	// URL of the image.
 	Url string `json:"url"`
 }
@@ -26,7 +25,7 @@ type ImageWidgetDefinition struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewImageWidgetDefinition(type_ string, url string) *ImageWidgetDefinition {
+func NewImageWidgetDefinition(type_ ImageWidgetDefinitionType, url string) *ImageWidgetDefinition {
 	this := ImageWidgetDefinition{}
 	this.Type = type_
 	this.Url = url
@@ -38,7 +37,7 @@ func NewImageWidgetDefinition(type_ string, url string) *ImageWidgetDefinition {
 // but it doesn't guarantee that properties required by API are set
 func NewImageWidgetDefinitionWithDefaults() *ImageWidgetDefinition {
 	this := ImageWidgetDefinition{}
-	var type_ string = "image"
+	var type_ ImageWidgetDefinitionType = "image"
 	this.Type = type_
 	return &this
 }
@@ -108,9 +107,9 @@ func (o *ImageWidgetDefinition) SetSizing(v WidgetImageSizing) {
 }
 
 // GetType returns the Type field value
-func (o *ImageWidgetDefinition) GetType() string {
+func (o *ImageWidgetDefinition) GetType() ImageWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret ImageWidgetDefinitionType
 		return ret
 	}
 
@@ -119,7 +118,7 @@ func (o *ImageWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *ImageWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *ImageWidgetDefinition) GetTypeOk() (*ImageWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -127,7 +126,7 @@ func (o *ImageWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *ImageWidgetDefinition) SetType(v string) {
+func (o *ImageWidgetDefinition) SetType(v ImageWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -170,11 +169,6 @@ func (o ImageWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["url"] = o.Url
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of ImageWidgetDefinition in WidgetDefinition
-func (s *ImageWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableImageWidgetDefinition struct {

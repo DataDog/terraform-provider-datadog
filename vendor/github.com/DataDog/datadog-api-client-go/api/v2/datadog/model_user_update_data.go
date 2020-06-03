@@ -16,9 +16,8 @@ import (
 type UserUpdateData struct {
 	Attributes *UserUpdateAttributes `json:"attributes,omitempty"`
 	// ID of the user.
-	Id *string `json:"id,omitempty"`
-	// Users resource type.
-	Type *string `json:"type,omitempty"`
+	Id   *string    `json:"id,omitempty"`
+	Type *UsersType `json:"type,omitempty"`
 }
 
 // NewUserUpdateData instantiates a new UserUpdateData object
@@ -27,7 +26,7 @@ type UserUpdateData struct {
 // will change when the set of required properties is changed
 func NewUserUpdateData() *UserUpdateData {
 	this := UserUpdateData{}
-	var type_ string = "users"
+	var type_ UsersType = "users"
 	this.Type = &type_
 	return &this
 }
@@ -37,7 +36,7 @@ func NewUserUpdateData() *UserUpdateData {
 // but it doesn't guarantee that properties required by API are set
 func NewUserUpdateDataWithDefaults() *UserUpdateData {
 	this := UserUpdateData{}
-	var type_ string = "users"
+	var type_ UsersType = "users"
 	this.Type = &type_
 	return &this
 }
@@ -107,9 +106,9 @@ func (o *UserUpdateData) SetId(v string) {
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *UserUpdateData) GetType() string {
+func (o *UserUpdateData) GetType() UsersType {
 	if o == nil || o.Type == nil {
-		var ret string
+		var ret UsersType
 		return ret
 	}
 	return *o.Type
@@ -117,7 +116,7 @@ func (o *UserUpdateData) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserUpdateData) GetTypeOk() (*string, bool) {
+func (o *UserUpdateData) GetTypeOk() (*UsersType, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -133,8 +132,8 @@ func (o *UserUpdateData) HasType() bool {
 	return false
 }
 
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *UserUpdateData) SetType(v string) {
+// SetType gets a reference to the given UsersType and assigns it to the Type field.
+func (o *UserUpdateData) SetType(v UsersType) {
 	o.Type = &v
 }
 

@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // SyntheticsResourceType Document type to apply an assertion against.
@@ -25,6 +26,23 @@ const (
 	SYNTHETICSRESOURCETYPE_XHR        SyntheticsResourceType = "xhr"
 	SYNTHETICSRESOURCETYPE_OTHER      SyntheticsResourceType = "other"
 )
+
+func (v *SyntheticsResourceType) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := SyntheticsResourceType(value)
+	for _, existing := range []SyntheticsResourceType{"document", "stylesheet", "fetch", "image", "script", "xhr", "other"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid SyntheticsResourceType", *v)
+}
 
 // Ptr returns reference to SyntheticsResourceType value
 func (v SyntheticsResourceType) Ptr() *SyntheticsResourceType {

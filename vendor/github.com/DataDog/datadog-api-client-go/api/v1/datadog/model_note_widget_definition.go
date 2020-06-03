@@ -25,16 +25,15 @@ type NoteWidgetDefinition struct {
 	TextAlign *WidgetTextAlign `json:"text_align,omitempty"`
 	TickEdge  *WidgetTickEdge  `json:"tick_edge,omitempty"`
 	// Where to position the tick on an edge.
-	TickPos *string `json:"tick_pos,omitempty"`
-	// Type of the widget.
-	Type string `json:"type"`
+	TickPos *string                  `json:"tick_pos,omitempty"`
+	Type    NoteWidgetDefinitionType `json:"type"`
 }
 
 // NewNoteWidgetDefinition instantiates a new NoteWidgetDefinition object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewNoteWidgetDefinition(content string, type_ string) *NoteWidgetDefinition {
+func NewNoteWidgetDefinition(content string, type_ NoteWidgetDefinitionType) *NoteWidgetDefinition {
 	this := NoteWidgetDefinition{}
 	this.Content = content
 	this.Type = type_
@@ -46,7 +45,7 @@ func NewNoteWidgetDefinition(content string, type_ string) *NoteWidgetDefinition
 // but it doesn't guarantee that properties required by API are set
 func NewNoteWidgetDefinitionWithDefaults() *NoteWidgetDefinition {
 	this := NoteWidgetDefinition{}
-	var type_ string = "note"
+	var type_ NoteWidgetDefinitionType = "note"
 	this.Type = type_
 	return &this
 }
@@ -268,9 +267,9 @@ func (o *NoteWidgetDefinition) SetTickPos(v string) {
 }
 
 // GetType returns the Type field value
-func (o *NoteWidgetDefinition) GetType() string {
+func (o *NoteWidgetDefinition) GetType() NoteWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret NoteWidgetDefinitionType
 		return ret
 	}
 
@@ -279,7 +278,7 @@ func (o *NoteWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *NoteWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *NoteWidgetDefinition) GetTypeOk() (*NoteWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -287,7 +286,7 @@ func (o *NoteWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *NoteWidgetDefinition) SetType(v string) {
+func (o *NoteWidgetDefinition) SetType(v NoteWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -318,11 +317,6 @@ func (o NoteWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of NoteWidgetDefinition in WidgetDefinition
-func (s *NoteWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableNoteWidgetDefinition struct {

@@ -31,16 +31,15 @@ type HostMapWidgetDefinition struct {
 	Title      *string          `json:"title,omitempty"`
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
 	// Size of the title.
-	TitleSize *string `json:"title_size,omitempty"`
-	// Type of the widget.
-	Type string `json:"type"`
+	TitleSize *string                     `json:"title_size,omitempty"`
+	Type      HostMapWidgetDefinitionType `json:"type"`
 }
 
 // NewHostMapWidgetDefinition instantiates a new HostMapWidgetDefinition object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewHostMapWidgetDefinition(requests HostMapWidgetDefinitionRequests, type_ string) *HostMapWidgetDefinition {
+func NewHostMapWidgetDefinition(requests HostMapWidgetDefinitionRequests, type_ HostMapWidgetDefinitionType) *HostMapWidgetDefinition {
 	this := HostMapWidgetDefinition{}
 	this.Requests = requests
 	this.Type = type_
@@ -52,7 +51,7 @@ func NewHostMapWidgetDefinition(requests HostMapWidgetDefinitionRequests, type_ 
 // but it doesn't guarantee that properties required by API are set
 func NewHostMapWidgetDefinitionWithDefaults() *HostMapWidgetDefinition {
 	this := HostMapWidgetDefinition{}
-	var type_ string = "hostmap"
+	var type_ HostMapWidgetDefinitionType = "hostmap"
 	this.Type = type_
 	return &this
 }
@@ -402,9 +401,9 @@ func (o *HostMapWidgetDefinition) SetTitleSize(v string) {
 }
 
 // GetType returns the Type field value
-func (o *HostMapWidgetDefinition) GetType() string {
+func (o *HostMapWidgetDefinition) GetType() HostMapWidgetDefinitionType {
 	if o == nil {
-		var ret string
+		var ret HostMapWidgetDefinitionType
 		return ret
 	}
 
@@ -413,7 +412,7 @@ func (o *HostMapWidgetDefinition) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *HostMapWidgetDefinition) GetTypeOk() (*string, bool) {
+func (o *HostMapWidgetDefinition) GetTypeOk() (*HostMapWidgetDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -421,7 +420,7 @@ func (o *HostMapWidgetDefinition) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *HostMapWidgetDefinition) SetType(v string) {
+func (o *HostMapWidgetDefinition) SetType(v HostMapWidgetDefinitionType) {
 	o.Type = v
 }
 
@@ -464,11 +463,6 @@ func (o HostMapWidgetDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)
-}
-
-// AsWidgetDefinition wraps this instance of HostMapWidgetDefinition in WidgetDefinition
-func (s *HostMapWidgetDefinition) AsWidgetDefinition() WidgetDefinition {
-	return WidgetDefinition{WidgetDefinitionInterface: s}
 }
 
 type NullableHostMapWidgetDefinition struct {

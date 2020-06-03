@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // WidgetTimeWindows Define a time window.
@@ -25,6 +26,23 @@ const (
 	WIDGETTIMEWINDOWS_MONTH_TO_DATE  WidgetTimeWindows = "month_to_date"
 	WIDGETTIMEWINDOWS_PREVIOUS_MONTH WidgetTimeWindows = "previous_month"
 )
+
+func (v *WidgetTimeWindows) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := WidgetTimeWindows(value)
+	for _, existing := range []WidgetTimeWindows{"7d", "30d", "90d", "week_to_date", "previous_week", "month_to_date", "previous_month"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid WidgetTimeWindows", *v)
+}
 
 // Ptr returns reference to WidgetTimeWindows value
 func (v WidgetTimeWindows) Ptr() *WidgetTimeWindows {

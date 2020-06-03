@@ -15,9 +15,8 @@ import (
 // RelationshipToOrganizationData Relationship to organization object.
 type RelationshipToOrganizationData struct {
 	// ID of the organization.
-	Id *string `json:"id,omitempty"`
-	// Organizations type.
-	Type *string `json:"type,omitempty"`
+	Id   *string            `json:"id,omitempty"`
+	Type *OrganizationsType `json:"type,omitempty"`
 }
 
 // NewRelationshipToOrganizationData instantiates a new RelationshipToOrganizationData object
@@ -26,7 +25,7 @@ type RelationshipToOrganizationData struct {
 // will change when the set of required properties is changed
 func NewRelationshipToOrganizationData() *RelationshipToOrganizationData {
 	this := RelationshipToOrganizationData{}
-	var type_ string = "orgs"
+	var type_ OrganizationsType = "orgs"
 	this.Type = &type_
 	return &this
 }
@@ -36,7 +35,7 @@ func NewRelationshipToOrganizationData() *RelationshipToOrganizationData {
 // but it doesn't guarantee that properties required by API are set
 func NewRelationshipToOrganizationDataWithDefaults() *RelationshipToOrganizationData {
 	this := RelationshipToOrganizationData{}
-	var type_ string = "orgs"
+	var type_ OrganizationsType = "orgs"
 	this.Type = &type_
 	return &this
 }
@@ -74,9 +73,9 @@ func (o *RelationshipToOrganizationData) SetId(v string) {
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *RelationshipToOrganizationData) GetType() string {
+func (o *RelationshipToOrganizationData) GetType() OrganizationsType {
 	if o == nil || o.Type == nil {
-		var ret string
+		var ret OrganizationsType
 		return ret
 	}
 	return *o.Type
@@ -84,7 +83,7 @@ func (o *RelationshipToOrganizationData) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RelationshipToOrganizationData) GetTypeOk() (*string, bool) {
+func (o *RelationshipToOrganizationData) GetTypeOk() (*OrganizationsType, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -100,8 +99,8 @@ func (o *RelationshipToOrganizationData) HasType() bool {
 	return false
 }
 
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *RelationshipToOrganizationData) SetType(v string) {
+// SetType gets a reference to the given OrganizationsType and assigns it to the Type field.
+func (o *RelationshipToOrganizationData) SetType(v OrganizationsType) {
 	o.Type = &v
 }
 

@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // SLOTimeframe The SLO time window options.
@@ -21,6 +22,23 @@ const (
 	SLOTIMEFRAME_THIRTY_DAYS SLOTimeframe = "30d"
 	SLOTIMEFRAME_NINETY_DAYS SLOTimeframe = "90d"
 )
+
+func (v *SLOTimeframe) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := SLOTimeframe(value)
+	for _, existing := range []SLOTimeframe{"7d", "30d", "90d"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid SLOTimeframe", *v)
+}
 
 // Ptr returns reference to SLOTimeframe value
 func (v SLOTimeframe) Ptr() *SLOTimeframe {

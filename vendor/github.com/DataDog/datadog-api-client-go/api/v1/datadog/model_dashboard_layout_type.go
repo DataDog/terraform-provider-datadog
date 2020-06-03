@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // DashboardLayoutType Layout type of the dashboard.
@@ -20,6 +21,23 @@ const (
 	DASHBOARDLAYOUTTYPE_ORDERED DashboardLayoutType = "ordered"
 	DASHBOARDLAYOUTTYPE_FREE    DashboardLayoutType = "free"
 )
+
+func (v *DashboardLayoutType) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := DashboardLayoutType(value)
+	for _, existing := range []DashboardLayoutType{"ordered", "free"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid DashboardLayoutType", *v)
+}
 
 // Ptr returns reference to DashboardLayoutType value
 func (v DashboardLayoutType) Ptr() *DashboardLayoutType {

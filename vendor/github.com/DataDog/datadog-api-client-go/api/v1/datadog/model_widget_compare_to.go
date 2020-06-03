@@ -10,6 +10,7 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // WidgetCompareTo Timeframe used for the change comparison.
@@ -22,6 +23,23 @@ const (
 	WIDGETCOMPARETO_WEEK_BEFORE  WidgetCompareTo = "week_before"
 	WIDGETCOMPARETO_MONTH_BEFORE WidgetCompareTo = "month_before"
 )
+
+func (v *WidgetCompareTo) UnmarshalJSON(src []byte) error {
+	var value string
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	enumTypeValue := WidgetCompareTo(value)
+	for _, existing := range []WidgetCompareTo{"hour_before", "day_before", "week_before", "month_before"} {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid WidgetCompareTo", *v)
+}
 
 // Ptr returns reference to WidgetCompareTo value
 func (v WidgetCompareTo) Ptr() *WidgetCompareTo {

@@ -14,9 +14,9 @@ import (
 
 // Pagination Pagination object.
 type Pagination struct {
-	// Total count of pages.
+	// Total count.
 	TotalCount *int64 `json:"total_count,omitempty"`
-	// Total count of filtered pages.
+	// Total count of elements matched by the filter.
 	TotalFilteredCount *int64 `json:"total_filtered_count,omitempty"`
 }
 

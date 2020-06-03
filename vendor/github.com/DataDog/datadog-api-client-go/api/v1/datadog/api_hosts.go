@@ -225,7 +225,8 @@ func (r apiListHostsRequest) From(from int64) apiListHostsRequest {
 /*
 ListHosts Get all hosts for your organization
 This endpoint allows searching for hosts by name, alias, or tag.
-Hosts live within the past 3 hours are included.
+Hosts live within the past 3 hours are included by default.
+Retention is 7 days.
 Results are paginated with a max of 1000 results at a time.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiListHostsRequest
