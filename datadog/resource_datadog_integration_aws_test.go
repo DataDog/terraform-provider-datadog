@@ -44,8 +44,21 @@ func TestAccountAndRoleFromID(t *testing.T) {
 
 const testAccDatadogIntegrationAWSConfig = `
 resource "datadog_integration_aws" "account" {
-  account_id                       = "1234567888"
+  account_id                       = "001234567888"
   role_name                        = "testacc-datadog-integration-role"
+}
+`
+
+const testAccDatadogIntegrationAWSUpdateConfig = `
+resource "datadog_integration_aws" "account" {
+  account_id                       = "001234567889"
+  role_name                        = "testacc-datadog-integration-role"
+  filter_tags                      = ["key:value"]
+  host_tags                        = ["key:value", "key2:value2"]
+  account_specific_namespace_rules = {
+    auto_scaling = false
+    opsworks = true
+  }
 }
 `
 
@@ -65,10 +78,36 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 					checkIntegrationAWSExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
-						"account_id", "1234567888"),
+						"account_id", "001234567888"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"role_name", "testacc-datadog-integration-role"),
+				),
+			}, {
+				Config: testAccDatadogIntegrationAWSUpdateConfig,
+				Check: resource.ComposeTestCheckFunc(
+					checkIntegrationAWSExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"account_id", "001234567889"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"role_name", "testacc-datadog-integration-role"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"filter_tags.0", "key:value"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"host_tags.0", "key:value"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"host_tags.1", "key2:value2"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"account_specific_namespace_rules.auto_scaling", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"account_specific_namespace_rules.opsworks", "true"),
 				),
 			},
 		},

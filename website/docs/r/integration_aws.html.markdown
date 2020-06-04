@@ -10,8 +10,6 @@ description: |-
 
 Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.
 
-Update operations are currently not supported with datadog API so any change forces a new resource.
-
 ## Example Usage
 
 ```hcl
@@ -51,6 +49,8 @@ The following arguments are supported:
 The following attributes are exported:
 
 * `external_id` - AWS External ID
+
+**NOTE** This provider will not be able to detect changes made to the `external_id` field from outside Terraform. 
 
 ## Import
 
