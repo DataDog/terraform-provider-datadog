@@ -683,12 +683,14 @@ Nested `widget` blocks have the following structure:
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
       - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
       - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+      - `tags_execution`: (Optional) The execution method for multi-value filters. Can be either "and" or "or".
   - `event_timeline_definition`: The definition for a Event Timeline widget. Exactly one nested block is allowed with the following structure:
       - `text`: (Required) The query to use in the widget.
       - `title`: (Optional) The title of the widget.
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
       - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
       - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+      - `tags_execution`: (Optional) The execution method for multi-value filters. Can be either "and" or "or".
   - `free_text_definition`: The definition for a Free Text. Exactly one nested block is allowed with the following structure:
       - `text` - (Required) The text to display in the widget.
       - `color` - (Optional) The color of the text in the widget.
@@ -838,6 +840,7 @@ Nested `widget` blocks have the following structure:
         - `legend_size`: (Optional) The size of the legend displayed in the widget.
         - `event`: (Optional) The definition of the event to overlay on the graph. Includes the following structure:
           - `q`: (Required) The event query to use in the widget.
+          - `tags_execution`: (Optional) The execution method for multi-value filters.
         - `yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
   - `toplist_definition`: The definition for a Toplist  widget. Exactly one nested block is allowed with the following structure:
         - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
