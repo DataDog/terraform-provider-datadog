@@ -13,7 +13,7 @@ IMPROVEMENTS:
 * `provider`: Harmonized errors across all resources ([#450](https://github.com/terraform-providers/terraform-provider-datadog/issues/450))
 * `provider`: Add more infos in user agent header ([#455](https://github.com/terraform-providers/terraform-provider-datadog/issues/455))
 * `provider`: Update the api error message ([#472](https://github.com/terraform-providers/terraform-provider-datadog/issues/472))
-* `datadog_integration_pagerduty`, `datadog_screenboard`, `datadog_timeboard`: Add deprecation messages ([#496](https://github.com/terraform-providers/terraform-provider-datadog/issues/496))
+* `datadog_screenboard`, `datadog_timeboard`: Add deprecation messages ([#496](https://github.com/terraform-providers/terraform-provider-datadog/issues/496))
 * `datadog_integration_aws`: Make sure the aws host_tags and filters_tags are never nil ([#503](https://github.com/terraform-providers/terraform-provider-datadog/issues/503)) 
 * `provider`: New UserAgent Header ([#510](https://github.com/terraform-providers/terraform-provider-datadog/issues/510))
 * `provider`: Update User Agent ([#511](https://github.com/terraform-providers/terraform-provider-datadog/issues/511))
@@ -46,7 +46,7 @@ NOTES:
     * `datadog_synthetics_test_`: Update synthetics resource to utilize Datadog Go Client ([#499](https://github.com/terraform-providers/terraform-provider-datadog/issues/499))
     * `datadog_integration_aws_log_collection`, `datadog_integration_aws_lambda_arn`: Migrate AWS logs to use the official Go Client ([#497](https://github.com/terraform-providers/terraform-provider-datadog/issues/497))
     * `datadog_dashboard`: Update dashboard resource to use Datadog Go client ([#489](https://github.com/terraform-providers/terraform-provider-datadog/issues/489))
-* `datadog_integration_pagerduty`, `datadog_screenboard` and `datadog_timeboard` resources are deprecated and should be converted to `datadog_integration_pagerduty_service_object` and `datadog_dashboard` resources.
+* `datadog_screenboard` and `datadog_timeboard` resources are deprecated and should be converted to `datadog_dashboard` resources.
 * Thanks [@NeverTwice](https://github.com/NeverTwice) and [@sepulworld](https://github.com/sepulworld) who contributed to this release as well.
 
 ## 2.7.0 (February 10, 2020)
