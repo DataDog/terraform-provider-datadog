@@ -26,8 +26,7 @@ BUGFIXES:
 
 NOTES:
 * This release replaces the underlying community driven Datadog API Go client [go-datadog-api](https://github.com/zorkian/go-datadog-api) with the Datadog Official API Go client [datadog-api-client-go](https://github.com/DataDog/datadog-api-client-go) for all resources listed below:
-    * `provider`: Add Datadog Go client v2 API ([#477](https://github.com/terraform-providers/terraform-provider-datadog/issues/477))
-    * `provider`: Add Datadog Go Client ([#456](https://github.com/terraform-providers/terraform-provider-datadog/issues/456))
+    * `provider`: Add Datadog Go client API ([#477](https://github.com/terraform-providers/terraform-provider-datadog/issues/477)) and ([#456](https://github.com/terraform-providers/terraform-provider-datadog/issues/456))
     * `datadog_service_level_objective`: Migrate SLO resource with Datadog Go Client ([#490](https://github.com/terraform-providers/terraform-provider-datadog/issues/490))
     * `datadog_metric_metadata`: Update metric_metadata resource to use Datadog Go client ([#486](https://github.com/terraform-providers/terraform-provider-datadog/issues/486))
     * `datadog_integration_aws`: Update AWS resource to use Datadog Go client ([#481](https://github.com/terraform-providers/terraform-provider-datadog/issues/481))
