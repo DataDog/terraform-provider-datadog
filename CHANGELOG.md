@@ -1,4 +1,4 @@
-## 2.8.0 (Unreleased)
+## 2.8.0 (June 10, 2020)
 
 FEATURES:
 * `provider`: Add support for `DD_API_KEY`, `DD_APP_KEY` and `DD_HOST` env variables ([#469](https://github.com/terraform-providers/terraform-provider-datadog/issues/469))
