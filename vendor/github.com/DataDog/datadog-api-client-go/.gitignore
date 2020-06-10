@@ -1,5 +1,6 @@
 .travis.yml
 git_push.sh
+gotestsum.json
 coverage.txt
 .env*
 
