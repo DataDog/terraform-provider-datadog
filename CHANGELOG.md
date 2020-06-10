@@ -14,10 +14,7 @@ IMPROVEMENTS:
 * `provider`: Add more infos in user agent header ([#455](https://github.com/terraform-providers/terraform-provider-datadog/issues/455))
 * `provider`: Update the api error message ([#472](https://github.com/terraform-providers/terraform-provider-datadog/issues/472))
 * `datadog_screenboard`, `datadog_timeboard`: Add deprecation messages ([#496](https://github.com/terraform-providers/terraform-provider-datadog/issues/496))
-* `datadog_integration_aws`: Make sure the aws host_tags and filters_tags are never nil ([#503](https://github.com/terraform-providers/terraform-provider-datadog/issues/503)) 
-* `provider`: New UserAgent Header ([#510](https://github.com/terraform-providers/terraform-provider-datadog/issues/510))
 * `provider`: New UserAgent Header ([#455](https://github.com/terraform-providers/terraform-provider-datadog/issues/455)), ([#510](https://github.com/terraform-providers/terraform-provider-datadog/issues/510)), ([#511](https://github.com/terraform-providers/terraform-provider-datadog/issues/511)), and ([#512](https://github.com/terraform-providers/terraform-provider-datadog/issues/512))
-* `provider`: UserAgent Header adjustment ([#512](https://github.com/terraform-providers/terraform-provider-datadog/issues/512))
 * `datadog_integration_aws`: Add full AWS Update support ([#521](https://github.com/terraform-providers/terraform-provider-datadog/issues/521))
 
 BUGFIXES:
