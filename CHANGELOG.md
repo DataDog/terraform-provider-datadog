@@ -34,7 +34,7 @@ NOTES:
     * `datadog_downtime`: Update Downtime resource to use Datadog Go client ([#480](https://github.com/terraform-providers/terraform-provider-datadog/issues/480))
     * `datadog_ip_ranges`: Migrate IP Range resource with Datadog Go client ([#491](https://github.com/terraform-providers/terraform-provider-datadog/issues/491))
     * `datadog_integration_pagerduty_service_object`: Update pagerduty_service_object resource to use Datadog Go client ([#488](https://github.com/terraform-providers/terraform-provider-datadog/issues/488))
-    * `datadog_logs_index`, `datadog_logs_index_order`, `datadog_logs_integration_pipeline`, `datadog_logs_pipeline_order`: Update Logs resources resource to use Datadog Go client ([#483](https://github.com/terraform-providers/terraform-provider-datadog/issues/483))
+    * `datadog_logs_index`, `datadog_logs_index_order`, `datadog_logs_integration_pipeline`, `datadog_logs_pipeline_order`: Update Logs resources to use Datadog Go client ([#483](https://github.com/terraform-providers/terraform-provider-datadog/issues/483))
     * `datadog_monitor`: Update monitor resource to use Datadog Go client ([#485](https://github.com/terraform-providers/terraform-provider-datadog/issues/485))
     * `datadog_dashboard_list`: Update Dashboard_list resource to use Datadog Go client ([#479](https://github.com/terraform-providers/terraform-provider-datadog/issues/479))
     * `datadog_integration_aws_log_collection`: Update aws_log_collection resource to use Datadog Go client ([#501](https://github.com/terraform-providers/terraform-provider-datadog/issues/501))
