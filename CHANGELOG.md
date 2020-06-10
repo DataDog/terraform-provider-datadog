@@ -47,7 +47,7 @@ NOTES:
     * `datadog_integration_aws_log_collection`, `datadog_integration_aws_lambda_arn`: Migrate AWS logs to use the official Go Client ([#497](https://github.com/terraform-providers/terraform-provider-datadog/issues/497))
     * `datadog_dashboard`: Update dashboard resource to use Datadog Go client ([#489](https://github.com/terraform-providers/terraform-provider-datadog/issues/489))
 * `datadog_screenboard` and `datadog_timeboard` resources are deprecated and should be converted to `datadog_dashboard` resources.
-* Thanks [@NeverTwice](https://github.com/NeverTwice) and [@sepulworld](https://github.com/sepulworld) who contributed to this release as well.
+* Thanks [@NeverTwice](https://github.com/NeverTwice) [#460](https://github.com/terraform-providers/terraform-provider-datadog/pull/460) and [@sepulworld](https://github.com/sepulworld) [#506](https://github.com/terraform-providers/terraform-provider-datadog/pull/506) who contributed to this release as well.
 
 ## 2.7.0 (February 10, 2020)
 
