@@ -15,11 +15,11 @@ var integrationPdMutex = sync.Mutex{}
 
 func resourceDatadogIntegrationPagerduty() *schema.Resource {
 	return &schema.Resource{
-		Create:             resourceDatadogIntegrationPagerdutyCreate,
-		Read:               resourceDatadogIntegrationPagerdutyRead,
-		Exists:             resourceDatadogIntegrationPagerdutyExists,
-		Update:             resourceDatadogIntegrationPagerdutyUpdate,
-		Delete:             resourceDatadogIntegrationPagerdutyDelete,
+		Create: resourceDatadogIntegrationPagerdutyCreate,
+		Read:   resourceDatadogIntegrationPagerdutyRead,
+		Exists: resourceDatadogIntegrationPagerdutyExists,
+		Update: resourceDatadogIntegrationPagerdutyUpdate,
+		Delete: resourceDatadogIntegrationPagerdutyDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
