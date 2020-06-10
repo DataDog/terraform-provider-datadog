@@ -140,8 +140,12 @@ func NewConfiguration() *Configuration {
 				},
 			},
 		},
-		OperationServers:   map[string]ServerConfigurations{},
-		unstableOperations: map[string]bool{},
+		OperationServers: map[string]ServerConfigurations{},
+		unstableOperations: map[string]bool{
+			"AddReadRoleToArchive":  false,
+			"ListArchiveReadRoles":  false,
+			"RemoveRoleFromArchive": false,
+		},
 	}
 	return cfg
 }

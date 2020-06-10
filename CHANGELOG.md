@@ -1,4 +1,54 @@
 ## 2.8.0 (Unreleased)
+
+FEATURES:
+* `provider`: Add support for `DD_API_KEY`, `DD_APP_KEY` and `DD_HOST` env variables ([#469](https://github.com/terraform-providers/terraform-provider-datadog/issues/469))
+* `datadog_logs_custom_pipeline`: Add support for lookup processor ([#415](https://github.com/terraform-providers/terraform-provider-datadog/issues/415))
+* `datadog_integration_aws_lambda_arn`: Add AWS Log Lambda Integration ([#436](https://github.com/terraform-providers/terraform-provider-datadog/issues/436))
+* `datadog_integration_aws_log_collection`: Add aws log collection service resource ([#437](https://github.com/terraform-providers/terraform-provider-datadog/issues/437)) Thanks [@mhaley-miovision](https://github.com/mhaley-miovision)
+* `datadog_dashboard`: Add support for tags_execution ([#524](https://github.com/terraform-providers/terraform-provider-datadog/issues/524))
+* `datadog_dashboard`: Add `legend_size` to api request ([#421](https://github.com/terraform-providers/terraform-provider-datadog/issues/421))
+* `provider`: Add "validate" option that can disable validation ([#474](https://github.com/terraform-providers/terraform-provider-datadog/issues/474)) Thanks [@bendrucker](https://github.com/bendrucker)
+
+IMPROVEMENTS:
+* `provider`: Harmonized errors across all resources ([#450](https://github.com/terraform-providers/terraform-provider-datadog/issues/450))
+* `provider`: Add more infos in user agent header ([#455](https://github.com/terraform-providers/terraform-provider-datadog/issues/455))
+* `provider`: Update the api error message ([#472](https://github.com/terraform-providers/terraform-provider-datadog/issues/472))
+* `datadog_integration_pagerduty`, `datadog_screenboard`, `datadog_timeboard`: Add deprecation messages ([#496](https://github.com/terraform-providers/terraform-provider-datadog/issues/496))
+* `datadog_integration_aws`: Make sure the aws host_tags and filters_tags are never nil ([#503](https://github.com/terraform-providers/terraform-provider-datadog/issues/503)) 
+* `provider`: New UserAgent Header ([#510](https://github.com/terraform-providers/terraform-provider-datadog/issues/510))
+* `provider`: Update User Agent ([#511](https://github.com/terraform-providers/terraform-provider-datadog/issues/511))
+* `provider`: UserAgent Header adjustment ([#512](https://github.com/terraform-providers/terraform-provider-datadog/issues/512))
+* `datadog_integration_aws`: Add full AWS Update support ([#521](https://github.com/terraform-providers/terraform-provider-datadog/issues/521))
+
+BUGFIXES:
+* `datadog_logs_index`: Fail fast if index isn't imported ([#452](https://github.com/terraform-providers/terraform-provider-datadog/issues/452)) 
+* `datadog_integration_aws`: Do not set empty structures in request to create aws integration ([#505](https://github.com/terraform-providers/terraform-provider-datadog/issues/505))  Thanks [@miguelaferreira](https://github.com/miguelaferreira)
+* `datadog_dashboard`: Add default to deprecated `count` field to avoid sending 0 ([#514](https://github.com/terraform-providers/terraform-provider-datadog/issues/514)) 
+* `datadog_integration_pagerduty`: Fix perpetual diff in api_token ([#518](https://github.com/terraform-providers/terraform-provider-datadog/issues/518)) Thanks [@bendrucker](https://github.com/bendrucker)
+* `datadog_dashboard`: Add column revamp properties to dashboard log stream ([#517](https://github.com/terraform-providers/terraform-provider-datadog/issues/517)) 
+
+NOTES:
+* This release replaces the underlying community driven Datadog API Go client [go-datadog-api](https://github.com/zorkian/go-datadog-api) with Datadog Official API Go client [datadog-api-client-go](https://github.com/DataDog/datadog-api-client-go) for all resources listed below:
+    * `provider`: Add Generated client v2 API ([#477](https://github.com/terraform-providers/terraform-provider-datadog/issues/477))
+    * `provider`: Add generated Go Client ([#456](https://github.com/terraform-providers/terraform-provider-datadog/issues/456))
+    * `datadog_service_level_objective`: Migrate SLO resource with Official Go SDK ([#490](https://github.com/terraform-providers/terraform-provider-datadog/issues/490))
+    * `datadog_metric_metadata`: Update metric_metadata resource to use Datadog Go client ([#486](https://github.com/terraform-providers/terraform-provider-datadog/issues/486))
+    * `datadog_integration_aws`: Update AWS resource to use Datadog Go client ([#481](https://github.com/terraform-providers/terraform-provider-datadog/issues/481))
+    * `datadog_integration_gcp`: Update GCP resource to use Datadog Go client ([#482](https://github.com/terraform-providers/terraform-provider-datadog/issues/482))
+    * `datadog_downtime`: Update Downtime resource to use Datadog Go client ([#480](https://github.com/terraform-providers/terraform-provider-datadog/issues/480))
+    * `datadog_ip_ranges`: Migrate IP Range resource with Official Go SDK ([#491](https://github.com/terraform-providers/terraform-provider-datadog/issues/491))
+    * `datadog_integration_pagerduty_service_object`: Update pagerduty_service_object resource to use Datadog Go client ([#488](https://github.com/terraform-providers/terraform-provider-datadog/issues/488))
+    * `datadog_logs_index`, `datadog_logs_index_order`, `datadog_logs_integration_pipeline`, `datadog_logs_pipeline_order`: Update Logs resources resource to use Datadog Go client ([#483](https://github.com/terraform-providers/terraform-provider-datadog/issues/483))
+    * `datadog_monitor`: Update monitor resource to use Datadog Go client ([#485](https://github.com/terraform-providers/terraform-provider-datadog/issues/485))
+    * `datadog_dashboard_list`: Update Dashboard_list resource to use Datadog Go client ([#479](https://github.com/terraform-providers/terraform-provider-datadog/issues/479))
+    * `datadog_integration_aws_log_collection`: Update aws_log_collection resource to use Datadog Go client ([#501](https://github.com/terraform-providers/terraform-provider-datadog/issues/501))
+    * `datadog_logs_custom_pipeline`: Update Logs custom pipeline resource to utilize Datadog Go client ([#495](https://github.com/terraform-providers/terraform-provider-datadog/issues/495))
+    * `datadog_synthetics_test_`: Update synthetics resource to utilize Datadog Go Client ([#499](https://github.com/terraform-providers/terraform-provider-datadog/issues/499))
+    * `datadog_integration_aws_log_collection`, `datadog_integration_aws_lambda_arn`: Migrate AWS logs to use the official Go Client ([#497](https://github.com/terraform-providers/terraform-provider-datadog/issues/497))
+    * `datadog_dashboard`: Update dashboard resource to use Datadog Go client ([#489](https://github.com/terraform-providers/terraform-provider-datadog/issues/489))
+* `datadog_integration_pagerduty`, `datadog_screenboard` and `datadog_timeboard` resources are deprecated and should be converted to `datadog_integration_pagerduty_service_object` and `datadog_dashboard` resources.
+* Thanks [@NeverTwice](https://github.com/NeverTwice) and [@sepulworld](https://github.com/sepulworld) who contributed to this release as well.
+
 ## 2.7.0 (February 10, 2020)
 
 IMPROVEMENTS:
