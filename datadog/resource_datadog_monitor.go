@@ -191,6 +191,10 @@ func resourceDatadogMonitor() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
+			"force_delete": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -554,14 +558,21 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 
 func resourceDatadogMonitorDelete(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	i, err := strconv.Atoi(d.Id())
+	i, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return err
 	}
 
-	if err = client.DeleteMonitor(i); err != nil {
+	if d.Get("force_delete").(bool) {
+		_, _, err = datadogClientV1.MonitorsApi.DeleteMonitor(authV1, i).Force("true").Execute()
+	} else {
+		_, _, err = datadogClientV1.MonitorsApi.DeleteMonitor(authV1, i).Execute()
+	}
+
+	if err != nil {
 		return translateClientError(err, "error deleting monitor")
 	}
 
