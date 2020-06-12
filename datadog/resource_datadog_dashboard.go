@@ -2533,9 +2533,13 @@ func buildDatadogWidgetFieldSort(terraformWidgetFieldSort map[string]interface{}
 
 func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
-	// Required params
-	terraformDefinition["indexes"] = *datadogDefinition.Indexes
 	// Optional params
+
+	// Indexes is the recommended required field, but we still allow setting logsets instead for backwards compatibility
+	if v, ok := datadogDefinition.GetIndexesOk(); ok {
+		terraformDefinition["indexes"] = *v
+	}
+
 	if v, ok := datadogDefinition.GetLogsetOk(); ok {
 		terraformDefinition["logset"] = *v
 	}
