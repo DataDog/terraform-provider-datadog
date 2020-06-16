@@ -100,7 +100,7 @@ func removeURLSecrets(u *url.URL) *url.URL {
 	return u
 }
 
-func initAccProvider(t *testing.T) (*schema.Provider, func(t *testing.T)) {
+func initRecorder(t *testing.T) *recorder.Recorder {
 	var mode recorder.Mode
 	if isRecording() {
 		mode = recorder.ModeRecording
@@ -129,9 +129,13 @@ func initAccProvider(t *testing.T) (*schema.Provider, func(t *testing.T)) {
 		i.Request.Headers.Del("Dd-Application-Key")
 		return nil
 	})
+	return rec
+}
+
+func initAccProvider(t *testing.T, httpClient *http.Client, rec *recorder.Recorder) (*schema.Provider, func(t *testing.T)) {
 
 	p := Provider().(*schema.Provider)
-	p.ConfigureFunc = testProviderConfigure(rec)
+	p.ConfigureFunc = testProviderConfigure(rec, httpClient)
 
 	cleanup := func(t *testing.T) {
 		rec.Stop()
@@ -139,15 +143,14 @@ func initAccProvider(t *testing.T) (*schema.Provider, func(t *testing.T)) {
 	return p, cleanup
 }
 
-func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
+func testProviderConfigure(r *recorder.Recorder, httpClient *http.Client) schema.ConfigureFunc {
 	return func(d *schema.ResourceData) (interface{}, error) {
 		communityClient := datadogCommunity.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
 		if apiURL := d.Get("api_url").(string); apiURL != "" {
 			communityClient.SetBaseUrl(apiURL)
 		}
 
-		c := cleanhttp.DefaultClient()
-		c.Transport = logging.NewTransport("Datadog", r)
+		c := httpClient
 		communityClient.HttpClient = c
 		communityClient.ExtraHeader["User-Agent"] = fmt.Sprintf("Datadog/%s/terraform (%s)", version.ProviderVersion, runtime.Version())
 
@@ -229,11 +232,18 @@ func testProviderConfigure(r *recorder.Recorder) schema.ConfigureFunc {
 	}
 }
 
-func testAccProviders(t *testing.T) (map[string]terraform.ResourceProvider, func(t *testing.T)) {
-	provider, cleanup := initAccProvider(t)
+func testAccProvidersWithHttpClient(t *testing.T, httpClient *http.Client, rec *recorder.Recorder) (map[string]terraform.ResourceProvider, func(t *testing.T)) {
+	provider, cleanup := initAccProvider(t, httpClient, rec)
 	return map[string]terraform.ResourceProvider{
 		"datadog": provider,
 	}, cleanup
+}
+
+func testAccProviders(t *testing.T) (map[string]terraform.ResourceProvider, func(t *testing.T)) {
+	rec := initRecorder(t)
+	c := cleanhttp.DefaultClient()
+	c.Transport = logging.NewTransport("Datadog", rec)
+	return testAccProvidersWithHttpClient(t, c, rec)
 }
 
 func testAccProvider(t *testing.T, accProviders map[string]terraform.ResourceProvider) *schema.Provider {
@@ -245,7 +255,10 @@ func testAccProvider(t *testing.T, accProviders map[string]terraform.ResourcePro
 }
 
 func TestProvider(t *testing.T) {
-	accProvider, cleanup := initAccProvider(t)
+	rec := initRecorder(t)
+	c := cleanhttp.DefaultClient()
+	c.Transport = logging.NewTransport("Datadog", rec)
+	accProvider, cleanup := initAccProvider(t, c, rec)
 	defer cleanup(t)
 
 	if err := accProvider.InternalValidate(); err != nil {
