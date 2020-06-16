@@ -229,7 +229,7 @@ func testProviderConfigure(httpClient *http.Client) schema.ConfigureFunc {
 	}
 }
 
-func testAccProvidersWithHttpClient(t *testing.T, httpClient *http.Client, rec *recorder.Recorder) map[string]terraform.ResourceProvider {
+func testAccProvidersWithHttpClient(t *testing.T, httpClient *http.Client) map[string]terraform.ResourceProvider {
 	provider := initAccProvider(t, httpClient)
 	return map[string]terraform.ResourceProvider{
 		"datadog": provider,
@@ -240,7 +240,7 @@ func testAccProviders(t *testing.T) (map[string]terraform.ResourceProvider, func
 	rec := initRecorder(t)
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", rec)
-	return testAccProvidersWithHttpClient(t, c, rec), func(t *testing.T) {
+	return testAccProvidersWithHttpClient(t, c), func(t *testing.T) {
 		rec.Stop()
 	}
 }
