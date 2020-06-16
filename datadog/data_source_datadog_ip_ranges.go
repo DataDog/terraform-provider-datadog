@@ -99,12 +99,12 @@ func dataSourceDatadogIPRangesRead(d *schema.ResourceData, meta interface{}) err
 	// v4 and v6
 	ipAddressesPtr := &ipAddresses
 	agents := ipAddressesPtr.GetAgents()
-	api := ipAddressesPtr.GetAgents()
-	apm := ipAddressesPtr.GetAgents()
-	logs := ipAddressesPtr.GetAgents()
-	process := ipAddressesPtr.GetAgents()
-	synthetics := ipAddressesPtr.GetAgents()
-	webhook := ipAddressesPtr.GetAgents()
+	api := ipAddressesPtr.GetApi()
+	apm := ipAddressesPtr.GetApm()
+	logs := ipAddressesPtr.GetLogs()
+	process := ipAddressesPtr.GetProcess()
+	synthetics := ipAddressesPtr.GetSynthetics()
+	webhook := ipAddressesPtr.GetWebhooks()
 
 	if len(agents.GetPrefixesIpv4())+len(api.GetPrefixesIpv4())+
 		len(apm.GetPrefixesIpv4())+len(logs.GetPrefixesIpv4())+
