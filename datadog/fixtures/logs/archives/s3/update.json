@@ -1,0 +1,19 @@
+{
+  "data": {
+    "attributes": {
+      "destination": {
+        "bucket": "my-bucket",
+        "integration": {
+          "account_id": "my-account-id",
+          "role_name": "DatadogGoClientTestIntegrationRole"
+        },
+        "path": "/path/foo",
+        "type": "s3"
+      },
+      "name": "my first s3 archive after update",
+      "query": "service:tutu"
+    },
+    "id": "FooBar",
+    "type": "archives"
+  }
+}
