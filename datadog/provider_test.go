@@ -3,12 +3,14 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"runtime"
+	"strings"
 	"testing"
 	"time"
 
@@ -266,5 +268,72 @@ func testAccPreCheck(t *testing.T) {
 	}
 	if !isAPPKeySet() {
 		t.Fatal("DD_APP_KEY must be set for acceptance tests")
+	}
+}
+
+func testCheckResourceAttrs(name string, checkExists resource.TestCheckFunc, assertions []string) []resource.TestCheckFunc {
+	funcs := []resource.TestCheckFunc{}
+	funcs = append(funcs, checkExists)
+	for _, assertion := range assertions {
+		assertionPair := strings.Split(assertion, " = ")
+		if len(assertionPair) == 1 {
+			assertionPair = strings.Split(assertion, " =")
+		}
+		key := assertionPair[0]
+		value := ""
+		if len(assertionPair) > 1 {
+			value = assertionPair[1]
+		}
+		// Use utility method to print out all state values during debugging
+		funcs = append(funcs, resource.TestCheckResourceAttr(name, key, value))
+		//funcs = append(funcs, CheckResourceAttr(name, key, value))
+	}
+	return funcs
+}
+
+/* Utility method for Debugging purpose */
+func CheckResourceAttr(name, key, value string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		ms := s.RootModule()
+		rs, ok := ms.Resources[name]
+		if !ok {
+			return nil
+		}
+
+		is := rs.Primary
+		if is == nil {
+			return nil
+		}
+
+		for k, val := range is.Attributes {
+			fmt.Println(fmt.Sprintf("%v = %v", k, val))
+		}
+
+		// Empty containers may be elided from the state.
+		// If the intent here is to check for an empty container, allow the key to
+		// also be non-existent.
+		emptyCheck := false
+		if value == "0" && (strings.HasSuffix(key, ".#") || strings.HasSuffix(key, ".%")) {
+			emptyCheck = true
+		}
+
+		if v, ok := is.Attributes[key]; !ok || v != value {
+
+			if emptyCheck && !ok {
+				return nil
+			}
+
+			if !ok {
+				return fmt.Errorf("%s: Attribute '%s' not found", name, key)
+			}
+
+			return fmt.Errorf(
+				"%s: Attribute '%s' expected %#v, got %#v",
+				name,
+				key,
+				value,
+				v)
+		}
+		return nil
 	}
 }

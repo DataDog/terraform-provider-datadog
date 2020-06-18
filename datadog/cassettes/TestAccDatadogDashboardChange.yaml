@@ -18,11 +18,11 @@ interactions:
     method: POST
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"e7t-jx3-qmz","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/e7t-jx3-qmz/acceptance-test-change-widget-dashboard","created_at":"2020-06-15T15:51:13.716303+00:00","modified_at":"2020-06-15T15:51:13.716303+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":5150020819463479},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"fgn-3ey-jby","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/fgn-3ey-jby/acceptance-test-change-widget-dashboard","created_at":"2020-06-17T13:04:51.925975+00:00","modified_at":"2020-06-17T13:04:51.925975+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":1984093298224065},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":3277726697955557}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":8420460865827460}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -33,13 +33,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 15 Jun 2020 15:51:13 GMT
+      - Wed, 17 Jun 2020 13:04:51 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:51:13 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 24-Jun-2020 13:04:51 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -48,9 +48,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - NueLa2zkdBcl9S7BHrRuWyjAeR9iWgPFe330KTY6Cp0/yUhjUktbxu5rG2fG6gBk
+      - bJj7D3RvHsKo+7eO3lrtPpPG0z8SsAwLw7bNfLb4htD+N9Ub8bD3AFgh45XaVsFM
       X-Dd-Version:
-      - "35.2622342"
+      - "35.2631588"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -66,15 +66,15 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/e7t-jx3-qmz
+    url: https://api.datadoghq.com/api/v1/dashboard/fgn-3ey-jby
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"e7t-jx3-qmz","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/e7t-jx3-qmz/acceptance-test-change-widget-dashboard","created_at":"2020-06-15T15:51:13.716303+00:00","modified_at":"2020-06-15T15:51:13.716303+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":5150020819463479},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"fgn-3ey-jby","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/fgn-3ey-jby/acceptance-test-change-widget-dashboard","created_at":"2020-06-17T13:04:51.925975+00:00","modified_at":"2020-06-17T13:04:51.925975+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":1984093298224065},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":3277726697955557}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":8420460865827460}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -85,13 +85,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 15 Jun 2020 15:51:13 GMT
+      - Wed, 17 Jun 2020 13:04:52 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:51:13 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 24-Jun-2020 13:04:52 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -100,9 +100,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Iy6HNgrdx6jplabT1ZfQVzkCrk+jqjHEQw0NvfR/5Sb/NsvSUgBv2AbCahJdaB7p
+      - hABsPq9DIvV7yAEiU7rMxs7UCRuTbRH/kYpwue4a0q9qmwd4SUh9bBZ5SHPkBLc6
       X-Dd-Version:
-      - "35.2622342"
+      - "35.2631588"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -118,15 +118,15 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/e7t-jx3-qmz
+    url: https://api.datadoghq.com/api/v1/dashboard/fgn-3ey-jby
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"e7t-jx3-qmz","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/e7t-jx3-qmz/acceptance-test-change-widget-dashboard","created_at":"2020-06-15T15:51:13.716303+00:00","modified_at":"2020-06-15T15:51:13.716303+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":5150020819463479},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"fgn-3ey-jby","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/fgn-3ey-jby/acceptance-test-change-widget-dashboard","created_at":"2020-06-17T13:04:51.925975+00:00","modified_at":"2020-06-17T13:04:51.925975+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":1984093298224065},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":3277726697955557}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":8420460865827460}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -137,13 +137,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 15 Jun 2020 15:51:14 GMT
+      - Wed, 17 Jun 2020 13:04:52 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:51:14 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 24-Jun-2020 13:04:52 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -152,9 +152,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - CPK+34LtKdL5YYX/NFOJUdMpxMoO80HISGpGpzDG5fENYSoZ2QNw1gEubOsJ9JNb
+      - RbevWUvO2oQYYDnX/G1lndTh/kTt+ebFIvajU6/3Ivb5c6aUQf49/uD1ICaXyx52
       X-Dd-Version:
-      - "35.2622342"
+      - "35.2631588"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -170,15 +170,15 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/e7t-jx3-qmz
+    url: https://api.datadoghq.com/api/v1/dashboard/fgn-3ey-jby
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"e7t-jx3-qmz","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/e7t-jx3-qmz/acceptance-test-change-widget-dashboard","created_at":"2020-06-15T15:51:13.716303+00:00","modified_at":"2020-06-15T15:51:13.716303+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":5150020819463479},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"fgn-3ey-jby","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/fgn-3ey-jby/acceptance-test-change-widget-dashboard","created_at":"2020-06-17T13:04:51.925975+00:00","modified_at":"2020-06-17T13:04:51.925975+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":1984093298224065},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":3277726697955557}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":8420460865827460}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -189,13 +189,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 15 Jun 2020 15:51:16 GMT
+      - Wed, 17 Jun 2020 13:04:53 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:51:16 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 24-Jun-2020 13:04:53 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -204,9 +204,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - KKdI9UAf8fC5q7osIllxNui0A1CUm45w7mZBz+tu6Vlp/ga+Q6ZXvY0JoJlUBVi+
+      - /Lq4EjXKMzRKp9qa/TaJTTVqSY3uTwQpdi8SFIU3firYrLG0qdPC+ksTJBROerQS
       X-Dd-Version:
-      - "35.2622342"
+      - "35.2631588"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -222,15 +222,15 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/e7t-jx3-qmz
+    url: https://api.datadoghq.com/api/v1/dashboard/fgn-3ey-jby
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"e7t-jx3-qmz","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/e7t-jx3-qmz/acceptance-test-change-widget-dashboard","created_at":"2020-06-15T15:51:13.716303+00:00","modified_at":"2020-06-15T15:51:13.716303+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":5150020819463479},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"fgn-3ey-jby","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/fgn-3ey-jby/acceptance-test-change-widget-dashboard","created_at":"2020-06-17T13:04:51.925975+00:00","modified_at":"2020-06-17T13:04:51.925975+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":1984093298224065},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":3277726697955557}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":8420460865827460}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -241,13 +241,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 15 Jun 2020 15:51:16 GMT
+      - Wed, 17 Jun 2020 13:04:54 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:51:16 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 24-Jun-2020 13:04:54 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -256,9 +256,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - SxoanfhUZNcxsD3lnA3j+up2jAgZV05RpnWjR/qtgMkjy5UIlkbs0WqFT6yaBwwR
+      - nfUJgEhoI/RZ8GJVApSQj6s2TfLYXQ1qvePMFw8ZmKB2iBVwiNegJAc5RNY4ZZbI
       X-Dd-Version:
-      - "35.2622342"
+      - "35.2631588"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -274,15 +274,15 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/e7t-jx3-qmz
+    url: https://api.datadoghq.com/api/v1/dashboard/fgn-3ey-jby
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"e7t-jx3-qmz","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/e7t-jx3-qmz/acceptance-test-change-widget-dashboard","created_at":"2020-06-15T15:51:13.716303+00:00","modified_at":"2020-06-15T15:51:13.716303+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":5150020819463479},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"fgn-3ey-jby","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/fgn-3ey-jby/acceptance-test-change-widget-dashboard","created_at":"2020-06-17T13:04:51.925975+00:00","modified_at":"2020-06-17T13:04:51.925975+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":1984093298224065},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":3277726697955557}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":8420460865827460}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -293,13 +293,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 15 Jun 2020 15:51:19 GMT
+      - Wed, 17 Jun 2020 13:04:55 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:51:19 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 24-Jun-2020 13:04:55 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -308,9 +308,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - o8MFmk+4Ge4vq85ax+5C1nfQs0lbtaPPYZrpqzeG6IsYGNLGMu/G7PbJElpjPS5i
+      - i/tjaZJ1Vhpke5HNSziupF5eEnHtDP3NjcuF7Ija0/AGuxq0WEQiFfpqy+mDADxv
       X-Dd-Version:
-      - "35.2622342"
+      - "35.2631588"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -326,15 +326,15 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/e7t-jx3-qmz
+    url: https://api.datadoghq.com/api/v1/dashboard/fgn-3ey-jby
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"e7t-jx3-qmz","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/e7t-jx3-qmz/acceptance-test-change-widget-dashboard","created_at":"2020-06-15T15:51:13.716303+00:00","modified_at":"2020-06-15T15:51:13.716303+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":5150020819463479},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"fgn-3ey-jby","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/fgn-3ey-jby/acceptance-test-change-widget-dashboard","created_at":"2020-06-17T13:04:51.925975+00:00","modified_at":"2020-06-17T13:04:51.925975+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":1984093298224065},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":3277726697955557}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":8420460865827460}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -345,13 +345,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 15 Jun 2020 15:51:19 GMT
+      - Wed, 17 Jun 2020 13:04:56 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:51:19 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 24-Jun-2020 13:04:56 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -360,9 +360,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 3OCRM/4FZbkllI4iloi1acHDABD1SJi2aj2fysEPLLsOVOk5Ki6mi6IOsVG7JIay
+      - oQ/oy4ezTZ+/WzL4afBMlDjLd5w62e5H15hF5BJChw1Gte+Sq8B8tB7i6vlTiLL0
       X-Dd-Version:
-      - "35.2622342"
+      - "35.2631588"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -378,10 +378,10 @@ interactions:
       - DeleteDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/e7t-jx3-qmz
+    url: https://api.datadoghq.com/api/v1/dashboard/fgn-3ey-jby
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"e7t-jx3-qmz"}'
+    body: '{"deleted_dashboard_id":"fgn-3ey-jby"}'
     headers:
       Cache-Control:
       - no-cache
@@ -392,13 +392,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 15 Jun 2020 15:51:32 GMT
+      - Wed, 17 Jun 2020 13:05:07 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:51:20 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 24-Jun-2020 13:04:57 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -407,9 +407,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - QO3HutZQjgMDp/HqClcLon+qq5lEghb3LRV+gXMIQ2Jivd1m1eEGCh0RxplUQMIV
+      - oiF9oLqSEnBWpAh9z89c+Ruy9xKAqrdZzQPjGsNOxlGQNWaw3sCTSoKaMkMdPunL
       X-Dd-Version:
-      - "35.2622342"
+      - "35.2631588"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -425,10 +425,10 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/e7t-jx3-qmz
+    url: https://api.datadoghq.com/api/v1/dashboard/fgn-3ey-jby
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID e7t-jx3-qmz not found"]}'
+    body: '{"errors": ["Dashboard with ID fgn-3ey-jby not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -439,7 +439,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 15 Jun 2020 15:51:32 GMT
+      - Wed, 17 Jun 2020 13:05:08 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -451,7 +451,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.2622342"
+      - "35.2631588"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found
