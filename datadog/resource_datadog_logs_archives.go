@@ -189,6 +189,10 @@ func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) (map[string]in
 
 func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) (map[string]interface{}) {
 	result := make(map[string]interface{})
+	result["account_id"] = destination.Integration.AccountId
+	result["role_name"] = destination.Integration.RoleName
+	result["bucket"] = destination.Bucket
+	result["path"] = destination.Path
 	return result
 }
 
@@ -329,14 +333,30 @@ func buildGCSDestination(d map[string]interface{}) (*datadogV2.LogsArchiveDestin
 }
 
 func buildS3Destination(d map[string]interface{}) (*datadogV2.LogsArchiveDestinationS3, error) {
+	accountId, ok := d["account_id"]
+	if !ok {
+		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("account_id is not defined")
+	}
+	roleName, ok := d["role_name"]
+	if !ok {
+		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("role_name is not defined")
+	}
 	integration := datadogV2.LogsArchiveIntegrationS3{
-		AccountId: "accountId", //FIXME
-		RoleName:  "roleName",  //FIXME
+		AccountId: accountId.(string),
+		RoleName:  roleName.(string),
+	}
+	bucket, ok := d["bucket"]
+	if !ok {
+		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("bucket is not defined")
+	}
+	path, ok := d["path"]
+	if !ok {
+		path = ""
 	}
 	destination := &datadogV2.LogsArchiveDestinationS3{
-		Bucket:      "bucket", //FIXME
+		Bucket:      bucket.(string),
 		Integration: integration,
-		Path:        datadogV2.PtrString("path"), //FIXME
+		Path:        datadogV2.PtrString(path.(string)),
 		Type:        datadogV2.LOGSARCHIVEDESTINATIONS3TYPE_S3,
 	}
 	return destination, nil
