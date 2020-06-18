@@ -10,7 +10,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"gopkg.in/h2non/gock.v1"
+	"io/ioutil"
 	"net/http"
+	"path/filepath"
 )
 
 const archiveAzureConfigForCreation = `
@@ -18,10 +20,12 @@ resource "datadog_logs_archive" "my_azure_archive" {
 	name = "my first azure archive"
 	query = "service:toto"
 	azure = {
-		container 		= "container"
-		client_id 		= "clientId"
-		tenant_id       = "tenantId"
+		container 		= "my-container"
+		client_id 		= "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaab"
+		tenant_id       = "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaaa"
 		storage_account = "storageAccount"
+		region          = "my-region"
+		path            = "/path/blou"
 	}
 }
 `
@@ -33,7 +37,7 @@ var archiveAzure = datadogV2.LogsArchiveCreateRequest{
 				LogsArchiveDestinationAzure: &datadogV2.LogsArchiveDestinationAzure{
 					Container: "my-container",
 					Integration: datadogV2.LogsArchiveIntegrationAzure{
-						ClientId: "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaaa",
+						ClientId: "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaab",
 						TenantId: "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaaa",
 					},
 					Path:           datadogV2.PtrString("/path/blou"),
@@ -42,7 +46,7 @@ var archiveAzure = datadogV2.LogsArchiveCreateRequest{
 					Type:           "azure",
 				},
 			},
-			Name:  "datadog-api-client-go Tests Archive",
+			Name:  "my first azure archive",
 			Query: "service:toto",
 		},
 		Type: "archives",
@@ -79,10 +83,16 @@ resource "datadog_logs_archive" "my_s3_archive" {
 
 //Test
 // create: OK azure
-
 func TestAccDatadogLogsArchive_basic(t *testing.T) {
-	outputArchiveStr := ""
-	gock.New("https://api.datadoghq.com").Post("/api/v2/logs/config/archives").MatchType("json").JSON(archiveAzure).Reply(200).Type("json").BodyString(outputArchiveStr)
+	defer gock.Disable()
+	expectedOut := readFixture(t, "fixtures/logs/archives/azure/create.json")
+	gock.New("https://api.datadoghq.com").Post("/api/v2/logs/config/archives").MatchType("json").JSON(archiveAzure).Reply(200).Type("json").BodyString(expectedOut)
+	id := "FooBar"
+	byIdURL := fmt.Sprintf("/api/v2/logs/config/archives/%s", id)
+	gock.New("https://api.datadoghq.com").Get(byIdURL).Reply(200).Type("json").BodyString(expectedOut)
+	gock.New("https://api.datadoghq.com").Get(byIdURL).Reply(200).Type("json").BodyString(expectedOut)
+	gock.New("https://api.datadoghq.com").Get(byIdURL).Reply(200).Type("json").BodyString(expectedOut)
+	gock.New("https://api.datadoghq.com").Get(byIdURL).Reply(404).Type("json").BodyString(expectedOut)
 	accProviders := testAccProvidersWithHttpClient(t, http.DefaultClient)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -97,12 +107,27 @@ func TestAccDatadogLogsArchive_basic(t *testing.T) {
 				Config: archiveAzureConfigForCreation,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_logs_archive.my_archive_test", "name", "my first azure archive"),
+						"datadog_logs_archive.my_azure_archive", "name", "my first azure archive"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "query", "service:toto"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "azure.container", "my-container"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "azure.client_id", "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaab"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "azure.tenant_id", "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaaa"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "azure.storage_account", "storageAccount"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "azure.path", "/path/blou"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "azure.region", "my-region"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "id", id),
 				),
 			},
 		},
 	})
-	fmt.Printf("Finished !")
 }
 
 // create: Ok s3
@@ -159,7 +184,7 @@ func archiveDestroyHelper(s *terraform.State, authV2 context.Context, datadogCli
 			id := r.Primary.ID
 			archive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, id).Execute()
 			if err != nil {
-				if httpresp.StatusCode == 404 {
+				if httpresp != nil && httpresp.StatusCode == 404 {
 					continue
 				}
 				return fmt.Errorf("received an error when retrieving pipeline, (%s)", err)
@@ -171,4 +196,18 @@ func archiveDestroyHelper(s *terraform.State, authV2 context.Context, datadogCli
 
 	}
 	return nil
+}
+
+// readFixture opens the file at path and returns the contents as a string
+func readFixture(t *testing.T, path string) string {
+	t.Helper()
+	fixturePath, err := filepath.Abs(path)
+	if err != nil {
+		t.Fatalf("failed to get fixture file path: %v", err)
+	}
+	data, err := ioutil.ReadFile(fixturePath)
+	if err != nil {
+		t.Fatalf("failed to open fixture file: %v", err)
+	}
+	return string(data)
 }
