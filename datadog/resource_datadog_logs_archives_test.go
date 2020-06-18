@@ -15,77 +15,8 @@ import (
 	"path/filepath"
 )
 
-const archiveAzureConfigForCreation = `
-resource "datadog_logs_archive" "my_azure_archive" {
-	name = "my first azure archive"
-	query = "service:toto"
-	azure = {
-		container 		= "my-container"
-		client_id 		= "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaab"
-		tenant_id       = "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaaa"
-		storage_account = "storageAccount"
-		region          = "my-region"
-		path            = "/path/blou"
-	}
-}
-`
-
-var archiveAzure = datadogV2.LogsArchiveCreateRequest{
-	Data: &datadogV2.LogsArchiveCreateRequestDefinition{
-		Attributes: &datadogV2.LogsArchiveCreateRequestAttributes{
-			Destination: datadogV2.LogsArchiveCreateRequestDestination{
-				LogsArchiveDestinationAzure: &datadogV2.LogsArchiveDestinationAzure{
-					Container: "my-container",
-					Integration: datadogV2.LogsArchiveIntegrationAzure{
-						ClientId: "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaab",
-						TenantId: "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaaa",
-					},
-					Path:           datadogV2.PtrString("/path/blou"),
-					Region:         datadogV2.PtrString("my-region"),
-					StorageAccount: "storageAccount",
-					Type:           "azure",
-				},
-			},
-			Name:  "my first azure archive",
-			Query: "service:toto",
-		},
-		Type: "archives",
-	},
-}
-
-const archiveGCSConfigForCreation = `
-resource "datadog_logs_archive" "my_gcs_archive" {
-	name = "my first gcs archive"
-	query = "service:tata"
-	gcs = {
-        bucket 		 = "dd-logs-test-datadog-api-client-go"
-        path 	     = "/path/blah"
-        client_email = "email@email.com"
-        project_id   = "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaaa"
-	}
-}
-`
-
-var archiveGCS = datadogV2.LogsArchiveCreateRequest{
-	Data: &datadogV2.LogsArchiveCreateRequestDefinition{
-		Attributes: &datadogV2.LogsArchiveCreateRequestAttributes{
-			Destination: datadogV2.LogsArchiveCreateRequestDestination{
-				LogsArchiveDestinationGCS: &datadogV2.LogsArchiveDestinationGCS{
-					Integration: datadogV2.LogsArchiveIntegrationGCS{
-						ClientEmail: "email@email.com",
-						ProjectId: "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaaa",
-					},
-					Path:           datadogV2.PtrString("/path/blah"),
-					Bucket:         "dd-logs-test-datadog-api-client-go",
-					Type:           "gcs",
-				},
-			},
-			Name:  "my first gcs archive",
-			Query: "service:tata",
-		},
-		Type: "archives",
-	},
-}
+//Test
+// create: OK azure
 
 const archiveS3ConfigForCreation = `
 resource "datadog_logs_archive" "my_s3_archive" {
@@ -121,8 +52,6 @@ var archiveS3 = datadogV2.LogsArchiveCreateRequest{
 	},
 }
 
-//Test
-// create: OK azure
 func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 	defer gock.Disable()
 	archiveType := "azure"
@@ -172,6 +101,40 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 }
 
 // create: Ok gcs
+const archiveGCSConfigForCreation = `
+resource "datadog_logs_archive" "my_gcs_archive" {
+	name = "my first gcs archive"
+	query = "service:tata"
+	gcs = {
+        bucket 		 = "dd-logs-test-datadog-api-client-go"
+        path 	     = "/path/blah"
+        client_email = "email@email.com"
+        project_id   = "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaaa"
+	}
+}
+`
+
+var archiveGCS = datadogV2.LogsArchiveCreateRequest{
+	Data: &datadogV2.LogsArchiveCreateRequestDefinition{
+		Attributes: &datadogV2.LogsArchiveCreateRequestAttributes{
+			Destination: datadogV2.LogsArchiveCreateRequestDestination{
+				LogsArchiveDestinationGCS: &datadogV2.LogsArchiveDestinationGCS{
+					Integration: datadogV2.LogsArchiveIntegrationGCS{
+						ClientEmail: "email@email.com",
+						ProjectId: "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaaa",
+					},
+					Path:           datadogV2.PtrString("/path/blah"),
+					Bucket:         "dd-logs-test-datadog-api-client-go",
+					Type:           "gcs",
+				},
+			},
+			Name:  "my first gcs archive",
+			Query: "service:tata",
+		},
+		Type: "archives",
+	},
+}
+
 func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 	defer gock.Disable()
 	archiveType := "gcs"
@@ -217,6 +180,45 @@ func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 }
 
 // create: Ok s3
+
+const archiveAzureConfigForCreation = `
+resource "datadog_logs_archive" "my_azure_archive" {
+	name = "my first azure archive"
+	query = "service:toto"
+	azure = {
+		container 		= "my-container"
+		client_id 		= "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaab"
+		tenant_id       = "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaaa"
+		storage_account = "storageAccount"
+		region          = "my-region"
+		path            = "/path/blou"
+	}
+}
+`
+
+var archiveAzure = datadogV2.LogsArchiveCreateRequest{
+	Data: &datadogV2.LogsArchiveCreateRequestDefinition{
+		Attributes: &datadogV2.LogsArchiveCreateRequestAttributes{
+			Destination: datadogV2.LogsArchiveCreateRequestDestination{
+				LogsArchiveDestinationAzure: &datadogV2.LogsArchiveDestinationAzure{
+					Container: "my-container",
+					Integration: datadogV2.LogsArchiveIntegrationAzure{
+						ClientId: "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaab",
+						TenantId: "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaaa",
+					},
+					Path:           datadogV2.PtrString("/path/blou"),
+					Region:         datadogV2.PtrString("my-region"),
+					StorageAccount: "storageAccount",
+					Type:           "azure",
+				},
+			},
+			Name:  "my first azure archive",
+			Query: "service:toto",
+		},
+		Type: "archives",
+	},
+}
+
 func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 	defer gock.Disable()
 	archiveType := "s3"
