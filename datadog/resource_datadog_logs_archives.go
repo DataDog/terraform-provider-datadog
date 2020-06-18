@@ -180,6 +180,10 @@ func buildAzureMap(destination datadogV2.LogsArchiveDestinationAzure) (map[strin
 
 func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) (map[string]interface{}) {
 	result := make(map[string]interface{})
+	result["client_email"] = destination.Integration.ClientEmail
+	result["project_id"] = destination.Integration.ProjectId
+	result["bucket"] = destination.Bucket
+	result["path"] = destination.Path
 	return result
 }
 
@@ -295,14 +299,30 @@ func buildAzureDestination(d map[string]interface{}) (*datadogV2.LogsArchiveDest
 }
 
 func buildGCSDestination(d map[string]interface{}) (*datadogV2.LogsArchiveDestinationGCS, error) {
+	clientEmail, ok := d["client_email"]
+	if !ok {
+		return &datadogV2.LogsArchiveDestinationGCS{}, fmt.Errorf("client_email is not defined")
+	}
+	projectId, ok := d["project_id"]
+	if !ok {
+		return &datadogV2.LogsArchiveDestinationGCS{}, fmt.Errorf("project_id is not defined")
+	}
 	integration := datadogV2.LogsArchiveIntegrationGCS{
-		ClientEmail: "clientEmail", //FIXME
-		ProjectId:   "projectId",   //FIXME
+		ClientEmail: clientEmail.(string),
+		ProjectId:   projectId.(string),
+	}
+	bucket, ok := d["bucket"]
+	if !ok {
+		return &datadogV2.LogsArchiveDestinationGCS{}, fmt.Errorf("bucket is not defined")
+	}
+	path, ok := d["path"]
+	if !ok {
+		path = ""
 	}
 	destination := &datadogV2.LogsArchiveDestinationGCS{
-		Bucket:      "bucket", //FIXME
+		Bucket:      bucket.(string),
 		Integration: integration,
-		Path:        datadogV2.PtrString("path"), //FIXME
+		Path:        datadogV2.PtrString(path.(string)),
 		Type:        datadogV2.LOGSARCHIVEDESTINATIONGCSTYPE_GCS,
 	}
 	return destination, nil

@@ -56,15 +56,36 @@ var archiveAzure = datadogV2.LogsArchiveCreateRequest{
 const archiveGCSConfigForCreation = `
 resource "datadog_logs_archive" "my_gcs_archive" {
 	name = "my first gcs archive"
-	query = "service:toto"
+	query = "service:tata"
 	gcs = {
-        bucket 		 = "bucket"
-        path 	     = "/path/hello"
-        client_email = "clientEmail"
-        project_id   = "projectId"
+        bucket 		 = "dd-logs-test-datadog-api-client-go"
+        path 	     = "/path/blah"
+        client_email = "email@email.com"
+        project_id   = "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaaa"
 	}
 }
 `
+
+var archiveGCS = datadogV2.LogsArchiveCreateRequest{
+	Data: &datadogV2.LogsArchiveCreateRequestDefinition{
+		Attributes: &datadogV2.LogsArchiveCreateRequestAttributes{
+			Destination: datadogV2.LogsArchiveCreateRequestDestination{
+				LogsArchiveDestinationGCS: &datadogV2.LogsArchiveDestinationGCS{
+					Integration: datadogV2.LogsArchiveIntegrationGCS{
+						ClientEmail: "email@email.com",
+						ProjectId: "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaaa",
+					},
+					Path:           datadogV2.PtrString("/path/blah"),
+					Bucket:         "dd-logs-test-datadog-api-client-go",
+					Type:           "gcs",
+				},
+			},
+			Name:  "my first gcs archive",
+			Query: "service:tata",
+		},
+		Type: "archives",
+	},
+}
 
 const archiveS3ConfigForCreation = `
 resource "datadog_logs_archive" "my_s3_archive" {
@@ -83,9 +104,10 @@ resource "datadog_logs_archive" "my_s3_archive" {
 
 //Test
 // create: OK azure
-func TestAccDatadogLogsArchive_basic(t *testing.T) {
+func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 	defer gock.Disable()
-	expectedOut := readFixture(t, "fixtures/logs/archives/azure/create.json")
+	archiveType := "azure"
+	expectedOut := readFixture(t, fmt.Sprintf("fixtures/logs/archives/%s/create.json", archiveType))
 	gock.New("https://api.datadoghq.com").Post("/api/v2/logs/config/archives").MatchType("json").JSON(archiveAzure).Reply(200).Type("json").BodyString(expectedOut)
 	id := "FooBar"
 	byIdURL := fmt.Sprintf("/api/v2/logs/config/archives/%s", id)
@@ -130,8 +152,52 @@ func TestAccDatadogLogsArchive_basic(t *testing.T) {
 	})
 }
 
-// create: Ok s3
 // create: Ok gcs
+func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
+	defer gock.Disable()
+	archiveType := "gcs"
+	expectedOut := readFixture(t, fmt.Sprintf("fixtures/logs/archives/%s/create.json", archiveType))
+	gock.New("https://api.datadoghq.com").Post("/api/v2/logs/config/archives").MatchType("json").JSON(archiveGCS).Reply(200).Type("json").BodyString(expectedOut)
+	id := "FooBar"
+	byIdURL := fmt.Sprintf("/api/v2/logs/config/archives/%s", id)
+	gock.New("https://api.datadoghq.com").Get(byIdURL).Reply(200).Type("json").BodyString(expectedOut)
+	gock.New("https://api.datadoghq.com").Get(byIdURL).Reply(200).Type("json").BodyString(expectedOut)
+	gock.New("https://api.datadoghq.com").Get(byIdURL).Reply(200).Type("json").BodyString(expectedOut)
+	gock.New("https://api.datadoghq.com").Get(byIdURL).Reply(404).Type("json").BodyString(expectedOut)
+	accProviders := testAccProvidersWithHttpClient(t, http.DefaultClient)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckArchiveDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				PreConfig: func() {
+				},
+				Config: archiveGCSConfigForCreation,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "name", "my first gcs archive"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "query", "service:tata"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "gcs.bucket", "dd-logs-test-datadog-api-client-go"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "gcs.client_email", "email@email.com"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "gcs.project_id", "aaaaaaaa-1a1a-1a1a-1a1a-aaaaaaaaaaaa"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "gcs.path", "/path/blah"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "id", id),
+				),
+			},
+		},
+	})
+}
+
+// create: Ok s3
 // create: type azure + azure, s3 defined => Fail
 // create: type azure + gcs defined => Fail
 // create: type unknown => Fail
