@@ -14,7 +14,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 		Delete: resourceDatadogLogsArchiveDelete,
 		Exists: resourceDatadogLogsArchiveExists,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough, //FIXME: hein ?
+			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
 			"name":  {Type: schema.TypeString, Required: true},
@@ -43,7 +43,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 						"tenant_id":       {Type: schema.TypeString, Required: true},
 						"storage_account": {Type: schema.TypeString, Required: true},
 						"path":            {Type: schema.TypeString, Optional: true},
-						"region":          {Type: schema.TypeString, Optional: true}, //FIXME: should it be removed because it is set by mcnulty ?
+						"region":          {Type: schema.TypeString, Optional: true},
 					},
 				},
 			},
@@ -164,7 +164,7 @@ func buildDestination(archiveDestination datadogV2.NullableLogsArchiveDestinatio
 			return "s3", buildS3Map(*d), nil
 		}
 	}
-	return "", emptyDestination, fmt.Errorf("Destination is not set. ") //FIXME: what to do if the destination is not returned
+	return "", emptyDestination, fmt.Errorf("Destination should be not null.")
 }
 
 func buildAzureMap(destination datadogV2.LogsArchiveDestinationAzure) (map[string]interface{}) {
