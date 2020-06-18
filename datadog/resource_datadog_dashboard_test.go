@@ -210,12 +210,12 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			request {
 				log_query {
 					index = "mcnulty"
-					compute {
+					compute = {
 						aggregation = "count"
 						facet = "@duration"
 						interval = 5000
 					}
-					search {
+					search = {
 						query = "status:info"
 					}
 					group_by {
@@ -233,12 +233,12 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			request {
 				apm_query {
 					index = "apm-search"
-					compute {
+					compute = {
 						aggregation = "count"
 						facet = "@duration"
 						interval = 5000
 					}
-					search {
+					search = {
 						query = "type:web"
 					}
 					group_by {
@@ -420,7 +420,7 @@ resource "datadog_dashboard" "free_dashboard" {
 				live_span = "1h"
 			}
 		}
-		layout {
+		layout = {
 			height = 43
 			width = 32
 			x = 5
@@ -437,7 +437,7 @@ resource "datadog_dashboard" "free_dashboard" {
 				live_span = "1h"
 			}
 		}
-		layout {
+		layout = {
 			height = 9
 			width = 65
 			x = 42
@@ -451,7 +451,7 @@ resource "datadog_dashboard" "free_dashboard" {
 			font_size = "88"
 			text_align = "left"
 		}
-		layout {
+		layout = {
 			height = 20
 			width = 30
 			x = 42
@@ -462,7 +462,7 @@ resource "datadog_dashboard" "free_dashboard" {
 		iframe_definition {
 			url = "http://google.com"
 		}
-		layout {
+		layout = {
 			height = 46
 			width = 39
 			x = 111
@@ -475,7 +475,7 @@ resource "datadog_dashboard" "free_dashboard" {
 			sizing = "fit"
 			margin = "small"
 		}
-		layout {
+		layout = {
 			height = 20
 			width = 30
 			x = 77
@@ -490,12 +490,12 @@ resource "datadog_dashboard" "free_dashboard" {
 			show_date_column = true
 			show_message_column = true
 			message_display = "expanded-md"
-			sort = {
+			sort {
 				column = "time" 
 				order = "desc"
 			}
 		}
-		layout {
+		layout = {
 			height = 36
 			width = 32
 			x = 5
@@ -517,7 +517,7 @@ resource "datadog_dashboard" "free_dashboard" {
 			title_size = 16
 			title_align = "left"
 		}
-		layout {
+		layout = {
 			height = 40
 			width = 30
 			x = 112
@@ -544,7 +544,7 @@ resource "datadog_dashboard" "free_dashboard" {
 				live_span = "1h"
 			}
 		}
-		layout {
+		layout = {
 			height = 38
 			width = 67
 			x = 40

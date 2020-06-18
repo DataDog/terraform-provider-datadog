@@ -3,7 +3,6 @@ package datadog
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -20,6 +19,7 @@ import (
 	"github.com/dnaeon/go-vcr/recorder"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"github.com/jonboulle/clockwork"
@@ -284,14 +284,14 @@ func testCheckResourceAttrs(name string, checkExists resource.TestCheckFunc, ass
 		if len(assertionPair) > 1 {
 			value = assertionPair[1]
 		}
-		// Use utility method to print out all state values during debugging
 		funcs = append(funcs, resource.TestCheckResourceAttr(name, key, value))
+		// Use utility method below, instead of the above one, to print out all state keys/values during test debugging
 		//funcs = append(funcs, CheckResourceAttr(name, key, value))
 	}
 	return funcs
 }
 
-/* Utility method for Debugging purpose */
+/* Utility method for Debugging purpose. This method helps list assertions as well */
 func CheckResourceAttr(name, key, value string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		ms := s.RootModule()

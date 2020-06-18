@@ -35,7 +35,16 @@ resource "datadog_dashboard" "distribution_dashboard" {
 `
 
 var datadogDashboardDistributionAsserts = []string{
-	"title = Acceptance Test Alert Graph Widget Dashboard",
+	"title = Acceptance Test Distribution Widget Dashboard",
+	"widget.0.distribution_definition.0.time.live_span = 1h",
+	"widget.0.distribution_definition.0.title = Avg of system.cpu.user over account:prod by service,account",
+	"widget.0.distribution_definition.0.title_size = 16",
+	"widget.0.distribution_definition.0.title_align = left",
+	"description = Created using the Datadog provider in Terraform",
+	"widget.0.distribution_definition.0.request.0.q = avg:system.cpu.user{account:prod} by {service,account}",
+	"widget.0.distribution_definition.0.request.0.style.0.palette = purple",
+	"layout_type = ordered",
+	"is_read_only = true",
 }
 
 func TestAccDatadogDashboardDistribution(t *testing.T) {
@@ -49,7 +58,7 @@ func TestAccDatadogDashboardDistribution(t *testing.T) {
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: datadogDashboardAlertGraphConfig,
+				Config: datadogDashboardDistributionConfig,
 				Check: resource.ComposeTestCheckFunc(
 					testCheckResourceAttrs("datadog_dashboard.distribution_dashboard", checkDashboardExists(accProvider), datadogDashboardDistributionAsserts)...,
 				),
