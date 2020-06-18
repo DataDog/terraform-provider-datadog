@@ -106,6 +106,17 @@ func resourceDatadogLogsArchiveRead(d *schema.ResourceData, meta interface{}) er
 }
 
 func resourceDatadogLogsArchiveUpdate(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
+
+	ddArchive, err := buildDatadogArchiveCreateReq(d)
+	if err != nil {
+		return err
+	}
+	if _, _, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchive(authV2, d.Id()).Body(ddArchive).Execute(); err != nil {
+		return translateClientError(err, "error updating logs archive")
+	}
 	return resourceDatadogLogsArchiveRead(d, meta)
 }
 
