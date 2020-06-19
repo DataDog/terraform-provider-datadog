@@ -55,10 +55,10 @@ import (
 
 const datadogDashboardChangeConfig = `
 resource "datadog_dashboard" "change_dashboard" {
-   title         = "Acceptance Test Change Widget Dashboard"
-   description   = "Created using the Datadog provider in Terraform"
-   layout_type   = "ordered"
-   is_read_only  = true
+   	title         = "Acceptance Test Change Widget Dashboard"
+   	description   = "Created using the Datadog provider in Terraform"
+   	layout_type   = "ordered"
+   	is_read_only  = true
 	widget {
 		change_definition {
 			request {
