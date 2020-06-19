@@ -71,7 +71,7 @@ func (r apiAddPermissionToRoleRequest) Execute() (PermissionsResponse, *_nethttp
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}/permissions"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.QueryEscape(parameterToString(r.roleId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(parameterToString(r.roleId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -240,7 +240,7 @@ func (r apiAddUserToRoleRequest) Execute() (UsersResponse, *_nethttp.Response, e
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}/users"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.QueryEscape(parameterToString(r.roleId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(parameterToString(r.roleId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -365,10 +365,10 @@ func (r apiAddUserToRoleRequest) Execute() (UsersResponse, *_nethttp.Response, e
 type apiCreateRoleRequest struct {
 	ctx        _context.Context
 	apiService *RolesApiService
-	body       *RoleCreatePayload
+	body       *RoleCreateRequest
 }
 
-func (r apiCreateRoleRequest) Body(body RoleCreatePayload) apiCreateRoleRequest {
+func (r apiCreateRoleRequest) Body(body RoleCreateRequest) apiCreateRoleRequest {
 	r.body = &body
 	return r
 }
@@ -388,16 +388,16 @@ func (a *RolesApiService) CreateRole(ctx _context.Context) apiCreateRoleRequest 
 
 /*
 Execute executes the request
- @return RoleResponse
+ @return RoleCreateResponse
 */
-func (r apiCreateRoleRequest) Execute() (RoleResponse, *_nethttp.Response, error) {
+func (r apiCreateRoleRequest) Execute() (RoleCreateResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  RoleResponse
+		localVarReturnValue  RoleCreateResponse
 	)
 
 	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "RolesApiService.CreateRole")
@@ -557,7 +557,7 @@ func (r apiDeleteRoleRequest) Execute() (*_nethttp.Response, error) {
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.QueryEscape(parameterToString(r.roleId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(parameterToString(r.roleId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -699,7 +699,7 @@ func (r apiGetRoleRequest) Execute() (RoleResponse, *_nethttp.Response, error) {
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.QueryEscape(parameterToString(r.roleId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(parameterToString(r.roleId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -997,7 +997,7 @@ func (r apiListRolePermissionsRequest) Execute() (PermissionsResponse, *_nethttp
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}/permissions"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.QueryEscape(parameterToString(r.roleId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(parameterToString(r.roleId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1172,7 +1172,7 @@ func (r apiListRoleUsersRequest) Execute() (UsersResponse, *_nethttp.Response, e
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}/users"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.QueryEscape(parameterToString(r.roleId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(parameterToString(r.roleId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1514,7 +1514,7 @@ func (r apiRemovePermissionFromRoleRequest) Execute() (PermissionsResponse, *_ne
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}/permissions"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.QueryEscape(parameterToString(r.roleId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(parameterToString(r.roleId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1683,7 +1683,7 @@ func (r apiRemoveUserFromRoleRequest) Execute() (UsersResponse, *_nethttp.Respon
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}/users"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.QueryEscape(parameterToString(r.roleId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(parameterToString(r.roleId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1809,10 +1809,10 @@ type apiUpdateRoleRequest struct {
 	ctx        _context.Context
 	apiService *RolesApiService
 	roleId     string
-	body       *RoleUpdatePayload
+	body       *RoleUpdateRequest
 }
 
-func (r apiUpdateRoleRequest) Body(body RoleUpdatePayload) apiUpdateRoleRequest {
+func (r apiUpdateRoleRequest) Body(body RoleUpdateRequest) apiUpdateRoleRequest {
 	r.body = &body
 	return r
 }
@@ -1834,16 +1834,16 @@ func (a *RolesApiService) UpdateRole(ctx _context.Context, roleId string) apiUpd
 
 /*
 Execute executes the request
- @return RoleResponse
+ @return RoleUpdateResponse
 */
-func (r apiUpdateRoleRequest) Execute() (RoleResponse, *_nethttp.Response, error) {
+func (r apiUpdateRoleRequest) Execute() (RoleUpdateResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPatch
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  RoleResponse
+		localVarReturnValue  RoleUpdateResponse
 	)
 
 	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "RolesApiService.UpdateRole")
@@ -1852,7 +1852,7 @@ func (r apiUpdateRoleRequest) Execute() (RoleResponse, *_nethttp.Response, error
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.QueryEscape(parameterToString(r.roleId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(parameterToString(r.roleId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

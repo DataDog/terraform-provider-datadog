@@ -65,7 +65,7 @@ func (r apiGetMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Respon
 	}
 
 	localVarPath := localBasePath + "/api/v1/metrics/{metric_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_name"+"}", _neturl.QueryEscape(parameterToString(r.metricName, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"metric_name"+"}", _neturl.PathEscape(parameterToString(r.metricName, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -727,7 +727,7 @@ func (r apiUpdateMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Res
 	}
 
 	localVarPath := localBasePath + "/api/v1/metrics/{metric_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_name"+"}", _neturl.QueryEscape(parameterToString(r.metricName, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"metric_name"+"}", _neturl.PathEscape(parameterToString(r.metricName, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

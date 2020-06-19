@@ -78,7 +78,7 @@ func (r apiCreateHostTagsRequest) Execute() (HostTags, *_nethttp.Response, error
 	}
 
 	localVarPath := localBasePath + "/api/v1/tags/hosts/{host_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"host_name"+"}", _neturl.QueryEscape(parameterToString(r.hostName, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"host_name"+"}", _neturl.PathEscape(parameterToString(r.hostName, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -244,7 +244,7 @@ func (r apiDeleteHostTagsRequest) Execute() (*_nethttp.Response, error) {
 	}
 
 	localVarPath := localBasePath + "/api/v1/tags/hosts/{host_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"host_name"+"}", _neturl.QueryEscape(parameterToString(r.hostName, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"host_name"+"}", _neturl.PathEscape(parameterToString(r.hostName, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -395,7 +395,7 @@ func (r apiGetHostTagsRequest) Execute() (HostTags, *_nethttp.Response, error) {
 	}
 
 	localVarPath := localBasePath + "/api/v1/tags/hosts/{host_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"host_name"+"}", _neturl.QueryEscape(parameterToString(r.hostName, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"host_name"+"}", _neturl.PathEscape(parameterToString(r.hostName, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -718,7 +718,7 @@ func (r apiUpdateHostTagsRequest) Execute() (HostTags, *_nethttp.Response, error
 	}
 
 	localVarPath := localBasePath + "/api/v1/tags/hosts/{host_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"host_name"+"}", _neturl.QueryEscape(parameterToString(r.hostName, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"host_name"+"}", _neturl.PathEscape(parameterToString(r.hostName, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

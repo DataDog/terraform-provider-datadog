@@ -12,31 +12,31 @@ import (
 	"encoding/json"
 )
 
-// UserInvitationPayload Object to invite users to join the organization.
-type UserInvitationPayload struct {
+// UserInvitationsRequest Object to invite users to join the organization.
+type UserInvitationsRequest struct {
 	// List of user invitations.
 	Data *[]UserInvitationData `json:"data,omitempty"`
 }
 
-// NewUserInvitationPayload instantiates a new UserInvitationPayload object
+// NewUserInvitationsRequest instantiates a new UserInvitationsRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserInvitationPayload() *UserInvitationPayload {
-	this := UserInvitationPayload{}
+func NewUserInvitationsRequest() *UserInvitationsRequest {
+	this := UserInvitationsRequest{}
 	return &this
 }
 
-// NewUserInvitationPayloadWithDefaults instantiates a new UserInvitationPayload object
+// NewUserInvitationsRequestWithDefaults instantiates a new UserInvitationsRequest object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewUserInvitationPayloadWithDefaults() *UserInvitationPayload {
-	this := UserInvitationPayload{}
+func NewUserInvitationsRequestWithDefaults() *UserInvitationsRequest {
+	this := UserInvitationsRequest{}
 	return &this
 }
 
 // GetData returns the Data field value if set, zero value otherwise.
-func (o *UserInvitationPayload) GetData() []UserInvitationData {
+func (o *UserInvitationsRequest) GetData() []UserInvitationData {
 	if o == nil || o.Data == nil {
 		var ret []UserInvitationData
 		return ret
@@ -46,7 +46,7 @@ func (o *UserInvitationPayload) GetData() []UserInvitationData {
 
 // GetDataOk returns a tuple with the Data field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserInvitationPayload) GetDataOk() (*[]UserInvitationData, bool) {
+func (o *UserInvitationsRequest) GetDataOk() (*[]UserInvitationData, bool) {
 	if o == nil || o.Data == nil {
 		return nil, false
 	}
@@ -54,7 +54,7 @@ func (o *UserInvitationPayload) GetDataOk() (*[]UserInvitationData, bool) {
 }
 
 // HasData returns a boolean if a field has been set.
-func (o *UserInvitationPayload) HasData() bool {
+func (o *UserInvitationsRequest) HasData() bool {
 	if o != nil && o.Data != nil {
 		return true
 	}
@@ -63,11 +63,11 @@ func (o *UserInvitationPayload) HasData() bool {
 }
 
 // SetData gets a reference to the given []UserInvitationData and assigns it to the Data field.
-func (o *UserInvitationPayload) SetData(v []UserInvitationData) {
+func (o *UserInvitationsRequest) SetData(v []UserInvitationData) {
 	o.Data = &v
 }
 
-func (o UserInvitationPayload) MarshalJSON() ([]byte, error) {
+func (o UserInvitationsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Data != nil {
 		toSerialize["data"] = o.Data
@@ -75,38 +75,38 @@ func (o UserInvitationPayload) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableUserInvitationPayload struct {
-	value *UserInvitationPayload
+type NullableUserInvitationsRequest struct {
+	value *UserInvitationsRequest
 	isSet bool
 }
 
-func (v NullableUserInvitationPayload) Get() *UserInvitationPayload {
+func (v NullableUserInvitationsRequest) Get() *UserInvitationsRequest {
 	return v.value
 }
 
-func (v *NullableUserInvitationPayload) Set(val *UserInvitationPayload) {
+func (v *NullableUserInvitationsRequest) Set(val *UserInvitationsRequest) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableUserInvitationPayload) IsSet() bool {
+func (v NullableUserInvitationsRequest) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableUserInvitationPayload) Unset() {
+func (v *NullableUserInvitationsRequest) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableUserInvitationPayload(val *UserInvitationPayload) *NullableUserInvitationPayload {
-	return &NullableUserInvitationPayload{value: val, isSet: true}
+func NewNullableUserInvitationsRequest(val *UserInvitationsRequest) *NullableUserInvitationsRequest {
+	return &NullableUserInvitationsRequest{value: val, isSet: true}
 }
 
-func (v NullableUserInvitationPayload) MarshalJSON() ([]byte, error) {
+func (v NullableUserInvitationsRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableUserInvitationPayload) UnmarshalJSON(src []byte) error {
+func (v *NullableUserInvitationsRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

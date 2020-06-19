@@ -39,6 +39,11 @@ func LogsArchiveDestinationS3AsLogsArchiveDestination(v *LogsArchiveDestinationS
 func (dst *LogsArchiveDestination) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
+	// this object is nullable so check if the payload is null or empty string
+	if string(data) == "" || string(data) == "{}" {
+		return nil
+	}
+
 	// try to unmarshal data into LogsArchiveDestinationAzure
 	err = json.Unmarshal(data, &dst.LogsArchiveDestinationAzure)
 	if err == nil {

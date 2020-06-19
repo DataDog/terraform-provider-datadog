@@ -21,6 +21,8 @@ type RoleAttributes struct {
 	ModifiedAt *time.Time `json:"modified_at,omitempty"`
 	// Name of the role.
 	Name *string `json:"name,omitempty"`
+	// Number of users with that role.
+	UserCount *int64 `json:"user_count,omitempty"`
 }
 
 // NewRoleAttributes instantiates a new RoleAttributes object
@@ -136,6 +138,38 @@ func (o *RoleAttributes) SetName(v string) {
 	o.Name = &v
 }
 
+// GetUserCount returns the UserCount field value if set, zero value otherwise.
+func (o *RoleAttributes) GetUserCount() int64 {
+	if o == nil || o.UserCount == nil {
+		var ret int64
+		return ret
+	}
+	return *o.UserCount
+}
+
+// GetUserCountOk returns a tuple with the UserCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RoleAttributes) GetUserCountOk() (*int64, bool) {
+	if o == nil || o.UserCount == nil {
+		return nil, false
+	}
+	return o.UserCount, true
+}
+
+// HasUserCount returns a boolean if a field has been set.
+func (o *RoleAttributes) HasUserCount() bool {
+	if o != nil && o.UserCount != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetUserCount gets a reference to the given int64 and assigns it to the UserCount field.
+func (o *RoleAttributes) SetUserCount(v int64) {
+	o.UserCount = &v
+}
+
 func (o RoleAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.CreatedAt != nil {
@@ -146,6 +180,9 @@ func (o RoleAttributes) MarshalJSON() ([]byte, error) {
 	}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
+	}
+	if o.UserCount != nil {
+		toSerialize["user_count"] = o.UserCount
 	}
 	return json.Marshal(toSerialize)
 }

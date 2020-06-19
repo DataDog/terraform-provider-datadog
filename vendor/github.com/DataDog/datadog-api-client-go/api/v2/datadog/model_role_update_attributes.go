@@ -10,11 +10,16 @@ package datadog
 
 import (
 	"encoding/json"
+	"time"
 )
 
-// RoleUpdateAttributes Attributes of the edited role.
+// RoleUpdateAttributes Attributes of the role.
 type RoleUpdateAttributes struct {
-	// The name of the role.
+	// Creation time of the role.
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	// Time of last role modification.
+	ModifiedAt *time.Time `json:"modified_at,omitempty"`
+	// Name of the role.
 	Name *string `json:"name,omitempty"`
 }
 
@@ -33,6 +38,70 @@ func NewRoleUpdateAttributes() *RoleUpdateAttributes {
 func NewRoleUpdateAttributesWithDefaults() *RoleUpdateAttributes {
 	this := RoleUpdateAttributes{}
 	return &this
+}
+
+// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
+func (o *RoleUpdateAttributes) GetCreatedAt() time.Time {
+	if o == nil || o.CreatedAt == nil {
+		var ret time.Time
+		return ret
+	}
+	return *o.CreatedAt
+}
+
+// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RoleUpdateAttributes) GetCreatedAtOk() (*time.Time, bool) {
+	if o == nil || o.CreatedAt == nil {
+		return nil, false
+	}
+	return o.CreatedAt, true
+}
+
+// HasCreatedAt returns a boolean if a field has been set.
+func (o *RoleUpdateAttributes) HasCreatedAt() bool {
+	if o != nil && o.CreatedAt != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCreatedAt gets a reference to the given time.Time and assigns it to the CreatedAt field.
+func (o *RoleUpdateAttributes) SetCreatedAt(v time.Time) {
+	o.CreatedAt = &v
+}
+
+// GetModifiedAt returns the ModifiedAt field value if set, zero value otherwise.
+func (o *RoleUpdateAttributes) GetModifiedAt() time.Time {
+	if o == nil || o.ModifiedAt == nil {
+		var ret time.Time
+		return ret
+	}
+	return *o.ModifiedAt
+}
+
+// GetModifiedAtOk returns a tuple with the ModifiedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RoleUpdateAttributes) GetModifiedAtOk() (*time.Time, bool) {
+	if o == nil || o.ModifiedAt == nil {
+		return nil, false
+	}
+	return o.ModifiedAt, true
+}
+
+// HasModifiedAt returns a boolean if a field has been set.
+func (o *RoleUpdateAttributes) HasModifiedAt() bool {
+	if o != nil && o.ModifiedAt != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetModifiedAt gets a reference to the given time.Time and assigns it to the ModifiedAt field.
+func (o *RoleUpdateAttributes) SetModifiedAt(v time.Time) {
+	o.ModifiedAt = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -69,6 +138,12 @@ func (o *RoleUpdateAttributes) SetName(v string) {
 
 func (o RoleUpdateAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.CreatedAt != nil {
+		toSerialize["created_at"] = o.CreatedAt
+	}
+	if o.ModifiedAt != nil {
+		toSerialize["modified_at"] = o.ModifiedAt
+	}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}

@@ -404,7 +404,7 @@ func (r apiDeleteSLORequest) Execute() (SLODeleteResponse, *_nethttp.Response, e
 	}
 
 	localVarPath := localBasePath + "/api/v1/slo/{slo_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"slo_id"+"}", _neturl.QueryEscape(parameterToString(r.sloId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"slo_id"+"}", _neturl.PathEscape(parameterToString(r.sloId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -731,7 +731,7 @@ func (r apiGetSLORequest) Execute() (SLOResponse, *_nethttp.Response, error) {
 	}
 
 	localVarPath := localBasePath + "/api/v1/slo/{slo_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"slo_id"+"}", _neturl.QueryEscape(parameterToString(r.sloId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"slo_id"+"}", _neturl.PathEscape(parameterToString(r.sloId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -907,7 +907,7 @@ func (r apiGetSLOHistoryRequest) Execute() (SLOHistoryResponse, *_nethttp.Respon
 	}
 
 	localVarPath := localBasePath + "/api/v1/slo/{slo_id}/history"
-	localVarPath = strings.Replace(localVarPath, "{"+"slo_id"+"}", _neturl.QueryEscape(parameterToString(r.sloId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"slo_id"+"}", _neturl.PathEscape(parameterToString(r.sloId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1252,7 +1252,7 @@ func (r apiUpdateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 	}
 
 	localVarPath := localBasePath + "/api/v1/slo/{slo_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"slo_id"+"}", _neturl.QueryEscape(parameterToString(r.sloId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"slo_id"+"}", _neturl.PathEscape(parameterToString(r.sloId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

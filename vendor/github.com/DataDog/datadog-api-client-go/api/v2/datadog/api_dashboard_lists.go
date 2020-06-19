@@ -71,7 +71,7 @@ func (r apiCreateDashboardListItemsRequest) Execute() (DashboardListAddItemsResp
 	}
 
 	localVarPath := localBasePath + "/api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards"
-	localVarPath = strings.Replace(localVarPath, "{"+"dashboard_list_id"+"}", _neturl.QueryEscape(parameterToString(r.dashboardListId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"dashboard_list_id"+"}", _neturl.PathEscape(parameterToString(r.dashboardListId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -244,7 +244,7 @@ func (r apiDeleteDashboardListItemsRequest) Execute() (DashboardListDeleteItemsR
 	}
 
 	localVarPath := localBasePath + "/api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards"
-	localVarPath = strings.Replace(localVarPath, "{"+"dashboard_list_id"+"}", _neturl.QueryEscape(parameterToString(r.dashboardListId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"dashboard_list_id"+"}", _neturl.PathEscape(parameterToString(r.dashboardListId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -411,7 +411,7 @@ func (r apiGetDashboardListItemsRequest) Execute() (DashboardListItems, *_nethtt
 	}
 
 	localVarPath := localBasePath + "/api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards"
-	localVarPath = strings.Replace(localVarPath, "{"+"dashboard_list_id"+"}", _neturl.QueryEscape(parameterToString(r.dashboardListId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"dashboard_list_id"+"}", _neturl.PathEscape(parameterToString(r.dashboardListId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -568,7 +568,7 @@ func (r apiUpdateDashboardListItemsRequest) Execute() (DashboardListUpdateItemsR
 	}
 
 	localVarPath := localBasePath + "/api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards"
-	localVarPath = strings.Replace(localVarPath, "{"+"dashboard_list_id"+"}", _neturl.QueryEscape(parameterToString(r.dashboardListId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"dashboard_list_id"+"}", _neturl.PathEscape(parameterToString(r.dashboardListId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

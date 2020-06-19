@@ -393,7 +393,7 @@ func (r apiDeleteAPIKeyRequest) Execute() (ApiKeyResponse, *_nethttp.Response, e
 	}
 
 	localVarPath := localBasePath + "/api/v1/api_key/{key}"
-	localVarPath = strings.Replace(localVarPath, "{"+"key"+"}", _neturl.QueryEscape(parameterToString(r.key, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"key"+"}", _neturl.PathEscape(parameterToString(r.key, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -554,7 +554,7 @@ func (r apiDeleteApplicationKeyRequest) Execute() (ApplicationKeyResponse, *_net
 	}
 
 	localVarPath := localBasePath + "/api/v1/application_key/{key}"
-	localVarPath = strings.Replace(localVarPath, "{"+"key"+"}", _neturl.QueryEscape(parameterToString(r.key, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"key"+"}", _neturl.PathEscape(parameterToString(r.key, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -705,7 +705,7 @@ func (r apiGetAPIKeyRequest) Execute() (ApiKeyResponse, *_nethttp.Response, erro
 	}
 
 	localVarPath := localBasePath + "/api/v1/api_key/{key}"
-	localVarPath = strings.Replace(localVarPath, "{"+"key"+"}", _neturl.QueryEscape(parameterToString(r.key, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"key"+"}", _neturl.PathEscape(parameterToString(r.key, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -856,7 +856,7 @@ func (r apiGetApplicationKeyRequest) Execute() (ApplicationKeyResponse, *_nethtt
 	}
 
 	localVarPath := localBasePath + "/api/v1/application_key/{key}"
-	localVarPath = strings.Replace(localVarPath, "{"+"key"+"}", _neturl.QueryEscape(parameterToString(r.key, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"key"+"}", _neturl.PathEscape(parameterToString(r.key, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1287,7 +1287,7 @@ func (r apiUpdateAPIKeyRequest) Execute() (ApiKeyResponse, *_nethttp.Response, e
 	}
 
 	localVarPath := localBasePath + "/api/v1/api_key/{key}"
-	localVarPath = strings.Replace(localVarPath, "{"+"key"+"}", _neturl.QueryEscape(parameterToString(r.key, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"key"+"}", _neturl.PathEscape(parameterToString(r.key, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1460,7 +1460,7 @@ func (r apiUpdateApplicationKeyRequest) Execute() (ApplicationKeyResponse, *_net
 	}
 
 	localVarPath := localBasePath + "/api/v1/application_key/{key}"
-	localVarPath = strings.Replace(localVarPath, "{"+"key"+"}", _neturl.QueryEscape(parameterToString(r.key, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"key"+"}", _neturl.PathEscape(parameterToString(r.key, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

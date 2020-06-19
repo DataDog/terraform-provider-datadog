@@ -219,7 +219,7 @@ func (r apiDeleteSecurityMonitoringRuleRequest) Execute() (*_nethttp.Response, e
 	}
 
 	localVarPath := localBasePath + "/api/v2/security_monitoring/rules/{rule_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"rule_id"+"}", _neturl.QueryEscape(parameterToString(r.ruleId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"rule_id"+"}", _neturl.PathEscape(parameterToString(r.ruleId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -361,7 +361,7 @@ func (r apiGetSecurityMonitoringRuleRequest) Execute() (SecurityMonitoringRuleRe
 	}
 
 	localVarPath := localBasePath + "/api/v2/security_monitoring/rules/{rule_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"rule_id"+"}", _neturl.QueryEscape(parameterToString(r.ruleId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"rule_id"+"}", _neturl.PathEscape(parameterToString(r.ruleId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -665,7 +665,7 @@ func (r apiUpdateSecurityMonitoringRuleRequest) Execute() (SecurityMonitoringRul
 	}
 
 	localVarPath := localBasePath + "/api/v2/security_monitoring/rules/{rule_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"rule_id"+"}", _neturl.QueryEscape(parameterToString(r.ruleId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"rule_id"+"}", _neturl.PathEscape(parameterToString(r.ruleId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
