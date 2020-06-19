@@ -312,10 +312,7 @@ func CheckResourceAttr(name, key, value string) resource.TestCheckFunc {
 		// Empty containers may be elided from the state.
 		// If the intent here is to check for an empty container, allow the key to
 		// also be non-existent.
-		emptyCheck := false
-		if value == "0" && (strings.HasSuffix(key, ".#") || strings.HasSuffix(key, ".%")) {
-			emptyCheck = true
-		}
+		emptyCheck := value == "0" && (strings.HasSuffix(key, ".#") || strings.HasSuffix(key, ".%"))
 
 		if v, ok := is.Attributes[key]; !ok || v != value {
 
