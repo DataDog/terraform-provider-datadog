@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.0.0-beta.6 / 2020-06-19
+
+* [Fixed] Update enum of synthetics devices IDs to match API. See [#351](https://github.com/DataDog/datadog-api-client-go/pull/351).
+
 ## v1.0.0-beta.5 / 2020-06-19
 
 * [Added] Update to the latest openapi-generator 5 snapshot. See [#338](https://github.com/DataDog/datadog-api-client-go/pull/338).
