@@ -115,6 +115,7 @@ The following arguments are supported:
     Default: True for "on average", "at all times" and "in total" aggregation. False otherwise.
 * `locked` (Optional) A boolean indicating whether changes to to this monitor should be restricted to the creator or admins. Defaults to False.
 * `tags` (Optional) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
+* `force_delete` (Optional) A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).
 * `threshold_windows` (Optional) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. Can only be used for, and are required for, anomaly monitors.
   * `recovery_window` describes how long an anomalous metric must be normal before the alert recovers.
   * `trigger_window`  describes how long a metric must be anomalous before an alert triggers.
