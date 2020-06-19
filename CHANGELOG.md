@@ -8,7 +8,7 @@ BUGFIXES:
 * `dashboard`: Safely access index field ([#536](https://github.com/terraform-providers/terraform-provider-datadog/pull/536))
 * `dashboard`: Set title and title_align properly on heatmap widget ([#539](https://github.com/terraform-providers/terraform-provider-datadog/pull/539))
 * `ip_ranges`: Fix data source for IPRanges ([#542](https://github.com/terraform-providers/terraform-provider-datadog/pull/542))
-* `monitor`: Fix indent in datadog_monitor ([#543](https://github.com/terraform-providers/terraform-provider-datadog/pull/543)) Thanks [@nekottyo](https://github.com/nekottyo)
+* `monitor`: Fix indent in datadog_monitor docs example ([#543](https://github.com/terraform-providers/terraform-provider-datadog/pull/543)) Thanks [@nekottyo](https://github.com/nekottyo)
 
 ## 2.8.0 (June 10, 2020)
 
