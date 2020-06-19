@@ -6,14 +6,83 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
+// JSON export used as test scenario
+//{
+//    "notify_list": [],
+//    "description": "",
+//    "author_name": "--redacted--",
+//    "id": "--redacted--",
+//    "url": "--redacted--",
+//    "template_variables": [],
+//    "is_read_only": false,
+//    "title": "TF - Query Table Example",
+//    "created_at": "2020-06-09T11:53:33.269271+00:00",
+//    "modified_at": "2020-06-09T11:57:11.580865+00:00",
+//    "author_handle": "--redacted--",
+//    "widgets": [
+//        {
+//            "definition": {
+//                "title_size": "16",
+//                "title": "system.cpu.user, system.load.1",
+//                "title_align": "right",
+//                "time": {
+//                    "live_span": "1d"
+//                },
+//                "requests": [
+//                    {
+//                        "aggregator": "max",
+//                        "conditional_formats": [
+//                            {
+//                                "palette": "white_on_green",
+//                                "value": 90,
+//                                "comparator": "<"
+//                            },
+//                            {
+//                                "palette": "white_on_red",
+//                                "value": 90,
+//                                "comparator": ">="
+//                            }
+//                        ],
+//                        "q": "avg:system.cpu.user{account:prod} by {service, team}",
+//                        "alias": "cpu user",
+//                        "limit": 25,
+//                        "order": "desc"
+//                    },
+//                    {
+//                        "q": "avg:system.load.1{*} by {service, team}",
+//                        "aggregator": "last",
+//                        "conditional_formats": [
+//                            {
+//                                "palette": "custom_bg",
+//                                "value": 50,
+//                                "comparator": ">"
+//                            }
+//                        ],
+//                        "alias": "system load"
+//                    }
+//                ],
+//                "type": "query_table"
+//            },
+//            "layout": {
+//                "y": 1,
+//                "x": 1,
+//                "height": 32,
+//                "width": 54
+//            },
+//            "id": 0
+//        }
+//    ],
+//    "layout_type": "free"
+//}
+
 const datadogDashboardQueryTableConfig = `
 resource "datadog_dashboard" "query_table_dashboard" {
-    title         = "Acceptance Test Query Table Widget Dashboard"
-    description   = "Created using the Datadog provider in Terraform"
-    layout_type   = "ordered"
-    is_read_only  = "true"
+	title         = "Acceptance Test Query Table Widget Dashboard"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
 
-    widget {
+	widget {
 		query_table_definition {
 			title_size = "16"
 			title = "system.cpu.user, system.load.1"
@@ -49,7 +118,7 @@ resource "datadog_dashboard" "query_table_dashboard" {
 				alias = "system load"
 			}
 		}
-    }
+	}
 }
 `
 

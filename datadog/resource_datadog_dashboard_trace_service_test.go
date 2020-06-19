@@ -6,14 +6,61 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
+// JSON export used as test scenario
+//{
+//    "notify_list": [],
+//    "description": "",
+//    "author_name": "--redacted--",
+//    "template_variables": [],
+//    "is_read_only": false,
+//    "id": "--redacted--",
+//    "title": "TF - Service Summary Example",
+//    "url": "--redacted--",
+//    "created_at": "2020-06-09T13:33:54.661635+00:00",
+//    "modified_at": "2020-06-09T13:34:41.222757+00:00",
+//    "author_handle": "--redacted--",
+//    "widgets": [
+//        {
+//            "definition": {
+//                "span_name": "postgres.connection.rollback",
+//                "title_size": "16",
+//                "service": "postgres",
+//                "title": "postgres #env:datadoghq.com",
+//                "size_format": "large",
+//                "show_hits": true,
+//                "show_latency": true,
+//                "title_align": "center",
+//                "show_errors": true,
+//                "show_breakdown": true,
+//                "env": "datadoghq.com",
+//                "time": {
+//                    "live_span": "30m"
+//                },
+//                "show_distribution": true,
+//                "display_format": "three_column",
+//                "type": "trace_service",
+//                "show_resource_list": true
+//            },
+//            "layout": {
+//                "y": 2,
+//                "x": 1,
+//                "height": 72,
+//                "width": 72
+//            },
+//            "id": 0
+//        }
+//    ],
+//    "layout_type": "free"
+//}
+
 const datadogDashboardTraceServiceConfig = `
 resource "datadog_dashboard" "trace_service_dashboard" {
-    title         = "Acceptance Test Trace Service Widget Dashboard"
-    description   = "Created using the Datadog provider in Terraform"
-    layout_type   = "free"
-    is_read_only  = "true"
+	title         = "Acceptance Test Trace Service Widget Dashboard"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "free"
+	is_read_only  = "true"
 
-    widget {
+	widget {
 		trace_service_definition {
 			span_name = "postgres.connection.rollback"
 			title_size = "16"
@@ -39,7 +86,7 @@ resource "datadog_dashboard" "trace_service_dashboard" {
 			x = 5
 			y = 5
 		}
-    }
+	}
 }
 `
 

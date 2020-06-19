@@ -6,19 +6,53 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
+// JSON export used as test scenario
+//{
+//    "notify_list": [],
+//    "description": "",
+//    "author_name": "--redacted--",
+//    "id": "--redacted--",
+//    "url": "--redacted--",
+//    "template_variables": [],
+//    "is_read_only": false,
+//    "title": "Free Text - Example",
+//    "created_at": "2020-06-09T13:38:43.135928+00:00",
+//    "modified_at": "2020-06-09T13:39:37.055724+00:00",
+//    "author_handle": "--redacted--",
+//    "widgets": [
+//        {
+//            "definition": {
+//                "color": "#eb364b",
+//                "text": "Free Text",
+//                "type": "free_text",
+//                "font_size": "56",
+//                "text_align": "left"
+//            },
+//            "layout": {
+//                "y": -2,
+//                "x": 1,
+//                "height": 6,
+//                "width": 24
+//            },
+//            "id": 0
+//        }
+//    ],
+//    "layout_type": "free"
+//}
+
 const datadogDashboardFreeTextConfig = `
 resource "datadog_dashboard" "free_text_dashboard" {
-    title         = "Acceptance Test Free Text Widget Dashboard"
-    description   = "Created using the Datadog provider in Terraform"
-    layout_type   = "free"
-    is_read_only  = "true"
-    
-    widget {
+	title         = "Acceptance Test Free Text Widget Dashboard"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "free"
+	is_read_only  = "true"
+	
+	widget {
 		free_text_definition {
 			color = "#eb364b"
 			text = "Free Text"
-            font_size = "56"
-            text_align = "left"
+			font_size = "56"
+			text_align = "left"
 		}
 		layout = {
 			height = 43
@@ -26,7 +60,7 @@ resource "datadog_dashboard" "free_text_dashboard" {
 			x = 5
 			y = 5
 		}
-    }
+	}
 }
 `
 

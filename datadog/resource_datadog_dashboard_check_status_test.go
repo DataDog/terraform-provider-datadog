@@ -6,24 +6,65 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
+// JSON export used as test scenario
+//{
+//    "notify_list": [],
+//    "description": "",
+//    "author_name": "--redacted--",
+//    "id": "--redacted--",
+//    "url": "--redacted--",
+//    "template_variables": [],
+//    "is_read_only": false,
+//    "title": "TF - Check Status Example",
+//    "created_at": "2020-06-09T12:59:18.872351+00:00",
+//    "modified_at": "2020-06-09T13:00:12.684566+00:00",
+//    "author_handle": "--redacted--",
+//    "widgets": [
+//        {
+//            "definition": {
+//                "title_size": "16",
+//                "title": "Agent Up",
+//                "title_align": "center",
+//                "group_by": [
+//                    "app"
+//                ],
+//                "type": "check_status",
+//                "check": "aws.ec2.host_status",
+//                "tags": [
+//                    "account:prod"
+//                ],
+//                "grouping": "cluster"
+//            },
+//            "layout": {
+//                "y": 1,
+//                "x": 7,
+//                "height": 8,
+//                "width": 15
+//            },
+//            "id": 0
+//        }
+//    ],
+//    "layout_type": "free"
+//}
+
 const datadogDashboardCheckStatusConfig = `
 resource "datadog_dashboard" "check_status_dashboard" {
-    title         = "Acceptance Test Check Status Widget Dashboard"
-    description   = "Created using the Datadog provider in Terraform"
-    layout_type   = "ordered"
-    is_read_only  = "true"
+	title         = "Acceptance Test Check Status Widget Dashboard"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
 
-    widget {
+	widget {
 		check_status_definition {
 			title = "Agent Up"
-            title_align = "center"
+			title_align = "center"
 			title_size = "16"
 			group_by = ["app"]
 			check = "aws.ec2.host_status"
 			tags = ["account:prod"]
 			grouping = "cluster"
 		}
-    }
+	}
 }
 `
 

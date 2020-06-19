@@ -6,18 +6,51 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
+// JSON export used as test scenario
+//{
+//    "notify_list": [],
+//    "description": "",
+//    "author_name": "--redacted--",
+//    "id": "--redacted--",
+//    "url": "--redacted--",
+//    "template_variables": [],
+//    "is_read_only": false,
+//    "title": "TF - Image Example",
+//    "created_at": "2020-06-09T13:35:49.700883+00:00",
+//    "modified_at": "2020-06-09T13:36:10.777106+00:00",
+//    "author_handle": "--redacted--",
+//    "widgets": [
+//        {
+//            "definition": {
+//                "url": "https://i.picsum.photos/id/826/200/300.jpg",
+//                "sizing": "fit",
+//                "margin": "small",
+//                "type": "image"
+//            },
+//            "layout": {
+//                "y": 2,
+//                "x": 8,
+//                "height": 12,
+//                "width": 12
+//            },
+//            "id": 0
+//        }
+//    ],
+//    "layout_type": "free"
+//}
+
 const datadogDashboardImageConfig = `
 resource "datadog_dashboard" "image_dashboard" {
-    title         = "Acceptance Test Image Widget Dashboard"
-    description   = "Created using the Datadog provider in Terraform"
-    layout_type   = "free"
-    is_read_only  = "true"
+	title         = "Acceptance Test Image Widget Dashboard"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "free"
+	is_read_only  = "true"
 
-    widget {
+	widget {
 		image_definition {
 			url = "https://i.picsum.photos/id/826/200/300.jpg"
 			sizing = "fit"
-            margin = "small"
+			margin = "small"
 		}
 		layout = {
 			height = 43
@@ -25,7 +58,7 @@ resource "datadog_dashboard" "image_dashboard" {
 			x = 5
 			y = 5
 		}
-    }
+	}
 }
 `
 

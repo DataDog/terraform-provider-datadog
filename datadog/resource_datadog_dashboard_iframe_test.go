@@ -6,14 +6,45 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
+// JSON export used as test scenario
+//{
+//    "notify_list": [],
+//    "description": "",
+//    "author_name": "--redacted--",
+//    "id": "--redacted--",
+//    "url": "--redacted--",
+//    "template_variables": [],
+//    "is_read_only": false,
+//    "title": "TF - IFrame Example",
+//    "created_at": "2020-06-09T13:36:50.905652+00:00",
+//    "modified_at": "2020-06-09T13:37:07.261954+00:00",
+//    "author_handle": "--redacted--",
+//    "widgets": [
+//        {
+//            "definition": {
+//                "url": "https://en.wikipedia.org/wiki/Datadog",
+//                "type": "iframe"
+//            },
+//            "layout": {
+//                "y": 2,
+//                "x": 18,
+//                "height": 12,
+//                "width": 12
+//            },
+//            "id": 0
+//        }
+//    ],
+//    "layout_type": "free"
+//}
+
 const datadogDashboardIFrameConfig = `
 resource "datadog_dashboard" "iframe_dashboard" {
-    title         = "Acceptance Test IFrame Widget Dashboard"
-    description   = "Created using the Datadog provider in Terraform"
-    layout_type   = "free"
-    is_read_only  = "true"
+	title         = "Acceptance Test IFrame Widget Dashboard"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "free"
+	is_read_only  = "true"
 
-    widget {
+	widget {
 		iframe_definition {
 			url = "https://en.wikipedia.org/wiki/Datadog"
 		}
@@ -23,7 +54,7 @@ resource "datadog_dashboard" "iframe_dashboard" {
 			x = 5
 			y = 5
 		}
-    }
+	}
 }
 `
 

@@ -6,14 +6,51 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
+// JSON export used as test scenario
+//{
+//    "notify_list": [],
+//    "description": "",
+//    "author_name": "--redacted--",
+//    "id": "--redacted--",
+//    "url": "--redacted--",
+//    "template_variables": [],
+//    "is_read_only": false,
+//    "title": "TF - Notes Example",
+//    "created_at": "2020-06-09T13:40:21.730235+00:00",
+//    "modified_at": "2020-06-09T13:40:45.349378+00:00",
+//    "author_handle": "--redacted--",
+//    "widgets": [
+//        {
+//            "definition": {
+//                "tick_pos": "50%",
+//                "show_tick": true,
+//                "type": "note",
+//                "tick_edge": "bottom",
+//                "text_align": "center",
+//                "content": "This is a note widget",
+//                "font_size": "18",
+//                "background_color": "green"
+//            },
+//            "layout": {
+//                "y": 3,
+//                "x": 7,
+//                "height": 24,
+//                "width": 18
+//            },
+//            "id": 0
+//        }
+//    ],
+//    "layout_type": "free"
+//}
+
 const datadogDashboardNoteConfig = `
 resource "datadog_dashboard" "note_dashboard" {
-    title         = "Acceptance Test Notes Widget Dashboard"
-    description   = "Created using the Datadog provider in Terraform"
-    layout_type   = "ordered"
-    is_read_only  = "true"
+	title         = "Acceptance Test Notes Widget Dashboard"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
 
-    widget {
+	widget {
 		note_definition {
 			tick_pos= "50%"
 			show_tick = true
@@ -23,7 +60,7 @@ resource "datadog_dashboard" "note_dashboard" {
 			font_size = "18"
 			background_color = "green"
 		}
-    }
+	}
 }
 `
 

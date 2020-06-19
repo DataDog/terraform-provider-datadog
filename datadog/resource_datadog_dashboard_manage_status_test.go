@@ -6,14 +6,56 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
+// JSON export used as test scenario
+//{
+//    "notify_list": [],
+//    "description": "",
+//    "author_name": "--redacted--",
+//    "id": "--redacted--",
+//    "url": "--redacted--",
+//    "template_variables": [],
+//    "is_read_only": false,
+//    "title": "TF - Manage Status Example",
+//    "created_at": "2020-06-09T13:24:12.975441+00:00",
+//    "modified_at": "2020-06-09T13:25:14.195517+00:00",
+//    "author_handle": "--redacted--",
+//    "widgets": [
+//        {
+//            "definition": {
+//                "sort": "triggered,desc",
+//                "count": 50,
+//                "title_size": "20",
+//                "title": "",
+//                "title_align": "center",
+//                "hide_zero_counts": true,
+//                "start": 0,
+//                "summary_type": "combined",
+//                "color_preference": "background",
+//                "query": "env:prod group_status:alert",
+//                "show_last_triggered": true,
+//                "type": "manage_status",
+//                "display_format": "countsAndList"
+//            },
+//            "layout": {
+//                "y": 3,
+//                "x": 1,
+//                "height": 25,
+//                "width": 50
+//            },
+//            "id": 0
+//        }
+//    ],
+//    "layout_type": "free"
+//}
+
 const datadogDashboardManageStatusConfig = `
 resource "datadog_dashboard" "manage_status_dashboard" {
-    title         = "Acceptance Test Manage Status Widget Dashboard"
-    description   = "Created using the Datadog provider in Terraform"
-    layout_type   = "free"
-    is_read_only  = "true"
+	title         = "Acceptance Test Manage Status Widget Dashboard"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "free"
+	is_read_only  = "true"
 
-    widget {
+	widget {
 		manage_status_definition {
 			sort = "triggered,desc"
 			count = "50"
@@ -34,7 +76,7 @@ resource "datadog_dashboard" "manage_status_dashboard" {
 			x = 5
 			y = 5
 		}
-    }
+	}
 }
 `
 

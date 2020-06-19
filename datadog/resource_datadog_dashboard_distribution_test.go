@@ -6,17 +6,63 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
+// JSON export used as test scenario
+//{
+//    "notify_list": [],
+//    "description": "",
+//    "author_name": "--redacted--",
+//    "id": "--redacted--",
+//    "url": "--redacted--",
+//    "template_variables": [],
+//    "is_read_only": false,
+//    "title": "TF - Distribution Example",
+//    "created_at": "2020-06-09T13:22:05.545823+00:00",
+//    "modified_at": "2020-06-09T13:22:57.196703+00:00",
+//    "author_handle": "--redacted--",
+//    "widgets": [
+//        {
+//            "definition": {
+//                "title_size": "13",
+//                "title": "Avg of system.cpu.user over account:prod by service,account",
+//                "title_align": "center",
+//                "time": {
+//                    "live_span": "1d"
+//                },
+//                "requests": [
+//                    {
+//                        "q": "avg:system.cpu.user{account:prod} by {service,account}",
+//                        "style": {
+//                            "palette": "purple"
+//                        }
+//                    }
+//                ],
+//                "type": "distribution",
+//                "show_legend": true,
+//                "legend_size": "2"
+//            },
+//            "layout": {
+//                "y": 3,
+//                "x": 2,
+//                "height": 15,
+//                "width": 47
+//            },
+//            "id": 0
+//        }
+//    ],
+//    "layout_type": "free"
+//}
+
 const datadogDashboardDistributionConfig = `
 resource "datadog_dashboard" "distribution_dashboard" {
-    title         = "Acceptance Test Distribution Widget Dashboard"
-    description   = "Created using the Datadog provider in Terraform"
-    layout_type   = "ordered"
-    is_read_only  = "true"
-    
-    widget {
+	title         = "Acceptance Test Distribution Widget Dashboard"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+	
+	widget {
 		distribution_definition {
 			title = "Avg of system.cpu.user over account:prod by service,account"
-            title_align = "left"
+			title_align = "left"
 			title_size = "16"
 			//show_legend = "true"
 			//legend_size = "2"
@@ -25,12 +71,12 @@ resource "datadog_dashboard" "distribution_dashboard" {
 			}
 			request {
 				q = "avg:system.cpu.user{account:prod} by {service,account}"
-                style {
+				style {
 					palette = "purple"
 				}
 			}
 		}
-    }
+	}
 }
 `
 

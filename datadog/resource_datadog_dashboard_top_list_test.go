@@ -6,14 +6,62 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
+// JSON export used as test scenario
+//{
+//    "notify_list": [],
+//    "description": "",
+//    "author_name": "--redacted--",
+//    "template_variables": [],
+//    "is_read_only": false,
+//    "id": "--redacted--",
+//    "title": "TF - Top List Example",
+//    "url": "--redacted--",
+//    "created_at": "2020-06-09T12:07:23.772156+00:00",
+//    "modified_at": "2020-06-09T12:10:02.808703+00:00",
+//    "author_handle": "--redacted--",
+//    "widgets": [
+//        {
+//            "definition": {
+//                "title_size": "16",
+//                "title": "Avg of system.core.user over account:prod by service,app",
+//                "title_align": "right",
+//                "time": {
+//                    "live_span": "1w"
+//                },
+//                "requests": [
+//                    {
+//                        "q": "top(avg:system.core.user{account:prod} by {service,app}, 10, 'sum', 'desc')",
+//                        "conditional_formats": [
+//                            {
+//                                "palette": "white_on_red",
+//                                "value": 15000,
+//                                "comparator": ">"
+//                            }
+//                        ]
+//                    }
+//                ],
+//                "type": "toplist"
+//            },
+//            "layout": {
+//                "y": 1,
+//                "x": 1,
+//                "height": 15,
+//                "width": 47
+//            },
+//            "id": 0
+//        }
+//    ],
+//    "layout_type": "free"
+//}
+
 const datadogDashboardTopListConfig = `
 resource "datadog_dashboard" "top_list_dashboard" {
-    title         = "Acceptance Test Top List Widget Dashboard"
-    description   = "Created using the Datadog provider in Terraform"
-    layout_type   = "ordered"
-    is_read_only  = "true"
+	title         = "Acceptance Test Top List Widget Dashboard"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
 
-    widget {
+	widget {
 		toplist_definition {
 			title_size = "16"
 			title = "Avg of system.core.user over account:prod by service,app"
@@ -30,7 +78,7 @@ resource "datadog_dashboard" "top_list_dashboard" {
 				}
 			}
 		}
-    }
+	}
 }
 `
 

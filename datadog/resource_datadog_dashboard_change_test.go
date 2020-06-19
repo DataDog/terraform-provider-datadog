@@ -6,6 +6,53 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
+// JSON export used as test scenario
+//{
+//    "notify_list": [],
+//    "description": "",
+//    "author_name": "--redacted--",
+//    "id": "--redacted--",
+//    "url": "--redacted--",
+//    "template_variables": [],
+//    "is_read_only": false,
+//    "title": "TF - Change Example",
+//    "created_at": "2020-06-09T13:01:22.235028+00:00",
+//    "modified_at": "2020-06-09T13:03:15.925532+00:00",
+//    "author_handle": "--redacted--",
+//    "widgets": [
+//        {
+//            "definition": {
+//                "title_size": "16",
+//                "title": "Sum of system.cpu.user over * by service,account",
+//                "title_align": "left",
+//                "time": {
+//                    "live_span": "1h"
+//                },
+//                "requests": [
+//                    {
+//                        "change_type": "relative",
+//                        "order_dir": "desc",
+//                        "compare_to": "day_before",
+//                        "q": "sum:system.cpu.user{*} by {service,account}",
+//                        "show_present": true,
+//                        "increase_good": false,
+//                        "order_by": "change"
+//                    }
+//                ],
+//                "type": "change"
+//            },
+//            "layout": {
+//                "y": 6,
+//                "x": 9,
+//                "height": 15,
+//                "width": 47
+//            },
+//            "id": 1
+//        }
+//    ],
+//    "layout_type": "free"
+//}
+
 const datadogDashboardChangeConfig = `
 resource "datadog_dashboard" "change_dashboard" {
    title         = "Acceptance Test Change Widget Dashboard"

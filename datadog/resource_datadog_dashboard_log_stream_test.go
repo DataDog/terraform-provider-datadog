@@ -6,17 +6,66 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
+// JSON export used as test scenario
+//{
+//    "notify_list": [],
+//    "description": "",
+//    "author_name": "--redacted--",
+//    "id": "--redacted--",
+//    "url": "--redacted--",
+//    "template_variables": [],
+//    "is_read_only": false,
+//    "title": "TF - Logstream Example",
+//    "created_at": "2020-06-09T13:29:37.131810+00:00",
+//    "modified_at": "2020-06-09T13:31:03.844403+00:00",
+//    "author_handle": "--redacted--",
+//    "widgets": [
+//        {
+//            "definition": {
+//                "sort": {
+//                    "column": "time",
+//                    "order": "desc"
+//                },
+//                "show_message_column": true,
+//                "title_size": "16",
+//                "title": "Log Stream",
+//                "title_align": "right",
+//                "message_display": "expanded-md",
+//                "indexes": [],
+//                "columns": [
+//                    "core_host",
+//                    "core_service"
+//                ],
+//                "time": {
+//                    "live_span": "1d"
+//                },
+//                "query": "status:error env:prod",
+//                "type": "log_stream",
+//                "show_date_column": true
+//            },
+//            "layout": {
+//                "y": 1,
+//                "x": 1,
+//                "height": 36,
+//                "width": 47
+//            },
+//            "id": 0
+//        }
+//    ],
+//    "layout_type": "free"
+//}
+
 const datadogDashboardLogStreamConfig = `
 resource "datadog_dashboard" "log_stream_dashboard" {
-    title         = "Acceptance Test Log Stream Widget Dashboard"
-    description   = "Created using the Datadog provider in Terraform"
-    layout_type   = "free"
-    is_read_only  = "true"
+	title         = "Acceptance Test Log Stream Widget Dashboard"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "free"
+	is_read_only  = "true"
 
-    widget {
+	widget {
 		log_stream_definition {
 			title = "Log Stream"
-            title_align = "right"
+			title_align = "right"
 			title_size = "16"
 			show_message_column = "true"
 			message_display = "expanded-md"
@@ -38,7 +87,7 @@ resource "datadog_dashboard" "log_stream_dashboard" {
 			x = 5
 			y = 5
 		}
-    }
+	}
 }
 `
 

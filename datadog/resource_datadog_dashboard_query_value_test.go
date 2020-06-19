@@ -6,17 +6,74 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
+// JSON export used as test scenario
+//{
+//    "notify_list": [],
+//    "description": null,
+//    "author_name": "--redacted--",
+//    "id": "--redacted--",
+//    "url": "--redacted--",
+//    "template_variables": [],
+//    "is_read_only": false,
+//    "title": "TF - Query Value example",
+//    "created_at": "2020-06-09T11:41:15.788029+00:00",
+//    "modified_at": "2020-06-09T11:44:13.755796+00:00",
+//    "author_handle": "--redacted--",
+//    "widgets": [
+//        {
+//            "definition": {
+//                "title_size": "16",
+//                "title": "Avg of system.mem.free over account:prod",
+//                "title_align": "center",
+//                "custom_unit": "Gib",
+//                "precision": 3,
+//                "time": {
+//                    "live_span": "1h"
+//                },
+//                "autoscale": true,
+//                "requests": [
+//                    {
+//                        "q": "avg:system.mem.free{account:prod}",
+//                        "aggregator": "max",
+//                        "conditional_formats": [
+//                            {
+//                                "palette": "white_on_red",
+//                                "value": 9,
+//                                "comparator": "<"
+//                            },
+//                            {
+//                                "palette": "white_on_green",
+//                                "value": 9,
+//                                "comparator": ">="
+//                            }
+//                        ]
+//                    }
+//                ],
+//                "type": "query_value"
+//            },
+//            "layout": {
+//                "y": 2,
+//                "x": 2,
+//                "height": 15,
+//                "width": 47
+//            },
+//            "id": 0
+//        }
+//    ],
+//    "layout_type": "free"
+//}
+
 const datadogDashboardQueryValueConfig = `
 resource "datadog_dashboard" "query_value_dashboard" {
-    title         = "Acceptance Test Query Value Widget Dashboard"
-    description   = "Created using the Datadog provider in Terraform"
-    layout_type   = "ordered"
-    is_read_only  = "true"
+	title         = "Acceptance Test Query Value Widget Dashboard"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
 
-    widget {
+	widget {
 		query_value_definition {
 			title = "Avg of system.mem.free over account:prod"
-            title_align = "center"
+			title_align = "center"
 			title_size = "16"
 			custom_unit = "Gib"
 			precision = "3"
@@ -39,7 +96,7 @@ resource "datadog_dashboard" "query_value_dashboard" {
 				live_span = "1h"
 			}
 		}
-    }
+	}
 }
 `
 
