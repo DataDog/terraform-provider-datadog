@@ -584,7 +584,6 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getManageStatusDefinitionSchema(),
 			},
 		},
-
 		"note_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -1944,7 +1943,7 @@ func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *
 		datadogDefinition.SetTitleSize(v)
 	}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
-		datadogDefinition.SetTitle(v)
+		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
 	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
 		datadogDefinition.Time = buildDatadogWidgetTime(v)
