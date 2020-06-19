@@ -522,7 +522,7 @@ resource "datadog_dashboard" "free_dashboard" {
       show_message_column = true
       message_display = "expanded-md"
       sort {
-        column = "time" 
+        column = "time"
         order = "desc"
       }
     }
@@ -685,7 +685,7 @@ Nested `widget` blocks have the following structure:
       - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
       - `tags_execution`: (Optional) The execution method for multi-value filters. Can be either "and" or "or".
   - `event_timeline_definition`: The definition for a Event Timeline widget. Exactly one nested block is allowed with the following structure:
-      - `text`: (Required) The query to use in the widget.
+      - `query`: (Required) The query to use in the widget.
       - `title`: (Optional) The title of the widget.
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
       - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
