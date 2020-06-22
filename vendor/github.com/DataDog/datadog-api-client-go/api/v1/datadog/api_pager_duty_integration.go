@@ -223,7 +223,7 @@ func (r apiDeletePagerDutyIntegrationServiceRequest) Execute() (*_nethttp.Respon
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/pagerduty/configuration/services/{service_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_name"+"}", _neturl.QueryEscape(parameterToString(r.serviceName, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"service_name"+"}", _neturl.PathEscape(parameterToString(r.serviceName, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -365,7 +365,7 @@ func (r apiGetPagerDutyIntegrationServiceRequest) Execute() (PagerDutyServiceNam
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/pagerduty/configuration/services/{service_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_name"+"}", _neturl.QueryEscape(parameterToString(r.serviceName, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"service_name"+"}", _neturl.PathEscape(parameterToString(r.serviceName, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -521,7 +521,7 @@ func (r apiUpdatePagerDutyIntegrationServiceRequest) Execute() (*_nethttp.Respon
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/pagerduty/configuration/services/{service_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_name"+"}", _neturl.QueryEscape(parameterToString(r.serviceName, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"service_name"+"}", _neturl.PathEscape(parameterToString(r.serviceName, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

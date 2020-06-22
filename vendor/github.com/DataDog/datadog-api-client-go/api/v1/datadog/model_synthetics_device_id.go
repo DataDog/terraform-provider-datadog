@@ -18,9 +18,15 @@ type SyntheticsDeviceID string
 
 // List of SyntheticsDeviceID
 const (
-	SYNTHETICSDEVICEID_LAPTOP_LARGE SyntheticsDeviceID = "laptop_large"
-	SYNTHETICSDEVICEID_TABLET       SyntheticsDeviceID = "tablet"
-	SYNTHETICSDEVICEID_MOBILE_SMALL SyntheticsDeviceID = "mobile_small"
+	SYNTHETICSDEVICEID_LAPTOP_LARGE         SyntheticsDeviceID = "laptop_large"
+	SYNTHETICSDEVICEID_TABLET               SyntheticsDeviceID = "tablet"
+	SYNTHETICSDEVICEID_MOBILE_SMALL         SyntheticsDeviceID = "mobile_small"
+	SYNTHETICSDEVICEID_CHROME_LAPTOP_LARGE  SyntheticsDeviceID = "chrome.laptop_large"
+	SYNTHETICSDEVICEID_CHROME_TABLET        SyntheticsDeviceID = "chrome.tablet"
+	SYNTHETICSDEVICEID_CHROME_MOBILE_SMALL  SyntheticsDeviceID = "chrome.mobile_small"
+	SYNTHETICSDEVICEID_FIREFOX_LAPTOP_LARGE SyntheticsDeviceID = "firefox.laptop_large"
+	SYNTHETICSDEVICEID_FIREFOX_TABLET       SyntheticsDeviceID = "firefox.tablet"
+	SYNTHETICSDEVICEID_FIREFOX_MOBILE_SMALL SyntheticsDeviceID = "firefox.mobile_small"
 )
 
 func (v *SyntheticsDeviceID) UnmarshalJSON(src []byte) error {
@@ -30,7 +36,7 @@ func (v *SyntheticsDeviceID) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsDeviceID(value)
-	for _, existing := range []SyntheticsDeviceID{"laptop_large", "tablet", "mobile_small"} {
+	for _, existing := range []SyntheticsDeviceID{"laptop_large", "tablet", "mobile_small", "chrome.laptop_large", "chrome.tablet", "chrome.mobile_small", "firefox.laptop_large", "firefox.tablet", "firefox.mobile_small"} {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil

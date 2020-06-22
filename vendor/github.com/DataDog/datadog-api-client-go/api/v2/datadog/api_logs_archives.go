@@ -78,7 +78,7 @@ func (r apiAddReadRoleToArchiveRequest) Execute() (*_nethttp.Response, error) {
 	}
 
 	localVarPath := localBasePath + "/api/v2/logs/config/archives/{archive_id}/readers"
-	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.QueryEscape(parameterToString(r.archiveId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.PathEscape(parameterToString(r.archiveId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -390,7 +390,7 @@ func (r apiDeleteLogsArchiveRequest) Execute() (*_nethttp.Response, error) {
 	}
 
 	localVarPath := localBasePath + "/api/v2/logs/config/archives/{archive_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.QueryEscape(parameterToString(r.archiveId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.PathEscape(parameterToString(r.archiveId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -542,7 +542,7 @@ func (r apiGetLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, er
 	}
 
 	localVarPath := localBasePath + "/api/v2/logs/config/archives/{archive_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.QueryEscape(parameterToString(r.archiveId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.PathEscape(parameterToString(r.archiveId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -709,7 +709,7 @@ func (r apiListArchiveReadRolesRequest) Execute() (RolesResponse, *_nethttp.Resp
 	}
 
 	localVarPath := localBasePath + "/api/v2/logs/config/archives/{archive_id}/readers"
-	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.QueryEscape(parameterToString(r.archiveId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.PathEscape(parameterToString(r.archiveId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1018,7 +1018,7 @@ func (r apiRemoveRoleFromArchiveRequest) Execute() (*_nethttp.Response, error) {
 	}
 
 	localVarPath := localBasePath + "/api/v2/logs/config/archives/{archive_id}/readers"
-	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.QueryEscape(parameterToString(r.archiveId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.PathEscape(parameterToString(r.archiveId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1181,7 +1181,7 @@ func (r apiUpdateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 	}
 
 	localVarPath := localBasePath + "/api/v2/logs/config/archives/{archive_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.QueryEscape(parameterToString(r.archiveId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.PathEscape(parameterToString(r.archiveId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

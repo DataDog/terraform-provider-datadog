@@ -14,10 +14,7 @@ import (
 
 // RoleResponseRelationships Relationships of the role object returned by the API.
 type RoleResponseRelationships struct {
-	Org        *RelationshipToOrganization  `json:"org,omitempty"`
-	OtherOrgs  *RelationshipToOrganizations `json:"other_orgs,omitempty"`
-	OtherRoles *RelationshipToRoles         `json:"other_roles,omitempty"`
-	Roles      *RelationshipToRoles         `json:"roles,omitempty"`
+	Permissions *RelationshipToPermissions `json:"permissions,omitempty"`
 }
 
 // NewRoleResponseRelationships instantiates a new RoleResponseRelationships object
@@ -37,147 +34,42 @@ func NewRoleResponseRelationshipsWithDefaults() *RoleResponseRelationships {
 	return &this
 }
 
-// GetOrg returns the Org field value if set, zero value otherwise.
-func (o *RoleResponseRelationships) GetOrg() RelationshipToOrganization {
-	if o == nil || o.Org == nil {
-		var ret RelationshipToOrganization
+// GetPermissions returns the Permissions field value if set, zero value otherwise.
+func (o *RoleResponseRelationships) GetPermissions() RelationshipToPermissions {
+	if o == nil || o.Permissions == nil {
+		var ret RelationshipToPermissions
 		return ret
 	}
-	return *o.Org
+	return *o.Permissions
 }
 
-// GetOrgOk returns a tuple with the Org field value if set, nil otherwise
+// GetPermissionsOk returns a tuple with the Permissions field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RoleResponseRelationships) GetOrgOk() (*RelationshipToOrganization, bool) {
-	if o == nil || o.Org == nil {
+func (o *RoleResponseRelationships) GetPermissionsOk() (*RelationshipToPermissions, bool) {
+	if o == nil || o.Permissions == nil {
 		return nil, false
 	}
-	return o.Org, true
+	return o.Permissions, true
 }
 
-// HasOrg returns a boolean if a field has been set.
-func (o *RoleResponseRelationships) HasOrg() bool {
-	if o != nil && o.Org != nil {
+// HasPermissions returns a boolean if a field has been set.
+func (o *RoleResponseRelationships) HasPermissions() bool {
+	if o != nil && o.Permissions != nil {
 		return true
 	}
 
 	return false
 }
 
-// SetOrg gets a reference to the given RelationshipToOrganization and assigns it to the Org field.
-func (o *RoleResponseRelationships) SetOrg(v RelationshipToOrganization) {
-	o.Org = &v
-}
-
-// GetOtherOrgs returns the OtherOrgs field value if set, zero value otherwise.
-func (o *RoleResponseRelationships) GetOtherOrgs() RelationshipToOrganizations {
-	if o == nil || o.OtherOrgs == nil {
-		var ret RelationshipToOrganizations
-		return ret
-	}
-	return *o.OtherOrgs
-}
-
-// GetOtherOrgsOk returns a tuple with the OtherOrgs field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RoleResponseRelationships) GetOtherOrgsOk() (*RelationshipToOrganizations, bool) {
-	if o == nil || o.OtherOrgs == nil {
-		return nil, false
-	}
-	return o.OtherOrgs, true
-}
-
-// HasOtherOrgs returns a boolean if a field has been set.
-func (o *RoleResponseRelationships) HasOtherOrgs() bool {
-	if o != nil && o.OtherOrgs != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetOtherOrgs gets a reference to the given RelationshipToOrganizations and assigns it to the OtherOrgs field.
-func (o *RoleResponseRelationships) SetOtherOrgs(v RelationshipToOrganizations) {
-	o.OtherOrgs = &v
-}
-
-// GetOtherRoles returns the OtherRoles field value if set, zero value otherwise.
-func (o *RoleResponseRelationships) GetOtherRoles() RelationshipToRoles {
-	if o == nil || o.OtherRoles == nil {
-		var ret RelationshipToRoles
-		return ret
-	}
-	return *o.OtherRoles
-}
-
-// GetOtherRolesOk returns a tuple with the OtherRoles field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RoleResponseRelationships) GetOtherRolesOk() (*RelationshipToRoles, bool) {
-	if o == nil || o.OtherRoles == nil {
-		return nil, false
-	}
-	return o.OtherRoles, true
-}
-
-// HasOtherRoles returns a boolean if a field has been set.
-func (o *RoleResponseRelationships) HasOtherRoles() bool {
-	if o != nil && o.OtherRoles != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetOtherRoles gets a reference to the given RelationshipToRoles and assigns it to the OtherRoles field.
-func (o *RoleResponseRelationships) SetOtherRoles(v RelationshipToRoles) {
-	o.OtherRoles = &v
-}
-
-// GetRoles returns the Roles field value if set, zero value otherwise.
-func (o *RoleResponseRelationships) GetRoles() RelationshipToRoles {
-	if o == nil || o.Roles == nil {
-		var ret RelationshipToRoles
-		return ret
-	}
-	return *o.Roles
-}
-
-// GetRolesOk returns a tuple with the Roles field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RoleResponseRelationships) GetRolesOk() (*RelationshipToRoles, bool) {
-	if o == nil || o.Roles == nil {
-		return nil, false
-	}
-	return o.Roles, true
-}
-
-// HasRoles returns a boolean if a field has been set.
-func (o *RoleResponseRelationships) HasRoles() bool {
-	if o != nil && o.Roles != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetRoles gets a reference to the given RelationshipToRoles and assigns it to the Roles field.
-func (o *RoleResponseRelationships) SetRoles(v RelationshipToRoles) {
-	o.Roles = &v
+// SetPermissions gets a reference to the given RelationshipToPermissions and assigns it to the Permissions field.
+func (o *RoleResponseRelationships) SetPermissions(v RelationshipToPermissions) {
+	o.Permissions = &v
 }
 
 func (o RoleResponseRelationships) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Org != nil {
-		toSerialize["org"] = o.Org
-	}
-	if o.OtherOrgs != nil {
-		toSerialize["other_orgs"] = o.OtherOrgs
-	}
-	if o.OtherRoles != nil {
-		toSerialize["other_roles"] = o.OtherRoles
-	}
-	if o.Roles != nil {
-		toSerialize["roles"] = o.Roles
+	if o.Permissions != nil {
+		toSerialize["permissions"] = o.Permissions
 	}
 	return json.Marshal(toSerialize)
 }

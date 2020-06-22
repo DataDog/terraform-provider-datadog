@@ -18,9 +18,15 @@ type MonitorDeviceID string
 
 // List of MonitorDeviceID
 const (
-	MONITORDEVICEID_LAPTOP_LARGE MonitorDeviceID = "laptop_large"
-	MONITORDEVICEID_TABLET       MonitorDeviceID = "tablet"
-	MONITORDEVICEID_MOBILE_SMALL MonitorDeviceID = "mobile_small"
+	MONITORDEVICEID_LAPTOP_LARGE         MonitorDeviceID = "laptop_large"
+	MONITORDEVICEID_TABLET               MonitorDeviceID = "tablet"
+	MONITORDEVICEID_MOBILE_SMALL         MonitorDeviceID = "mobile_small"
+	MONITORDEVICEID_CHROME_LAPTOP_LARGE  MonitorDeviceID = "chrome.laptop_large"
+	MONITORDEVICEID_CHROME_TABLET        MonitorDeviceID = "chrome.tablet"
+	MONITORDEVICEID_CHROME_MOBILE_SMALL  MonitorDeviceID = "chrome.mobile_small"
+	MONITORDEVICEID_FIREFOX_LAPTOP_LARGE MonitorDeviceID = "firefox.laptop_large"
+	MONITORDEVICEID_FIREFOX_TABLET       MonitorDeviceID = "firefox.tablet"
+	MONITORDEVICEID_FIREFOX_MOBILE_SMALL MonitorDeviceID = "firefox.mobile_small"
 )
 
 func (v *MonitorDeviceID) UnmarshalJSON(src []byte) error {
@@ -30,7 +36,7 @@ func (v *MonitorDeviceID) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := MonitorDeviceID(value)
-	for _, existing := range []MonitorDeviceID{"laptop_large", "tablet", "mobile_small"} {
+	for _, existing := range []MonitorDeviceID{"laptop_large", "tablet", "mobile_small", "chrome.laptop_large", "chrome.tablet", "chrome.mobile_small", "firefox.laptop_large", "firefox.tablet", "firefox.mobile_small"} {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil

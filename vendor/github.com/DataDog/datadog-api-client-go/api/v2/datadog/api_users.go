@@ -27,10 +27,10 @@ type UsersApiService service
 type apiCreateUserRequest struct {
 	ctx        _context.Context
 	apiService *UsersApiService
-	body       *UserCreatePayload
+	body       *UserCreateRequest
 }
 
-func (r apiCreateUserRequest) Body(body UserCreatePayload) apiCreateUserRequest {
+func (r apiCreateUserRequest) Body(body UserCreateRequest) apiCreateUserRequest {
 	r.body = &body
 	return r
 }
@@ -219,7 +219,7 @@ func (r apiDisableUserRequest) Execute() (*_nethttp.Response, error) {
 	}
 
 	localVarPath := localBasePath + "/api/v2/users/{user_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.QueryEscape(parameterToString(r.userId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.PathEscape(parameterToString(r.userId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -361,7 +361,7 @@ func (r apiGetInvitationRequest) Execute() (UserInvitationResponse, *_nethttp.Re
 	}
 
 	localVarPath := localBasePath + "/api/v2/user_invitations/{user_invitation_uuid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_invitation_uuid"+"}", _neturl.QueryEscape(parameterToString(r.userInvitationUuid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"user_invitation_uuid"+"}", _neturl.PathEscape(parameterToString(r.userInvitationUuid, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -512,7 +512,7 @@ func (r apiGetUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
 	}
 
 	localVarPath := localBasePath + "/api/v2/users/{user_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.QueryEscape(parameterToString(r.userId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.PathEscape(parameterToString(r.userId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -663,7 +663,7 @@ func (r apiListUserOrganizationsRequest) Execute() (UserResponse, *_nethttp.Resp
 	}
 
 	localVarPath := localBasePath + "/api/v2/users/{user_id}/orgs"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.QueryEscape(parameterToString(r.userId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.PathEscape(parameterToString(r.userId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -814,7 +814,7 @@ func (r apiListUserPermissionsRequest) Execute() (PermissionsResponse, *_nethttp
 	}
 
 	localVarPath := localBasePath + "/api/v2/users/{user_id}/permissions"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.QueryEscape(parameterToString(r.userId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.PathEscape(parameterToString(r.userId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1128,10 +1128,10 @@ func (r apiListUsersRequest) Execute() (UsersResponse, *_nethttp.Response, error
 type apiSendInvitationsRequest struct {
 	ctx        _context.Context
 	apiService *UsersApiService
-	body       *UserInvitationPayload
+	body       *UserInvitationsRequest
 }
 
-func (r apiSendInvitationsRequest) Body(body UserInvitationPayload) apiSendInvitationsRequest {
+func (r apiSendInvitationsRequest) Body(body UserInvitationsRequest) apiSendInvitationsRequest {
 	r.body = &body
 	return r
 }
@@ -1284,10 +1284,10 @@ type apiUpdateUserRequest struct {
 	ctx        _context.Context
 	apiService *UsersApiService
 	userId     string
-	body       *UserUpdatePayload
+	body       *UserUpdateRequest
 }
 
-func (r apiUpdateUserRequest) Body(body UserUpdatePayload) apiUpdateUserRequest {
+func (r apiUpdateUserRequest) Body(body UserUpdateRequest) apiUpdateUserRequest {
 	r.body = &body
 	return r
 }
@@ -1326,7 +1326,7 @@ func (r apiUpdateUserRequest) Execute() (*_nethttp.Response, error) {
 	}
 
 	localVarPath := localBasePath + "/api/v2/users/{user_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.QueryEscape(parameterToString(r.userId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.PathEscape(parameterToString(r.userId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

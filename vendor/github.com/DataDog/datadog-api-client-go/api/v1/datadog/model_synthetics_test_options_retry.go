@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsTestOptionsRetry Object describing the retry strategy to apply to a Synthetic test.
+// SyntheticsTestOptionsRetry Object describing the retry strategy to apply to a Synthetic test. By default, there is a 300ms wait before retrying a test that has failed.
 type SyntheticsTestOptionsRetry struct {
 	// The amount of location that needs to fail for the test to be retried.
 	Count *int64 `json:"count,omitempty"`

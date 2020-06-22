@@ -25,7 +25,7 @@ When moving this package from one major semver version to the next, there's a co
 
 ### Commands
 
-- See changes ready for release by running `ddev release show changes .` at the root of this project. Add any missing labels to PRs if needed.
+- See changes ready for release by running `ddev release show changes --tag-prefix "v" .` at the root of this project. Add any missing labels to PRs if needed.
 - Run `ddev release changelog . <NEW_VERSION>` to update the `CHANGELOG.md` file at the root of this repository
 - Run `go mod tidy` to clean up the dependencies defined in `go.mod` and `go.sum`
 - Update the version in `version.go` you want to release, following semver. This file is used to know the version when sending telemetry.

@@ -12,30 +12,30 @@ import (
 	"encoding/json"
 )
 
-// RoleUpdatePayload Update a role.
-type RoleUpdatePayload struct {
+// RoleUpdateRequest Update a role.
+type RoleUpdateRequest struct {
 	Data *RoleUpdateData `json:"data,omitempty"`
 }
 
-// NewRoleUpdatePayload instantiates a new RoleUpdatePayload object
+// NewRoleUpdateRequest instantiates a new RoleUpdateRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRoleUpdatePayload() *RoleUpdatePayload {
-	this := RoleUpdatePayload{}
+func NewRoleUpdateRequest() *RoleUpdateRequest {
+	this := RoleUpdateRequest{}
 	return &this
 }
 
-// NewRoleUpdatePayloadWithDefaults instantiates a new RoleUpdatePayload object
+// NewRoleUpdateRequestWithDefaults instantiates a new RoleUpdateRequest object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewRoleUpdatePayloadWithDefaults() *RoleUpdatePayload {
-	this := RoleUpdatePayload{}
+func NewRoleUpdateRequestWithDefaults() *RoleUpdateRequest {
+	this := RoleUpdateRequest{}
 	return &this
 }
 
 // GetData returns the Data field value if set, zero value otherwise.
-func (o *RoleUpdatePayload) GetData() RoleUpdateData {
+func (o *RoleUpdateRequest) GetData() RoleUpdateData {
 	if o == nil || o.Data == nil {
 		var ret RoleUpdateData
 		return ret
@@ -45,7 +45,7 @@ func (o *RoleUpdatePayload) GetData() RoleUpdateData {
 
 // GetDataOk returns a tuple with the Data field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RoleUpdatePayload) GetDataOk() (*RoleUpdateData, bool) {
+func (o *RoleUpdateRequest) GetDataOk() (*RoleUpdateData, bool) {
 	if o == nil || o.Data == nil {
 		return nil, false
 	}
@@ -53,7 +53,7 @@ func (o *RoleUpdatePayload) GetDataOk() (*RoleUpdateData, bool) {
 }
 
 // HasData returns a boolean if a field has been set.
-func (o *RoleUpdatePayload) HasData() bool {
+func (o *RoleUpdateRequest) HasData() bool {
 	if o != nil && o.Data != nil {
 		return true
 	}
@@ -62,11 +62,11 @@ func (o *RoleUpdatePayload) HasData() bool {
 }
 
 // SetData gets a reference to the given RoleUpdateData and assigns it to the Data field.
-func (o *RoleUpdatePayload) SetData(v RoleUpdateData) {
+func (o *RoleUpdateRequest) SetData(v RoleUpdateData) {
 	o.Data = &v
 }
 
-func (o RoleUpdatePayload) MarshalJSON() ([]byte, error) {
+func (o RoleUpdateRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Data != nil {
 		toSerialize["data"] = o.Data
@@ -74,38 +74,38 @@ func (o RoleUpdatePayload) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableRoleUpdatePayload struct {
-	value *RoleUpdatePayload
+type NullableRoleUpdateRequest struct {
+	value *RoleUpdateRequest
 	isSet bool
 }
 
-func (v NullableRoleUpdatePayload) Get() *RoleUpdatePayload {
+func (v NullableRoleUpdateRequest) Get() *RoleUpdateRequest {
 	return v.value
 }
 
-func (v *NullableRoleUpdatePayload) Set(val *RoleUpdatePayload) {
+func (v *NullableRoleUpdateRequest) Set(val *RoleUpdateRequest) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableRoleUpdatePayload) IsSet() bool {
+func (v NullableRoleUpdateRequest) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableRoleUpdatePayload) Unset() {
+func (v *NullableRoleUpdateRequest) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableRoleUpdatePayload(val *RoleUpdatePayload) *NullableRoleUpdatePayload {
-	return &NullableRoleUpdatePayload{value: val, isSet: true}
+func NewNullableRoleUpdateRequest(val *RoleUpdateRequest) *NullableRoleUpdateRequest {
+	return &NullableRoleUpdateRequest{value: val, isSet: true}
 }
 
-func (v NullableRoleUpdatePayload) MarshalJSON() ([]byte, error) {
+func (v NullableRoleUpdateRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableRoleUpdatePayload) UnmarshalJSON(src []byte) error {
+func (v *NullableRoleUpdateRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

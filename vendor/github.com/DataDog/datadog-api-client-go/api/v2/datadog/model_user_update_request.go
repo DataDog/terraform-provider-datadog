@@ -12,30 +12,30 @@ import (
 	"encoding/json"
 )
 
-// UserUpdatePayload Update a user.
-type UserUpdatePayload struct {
+// UserUpdateRequest Update a user.
+type UserUpdateRequest struct {
 	Data *UserUpdateData `json:"data,omitempty"`
 }
 
-// NewUserUpdatePayload instantiates a new UserUpdatePayload object
+// NewUserUpdateRequest instantiates a new UserUpdateRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserUpdatePayload() *UserUpdatePayload {
-	this := UserUpdatePayload{}
+func NewUserUpdateRequest() *UserUpdateRequest {
+	this := UserUpdateRequest{}
 	return &this
 }
 
-// NewUserUpdatePayloadWithDefaults instantiates a new UserUpdatePayload object
+// NewUserUpdateRequestWithDefaults instantiates a new UserUpdateRequest object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewUserUpdatePayloadWithDefaults() *UserUpdatePayload {
-	this := UserUpdatePayload{}
+func NewUserUpdateRequestWithDefaults() *UserUpdateRequest {
+	this := UserUpdateRequest{}
 	return &this
 }
 
 // GetData returns the Data field value if set, zero value otherwise.
-func (o *UserUpdatePayload) GetData() UserUpdateData {
+func (o *UserUpdateRequest) GetData() UserUpdateData {
 	if o == nil || o.Data == nil {
 		var ret UserUpdateData
 		return ret
@@ -45,7 +45,7 @@ func (o *UserUpdatePayload) GetData() UserUpdateData {
 
 // GetDataOk returns a tuple with the Data field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserUpdatePayload) GetDataOk() (*UserUpdateData, bool) {
+func (o *UserUpdateRequest) GetDataOk() (*UserUpdateData, bool) {
 	if o == nil || o.Data == nil {
 		return nil, false
 	}
@@ -53,7 +53,7 @@ func (o *UserUpdatePayload) GetDataOk() (*UserUpdateData, bool) {
 }
 
 // HasData returns a boolean if a field has been set.
-func (o *UserUpdatePayload) HasData() bool {
+func (o *UserUpdateRequest) HasData() bool {
 	if o != nil && o.Data != nil {
 		return true
 	}
@@ -62,11 +62,11 @@ func (o *UserUpdatePayload) HasData() bool {
 }
 
 // SetData gets a reference to the given UserUpdateData and assigns it to the Data field.
-func (o *UserUpdatePayload) SetData(v UserUpdateData) {
+func (o *UserUpdateRequest) SetData(v UserUpdateData) {
 	o.Data = &v
 }
 
-func (o UserUpdatePayload) MarshalJSON() ([]byte, error) {
+func (o UserUpdateRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Data != nil {
 		toSerialize["data"] = o.Data
@@ -74,38 +74,38 @@ func (o UserUpdatePayload) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableUserUpdatePayload struct {
-	value *UserUpdatePayload
+type NullableUserUpdateRequest struct {
+	value *UserUpdateRequest
 	isSet bool
 }
 
-func (v NullableUserUpdatePayload) Get() *UserUpdatePayload {
+func (v NullableUserUpdateRequest) Get() *UserUpdateRequest {
 	return v.value
 }
 
-func (v *NullableUserUpdatePayload) Set(val *UserUpdatePayload) {
+func (v *NullableUserUpdateRequest) Set(val *UserUpdateRequest) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableUserUpdatePayload) IsSet() bool {
+func (v NullableUserUpdateRequest) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableUserUpdatePayload) Unset() {
+func (v *NullableUserUpdateRequest) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableUserUpdatePayload(val *UserUpdatePayload) *NullableUserUpdatePayload {
-	return &NullableUserUpdatePayload{value: val, isSet: true}
+func NewNullableUserUpdateRequest(val *UserUpdateRequest) *NullableUserUpdateRequest {
+	return &NullableUserUpdateRequest{value: val, isSet: true}
 }
 
-func (v NullableUserUpdatePayload) MarshalJSON() ([]byte, error) {
+func (v NullableUserUpdateRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableUserUpdatePayload) UnmarshalJSON(src []byte) error {
+func (v *NullableUserUpdateRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

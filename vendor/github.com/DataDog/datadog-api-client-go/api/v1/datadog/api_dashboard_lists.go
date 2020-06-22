@@ -224,7 +224,7 @@ func (r apiDeleteDashboardListRequest) Execute() (DashboardListDeleteResponse, *
 	}
 
 	localVarPath := localBasePath + "/api/v1/dashboard/lists/manual/{list_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"list_id"+"}", _neturl.QueryEscape(parameterToString(r.listId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"list_id"+"}", _neturl.PathEscape(parameterToString(r.listId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -375,7 +375,7 @@ func (r apiGetDashboardListRequest) Execute() (DashboardList, *_nethttp.Response
 	}
 
 	localVarPath := localBasePath + "/api/v1/dashboard/lists/manual/{list_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"list_id"+"}", _neturl.QueryEscape(parameterToString(r.listId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"list_id"+"}", _neturl.PathEscape(parameterToString(r.listId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -669,7 +669,7 @@ func (r apiUpdateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 	}
 
 	localVarPath := localBasePath + "/api/v1/dashboard/lists/manual/{list_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"list_id"+"}", _neturl.QueryEscape(parameterToString(r.listId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"list_id"+"}", _neturl.PathEscape(parameterToString(r.listId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

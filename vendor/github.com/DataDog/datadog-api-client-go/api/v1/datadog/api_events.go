@@ -68,7 +68,7 @@ func (r apiGetEventRequest) Execute() (EventResponse, *_nethttp.Response, error)
 	}
 
 	localVarPath := localBasePath + "/api/v1/events/{event_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"event_id"+"}", _neturl.QueryEscape(parameterToString(r.eventId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"event_id"+"}", _neturl.PathEscape(parameterToString(r.eventId, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
