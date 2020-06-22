@@ -11,7 +11,7 @@ BUGFIXES:
 
 NOTES:
 * `datadog_synthetics_test`: `SyntheticsDeviceID` should accept all allowed values ([#538](https://github.com/terraform-providers/terraform-provider-datadog/issues/538))
-* Thanks [@razaj92](https://github.com/razaj92) ([#547](https://github.com/terraform-providers/terraform-provider-datadog/pull/547) ) who contributed to this release as well.
+* Thanks [@razaj92](https://github.com/razaj92) ([#547](https://github.com/terraform-providers/terraform-provider-datadog/pull/547)) who contributed to this release as well.
 
 ## 2.8.0 (June 10, 2020)
 
