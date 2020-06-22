@@ -1,4 +1,4 @@
-## 2.8.1 (Unreleased)
+## 2.9.0 (Unreleased)
 
 IMPROVEMENTS:
 * `datadog_monitor`: Add monitor `force_delete` parameter ([#535](https://github.com/terraform-providers/terraform-provider-datadog/pull/535)) Thanks [@ykyr](https://github.com/ykyr)
