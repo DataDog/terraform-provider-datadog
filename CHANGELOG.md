@@ -1,14 +1,13 @@
 ## 2.8.1 (Unreleased)
 
 IMPROVEMENTS:
-* `monitor`: Add monitor `force_delete` parameter ([#535](https://github.com/terraform-providers/terraform-provider-datadog/pull/535)) Thanks [@ykyr](https://github.com/ykyr)
-* `provider_test`: Allow to pass http client when creating test provider ([#541](https://github.com/terraform-providers/terraform-provider-datadog/pull/541)) Thanks [@txominpelu](https://github.com/txominpelu)
+* `datadog_monitor`: Add monitor `force_delete` parameter ([#535](https://github.com/terraform-providers/terraform-provider-datadog/pull/535)) Thanks [@ykyr](https://github.com/ykyr)
 
 BUGFIXES:
-* `dashboard`: Safely access index field ([#536](https://github.com/terraform-providers/terraform-provider-datadog/pull/536))
-* `dashboard`: Set title and title_align properly on heatmap widget ([#539](https://github.com/terraform-providers/terraform-provider-datadog/pull/539))
-* `ip_ranges`: Fix data source for IPRanges ([#542](https://github.com/terraform-providers/terraform-provider-datadog/pull/542))
-* `monitor`: Fix indent in datadog_monitor ([#543](https://github.com/terraform-providers/terraform-provider-datadog/pull/543)) Thanks [@nekottyo](https://github.com/nekottyo)
+* `datadog_dashboard`: Safely access index field ([#536](https://github.com/terraform-providers/terraform-provider-datadog/pull/536))
+* `datadog_dashboard`: Set title and title_align properly on heatmap widget ([#539](https://github.com/terraform-providers/terraform-provider-datadog/pull/539))
+* `datadog_ip_ranges`: Fix data source for IPRanges ([#542](https://github.com/terraform-providers/terraform-provider-datadog/pull/542))
+* `datadog_monitor`: Fix indent in datadog_monitor docs example ([#543](https://github.com/terraform-providers/terraform-provider-datadog/pull/543)) Thanks [@nekottyo](https://github.com/nekottyo)
 
 NOTES:
 * `datadog_synthetics_test`: `SyntheticsDeviceID` should accept all allowed values ([#538](https://github.com/terraform-providers/terraform-provider-datadog/issues/538))
