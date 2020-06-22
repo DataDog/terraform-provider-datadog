@@ -2,8 +2,6 @@ package datadog
 
 import (
 	"testing"
-
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
 // JSON export used as test scenario
@@ -116,43 +114,9 @@ var datadogDashboardLogStreamAsserts = []string{
 }
 
 func TestAccDatadogDashboardLogStream(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
-	defer cleanup(t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: datadogDashboardLogStreamConfig,
-				Check: resource.ComposeTestCheckFunc(
-					testCheckResourceAttrs("datadog_dashboard.log_stream_dashboard", checkDashboardExists(accProvider), datadogDashboardLogStreamAsserts)...,
-				),
-			},
-		},
-	})
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardLogStreamConfig, "datadog_dashboard.log_stream_dashboard", datadogDashboardLogStreamAsserts)
 }
 
 func TestAccDatadogDashboardLogStream_import(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
-	defer cleanup(t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: datadogDashboardLogStreamConfig,
-			},
-			{
-				ResourceName:      "datadog_dashboard.log_stream_dashboard",
-				ImportState:       true,
-				ImportStateVerify: true,
-			},
-		},
-	})
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardLogStreamConfig, "datadog_dashboard.log_stream_dashboard")
 }

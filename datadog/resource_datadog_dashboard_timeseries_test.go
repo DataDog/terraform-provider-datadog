@@ -2,8 +2,6 @@ package datadog
 
 import (
 	"testing"
-
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
 // JSON export used as test scenario
@@ -579,43 +577,9 @@ var datadogDashboardTimeseriesAsserts = []string{
 }
 
 func TestAccDatadogDashboardTimeseries(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
-	defer cleanup(t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: datadogDashboardTimeseriesConfig,
-				Check: resource.ComposeTestCheckFunc(
-					testCheckResourceAttrs("datadog_dashboard.timeseries_dashboard", checkDashboardExists(accProvider), datadogDashboardTimeseriesAsserts)...,
-				),
-			},
-		},
-	})
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardTimeseriesConfig, "datadog_dashboard.timeseries_dashboard", datadogDashboardTimeseriesAsserts)
 }
 
 func TestAccDatadogDashboardTimeseries_import(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
-	defer cleanup(t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: datadogDashboardTimeseriesConfig,
-			},
-			{
-				ResourceName:      "datadog_dashboard.timeseries_dashboard",
-				ImportState:       true,
-				ImportStateVerify: true,
-			},
-		},
-	})
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTimeseriesConfig, "datadog_dashboard.timeseries_dashboard")
 }

@@ -2,8 +2,6 @@ package datadog
 
 import (
 	"testing"
-
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
 // JSON export used as test scenario
@@ -84,43 +82,9 @@ var datadogDashboardCheckStatusAsserts = []string{
 }
 
 func TestAccDatadogDashboardCheckStatus(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
-	defer cleanup(t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: datadogDashboardCheckStatusConfig,
-				Check: resource.ComposeTestCheckFunc(
-					testCheckResourceAttrs("datadog_dashboard.check_status_dashboard", checkDashboardExists(accProvider), datadogDashboardCheckStatusAsserts)...,
-				),
-			},
-		},
-	})
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardCheckStatusConfig, "datadog_dashboard.check_status_dashboard", datadogDashboardCheckStatusAsserts)
 }
 
 func TestAccDatadogDashboardCheckStatus_import(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
-	defer cleanup(t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: datadogDashboardCheckStatusConfig,
-			},
-			{
-				ResourceName:      "datadog_dashboard.check_status_dashboard",
-				ImportState:       true,
-				ImportStateVerify: true,
-			},
-		},
-	})
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardCheckStatusConfig, "datadog_dashboard.check_status_dashboard")
 }

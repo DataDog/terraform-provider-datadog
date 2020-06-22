@@ -2,8 +2,6 @@ package datadog
 
 import (
 	"testing"
-
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
 // JSON export used as test scenario
@@ -91,43 +89,9 @@ var datadogDashboardEventTimelineAsserts = []string{
 }
 
 func TestAccDatadogDashboardEventTimeline(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
-	defer cleanup(t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: datadogDashboardEventTimelineConfig,
-				Check: resource.ComposeTestCheckFunc(
-					testCheckResourceAttrs("datadog_dashboard.event_timeline_dashboard", checkDashboardExists(accProvider), datadogDashboardEventTimelineAsserts)...,
-				),
-			},
-		},
-	})
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardEventTimelineConfig, "datadog_dashboard.event_timeline_dashboard", datadogDashboardEventTimelineAsserts)
 }
 
 func TestAccDatadogDashboardEventTimeline_import(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
-	defer cleanup(t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: datadogDashboardEventTimelineConfig,
-			},
-			{
-				ResourceName:      "datadog_dashboard.event_timeline_dashboard",
-				ImportState:       true,
-				ImportStateVerify: true,
-			},
-		},
-	})
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardEventTimelineConfig, "datadog_dashboard.event_timeline_dashboard")
 }
