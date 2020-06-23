@@ -4509,7 +4509,7 @@ func getMetricQuerySchema() *schema.Schema {
 	}
 }
 
-// APM or Log Query
+// APM, Log, Network or RUM Query
 func getApmLogNetworkOrRumQuerySchema() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,
