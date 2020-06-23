@@ -243,6 +243,23 @@ resource "datadog_dashboard" "ordered_dashboard" {
   }
 
   widget {
+    servicemap_definition {
+      service = "master-db"
+      filters = ["env:prod","datacenter:us1.prod.dog"]
+      title = "env: prod, datacenter:us1.prod.dog, service: master-db"
+      title_size = "16"
+      title_align = "left"
+        
+    }
+    layout = {
+      height = 43
+      width = 32
+      x = 5
+      y = 5
+    }
+  }
+
+  widget {
     timeseries_definition {
       request {
         q= "avg:system.cpu.user{app:general} by {env}"
@@ -675,6 +692,8 @@ Nested `widget` blocks have the following structure:
       - `title`: (Optional) The title of the widget.
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
       - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+      - `show_legend`: (Optional) Whether or not to show the legend on this widget.
+      - `legend_size`: (Optional) The size of the legend displayed in the widget.
       - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
   - `event_stream_definition`: The definition for a Event Stream widget. Exactly one nested block is allowed with the following structure:
       - `query`: (Required) The query to use in the widget.
@@ -808,6 +827,12 @@ Nested `widget` blocks have the following structure:
         - `title_size`: (Optional) The size of the widget's title. Default is 16.
         - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
         - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+  - `servicemap_definition`: The definition for a Service Map widget. Exactly one nested block is allowed with the following structure:
+          - `filters`: (Required) Your environment and primary tag (or * if enabled for your account).
+          - `service`: (Required) The ID of the service you want to map.
+          - `title`: (Optional) The title of the widget.
+          - `title_size`: (Optional) The size of the widget's title. Default is 16.
+          - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
   - `service_level_objective_definition`: The definition for a Service Level Objective widget. Exactly one nested block is allowed with the following structure:
         - `view_type`: (Required) Type of view to use when displaying the widget. Only "detail" is currently supported.
         - `slo_id`: (Required) The ID of the service level objective used by the widget.
