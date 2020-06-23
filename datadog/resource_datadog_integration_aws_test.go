@@ -56,8 +56,8 @@ resource "datadog_integration_aws" "account" {
 	filter_tags                      = ["key:value"]
   	host_tags                        = ["key:value", "key2:value2"]
   	account_specific_namespace_rules = {
-    	auto_scaling = false
-    	opsworks = true
+    	    auto_scaling = false
+    	    opsworks = true
   	}
   	excluded_regions                 = ["us-east-1", "us-west-2"]
 }
