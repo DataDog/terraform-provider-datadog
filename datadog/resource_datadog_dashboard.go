@@ -1932,6 +1932,22 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			Type:     schema.TypeString,
 			Optional: true,
 		},
+		"event": {
+			Type:     schema.TypeList,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: getWidgetEventSchema(),
+			},
+		},
+		"show_legend": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
+		"legend_size": {
+			Type:         schema.TypeString,
+			Optional:     true,
+			ValidateFunc: validateTimeseriesWidgetLegendSize,
+		},
 		"time": {
 			Type:     schema.TypeMap,
 			Optional: true,
@@ -1951,6 +1967,15 @@ func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *
 		if v, ok := axis[0].(map[string]interface{}); ok && len(v) > 0 {
 			datadogDefinition.Yaxis = buildDatadogWidgetAxis(v)
 		}
+	}
+	if v, ok := terraformDefinition["event"].([]interface{}); ok && len(v) > 0 {
+		datadogDefinition.Events = buildDatadogWidgetEvents(&v)
+	}
+	if v, ok := terraformDefinition["show_legend"].(bool); ok {
+		datadogDefinition.SetShowLegend(v)
+	}
+	if v, ok := terraformDefinition["legend_size"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetLegendSize(datadogV1.WidgetLegendSize(v))
 	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
@@ -1975,6 +2000,9 @@ func buildTerraformHeatmapDefinition(datadogDefinition datadogV1.HeatMapWidgetDe
 		axis := buildTerraformWidgetAxis(*v)
 		terraformDefinition["yaxis"] = []map[string]interface{}{axis}
 	}
+	if v, ok := datadogDefinition.GetEventsOk(); ok {
+		terraformDefinition["event"] = buildTerraformWidgetEvents(v)
+	}
 	if v, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = *v
 	}
@@ -1983,6 +2011,12 @@ func buildTerraformHeatmapDefinition(datadogDefinition datadogV1.HeatMapWidgetDe
 	}
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
+	}
+	if v, ok := datadogDefinition.GetShowLegendOk(); ok {
+		terraformDefinition["show_legend"] = *v
+	}
+	if v, ok := datadogDefinition.GetLegendSizeOk(); ok {
+		terraformDefinition["legend_size"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		terraformDefinition["time"] = buildTerraformWidgetTime(*v)
@@ -3778,9 +3812,7 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 	if v, ok := datadogDefinition.GetLegendSizeOk(); ok {
 		terraformDefinition["legend_size"] = *v
 	}
-	if datadogDefinition.LegendSize != nil {
-		terraformDefinition["legend_size"] = *datadogDefinition.LegendSize
-	}
+
 	return terraformDefinition
 }
 
