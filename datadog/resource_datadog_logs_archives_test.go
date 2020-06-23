@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"testing"
 
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"gopkg.in/h2non/gock.v1"
 	"io/ioutil"
+	"net/http"
+	"os"
 	"path/filepath"
 )
 
@@ -23,8 +26,8 @@ resource "datadog_logs_archive" "my_azure_archive" {
 	query = "service:toto"
 	azure = {
 		container 		= "my-container"
-		tenant_id 		= "testc44-1234-5678-9101-cc0073update"
-		client_id       = "testc7f6-1234-5678-9101-3fcbf4update"
+		tenant_id 		= "my-tenant-id"
+		client_id       = "testc7f6-1234-5678-9101-3fcbf464test"
 		storage_account = "storageAccount"
 		path            = "/path/blou"
 	}
@@ -32,9 +35,26 @@ resource "datadog_logs_archive" "my_azure_archive" {
 `
 
 func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
-	defer gock.Disable()
-	accProviders, cleanup := testAccProviders(t)
-	defer cleanup(t)
+	rec := initRecorder(t)
+	defer rec.Stop()
+	httpClient := &http.Client{Transport: logging.NewTransport("Datadog", rec)}
+	datadogClientV1 := buildDatadogClientV1(httpClient)
+	authV1, err := buildAuthV1(os.Getenv("DD_API_KEY"), os.Getenv("DD_APP_KEY"), os.Getenv("DD_HOST"))
+	if err != nil {
+		t.Fatalf("Error creating Datadog Client context: %s", err)
+	}
+	var testAzureAcct = datadogV1.AzureAccount{
+		ClientId:     datadogV1.PtrString("testc7f6-1234-5678-9101-3fcbf464test"),
+		ClientSecret: datadogV1.PtrString("testingx./Sw*g/Y33t..R1cH+hScMDt"),
+		TenantName:   datadogV1.PtrString("my-tenant-id"),
+	}
+	_, _, err = datadogClientV1.AzureIntegrationApi.CreateAzureIntegration(authV1).Body(testAzureAcct).Execute()
+	if err != nil {
+		t.Fatalf("Error creating Azure Account: Response %s: %v", err.(datadogV1.GenericOpenAPIError).Body(), err)
+	}
+	defer deleteAzureIntegration(t, datadogClientV1, authV1, testAzureAcct)
+
+	accProviders := testAccProvidersWithHttpClient(t, httpClient)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -52,9 +72,9 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_azure_archive", "azure.container", "my-container"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_archive.my_azure_archive", "azure.client_id", "testc7f6-1234-5678-9101-3fcbf4update"),
+						"datadog_logs_archive.my_azure_archive", "azure.client_id", "testc7f6-1234-5678-9101-3fcbf464test"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_archive.my_azure_archive", "azure.tenant_id", "testc44-1234-5678-9101-cc0073update"),
+						"datadog_logs_archive.my_azure_archive", "azure.tenant_id", "my-tenant-id"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_azure_archive", "azure.storage_account", "storageAccount"),
 					resource.TestCheckResourceAttr(
@@ -63,6 +83,13 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 			},
 		},
 	})
+}
+
+func deleteAzureIntegration(t *testing.T, datadogClientV1 *datadogV1.APIClient, authV1 context.Context, azureAcct datadogV1.AzureAccount) {
+	_, _, err := datadogClientV1.AzureIntegrationApi.DeleteAzureIntegration(authV1).Body(azureAcct).Execute()
+	if err != nil {
+		t.Fatalf("Error deleting Azure Account: Response %s: %v", err.(datadogV1.GenericOpenAPIError).Body(), err)
+	}
 }
 
 // create: Ok gcs
@@ -91,8 +118,7 @@ resource "datadog_logs_archive" "my_gcs_archive" {
 `
 
 func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
-	defer gock.Disable()
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -143,8 +169,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
 `
 
 func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
-	defer gock.Disable()
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -196,8 +221,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
 `
 
 func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
-	defer gock.Disable()
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 	resource.Test(t, resource.TestCase{

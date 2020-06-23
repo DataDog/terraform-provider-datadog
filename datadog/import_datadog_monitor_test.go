@@ -8,7 +8,7 @@ import (
 
 func TestDatadogMonitor_import(t *testing.T) {
 	resourceName := "datadog_monitor.foo"
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -31,7 +31,7 @@ func TestDatadogMonitor_import(t *testing.T) {
 
 func TestDatadogMonitor_import_no_recovery(t *testing.T) {
 	resourceName := "datadog_monitor.foo"
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 

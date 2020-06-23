@@ -249,8 +249,7 @@ func testAccProvidersWithHttpClient(t *testing.T, httpClient *http.Client) map[s
 	}
 }
 
-func testAccProviders(t *testing.T) (map[string]terraform.ResourceProvider, func(t *testing.T)) {
-	rec := initRecorder(t)
+func testAccProviders(t *testing.T, rec *recorder.Recorder) (map[string]terraform.ResourceProvider, func(t *testing.T)) {
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", rec)
 	return testAccProvidersWithHttpClient(t, c), func(t *testing.T) {

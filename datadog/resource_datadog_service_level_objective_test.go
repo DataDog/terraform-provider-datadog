@@ -77,7 +77,7 @@ resource "datadog_service_level_objective" "foo" {
 // tests
 
 func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
