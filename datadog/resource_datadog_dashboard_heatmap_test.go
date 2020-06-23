@@ -38,6 +38,7 @@ import (
 //                },
 //                "title": "Avg of system.cpu.user over account:prod by app",
 //                "legend_size": "2",
+//                "show_legend": true,
 //                "type": "heatmap",
 //                "events": [
 //                    {
@@ -83,11 +84,12 @@ resource "datadog_dashboard" "heatmap_dashboard" {
 			time = {
 				live_span = "1mo"
 			}
-			//event {
-			//	q = "env:prod"
-			//	tags_execution = "and"
-			//}
-			//legend_size = "2"
+			event {
+				q = "env:prod"
+				tags_execution = "and"
+			}
+			show_legend = true
+			legend_size = "2"
 		}
 	}
 }
@@ -109,6 +111,10 @@ var datadogDashboardHeatMapAsserts = []string{
 	"widget.0.heatmap_definition.0.yaxis.0.scale =",
 	"widget.0.heatmap_definition.0.yaxis.0.min =",
 	"widget.0.heatmap_definition.0.time.live_span = 1mo",
+	"widget.0.heatmap_definition.0.event.0.q = env:prod",
+	"widget.0.heatmap_definition.0.event.0.tags_execution = and",
+	"widget.0.heatmap_definition.0.show_legend = true",
+	"widget.0.heatmap_definition.0.legend_size = 2",
 }
 
 func TestAccDatadogDashboardHeatMap(t *testing.T) {

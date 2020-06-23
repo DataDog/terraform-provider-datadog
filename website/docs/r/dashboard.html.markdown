@@ -721,6 +721,11 @@ Nested `widget` blocks have the following structure:
           - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
               - `palette` - (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
       - `yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
+      - `show_legend`: (Optional) Whether or not to show the legend on this widget.
+      - `legend_size`: (Optional) The size of the legend displayed in the widget.
+      - `event`: (Optional) The definition of the event to overlay on the graph. Includes the following structure:
+            - `q`: (Required) The event query to use in the widget.
+            - `tags_execution`: (Optional) The execution method for multi-value filters.
       - `title`: (Optional) The title of the widget.
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
       - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
