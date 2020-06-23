@@ -765,8 +765,8 @@ Nested `widget` blocks have the following structure:
   - `query_value_definition`: The definition for a Query Value widget. Exactly one nested block is allowed with the following structure:
         - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
             - `q`: (Optional) The metric query to use in the widget.
-            - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
-            - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
+            - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+            - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
             - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             - `conditional_formats` - (Optional) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple request blocks are allowed. The structure of this block is described [below](dashboard.html#nested-widget-conditional_formats-blocks).
             - `aggregator` - (Optional) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
@@ -781,8 +781,8 @@ Nested `widget` blocks have the following structure:
   - `query_table_definition`: The definition for a Query Table widget. Exactly one nested block is allowed with the following structure:
         - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
             - `q`: (Optional) The metric query to use in the widget
-            - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
-            - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
+            - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+            - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
             - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             - `conditional_formats` - (Optional) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple request blocks are allowed. The structure of this block is described [below](dashboard.html#nested-widget-conditional_formats-blocks).
             - `alias` - (Optional) The alias for the column name. Default is the metric name.
@@ -820,8 +820,10 @@ Nested `widget` blocks have the following structure:
   - `timeseries_definition`: The definition for a Timeseries  widget. Exactly one nested block is allowed with the following structure:
         - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
             - `q`: (Optional) The metric query to use in the widget.
-            - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
-            - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
+            - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+            - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+            - `network_query`: (Optional) The network query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+            - `rum_query`: (Optional) The rum query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).           
             - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             - `display_type` - (Optional) Type of display to use for the request. Available values are: `area`, `bars`, or `line`.
             - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
@@ -845,8 +847,8 @@ Nested `widget` blocks have the following structure:
   - `toplist_definition`: The definition for a Toplist  widget. Exactly one nested block is allowed with the following structure:
         - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
             - `q`: (Optional) The metric query to use in the widget.
-            - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
-            - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-and-log_query-blocks).
+            - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+            - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#ested-apm_query-log_query-network_query-and-rum_query-blocks).
             - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             - `conditional_formats` - (Optional) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple request blocks are allowed. The structure of this block is described [below](dashboard.html#nested-widget-conditional_formats-blocks).
         - `title`: (Optional) The title of the widget.
@@ -905,8 +907,8 @@ Nested `widget` `time` blocks have the following structure:
 
 - `live_span` - (Required) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`.
 
-### Nested `apm_query` and `log_query` blocks
-Nested `apm_query` and `log_query` blocks have the following structure (Visit the [ Graph Primer](https://docs.datadoghq.com/graphing/) for more information about these values):
+### Nested `apm_query`, `log_query`, `network_query` and `rum_query` blocks
+Nested `apm_query`, `log_query`, `network_query` and `rum_query` blocks have the following structure (Visit the [ Graph Primer](https://docs.datadoghq.com/graphing/) for more information about these values):
 
   - `index` - (Required)
   - `compute` - (Required). Exactly one nested block is required with the following structure:

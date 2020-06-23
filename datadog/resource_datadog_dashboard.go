@@ -3811,6 +3811,8 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 		"q":             getMetricQuerySchema(),
 		"apm_query":     getApmOrLogQuerySchema(),
 		"log_query":     getApmOrLogQuerySchema(),
+		"rum_query":     getApmOrLogQuerySchema(),
+		"network_query": getApmOrLogQuerySchema(),
 		"process_query": getProcessQuerySchema(),
 		// Settings specific to Timeseries requests
 		"style": {
@@ -3870,6 +3872,12 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["log_query"].([]interface{}); ok && len(v) > 0 {
 			logQuery := v[0].(map[string]interface{})
 			datadogTimeseriesRequest.LogQuery = buildDatadogApmOrLogQuery(logQuery)
+		} else if v, ok := terraformRequest["network_query"].([]interface{}); ok && len(v) > 0 {
+			networkQuery := v[0].(map[string]interface{})
+			datadogTimeseriesRequest.NetworkQuery = buildDatadogApmOrLogQuery(networkQuery)
+		} else if v, ok := terraformRequest["rum_query"].([]interface{}); ok && len(v) > 0 {
+			rumQuery := v[0].(map[string]interface{})
+			datadogTimeseriesRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogTimeseriesRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
@@ -3913,6 +3921,12 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 		} else if v, ok := datadogRequest.GetLogQueryOk(); ok {
 			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["log_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetNetworkQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["network_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
