@@ -43,7 +43,6 @@ func resourceDatadogLogsArchive() *schema.Resource {
 						"tenant_id":       {Type: schema.TypeString, Required: true},
 						"storage_account": {Type: schema.TypeString, Required: true},
 						"path":            {Type: schema.TypeString, Optional: true},
-						"region":          {Type: schema.TypeString, Optional: true},
 					},
 				},
 			},
@@ -167,18 +166,17 @@ func buildDestination(archiveDestination datadogV2.NullableLogsArchiveDestinatio
 	return "", emptyDestination, fmt.Errorf("Destination should be not null.")
 }
 
-func buildAzureMap(destination datadogV2.LogsArchiveDestinationAzure) (map[string]interface{}) {
+func buildAzureMap(destination datadogV2.LogsArchiveDestinationAzure) map[string]interface{} {
 	result := make(map[string]interface{})
 	result["client_id"] = destination.Integration.ClientId
 	result["tenant_id"] = destination.Integration.TenantId
 	result["container"] = destination.Container
 	result["storage_account"] = destination.StorageAccount
-	result["region"] = destination.Region
 	result["path"] = destination.Path
 	return result
 }
 
-func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) (map[string]interface{}) {
+func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) map[string]interface{} {
 	result := make(map[string]interface{})
 	result["client_email"] = destination.Integration.ClientEmail
 	result["project_id"] = destination.Integration.ProjectId
@@ -187,7 +185,7 @@ func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) (map[string]in
 	return result
 }
 
-func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) (map[string]interface{}) {
+func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) map[string]interface{} {
 	result := make(map[string]interface{})
 	result["account_id"] = destination.Integration.AccountId
 	result["role_name"] = destination.Integration.RoleName
@@ -195,7 +193,6 @@ func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) (map[string]inte
 	result["path"] = destination.Path
 	return result
 }
-
 
 //Map to model
 func buildDatadogArchiveCreateReq(d *schema.ResourceData) (datadogV2.LogsArchiveCreateRequest, error) {
@@ -263,43 +260,38 @@ var buildCreateReqDestinationByTypeFunctions = map[string]func(map[string]interf
 }
 
 func buildAzureDestination(d map[string]interface{}) (*datadogV2.LogsArchiveDestinationAzure, error) {
-		clientId, ok := d["client_id"]
-		if !ok {
-			return &datadogV2.LogsArchiveDestinationAzure{}, fmt.Errorf("client_id is not defined")
-		}
-		tenantId, ok := d["tenant_id"]
-		if !ok {
-			return &datadogV2.LogsArchiveDestinationAzure{}, fmt.Errorf("tenant_id is not defined")
-		}
-		integration := datadogV2.LogsArchiveIntegrationAzure{
-			ClientId: clientId.(string),
-			TenantId: tenantId.(string),
-		}
-		container, ok := d["container"]
-		if !ok {
-			return &datadogV2.LogsArchiveDestinationAzure{}, fmt.Errorf("container is not defined")
-		}
-		storageAccount, ok := d["storage_account"]
-		if !ok {
-			return &datadogV2.LogsArchiveDestinationAzure{}, fmt.Errorf("storage_account is not defined")
-		}
-		region, ok := d["region"]
-		if !ok {
-			region = ""
-		}
-		path, ok := d["path"]
-		if !ok {
-			path = ""
-		}
-		destination := &datadogV2.LogsArchiveDestinationAzure{
-			Container:      container.(string),
-			Integration:    integration,
-			StorageAccount: storageAccount.(string),
-			Type:           datadogV2.LOGSARCHIVEDESTINATIONAZURETYPE_AZURE,
-			Region:         datadogV2.PtrString(region.(string)),
-			Path:           datadogV2.PtrString(path.(string)),
-		}
-		return destination, nil
+	clientId, ok := d["client_id"]
+	if !ok {
+		return &datadogV2.LogsArchiveDestinationAzure{}, fmt.Errorf("client_id is not defined")
+	}
+	tenantId, ok := d["tenant_id"]
+	if !ok {
+		return &datadogV2.LogsArchiveDestinationAzure{}, fmt.Errorf("tenant_id is not defined")
+	}
+	integration := datadogV2.LogsArchiveIntegrationAzure{
+		ClientId: clientId.(string),
+		TenantId: tenantId.(string),
+	}
+	container, ok := d["container"]
+	if !ok {
+		return &datadogV2.LogsArchiveDestinationAzure{}, fmt.Errorf("container is not defined")
+	}
+	storageAccount, ok := d["storage_account"]
+	if !ok {
+		return &datadogV2.LogsArchiveDestinationAzure{}, fmt.Errorf("storage_account is not defined")
+	}
+	path, ok := d["path"]
+	if !ok {
+		path = ""
+	}
+	destination := &datadogV2.LogsArchiveDestinationAzure{
+		Container:      container.(string),
+		Integration:    integration,
+		StorageAccount: storageAccount.(string),
+		Type:           datadogV2.LOGSARCHIVEDESTINATIONAZURETYPE_AZURE,
+		Path:           datadogV2.PtrString(path.(string)),
+	}
+	return destination, nil
 }
 
 func buildGCSDestination(d map[string]interface{}) (*datadogV2.LogsArchiveDestinationGCS, error) {
