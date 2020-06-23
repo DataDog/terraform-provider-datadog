@@ -1420,6 +1420,15 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 			Type:     schema.TypeString,
 			Optional: true,
 		},
+		"legend_size": {
+			Type:         schema.TypeString,
+			Optional:     true,
+			ValidateFunc: validateTimeseriesWidgetLegendSize,
+		},
+		"show_legend": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
 		"time": {
 			Type:     schema.TypeMap,
 			Optional: true,
@@ -1435,6 +1444,12 @@ func buildDatadogDistributionDefinition(terraformDefinition map[string]interface
 	terraformRequests := terraformDefinition["request"].([]interface{})
 	datadogDefinition.Requests = *buildDatadogDistributionRequests(&terraformRequests)
 	// Optional params
+	if v, ok := terraformDefinition["show_legend"].(bool); ok {
+		datadogDefinition.SetShowLegend(v)
+	}
+	if v, ok := terraformDefinition["legend_size"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetLegendSize(datadogV1.WidgetLegendSize(v))
+	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
 	}
@@ -1454,6 +1469,12 @@ func buildTerraformDistributionDefinition(datadogDefinition datadogV1.Distributi
 	// Required params
 	terraformDefinition["request"] = buildTerraformDistributionRequests(&datadogDefinition.Requests)
 	// Optional params
+	if v, ok := datadogDefinition.GetShowLegendOk(); ok {
+		terraformDefinition["show_legend"] = *v
+	}
+	if v, ok := datadogDefinition.GetLegendSizeOk(); ok {
+		terraformDefinition["legend_size"] = *v
+	}
 	if v, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = *v
 	}
@@ -4927,7 +4948,7 @@ func validateGroupWidgetLayoutType(val interface{}, key string) (warns []string,
 func validateTimeseriesWidgetLegendSize(val interface{}, key string) (warns []string, errs []error) {
 	value := val.(string)
 	switch value {
-	case "2", "4", "8", "16", "auto":
+	case "0", "2", "4", "8", "16", "auto":
 		break
 	default:
 		errs = append(errs, fmt.Errorf(
