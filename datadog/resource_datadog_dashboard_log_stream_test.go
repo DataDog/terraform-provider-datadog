@@ -138,7 +138,7 @@ resource "datadog_dashboard" "log_stream_dashboard_logset" {
 			message_display = "expanded-md"
 			query = "status:error env:prod"
 			show_date_column = "true"
-			logset = "main"
+			logset = 19
 			columns = ["core_host", "core_service"]
 			time = {
 				live_span = "1d"
@@ -175,7 +175,7 @@ var datadogDashboardLogStreamLogSetAsserts = []string{
 	"title = Acceptance Test Log Stream Widget Dashboard",
 	"widget.0.log_stream_definition.0.columns.1 = core_service",
 	"widget.0.log_stream_definition.0.title_size = 16",
-	"widget.0.log_stream_definition.0.logset = main",
+	"widget.0.log_stream_definition.0.logset = 19",
 	"widget.0.layout.y = 5",
 	"widget.0.log_stream_definition.0.sort.0.column = time",
 	"widget.0.log_stream_definition.0.title = Log Stream",
