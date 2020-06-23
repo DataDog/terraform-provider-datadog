@@ -44,21 +44,22 @@ func TestAccountAndRoleFromID(t *testing.T) {
 
 const testAccDatadogIntegrationAWSConfig = `
 resource "datadog_integration_aws" "account" {
-  account_id                       = "001234567888"
-  role_name                        = "testacc-datadog-integration-role"
+  	account_id                       = "001234567888"
+  	role_name                        = "testacc-datadog-integration-role"
 }
 `
 
 const testAccDatadogIntegrationAWSUpdateConfig = `
 resource "datadog_integration_aws" "account" {
-  account_id                       = "001234567889"
-  role_name                        = "testacc-datadog-integration-role"
-  filter_tags                      = ["key:value"]
-  host_tags                        = ["key:value", "key2:value2"]
-  account_specific_namespace_rules = {
-    auto_scaling = false
-    opsworks = true
-  }
+  	account_id                       = "001234567889"
+  	role_name                        = "testacc-datadog-integration-role"
+	filter_tags                      = ["key:value"]
+  	host_tags                        = ["key:value", "key2:value2"]
+  	account_specific_namespace_rules = {
+    	    auto_scaling = false
+    	    opsworks = true
+  	}
+  	excluded_regions                 = ["us-east-1", "us-west-2"]
 }
 `
 
@@ -108,6 +109,12 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"account_specific_namespace_rules.opsworks", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"excluded_regions.0", "us-east-1"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"excluded_regions.1", "us-west-2"),
 				),
 			},
 		},

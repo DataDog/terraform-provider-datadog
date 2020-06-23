@@ -55,6 +55,11 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 				Optional: true,
 				Elem:     schema.TypeBool,
 			},
+			"excluded_regions": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
 			"external_id": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -92,7 +97,6 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData, accountID string, 
 	iaws.SetRoleName(roleName)
 
 	filterTags := make([]string, 0)
-
 	if attr, ok := d.GetOk("filter_tags"); ok {
 		for _, s := range attr.([]interface{}) {
 			filterTags = append(filterTags, s.(string))
@@ -101,7 +105,6 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData, accountID string, 
 	}
 
 	hostTags := make([]string, 0)
-
 	if attr, ok := d.GetOk("host_tags"); ok {
 		for _, s := range attr.([]interface{}) {
 			hostTags = append(hostTags, s.(string))
@@ -110,13 +113,20 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData, accountID string, 
 	}
 
 	accountSpecificNamespaceRules := make(map[string]bool)
-
 	if attr, ok := d.GetOk("account_specific_namespace_rules"); ok {
 		// TODO: this is not very defensive, test if we can fail on non bool input
 		for k, v := range attr.(map[string]interface{}) {
 			accountSpecificNamespaceRules[k] = v.(bool)
 		}
 		iaws.SetAccountSpecificNamespaceRules(accountSpecificNamespaceRules)
+	}
+
+	excludedRegions := make([]string, 0)
+	if attr, ok := d.GetOk("excluded_regions"); ok {
+		for _, s := range attr.([]interface{}) {
+			excludedRegions = append(excludedRegions, s.(string))
+		}
+		iaws.SetExcludedRegions(excludedRegions)
 	}
 
 	return iaws
@@ -166,7 +176,8 @@ func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{})
 			d.Set("role_name", integration.GetRoleName())
 			d.Set("filter_tags", integration.GetFilterTags())
 			d.Set("host_tags", integration.GetHostTags())
-			d.Set("account_specific_namespace_rules", integration.AccountSpecificNamespaceRules)
+			d.Set("account_specific_namespace_rules", integration.GetAccountSpecificNamespaceRules())
+			d.Set("excluded_regions", integration.GetExcludedRegions())
 			return nil
 		}
 	}
