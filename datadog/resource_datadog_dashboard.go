@@ -620,6 +620,15 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getScatterplotDefinitionSchema(),
 			},
 		},
+		"servicemap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Service Map widget",
+			Elem: &schema.Resource{
+				Schema: getServiceMapDefinitionSchema(),
+			},
+		},
 		"service_level_objective_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -755,6 +764,10 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 		if scatterplotDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.ScatterPlotWidgetDefinitionAsWidgetDefinition(buildDatadogScatterplotDefinition(scatterplotDefinition))
 		}
+	} else if def, ok := terraformWidget["servicemap_definition"].([]interface{}); ok && len(def) > 0 {
+		if serviceMapDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.ServiceMapWidgetDefinitionAsWidgetDefinition(buildDatadogServiceMapDefinition(serviceMapDefinition))
+		}
 	} else if def, ok := terraformWidget["service_level_objective_definition"].([]interface{}); ok && len(def) > 0 {
 		if serviceLevelObjectiveDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.SLOWidgetDefinitionAsWidgetDefinition(buildDatadogServiceLevelObjectiveDefinition(serviceLevelObjectiveDefinition))
@@ -867,6 +880,9 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget) (map[string]interface{
 	} else if widgetDefinition.ScatterPlotWidgetDefinition != nil {
 		terraformDefinition := buildTerraformScatterplotDefinition(*widgetDefinition.ScatterPlotWidgetDefinition)
 		terraformWidget["scatterplot_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if widgetDefinition.ServiceMapWidgetDefinition != nil {
+		terraformDefinition := buildTerraformServiceMapDefinition(*widgetDefinition.ServiceMapWidgetDefinition)
+		terraformWidget["servicemap_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.SLOWidgetDefinition != nil {
 		terraformDefinition := buildTerraformServiceLevelObjectiveDefinition(*widgetDefinition.SLOWidgetDefinition)
 		terraformWidget["service_level_objective_definition"] = []map[string]interface{}{terraformDefinition}
@@ -3437,6 +3453,81 @@ func buildTerraformScatterplotRequest(datadogScatterplotRequest *datadogV1.Scatt
 		terraformRequest["aggregator"] = *datadogScatterplotRequest.Aggregator
 	}
 	return &terraformRequest
+}
+
+//
+// ServiceMap Widget Definition helpers
+//
+
+func getServiceMapDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"service": {
+			Type:     schema.TypeString,
+			Required: true,
+		},
+		"filters": {
+			Type:     schema.TypeList,
+			Required: true,
+			Elem:     &schema.Schema{Type: schema.TypeString},
+		},
+		"title": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"title_size": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+		"title_align": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+	}
+}
+func buildDatadogServiceMapDefinition(terraformDefinition map[string]interface{}) *datadogV1.ServiceMapWidgetDefinition {
+	datadogDefinition := datadogV1.NewServiceMapWidgetDefinitionWithDefaults()
+
+	// Required params
+	datadogDefinition.SetService(terraformDefinition["service"].(string))
+	terraformFilters := terraformDefinition["filters"].([]interface{})
+	datadogFilters := make([]string, len(terraformFilters))
+	for i, terraformFilter := range terraformFilters {
+		datadogFilters[i] = terraformFilter.(string)
+	}
+	datadogDefinition.SetFilters(datadogFilters)
+
+	// Optional params
+	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitle(v)
+	}
+	if v, ok := terraformDefinition["title_size"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleSize(v)
+	}
+	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
+	}
+
+	return datadogDefinition
+}
+func buildTerraformServiceMapDefinition(datadogDefinition datadogV1.ServiceMapWidgetDefinition) map[string]interface{} {
+	terraformDefinition := map[string]interface{}{}
+
+	// Required params
+	terraformDefinition["service"] = datadogDefinition.GetService()
+	terraformDefinition["filters"] = datadogDefinition.GetFilters()
+
+	// Optional params
+	if v, ok := datadogDefinition.GetTitleOk(); ok {
+		terraformDefinition["title"] = *v
+	}
+	if v, ok := datadogDefinition.GetTitleSizeOk(); ok {
+		terraformDefinition["title_size"] = *v
+	}
+	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
+		terraformDefinition["title_align"] = *v
+	}
+
+	return terraformDefinition
 }
 
 //
