@@ -23,6 +23,7 @@ resource "datadog_integration_aws" "sandbox" {
         auto_scaling = false
         opsworks = false
     }
+    excluded_regions = ["us-east-1", "us-west-2"]
 }
 ```
 
@@ -40,6 +41,7 @@ The following arguments are supported:
 
 * `host_tags` - (Optional) Array of tags (in the form key:value) to add to all hosts and metrics reporting through this integration.
 * `account_specific_namespace_rules` - (Optional) Enables or disables metric collection for specific AWS namespaces for this AWS account only. A list of namespaces can be found at the [available namespace rules API endpoint](https://docs.datadoghq.com/api/v1/aws-integration/#list-namespace-rules).
+* `excluded_regions` - (Optional) An array of AWS regions to exclude from metrics collection.
 
 ### See also
 * [Datadog API Reference > Integrations > AWS](https://docs.datadoghq.com/api/v1/aws-integration/)
