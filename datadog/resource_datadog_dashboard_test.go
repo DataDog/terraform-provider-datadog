@@ -1041,3 +1041,45 @@ func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc 
 		return nil
 	}
 }
+
+func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string, assertions []string) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: checkDashboardDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeTestCheckFunc(
+					testCheckResourceAttrs(name, checkDashboardExists(accProvider), assertions)...,
+				),
+			},
+		},
+	})
+}
+
+func testAccDatadogDashboardWidgetUtil_import(t *testing.T, config string, name string) {
+	accProviders, cleanup := testAccProviders(t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: checkDashboardDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+			},
+			{
+				ResourceName:      name,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
