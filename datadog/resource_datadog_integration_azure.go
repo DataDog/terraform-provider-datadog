@@ -2,9 +2,10 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
 
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/zorkian/go-datadog-api"
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourceDatadogIntegrationAzure() *schema.Resource {
@@ -35,31 +36,28 @@ func resourceDatadogIntegrationAzure() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"new_tenant_name": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"new_client_id": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
 		},
 	}
 }
 
 func resourceDatadogIntegrationAzureRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	tenantName := d.Id()
+	tenantName, _, err := tenantAndClientFromID(d.Id())
+	if err != nil {
+		return err
+	}
 
-	integrations, err := client.ListIntegrationsAzure()
+	integrations, _, err := datadogClientV1.AzureIntegrationApi.ListAzureIntegration(authV1).Execute()
 	if err != nil {
 		return err
 	}
 	for _, integration := range integrations {
 		if integration.GetTenantName() == tenantName {
 			d.Set("tenant_name", integration.GetTenantName())
-			d.Set("client_id", integration.GetClientID())
+			d.Set("client_id", integration.GetClientId())
 			d.Set("host_filters", integration.GetHostFilters())
 			return nil
 		}
@@ -68,54 +66,69 @@ func resourceDatadogIntegrationAzureRead(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogIntegrationAzureCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
 	tenantName := d.Get("tenant_name").(string)
+	iazure := datadogV1.NewAzureAccount()
+	iazure.SetTenantName(tenantName)
+	iazure.SetClientId(d.Get("client_id").(string))
+	iazure.SetClientSecret(d.Get("client_secret").(string))
+	iazure.SetHostFilters(d.Get("host_filters").(string))
 
-	if err := client.CreateIntegrationAzure(
-		&datadog.IntegrationAzure{
-			TenantName:   datadog.String(tenantName),
-			ClientID:     datadog.String(d.Get("client_id").(string)),
-			ClientSecret: datadog.String(d.Get("client_secret").(string)),
-			HostFilters:  datadog.String(d.Get("host_filters").(string)),
-		},
-	); err != nil {
+	if _, _, err := datadogClientV1.AzureIntegrationApi.CreateAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
 		return fmt.Errorf("error creating an Azure integration: %s", err.Error())
 	}
 
-	d.SetId(tenantName)
+	d.SetId(fmt.Sprintf("%s:%s", iazure.GetTenantName(), iazure.GetClientId()))
 
 	return resourceDatadogIntegrationAzureRead(d, meta)
 }
 
 func resourceDatadogIntegrationAzureUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	if err := client.UpdateIntegrationAccountAzure(
-		&datadog.IntegrationAzureUpdateAccountRequest{
-			TenantName:    datadog.String(d.Get("tenant_name").(string)),
-			NewTenantName: datadog.String(d.Get("new_tenant_name").(string)),
-			ClientID:      datadog.String(d.Get("client_id").(string)),
-			NewClientID:   datadog.String(d.Get("new_client_id").(string)),
-			ClientSecret:  datadog.String(d.Get("client_secret").(string)),
-			HostFilters:   datadog.String(d.Get("host_filters").(string)),
-		},
-	); err != nil {
-		return fmt.Errorf("error updating a Google Cloud Platform integration: %s", err.Error())
+	existingTenantName, existingClientID, err := tenantAndClientFromID(d.Id())
+	if err != nil {
+		return err
+	}
+	newTenantName := d.Get("tenant_name").(string)
+	newClientID := d.Get("client_id").(string)
+
+	iazure := datadogV1.NewAzureAccount()
+	iazure.SetTenantName(existingTenantName)
+	iazure.SetClientId(existingClientID)
+	iazure.SetNewTenantName(newTenantName)
+	iazure.SetNewClientId(newClientID)
+	iazure.SetHostFilters(d.Get("host_filters").(string))
+	iazure.SetClientSecret(d.Get("client_secret").(string))
+
+	if _, _, err := datadogClientV1.AzureIntegrationApi.UpdateAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
+		return fmt.Errorf("error updating an Azure integration: %s", err.Error())
 	}
 
-	return resourceDatadogIntegrationGcpRead(d, meta)
+	d.SetId(fmt.Sprintf("%s:%s", iazure.GetTenantName(), iazure.GetClientId()))
+
+	return resourceDatadogIntegrationAzureRead(d, meta)
 }
 
 func resourceDatadogIntegrationAzureDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	if err := client.DeleteIntegrationAzure(
-		&datadog.IntegrationAzure{
-			TenantName: datadog.String(d.Id()),
-			ClientID:   datadog.String(d.Get("client_id").(string)),
-		},
-	); err != nil {
+	tenantName, clientID, err := tenantAndClientFromID(d.Id())
+	if err != nil {
+		return err
+	}
+	iazure := datadogV1.NewAzureAccount()
+	iazure.SetTenantName(tenantName)
+	iazure.SetClientId(clientID)
+
+	if _, _, err := datadogClientV1.AzureIntegrationApi.DeleteAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
 		return fmt.Errorf("error deleting an Azure integration: %s", err.Error())
 	}
 
@@ -127,4 +140,12 @@ func resourceDatadogIntegrationAzureImport(d *schema.ResourceData, meta interfac
 		return nil, err
 	}
 	return []*schema.ResourceData{d}, nil
+}
+
+func tenantAndClientFromID(id string) (string, string, error) {
+	result := strings.SplitN(id, ":", 2)
+	if len(result) != 2 {
+		return "", "", fmt.Errorf("error extracting tenant name and client ID from an Azure integration id: %s", id)
+	}
+	return result[0], result[1], nil
 }
