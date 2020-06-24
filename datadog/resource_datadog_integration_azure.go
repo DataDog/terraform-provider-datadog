@@ -110,7 +110,7 @@ func resourceDatadogIntegrationAzureUpdate(d *schema.ResourceData, meta interfac
 		return fmt.Errorf("error updating an Azure integration: %s", err.Error())
 	}
 
-	d.SetId(fmt.Sprintf("%s:%s", iazure.GetTenantName(), iazure.GetClientId()))
+	d.SetId(fmt.Sprintf("%s:%s", newTenantName, newClientID))
 
 	return resourceDatadogIntegrationAzureRead(d, meta)
 }
