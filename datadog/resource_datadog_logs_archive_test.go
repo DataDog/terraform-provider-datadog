@@ -39,6 +39,7 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 	defer rec.Stop()
 	httpClient := &http.Client{Transport: logging.NewTransport("Datadog", rec)}
 	datadogClientV1 := buildDatadogClientV1(httpClient)
+	datadogClientV1.GetConfig().Debug = true
 	authV1, err := buildAuthV1(os.Getenv("DD_API_KEY"), os.Getenv("DD_APP_KEY"), os.Getenv("DD_HOST"))
 	if err != nil {
 		t.Fatalf("Error creating Datadog Client context: %s", err)
