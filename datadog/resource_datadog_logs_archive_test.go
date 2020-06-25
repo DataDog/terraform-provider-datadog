@@ -38,8 +38,9 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 	rec := initRecorder(t)
 	defer rec.Stop()
 	httpClient := &http.Client{Transport: logging.NewTransport("Datadog", rec)}
+	// At the moment there's no azure integration in tf so we manually:
+	// 1. Create an api client with the right conf and the right recorder
 	datadogClientV1 := buildDatadogClientV1(httpClient)
-	datadogClientV1.GetConfig().Debug = true
 	authV1, err := buildAuthV1(os.Getenv("DD_API_KEY"), os.Getenv("DD_APP_KEY"), os.Getenv("DD_HOST"))
 	if err != nil {
 		t.Fatalf("Error creating Datadog Client context: %s", err)
@@ -49,10 +50,12 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 		ClientSecret: datadogV1.PtrString("testingx./Sw*g/Y33t..R1cH+hScMDt"),
 		TenantName:   datadogV1.PtrString("my-tenant-id"),
 	}
+	// 2. Create the azure account
 	_, _, err = datadogClientV1.AzureIntegrationApi.CreateAzureIntegration(authV1).Body(testAzureAcct).Execute()
 	if err != nil {
 		t.Fatalf("Error creating Azure Account: Response %s: %v", err.(datadogV1.GenericOpenAPIError).Body(), err)
 	}
+	// 3. Destroy it at the end of the test
 	defer deleteAzureIntegration(t, datadogClientV1, authV1, testAzureAcct)
 
 	accProviders := testAccProvidersWithHttpClient(t, httpClient)
