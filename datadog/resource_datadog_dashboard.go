@@ -53,6 +53,7 @@ func resourceDatadogDashboard() *schema.Resource {
 			"url": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "The URL of the dashboard.",
 			},
 			"template_variable": {
@@ -216,9 +217,6 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 	}
 	if v, ok := d.GetOk("is_read_only"); ok {
 		dashboard.SetIsReadOnly(v.(bool))
-	}
-	if v, ok := d.GetOk("url"); ok {
-		dashboard.SetUrl(v.(string))
 	}
 
 	// Build Widgets
