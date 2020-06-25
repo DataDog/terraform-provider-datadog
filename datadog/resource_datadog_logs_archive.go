@@ -168,29 +168,32 @@ func buildDestination(archiveDestination datadogV2.NullableLogsArchiveDestinatio
 
 func buildAzureMap(destination datadogV2.LogsArchiveDestinationAzure) map[string]interface{} {
 	result := make(map[string]interface{})
-	result["client_id"] = destination.Integration.ClientId
-	result["tenant_id"] = destination.Integration.TenantId
-	result["container"] = destination.Container
-	result["storage_account"] = destination.StorageAccount
-	result["path"] = destination.Path
+	integration := destination.GetIntegration()
+	result["client_id"] = integration.GetClientId()
+	result["tenant_id"] = integration.GetTenantId()
+	result["container"] = destination.GetContainer()
+	result["storage_account"] = destination.GetStorageAccount()
+	result["path"] = destination.GetPath()
 	return result
 }
 
 func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) map[string]interface{} {
 	result := make(map[string]interface{})
-	result["client_email"] = destination.Integration.ClientEmail
-	result["project_id"] = destination.Integration.ProjectId
-	result["bucket"] = destination.Bucket
-	result["path"] = destination.Path
+	integration := destination.GetIntegration()
+	result["client_email"] = integration.GetClientEmail()
+	result["project_id"] = integration.GetProjectId()
+	result["bucket"] = destination.GetBucket()
+	result["path"] = destination.GetPath()
 	return result
 }
 
 func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) map[string]interface{} {
 	result := make(map[string]interface{})
-	result["account_id"] = destination.Integration.AccountId
-	result["role_name"] = destination.Integration.RoleName
-	result["bucket"] = destination.Bucket
-	result["path"] = destination.Path
+	integration := destination.GetIntegration()
+	result["account_id"] = integration.GetAccountId()
+	result["role_name"] = integration.GetRoleName()
+	result["bucket"] = destination.GetBucket()
+	result["path"] = destination.GetPath()
 	return result
 }
 
