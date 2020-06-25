@@ -32,6 +32,25 @@ resource "datadog_logs_archive" "my_azure_archive" {
 }
 `
 
+func getApiKey() string {
+	if os.Getenv("DATADOG_API_KEY") != "" {
+		return os.Getenv("DATADOG_API_KEY")
+	}
+	if os.Getenv("DD_API_KEY") != "" {
+		return os.Getenv("DD_API_KEY")
+	}
+	return ""
+}
+func getAppKey() string {
+	if os.Getenv("DATADOG_APP_KEY") != "" {
+		return os.Getenv("DATADOG_APP_KEY")
+	}
+	if os.Getenv("DD_APP_KEY") != "" {
+		return os.Getenv("DD_APP_KEY")
+	}
+	return ""
+}
+
 func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 	rec := initRecorder(t)
 	defer rec.Stop()
@@ -39,7 +58,7 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 	// At the moment there's no azure integration in tf so we manually:
 	// 1. Create an api client with the right conf and the right recorder
 	datadogClientV1 := buildDatadogClientV1(httpClient)
-	authV1, err := buildAuthV1(os.Getenv("DD_API_KEY"), os.Getenv("DD_APP_KEY"), os.Getenv("DD_HOST"))
+	authV1, err := buildAuthV1(getApiKey(), getAppKey(), "")
 	if err != nil {
 		t.Fatalf("Error creating Datadog Client context: %s", err)
 	}
