@@ -52,7 +52,7 @@ func resourceDatadogIntegrationAzureRead(d *schema.ResourceData, meta interface{
 
 	integrations, _, err := datadogClientV1.AzureIntegrationApi.ListAzureIntegration(authV1).Execute()
 	if err != nil {
-		return err
+		return translateClientError(err, "error listing azure integration")
 	}
 	for _, integration := range integrations {
 		if integration.GetTenantName() == tenantName {
@@ -78,7 +78,7 @@ func resourceDatadogIntegrationAzureCreate(d *schema.ResourceData, meta interfac
 	iazure.SetHostFilters(d.Get("host_filters").(string))
 
 	if _, _, err := datadogClientV1.AzureIntegrationApi.CreateAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
-		return fmt.Errorf("error creating an Azure integration: %s", err.Error())
+		return translateClientError(err, "error creating an Azure integration")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", iazure.GetTenantName(), iazure.GetClientId()))
@@ -107,7 +107,7 @@ func resourceDatadogIntegrationAzureUpdate(d *schema.ResourceData, meta interfac
 	iazure.SetClientSecret(d.Get("client_secret").(string))
 
 	if _, _, err := datadogClientV1.AzureIntegrationApi.UpdateAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
-		return fmt.Errorf("error updating an Azure integration: %s", err.Error())
+		return translateClientError(err, "error updating an Azure integration")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", newTenantName, newClientID))
@@ -129,7 +129,7 @@ func resourceDatadogIntegrationAzureDelete(d *schema.ResourceData, meta interfac
 	iazure.SetClientId(clientID)
 
 	if _, _, err := datadogClientV1.AzureIntegrationApi.DeleteAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
-		return fmt.Errorf("error deleting an Azure integration: %s", err.Error())
+		return translateClientError(err, "error deleting an Azure integration")
 	}
 
 	return nil
