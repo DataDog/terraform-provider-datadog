@@ -58,7 +58,10 @@ func resourceDatadogIntegrationAzureRead(d *schema.ResourceData, meta interface{
 		if integration.GetTenantName() == tenantName {
 			d.Set("tenant_name", integration.GetTenantName())
 			d.Set("client_id", integration.GetClientId())
-			d.Set("host_filters", integration.GetHostFilters())
+			hostFilters, exists := integration.GetHostFiltersOk()
+			if exists == true {
+				d.Set("host_filters", hostFilters)
+			}
 			return nil
 		}
 	}
