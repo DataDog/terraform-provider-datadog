@@ -327,17 +327,3 @@ func archiveDestroyHelper(authV2 context.Context, s *terraform.State, datadogCli
 	}
 	return nil
 }
-
-// readFixture opens the file at path and returns the contents as a string
-func readFixture(t *testing.T, path string) string {
-	t.Helper()
-	fixturePath, err := filepath.Abs(path)
-	if err != nil {
-		t.Fatalf("failed to get fixture file path: %v", err)
-	}
-	data, err := ioutil.ReadFile(fixturePath)
-	if err != nil {
-		t.Fatalf("failed to open fixture file: %v", err)
-	}
-	return string(data)
-}
