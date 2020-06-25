@@ -216,37 +216,36 @@ func buildDatadogArchiveCreateReq(d *schema.ResourceData) (*datadogV2.LogsArchiv
 }
 
 func buildCreateReqDestination(d *schema.ResourceData) (*datadogV2.LogsArchiveCreateRequestDestination, error) {
-	emptyDestination := datadogV2.LogsArchiveCreateRequestDestination{}
 	defDestinations := definedDestinations(d)
 	if len(defDestinations) != 1 {
-		return &emptyDestination, fmt.Errorf("More than one type defined: %v", defDestinations)
+		return nil, fmt.Errorf("More than one type defined: %v", defDestinations)
 	}
 	archiveType := defDestinations[0]
 	destinationMap := d.Get(archiveType).(map[string]interface{})
 	switch archiveType {
 	case string(datadogV2.LOGSARCHIVEDESTINATIONAZURETYPE_AZURE):
 		if destination, err := buildAzureDestination(destinationMap); err != nil {
-			return &emptyDestination, err
+			return nil, err
 		} else {
 			result := datadogV2.LogsArchiveDestinationAzureAsLogsArchiveCreateRequestDestination(destination)
 			return &result, nil
 		}
 	case string(datadogV2.LOGSARCHIVEDESTINATIONGCSTYPE_GCS):
 		if destination, err := buildGCSDestination(destinationMap); err != nil {
-			return &emptyDestination, err
+			return nil, err
 		} else {
 			result := datadogV2.LogsArchiveDestinationGCSAsLogsArchiveCreateRequestDestination(destination)
 			return &result, nil
 		}
 	case string(datadogV2.LOGSARCHIVEDESTINATIONS3TYPE_S3):
 		if destination, err := buildS3Destination(destinationMap); err != nil {
-			return &emptyDestination, err
+			return nil, err
 		} else {
 			result := datadogV2.LogsArchiveDestinationS3AsLogsArchiveCreateRequestDestination(destination)
 			return &result, nil
 		}
 	default:
-		return &emptyDestination, fmt.Errorf("Archive type '%s' doesn't exist", archiveType)
+		return nil, fmt.Errorf("Archive type '%s' doesn't exist", archiveType)
 	}
 }
 
