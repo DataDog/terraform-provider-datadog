@@ -17,14 +17,14 @@ Create a Datadog logs archive:
 
 ```hcl
 resource "datadog_logs_archive" "my_s3_archive" {
-	name = "my first s3 archive after update"
-	query = "service:tutu"
-	s3 = {
-        bucket 		 = "my-bucket"
-        path 		 = "/path/foo"
-        account_id   = "001234567888"
-        role_name    = "testacc-datadog-integration-role"
-	}
+  name  = "my first s3 archive after update"
+  query = "service:tutu"
+  s3 = {
+    bucket     = "my-bucket"
+    path       = "/path/foo"
+    account_id = "001234567888"
+    role_name  = "testacc-datadog-integration-role"
+  }
 }
 ```
 
@@ -45,7 +45,6 @@ The following arguments are supported:
   * `client_email` - (Required) Your client email.
   * `project_id` - (Required) Your project id.
 * `azure` - (Optional) Definition of an azure archive.
-		storage_account = "storageAccount"
   * `container` - (Required) The container where the archive will be stored.
   * `path` - (Optional, default = "") The path where the archive will be stored.
   * `tenant_id` - (Required) Your tenant id.

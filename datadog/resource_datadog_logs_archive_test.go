@@ -20,15 +20,15 @@ import (
 
 const archiveAzureConfigForCreation = `
 resource "datadog_logs_archive" "my_azure_archive" {
-	name = "my first azure archive"
-	query = "service:toto"
-	azure = {
-		container 		= "my-container"
-		tenant_id 		= "my-tenant-id"
-		client_id       = "testc7f6-1234-5678-9101-3fcbf464test"
-		storage_account = "storageAccount"
-		path            = "/path/blou"
-	}
+  name  = "my first azure archive"
+  query = "service:toto"
+  azure = {
+    container 		= "my-container"
+    tenant_id 		= "my-tenant-id"
+    client_id       = "testc7f6-1234-5678-9101-3fcbf464test"
+    storage_account = "storageAccount"
+    path            = "/path/blou"
+  }
 }
 `
 
@@ -107,15 +107,15 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
 }
 
 resource "datadog_logs_archive" "my_gcs_archive" {
-	depends_on = ["datadog_integration_gcp.awesome_gcp_project_integration"]
-	name = "my first gcs archive"
-	query = "service:tata"
-	gcs = {
-        bucket 		 = "dd-logs-test-datadog-api-client-go"
-        path 	     = "/path/blah"
-        client_email = "awesome-service-account@awesome-project-id.iam.gserviceaccount.com"
-        project_id   = "super-awesome-project-id"
-	}
+  depends_on = ["datadog_integration_gcp.awesome_gcp_project_integration"]
+  name       = "my first gcs archive"
+  query      = "service:tata"
+  gcs        = {
+    bucket 		 = "dd-logs-test-datadog-api-client-go"
+	path 	     = "/path/blah"
+	client_email = "awesome-service-account@awesome-project-id.iam.gserviceaccount.com"
+	project_id   = "super-awesome-project-id"
+  }
 }
 `
 
@@ -153,20 +153,20 @@ func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 // create: Ok s3
 const archiveS3ConfigForCreation = `
 resource "datadog_integration_aws" "account" {
-  account_id                       = "001234567888"
-  role_name                        = "testacc-datadog-integration-role"
+  account_id         = "001234567888"
+  role_name          = "testacc-datadog-integration-role"
 }
 
 resource "datadog_logs_archive" "my_s3_archive" {
-	depends_on = ["datadog_integration_aws.account"]
-	name = "my first s3 archive"
-	query = "service:tutu"
-	s3 = {
-        bucket 		 = "my-bucket"
-        path 		 = "/path/foo"
-        account_id   = "001234567888"
-        role_name    = "testacc-datadog-integration-role"
-	}
+  depends_on = ["datadog_integration_aws.account"]
+  name = "my first s3 archive"
+  query = "service:tutu"
+  s3 = {
+    bucket 		 = "my-bucket"
+    path 		 = "/path/foo"
+    account_id   = "001234567888"
+    role_name    = "testacc-datadog-integration-role"
+  }
 }
 `
 
@@ -205,20 +205,20 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 const archiveS3ConfigForUpdate = `
 
 resource "datadog_integration_aws" "account" {
-  account_id                       = "001234567888"
-  role_name                        = "testacc-datadog-integration-role"
+  account_id = "001234567888"
+  role_name  = "testacc-datadog-integration-role"
 }
 
 resource "datadog_logs_archive" "my_s3_archive" {
-	depends_on = ["datadog_integration_aws.account"]
-	name = "my first s3 archive after update"
-	query = "service:tutu"
-	s3 = {
-        bucket 		 = "my-bucket"
-        path 		 = "/path/foo"
-        account_id   = "001234567888"
-        role_name    = "testacc-datadog-integration-role"
-	}
+  depends_on = ["datadog_integration_aws.account"]
+  name       = "my first s3 archive after update"
+  query      = "service:tutu"
+  s3 = {
+  	bucket 		 = "my-bucket"
+	path 		 = "/path/foo"
+	account_id   = "001234567888"
+	role_name    = "testacc-datadog-integration-role"
+  }
 }
 `
 
