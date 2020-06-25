@@ -635,7 +635,7 @@ The following arguments are supported:
 <br>**Note: This value cannot be changed. Converting a dashboard from `free` <-> `ordered` requires destroying and re-creating the dashboard.** Instead of using `ForceNew`, this is a manual action as many underlying widget configs need to be updated to work for the updated layout, otherwise the new dashboard won't be created properly.
 - `description` - (Optional) Description of the dashboard.
 - `is_read_only` - (Optional) Whether this dashboard is read-only. If `true`, only the author and admins can make changes to it.
-- `is_read_only` - (Optional) Read only field - The URL of the dashboard.
+- `url` - (Optional) Read only field - The URL of the dashboard.
 - `notify_list` - (Optional) List of handles of users to notify when changes are made to this dashboard.
 - `template_variables` - (Optional) Nested block describing a template variable. The structure of this block is described [below](dashboard.html#nested-template_variable-blocks). Multiple template_variable blocks are allowed within a `datadog_dashboard` resource.
 - `template_variable_presets` - (Optional) Nested block describing saved configurations of existing template variables. The structure of this block is described [below](dashboard.html#nested-template_variable_preset-blocks). Multiple template_variable_preset blocks are allowed within a `datadog_dashboard` resource, and multiple template_variables can be described by each template_variable_preset.

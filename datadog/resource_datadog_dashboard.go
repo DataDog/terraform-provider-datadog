@@ -217,6 +217,9 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 	if v, ok := d.GetOk("is_read_only"); ok {
 		dashboard.SetIsReadOnly(v.(bool))
 	}
+	if v, ok := d.GetOk("url"); ok {
+		dashboard.SetUrl(v.(string))
+	}
 
 	// Build Widgets
 	terraformWidgets := d.Get("widget").([]interface{})
