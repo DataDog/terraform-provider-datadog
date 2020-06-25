@@ -269,10 +269,10 @@ func buildAzureDestination(d map[string]interface{}) (*datadogV2.LogsArchiveDest
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationAzure{}, fmt.Errorf("tenant_id is not defined")
 	}
-	integration := datadogV2.LogsArchiveIntegrationAzure{
-		ClientId: clientId.(string),
-		TenantId: tenantId.(string),
-	}
+	integration := datadogV2.NewLogsArchiveIntegrationAzure(
+		clientId.(string),
+		tenantId.(string),
+	)
 	container, ok := d["container"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationAzure{}, fmt.Errorf("container is not defined")
@@ -285,13 +285,13 @@ func buildAzureDestination(d map[string]interface{}) (*datadogV2.LogsArchiveDest
 	if !ok {
 		path = ""
 	}
-	destination := &datadogV2.LogsArchiveDestinationAzure{
-		Container:      container.(string),
-		Integration:    integration,
-		StorageAccount: storageAccount.(string),
-		Type:           datadogV2.LOGSARCHIVEDESTINATIONAZURETYPE_AZURE,
-		Path:           datadogV2.PtrString(path.(string)),
-	}
+	destination := datadogV2.NewLogsArchiveDestinationAzure(
+		container.(string),
+		*integration,
+		storageAccount.(string),
+		datadogV2.LOGSARCHIVEDESTINATIONAZURETYPE_AZURE,
+	)
+	destination.Path = datadogV2.PtrString(path.(string))
 	return destination, nil
 }
 
@@ -304,10 +304,10 @@ func buildGCSDestination(d map[string]interface{}) (*datadogV2.LogsArchiveDestin
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationGCS{}, fmt.Errorf("project_id is not defined")
 	}
-	integration := datadogV2.LogsArchiveIntegrationGCS{
-		ClientEmail: clientEmail.(string),
-		ProjectId:   projectId.(string),
-	}
+	integration := datadogV2.NewLogsArchiveIntegrationGCS(
+		clientEmail.(string),
+		projectId.(string),
+	)
 	bucket, ok := d["bucket"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationGCS{}, fmt.Errorf("bucket is not defined")
@@ -316,12 +316,12 @@ func buildGCSDestination(d map[string]interface{}) (*datadogV2.LogsArchiveDestin
 	if !ok {
 		path = ""
 	}
-	destination := &datadogV2.LogsArchiveDestinationGCS{
-		Bucket:      bucket.(string),
-		Integration: integration,
-		Path:        datadogV2.PtrString(path.(string)),
-		Type:        datadogV2.LOGSARCHIVEDESTINATIONGCSTYPE_GCS,
-	}
+	destination := datadogV2.NewLogsArchiveDestinationGCS(
+		bucket.(string),
+		*integration,
+		datadogV2.LOGSARCHIVEDESTINATIONGCSTYPE_GCS,
+	)
+	destination.Path = datadogV2.PtrString(path.(string))
 	return destination, nil
 }
 
@@ -334,10 +334,10 @@ func buildS3Destination(d map[string]interface{}) (*datadogV2.LogsArchiveDestina
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("role_name is not defined")
 	}
-	integration := datadogV2.LogsArchiveIntegrationS3{
-		AccountId: accountId.(string),
-		RoleName:  roleName.(string),
-	}
+	integration := datadogV2.NewLogsArchiveIntegrationS3(
+		accountId.(string),
+		roleName.(string),
+	)
 	bucket, ok := d["bucket"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("bucket is not defined")
@@ -346,11 +346,11 @@ func buildS3Destination(d map[string]interface{}) (*datadogV2.LogsArchiveDestina
 	if !ok {
 		path = ""
 	}
-	destination := &datadogV2.LogsArchiveDestinationS3{
-		Bucket:      bucket.(string),
-		Integration: integration,
-		Path:        datadogV2.PtrString(path.(string)),
-		Type:        datadogV2.LOGSARCHIVEDESTINATIONS3TYPE_S3,
-	}
+	destination := datadogV2.NewLogsArchiveDestinationS3(
+		bucket.(string),
+		*integration,
+		datadogV2.LOGSARCHIVEDESTINATIONS3TYPE_S3,
+	)
+	destination.Path = datadogV2.PtrString(path.(string))
 	return destination, nil
 }
