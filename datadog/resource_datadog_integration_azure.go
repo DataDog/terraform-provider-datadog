@@ -71,11 +71,9 @@ func resourceDatadogIntegrationAzureCreate(d *schema.ResourceData, meta interfac
 	authV1 := providerConf.AuthV1
 
 	tenantName := d.Get("tenant_name").(string)
-	iazure := datadogV1.NewAzureAccount()
-	iazure.SetTenantName(tenantName)
-	iazure.SetClientId(d.Get("client_id").(string))
-	iazure.SetClientSecret(d.Get("client_secret").(string))
-	iazure.SetHostFilters(d.Get("host_filters").(string))
+	clientID := d.Get("client_id").(string)
+
+	iazure := buildDatadogAzureIntegrationDefinition(d, tenantName, clientID, false)
 
 	if _, _, err := datadogClientV1.AzureIntegrationApi.CreateAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
 		return translateClientError(err, "error creating an Azure integration")
@@ -96,7 +94,7 @@ func resourceDatadogIntegrationAzureUpdate(d *schema.ResourceData, meta interfac
 		return err
 	}
 
-	iazure := buildDatadogAzureIntegrationDefinition(d, existingTenantName, existingClientID)
+	iazure := buildDatadogAzureIntegrationDefinition(d, existingTenantName, existingClientID, true)
 
 	if _, _, err := datadogClientV1.AzureIntegrationApi.UpdateAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
 		return translateClientError(err, "error updating an Azure integration")
@@ -116,9 +114,7 @@ func resourceDatadogIntegrationAzureDelete(d *schema.ResourceData, meta interfac
 	if err != nil {
 		return err
 	}
-	iazure := datadogV1.NewAzureAccount()
-	iazure.SetTenantName(tenantName)
-	iazure.SetClientId(clientID)
+	iazure := buildDatadogAzureIntegrationDefinition(d, tenantName, clientID, false)
 
 	if _, _, err := datadogClientV1.AzureIntegrationApi.DeleteAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
 		return translateClientError(err, "error deleting an Azure integration")
@@ -142,11 +138,11 @@ func tenantAndClientFromID(id string) (string, string, error) {
 	return result[0], result[1], nil
 }
 
-func buildDatadogAzureIntegrationDefinition(terraformDefinition *schema.ResourceData, existingTenantName string, existingClientID string) *datadogV1.AzureAccount {
+func buildDatadogAzureIntegrationDefinition(terraformDefinition *schema.ResourceData, tenantName string, clientID string, update bool) *datadogV1.AzureAccount {
 	datadogDefinition := datadogV1.NewAzureAccount()
 	// Required params
-	datadogDefinition.SetTenantName(existingTenantName)
-	datadogDefinition.SetClientId(existingClientID)
+	datadogDefinition.SetTenantName(tenantName)
+	datadogDefinition.SetClientId(clientID)
 	// Optional params
 	hostFilters, exists := terraformDefinition.GetOk("host_filters")
 	if exists == true {
@@ -156,13 +152,16 @@ func buildDatadogAzureIntegrationDefinition(terraformDefinition *schema.Resource
 	if exists == true {
 		datadogDefinition.SetClientSecret(clientSecret.(string))
 	}
-	newTenantName, exists := terraformDefinition.GetOk("tenant_name")
-	if exists == true {
-		datadogDefinition.SetNewTenantName(newTenantName.(string))
-	}
-	newClientID, exists := terraformDefinition.GetOk("tenant_name")
-	if exists == true {
-		datadogDefinition.SetNewClientId(newClientID.(string))
+	// Only do the following if building for the Update
+	if update == true {
+		newTenantName, exists := terraformDefinition.GetOk("tenant_name")
+		if exists == true {
+			datadogDefinition.SetNewTenantName(newTenantName.(string))
+		}
+		newClientID, exists := terraformDefinition.GetOk("client_id")
+		if exists == true {
+			datadogDefinition.SetNewClientId(newClientID.(string))
+		}
 	}
 	return datadogDefinition
 }
