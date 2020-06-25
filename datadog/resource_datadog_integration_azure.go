@@ -95,22 +95,14 @@ func resourceDatadogIntegrationAzureUpdate(d *schema.ResourceData, meta interfac
 	if err != nil {
 		return err
 	}
-	newTenantName := d.Get("tenant_name").(string)
-	newClientID := d.Get("client_id").(string)
 
-	iazure := datadogV1.NewAzureAccount()
-	iazure.SetTenantName(existingTenantName)
-	iazure.SetClientId(existingClientID)
-	iazure.SetNewTenantName(newTenantName)
-	iazure.SetNewClientId(newClientID)
-	iazure.SetHostFilters(d.Get("host_filters").(string))
-	iazure.SetClientSecret(d.Get("client_secret").(string))
+	iazure := buildDatadogAzureIntegrationDefinition(d, existingTenantName, existingClientID)
 
 	if _, _, err := datadogClientV1.AzureIntegrationApi.UpdateAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
 		return translateClientError(err, "error updating an Azure integration")
 	}
 
-	d.SetId(fmt.Sprintf("%s:%s", newTenantName, newClientID))
+	d.SetId(fmt.Sprintf("%s:%s", iazure.GetNewTenantName(), iazure.GetNewClientId()))
 
 	return resourceDatadogIntegrationAzureRead(d, meta)
 }
@@ -148,4 +140,29 @@ func tenantAndClientFromID(id string) (string, string, error) {
 		return "", "", fmt.Errorf("error extracting tenant name and client ID from an Azure integration id: %s", id)
 	}
 	return result[0], result[1], nil
+}
+
+func buildDatadogAzureIntegrationDefinition(terraformDefinition *schema.ResourceData, existingTenantName string, existingClientID string) *datadogV1.AzureAccount {
+	datadogDefinition := datadogV1.NewAzureAccount()
+	// Required params
+	datadogDefinition.SetTenantName(existingTenantName)
+	datadogDefinition.SetClientId(existingClientID)
+	// Optional params
+	hostFilters, exists := terraformDefinition.GetOk("host_filters")
+	if exists == true {
+		datadogDefinition.SetHostFilters(hostFilters.(string))
+	}
+	clientSecret, exists := terraformDefinition.GetOk("client_secret")
+	if exists == true {
+		datadogDefinition.SetClientSecret(clientSecret.(string))
+	}
+	newTenantName, exists := terraformDefinition.GetOk("tenant_name")
+	if exists == true {
+		datadogDefinition.SetNewTenantName(newTenantName.(string))
+	}
+	newClientID, exists := terraformDefinition.GetOk("tenant_name")
+	if exists == true {
+		datadogDefinition.SetNewClientId(newClientID.(string))
+	}
+	return datadogDefinition
 }
