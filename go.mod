@@ -9,7 +9,6 @@ require (
 	github.com/jonboulle/clockwork v0.1.0
 	github.com/kr/pretty v0.1.0
 	github.com/zorkian/go-datadog-api v2.29.0+incompatible
-	gopkg.in/h2non/gock.v1 v1.0.15
 )
 
 go 1.13
