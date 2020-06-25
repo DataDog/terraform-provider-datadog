@@ -7,6 +7,9 @@ FEATURES:
 * `datadog_dashboard`: Add `network_query` and `rum_query` to timeseries widget ([#555](https://github.com/terraform-providers/terraform-provider-datadog/pull/555))
 * `datadog_dashboard`: Add `event`, `legend_size` and `show_legend` fields to heatmap widget ([#554](https://github.com/terraform-providers/terraform-provider-datadog/pull/554))
 
+IMPROVEMENTS:
+* `datadog_dashboard`: Add readonly url field to dashboard ([#558](https://github.com/terraform-providers/terraform-provider-datadog/pull/558))
+
 ## 2.9.0 (June 22, 2020)
 
 IMPROVEMENTS:
