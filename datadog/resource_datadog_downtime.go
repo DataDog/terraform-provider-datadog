@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"4d63.com/tz"
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
@@ -494,7 +495,7 @@ func validateDatadogDowntimeTimezone(v interface{}, k string) (ws []string, erro
 		zone, _ := time.Now().Local().Zone()
 		return validateDatadogDowntimeRecurrenceType(zone, k)
 	default:
-		_, err := time.LoadLocation(value)
+		_, err := tz.LoadLocation(value)
 		if err != nil {
 			errors = append(errors, fmt.Errorf(
 				"%q contains an invalid timezone parameter: %q, Valid parameters are IANA Time Zone names",
