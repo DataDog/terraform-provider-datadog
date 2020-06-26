@@ -217,7 +217,7 @@ resource "datadog_timeboard" "acceptance_test" {
 `
 
 func TestAccDatadogTimeboard_update(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 

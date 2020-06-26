@@ -13,7 +13,7 @@ import (
 )
 
 func TestAccDatadogMonitor_Basic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -71,7 +71,7 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -126,7 +126,7 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -169,7 +169,7 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_Updated(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -304,7 +304,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -434,7 +434,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -476,7 +476,7 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -519,7 +519,7 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_Log(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -557,7 +557,7 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_NoThresholdWindows(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -580,7 +580,7 @@ func TestAccDatadogMonitor_NoThresholdWindows(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -633,7 +633,7 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_MuteUnmuteSpecificScopes(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -665,7 +665,7 @@ func TestAccDatadogMonitor_MuteUnmuteSpecificScopes(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -713,7 +713,7 @@ func testAccCheckDatadogMonitorExists(accProvider *schema.Provider, n string) re
 }
 
 func TestAccDatadogMonitor_SilencedRemove(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -755,7 +755,7 @@ func TestAccDatadogMonitor_SilencedRemove(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -789,7 +789,7 @@ func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_SilencedUpdatePastTimestamp(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 

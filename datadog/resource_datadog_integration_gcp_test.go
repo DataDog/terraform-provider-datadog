@@ -30,7 +30,7 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
 `
 
 func TestAccDatadogIntegrationGCP(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 

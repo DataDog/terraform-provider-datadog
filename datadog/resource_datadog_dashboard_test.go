@@ -938,8 +938,8 @@ var datadogFreeDashboardAsserts = []string{
 	"template_variable_preset.1.template_variable.0.value = var_1_value",
 }
 
-func TestAccDatadogOrderedDashboard(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+func TestAccDatadogDashboard_update(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -959,7 +959,7 @@ func TestAccDatadogOrderedDashboard(t *testing.T) {
 }
 
 func TestAccDatadogFreeDashboard(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -979,7 +979,7 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 }
 
 func TestAccDatadogDashboard_import(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -1043,7 +1043,7 @@ func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc 
 }
 
 func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string, assertions []string) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -1063,7 +1063,7 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 }
 
 func testAccDatadogDashboardWidgetUtil_import(t *testing.T, config string, name string) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 

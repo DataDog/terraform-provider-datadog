@@ -11,7 +11,7 @@ import (
 )
 
 func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -43,7 +43,7 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
