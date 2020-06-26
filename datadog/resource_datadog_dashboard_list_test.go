@@ -81,7 +81,7 @@ resource "datadog_dashboard" "screen" {
 
 func TestDatadogDashListImport(t *testing.T) {
 	resourceName := "datadog_dashboard_list.new_list"
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 

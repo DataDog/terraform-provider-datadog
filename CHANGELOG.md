@@ -1,4 +1,16 @@
-## 2.10.0 (Unreleased)
+## 2.11.0 (Unreleased)
+## 2.10.0 (June 26, 2020)
+
+FEATURES:
+* `datadog_integration_aws`: Add `excluded_regions` parameter ([#549](https://github.com/terraform-providers/terraform-provider-datadog/pull/549))
+* `datadog_dashboard`: Add `ServiceMap` widget to dashboard ([#550](https://github.com/terraform-providers/terraform-provider-datadog/pull/550))
+* `datadog_dashboard`: Add `show_legend` and `legend_size` fields to Distribution widget ([#551](https://github.com/terraform-providers/terraform-provider-datadog/pull/551))
+* `datadog_dashboard`: Add `network_query` and `rum_query` to timeseries widget ([#555](https://github.com/terraform-providers/terraform-provider-datadog/pull/555))
+* `datadog_dashboard`: Add `event`, `legend_size` and `show_legend` fields to heatmap widget ([#554](https://github.com/terraform-providers/terraform-provider-datadog/pull/554))
+
+IMPROVEMENTS:
+* `datadog_dashboard`: Add readonly url field to dashboard ([#558](https://github.com/terraform-providers/terraform-provider-datadog/pull/558))
+
 ## 2.9.0 (June 22, 2020)
 
 IMPROVEMENTS:

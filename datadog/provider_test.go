@@ -142,6 +142,45 @@ func initAccProvider(t *testing.T, httpClient *http.Client) *schema.Provider {
 	return p
 }
 
+func buildAuthV1(apiKey string, appKey string, apiURL string) (context.Context, error) {
+	authV1 := context.WithValue(
+		context.Background(),
+		datadogV1.ContextAPIKeys,
+		map[string]datadogV1.APIKey{
+			"apiKeyAuth": datadogV1.APIKey{
+				Key: apiKey,
+			},
+			"appKeyAuth": datadogV1.APIKey{
+				Key: appKey,
+			},
+		},
+	)
+	if apiURL != "" {
+		parsedApiUrl, parseErr := url.Parse(apiURL)
+		if parseErr != nil {
+			return nil, fmt.Errorf(`invalid API Url : %v`, parseErr)
+		}
+		if parsedApiUrl.Host == "" || parsedApiUrl.Scheme == "" {
+			return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
+		}
+		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
+		authV1 = context.WithValue(authV1, datadogV1.ContextServerIndex, 1)
+		authV1 = context.WithValue(authV1, datadogV1.ContextServerVariables, map[string]string{
+			"name":     parsedApiUrl.Host,
+			"protocol": parsedApiUrl.Scheme,
+		})
+	}
+	return authV1, nil
+}
+
+func buildDatadogClientV1(httpClient *http.Client) *datadogV1.APIClient {
+	//Datadog V1 API config.HTTPClient
+	configV1 := datadogV1.NewConfiguration()
+	configV1.Debug = isDebug()
+	configV1.HTTPClient = httpClient
+	return datadogV1.NewAPIClient(configV1)
+}
+
 func testProviderConfigure(httpClient *http.Client) schema.ConfigureFunc {
 	return func(d *schema.ResourceData) (interface{}, error) {
 		communityClient := datadogCommunity.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
@@ -153,39 +192,11 @@ func testProviderConfigure(httpClient *http.Client) schema.ConfigureFunc {
 		communityClient.HttpClient = c
 		communityClient.ExtraHeader["User-Agent"] = fmt.Sprintf("Datadog/%s/terraform (%s)", version.ProviderVersion, runtime.Version())
 
-		// Initialize the official datadog client
-		authV1 := context.WithValue(
-			context.Background(),
-			datadogV1.ContextAPIKeys,
-			map[string]datadogV1.APIKey{
-				"apiKeyAuth": datadogV1.APIKey{
-					Key: d.Get("api_key").(string),
-				},
-				"appKeyAuth": datadogV1.APIKey{
-					Key: d.Get("app_key").(string),
-				},
-			},
-		)
-		//Datadog V1 API config.HTTPClient
-		configV1 := datadogV1.NewConfiguration()
-		configV1.Debug = isDebug()
-		configV1.HTTPClient = c
-		if apiURL := d.Get("api_url").(string); apiURL != "" {
-			parsedApiUrl, parseErr := url.Parse(apiURL)
-			if parseErr != nil {
-				return nil, fmt.Errorf(`invalid API Url : %v`, parseErr)
-			}
-			if parsedApiUrl.Host == "" || parsedApiUrl.Scheme == "" {
-				return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
-			}
-			// If api url is passed, set and use the api name and protocol on ServerIndex{1}
-			authV1 = context.WithValue(authV1, datadogV1.ContextServerIndex, 1)
-			authV1 = context.WithValue(authV1, datadogV1.ContextServerVariables, map[string]string{
-				"name":     parsedApiUrl.Host,
-				"protocol": parsedApiUrl.Scheme,
-			})
+		authV1, err := buildAuthV1(d.Get("api_key").(string), d.Get("app_key").(string), d.Get("api_url").(string))
+		if err != nil {
+			return nil, err
 		}
-		datadogClientV1 := datadogV1.NewAPIClient(configV1)
+		datadogClientV1 := buildDatadogClientV1(httpClient)
 
 		// Initialize the official datadog v2 API client
 		authV2 := context.WithValue(
@@ -238,8 +249,7 @@ func testAccProvidersWithHttpClient(t *testing.T, httpClient *http.Client) map[s
 	}
 }
 
-func testAccProviders(t *testing.T) (map[string]terraform.ResourceProvider, func(t *testing.T)) {
-	rec := initRecorder(t)
+func testAccProviders(t *testing.T, rec *recorder.Recorder) (map[string]terraform.ResourceProvider, func(t *testing.T)) {
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", rec)
 	return testAccProvidersWithHttpClient(t, c), func(t *testing.T) {

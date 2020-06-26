@@ -50,6 +50,12 @@ func resourceDatadogDashboard() *schema.Resource {
 				Default:     false,
 				Description: "Whether this dashboard is read-only.",
 			},
+			"url": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				Description: "The URL of the dashboard.",
+			},
 			"template_variable": {
 				Type:        schema.TypeList,
 				Optional:    true,
@@ -127,6 +133,9 @@ func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) erro
 		return err
 	}
 	if err = d.Set("is_read_only", dashboard.GetIsReadOnly()); err != nil {
+		return err
+	}
+	if err = d.Set("url", dashboard.GetUrl()); err != nil {
 		return err
 	}
 
