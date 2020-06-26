@@ -17,13 +17,13 @@ Create a Datadog logs archive:
 
 ```hcl
 resource "datadog_logs_archive" "my_s3_archive" {
-  name  = "my first s3 archive after update"
-  query = "service:tutu"
+  name  = "my s3 archive"
+  query = "service:myservice"
   s3 = {
     bucket     = "my-bucket"
     path       = "/path/foo"
     account_id = "001234567888"
-    role_name  = "testacc-datadog-integration-role"
+    role_name  = "my-role-name"
   }
 }
 ```
