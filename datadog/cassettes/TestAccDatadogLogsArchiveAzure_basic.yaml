@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","tenant_name":"my-tenant-id"}
+      {"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","tenant_name":"testc44-1234-5678-9101-cc00736ftest"}
     form: {}
     headers:
       Accept:
@@ -30,22 +30,71 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 25 Jun 2020 10:02:10 GMT
+      - Fri, 26 Jun 2020 17:27:33 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 02-Jul-2020 10:02:10 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 17:27:32 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - u9VEJv4YNx+Fl9tRGJNbGm0+76jyym0t+mec2t84PhoJYEedil3ajyEhP7U3EneZ
+      - OxP+mFpjAbASiVhNf+t4MttAs95ZlMiGosIRnYJJGFoApNgv2oxtdzpnmNlMOki6
       X-Dd-Version:
-      - "35.2663868"
+      - "35.2671023"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListAzureIntegration
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.14.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/azure
+    method: GET
+  response:
+    body: '[{"tenant_name":"testc44-1234-5678-9101-cc00736ftest","errors":[],"host_filters":"","client_id":"testc7f6-1234-5678-9101-3fcbf464test"},{"tenant_name":"testc44-1234-5678-9101-cc0073update","errors":["Datadog
+      could not query tenant testc44-1234-5678-9101-cc0073update and client ID testc7f6-1234-5678-9101-3fcbf4update:
+      invalid credentials"],"host_filters":"test:foo,test:bar","client_id":"testc7f6-1234-5678-9101-3fcbf4update"}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 26 Jun 2020 17:27:34 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 17:27:33 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - IWbeot5NPPjwzkLRJwJSrhKxooUYWPiItYmeOu7MvfpEU9kI8879nM2EukYnEnom
+      X-Dd-Version:
+      - "35.2671023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -53,7 +102,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"destination":{"container":"my-container","integration":{"client_id":"testc7f6-1234-5678-9101-3fcbf464test","tenant_id":"my-tenant-id"},"path":"/path/blou","storage_account":"storageAccount","type":"azure"},"name":"my first azure archive","query":"service:toto"},"type":"archives"}}
+      {"data":{"attributes":{"destination":{"container":"my-container","integration":{"client_id":"testc7f6-1234-5678-9101-3fcbf464test","tenant_id":"testc44-1234-5678-9101-cc00736ftest"},"path":"/path/blou","storage_account":"storageAccount","type":"azure"},"name":"my first azure archive","query":"service:toto"},"type":"archives"}}
     form: {}
     headers:
       Accept:
@@ -67,8 +116,8 @@ interactions:
     url: https://api.datadoghq.com/api/v2/logs/config/archives
     method: POST
   response:
-    body: '{"data":{"type":"archives","id":"cbAxC2EwR5u5koUk600gUw","attributes":{"name":"my
-      first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"my-tenant-id","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}}}}}'
+    body: '{"data":{"type":"archives","id":"cNjGyLUtQqmbv85dejNd5g","attributes":{"name":"my
+      first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"testc44-1234-5678-9101-cc00736ftest","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -79,13 +128,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 25 Jun 2020 10:02:11 GMT
+      - Fri, 26 Jun 2020 17:27:34 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 02-Jul-2020 10:02:11 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 17:27:34 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -94,9 +143,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - YNGrI7M9aLfuf6Npp7n/51e6xDtYCO9Rm/LB+HGbX4I6A/e7rnC+cgQxIZnsU+fj
+      - zgs4/R8U39Dx88K274ycCG8gmotK2r1yjyecTfeITqBuGEc/zW9V1MMOyMl9URns
       X-Dd-Version:
-      - "35.2663868"
+      - "35.2671023"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -104,9 +153,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "99"
+      - "93"
       X-Ratelimit-Reset:
-      - "3469"
+      - "1946"
     status: 200 OK
     code: 200
     duration: ""
@@ -120,11 +169,11 @@ interactions:
       - GetLogsArchive
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.6 (go go1.14.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/cbAxC2EwR5u5koUk600gUw
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/cNjGyLUtQqmbv85dejNd5g
     method: GET
   response:
-    body: '{"data":{"type":"archives","id":"cbAxC2EwR5u5koUk600gUw","attributes":{"name":"my
-      first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"my-tenant-id","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}}}}}'
+    body: '{"data":{"type":"archives","id":"cNjGyLUtQqmbv85dejNd5g","attributes":{"name":"my
+      first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"testc44-1234-5678-9101-cc00736ftest","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -135,13 +184,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 25 Jun 2020 10:02:11 GMT
+      - Fri, 26 Jun 2020 17:27:34 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 02-Jul-2020 10:02:11 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 17:27:34 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -150,9 +199,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - aERr2Ftx8O/BR8oAhSymZ3bVROQEC+81YMSphOQK1me4DxXSbMIcFkB0Di4ggZ++
+      - lyzq/AwBoYy31tqkvQ8mzBugAZOys447o2yCYdRfm1oPuJTtZy0Uz+ukzrgaZfIT
       X-Dd-Version:
-      - "35.2663868"
+      - "35.2671023"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -160,9 +209,58 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4999"
+      - "4981"
       X-Ratelimit-Reset:
-      - "3469"
+      - "1946"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListAzureIntegration
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.14.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/azure
+    method: GET
+  response:
+    body: '[{"tenant_name":"testc44-1234-5678-9101-cc00736ftest","errors":[],"host_filters":"","client_id":"testc7f6-1234-5678-9101-3fcbf464test"},{"tenant_name":"testc44-1234-5678-9101-cc0073update","errors":["Datadog
+      could not query tenant testc44-1234-5678-9101-cc0073update and client ID testc7f6-1234-5678-9101-3fcbf4update:
+      invalid credentials"],"host_filters":"test:foo,test:bar","client_id":"testc7f6-1234-5678-9101-3fcbf4update"}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 26 Jun 2020 17:27:35 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 17:27:34 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - Wi4QF3nhe5s0sRyfZvyTHLc/3mQu/jJVn8BZnev44SXt+VBNA1+haKi5VcNZFpaP
+      X-Dd-Version:
+      - "35.2671023"
+      X-Frame-Options:
+      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -176,11 +274,11 @@ interactions:
       - GetLogsArchive
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.6 (go go1.14.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/cbAxC2EwR5u5koUk600gUw
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/cNjGyLUtQqmbv85dejNd5g
     method: GET
   response:
-    body: '{"data":{"type":"archives","id":"cbAxC2EwR5u5koUk600gUw","attributes":{"name":"my
-      first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"my-tenant-id","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}}}}}'
+    body: '{"data":{"type":"archives","id":"cNjGyLUtQqmbv85dejNd5g","attributes":{"name":"my
+      first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"testc44-1234-5678-9101-cc00736ftest","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -191,13 +289,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 25 Jun 2020 10:02:12 GMT
+      - Fri, 26 Jun 2020 17:27:35 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 02-Jul-2020 10:02:12 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 17:27:35 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -206,9 +304,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - NueLa2zkdBcl9S7BHrRuWyjAeR9iWgPFe330KTY6Cp0/yUhjUktbxu5rG2fG6gBk
+      - FAXIqEyJyWWDyUDKgR+Td75IkfWeu40aSEpg9NtrH84gUkIxi84nk9RHrJt3rVD3
       X-Dd-Version:
-      - "35.2663868"
+      - "35.2671023"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -216,9 +314,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4998"
+      - "4980"
       X-Ratelimit-Reset:
-      - "3468"
+      - "1945"
     status: 200 OK
     code: 200
     duration: ""
@@ -232,11 +330,11 @@ interactions:
       - GetLogsArchive
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.6 (go go1.14.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/cbAxC2EwR5u5koUk600gUw
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/cNjGyLUtQqmbv85dejNd5g
     method: GET
   response:
-    body: '{"data":{"type":"archives","id":"cbAxC2EwR5u5koUk600gUw","attributes":{"name":"my
-      first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"my-tenant-id","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}}}}}'
+    body: '{"data":{"type":"archives","id":"cNjGyLUtQqmbv85dejNd5g","attributes":{"name":"my
+      first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"testc44-1234-5678-9101-cc00736ftest","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -247,13 +345,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 25 Jun 2020 10:02:12 GMT
+      - Fri, 26 Jun 2020 17:27:35 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 02-Jul-2020 10:02:12 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 17:27:35 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -262,9 +360,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - QaEGvF++JqTbTiFomKhE21Fdnra2zinKOaCEqOgwcd7OtJatRLgvovBbCNyGqcpO
+      - SxoanfhUZNcxsD3lnA3j+up2jAgZV05RpnWjR/qtgMkjy5UIlkbs0WqFT6yaBwwR
       X-Dd-Version:
-      - "35.2663868"
+      - "35.2671023"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -272,9 +370,58 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4997"
+      - "4979"
       X-Ratelimit-Reset:
-      - "3468"
+      - "1945"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListAzureIntegration
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.14.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/azure
+    method: GET
+  response:
+    body: '[{"tenant_name":"testc44-1234-5678-9101-cc00736ftest","errors":[],"host_filters":"","client_id":"testc7f6-1234-5678-9101-3fcbf464test"},{"tenant_name":"testc44-1234-5678-9101-cc0073update","errors":["Datadog
+      could not query tenant testc44-1234-5678-9101-cc0073update and client ID testc7f6-1234-5678-9101-3fcbf4update:
+      invalid credentials"],"host_filters":"test:foo,test:bar","client_id":"testc7f6-1234-5678-9101-3fcbf4update"}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 26 Jun 2020 17:27:36 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 17:27:36 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - QpzDmIoaO5Hufx014PqM5BuLw+G9k75nLqy12TEr4Iab1Fl7hIFT5DrERoBer8OF
+      X-Dd-Version:
+      - "35.2671023"
+      X-Frame-Options:
+      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -288,11 +435,11 @@ interactions:
       - GetLogsArchive
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.6 (go go1.14.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/cbAxC2EwR5u5koUk600gUw
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/cNjGyLUtQqmbv85dejNd5g
     method: GET
   response:
-    body: '{"data":{"type":"archives","id":"cbAxC2EwR5u5koUk600gUw","attributes":{"name":"my
-      first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"my-tenant-id","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}}}}}'
+    body: '{"data":{"type":"archives","id":"cNjGyLUtQqmbv85dejNd5g","attributes":{"name":"my
+      first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"testc44-1234-5678-9101-cc00736ftest","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -303,13 +450,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 25 Jun 2020 10:02:12 GMT
+      - Fri, 26 Jun 2020 17:27:37 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 02-Jul-2020 10:02:12 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 17:27:37 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -318,9 +465,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - bJj7D3RvHsKo+7eO3lrtPpPG0z8SsAwLw7bNfLb4htD+N9Ub8bD3AFgh45XaVsFM
+      - dPTJBBDv5jeY1gnH1FisDpda5Hi0boOGbsHxIOi4qkMt+QLOH7F7P7MeSr40vXZ0
       X-Dd-Version:
-      - "35.2663868"
+      - "35.2671023"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -328,9 +475,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4996"
+      - "4978"
       X-Ratelimit-Reset:
-      - "3468"
+      - "1943"
     status: 200 OK
     code: 200
     duration: ""
@@ -344,11 +491,11 @@ interactions:
       - GetLogsArchive
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.6 (go go1.14.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/cbAxC2EwR5u5koUk600gUw
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/cNjGyLUtQqmbv85dejNd5g
     method: GET
   response:
-    body: '{"data":{"type":"archives","id":"cbAxC2EwR5u5koUk600gUw","attributes":{"name":"my
-      first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"my-tenant-id","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}}}}}'
+    body: '{"data":{"type":"archives","id":"cNjGyLUtQqmbv85dejNd5g","attributes":{"name":"my
+      first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"testc44-1234-5678-9101-cc00736ftest","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -359,13 +506,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 25 Jun 2020 10:02:13 GMT
+      - Fri, 26 Jun 2020 17:27:37 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 02-Jul-2020 10:02:12 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 17:27:37 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -374,9 +521,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - HTCsbjwqQM0jTFHFq9ukWObBv4f/yxvHIxzrANPhzJkr6s3+rN5uCN3TcZuK2V2B
+      - GAK1J4mJd/EBZfEK4rqUw9OeB9GOeKgSyrXGtzNUi5zrv5sHYU56xJgA4bcbtgUA
       X-Dd-Version:
-      - "35.2663868"
+      - "35.2671023"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -384,9 +531,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4995"
+      - "4977"
       X-Ratelimit-Reset:
-      - "3468"
+      - "1943"
     status: 200 OK
     code: 200
     duration: ""
@@ -400,7 +547,7 @@ interactions:
       - DeleteLogsArchive
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.6 (go go1.14.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/cbAxC2EwR5u5koUk600gUw
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/cNjGyLUtQqmbv85dejNd5g
     method: DELETE
   response:
     body: ""
@@ -416,22 +563,22 @@ interactions:
       Content-Type:
       - text/html; charset=UTF-8
       Date:
-      - Thu, 25 Jun 2020 10:02:14 GMT
+      - Fri, 26 Jun 2020 17:27:37 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 02-Jul-2020 10:02:14 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 17:27:37 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - hlZGwPPL87Cire+2SDWJrcKtg5ChXKBaVFmtHdrZS+BoDfdo10256wfXrEDRUv8c
+      - FiLv+OaMPfXL1uddbn+9yDPMV5awac1EEhAgzXF2ZG6GNVh7KFUCM+HhGv6IDSg0
       X-Dd-Version:
-      - "35.2663868"
+      - "35.2671023"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -439,65 +586,15 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "98"
+      - "92"
       X-Ratelimit-Reset:
-      - "3466"
+      - "1943"
     status: 204 No Content
     code: 204
     duration: ""
 - request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetLogsArchive
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.6 (go go1.14.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/cbAxC2EwR5u5koUk600gUw
-    method: GET
-  response:
-    body: '{"errors": ["Archive cbAxC2EwR5u5koUk600gUw not found"]}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 25 Jun 2020 10:02:14 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Version:
-      - "35.2663868"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "5000"
-      X-Ratelimit-Period:
-      - "3600"
-      X-Ratelimit-Remaining:
-      - "4994"
-      X-Ratelimit-Reset:
-      - "3466"
-    status: 404 Not Found
-    code: 404
-    duration: ""
-- request:
     body: |
-      {"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","tenant_name":"my-tenant-id"}
+      {"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","tenant_name":"testc44-1234-5678-9101-cc00736ftest"}
     form: {}
     headers:
       Accept:
@@ -524,22 +621,121 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 25 Jun 2020 10:02:15 GMT
+      - Fri, 26 Jun 2020 17:27:37 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 02-Jul-2020 10:02:15 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 17:27:37 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - gVnECQ7ifaEfJ6BNPsXSglLjlU41ay4U8jXHC6V3+oC4U6gHkBb20H5zrSJj1zee
+      - pEDVi2191MvoIMwusdL+COAxndBmcRhJtxAtWxDDnECWDI8Z99hIoBZbpR57tJKz
       X-Dd-Version:
-      - "35.2663868"
+      - "35.2671023"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetLogsArchive
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.14.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/cNjGyLUtQqmbv85dejNd5g
+    method: GET
+  response:
+    body: '{"errors": ["Archive cNjGyLUtQqmbv85dejNd5g not found"]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 26 Jun 2020 17:27:38 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2671023"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "5000"
+      X-Ratelimit-Period:
+      - "3600"
+      X-Ratelimit-Remaining:
+      - "4976"
+      X-Ratelimit-Reset:
+      - "1943"
+    status: 404 Not Found
+    code: 404
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListAzureIntegration
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.14.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/azure
+    method: GET
+  response:
+    body: '[{"tenant_name":"testc44-1234-5678-9101-cc0073update","errors":["Datadog
+      could not query tenant testc44-1234-5678-9101-cc0073update and client ID testc7f6-1234-5678-9101-3fcbf4update:
+      invalid credentials"],"host_filters":"test:foo,test:bar","client_id":"testc7f6-1234-5678-9101-3fcbf4update"}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 26 Jun 2020 17:27:38 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 17:27:38 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - B/LXPck0nGNX0RSV/Gw7cnZ0oe92FUOfg1ec7WcU0kSvw/UBT+IXTFTD87Snvz2v
+      X-Dd-Version:
+      - "35.2671023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

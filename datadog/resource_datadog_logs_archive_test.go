@@ -5,26 +5,28 @@ import (
 	"fmt"
 	"testing"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"net/http"
-	"os"
 )
 
 //Test
 // create: OK azure
-
 const archiveAzureConfigForCreation = `
+resource "datadog_integration_azure" "an_azure_integration" {
+  tenant_name   = "testc44-1234-5678-9101-cc00736ftest"
+  client_id     = "testc7f6-1234-5678-9101-3fcbf464test"
+  client_secret = "testingx./Sw*g/Y33t..R1cH+hScMDt"
+}
+
 resource "datadog_logs_archive" "my_azure_archive" {
+  depends_on = ["datadog_integration_azure.an_azure_integration"]
   name  = "my first azure archive"
   query = "service:toto"
   azure = {
     container 		= "my-container"
-    tenant_id 		= "my-tenant-id"
+    tenant_id 		= "testc44-1234-5678-9101-cc00736ftest"
     client_id       = "testc7f6-1234-5678-9101-3fcbf464test"
     storage_account = "storageAccount"
     path            = "/path/blou"
@@ -32,60 +34,15 @@ resource "datadog_logs_archive" "my_azure_archive" {
 }
 `
 
-func getApiKey() string {
-	if os.Getenv("DATADOG_API_KEY") != "" {
-		return os.Getenv("DATADOG_API_KEY")
-	}
-	if os.Getenv("DD_API_KEY") != "" {
-		return os.Getenv("DD_API_KEY")
-	}
-	return ""
-}
-func getAppKey() string {
-	if os.Getenv("DATADOG_APP_KEY") != "" {
-		return os.Getenv("DATADOG_APP_KEY")
-	}
-	if os.Getenv("DD_APP_KEY") != "" {
-		return os.Getenv("DD_APP_KEY")
-	}
-	return ""
-}
-
 func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
-	//This is only required for this tests because the others do this check inside resource.Test
-	if os.Getenv("TF_ACC") == "" {
-		t.Skip(fmt.Sprintf("Acceptance tests skipped unless env '%s' set", "TF_ACC"))
-	}
-	rec := initRecorder(t)
-	defer rec.Stop()
-	httpClient := &http.Client{Transport: logging.NewTransport("Datadog", rec)}
-	// At the moment there's no azure integration in tf so we manually:
-	// 1. Create an api client with the right conf and the right recorder
-	datadogClientV1 := buildDatadogClientV1(httpClient)
-	authV1, err := buildAuthV1(getApiKey(), getAppKey(), "")
-	if err != nil {
-		t.Fatalf("Error creating Datadog Client context: %s", err)
-	}
-	var testAzureAcct = datadogV1.AzureAccount{
-		ClientId:     datadogV1.PtrString("testc7f6-1234-5678-9101-3fcbf464test"),
-		ClientSecret: datadogV1.PtrString("testingx./Sw*g/Y33t..R1cH+hScMDt"),
-		TenantName:   datadogV1.PtrString("my-tenant-id"),
-	}
-	// 2. Create the azure account
-	_, _, err = datadogClientV1.AzureIntegrationApi.CreateAzureIntegration(authV1).Body(testAzureAcct).Execute()
-	if err != nil {
-		t.Fatalf("Error creating Azure Account: Response %s: %v", err.(datadogV1.GenericOpenAPIError).Body(), err)
-	}
-	// 3. Destroy it at the end of the test
-	defer deleteAzureIntegration(t, datadogClientV1, authV1, testAzureAcct)
-
-	accProviders := testAccProvidersWithHttpClient(t, httpClient)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
-		CheckDestroy: testAccCheckArchiveDestroy(accProvider),
+		CheckDestroy: testAccCheckArchiveAndIntegrationAzureDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: archiveAzureConfigForCreation,
@@ -99,7 +56,7 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_azure_archive", "azure.client_id", "testc7f6-1234-5678-9101-3fcbf464test"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_archive.my_azure_archive", "azure.tenant_id", "my-tenant-id"),
+						"datadog_logs_archive.my_azure_archive", "azure.tenant_id", "testc44-1234-5678-9101-cc00736ftest"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_azure_archive", "azure.storage_account", "storageAccount"),
 					resource.TestCheckResourceAttr(
@@ -108,13 +65,6 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 			},
 		},
 	})
-}
-
-func deleteAzureIntegration(t *testing.T, datadogClientV1 *datadogV1.APIClient, authV1 context.Context, azureAcct datadogV1.AzureAccount) {
-	_, _, err := datadogClientV1.AzureIntegrationApi.DeleteAzureIntegration(authV1).Body(azureAcct).Execute()
-	if err != nil {
-		t.Fatalf("Error deleting Azure Account: Response %s: %v", err.(datadogV1.GenericOpenAPIError).Body(), err)
-	}
 }
 
 // create: Ok gcs
@@ -297,6 +247,17 @@ func archiveExistsChecker(authV2 context.Context, s *terraform.State, datadogCli
 	return nil
 }
 
+func testAccCheckArchiveAndIntegrationAzureDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		err := testAccCheckArchiveDestroy(accProvider)(s)
+		if err != nil {
+			return err
+		}
+		err = checkIntegrationAzureDestroy(accProvider)(s)
+		return err
+	}
+}
+
 func testAccCheckArchiveAndIntegrationGCSDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		err := testAccCheckArchiveDestroy(accProvider)(s)
@@ -324,7 +285,6 @@ func testAccCheckArchiveDestroy(accProvider *schema.Provider) func(*terraform.St
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
-
 		if err := archiveDestroyHelper(authV2, s, datadogClientV2); err != nil {
 			return err
 		}

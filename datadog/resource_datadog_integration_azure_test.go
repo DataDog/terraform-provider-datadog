@@ -94,13 +94,15 @@ func checkIntegrationAzureDestroyHelper(s *terraform.State, authV1 context.Conte
 		return fmt.Errorf("Error listing Azure Accounts: Response %s: %v", err.(datadog.GenericOpenAPIError).Body(), err)
 	}
 	for _, r := range s.RootModule().Resources {
-		tenantName, _, err := tenantAndClientFromID(r.Primary.ID)
-		if err != nil {
-			return err
-		}
-		for _, integration := range integrations {
-			if integration.GetTenantName() == tenantName {
-				return fmt.Errorf("The Azure integration still exist: tenantName=%s", tenantName)
+		if r.Type == "datadog_integration_azure" {
+			tenantName, _, err := tenantAndClientFromID(r.Primary.ID)
+			if err != nil {
+				return err
+			}
+			for _, integration := range integrations {
+				if integration.GetTenantName() == tenantName {
+					return fmt.Errorf("The Azure integration still exist: tenantName=%s", tenantName)
+				}
 			}
 		}
 	}
