@@ -1,4 +1,4 @@
-## 2.10.0 (Unreleased)
+## 2.10.0 (June 26, 2020)
 
 FEATURES:
 * `datadog_integration_aws`: Add `excluded_regions` parameter ([#549](https://github.com/terraform-providers/terraform-provider-datadog/pull/549))
