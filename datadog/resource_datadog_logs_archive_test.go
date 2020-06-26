@@ -52,6 +52,10 @@ func getAppKey() string {
 }
 
 func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
+	//This is only required for this tests because the others do this check inside resource.Test
+	if os.Getenv("TF_ACC") == "" {
+		t.Skip(fmt.Sprintf("Acceptance tests skipped unless env '%s' set", "TF_ACC"))
+	}
 	rec := initRecorder(t)
 	defer rec.Stop()
 	httpClient := &http.Client{Transport: logging.NewTransport("Datadog", rec)}
