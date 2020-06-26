@@ -8,7 +8,7 @@ import (
 
 func TestDatadogDowntime_import(t *testing.T) {
 	resourceName := "datadog_downtime.foo"
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 

@@ -128,7 +128,7 @@ resource "datadog_logs_custom_pipeline" "test_import" {
 `
 
 func TestAccLogsCustomPipeline_importBasic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 

@@ -25,7 +25,7 @@ resource "datadog_integration_aws_log_collection" "main" {
 `
 
 func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t)
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
