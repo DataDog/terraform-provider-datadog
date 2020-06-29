@@ -1,4 +1,4 @@
-## 2.11.0 (Unreleased)
+## 2.11.0 (June 29, 2020)
 
 FEATURES:
 * `datadog_logs_archive`: Add `datadog_logs_archive` resource ([#544](https://github.com/terraform-providers/terraform-provider-datadog/pull/544))
