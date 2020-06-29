@@ -1,4 +1,9 @@
 ## 2.11.0 (Unreleased)
+
+FEATURES:
+* `datadog_logs_archive`: Add `datadog_logs_archive` resource ([#544](https://github.com/terraform-providers/terraform-provider-datadog/pull/544))
+* `datadog_integration_azure`: Add `datadog_integration_azure` resource ([#556](https://github.com/terraform-providers/terraform-provider-datadog/pull/556))
+
 ## 2.10.0 (June 26, 2020)
 
 FEATURES:
