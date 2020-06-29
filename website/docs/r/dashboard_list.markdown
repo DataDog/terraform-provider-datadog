@@ -12,7 +12,7 @@ Provides a Datadog dashboard_list resource. This can be used to create and manag
 
 ## Example Usage
 
-Create a new Dashboard list with two dashbaords
+Create a new Dashboard list with two dashboards
 
 ```hcl
 resource "datadog_dashboard_list" "new_list" {
@@ -81,7 +81,7 @@ resource "datadog_dashboard" "screen" {
 
 The following arguments are supported:
 
-* `name` - (Required) The name of this Dashbaord List.
+* `name` - (Required) The name of this Dashboard List.
 * `dash_item` - (Optional) An individual dashboard object to add to this Dashboard List. If present, must contain the following:
   * `type` - (Required) The type of this dashboard. Available options are: `custom_timeboard`, `custom_screenboard`, `integration_screenboard`, `integration_timeboard`, and `host_timeboard`
   * `dash_id` - (Required) The ID of this dashboard.
