@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"sync"
@@ -63,6 +64,12 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 				Optional:  true,
 				Sensitive: true,
 			},
+			"preserve_existing_integration": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+				Description: "Set to true to preserve any existing Pager Duty Integrations if they exist",
+			},
 		},
 	}
 }
@@ -112,6 +119,10 @@ func resourceDatadogIntegrationPagerdutyCreate(d *schema.ResourceData, meta inte
 		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 
+	if exists, _ := resourceDatadogIntegrationPagerdutyExists(d, meta); exists && d.Get("preserve_existing_integration").(bool) {
+		return translateClientError(errors.New("PagerDuty integration already exists"), "Please import into your existing state or remove from your HCL.")
+	}
+
 	if err := client.CreateIntegrationPD(pd); err != nil {
 		return translateClientError(err, "error creating PagerDuty integration")
 	}
@@ -150,7 +161,6 @@ func resourceDatadogIntegrationPagerdutyRead(d *schema.ResourceData, meta interf
 	d.Set("services", services)
 	d.Set("subdomain", pd.GetSubdomain())
 	d.Set("schedules", pd.Schedules)
-
 	return nil
 }
 

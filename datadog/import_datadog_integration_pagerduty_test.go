@@ -24,6 +24,9 @@ func TestDatadogIntegrationPagerduty_import(t *testing.T) {
 				ResourceName:      resourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
+				ImportStateVerifyIgnore: []string{
+					"preserve_existing_integration",
+				},
 			},
 		},
 	})
