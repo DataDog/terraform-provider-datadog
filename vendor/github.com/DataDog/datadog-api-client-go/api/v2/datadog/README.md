@@ -77,6 +77,8 @@ Class | Method | HTTP request | Description
 *DashboardListsApi* | [**DeleteDashboardListItems**](docs/DashboardListsApi.md#deletedashboardlistitems) | **Delete** /api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards | Delete items from a dashboard list
 *DashboardListsApi* | [**GetDashboardListItems**](docs/DashboardListsApi.md#getdashboardlistitems) | **Get** /api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards | Get a Dashboard List
 *DashboardListsApi* | [**UpdateDashboardListItems**](docs/DashboardListsApi.md#updatedashboardlistitems) | **Put** /api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards | Update items of a dashboard list
+*LogsApi* | [**ListLogs**](docs/LogsApi.md#listlogs) | **Post** /api/v2/logs/events/search | Get a list of logs
+*LogsApi* | [**ListLogsGet**](docs/LogsApi.md#listlogsget) | **Get** /api/v2/logs/events | Get a quick list of logs
 *LogsArchivesApi* | [**AddReadRoleToArchive**](docs/LogsArchivesApi.md#addreadroletoarchive) | **Post** /api/v2/logs/config/archives/{archive_id}/readers | Grant role to an archive
 *LogsArchivesApi* | [**CreateLogsArchive**](docs/LogsArchivesApi.md#createlogsarchive) | **Post** /api/v2/logs/config/archives | Create an archive
 *LogsArchivesApi* | [**DeleteLogsArchive**](docs/LogsArchivesApi.md#deletelogsarchive) | **Delete** /api/v2/logs/config/archives/{archive_id} | Delete an archive
@@ -128,6 +130,9 @@ Class | Method | HTTP request | Description
  - [DashboardListUpdateItemsRequest](docs/DashboardListUpdateItemsRequest.md)
  - [DashboardListUpdateItemsResponse](docs/DashboardListUpdateItemsResponse.md)
  - [DashboardType](docs/DashboardType.md)
+ - [Log](docs/Log.md)
+ - [LogAttributes](docs/LogAttributes.md)
+ - [LogType](docs/LogType.md)
  - [LogsArchive](docs/LogsArchive.md)
  - [LogsArchiveAttributes](docs/LogsArchiveAttributes.md)
  - [LogsArchiveCreateRequest](docs/LogsArchiveCreateRequest.md)
@@ -147,6 +152,14 @@ Class | Method | HTTP request | Description
  - [LogsArchiveIntegrationS3](docs/LogsArchiveIntegrationS3.md)
  - [LogsArchiveState](docs/LogsArchiveState.md)
  - [LogsArchives](docs/LogsArchives.md)
+ - [LogsListRequest](docs/LogsListRequest.md)
+ - [LogsListRequestFilter](docs/LogsListRequestFilter.md)
+ - [LogsListRequestPage](docs/LogsListRequestPage.md)
+ - [LogsListResponse](docs/LogsListResponse.md)
+ - [LogsListResponseLinks](docs/LogsListResponseLinks.md)
+ - [LogsListResponseMeta](docs/LogsListResponseMeta.md)
+ - [LogsListResponseMetaPage](docs/LogsListResponseMetaPage.md)
+ - [LogsSort](docs/LogsSort.md)
  - [Organization](docs/Organization.md)
  - [OrganizationAttributes](docs/OrganizationAttributes.md)
  - [OrganizationsType](docs/OrganizationsType.md)

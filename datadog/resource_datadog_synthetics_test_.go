@@ -332,31 +332,52 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 
 	if attr, ok := d.GetOk("assertions"); ok && attr != nil {
 		for _, attr := range attr.([]interface{}) {
-			assertion := datadogV1.SyntheticsAssertion{}
 			assertionMap := attr.(map[string]interface{})
 			if v, ok := assertionMap["type"]; ok {
 				assertionType := v.(string)
-				assertion.SetType(datadogV1.SyntheticsAssertionType(assertionType))
-			}
-			if v, ok := assertionMap["property"]; ok {
-				assertionProperty := v.(string)
-				assertion.SetProperty(assertionProperty)
-			}
-			if v, ok := assertionMap["operator"]; ok {
-				assertionOperator := v.(string)
-				assertion.SetOperator(datadogV1.SyntheticsAssertionOperator(assertionOperator))
-			}
-			if v, ok := assertionMap["target"]; ok {
-				if isTargetOfTypeInt(assertion.GetType()) {
-					assertionTargetInt, _ := strconv.Atoi(v.(string))
-					assertion.SetTarget(assertionTargetInt)
-				} else if assertion.GetOperator() == datadogV1.SYNTHETICSASSERTIONOPERATOR_VALIDATES {
-					assertion.SetTarget(v.(string))
-				} else {
-					assertion.SetTarget(v.(string))
+				if v, ok := assertionMap["operator"]; ok {
+					assertionOperator := v.(string)
+					if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONPATHOPERATOR_VALIDATES_JSON_PATH) {
+						assertionJSONPathTarget := datadogV1.NewSyntheticsAssertionJSONPathTarget(datadogV1.SyntheticsAssertionJSONPathOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
+						if v, ok := assertionMap["property"]; ok {
+							assertionProperty := v.(string)
+							assertionJSONPathTarget.SetProperty(assertionProperty)
+						}
+						if v, ok := assertionMap["target"]; ok {
+							subTarget := datadogV1.NewSyntheticsAssertionJSONPathTargetTarget()
+							targetMap := v.(map[string]string)
+							if v, ok := targetMap["jsonPath"]; ok {
+								subTarget.SetJsonPath(v)
+							}
+							if v, ok := targetMap["operator"]; ok {
+								subTarget.SetOperator(v)
+							}
+							if v, ok := targetMap["targetValue"]; ok {
+								subTarget.SetTargetValue(v)
+							}
+							assertionJSONPathTarget.SetTarget(*subTarget)
+						}
+						config.Assertions = append(config.Assertions, datadogV1.SyntheticsAssertionJSONPathTargetAsSyntheticsAssertion(assertionJSONPathTarget))
+					} else {
+						assertionTarget := datadogV1.NewSyntheticsAssertionTarget(datadogV1.SyntheticsAssertionOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
+						if v, ok := assertionMap["property"]; ok {
+							assertionProperty := v.(string)
+							assertionTarget.SetProperty(assertionProperty)
+						}
+						if v, ok := assertionMap["target"]; ok {
+							if isTargetOfTypeInt(assertionTarget.GetType()) {
+								assertionTargetInt, _ := strconv.Atoi(v.(string))
+								assertionTarget.SetTarget(assertionTargetInt)
+							} else if assertionTarget.GetOperator() == datadogV1.SYNTHETICSASSERTIONOPERATOR_VALIDATES {
+								assertionTarget.SetTarget(v.(string))
+							} else {
+								assertionTarget.SetTarget(v.(string))
+							}
+						}
+						config.Assertions = append(config.Assertions, datadogV1.SyntheticsAssertionTargetAsSyntheticsAssertion(assertionTarget))
+					}
 				}
 			}
-			config.Assertions = append(config.Assertions, assertion)
 		}
 	}
 
@@ -466,20 +487,48 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("request_headers", actualRequest.Headers)
 
 	actualAssertions := syntheticsTest.GetConfig().Assertions
-	var localAssertions []map[string]string
+	var localAssertions []map[string]interface{}
 	for _, assertion := range actualAssertions {
-		localAssertion := make(map[string]string)
-		if v, ok := assertion.GetOperatorOk(); ok {
-			localAssertion["operator"] = string(*v)
+		localAssertion := make(map[string]interface{})
+		if assertion.SyntheticsAssertionTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionTarget
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if assertionTarget.HasProperty() {
+				localAssertion["property"] = assertionTarget.GetProperty()
+			}
+			if target := assertionTarget.GetTarget(); target != nil {
+				localAssertion["target"] = convertToString(target)
+			}
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
 		}
-		if assertion.HasProperty() {
-			localAssertion["property"] = assertion.GetProperty()
-		}
-		if target := assertion.GetTarget(); target != nil {
-			localAssertion["target"] = convertToString(target)
-		}
-		if v, ok := assertion.GetTypeOk(); ok {
-			localAssertion["type"] = string(*v)
+		if assertion.SyntheticsAssertionJSONPathTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionJSONPathTarget
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if assertionTarget.HasProperty() {
+				localAssertion["property"] = assertionTarget.GetProperty()
+			}
+			if target, ok := assertionTarget.GetTargetOk(); ok {
+				localTarget := make(map[string]string)
+				if v, ok := target.GetJsonPathOk(); ok {
+					localTarget["jsonPath"] = string(*v)
+				}
+				if v, ok := target.GetOperatorOk(); ok {
+					localTarget["operator"] = string(*v)
+				}
+				if v, ok := target.GetTargetValueOk(); ok {
+					localTarget["targetValue"] = convertToString(v)
+				}
+				localAssertion["target"] = localTarget
+			}
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
 		}
 		localAssertions = append(localAssertions, localAssertion)
 	}

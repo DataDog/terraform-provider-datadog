@@ -16,6 +16,8 @@ import (
 type DowntimeRecurrence struct {
 	// How often to repeat as an integer. For example, to repeat every 3 days, select a type of `days` and a period of `3`.
 	Period *int32 `json:"period,omitempty"`
+	// The `RRULE` standard for defining recurring events. For example, to have a recurring event on the first day of each month, select a type of `rrule` and set the `FREQ` to `MONTHLY` and `BYMONTHDAY` to `1`. Most common `rrule` options from the [iCalendar Spec](https://tools.ietf.org/html/rfc5545) are supported.  **Note**: Attributes specifying the duration in `RRULE` are not supported (for example, `DTSTART`, `DTEND`, `DURATION`).
+	Rrule *string `json:"rrule,omitempty"`
 	// The type of recurrence. Choose from `days`, `weeks`, `months`, `years`.
 	Type *string `json:"type,omitempty"`
 	// The date at which the recurrence should end as a POSIX timestamp. `until_occurences` and `until_date` are mutually exclusive.
@@ -73,6 +75,38 @@ func (o *DowntimeRecurrence) HasPeriod() bool {
 // SetPeriod gets a reference to the given int32 and assigns it to the Period field.
 func (o *DowntimeRecurrence) SetPeriod(v int32) {
 	o.Period = &v
+}
+
+// GetRrule returns the Rrule field value if set, zero value otherwise.
+func (o *DowntimeRecurrence) GetRrule() string {
+	if o == nil || o.Rrule == nil {
+		var ret string
+		return ret
+	}
+	return *o.Rrule
+}
+
+// GetRruleOk returns a tuple with the Rrule field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DowntimeRecurrence) GetRruleOk() (*string, bool) {
+	if o == nil || o.Rrule == nil {
+		return nil, false
+	}
+	return o.Rrule, true
+}
+
+// HasRrule returns a boolean if a field has been set.
+func (o *DowntimeRecurrence) HasRrule() bool {
+	if o != nil && o.Rrule != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRrule gets a reference to the given string and assigns it to the Rrule field.
+func (o *DowntimeRecurrence) SetRrule(v string) {
+	o.Rrule = &v
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
@@ -229,6 +263,9 @@ func (o DowntimeRecurrence) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Period != nil {
 		toSerialize["period"] = o.Period
+	}
+	if o.Rrule != nil {
+		toSerialize["rrule"] = o.Rrule
 	}
 	if o.Type != nil {
 		toSerialize["type"] = o.Type

@@ -190,6 +190,7 @@ Class | Method | HTTP request | Description
 *TagsApi* | [**ListHostTags**](docs/TagsApi.md#listhosttags) | **Get** /api/v1/tags/hosts | Get Tags
 *TagsApi* | [**UpdateHostTags**](docs/TagsApi.md#updatehosttags) | **Put** /api/v1/tags/hosts/{host_name} | Update host tags
 *UsageMeteringApi* | [**GetUsageAnalyzedLogs**](docs/UsageMeteringApi.md#getusageanalyzedlogs) | **Get** /api/v1/usage/analyzed_logs | Get hourly usage for analyzed logs
+*UsageMeteringApi* | [**GetUsageBillableSummary**](docs/UsageMeteringApi.md#getusagebillablesummary) | **Get** /api/v1/usage/billable-summary | Get monthly billable summary
 *UsageMeteringApi* | [**GetUsageFargate**](docs/UsageMeteringApi.md#getusagefargate) | **Get** /api/v1/usage/fargate | Get hourly usage for Fargate
 *UsageMeteringApi* | [**GetUsageHosts**](docs/UsageMeteringApi.md#getusagehosts) | **Get** /api/v1/usage/hosts | Get hourly usage for hosts and containers
 *UsageMeteringApi* | [**GetUsageLambda**](docs/UsageMeteringApi.md#getusagelambda) | **Get** /api/v1/usage/aws_lambda | Get hourly usage for Lambda
@@ -449,7 +450,11 @@ Class | Method | HTTP request | Description
  - [SyntheticsAPITestResultShort](docs/SyntheticsAPITestResultShort.md)
  - [SyntheticsAPITestResultShortResult](docs/SyntheticsAPITestResultShortResult.md)
  - [SyntheticsAssertion](docs/SyntheticsAssertion.md)
+ - [SyntheticsAssertionJSONPathOperator](docs/SyntheticsAssertionJSONPathOperator.md)
+ - [SyntheticsAssertionJSONPathTarget](docs/SyntheticsAssertionJSONPathTarget.md)
+ - [SyntheticsAssertionJSONPathTargetTarget](docs/SyntheticsAssertionJSONPathTargetTarget.md)
  - [SyntheticsAssertionOperator](docs/SyntheticsAssertionOperator.md)
+ - [SyntheticsAssertionTarget](docs/SyntheticsAssertionTarget.md)
  - [SyntheticsAssertionType](docs/SyntheticsAssertionType.md)
  - [SyntheticsBrowserError](docs/SyntheticsBrowserError.md)
  - [SyntheticsBrowserErrorType](docs/SyntheticsBrowserErrorType.md)
@@ -510,6 +515,10 @@ Class | Method | HTTP request | Description
  - [ToplistWidgetRequest](docs/ToplistWidgetRequest.md)
  - [UsageAnalyzedLogsHour](docs/UsageAnalyzedLogsHour.md)
  - [UsageAnalyzedLogsResponse](docs/UsageAnalyzedLogsResponse.md)
+ - [UsageBillableSummaryBody](docs/UsageBillableSummaryBody.md)
+ - [UsageBillableSummaryHour](docs/UsageBillableSummaryHour.md)
+ - [UsageBillableSummaryKeys](docs/UsageBillableSummaryKeys.md)
+ - [UsageBillableSummaryResponse](docs/UsageBillableSummaryResponse.md)
  - [UsageFargateHour](docs/UsageFargateHour.md)
  - [UsageFargateResponse](docs/UsageFargateResponse.md)
  - [UsageHostHour](docs/UsageHostHour.md)

@@ -10,164 +10,93 @@ package datadog
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
-// SyntheticsAssertion Object describing the assertions type, their associated operator, which property they apply , and upon which target.
+// SyntheticsAssertion - Object describing the assertions type, their associated operator, which property they apply, and upon which target.
 type SyntheticsAssertion struct {
-	Operator SyntheticsAssertionOperator `json:"operator"`
-	// The associated assertion property.
-	Property *string `json:"property,omitempty"`
-	// Target to apply the assertion to. It can be a string, a number, or a Date.
-	Target *interface{}            `json:"target,omitempty"`
-	Type   SyntheticsAssertionType `json:"type"`
+	SyntheticsAssertionJSONPathTarget *SyntheticsAssertionJSONPathTarget
+	SyntheticsAssertionTarget         *SyntheticsAssertionTarget
 }
 
-// NewSyntheticsAssertion instantiates a new SyntheticsAssertion object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewSyntheticsAssertion(operator SyntheticsAssertionOperator, type_ SyntheticsAssertionType) *SyntheticsAssertion {
-	this := SyntheticsAssertion{}
-	this.Operator = operator
-	this.Type = type_
-	return &this
+// SyntheticsAssertionJSONPathTargetAsSyntheticsAssertion is a convenience function that returns SyntheticsAssertionJSONPathTarget wrapped in SyntheticsAssertion
+func SyntheticsAssertionJSONPathTargetAsSyntheticsAssertion(v *SyntheticsAssertionJSONPathTarget) SyntheticsAssertion {
+	return SyntheticsAssertion{SyntheticsAssertionJSONPathTarget: v}
 }
 
-// NewSyntheticsAssertionWithDefaults instantiates a new SyntheticsAssertion object
-// This constructor will only assign default values to properties that have it defined,
-// but it doesn't guarantee that properties required by API are set
-func NewSyntheticsAssertionWithDefaults() *SyntheticsAssertion {
-	this := SyntheticsAssertion{}
-	return &this
+// SyntheticsAssertionTargetAsSyntheticsAssertion is a convenience function that returns SyntheticsAssertionTarget wrapped in SyntheticsAssertion
+func SyntheticsAssertionTargetAsSyntheticsAssertion(v *SyntheticsAssertionTarget) SyntheticsAssertion {
+	return SyntheticsAssertion{SyntheticsAssertionTarget: v}
 }
 
-// GetOperator returns the Operator field value
-func (o *SyntheticsAssertion) GetOperator() SyntheticsAssertionOperator {
-	if o == nil {
-		var ret SyntheticsAssertionOperator
-		return ret
+// Unmarshal JSON data into one of the pointers in the struct
+func (dst *SyntheticsAssertion) UnmarshalJSON(data []byte) error {
+	var err error
+	match := 0
+	// try to unmarshal data into SyntheticsAssertionJSONPathTarget
+	err = json.Unmarshal(data, &dst.SyntheticsAssertionJSONPathTarget)
+	if err == nil {
+		jsonSyntheticsAssertionJSONPathTarget, _ := json.Marshal(dst.SyntheticsAssertionJSONPathTarget)
+		if string(jsonSyntheticsAssertionJSONPathTarget) == "{}" { // empty struct
+			dst.SyntheticsAssertionJSONPathTarget = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.SyntheticsAssertionJSONPathTarget = nil
 	}
 
-	return o.Operator
-}
-
-// GetOperatorOk returns a tuple with the Operator field value
-// and a boolean to check if the value has been set.
-func (o *SyntheticsAssertion) GetOperatorOk() (*SyntheticsAssertionOperator, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Operator, true
-}
-
-// SetOperator sets field value
-func (o *SyntheticsAssertion) SetOperator(v SyntheticsAssertionOperator) {
-	o.Operator = v
-}
-
-// GetProperty returns the Property field value if set, zero value otherwise.
-func (o *SyntheticsAssertion) GetProperty() string {
-	if o == nil || o.Property == nil {
-		var ret string
-		return ret
-	}
-	return *o.Property
-}
-
-// GetPropertyOk returns a tuple with the Property field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SyntheticsAssertion) GetPropertyOk() (*string, bool) {
-	if o == nil || o.Property == nil {
-		return nil, false
-	}
-	return o.Property, true
-}
-
-// HasProperty returns a boolean if a field has been set.
-func (o *SyntheticsAssertion) HasProperty() bool {
-	if o != nil && o.Property != nil {
-		return true
+	// try to unmarshal data into SyntheticsAssertionTarget
+	err = json.Unmarshal(data, &dst.SyntheticsAssertionTarget)
+	if err == nil {
+		jsonSyntheticsAssertionTarget, _ := json.Marshal(dst.SyntheticsAssertionTarget)
+		if string(jsonSyntheticsAssertionTarget) == "{}" { // empty struct
+			dst.SyntheticsAssertionTarget = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.SyntheticsAssertionTarget = nil
 	}
 
-	return false
+	if match > 1 { // more than 1 match
+		// reset to nil
+		dst.SyntheticsAssertionJSONPathTarget = nil
+		dst.SyntheticsAssertionTarget = nil
+
+		return fmt.Errorf("Data matches more than one schema in oneOf(SyntheticsAssertion)")
+	} else if match == 1 {
+		return nil // exactly one match
+	} else { // no match
+		return fmt.Errorf("Data failed to match schemas in oneOf(SyntheticsAssertion)")
+	}
 }
 
-// SetProperty gets a reference to the given string and assigns it to the Property field.
-func (o *SyntheticsAssertion) SetProperty(v string) {
-	o.Property = &v
+// Marshal data from the first non-nil pointers in the struct to JSON
+func (src SyntheticsAssertion) MarshalJSON() ([]byte, error) {
+	if src.SyntheticsAssertionJSONPathTarget != nil {
+		return json.Marshal(&src.SyntheticsAssertionJSONPathTarget)
+	}
+
+	if src.SyntheticsAssertionTarget != nil {
+		return json.Marshal(&src.SyntheticsAssertionTarget)
+	}
+
+	return nil, nil // no data in oneOf schemas
 }
 
-// GetTarget returns the Target field value if set, zero value otherwise.
-func (o *SyntheticsAssertion) GetTarget() interface{} {
-	if o == nil || o.Target == nil {
-		var ret interface{}
-		return ret
-	}
-	return *o.Target
-}
-
-// GetTargetOk returns a tuple with the Target field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SyntheticsAssertion) GetTargetOk() (*interface{}, bool) {
-	if o == nil || o.Target == nil {
-		return nil, false
-	}
-	return o.Target, true
-}
-
-// HasTarget returns a boolean if a field has been set.
-func (o *SyntheticsAssertion) HasTarget() bool {
-	if o != nil && o.Target != nil {
-		return true
+// Get the actual instance
+func (obj *SyntheticsAssertion) GetActualInstance() interface{} {
+	if obj.SyntheticsAssertionJSONPathTarget != nil {
+		return obj.SyntheticsAssertionJSONPathTarget
 	}
 
-	return false
-}
-
-// SetTarget gets a reference to the given interface{} and assigns it to the Target field.
-func (o *SyntheticsAssertion) SetTarget(v interface{}) {
-	o.Target = &v
-}
-
-// GetType returns the Type field value
-func (o *SyntheticsAssertion) GetType() SyntheticsAssertionType {
-	if o == nil {
-		var ret SyntheticsAssertionType
-		return ret
+	if obj.SyntheticsAssertionTarget != nil {
+		return obj.SyntheticsAssertionTarget
 	}
 
-	return o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value
-// and a boolean to check if the value has been set.
-func (o *SyntheticsAssertion) GetTypeOk() (*SyntheticsAssertionType, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Type, true
-}
-
-// SetType sets field value
-func (o *SyntheticsAssertion) SetType(v SyntheticsAssertionType) {
-	o.Type = v
-}
-
-func (o SyntheticsAssertion) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if true {
-		toSerialize["operator"] = o.Operator
-	}
-	if o.Property != nil {
-		toSerialize["property"] = o.Property
-	}
-	if o.Target != nil {
-		toSerialize["target"] = o.Target
-	}
-	if true {
-		toSerialize["type"] = o.Type
-	}
-	return json.Marshal(toSerialize)
+	// all schemas are nil
+	return nil
 }
 
 type NullableSyntheticsAssertion struct {
