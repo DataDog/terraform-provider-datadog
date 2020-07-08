@@ -227,7 +227,6 @@ func dataSourceDatadogMonitorsRead(d *schema.ResourceData, meta interface{}) err
 	}
 	sort.Strings(tags)
 
-	log.Printf("[DEBUG] monitor: %+v", m)
 	d.Set("name", m.GetName())
 	d.Set("message", m.GetMessage())
 	d.Set("query", m.GetQuery())
