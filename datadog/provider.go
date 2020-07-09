@@ -74,6 +74,7 @@ func Provider() terraform.ResourceProvider {
 
 		DataSourcesMap: map[string]*schema.Resource{
 			"datadog_ip_ranges": dataSourceDatadogIpRanges(),
+			"datadog_monitor":   dataSourceDatadogMonitor(),
 		},
 
 		ConfigureFunc: providerConfigure,
