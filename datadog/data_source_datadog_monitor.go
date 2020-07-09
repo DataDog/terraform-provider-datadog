@@ -2,8 +2,8 @@ package datadog
 
 import (
 	"fmt"
-	"log"
 	"sort"
+	"strconv"
 	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
@@ -227,6 +227,7 @@ func dataSourceDatadogMonitorsRead(d *schema.ResourceData, meta interface{}) err
 	}
 	sort.Strings(tags)
 
+	d.SetId(strconv.FormatInt(m.GetId(), 10))
 	d.Set("name", m.GetName())
 	d.Set("message", m.GetMessage())
 	d.Set("query", m.GetQuery())
