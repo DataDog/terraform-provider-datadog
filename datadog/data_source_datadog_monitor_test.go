@@ -3,7 +3,6 @@ package datadog
 import (
 	"fmt"
 	"testing"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -48,13 +47,13 @@ func checkDatasourceAttrs(accProvider *schema.Provider) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "name", fmt.Sprintf("monitor for datasource %d", now)),
+			"data.datadog_monitor.foo", "name", "monitor for datasource test"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "type", "query alert"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "query", fmt.Sprintf("avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:%d} by {host} > 2", now)),
+			"data.datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:foo} by {host} > 2"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "notify_no_data", "false"),
 		resource.TestCheckResourceAttr(
@@ -86,16 +85,14 @@ func checkDatasourceAttrs(accProvider *schema.Provider) resource.TestCheckFunc {
 	)
 }
 
-var now = time.Now().Unix()
-
-var testAccMonitorConfig = fmt.Sprintf(`
+var testAccMonitorConfig = `
 resource "datadog_monitor" "foo" {
-  name = "monitor for datasource %d"
+  name = "monitor for datasource test"
   type = "query alert"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
 
-  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:%d} by {host} > 2"
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:foo} by {host} > 2"
 
   thresholds = {
 	warning = "1.0"
@@ -113,9 +110,9 @@ resource "datadog_monitor" "foo" {
   include_tags = true
   require_full_window = true
   locked = false
-  tags = ["test_datasource_monitor:%d", "baz"]
+  tags = ["test_datasource_monitor:foo", "baz"]
 }
-`, now, now, now)
+`
 
 var testAccDatasourceMonitorNameFilterConfig = fmt.Sprintf(`
 %s
@@ -123,9 +120,9 @@ data "datadog_monitor" "foo" {
   depends_on = [
     datadog_monitor.foo,
   ]
-  name_filter = "monitor for datasource %d"
+  name_filter = "monitor for datasource test"
 }
-`, testAccMonitorConfig, now)
+`, testAccMonitorConfig)
 
 var testAccDatasourceMonitorTagsFilterConfig = fmt.Sprintf(`
 %s
@@ -134,10 +131,10 @@ data "datadog_monitor" "foo" {
     datadog_monitor.foo,
   ]
   tags_filter = [
-    "test_datasource_monitor_scope:%d",
+    "test_datasource_monitor_scope:foo",
   ]
 }
-`, testAccMonitorConfig, now)
+`, testAccMonitorConfig)
 
 var testAccDatasourceMonitorMonitorTagsFilterConfig = fmt.Sprintf(`
 %s
@@ -146,7 +143,7 @@ data "datadog_monitor" "foo" {
     datadog_monitor.foo,
   ]
   monitor_tags_filter = [
-    "test_datasource_monitor:%d",
+    "test_datasource_monitor:foo",
   ]
 }
-`, testAccMonitorConfig, now)
+`, testAccMonitorConfig)
