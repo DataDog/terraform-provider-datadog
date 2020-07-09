@@ -49,10 +49,58 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Optional: true,
 			},
 			"assertions": {
-				Type:     schema.TypeList,
-				Optional: true,
+				Type:          schema.TypeList,
+				Optional:      true,
+				ConflictsWith: []string{"assertion"},
+				Deprecated:    "Use assertion instead",
 				Elem: &schema.Schema{
 					Type: schema.TypeMap,
+				},
+			},
+			"assertion": {
+				Type:          schema.TypeList,
+				Optional:      true,
+				ConflictsWith: []string{"assertions"},
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"type": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"operator": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"property": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"target": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"targetjsonpath": {
+							Type:     schema.TypeList,
+							Optional: true,
+							MaxItems: 1,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"operator": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+									"jsonpath": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+									"targetvalue": {
+										Type:     schema.TypeString,
+										Required: true,
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 			"device_ids": {
@@ -330,7 +378,36 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	config := datadogV1.NewSyntheticsTestConfig([]datadogV1.SyntheticsAssertion{}, *request)
 	config.SetVariables([]datadogV1.SyntheticsBrowserVariable{})
 
+	// Deprecated path
 	if attr, ok := d.GetOk("assertions"); ok && attr != nil {
+		for _, attr := range attr.([]interface{}) {
+			assertionMap := attr.(map[string]interface{})
+			if v, ok := assertionMap["type"]; ok {
+				assertionType := v.(string)
+				if v, ok := assertionMap["operator"]; ok {
+					assertionOperator := v.(string)
+					assertionTarget := datadogV1.NewSyntheticsAssertionTarget(datadogV1.SyntheticsAssertionOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
+					if v, ok := assertionMap["property"]; ok {
+						assertionProperty := v.(string)
+						assertionTarget.SetProperty(assertionProperty)
+					}
+					if v, ok := assertionMap["target"]; ok {
+						if isTargetOfTypeInt(assertionTarget.GetType()) {
+							assertionTargetInt, _ := strconv.Atoi(v.(string))
+							assertionTarget.SetTarget(assertionTargetInt)
+						} else if assertionTarget.GetOperator() == datadogV1.SYNTHETICSASSERTIONOPERATOR_VALIDATES {
+							assertionTarget.SetTarget(v.(string))
+						} else {
+							assertionTarget.SetTarget(v.(string))
+						}
+					}
+					config.Assertions = append(config.Assertions, datadogV1.SyntheticsAssertionTargetAsSyntheticsAssertion(assertionTarget))
+				}
+			}
+		}
+	}
+
+	if attr, ok := d.GetOk("assertion"); ok && attr != nil {
 		for _, attr := range attr.([]interface{}) {
 			assertionMap := attr.(map[string]interface{})
 			if v, ok := assertionMap["type"]; ok {
@@ -343,16 +420,16 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 							assertionProperty := v.(string)
 							assertionJSONPathTarget.SetProperty(assertionProperty)
 						}
-						if v, ok := assertionMap["target"]; ok {
+						if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
 							subTarget := datadogV1.NewSyntheticsAssertionJSONPathTargetTarget()
-							targetMap := v.(map[string]string)
-							if v, ok := targetMap["jsonPath"]; ok {
-								subTarget.SetJsonPath(v)
+							targetMap := v[0].(map[string]interface{})
+							if v, ok := targetMap["jsonpath"]; ok {
+								subTarget.SetJsonPath(v.(string))
 							}
 							if v, ok := targetMap["operator"]; ok {
-								subTarget.SetOperator(v)
+								subTarget.SetOperator(v.(string))
 							}
-							if v, ok := targetMap["targetValue"]; ok {
+							if v, ok := targetMap["targetvalue"]; ok {
 								subTarget.SetTargetValue(v)
 							}
 							assertionJSONPathTarget.SetTarget(*subTarget)
