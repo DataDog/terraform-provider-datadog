@@ -416,9 +416,8 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 					assertionOperator := v.(string)
 					if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONPATHOPERATOR_VALIDATES_JSON_PATH) {
 						assertionJSONPathTarget := datadogV1.NewSyntheticsAssertionJSONPathTarget(datadogV1.SyntheticsAssertionJSONPathOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
-						if v, ok := assertionMap["property"]; ok {
-							assertionProperty := v.(string)
-							assertionJSONPathTarget.SetProperty(assertionProperty)
+						if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
+							assertionJSONPathTarget.SetProperty(v)
 						}
 						if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
 							subTarget := datadogV1.NewSyntheticsAssertionJSONPathTargetTarget()
@@ -437,9 +436,8 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 						config.Assertions = append(config.Assertions, datadogV1.SyntheticsAssertionJSONPathTargetAsSyntheticsAssertion(assertionJSONPathTarget))
 					} else {
 						assertionTarget := datadogV1.NewSyntheticsAssertionTarget(datadogV1.SyntheticsAssertionOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
-						if v, ok := assertionMap["property"]; ok {
-							assertionProperty := v.(string)
-							assertionTarget.SetProperty(assertionProperty)
+						if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
+							assertionTarget.SetProperty(v)
 						}
 						if v, ok := assertionMap["target"]; ok {
 							if isTargetOfTypeInt(assertionTarget.GetType()) {
