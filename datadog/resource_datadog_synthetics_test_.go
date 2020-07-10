@@ -90,6 +90,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
+			"step": syntheticsTestStep(),
 		},
 	}
 }
@@ -210,6 +211,44 @@ func syntheticsTestOptions() *schema.Schema {
 				"allow_insecure": {
 					Type:     schema.TypeBool,
 					Optional: true,
+				},
+			},
+		},
+	}
+}
+
+func syntheticsTestStep() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeSet,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"type": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"allow_failure": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"timeout": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+				"params": {
+					Type:     schema.TypeMap,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+				"position": {
+					Type:     schema.TypeInt,
+					Required: true,
 				},
 			},
 		},
@@ -433,6 +472,28 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		}
 	}
 
+	if attr, ok := d.GetOk("step"); ok && syntheticsTest.GetType() == "browser" {
+		var nbSteps = len(attr.(*schema.Set).List())
+		steps := make([]datadogV1.SyntheticsStep, nbSteps)
+
+		fmt.Println()
+		for _, s := range attr.(*schema.Set).List() {
+			step := datadogV1.SyntheticsStep{}
+			stepRaw := s.(map[string]interface{})
+
+			step.SetName(stepRaw["name"].(string))
+			stepType := stepRaw["type"].(string)
+			step.SetType(datadogV1.SyntheticsStepType(stepType))
+
+			step.SetAllowFailure(stepRaw["allow_failure"].(bool))
+			step.SetTimeout(float32(stepRaw["timeout"].(int)))
+			step.SetParams(stepRaw["params"].(interface{}))
+
+			steps[stepRaw["position"].(int)] = step
+		}
+		syntheticsTest.SetSteps(steps)
+	}
+
 	return syntheticsTest
 }
 
@@ -516,6 +577,33 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("message", syntheticsTest.GetMessage())
 	d.Set("status", syntheticsTest.GetStatus())
 	d.Set("tags", syntheticsTest.Tags)
+
+	if syntheticsTest.GetType() == "browser" {
+		// d.Set("steps", syntheticsTest.GetSteps())
+
+		steps := syntheticsTest.GetSteps()
+		var localSteps []map[string]string
+		for _, step := range steps {
+			localStep := make(map[string]string)
+			localStep["name"] = step.GetName()
+			localStep["type"] = string(step.GetType())
+
+			if allowFailure, ok := step.GetAllowFailureOk(); ok {
+				localStep["allow_failure"] = convertToString(allowFailure)
+			}
+
+			if timeout, ok := step.GetTimeoutOk(); ok {
+				localStep["timeout"] = convertToString(timeout)
+			}
+
+			// todo params
+			localSteps = append(localSteps, localStep)
+		}
+		// fmt.Println("####################################### ADD STEPS")
+		// fmt.Println(len(localSteps))
+		d.Set("steps", localSteps)
+	}
+
 	d.Set("monitor_id", syntheticsTest.MonitorId)
 }
 

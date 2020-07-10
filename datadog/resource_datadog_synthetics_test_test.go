@@ -597,6 +597,22 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1582127741.allow_failure", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1582127741.name", "step name"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1582127741.type", "assertElementContent"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1582127741.timeout", "300"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1582127741.params.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1582127741.params.check", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1582127741.params.value", "value"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 		),
@@ -631,6 +647,18 @@ resource "datadog_synthetics_test" "bar" {
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
+
+	step {
+		allow_failure = false
+		name = "step name"
+		type = "assertElementContent"
+		timeout = 300
+		params = {
+			check = "contains"
+			value = "value"
+		}
+		position = 0
+	}
 }
 `
 
@@ -683,6 +711,36 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "buz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.883785754.allow_failure", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.883785754.name", "updated step name"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.883785754.type", "assertElementContent"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.883785754.timeout", "300"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.883785754.params.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.883785754.params.check", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.883785754.params.value", "updated value"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.883785754.allow_failure", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1633421371.name", "second step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1633421371.type", "assertElementContent"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1633421371.timeout", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1633421371.params.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1633421371.params.check", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1633421371.params.value", "second value"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 		),
@@ -713,6 +771,29 @@ resource "datadog_synthetics_test" "bar" {
 	message = "Notify @pagerduty"
 	tags = ["foo:bar", "buz"]
 	status = "live"
+
+	step {
+		allow_failure = false
+		name = "updated step name"
+		type = "assertElementContent"
+		timeout = 300
+		params = {
+			check = "contains"
+			value = "updated value"
+		}
+		position = 0
+	}
+
+	step {
+		allow_failure = false
+		name = "second step"
+		type = "assertElementContent"
+		params = {
+			check = "contains"
+			value = "second value"
+		}
+		position = 1
+	}
 }
 `
 
