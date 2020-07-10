@@ -46,9 +46,10 @@ func TestAccDatadogSyntheticsAPITest_importBasicNewAssertions(t *testing.T) {
 				Config: createSyntheticsAPITestConfigNewAssertions,
 			},
 			{
-				ResourceName:      "datadog_synthetics_test.bar",
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:            "datadog_synthetics_test.bar",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"assertion"},
 			},
 		},
 	})
