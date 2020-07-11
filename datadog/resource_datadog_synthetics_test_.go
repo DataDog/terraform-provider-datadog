@@ -605,8 +605,15 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		}
 		localAssertions[i] = localAssertion
 	}
-	if err := d.Set("assertion", localAssertions); err != nil {
-		return err
+	// If the config still uses assertions, keep using that in the state to not generate useless diffs
+	if attr, ok := d.GetOk("assertions"); ok && attr != nil && len(attr.([]interface{})) > 0 {
+		if err := d.Set("assertions", localAssertions); err != nil {
+			return err
+		}
+	} else {
+		if err := d.Set("assertion", localAssertions); err != nil {
+			return err
+		}
 	}
 
 	d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds)
