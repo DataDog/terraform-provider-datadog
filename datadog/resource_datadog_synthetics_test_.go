@@ -299,9 +299,7 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 		return translateClientError(err, "error getting synthetics test")
 	}
 
-	updateSyntheticsTestLocalState(d, &syntheticsTest)
-
-	return nil
+	return updateSyntheticsTestLocalState(d, &syntheticsTest)
 }
 
 func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -532,7 +530,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	return syntheticsTest
 }
 
-func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsTestDetails) {
+func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsTestDetails) error {
 	d.Set("type", syntheticsTest.GetType())
 	if syntheticsTest.HasSubtype() {
 		d.Set("subtype", syntheticsTest.GetSubtype())
@@ -562,8 +560,8 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("request_headers", actualRequest.Headers)
 
 	actualAssertions := syntheticsTest.GetConfig().Assertions
-	var localAssertions []map[string]interface{}
-	for _, assertion := range actualAssertions {
+	localAssertions := make([]map[string]interface{}, len(actualAssertions))
+	for i, assertion := range actualAssertions {
 		localAssertion := make(map[string]interface{})
 		if assertion.SyntheticsAssertionTarget != nil {
 			assertionTarget := assertion.SyntheticsAssertionTarget
@@ -591,23 +589,25 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 			if target, ok := assertionTarget.GetTargetOk(); ok {
 				localTarget := make(map[string]string)
 				if v, ok := target.GetJsonPathOk(); ok {
-					localTarget["jsonPath"] = string(*v)
+					localTarget["jsonpath"] = string(*v)
 				}
 				if v, ok := target.GetOperatorOk(); ok {
 					localTarget["operator"] = string(*v)
 				}
 				if v, ok := target.GetTargetValueOk(); ok {
-					localTarget["targetValue"] = convertToString(v)
+					localTarget["targetvalue"] = (*v).(string)
 				}
-				localAssertion["target"] = localTarget
+				localAssertion["targetjsonpath"] = []map[string]string{localTarget}
 			}
 			if v, ok := assertionTarget.GetTypeOk(); ok {
 				localAssertion["type"] = string(*v)
 			}
 		}
-		localAssertions = append(localAssertions, localAssertion)
+		localAssertions[i] = localAssertion
 	}
-	d.Set("assertions", localAssertions)
+	if err := d.Set("assertion", localAssertions); err != nil {
+		return err
+	}
 
 	d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds)
 
@@ -641,6 +641,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("status", syntheticsTest.GetStatus())
 	d.Set("tags", syntheticsTest.Tags)
 	d.Set("monitor_id", syntheticsTest.MonitorId)
+	return nil
 }
 
 func convertToString(i interface{}) string {
