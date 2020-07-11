@@ -376,7 +376,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	config := datadogV1.NewSyntheticsTestConfig([]datadogV1.SyntheticsAssertion{}, *request)
 	config.SetVariables([]datadogV1.SyntheticsBrowserVariable{})
 
-	// Deprecated path
+	// Deprecated path, the assertions field is replaced with assertion
 	if attr, ok := d.GetOk("assertions"); ok && attr != nil {
 		for _, attr := range attr.([]interface{}) {
 			assertionMap := attr.(map[string]interface{})
@@ -393,8 +393,6 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 						if isTargetOfTypeInt(assertionTarget.GetType()) {
 							assertionTargetInt, _ := strconv.Atoi(v.(string))
 							assertionTarget.SetTarget(assertionTargetInt)
-						} else if assertionTarget.GetOperator() == datadogV1.SYNTHETICSASSERTIONOPERATOR_VALIDATES {
-							assertionTarget.SetTarget(v.(string))
 						} else {
 							assertionTarget.SetTarget(v.(string))
 						}
@@ -441,8 +439,6 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 							if isTargetOfTypeInt(assertionTarget.GetType()) {
 								assertionTargetInt, _ := strconv.Atoi(v.(string))
 								assertionTarget.SetTarget(assertionTargetInt)
-							} else if assertionTarget.GetOperator() == datadogV1.SYNTHETICSASSERTIONOPERATOR_VALIDATES {
-								assertionTarget.SetTarget(v.(string))
 							} else {
 								assertionTarget.SetTarget(v.(string))
 							}
