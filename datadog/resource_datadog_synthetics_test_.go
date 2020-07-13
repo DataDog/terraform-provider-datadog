@@ -599,8 +599,6 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 			// todo params
 			localSteps = append(localSteps, localStep)
 		}
-		// fmt.Println("####################################### ADD STEPS")
-		// fmt.Println(len(localSteps))
 		d.Set("steps", localSteps)
 	}
 
