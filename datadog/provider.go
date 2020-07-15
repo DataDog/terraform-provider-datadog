@@ -158,6 +158,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	configV1.SetUnstableOperationEnabled("ListLogIndexes", true)
 	configV1.SetUnstableOperationEnabled("UpdateLogsIndex", true)
 	configV1.UserAgent = getUserAgent(configV1.UserAgent)
+	configV1.Debug = logging.IsDebugOrHigher()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedApiUrl, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
@@ -191,6 +192,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	)
 	configV2 := datadogV2.NewConfiguration()
 	configV2.UserAgent = getUserAgent(configV2.UserAgent)
+	configV2.Debug = logging.IsDebugOrHigher()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedApiUrl, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
