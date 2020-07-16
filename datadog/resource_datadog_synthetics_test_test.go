@@ -73,6 +73,8 @@ func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 				ResourceName:      "datadog_synthetics_test.ssl",
 				ImportState:       true,
 				ImportStateVerify: true,
+				// Assertions will be imported into the new schema by default, but we can ignore them as users need to update the local config in this case
+				ImportStateVerifyIgnore: []string{"assertions", "assertion"},
 			},
 		},
 	})
