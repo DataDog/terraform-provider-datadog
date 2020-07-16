@@ -378,8 +378,8 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 
 	// Deprecated path, the assertions field is replaced with assertion
 	if attr, ok := d.GetOk("assertions"); ok && attr != nil {
-		for _, attr := range attr.([]interface{}) {
-			assertionMap := attr.(map[string]interface{})
+		for _, assertion := range attr.([]interface{}) {
+			assertionMap := assertion.(map[string]interface{})
 			if v, ok := assertionMap["type"]; ok {
 				assertionType := v.(string)
 				if v, ok := assertionMap["operator"]; ok {
@@ -404,8 +404,8 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	}
 
 	if attr, ok := d.GetOk("assertion"); ok && attr != nil {
-		for _, attr := range attr.([]interface{}) {
-			assertionMap := attr.(map[string]interface{})
+		for _, assertion := range attr.([]interface{}) {
+			assertionMap := assertion.(map[string]interface{})
 			if v, ok := assertionMap["type"]; ok {
 				assertionType := v.(string)
 				if v, ok := assertionMap["operator"]; ok {
