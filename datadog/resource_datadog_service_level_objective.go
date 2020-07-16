@@ -27,17 +27,10 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Required: true,
 			},
 			"description": {
-				Type:     schema.TypeString,
-				Optional: true,
-				StateFunc: func(val interface{}) string {
-					return strings.TrimSpace(val.(string))
-				},
-				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
-					if strings.TrimSpace(old) == strings.TrimSpace(new) {
-						return true
-					}
-					return false
-				},
+				Type:             schema.TypeString,
+				Optional:         true,
+				StateFunc:        trimStateValue,
+				DiffSuppressFunc: diffTrimmedValues,
 			},
 			"tags": {
 				// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
@@ -97,18 +90,16 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"numerator": {
-							Type:     schema.TypeString,
-							Required: true,
-							StateFunc: func(val interface{}) string {
-								return strings.TrimSpace(val.(string))
-							},
+							Type:             schema.TypeString,
+							Required:         true,
+							StateFunc:        trimStateValue,
+							DiffSuppressFunc: diffTrimmedValues,
 						},
 						"denominator": {
-							Type:     schema.TypeString,
-							Required: true,
-							StateFunc: func(val interface{}) string {
-								return strings.TrimSpace(val.(string))
-							},
+							Type:             schema.TypeString,
+							Required:         true,
+							StateFunc:        trimStateValue,
+							DiffSuppressFunc: diffTrimmedValues,
 						},
 					},
 				},
@@ -431,4 +422,13 @@ func suppressDataDogSLODisplayValueDiff(k, old, new string, d *schema.ResourceDa
 	}
 
 	return suppressDataDogFloatIntDiff(k, old, new, d)
+}
+
+func trimStateValue(val interface{}) string {
+	return strings.TrimSpace(val.(string))
+}
+
+// Ignore any diff for trimmed state values.
+func diffTrimmedValues(k, old, new string, d *schema.ResourceData) bool {
+	return strings.TrimSpace(old) == strings.TrimSpace(new)
 }
