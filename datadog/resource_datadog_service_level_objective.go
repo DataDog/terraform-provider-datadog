@@ -32,6 +32,12 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				StateFunc: func(val interface{}) string {
 					return strings.TrimSpace(val.(string))
 				},
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					if strings.TrimSpace(old) == strings.TrimSpace(new) {
+						return true
+					}
+					return false
+				},
 			},
 			"tags": {
 				// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
