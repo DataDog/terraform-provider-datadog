@@ -135,8 +135,6 @@ func resourceDatadogDowntime() *schema.Resource {
 				Description:   "When specified, this downtime will only apply to this monitor",
 			},
 			"monitor_tags": {
-				// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
-				// we order them explicitly in the read/create/update methods of this resource and using
 				// TypeSet makes Terraform ignore differences in order when creating a plan
 				Type:        schema.TypeSet,
 				Optional:    true,
@@ -144,7 +142,7 @@ func resourceDatadogDowntime() *schema.Resource {
 				// MonitorTags conflicts with MonitorId and it also has a default of `["*"]`, which brings some problems:
 				// * We can't use DefaultFunc to default to ["*"], since that's incompatible with
 				//   ConflictsWith
-				// * Since this is a TypeList, DiffSuppressFunc can't really be written well for it
+				// * Since this is a TypeSet, DiffSuppressFunc can't really be written well for it
 				//   (it is called and expected to give result for each element, not for the whole
 				//    list, so there's no way to tell in each iteration whether the new config value
 				//    is an empty list).
