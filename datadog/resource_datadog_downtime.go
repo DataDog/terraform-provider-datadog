@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"reflect"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -279,7 +278,6 @@ func buildDowntimeStruct(authV1 context.Context, d *schema.ResourceData, client 
 	for _, mt := range d.Get("monitor_tags").(*schema.Set).List() {
 		tags = append(tags, mt.(string))
 	}
-	sort.Strings(tags)
 	dt.SetMonitorTags(tags)
 
 	startValue, startAttrName := getDowntimeBoundaryTimestamp(d, "start_date", "start")
@@ -408,9 +406,7 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 	d.Set("scope", dt.Scope)
 	// See the comment for monitor_tags in the schema definition above
 	if !reflect.DeepEqual(dt.GetMonitorTags(), []string{"*"}) {
-		tags := dt.GetMonitorTags()
-		sort.Strings(tags)
-		d.Set("monitor_tags", tags)
+		d.Set("monitor_tags", dt.GetMonitorTags())
 	}
 	d.Set("start", dt.GetStart())
 
