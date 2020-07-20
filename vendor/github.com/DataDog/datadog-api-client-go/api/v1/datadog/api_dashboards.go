@@ -493,6 +493,9 @@ type apiListDashboardsRequest struct {
 /*
 ListDashboards Get all dashboards
 Get all dashboards.
+
+**Note**: This query will only return custom created or cloned dashboards.
+This query will not return preset dashboards.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiListDashboardsRequest
 */

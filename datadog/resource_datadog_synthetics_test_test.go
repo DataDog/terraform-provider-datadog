@@ -27,6 +27,30 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 				ResourceName:      "datadog_synthetics_test.foo",
 				ImportState:       true,
 				ImportStateVerify: true,
+				// Assertions will be imported into the new schema by default, but we can ignore them as users need to update the local config in this case
+				ImportStateVerifyIgnore: []string{"assertions", "assertion"},
+			},
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsAPITest_importBasicNewAssertions(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: createSyntheticsAPITestConfigNewAssertions,
+			},
+			{
+				ResourceName:      "datadog_synthetics_test.bar",
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 		},
 	})
@@ -49,6 +73,8 @@ func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 				ResourceName:      "datadog_synthetics_test.ssl",
 				ImportState:       true,
 				ImportStateVerify: true,
+				// Assertions will be imported into the new schema by default, but we can ignore them as users need to update the local config in this case
+				ImportStateVerifyIgnore: []string{"assertions", "assertion"},
 			},
 		},
 	})
@@ -103,6 +129,37 @@ func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestStep(accProvider),
 			updateSyntheticsAPITestStep(accProvider),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsAPITest_BasicNewAssertions(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsAPITestStepNewAssertions(accProvider),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertions(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsAPITestStepNewAssertions(accProvider),
+			updateSyntheticsAPITestStepNewAssertions(accProvider),
 		},
 	})
 }
@@ -296,6 +353,130 @@ resource "datadog_synthetics_test" "foo" {
 }
 `
 
+func createSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider) resource.TestStep {
+	return resource.TestStep{
+		Config: createSyntheticsAPITestConfigNewAssertions,
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "subtype", "http"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.method", "GET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.url", "https://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.#", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.type", "header"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.property", "content-type"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.operator", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.target", "application/json"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.1.type", "statusCode"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.1.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.1.target", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.2.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.2.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.2.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.2.targetjsonpath.0.jsonpath", "topKey"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.2.targetjsonpath.0.operator", "isNot"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.2.targetjsonpath.0.targetvalue", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.follow_redirects", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "name", "name for synthetics test foo"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.bar", "monitor_id"),
+		),
+	}
+}
+
+const createSyntheticsAPITestConfigNewAssertions = `
+resource "datadog_synthetics_test" "bar" {
+	type = "api"
+	subtype = "http"
+
+	request = {
+		method = "GET"
+		url = "https://www.datadoghq.com"
+		body = "this is a body"
+		timeout = 30
+	}
+	request_headers = {
+		Accept = "application/json"
+		X-Datadog-Trace-ID = "1234566789"
+	}
+
+	assertion {
+		type = "header"
+		property = "content-type"
+		operator = "contains"
+		target = "application/json"
+	}
+	assertion {
+		type = "statusCode"
+		operator = "is"
+		target = "200"
+	}
+	assertion {
+		type = "body"
+		operator = "validatesJSONPath"
+		targetjsonpath {
+			operator = "isNot"
+			targetvalue = "0"
+			jsonpath = "topKey"
+		}
+	}
+
+	locations = [ "aws:eu-central-1" ]
+	options = {
+		tick_every = 60
+		follow_redirects = true
+		min_failure_duration = 0
+		min_location_failed = 1
+	}
+
+	name = "name for synthetics test foo"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+
+	status = "paused"
+}
+`
+
 func updateSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep {
 	return resource.TestStep{
 		Config: updateSyntheticsAPITestConfig,
@@ -369,6 +550,105 @@ resource "datadog_synthetics_test" "foo" {
 			target = "500"
 		}
 	]
+
+	locations = [ "aws:eu-central-1" ]
+
+	options = {
+		tick_every = 900
+		follow_redirects = false
+		min_failure_duration = 10
+		min_location_failed = 1
+	}
+
+	name = "updated name"
+	message = "Notify @pagerduty"
+	tags = ["foo:bar", "foo", "env:test"]
+
+	status = "live"
+}
+`
+
+func updateSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider) resource.TestStep {
+	return resource.TestStep{
+		Config: updateSyntheticsAPITestConfigNewAssertions,
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "subtype", "http"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.method", "GET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.url", "https://docs.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.timeout", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.targetjsonpath.0.jsonpath", "topKey"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.targetjsonpath.0.operator", "isNot"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.targetjsonpath.0.targetvalue", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.tick_every", "900"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.follow_redirects", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.min_failure_duration", "10"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "name", "updated name"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "message", "Notify @pagerduty"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.#", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.1", "foo"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.2", "env:test"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "status", "live"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.bar", "monitor_id"),
+		),
+	}
+}
+
+const updateSyntheticsAPITestConfigNewAssertions = `
+resource "datadog_synthetics_test" "bar" {
+	type = "api"
+	subtype = "http"
+
+	request = {
+		method = "GET"
+		url = "https://docs.datadoghq.com"
+		timeout = 60
+	}
+
+	assertion {
+		type = "body"
+		operator = "validatesJSONPath"
+		targetjsonpath {
+			operator = "isNot"
+			targetvalue = "0"
+			jsonpath = "topKey"
+		}
+	}
 
 	locations = [ "aws:eu-central-1" ]
 
