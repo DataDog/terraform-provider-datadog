@@ -8,31 +8,17 @@ description: |-
 
 # datadog_integration_pagerduty_service_object
 
-Provides access to individual Service Objects of Datadog - PagerDuty integrations. Note that the Datadog - PagerDuty integration must be activated (either manually in the Datadog UI or by using [datadog_integration_pagerduty](/docs/providers/datadog/r/integration_pagerduty.html)) in order for this resource to be usable.
+Provides access to individual Service Objects of Datadog - PagerDuty integrations. Note that the Datadog - PagerDuty integration must be activated in the Datadog UI in order for this resource to be usable.
 
 ## Example Usage
 
 ```
-resource "datadog_integration_pagerduty" "pd" {
-  individual_services = true
-  schedules = [
-    "https://ddog.pagerduty.com/schedules/X123VF",
-    "https://ddog.pagerduty.com/schedules/X321XX"
-    ]
-  subdomain = "ddog"
-  api_token = "38457822378273432587234242874"
-}
-
 resource "datadog_integration_pagerduty_service_object" "testing_foo" {
-  # when creating the integration object for the first time, the service
-  # objects have to be created *after* the integration
-  depends_on = ["datadog_integration_pagerduty.pd"]
   service_name = "testing_foo"
   service_key  = "9876543210123456789"
 }
 
 resource "datadog_integration_pagerduty_service_object" "testing_bar" {
-  depends_on = ["datadog_integration_pagerduty.pd"]
   service_name = "testing_bar"
   service_key  = "54321098765432109876"
 }
