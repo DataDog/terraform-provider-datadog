@@ -53,3 +53,11 @@ The following arguments are supported:
 
 
 An archive definition must have one (and only one) of the three possible types defined: s3, gcs, azure.
+
+## Import
+
+Logs archives can be imported using their public string ID, e.g.
+
+```
+$ terraform import datadog_logs_archive.my_s3_archive 1Aabc2_dfQPLnXy3HlfK4hi
+```
