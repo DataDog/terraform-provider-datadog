@@ -573,8 +573,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 			if v, ok := assertionTarget.GetTypeOk(); ok {
 				localAssertion["type"] = string(*v)
 			}
-		}
-		if assertion.SyntheticsAssertionJSONPathTarget != nil {
+		} else if assertion.SyntheticsAssertionJSONPathTarget != nil {
 			assertionTarget := assertion.SyntheticsAssertionJSONPathTarget
 			if v, ok := assertionTarget.GetOperatorOk(); ok {
 				localAssertion["operator"] = string(*v)
