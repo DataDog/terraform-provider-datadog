@@ -5,6 +5,7 @@ package datadog
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 
@@ -429,6 +430,9 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 							}
 							assertionJSONPathTarget.SetTarget(*subTarget)
 						}
+						if _, ok := assertionMap["target"]; ok {
+							log.Printf("[WARN] target shouldn't be specified for validateJSONPath operator, only targetjsonpath")
+						}
 						config.Assertions = append(config.Assertions, datadogV1.SyntheticsAssertionJSONPathTargetAsSyntheticsAssertion(assertionJSONPathTarget))
 					} else {
 						assertionTarget := datadogV1.NewSyntheticsAssertionTarget(datadogV1.SyntheticsAssertionOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
@@ -442,6 +446,9 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 							} else {
 								assertionTarget.SetTarget(v.(string))
 							}
+						}
+						if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
+							log.Printf("[WARN] targetjsonpath shouldn't be specified for non-validateJSONPath operator, only target")
 						}
 						config.Assertions = append(config.Assertions, datadogV1.SyntheticsAssertionTargetAsSyntheticsAssertion(assertionTarget))
 					}
