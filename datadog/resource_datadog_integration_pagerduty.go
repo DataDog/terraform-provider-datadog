@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"fmt"
+	"log"
 	"strings"
 	"sync"
 
@@ -15,11 +16,12 @@ var integrationPdMutex = sync.Mutex{}
 
 func resourceDatadogIntegrationPagerduty() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogIntegrationPagerdutyCreate,
-		Read:   resourceDatadogIntegrationPagerdutyRead,
-		Exists: resourceDatadogIntegrationPagerdutyExists,
-		Update: resourceDatadogIntegrationPagerdutyUpdate,
-		Delete: resourceDatadogIntegrationPagerdutyDelete,
+		DeprecationMessage: "This resource is deprecated. You can use datadog_integration_pagerduty_service_object resources directly once the integration is activated",
+		Create:             resourceDatadogIntegrationPagerdutyCreate,
+		Read:               resourceDatadogIntegrationPagerdutyRead,
+		Exists:             resourceDatadogIntegrationPagerdutyExists,
+		Update:             resourceDatadogIntegrationPagerdutyUpdate,
+		Delete:             resourceDatadogIntegrationPagerdutyDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -206,15 +208,7 @@ func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta inte
 }
 
 func resourceDatadogIntegrationPagerdutyDelete(d *schema.ResourceData, meta interface{}) error {
-	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-
-	integrationPdMutex.Lock()
-	defer integrationPdMutex.Unlock()
-
-	if err := client.DeleteIntegrationPD(); err != nil {
-		return translateClientError(err, "error deleting PagerDuty integration")
-	}
+	log.Printf("Deleting the pagerduty integration isn't safe, please don't use this resource anymore")
 
 	return nil
 }
