@@ -42,7 +42,11 @@ func TestAccDatadogDowntime_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "monitor_tags.0", "*"),
+						"datadog_downtime.foo", "monitor_tags.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "monitor_tags.2925324183", "app:webserver"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "monitor_tags.188033227", "service"),
 				),
 			},
 		},
@@ -130,7 +134,7 @@ func TestAccDatadogDowntime_BasicMultiScope(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "monitor_tags.0", "*"),
+						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
 			},
 		},
@@ -160,7 +164,7 @@ func TestAccDatadogDowntime_BasicNoRecurrence(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "monitor_tags.0", "*"),
+						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
 			},
 		},
@@ -196,7 +200,7 @@ func TestAccDatadogDowntime_BasicUntilDateRecurrence(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "monitor_tags.0", "*"),
+						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
 			},
 		},
@@ -232,7 +236,7 @@ func TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "monitor_tags.0", "*"),
+						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
 			},
 		},
@@ -270,7 +274,7 @@ func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "monitor_tags.0", "*"),
+						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
 			},
 		},
@@ -304,7 +308,9 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "monitor_tags.0", "*"),
+						"datadog_downtime.foo", "monitor_tags.2925324183", "app:webserver"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "monitor_tags.188033227", "service"),
 				),
 			},
 			{
@@ -324,7 +330,7 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "monitor_tags.0", "*"),
+						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
 			},
 		},
@@ -358,7 +364,7 @@ func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "monitor_tags.0", "*"),
+						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
 			},
 		},
@@ -418,7 +424,7 @@ func TestAccDatadogDowntimeDates(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "monitor_tags.0", "*"),
+						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
 			},
 		},
@@ -493,7 +499,7 @@ resource "datadog_downtime" "foo" {
   }
 
 	message = "Example Datadog downtime message."
-  monitor_tags = ["*"]
+  monitor_tags = ["service", "app:webserver"]
 }
 `
 
