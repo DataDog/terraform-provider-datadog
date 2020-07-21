@@ -49,6 +49,28 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Type:     schema.TypeMap,
 				Optional: true,
 			},
+			"request_query": {
+				Type:     schema.TypeMap,
+				Optional: true,
+			},
+			"request_basicauth": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"username": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"password": {
+							Type:      schema.TypeString,
+							Required:  true,
+							Sensitive: true,
+						},
+					},
+				},
+			},
 			"assertions": {
 				Type:          schema.TypeList,
 				Optional:      true,
@@ -364,6 +386,18 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		portInt, _ := strconv.Atoi(attr.(string))
 		request.SetPort(int64(portInt))
 	}
+	if attr, ok := d.GetOk("request_query"); ok {
+		query := attr.(map[string]interface{})
+		if len(query) > 0 {
+			request.SetQuery(query)
+		}
+	}
+	if username, ok := d.GetOk("request_basicauth.0.username"); ok {
+		if password, ok := d.GetOk("request_basicauth.0.password"); ok {
+			basicAuth := datadogV1.NewSyntheticsTestRequestBasicAuth(password.(string), username.(string))
+			request.SetBasicAuth(*basicAuth)
+		}
+	}
 	if attr, ok := d.GetOk("request_headers"); ok {
 		headers := attr.(map[string]interface{})
 		if len(headers) > 0 {
@@ -561,6 +595,13 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 	d.Set("request", localRequest)
 	d.Set("request_headers", actualRequest.Headers)
+	d.Set("request_query", actualRequest.GetQuery())
+	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok {
+		localAuth := make(map[string]string)
+		localAuth["username"] = basicAuth.Username
+		localAuth["password"] = basicAuth.Password
+		d.Set("request_basicauth", []map[string]string{localAuth})
+	}
 
 	actualAssertions := syntheticsTest.GetConfig().Assertions
 	localAssertions := make([]map[string]interface{}, len(actualAssertions))

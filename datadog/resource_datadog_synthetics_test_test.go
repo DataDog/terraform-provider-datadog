@@ -367,6 +367,16 @@ func createSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider) reso
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request.url", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_query.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_query.foo", "bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_basicauth.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_basicauth.0.username", "admin"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_basicauth.0.password", "secret"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.#", "3"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.type", "header"),
@@ -434,6 +444,13 @@ resource "datadog_synthetics_test" "bar" {
 		url = "https://www.datadoghq.com"
 		body = "this is a body"
 		timeout = 30
+	}
+	request_query = {
+		foo = "bar"
+	}
+	request_basicauth {
+		username = "admin"
+		password = "secret"
 	}
 	request_headers = {
 		Accept = "application/json"
