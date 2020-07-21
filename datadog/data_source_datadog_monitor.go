@@ -153,10 +153,6 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
-			"force_delete": {
-				Type:     schema.TypeBool,
-				Computed: true,
-			},
 		},
 	}
 }
