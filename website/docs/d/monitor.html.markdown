@@ -6,7 +6,7 @@ description: |-
   Retrieve information about an existing monitor.
 ---
 
-# datadog_ip_ranges
+# datadog_monitor
 
 Use this data source to retrieve information about an existing monitor for use in other resources.
 
