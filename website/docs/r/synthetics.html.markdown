@@ -125,6 +125,10 @@ The following arguments are supported:
   - `method` - (Required) no-op, use GET
   - `url` - (Required) Any url
 - `request_headers` - (Optional) Header name and value map
+- `request_query` - (Optional) Query arguments name and value map
+- `request_basicauth` - (Optional) Array of 1 item containing HTTP basic authentication credentials
+  - `username` - (Required) Username for authentication
+  - `password` - (Required) Password for authentication
 - `assertion` - (Required) Array of 1 to 10 items, only some combinations of type/operator are valid (please refer to Datadog documentation)
   - `type` - (Required) body, header, responseTime, statusCode
   - `operator` - (Required) Please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation) as operator depend on assertion type
