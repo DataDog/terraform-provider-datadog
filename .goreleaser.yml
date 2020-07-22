@@ -13,7 +13,7 @@ builds:
   flags:
     - -trimpath
   ldflags:
-    - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}}'
+    - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X github.com/terraform-providers/terraform-provider-datadog/version.ProviderVersion={{.Version}}'
   goos:
     - freebsd
     - windows
