@@ -27,7 +27,7 @@ type SyntheticsTestDetails struct {
 	// The test public ID.
 	PublicId *string                    `json:"public_id,omitempty"`
 	Status   *SyntheticsTestPauseStatus `json:"status,omitempty"`
-	// The steps of the test (only for browser tests).
+	// For browser test, the steps of the test.
 	Steps   *[]SyntheticsStep             `json:"steps,omitempty"`
 	Subtype *SyntheticsTestDetailsSubType `json:"subtype,omitempty"`
 	// Array of tags attached to the test.

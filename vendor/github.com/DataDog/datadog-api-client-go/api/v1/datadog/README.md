@@ -189,8 +189,12 @@ Class | Method | HTTP request | Description
 *TagsApi* | [**GetHostTags**](docs/TagsApi.md#gethosttags) | **Get** /api/v1/tags/hosts/{host_name} | Get host tags
 *TagsApi* | [**ListHostTags**](docs/TagsApi.md#listhosttags) | **Get** /api/v1/tags/hosts | Get Tags
 *TagsApi* | [**UpdateHostTags**](docs/TagsApi.md#updatehosttags) | **Put** /api/v1/tags/hosts/{host_name} | Update host tags
+*UsageMeteringApi* | [**GetDailyCustomReports**](docs/UsageMeteringApi.md#getdailycustomreports) | **Get** /api/v1/daily_custom_reports | Get the list of available daily custom reports
+*UsageMeteringApi* | [**GetMonthlyCustomReports**](docs/UsageMeteringApi.md#getmonthlycustomreports) | **Get** /api/v1/monthly_custom_reports | Get the list of available monthly custom reports
+*UsageMeteringApi* | [**GetSpecifiedDailyCustomReports**](docs/UsageMeteringApi.md#getspecifieddailycustomreports) | **Get** /api/v1/daily_custom_reports/{report_id} | Get specified daily custom reports
+*UsageMeteringApi* | [**GetSpecifiedMonthlyCustomReports**](docs/UsageMeteringApi.md#getspecifiedmonthlycustomreports) | **Get** /api/v1/monthly_custom_reports/{report_id} | Get specified monthly custom reports
 *UsageMeteringApi* | [**GetUsageAnalyzedLogs**](docs/UsageMeteringApi.md#getusageanalyzedlogs) | **Get** /api/v1/usage/analyzed_logs | Get hourly usage for analyzed logs
-*UsageMeteringApi* | [**GetUsageBillableSummary**](docs/UsageMeteringApi.md#getusagebillablesummary) | **Get** /api/v1/usage/billable-summary | Get monthly billable summary
+*UsageMeteringApi* | [**GetUsageBillableSummary**](docs/UsageMeteringApi.md#getusagebillablesummary) | **Get** /api/v1/usage/billable-summary | Get billable usage across your multi-org account
 *UsageMeteringApi* | [**GetUsageFargate**](docs/UsageMeteringApi.md#getusagefargate) | **Get** /api/v1/usage/fargate | Get hourly usage for Fargate
 *UsageMeteringApi* | [**GetUsageHosts**](docs/UsageMeteringApi.md#getusagehosts) | **Get** /api/v1/usage/hosts | Get hourly usage for hosts and containers
 *UsageMeteringApi* | [**GetUsageLambda**](docs/UsageMeteringApi.md#getusagelambda) | **Get** /api/v1/usage/aws_lambda | Get hourly usage for Lambda
@@ -201,7 +205,7 @@ Class | Method | HTTP request | Description
 *UsageMeteringApi* | [**GetUsageRumSessions**](docs/UsageMeteringApi.md#getusagerumsessions) | **Get** /api/v1/usage/rum_sessions | Get hourly usage for RUM Sessions
 *UsageMeteringApi* | [**GetUsageSNMP**](docs/UsageMeteringApi.md#getusagesnmp) | **Get** /api/v1/usage/snmp | Get hourly usage for SNMP devices
 *UsageMeteringApi* | [**GetUsageSummary**](docs/UsageMeteringApi.md#getusagesummary) | **Get** /api/v1/usage/summary | Get usage across your multi-org account
-*UsageMeteringApi* | [**GetUsageSynthetics**](docs/UsageMeteringApi.md#getusagesynthetics) | **Get** /api/v1/usage/synthetics | Get hourly usage for Synthetics API Checks
+*UsageMeteringApi* | [**GetUsageSynthetics**](docs/UsageMeteringApi.md#getusagesynthetics) | **Get** /api/v1/usage/synthetics | Get hourly usage for Synthetics Checks
 *UsageMeteringApi* | [**GetUsageSyntheticsAPI**](docs/UsageMeteringApi.md#getusagesyntheticsapi) | **Get** /api/v1/usage/synthetics_api | Get hourly usage for Synthetics API Checks
 *UsageMeteringApi* | [**GetUsageSyntheticsBrowser**](docs/UsageMeteringApi.md#getusagesyntheticsbrowser) | **Get** /api/v1/usage/synthetics_browser | Get hourly usage for Synthetics Browser Checks
 *UsageMeteringApi* | [**GetUsageTimeseries**](docs/UsageMeteringApi.md#getusagetimeseries) | **Get** /api/v1/usage/timeseries | Get hourly usage for custom metrics
@@ -519,6 +523,11 @@ Class | Method | HTTP request | Description
  - [UsageBillableSummaryHour](docs/UsageBillableSummaryHour.md)
  - [UsageBillableSummaryKeys](docs/UsageBillableSummaryKeys.md)
  - [UsageBillableSummaryResponse](docs/UsageBillableSummaryResponse.md)
+ - [UsageCustomReportsAttributes](docs/UsageCustomReportsAttributes.md)
+ - [UsageCustomReportsData](docs/UsageCustomReportsData.md)
+ - [UsageCustomReportsMeta](docs/UsageCustomReportsMeta.md)
+ - [UsageCustomReportsPage](docs/UsageCustomReportsPage.md)
+ - [UsageCustomReportsResponse](docs/UsageCustomReportsResponse.md)
  - [UsageFargateHour](docs/UsageFargateHour.md)
  - [UsageFargateResponse](docs/UsageFargateResponse.md)
  - [UsageHostHour](docs/UsageHostHour.md)
@@ -534,10 +543,18 @@ Class | Method | HTTP request | Description
  - [UsageNetworkFlowsResponse](docs/UsageNetworkFlowsResponse.md)
  - [UsageNetworkHostsHour](docs/UsageNetworkHostsHour.md)
  - [UsageNetworkHostsResponse](docs/UsageNetworkHostsResponse.md)
+ - [UsageReportsType](docs/UsageReportsType.md)
  - [UsageRumSessionsHour](docs/UsageRumSessionsHour.md)
  - [UsageRumSessionsResponse](docs/UsageRumSessionsResponse.md)
  - [UsageSNMPHour](docs/UsageSNMPHour.md)
  - [UsageSNMPResponse](docs/UsageSNMPResponse.md)
+ - [UsageSort](docs/UsageSort.md)
+ - [UsageSortDirection](docs/UsageSortDirection.md)
+ - [UsageSpecifiedCustomReportsAttributes](docs/UsageSpecifiedCustomReportsAttributes.md)
+ - [UsageSpecifiedCustomReportsData](docs/UsageSpecifiedCustomReportsData.md)
+ - [UsageSpecifiedCustomReportsMeta](docs/UsageSpecifiedCustomReportsMeta.md)
+ - [UsageSpecifiedCustomReportsPage](docs/UsageSpecifiedCustomReportsPage.md)
+ - [UsageSpecifiedCustomReportsResponse](docs/UsageSpecifiedCustomReportsResponse.md)
  - [UsageSummaryDate](docs/UsageSummaryDate.md)
  - [UsageSummaryDateOrg](docs/UsageSummaryDateOrg.md)
  - [UsageSummaryResponse](docs/UsageSummaryResponse.md)
