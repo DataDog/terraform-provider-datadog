@@ -350,6 +350,10 @@ func resourceDatadogMonitorExists(d *schema.ResourceData, meta interface{}) (b b
 }
 
 func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interface{}) error {
+	if _, ok := diff.GetOk("query"); !ok {
+		// If query depends on previous resources, we can't validate
+		return nil
+	}
 	m, _ := buildMonitorStruct(diff)
 
 	providerConf := meta.(*ProviderConfiguration)
