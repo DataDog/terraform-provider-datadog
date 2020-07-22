@@ -1,3 +1,5 @@
+**THIS REPOSITORY HAS MOVED TO https://github.com/DataDog/terraform-provider-datadog**
+
 Terraform Provider
 ==================
 
