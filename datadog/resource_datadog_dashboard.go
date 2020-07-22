@@ -2085,19 +2085,12 @@ func buildTerraformHeatmapDefinition(datadogDefinition datadogV1.HeatMapWidgetDe
 func getHeatmapRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-<<<<<<< HEAD
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
-=======
 		"q":              getMetricQuerySchema(),
 		"apm_query":      getApmOrLogQuerySchema(),
 		"log_query":      getApmOrLogQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
 		"rum_query":      getApmOrLogQuerySchema(),
 		"security_query": getApmOrLogQuerySchema(),
->>>>>>> c36107a... [k9] Add support for ScatterPlot,  HeatMap, Distribution and HostMap widgets
 		// Settings specific to Heatmap requests
 		"style": {
 			Type:     schema.TypeList,
@@ -2378,19 +2371,12 @@ func buildTerraformHostmapDefinition(datadogDefinition datadogV1.HostMapWidgetDe
 func getHostmapRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement at least one of the following type of query
-<<<<<<< HEAD
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
-=======
 		"q":              getMetricQuerySchema(),
 		"apm_query":      getApmOrLogQuerySchema(),
 		"log_query":      getApmOrLogQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
 		"rum_query":      getApmOrLogQuerySchema(),
 		"security_query": getApmOrLogQuerySchema(),
->>>>>>> c36107a... [k9] Add support for ScatterPlot,  HeatMap, Distribution and HostMap widgets
 	}
 }
 func buildDatadogHostmapRequest(terraformRequest map[string]interface{}) *datadogV1.HostMapRequest {
@@ -3563,19 +3549,12 @@ func buildTerraformScatterplotDefinition(datadogDefinition datadogV1.ScatterPlot
 func getScatterplotRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-<<<<<<< HEAD
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
-=======
 		"q":              getMetricQuerySchema(),
 		"apm_query":      getApmOrLogQuerySchema(),
 		"log_query":      getApmOrLogQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
 		"rum_query":      getApmOrLogQuerySchema(),
 		"security_query": getApmOrLogQuerySchema(),
->>>>>>> c36107a... [k9] Add support for ScatterPlot,  HeatMap, Distribution and HostMap widgets
 		// Settings specific to Scatterplot requests
 		"aggregator": {
 			Type:     schema.TypeString,
@@ -3971,8 +3950,8 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 		"q":              getMetricQuerySchema(),
 		"apm_query":      getApmOrLogQuerySchema(),
 		"log_query":      getApmOrLogQuerySchema(),
-		"rum_query":     getApmLogNetworkOrRumQuerySchema(),
-		"network_query": getApmLogNetworkOrRumQuerySchema(),
+		"rum_query":      getApmLogNetworkOrRumQuerySchema(),
+		"network_query":  getApmLogNetworkOrRumQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
 		"rum_query":      getApmOrLogQuerySchema(),
 		"security_query": getApmOrLogQuerySchema(),
