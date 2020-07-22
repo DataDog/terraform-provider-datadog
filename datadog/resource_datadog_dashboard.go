@@ -1292,10 +1292,10 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmOrLogQuerySchema(),
-		"log_query":      getApmOrLogQuerySchema(),
-		"rum_query":      getApmOrLogQuerySchema(),
-		"security_query": getApmOrLogQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
 		// Settings specific to Change requests
 		"change_type": {
@@ -1517,11 +1517,11 @@ func getDistributionRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmOrLogQuerySchema(),
-		"log_query":      getApmOrLogQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
-		"rum_query":      getApmOrLogQuerySchema(),
-		"security_query": getApmOrLogQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Distribution requests
 		"style": {
 			Type:     schema.TypeList,
@@ -2086,11 +2086,11 @@ func getHeatmapRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmOrLogQuerySchema(),
-		"log_query":      getApmOrLogQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
-		"rum_query":      getApmOrLogQuerySchema(),
-		"security_query": getApmOrLogQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Heatmap requests
 		"style": {
 			Type:     schema.TypeList,
@@ -2372,11 +2372,11 @@ func getHostmapRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement at least one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmOrLogQuerySchema(),
-		"log_query":      getApmOrLogQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
-		"rum_query":      getApmOrLogQuerySchema(),
-		"security_query": getApmOrLogQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 	}
 }
 func buildDatadogHostmapRequest(terraformRequest map[string]interface{}) *datadogV1.HostMapRequest {
@@ -3090,11 +3090,11 @@ func getQueryValueRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmOrLogQuerySchema(),
-		"log_query":      getApmOrLogQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
-		"rum_query":      getApmOrLogQuerySchema(),
-		"security_query": getApmOrLogQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to QueryValue requests
 		"conditional_formats": {
 			Type:     schema.TypeList,
@@ -3258,11 +3258,11 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmOrLogQuerySchema(),
-		"log_query":      getApmOrLogQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
-		"rum_query":      getApmOrLogQuerySchema(),
-		"security_query": getApmOrLogQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to QueryTable requests
 		"conditional_formats": {
 			Type:     schema.TypeList,
@@ -3550,11 +3550,11 @@ func getScatterplotRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmOrLogQuerySchema(),
-		"log_query":      getApmOrLogQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
-		"rum_query":      getApmOrLogQuerySchema(),
-		"security_query": getApmOrLogQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Scatterplot requests
 		"aggregator": {
 			Type:     schema.TypeString,
@@ -3948,13 +3948,13 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmOrLogQuerySchema(),
-		"log_query":      getApmOrLogQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"rum_query":      getApmLogNetworkOrRumQuerySchema(),
 		"network_query":  getApmLogNetworkOrRumQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
-		"rum_query":      getApmOrLogQuerySchema(),
-		"security_query": getApmOrLogQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Timeseries requests
 		"style": {
 			Type:     schema.TypeList,
@@ -4188,11 +4188,11 @@ func getToplistRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmOrLogQuerySchema(),
-		"log_query":      getApmOrLogQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
-		"rum_query":      getApmOrLogQuerySchema(),
-		"security_query": getApmOrLogQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Toplist requests
 		"conditional_formats": {
 			Type:     schema.TypeList,
@@ -4674,7 +4674,7 @@ func getMetricQuerySchema() *schema.Schema {
 }
 
 // APM, Log, Network or RUM Query
-func getApmLogNetworkOrRumQuerySchema() *schema.Schema {
+func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,
 		Optional: true,
