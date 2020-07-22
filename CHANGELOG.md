@@ -10,7 +10,7 @@ IMPROVEMENTS:
 
 BUGFIXES:
 * `datadog_downtime`: Replace `time.LoadLocation` by tz.LoadLocation from `4d63.com/tz` package [GH-560]
-* `datadog_downtime`: Sort monitor tags to avoid unnecessary diffs [GH-540]
+* `datadog_downtime`: Use `TypeSet` for monitor tags to avoid unnecessary diffs [GH-540]
 * `provider`: Respect the debug setting in the new Go Datadog client [GH-580]
 
 NOTES:
