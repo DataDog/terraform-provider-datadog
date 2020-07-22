@@ -13,13 +13,20 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
+// Minimal interface between ResourceData and ResourceDiff so that we can use them interchangeably in buildMonitorStruct
+type BuiltResource interface {
+	Get(string) interface{}
+	GetOk(string) (interface{}, bool)
+}
+
 func resourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogMonitorCreate,
-		Read:   resourceDatadogMonitorRead,
-		Update: resourceDatadogMonitorUpdate,
-		Delete: resourceDatadogMonitorDelete,
-		Exists: resourceDatadogMonitorExists,
+		Create:        resourceDatadogMonitorCreate,
+		Read:          resourceDatadogMonitorRead,
+		Update:        resourceDatadogMonitorUpdate,
+		Delete:        resourceDatadogMonitorDelete,
+		Exists:        resourceDatadogMonitorExists,
+		CustomizeDiff: resourceDatadogMonitorCustomizeDiff,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogMonitorImport,
 		},
@@ -199,7 +206,7 @@ func resourceDatadogMonitor() *schema.Resource {
 	}
 }
 
-func buildMonitorStruct(d *schema.ResourceData) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
+func buildMonitorStruct(d BuiltResource) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
 
 	var thresholds datadogV1.MonitorThresholds
 
@@ -340,6 +347,18 @@ func resourceDatadogMonitorExists(d *schema.ResourceData, meta interface{}) (b b
 	}
 
 	return true, nil
+}
+
+func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interface{}) error {
+	m, _ := buildMonitorStruct(diff)
+
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+	if _, _, err := datadogClientV1.MonitorsApi.ValidateMonitor(authV1).Body(*m).Execute(); err != nil {
+		return translateClientError(err, "error validating monitor")
+	}
+	return nil
 }
 
 func getUnmutedScopes(d *schema.ResourceData) []string {
