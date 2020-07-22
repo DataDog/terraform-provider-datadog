@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// EventQueryDefinition List of events
+// EventQueryDefinition The event query.
 type EventQueryDefinition struct {
 	// The query being made on the event.
 	Search string `json:"search"`

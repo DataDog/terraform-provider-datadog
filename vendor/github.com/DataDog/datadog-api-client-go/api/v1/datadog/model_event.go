@@ -17,7 +17,7 @@ type Event struct {
 	// An arbitrary string to use for aggregation. Limited to 100 characters. If you specify a key, all events using that key are grouped together in the Event Stream.
 	AggregationKey *string         `json:"aggregation_key,omitempty"`
 	AlertType      *EventAlertType `json:"alert_type,omitempty"`
-	// POSIX timestamp of the event. Must be sent as an integer (i.e. no quotes). Limited to events no older than 1 year, 24 days (389 days).
+	// POSIX timestamp of the event. Must be sent as an integer (i.e. no quotes). Limited to events no older than 7 days.
 	DateHappened *int64 `json:"date_happened,omitempty"`
 	// A list of device names to post the event with.
 	DeviceName *[]string `json:"device_name,omitempty"`

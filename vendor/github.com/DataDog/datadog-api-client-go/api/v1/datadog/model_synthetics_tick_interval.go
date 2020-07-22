@@ -13,7 +13,7 @@ import (
 	"fmt"
 )
 
-// SyntheticsTickInterval The frequency at which to run the Synthetic test.
+// SyntheticsTickInterval The frequency at which to run the Synthetic test (in seconds).
 type SyntheticsTickInterval int64
 
 // List of SyntheticsTickInterval
