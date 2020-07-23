@@ -31,6 +31,6 @@ jobs:
     - name: Website test
       if: matrix.platform == 'ubuntu-latest'
       shell: bash
-      run: make -e GOPATH=$(go env GOPATH) website-test 
+      run: make -e GOPATH="$(go env GOPATH)" website-test 
     - name: Test
       run: make test
