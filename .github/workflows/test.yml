@@ -18,6 +18,11 @@ jobs:
       uses: actions/setup-go@v2-beta
       with:
         go-version: 1.14
+    # if we don't do this, `gofmt` will want to rewrite all Go files because of CRLF line endings
+    - name: Set git to use Linux-style line endings
+      run: |
+        git config --global core.autocrlf false
+        git config --global core.eol lf
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Vet
