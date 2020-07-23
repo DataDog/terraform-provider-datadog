@@ -8,7 +8,7 @@ on:
 jobs:
   test:
     env:
-      GOFLAGS=-mod=vendor
+      GOFLAGS: "-mod=vendor"
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-latest, windows-latest]
