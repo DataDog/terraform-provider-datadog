@@ -26,6 +26,8 @@ jobs:
         go-version: 1.14
     - name: Checkout code
       uses: actions/checkout@v2
+    - name: Debug Go env
+      run: go env
     - name: Vet
       run: make vet
     - name: Website test
