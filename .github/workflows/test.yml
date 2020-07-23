@@ -32,6 +32,6 @@ jobs:
       run: make vet
     - name: Website test
       if: matrix.platform == 'ubuntu-latest'
-      run: make website-test
+      run: make website-test GOPATH=`go env GOPATH`
     - name: Test
       run: make test
