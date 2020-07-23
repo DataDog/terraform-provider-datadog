@@ -28,8 +28,8 @@ jobs:
       uses: actions/checkout@v2
     - name: Vet
       run: make vet
-    - name: Test
-      run: make test
     - name: Website test
       if: matrix.platform == 'ubuntu-latest'
       run: make website-test
+    - name: Test
+      run: make test
