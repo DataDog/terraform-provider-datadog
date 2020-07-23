@@ -1,4 +1,7 @@
-## 2.13.0 (Unreleased)
+## 2.12.1 (July 23, 2020)
+
+This release doesn't contain any user-facing changes. It's done as a required part of process to finalize the transfer of the provider repository under DataDog Github org: https://github.com/DataDog/terraform-provider-datadog.
+
 ## 2.12.0 (July 22, 2020)
 
 FEATURES:
