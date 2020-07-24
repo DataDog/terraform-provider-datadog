@@ -1,0 +1,25 @@
+name: IntegrationTests
+trigger:
+  batch: false
+  branches:
+    include:
+    - master
+pr:
+  branches:
+    include:
+    - master
+
+jobs:
+- job: IntegrationTests
+  pool:
+    vmImage: "Ubuntu-16.04"
+  container:
+    image: golang:latest
+  steps:
+    - script: make testacc
+      displayName: Run integration tests
+      env:
+        CI: "true"
+        DD_API_KEY: $(datadogAPIKey)
+        DD_APP_KEY: $(datadogAPPKey)
+        GOFLAGS: "-mod=vendor"
