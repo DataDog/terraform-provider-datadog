@@ -13,8 +13,8 @@ cloud.google.com/go/bigquery v1.0.1/go.mod h1:i/xbL2UlR5RvWAURpBYZTtm/cXjCha9lbf
 cloud.google.com/go/datastore v1.0.0/go.mod h1:LXYbyblFSglQ5pkeyhO+Qmw7ukd3C+pD7TKLgZqpHYE=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/DataDog/datadog-api-client-go v1.0.0-beta.7 h1:GGF2JsBg6MTu5nRLKF2NKrxgQl9g0SGjR6Wo7Z5yRwI=
-github.com/DataDog/datadog-api-client-go v1.0.0-beta.7/go.mod h1:RQvzywj9rwl11tiGxX84pe3hZlU9f3Wd/8435jr7M3s=
+github.com/DataDog/datadog-api-client-go v1.0.0-beta.7.0.20200724115206-de170dad4ec5 h1:Tix8DdN9j/XPAKtMuGhgvkFk4xOZa5vxswso0Xi2Xvc=
+github.com/DataDog/datadog-api-client-go v1.0.0-beta.7.0.20200724115206-de170dad4ec5/go.mod h1:RQvzywj9rwl11tiGxX84pe3hZlU9f3Wd/8435jr7M3s=
 github.com/DataDog/datadog-go v3.6.0+incompatible h1:ILg7c5Y1KvZFDOaVS0higGmJ5Fal5O1KQrkrT9j6dSM=
 github.com/DataDog/datadog-go v3.6.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/agext/levenshtein v1.2.1/go.mod h1:JEDfjyjHDjOF/1e4FlBE/PkbqA9OfWu2ki2W0IB5558=
