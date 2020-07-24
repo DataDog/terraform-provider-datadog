@@ -3,19 +3,22 @@ package datadog
 import (
 	"testing"
 
-	"github.com/hashicorp/terraform/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
 func TestAccDatatogSyntheticsLocation_existing(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+
 	resource.ParallelTest(t, resource.TestCase{
-		Providers: testAccProviders,
+		Providers: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: `
 				data "datadog_synthetics_locations" "test" {}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.datadog_synthetics_locations.test", ".#"),
+					resource.TestCheckResourceAttrSet("data.datadog_synthetics_locations.test", "locations.%"),
 				),
 			},
 		},
