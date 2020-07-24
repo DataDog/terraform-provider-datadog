@@ -46,6 +46,7 @@ func resourceDatadogDowntime() *schema.Resource {
 				Optional: true,
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
 					_, startDatePresent := d.GetOk("start_date")
+					// If "start_date" is set, ignore diff for "start". If "start" isn't set, ignore diff because the value was set automatically.
 					return startDatePresent || (newVal == "0" && oldVal != "0")
 				},
 				Description: "Specify when this downtime should start",
