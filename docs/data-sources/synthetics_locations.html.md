@@ -13,8 +13,13 @@ Use this data source to retrieve Datadog's Synthetics Locations (to be used in S
 
 ```hcl
 data "datadog_synthetics_locations" "test" {}
+
+resource "datadog_synthetics_test" "test_api" {
+  type = "api"
+  locations = keys(data.datadog_synthetics_locations.test.locations)
+}
 ```
 
 ## Attributes Reference
 
- * `locations` - An Array of available Synthetics locations for Synthetics tests.
+ * `locations` - An amp of available Synthetics location IDs to names for Synthetics tests.
