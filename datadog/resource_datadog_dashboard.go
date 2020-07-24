@@ -3950,10 +3950,9 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 		"q":              getMetricQuerySchema(),
 		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"rum_query":      getApmLogNetworkOrRumQuerySchema(),
-		"network_query":  getApmLogNetworkOrRumQuerySchema(),
-		"process_query":  getProcessQuerySchema(),
 		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"network_query":  getApmLogNetworkRumSecurityQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Timeseries requests
 		"style": {
