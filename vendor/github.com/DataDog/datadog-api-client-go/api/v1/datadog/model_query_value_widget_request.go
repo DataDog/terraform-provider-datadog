@@ -23,8 +23,9 @@ type QueryValueWidgetRequest struct {
 	NetworkQuery       *LogQueryDefinition        `json:"network_query,omitempty"`
 	ProcessQuery       *ProcessQueryDefinition    `json:"process_query,omitempty"`
 	// TODO.
-	Q        *string             `json:"q,omitempty"`
-	RumQuery *LogQueryDefinition `json:"rum_query,omitempty"`
+	Q             *string             `json:"q,omitempty"`
+	RumQuery      *LogQueryDefinition `json:"rum_query,omitempty"`
+	SecurityQuery *LogQueryDefinition `json:"security_query,omitempty"`
 }
 
 // NewQueryValueWidgetRequest instantiates a new QueryValueWidgetRequest object
@@ -332,6 +333,38 @@ func (o *QueryValueWidgetRequest) SetRumQuery(v LogQueryDefinition) {
 	o.RumQuery = &v
 }
 
+// GetSecurityQuery returns the SecurityQuery field value if set, zero value otherwise.
+func (o *QueryValueWidgetRequest) GetSecurityQuery() LogQueryDefinition {
+	if o == nil || o.SecurityQuery == nil {
+		var ret LogQueryDefinition
+		return ret
+	}
+	return *o.SecurityQuery
+}
+
+// GetSecurityQueryOk returns a tuple with the SecurityQuery field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryValueWidgetRequest) GetSecurityQueryOk() (*LogQueryDefinition, bool) {
+	if o == nil || o.SecurityQuery == nil {
+		return nil, false
+	}
+	return o.SecurityQuery, true
+}
+
+// HasSecurityQuery returns a boolean if a field has been set.
+func (o *QueryValueWidgetRequest) HasSecurityQuery() bool {
+	if o != nil && o.SecurityQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSecurityQuery gets a reference to the given LogQueryDefinition and assigns it to the SecurityQuery field.
+func (o *QueryValueWidgetRequest) SetSecurityQuery(v LogQueryDefinition) {
+	o.SecurityQuery = &v
+}
+
 func (o QueryValueWidgetRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Aggregator != nil {
@@ -360,6 +393,9 @@ func (o QueryValueWidgetRequest) MarshalJSON() ([]byte, error) {
 	}
 	if o.RumQuery != nil {
 		toSerialize["rum_query"] = o.RumQuery
+	}
+	if o.SecurityQuery != nil {
+		toSerialize["security_query"] = o.SecurityQuery
 	}
 	return json.Marshal(toSerialize)
 }
