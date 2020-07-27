@@ -134,11 +134,9 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Type:     schema.TypeString,
 					Optional: true,
 				},
-				"log_query":      apmOrLogQuery,
-				"apm_query":      apmOrLogQuery,
-				"process_query":  processQuery,
-				"rum_query":      apmOrLogQuery,
-				"security_query": apmOrLogQuery,
+				"log_query":     apmOrLogQuery,
+				"apm_query":     apmOrLogQuery,
+				"process_query": processQuery,
 				"stacked": {
 					Type:     schema.TypeBool,
 					Optional: true,
@@ -592,12 +590,6 @@ func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{
 		} else if v, ok := t["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			d.ProcessQuery = buildDatadogGraphProcessQuery(processQuery)
-		} else if v, ok := t["rum_query"].([]interface{}); ok && len(v) > 0 {
-			rumQuery := v[0].(map[string]interface{})
-			d.RumQuery = buildDatadogGraphApmOrLogQuery(rumQuery)
-		} else if v, ok := t["security_query"].([]interface{}); ok && len(v) > 0 {
-			securityQuery := v[0].(map[string]interface{})
-			d.SecurityQuery = buildDatadogGraphApmOrLogQuery(securityQuery)
 		}
 
 		if stacked, ok := t["stacked"]; ok {
@@ -946,12 +938,6 @@ func appendTerraformGraphRequests(datadogRequests []datadog.GraphDefinitionReque
 		} else if datadogRequest.ProcessQuery != nil {
 			terraformQuery := buildTFGraphProcessQuery(*datadogRequest.ProcessQuery)
 			request["process_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.RumQuery != nil {
-			terraformQuery := buildTFGraphApmOrLogQuery(*datadogRequest.RumQuery)
-			request["rum_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.SecurityQuery != nil {
-			terraformQuery := buildTFGraphApmOrLogQuery(*datadogRequest.SecurityQuery)
-			request["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 		if v, ok := datadogRequest.GetStackedOk(); ok {
 			request["stacked"] = v

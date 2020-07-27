@@ -212,36 +212,6 @@ resource "datadog_timeboard" "acceptance_test" {
       }
       type = "area"
     }
-    request {
-      security_query {
-        index = "signal"
-        compute {
-          aggregation = "count"
-        }
-        search {
-          query = "status:(high OR critical)"
-        }
-        group_by {
-          facet = "status"
-        }
-      }
-      type = "bars"
-    }
-    request {
-      rum_query {
-        index = "rum"
-        compute {
-          aggregation = "count"
-        }
-        search {
-          query = "status:info"
-        }
-        group_by {
-          facet = "service"
-        }
-      }
-      type = "bars"
-    }
   }
 }
 `
@@ -373,16 +343,6 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.3.process_query.0.filter_by.#", "1"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.3.process_query.0.filter_by.0", "active"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.3.process_query.0.limit", "50"),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.4.security_query.0.index", "signal"),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.4.security_query.0.compute.0.aggregation", "count"),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.4.security_query.0.search.0.query", "status:(high OR critical)"),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.4.security_query.0.group_by.0.facet", "status"),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.4.type", "bars"),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.5.rum_query.0.index", "rum"),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.5.rum_query.0.compute.0.aggregation", "count"),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.5.rum_query.0.search.0.query", "status:info"),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.5.rum_query.0.group_by.0.facet", "service"),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.request.5.type", "bars"),
 		),
 	}
 
