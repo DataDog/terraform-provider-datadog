@@ -98,8 +98,8 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 	d.SetId(*dashboard.Id)
 
 	return resource.Retry(d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
-		if _, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, *dashboard.Id).Execute(); err != nil {
-			if strings.Contains(err.Error(), "404 Not Found") {
+		if _, httpResponse, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, *dashboard.Id).Execute(); err != nil {
+			if httpResponse.StatusCode == 404 {
 				return resource.RetryableError(fmt.Errorf("Dashboard not created yet"))
 			}
 			return resource.NonRetryableError(err)
