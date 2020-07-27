@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -95,7 +96,16 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 		return translateClientError(err, "error creating dashboard")
 	}
 	d.SetId(*dashboard.Id)
-	return resourceDatadogDashboardRead(d, meta)
+
+	return resource.Retry(d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+		if _, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, *dashboard.Id).Execute(); err != nil {
+			if strings.Contains(err.Error(), "404 Not Found") {
+				return resource.RetryableError(fmt.Errorf("Dashboard not created yet"))
+			}
+			return resource.NonRetryableError(err)
+		}
+		return resource.NonRetryableError(resourceDatadogDashboardRead(d, meta))
+	})
 }
 
 func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) error {
