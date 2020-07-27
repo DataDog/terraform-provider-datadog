@@ -22,4 +22,4 @@ resource "datadog_synthetics_test" "test_api" {
 
 ## Attributes Reference
 
- * `locations` - An amp of available Synthetics location IDs to names for Synthetics tests.
+ * `locations` - An map of available Synthetics location IDs to names for Synthetics tests.
