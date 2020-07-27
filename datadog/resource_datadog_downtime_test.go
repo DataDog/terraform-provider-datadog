@@ -371,6 +371,26 @@ func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
 	})
 }
 
+func TestAccDatadogDowntime_DiffStart(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDowntimeConfigDiffStart,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogDowntimeDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
@@ -464,7 +484,7 @@ resource "datadog_downtime" "foo" {
     period = 1
   }
 
-	message = "Example Datadog downtime message."
+  message = "Example Datadog downtime message."
   monitor_tags = ["*"]
 }
 `
@@ -482,7 +502,7 @@ resource "datadog_downtime" "foo" {
     period = 1
   }
 
-	message = "Example Datadog downtime message."
+  message = "Example Datadog downtime message."
   monitor_tags = ["*"]
 }
 `
@@ -498,7 +518,7 @@ resource "datadog_downtime" "foo" {
     period = 1
   }
 
-	message = "Example Datadog downtime message."
+  message = "Example Datadog downtime message."
   monitor_tags = ["service", "app:webserver"]
 }
 `
@@ -516,12 +536,12 @@ resource "datadog_monitor" "downtime_monitor" {
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
 
   thresholds = {
-		warning = "1.0"
-		critical = "2.0"
-	}
-	silenced = {
-		"*" = %d
-	}
+    warning = "1.0"
+    critical = "2.0"
+  }
+  silenced = {
+    "*" = %d
+  }
 }
 
 resource "datadog_downtime" "foo" {
@@ -549,12 +569,12 @@ resource "datadog_monitor" "downtime_monitor" {
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
 
   thresholds = {
-		warning = "1.0"
-		critical = "2.0"
-	}
-	silenced = {
-		"*" = %d
-	}
+    warning = "1.0"
+    critical = "2.0"
+  }
+  silenced = {
+    "*" = %d
+  }
 }
 
 resource "datadog_downtime" "foo" {
@@ -563,7 +583,7 @@ resource "datadog_downtime" "foo" {
   end   = %d
 
   message = "Example Datadog downtime message."
-	monitor_tags = ["app:webserver"]
+  monitor_tags = ["app:webserver"]
 }
 `, end, start, end)
 }
@@ -579,8 +599,8 @@ resource "datadog_downtime" "foo" {
     period = 1
   }
 
-	message = "Example Datadog downtime message."
-	monitor_tags = ["*"]
+  message = "Example Datadog downtime message."
+  monitor_tags = ["*"]
 }
 `
 
@@ -589,8 +609,8 @@ resource "datadog_downtime" "foo" {
   scope = ["host:NoRecurrence"]
   start = 1735707600
   end   = 1735765200
-	message = "Example Datadog downtime message."
-	monitor_tags = ["*"]
+  message = "Example Datadog downtime message."
+  monitor_tags = ["*"]
 }
 `
 
@@ -603,11 +623,11 @@ resource "datadog_downtime" "foo" {
   recurrence {
     type       = "days"
     period     = 1
-	until_date = 1736226000
+    until_date = 1736226000
   }
 
-	message = "Example Datadog downtime message."
-	monitor_tags = ["*"]
+  message = "Example Datadog downtime message."
+  monitor_tags = ["*"]
 }
 `
 
@@ -620,11 +640,11 @@ resource "datadog_downtime" "foo" {
   recurrence {
     type              = "days"
     period            = 1
-	until_occurrences = 5
+    until_occurrences = 5
   }
 
-	message = "Example Datadog downtime message."
-	monitor_tags = ["*"]
+  message = "Example Datadog downtime message."
+  monitor_tags = ["*"]
 }
 `
 
@@ -636,12 +656,12 @@ resource "datadog_downtime" "foo" {
 
   recurrence {
     period    = 1
-	type      = "weeks"
-	week_days = ["Sat", "Sun"]
+    type      = "weeks"
+    week_days = ["Sat", "Sun"]
   }
 
-	message = "Example Datadog downtime message."
-	monitor_tags = ["*"]
+  message = "Example Datadog downtime message."
+  monitor_tags = ["*"]
 }
 `
 
@@ -656,8 +676,8 @@ resource "datadog_downtime" "foo" {
     period = 3
   }
 
-	message = "Example Datadog downtime message."
-	monitor_tags = ["*"]
+  message = "Example Datadog downtime message."
+  monitor_tags = ["*"]
 }
 `
 
@@ -676,6 +696,15 @@ resource "datadog_downtime" "foo" {
 Example Datadog downtime message.
 EOF
   monitor_tags = ["*"]
+}
+`
+
+const testAccCheckDatadogDowntimeConfigDiffStart = `
+resource "datadog_downtime" "foo" {
+  scope = ["somescope"]
+
+  monitor_tags = ["*"]
+  active = true
 }
 `
 
