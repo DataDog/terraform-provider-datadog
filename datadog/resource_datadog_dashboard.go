@@ -1387,11 +1387,11 @@ func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidge
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.RumQuery != nil {
-			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.RumQuery)
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.SecurityQuery != nil {
-			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.SecurityQuery)
+		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 
@@ -1582,11 +1582,11 @@ func buildTerraformDistributionRequests(datadogDistributionRequests *[]datadogV1
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.RumQuery != nil {
-			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.RumQuery)
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.SecurityQuery != nil {
-			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.SecurityQuery)
+		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 		if datadogRequest.Style != nil {
@@ -2150,11 +2150,11 @@ func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWi
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.RumQuery != nil {
-			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.RumQuery)
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.SecurityQuery != nil {
-			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.SecurityQuery)
+		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 		if v, ok := datadogRequest.GetStyleOk(); ok {
@@ -2416,11 +2416,11 @@ func buildTerraformHostmapRequest(datadogHostmapRequest *datadogV1.HostMapReques
 	} else if v, ok := datadogHostmapRequest.GetProcessQueryOk(); ok {
 		terraformQuery := buildTerraformProcessQuery(*v)
 		terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
-	} else if datadogHostmapRequest.RumQuery != nil {
-		terraformQuery := buildTerraformApmOrLogQuery(*datadogHostmapRequest.RumQuery)
+	} else if v, ok := datadogHostmapRequest.GetRumQueryOk(); ok {
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
 		terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
-	} else if datadogHostmapRequest.SecurityQuery != nil {
-		terraformQuery := buildTerraformApmOrLogQuery(*datadogHostmapRequest.SecurityQuery)
+	} else if v, ok := datadogHostmapRequest.GetSecurityQueryOk(); ok {
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
 		terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 	}
 	return &terraformRequest
@@ -3160,11 +3160,11 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 		} else if datadogRequest.ProcessQuery != nil {
 			terraformQuery := buildTerraformProcessQuery(*datadogRequest.ProcessQuery)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.RumQuery != nil {
-			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.RumQuery)
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.SecurityQuery != nil {
-			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.SecurityQuery)
+		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 
@@ -3349,11 +3349,11 @@ func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.Tab
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.RumQuery != nil {
-			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.RumQuery)
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.SecurityQuery != nil {
-			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.SecurityQuery)
+		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 
@@ -3603,11 +3603,11 @@ func buildTerraformScatterplotRequest(datadogScatterplotRequest *datadogV1.Scatt
 	} else if datadogScatterplotRequest.ProcessQuery != nil {
 		terraformQuery := buildTerraformProcessQuery(*datadogScatterplotRequest.ProcessQuery)
 		terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
-	} else if datadogScatterplotRequest.RumQuery != nil {
-		terraformQuery := buildTerraformApmOrLogQuery(*datadogScatterplotRequest.RumQuery)
+	} else if v, ok := datadogScatterplotRequest.GetRumQueryOk(); ok {
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
 		terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
-	} else if datadogScatterplotRequest.SecurityQuery != nil {
-		terraformQuery := buildTerraformApmOrLogQuery(*datadogScatterplotRequest.SecurityQuery)
+	} else if v, ok := datadogScatterplotRequest.GetSecurityQueryOk(); ok {
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
 		terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 	}
 
@@ -4073,11 +4073,11 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.RumQuery != nil {
-			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.RumQuery)
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.SecurityQuery != nil {
-			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.SecurityQuery)
+		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 		if v, ok := datadogRequest.GetStyleOk(); ok {
@@ -4261,11 +4261,11 @@ func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWi
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.RumQuery != nil {
-			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.RumQuery)
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
-		} else if datadogRequest.SecurityQuery != nil {
-			terraformQuery := buildTerraformApmOrLogQuery(*datadogRequest.SecurityQuery)
+		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 
