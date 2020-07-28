@@ -1291,10 +1291,12 @@ func buildTerraformChangeDefinition(datadogDefinition datadogV1.ChangeWidgetDefi
 func getChangeRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
+		"q":              getMetricQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
 		// Settings specific to Change requests
 		"change_type": {
 			Type:     schema.TypeString,
@@ -1336,6 +1338,12 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 		} else if v, ok := terraformRequest["log_query"].([]interface{}); ok && len(v) > 0 {
 			logQuery := v[0].(map[string]interface{})
 			datadogChangeRequest.LogQuery = buildDatadogApmOrLogQuery(logQuery)
+		} else if v, ok := terraformRequest["rum_query"].([]interface{}); ok && len(v) > 0 {
+			rumQuery := v[0].(map[string]interface{})
+			datadogChangeRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
+		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
+			securityQuery := v[0].(map[string]interface{})
+			datadogChangeRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogChangeRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
@@ -1379,6 +1387,12 @@ func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidge
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 
 		if v, ok := datadogRequest.GetChangeTypeOk(); ok {
@@ -1502,10 +1516,12 @@ func buildTerraformDistributionDefinition(datadogDefinition datadogV1.Distributi
 func getDistributionRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
+		"q":              getMetricQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Distribution requests
 		"style": {
 			Type:     schema.TypeList,
@@ -1534,6 +1550,12 @@ func buildDatadogDistributionRequests(terraformRequests *[]interface{}) *[]datad
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogDistributionRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		} else if v, ok := terraformRequest["rum_query"].([]interface{}); ok && len(v) > 0 {
+			rumQuery := v[0].(map[string]interface{})
+			datadogDistributionRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
+		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
+			securityQuery := v[0].(map[string]interface{})
+			datadogDistributionRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 		}
 		if style, ok := terraformRequest["style"].([]interface{}); ok && len(style) > 0 {
 			if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
@@ -1560,6 +1582,12 @@ func buildTerraformDistributionRequests(datadogDistributionRequests *[]datadogV1
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 		if datadogRequest.Style != nil {
 			style := buildTerraformWidgetStyle(*datadogRequest.Style)
@@ -2057,10 +2085,12 @@ func buildTerraformHeatmapDefinition(datadogDefinition datadogV1.HeatMapWidgetDe
 func getHeatmapRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
+		"q":              getMetricQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Heatmap requests
 		"style": {
 			Type:     schema.TypeList,
@@ -2089,6 +2119,12 @@ func buildDatadogHeatmapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogHeatmapRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		} else if v, ok := terraformRequest["rum_query"].([]interface{}); ok && len(v) > 0 {
+			rumQuery := v[0].(map[string]interface{})
+			datadogHeatmapRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
+		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
+			securityQuery := v[0].(map[string]interface{})
+			datadogHeatmapRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 		}
 		if style, ok := terraformRequest["style"].([]interface{}); ok && len(style) > 0 {
 			if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
@@ -2114,6 +2150,12 @@ func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWi
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 		if v, ok := datadogRequest.GetStyleOk(); ok {
 			style := buildTerraformWidgetStyle(*v)
@@ -2329,10 +2371,12 @@ func buildTerraformHostmapDefinition(datadogDefinition datadogV1.HostMapWidgetDe
 func getHostmapRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement at least one of the following type of query
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
+		"q":              getMetricQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 	}
 }
 func buildDatadogHostmapRequest(terraformRequest map[string]interface{}) *datadogV1.HostMapRequest {
@@ -2349,6 +2393,12 @@ func buildDatadogHostmapRequest(terraformRequest map[string]interface{}) *datado
 	} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 		processQuery := v[0].(map[string]interface{})
 		datadogHostmapRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+	} else if v, ok := terraformRequest["rum_query"].([]interface{}); ok && len(v) > 0 {
+		rumQuery := v[0].(map[string]interface{})
+		datadogHostmapRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
+	} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
+		securityQuery := v[0].(map[string]interface{})
+		datadogHostmapRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 	}
 
 	return datadogHostmapRequest
@@ -2366,6 +2416,12 @@ func buildTerraformHostmapRequest(datadogHostmapRequest *datadogV1.HostMapReques
 	} else if v, ok := datadogHostmapRequest.GetProcessQueryOk(); ok {
 		terraformQuery := buildTerraformProcessQuery(*v)
 		terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+	} else if v, ok := datadogHostmapRequest.GetRumQueryOk(); ok {
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
+		terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
+	} else if v, ok := datadogHostmapRequest.GetSecurityQueryOk(); ok {
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
+		terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 	}
 	return &terraformRequest
 }
@@ -3033,10 +3089,12 @@ func buildTerraformQueryValueDefinition(datadogDefinition datadogV1.QueryValueWi
 func getQueryValueRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
+		"q":              getMetricQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to QueryValue requests
 		"conditional_formats": {
 			Type:     schema.TypeList,
@@ -3068,6 +3126,12 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogQueryValueRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		} else if v, ok := terraformRequest["rum_query"].([]interface{}); ok && len(v) > 0 {
+			rumQuery := v[0].(map[string]interface{})
+			datadogQueryValueRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
+		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
+			securityQuery := v[0].(map[string]interface{})
+			datadogQueryValueRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 		}
 
 		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
@@ -3096,6 +3160,12 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 		} else if datadogRequest.ProcessQuery != nil {
 			terraformQuery := buildTerraformProcessQuery(*datadogRequest.ProcessQuery)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 
 		if datadogRequest.ConditionalFormats != nil {
@@ -3187,10 +3257,12 @@ func buildTerraformQueryTableDefinition(datadogDefinition datadogV1.TableWidgetD
 func getQueryTableRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
+		"q":              getMetricQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to QueryTable requests
 		"conditional_formats": {
 			Type:     schema.TypeList,
@@ -3234,6 +3306,12 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogQueryTableRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		} else if v, ok := terraformRequest["rum_query"].([]interface{}); ok && len(v) > 0 {
+			rumQuery := v[0].(map[string]interface{})
+			datadogQueryTableRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
+		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
+			securityQuery := v[0].(map[string]interface{})
+			datadogQueryTableRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 		}
 
 		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
@@ -3271,6 +3349,12 @@ func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.Tab
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 
 		if v, ok := datadogRequest.GetConditionalFormatsOk(); ok {
@@ -3465,10 +3549,12 @@ func buildTerraformScatterplotDefinition(datadogDefinition datadogV1.ScatterPlot
 func getScatterplotRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
+		"q":              getMetricQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Scatterplot requests
 		"aggregator": {
 			Type:     schema.TypeString,
@@ -3490,6 +3576,12 @@ func buildDatadogScatterplotRequest(terraformRequest map[string]interface{}) *da
 	} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 		processQuery := v[0].(map[string]interface{})
 		datadogScatterplotRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+	} else if v, ok := terraformRequest["rum_query"].([]interface{}); ok && len(v) > 0 {
+		rumQuery := v[0].(map[string]interface{})
+		datadogScatterplotRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
+	} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
+		securityQuery := v[0].(map[string]interface{})
+		datadogScatterplotRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 	}
 
 	if v, ok := terraformRequest["aggregator"].(string); ok && len(v) != 0 {
@@ -3511,6 +3603,12 @@ func buildTerraformScatterplotRequest(datadogScatterplotRequest *datadogV1.Scatt
 	} else if datadogScatterplotRequest.ProcessQuery != nil {
 		terraformQuery := buildTerraformProcessQuery(*datadogScatterplotRequest.ProcessQuery)
 		terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+	} else if v, ok := datadogScatterplotRequest.GetRumQueryOk(); ok {
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
+		terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
+	} else if v, ok := datadogScatterplotRequest.GetSecurityQueryOk(); ok {
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
+		terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 	}
 
 	if datadogScatterplotRequest.Aggregator != nil {
@@ -3849,12 +3947,13 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 func getTimeseriesRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"rum_query":     getApmLogNetworkOrRumQuerySchema(),
-		"network_query": getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
+		"q":              getMetricQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"network_query":  getApmLogNetworkRumSecurityQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Timeseries requests
 		"style": {
 			Type:     schema.TypeList,
@@ -3919,6 +4018,9 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["rum_query"].([]interface{}); ok && len(v) > 0 {
 			rumQuery := v[0].(map[string]interface{})
 			datadogTimeseriesRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
+		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
+			securityQuery := v[0].(map[string]interface{})
+			datadogTimeseriesRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogTimeseriesRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
@@ -3971,6 +4073,12 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 		if v, ok := datadogRequest.GetStyleOk(); ok {
 			style := buildTerraformWidgetRequestStyle(*v)
@@ -4078,10 +4186,12 @@ func buildTerraformToplistDefinition(datadogDefinition datadogV1.ToplistWidgetDe
 func getToplistRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":             getMetricQuerySchema(),
-		"apm_query":     getApmLogNetworkOrRumQuerySchema(),
-		"log_query":     getApmLogNetworkOrRumQuerySchema(),
-		"process_query": getProcessQuerySchema(),
+		"q":              getMetricQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Toplist requests
 		"conditional_formats": {
 			Type:     schema.TypeList,
@@ -4117,6 +4227,12 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogToplistRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		} else if v, ok := terraformRequest["rum_query"].([]interface{}); ok && len(v) > 0 {
+			rumQuery := v[0].(map[string]interface{})
+			datadogToplistRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
+		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
+			securityQuery := v[0].(map[string]interface{})
+			datadogToplistRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 		}
 		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
 			datadogToplistRequest.ConditionalFormats = buildDatadogWidgetConditionalFormat(&v)
@@ -4145,6 +4261,12 @@ func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWi
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
+			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 
 		if v, ok := datadogRequest.GetConditionalFormatsOk(); ok {
@@ -4551,7 +4673,7 @@ func getMetricQuerySchema() *schema.Schema {
 }
 
 // APM, Log, Network or RUM Query
-func getApmLogNetworkOrRumQuerySchema() *schema.Schema {
+func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,
 		Optional: true,

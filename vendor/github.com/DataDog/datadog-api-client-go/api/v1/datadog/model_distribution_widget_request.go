@@ -20,9 +20,10 @@ type DistributionWidgetRequest struct {
 	NetworkQuery *LogQueryDefinition     `json:"network_query,omitempty"`
 	ProcessQuery *ProcessQueryDefinition `json:"process_query,omitempty"`
 	// Widget query.
-	Q        *string             `json:"q,omitempty"`
-	RumQuery *LogQueryDefinition `json:"rum_query,omitempty"`
-	Style    *WidgetStyle        `json:"style,omitempty"`
+	Q             *string             `json:"q,omitempty"`
+	RumQuery      *LogQueryDefinition `json:"rum_query,omitempty"`
+	SecurityQuery *LogQueryDefinition `json:"security_query,omitempty"`
+	Style         *WidgetStyle        `json:"style,omitempty"`
 }
 
 // NewDistributionWidgetRequest instantiates a new DistributionWidgetRequest object
@@ -266,6 +267,38 @@ func (o *DistributionWidgetRequest) SetRumQuery(v LogQueryDefinition) {
 	o.RumQuery = &v
 }
 
+// GetSecurityQuery returns the SecurityQuery field value if set, zero value otherwise.
+func (o *DistributionWidgetRequest) GetSecurityQuery() LogQueryDefinition {
+	if o == nil || o.SecurityQuery == nil {
+		var ret LogQueryDefinition
+		return ret
+	}
+	return *o.SecurityQuery
+}
+
+// GetSecurityQueryOk returns a tuple with the SecurityQuery field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DistributionWidgetRequest) GetSecurityQueryOk() (*LogQueryDefinition, bool) {
+	if o == nil || o.SecurityQuery == nil {
+		return nil, false
+	}
+	return o.SecurityQuery, true
+}
+
+// HasSecurityQuery returns a boolean if a field has been set.
+func (o *DistributionWidgetRequest) HasSecurityQuery() bool {
+	if o != nil && o.SecurityQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSecurityQuery gets a reference to the given LogQueryDefinition and assigns it to the SecurityQuery field.
+func (o *DistributionWidgetRequest) SetSecurityQuery(v LogQueryDefinition) {
+	o.SecurityQuery = &v
+}
+
 // GetStyle returns the Style field value if set, zero value otherwise.
 func (o *DistributionWidgetRequest) GetStyle() WidgetStyle {
 	if o == nil || o.Style == nil {
@@ -320,6 +353,9 @@ func (o DistributionWidgetRequest) MarshalJSON() ([]byte, error) {
 	}
 	if o.RumQuery != nil {
 		toSerialize["rum_query"] = o.RumQuery
+	}
+	if o.SecurityQuery != nil {
+		toSerialize["security_query"] = o.SecurityQuery
 	}
 	if o.Style != nil {
 		toSerialize["style"] = o.Style

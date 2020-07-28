@@ -12,10 +12,10 @@ import (
 
 const datadogOrderedDashboardConfig = `
 resource "datadog_dashboard" "ordered_dashboard" {
-  title         = "Acceptance Test Ordered Dashboard"
-  description   = "Created using the Datadog provider in Terraform"
-  layout_type   = "ordered"
-  is_read_only  = true
+	title         = "Acceptance Test Ordered Dashboard"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = true
 	widget {
 		alert_graph_definition {
 			alert_id = "895605"
@@ -135,28 +135,28 @@ resource "datadog_dashboard" "ordered_dashboard" {
 	}
 	widget {
 		query_value_definition {
-		  request {
-			q = "avg:system.load.1{env:staging} by {account}"
-			aggregator = "sum"
-			conditional_formats {
-				comparator = "<"
-				value = "2"
-				palette = "white_on_green"
+			request {
+				q = "avg:system.load.1{env:staging} by {account}"
+				aggregator = "sum"
+				conditional_formats {
+					comparator = "<"
+					value = "2"
+					palette = "white_on_green"
+				}
+				conditional_formats {
+					comparator = ">"
+					value = "2.2"
+					palette = "white_on_red"
+				}
 			}
-			conditional_formats {
-				comparator = ">"
-				value = "2.2"
-				palette = "white_on_red"
+			autoscale = true
+			custom_unit = "xx"
+			precision = "4"
+			text_align = "right"
+			title = "Widget Title"
+			time = {
+				live_span = "1h"
 			}
-		  }
-		  autoscale = true
-		  custom_unit = "xx"
-		  precision = "4"
-		  text_align = "right"
-		  title = "Widget Title"
-		  time = {
-			live_span = "1h"
-		  }
 		}
 	}
 	widget {
@@ -262,6 +262,36 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				}
 				display_type = "area"
 			}
+			request {
+				security_query {
+					index = "signal"
+					compute = {
+						aggregation = "count"
+					}
+					search = {
+						query = "status:(high OR critical)"
+					}
+					group_by {
+						facet = "status"
+					}
+				}
+				display_type = "bars"
+			}
+			request {
+				rum_query {
+					index = "rum"
+					compute = {
+						aggregation = "count"
+					}
+					search = {
+						query = "status:info"
+					}
+					group_by {
+						facet = "service"
+					}
+				}
+				display_type = "bars"
+			}
 			marker {
 				display_type = "error dashed"
 				label = " z=6 "
@@ -288,7 +318,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				scale = "log"
 				include_zero = false
 				max = 100
-			  }
+			}
 		}
 	}
 	widget {
@@ -305,7 +335,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 					value = "2.2"
 					palette = "white_on_red"
 				}
-		  	}
+			}
 			title = "Widget Title"
 		}
 	}
@@ -349,25 +379,25 @@ resource "datadog_dashboard" "ordered_dashboard" {
 	}
 	widget {
 		query_table_definition {
-		  request {
-			q = "avg:system.load.1{env:staging} by {account}"
-			aggregator = "sum"
-			limit = "10"
-			conditional_formats {
-				comparator = "<"
-				value = "2"
-				palette = "white_on_green"
+			request {
+				q = "avg:system.load.1{env:staging} by {account}"
+				aggregator = "sum"
+				limit = "10"
+				conditional_formats {
+					comparator = "<"
+					value = "2"
+					palette = "white_on_green"
+				}
+				conditional_formats {
+					comparator = ">"
+					value = "2.2"
+					palette = "white_on_red"
+				}
 			}
-			conditional_formats {
-				comparator = ">"
-				value = "2.2"
-				palette = "white_on_red"
+			title = "Widget Title"
+			time = {
+				live_span = "1h"
 			}
-		  }
-		  title = "Widget Title"
-		  time = {
-		    live_span = "1h"
-		  }
 		}
 	}
 	template_variable {
@@ -409,7 +439,7 @@ resource "datadog_dashboard" "free_dashboard" {
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
 	is_read_only  = false
-  	widget {
+	widget {
 		event_stream_definition {
 			query = "*"
 			event_size = "l"
@@ -426,7 +456,7 @@ resource "datadog_dashboard" "free_dashboard" {
 			x = 5
 			y = 5
 		}
-  	}
+	}
 	widget {
 		event_timeline_definition {
 			query = "*"
@@ -491,7 +521,7 @@ resource "datadog_dashboard" "free_dashboard" {
 			show_message_column = true
 			message_display = "expanded-md"
 			sort {
-				column = "time" 
+				column = "time"
 				order = "desc"
 			}
 		}
@@ -733,6 +763,16 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.10.timeseries_definition.0.request.3.process_query.0.filter_by.0 = active",
 	"widget.10.timeseries_definition.0.request.3.process_query.0.limit = 50",
 	"widget.10.timeseries_definition.0.request.3.display_type = area",
+	"widget.10.timeseries_definition.0.request.4.security_query.0.index = signal",
+	"widget.10.timeseries_definition.0.request.4.security_query.0.compute.aggregation = count",
+	"widget.10.timeseries_definition.0.request.4.security_query.0.search.query = status:(high OR critical)",
+	"widget.10.timeseries_definition.0.request.4.security_query.0.group_by.0.facet = status",
+	"widget.10.timeseries_definition.0.request.4.display_type = bars",
+	"widget.10.timeseries_definition.0.request.5.rum_query.0.index = rum",
+	"widget.10.timeseries_definition.0.request.5.rum_query.0.compute.aggregation = count",
+	"widget.10.timeseries_definition.0.request.5.rum_query.0.search.query = status:info",
+	"widget.10.timeseries_definition.0.request.5.rum_query.0.group_by.0.facet = service",
+	"widget.10.timeseries_definition.0.request.5.display_type = bars",
 	"widget.10.timeseries_definition.0.marker.# = 2",
 	"widget.10.timeseries_definition.0.marker.0.display_type = error dashed",
 	"widget.10.timeseries_definition.0.marker.0.label =  z=6 ",
