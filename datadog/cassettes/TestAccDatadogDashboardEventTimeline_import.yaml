@@ -18,9 +18,9 @@ interactions:
     method: POST
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"vgh-9qg-ri5","title":"Acceptance
-      Test Event Timeline Widget Dashboard","url":"/dashboard/vgh-9qg-ri5/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T09:05:42.355160+00:00","modified_at":"2020-07-28T09:05:42.355160+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7409582284501607}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"yc9-qc8-9y7","title":"Acceptance
+      Test Event Timeline Widget Dashboard","url":"/dashboard/yc9-qc8-9y7/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T11:39:09.105569+00:00","modified_at":"2020-07-28T11:39:09.105569+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8353385588167529}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -31,13 +31,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:05:42 GMT
+      - Tue, 28 Jul 2020 11:39:09 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:05:42 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:39:09 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -46,7 +46,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - dJ1k0vE6N2QAqKKr5+3OfRWQwLSb6j4uP6j4Bl+7j1ZSiaodXUBMXWo/xK3ZKOrQ
+      - pt+16+jYIrkK/LEwCbjF0ZKC0i5shFH8jQRqiIr0a1WORBHTcEJ5R+89IKmV161p
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -64,13 +64,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/vgh-9qg-ri5
+    url: https://api.datadoghq.com/api/v1/dashboard/yc9-qc8-9y7
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"vgh-9qg-ri5","title":"Acceptance
-      Test Event Timeline Widget Dashboard","url":"/dashboard/vgh-9qg-ri5/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T09:05:42.355160+00:00","modified_at":"2020-07-28T09:05:42.355160+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7409582284501607}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"yc9-qc8-9y7","title":"Acceptance
+      Test Event Timeline Widget Dashboard","url":"/dashboard/yc9-qc8-9y7/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T11:39:09.105569+00:00","modified_at":"2020-07-28T11:39:09.105569+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8353385588167529}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -81,13 +81,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:05:42 GMT
+      - Tue, 28 Jul 2020 11:39:09 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:05:42 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:39:09 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -96,7 +96,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - c0iIf+8od+LWFc1nNL0N8AQWojGfJ/JnxWgSmjrPehpU3RSufBX7dVgVD11pOk4o
+      - 9KqlMq3gTLpkJSVJyvAwXe8+x8jjzLiadKiJ+urXt2iPIG7RDD8GegNJYYpRqZOo
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -114,13 +114,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/vgh-9qg-ri5
+    url: https://api.datadoghq.com/api/v1/dashboard/yc9-qc8-9y7
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"vgh-9qg-ri5","title":"Acceptance
-      Test Event Timeline Widget Dashboard","url":"/dashboard/vgh-9qg-ri5/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T09:05:42.355160+00:00","modified_at":"2020-07-28T09:05:42.355160+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7409582284501607}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"yc9-qc8-9y7","title":"Acceptance
+      Test Event Timeline Widget Dashboard","url":"/dashboard/yc9-qc8-9y7/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T11:39:09.105569+00:00","modified_at":"2020-07-28T11:39:09.105569+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8353385588167529}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -131,13 +131,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:05:42 GMT
+      - Tue, 28 Jul 2020 11:39:11 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:05:42 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:39:10 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -146,7 +146,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - WwAljovF+hfODWoU8mW9t/NNFvvBKHef8Ui2iKhkgbX02uPzdJfHlsGaLoa74iMP
+      - aXCZgb4r7KNLtRU6QOgrdqp4CCAIpWjyEEb7nwYI2mHYzjlPLDb8G5n/JQZJSDDr
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -164,13 +164,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/vgh-9qg-ri5
+    url: https://api.datadoghq.com/api/v1/dashboard/yc9-qc8-9y7
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"vgh-9qg-ri5","title":"Acceptance
-      Test Event Timeline Widget Dashboard","url":"/dashboard/vgh-9qg-ri5/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T09:05:42.355160+00:00","modified_at":"2020-07-28T09:05:42.355160+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7409582284501607}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"yc9-qc8-9y7","title":"Acceptance
+      Test Event Timeline Widget Dashboard","url":"/dashboard/yc9-qc8-9y7/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T11:39:09.105569+00:00","modified_at":"2020-07-28T11:39:09.105569+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8353385588167529}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -181,13 +181,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:05:44 GMT
+      - Tue, 28 Jul 2020 11:39:11 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:05:44 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:39:11 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -196,7 +196,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 8A8KYFunHmbMGoUhAhh0dcNSwu/a9C1pi6AdKbsYpSx+6BCco+7UDhhLwyOB1aEg
+      - cfEWVNvwHWbWsrWROT0d1CHGudoLbjNIlQSqHa016QLfBXNCL60mCyglgWWKORwS
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -214,13 +214,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/vgh-9qg-ri5
+    url: https://api.datadoghq.com/api/v1/dashboard/yc9-qc8-9y7
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"vgh-9qg-ri5","title":"Acceptance
-      Test Event Timeline Widget Dashboard","url":"/dashboard/vgh-9qg-ri5/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T09:05:42.355160+00:00","modified_at":"2020-07-28T09:05:42.355160+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7409582284501607}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"yc9-qc8-9y7","title":"Acceptance
+      Test Event Timeline Widget Dashboard","url":"/dashboard/yc9-qc8-9y7/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T11:39:09.105569+00:00","modified_at":"2020-07-28T11:39:09.105569+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8353385588167529}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -231,13 +231,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:05:44 GMT
+      - Tue, 28 Jul 2020 11:39:12 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:05:44 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:39:12 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -246,7 +246,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - g9CHpXZyB0XNkGLw7I2sC/omv+QxyaaRPL8vH6hykY0k0XCg1nflMOfGqUcwL451
+      - 4ZutoXjD1dtrPYR8YKRovF2eKpb8tYXyHMBf1sluqqFFWp3GqAYhbsyigyK3Zy4D
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -264,13 +264,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/vgh-9qg-ri5
+    url: https://api.datadoghq.com/api/v1/dashboard/yc9-qc8-9y7
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"vgh-9qg-ri5","title":"Acceptance
-      Test Event Timeline Widget Dashboard","url":"/dashboard/vgh-9qg-ri5/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T09:05:42.355160+00:00","modified_at":"2020-07-28T09:05:42.355160+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7409582284501607}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"yc9-qc8-9y7","title":"Acceptance
+      Test Event Timeline Widget Dashboard","url":"/dashboard/yc9-qc8-9y7/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T11:39:09.105569+00:00","modified_at":"2020-07-28T11:39:09.105569+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8353385588167529}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -281,13 +281,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:05:45 GMT
+      - Tue, 28 Jul 2020 11:39:12 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:05:45 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:39:12 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -296,7 +296,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 5GPg/dBKYaB5CXOGNtsOQzZ3tz07fPpO/aykrAMaOva5F5ohy9kxete70d9JN9BY
+      - 9KqlMq3gTLpkJSVJyvAwXe8+x8jjzLiadKiJ+urXt2iPIG7RDD8GegNJYYpRqZOo
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -314,13 +314,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/vgh-9qg-ri5
+    url: https://api.datadoghq.com/api/v1/dashboard/yc9-qc8-9y7
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"vgh-9qg-ri5","title":"Acceptance
-      Test Event Timeline Widget Dashboard","url":"/dashboard/vgh-9qg-ri5/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T09:05:42.355160+00:00","modified_at":"2020-07-28T09:05:42.355160+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7409582284501607}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"yc9-qc8-9y7","title":"Acceptance
+      Test Event Timeline Widget Dashboard","url":"/dashboard/yc9-qc8-9y7/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T11:39:09.105569+00:00","modified_at":"2020-07-28T11:39:09.105569+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8353385588167529}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -331,13 +331,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:05:46 GMT
+      - Tue, 28 Jul 2020 11:39:12 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:05:46 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:39:12 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -346,7 +346,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Omw2HBtli6Fvv+m1GrrKYauxiZRRsmEallYCFjCXur8QlnmEuW2U9xJoVSDmbCuH
+      - GvAWnMlYTdjqOKziitdOxQmAR5bPfoeGsfMuHBYlSfNplHRtKZTN2ms34yfMprKJ
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -364,13 +364,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/vgh-9qg-ri5
+    url: https://api.datadoghq.com/api/v1/dashboard/yc9-qc8-9y7
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"vgh-9qg-ri5","title":"Acceptance
-      Test Event Timeline Widget Dashboard","url":"/dashboard/vgh-9qg-ri5/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T09:05:42.355160+00:00","modified_at":"2020-07-28T09:05:42.355160+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7409582284501607}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"yc9-qc8-9y7","title":"Acceptance
+      Test Event Timeline Widget Dashboard","url":"/dashboard/yc9-qc8-9y7/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T11:39:09.105569+00:00","modified_at":"2020-07-28T11:39:09.105569+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8353385588167529}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -381,13 +381,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:05:46 GMT
+      - Tue, 28 Jul 2020 11:39:13 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:05:46 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:39:13 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -396,7 +396,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - E22B/LB41fk5Clwb1Y5tAINOF8ps7jC0I/En/b1pqW8827LMXxxoMOfvIcb6V+2H
+      - FBOyGW/hVU5oedgIOY2y9t5KkfvCrCr0Sr8iBKKd2Ws33lSJZh/xqejVbBeJiMaK
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -414,13 +414,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/vgh-9qg-ri5
+    url: https://api.datadoghq.com/api/v1/dashboard/yc9-qc8-9y7
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"vgh-9qg-ri5","title":"Acceptance
-      Test Event Timeline Widget Dashboard","url":"/dashboard/vgh-9qg-ri5/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T09:05:42.355160+00:00","modified_at":"2020-07-28T09:05:42.355160+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7409582284501607}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"yc9-qc8-9y7","title":"Acceptance
+      Test Event Timeline Widget Dashboard","url":"/dashboard/yc9-qc8-9y7/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T11:39:09.105569+00:00","modified_at":"2020-07-28T11:39:09.105569+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
+      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8353385588167529}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -431,13 +431,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:05:47 GMT
+      - Tue, 28 Jul 2020 11:39:13 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:05:47 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:39:13 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -446,57 +446,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - CK/Tcg81sO+otcgqNVrFCEAggkB6PEm654zS/cck1QJiYosddrPqPo7XuMknQQ6v
-      X-Dd-Version:
-      - "35.2795924"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/vgh-9qg-ri5
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"vgh-9qg-ri5","title":"Acceptance
-      Test Event Timeline Widget Dashboard","url":"/dashboard/vgh-9qg-ri5/acceptance-test-event-timeline-widget-dashboard","created_at":"2020-07-28T09:05:42.355160+00:00","modified_at":"2020-07-28T09:05:42.355160+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget
-      Title","title_align":"right","tags_execution":"and","time":{"live_span":"1h"},"query":"status:error","type":"event_timeline"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7409582284501607}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 28 Jul 2020 09:05:47 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:05:47 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - s6EgTr3uLLqDHLca63rZ+tMogH/NqYKbDvwfNXam608hLqn/BJnHLsGiOIhvn2wG
+      - Ibwt1LOMazDUZo/NkqtIyT001dZxiPruSKHOyBiCNyqNWAUjrw1TErmlQNwQ5uoW
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -514,10 +464,10 @@ interactions:
       - DeleteDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/vgh-9qg-ri5
+    url: https://api.datadoghq.com/api/v1/dashboard/yc9-qc8-9y7
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"vgh-9qg-ri5"}'
+    body: '{"deleted_dashboard_id":"yc9-qc8-9y7"}'
     headers:
       Cache-Control:
       - no-cache
@@ -528,13 +478,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:06:11 GMT
+      - Tue, 28 Jul 2020 11:39:37 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:05:48 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:39:14 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -543,7 +493,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - jicUVFbc66OIYAq7IAkmB2WpJ70vxjY6p18cm0vyR+TPMp9r4hmzTC1Ixas9xAHp
+      - 70XaWeaQvpcLJhvCTAqT4hHsqdm1UQrPhYlUoOuxIMHjzhNLG/kbMFjSjTsMEqRh
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -561,10 +511,10 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/vgh-9qg-ri5
+    url: https://api.datadoghq.com/api/v1/dashboard/yc9-qc8-9y7
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID vgh-9qg-ri5 not found"]}'
+    body: '{"errors": ["Dashboard with ID yc9-qc8-9y7 not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -575,7 +525,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:06:11 GMT
+      - Tue, 28 Jul 2020 11:39:37 GMT
       Dd-Pool:
       - dogweb
       Pragma:

@@ -98,13 +98,14 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 	d.SetId(*dashboard.Id)
 
 	return resource.Retry(d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
-		if _, httpResponse, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, *dashboard.Id).Execute(); err != nil {
+		getDashboard, httpResponse, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, *dashboard.Id).Execute()
+		if err != nil {
 			if httpResponse.StatusCode == 404 {
 				return resource.RetryableError(fmt.Errorf("Dashboard not created yet"))
 			}
 			return resource.NonRetryableError(err)
 		}
-		return resource.NonRetryableError(resourceDatadogDashboardRead(d, meta))
+		return resource.NonRetryableError(loadDatadogDashboard(d, getDashboard))
 	})
 }
 
@@ -123,29 +124,20 @@ func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) er
 	return resourceDatadogDashboardRead(d, meta)
 }
 
-func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) error {
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-	id := d.Id()
-	dashboard, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, id).Execute()
-	if err != nil {
-		return translateClientError(err, "error getting dashboard")
-	}
-
-	if err = d.Set("title", dashboard.GetTitle()); err != nil {
+func loadDatadogDashboard(d *schema.ResourceData, dashboard datadogV1.Dashboard) error {
+	if err := d.Set("title", dashboard.GetTitle()); err != nil {
 		return err
 	}
-	if err = d.Set("layout_type", dashboard.GetLayoutType()); err != nil {
+	if err := d.Set("layout_type", dashboard.GetLayoutType()); err != nil {
 		return err
 	}
-	if err = d.Set("description", dashboard.GetDescription()); err != nil {
+	if err := d.Set("description", dashboard.GetDescription()); err != nil {
 		return err
 	}
-	if err = d.Set("is_read_only", dashboard.GetIsReadOnly()); err != nil {
+	if err := d.Set("is_read_only", dashboard.GetIsReadOnly()); err != nil {
 		return err
 	}
-	if err = d.Set("url", dashboard.GetUrl()); err != nil {
+	if err := d.Set("url", dashboard.GetUrl()); err != nil {
 		return err
 	}
 
@@ -177,6 +169,19 @@ func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) erro
 	}
 
 	return nil
+}
+
+func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+	id := d.Id()
+	dashboard, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, id).Execute()
+	if err != nil {
+		return translateClientError(err, "error getting dashboard")
+	}
+
+	return loadDatadogDashboard(d, dashboard)
 }
 
 func resourceDatadogDashboardDelete(d *schema.ResourceData, meta interface{}) error {

@@ -18,9 +18,9 @@ interactions:
     method: POST
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"usz-wbp-s4e","title":"Acceptance
-      Test Manage Status Widget Dashboard","url":"/dashboard/usz-wbp-s4e/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T09:13:14.341367+00:00","modified_at":"2020-07-28T09:13:14.341367+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
-      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1741153315041500}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3xw-jvn-uez","title":"Acceptance
+      Test Manage Status Widget Dashboard","url":"/dashboard/3xw-jvn-uez/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T11:47:03.475201+00:00","modified_at":"2020-07-28T11:47:03.475201+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
+      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5962647646151112}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -31,13 +31,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:13:14 GMT
+      - Tue, 28 Jul 2020 11:47:03 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:13:14 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:47:03 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -46,7 +46,57 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - KMMh6tjgG7zEWSe2NGqx/9X6V+TIhZeCgfZ2Bep7yTf9IImwE1tg/54JUYhMkMlR
+      - 7xONvr5YON7X4FQXeghA+NJbsf/zBcRCZm8GUKeOauq94s1Zcj1D+oAjzjpJMIU1
+      X-Dd-Version:
+      - "35.2796563"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/3xw-jvn-uez
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3xw-jvn-uez","title":"Acceptance
+      Test Manage Status Widget Dashboard","url":"/dashboard/3xw-jvn-uez/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T11:47:03.475201+00:00","modified_at":"2020-07-28T11:47:03.475201+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
+      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5962647646151112}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 28 Jul 2020 11:47:03 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:47:03 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - bBbioXpa6ShaRFS3TVifmUpCp9OwAEO7+Tw5VY8cvHkl6RMQIabk8Abv1cyspWNN
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -64,13 +114,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/usz-wbp-s4e
+    url: https://api.datadoghq.com/api/v1/dashboard/3xw-jvn-uez
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"usz-wbp-s4e","title":"Acceptance
-      Test Manage Status Widget Dashboard","url":"/dashboard/usz-wbp-s4e/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T09:13:14.341367+00:00","modified_at":"2020-07-28T09:13:14.341367+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
-      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1741153315041500}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3xw-jvn-uez","title":"Acceptance
+      Test Manage Status Widget Dashboard","url":"/dashboard/3xw-jvn-uez/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T11:47:03.475201+00:00","modified_at":"2020-07-28T11:47:03.475201+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
+      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5962647646151112}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -81,13 +131,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:13:14 GMT
+      - Tue, 28 Jul 2020 11:47:05 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:13:14 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:47:05 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -96,7 +146,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - E22B/LB41fk5Clwb1Y5tAINOF8ps7jC0I/En/b1pqW8827LMXxxoMOfvIcb6V+2H
+      - a/3bb5caryljOZg60y3plxmSTUwgvhHh3NJHey2e2D2N+wxkXarkWaTdpeJopF5M
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -114,13 +164,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/usz-wbp-s4e
+    url: https://api.datadoghq.com/api/v1/dashboard/3xw-jvn-uez
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"usz-wbp-s4e","title":"Acceptance
-      Test Manage Status Widget Dashboard","url":"/dashboard/usz-wbp-s4e/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T09:13:14.341367+00:00","modified_at":"2020-07-28T09:13:14.341367+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
-      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1741153315041500}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3xw-jvn-uez","title":"Acceptance
+      Test Manage Status Widget Dashboard","url":"/dashboard/3xw-jvn-uez/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T11:47:03.475201+00:00","modified_at":"2020-07-28T11:47:03.475201+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
+      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5962647646151112}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -131,13 +181,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:13:14 GMT
+      - Tue, 28 Jul 2020 11:47:05 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:13:14 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:47:05 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -146,7 +196,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 8HliSMicS/QWY7M59LyYgAFqrWx81jXGSDyfbJGaX8BahoTpS5uxc6017TLN8dKy
+      - vQYgH+orCqhRbQG/mSd6IeQSqyYBCkFVCv4Bj6PXMALQcvTK5EvxQuH7fIz3d52m
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -164,13 +214,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/usz-wbp-s4e
+    url: https://api.datadoghq.com/api/v1/dashboard/3xw-jvn-uez
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"usz-wbp-s4e","title":"Acceptance
-      Test Manage Status Widget Dashboard","url":"/dashboard/usz-wbp-s4e/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T09:13:14.341367+00:00","modified_at":"2020-07-28T09:13:14.341367+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
-      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1741153315041500}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3xw-jvn-uez","title":"Acceptance
+      Test Manage Status Widget Dashboard","url":"/dashboard/3xw-jvn-uez/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T11:47:03.475201+00:00","modified_at":"2020-07-28T11:47:03.475201+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
+      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5962647646151112}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -181,13 +231,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:13:16 GMT
+      - Tue, 28 Jul 2020 11:47:06 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:13:16 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:47:06 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -196,7 +246,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - sV14k28ZtXjcMZj4QwIWkEANTxfaaZw79eCtf5+2ae7o5VDNLNgFT8efPZLzZ1O5
+      - om1XnEWhly2whLIXwLO+fkzEb2L84pNIroGZK2fiMqRbZbwaEjag1Efr2qx8JGrD
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -214,13 +264,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/usz-wbp-s4e
+    url: https://api.datadoghq.com/api/v1/dashboard/3xw-jvn-uez
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"usz-wbp-s4e","title":"Acceptance
-      Test Manage Status Widget Dashboard","url":"/dashboard/usz-wbp-s4e/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T09:13:14.341367+00:00","modified_at":"2020-07-28T09:13:14.341367+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
-      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1741153315041500}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3xw-jvn-uez","title":"Acceptance
+      Test Manage Status Widget Dashboard","url":"/dashboard/3xw-jvn-uez/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T11:47:03.475201+00:00","modified_at":"2020-07-28T11:47:03.475201+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
+      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5962647646151112}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -231,13 +281,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:13:16 GMT
+      - Tue, 28 Jul 2020 11:47:07 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:13:16 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:47:07 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -246,7 +296,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - rABORaCdo0eXwjiAWlD/0SR1FMrz+6a0WK3wFJ2nq/fhaAjzdUxlvh0wWPrWcMgm
+      - dJ1k0vE6N2QAqKKr5+3OfRWQwLSb6j4uP6j4Bl+7j1ZSiaodXUBMXWo/xK3ZKOrQ
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -264,13 +314,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/usz-wbp-s4e
+    url: https://api.datadoghq.com/api/v1/dashboard/3xw-jvn-uez
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"usz-wbp-s4e","title":"Acceptance
-      Test Manage Status Widget Dashboard","url":"/dashboard/usz-wbp-s4e/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T09:13:14.341367+00:00","modified_at":"2020-07-28T09:13:14.341367+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
-      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1741153315041500}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3xw-jvn-uez","title":"Acceptance
+      Test Manage Status Widget Dashboard","url":"/dashboard/3xw-jvn-uez/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T11:47:03.475201+00:00","modified_at":"2020-07-28T11:47:03.475201+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
+      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5962647646151112}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -281,13 +331,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:13:17 GMT
+      - Tue, 28 Jul 2020 11:47:07 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:13:17 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:47:07 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -296,7 +346,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - bdSqhkfOxHsLgf03iBostd7JCruMdjf6h9eGSRNie2NKQkZADklQH98pbyihkInb
+      - GuLu62tSzOSa22pyvJe4qZbqEPb2XguW+CCh3Eowo1qerJKhdDgAZvH//li1gRua
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -314,13 +364,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/usz-wbp-s4e
+    url: https://api.datadoghq.com/api/v1/dashboard/3xw-jvn-uez
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"usz-wbp-s4e","title":"Acceptance
-      Test Manage Status Widget Dashboard","url":"/dashboard/usz-wbp-s4e/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T09:13:14.341367+00:00","modified_at":"2020-07-28T09:13:14.341367+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
-      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1741153315041500}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3xw-jvn-uez","title":"Acceptance
+      Test Manage Status Widget Dashboard","url":"/dashboard/3xw-jvn-uez/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T11:47:03.475201+00:00","modified_at":"2020-07-28T11:47:03.475201+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
+      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5962647646151112}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -331,13 +381,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:13:18 GMT
+      - Tue, 28 Jul 2020 11:47:08 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:13:18 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:47:07 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -346,7 +396,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Iq+PCudgbL86AsCtEhGk1g+0wAKNJYW3pFOjBo0Ed8a5aVFBuDvJ68L2xH/RXAPf
+      - VO9DShLSveKHtBMmwrtjGFWJ868Dg8a/6aIIhVf3cStJvZ+xRkKOM6ckA1ndjHeE
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -364,13 +414,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/usz-wbp-s4e
+    url: https://api.datadoghq.com/api/v1/dashboard/3xw-jvn-uez
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"usz-wbp-s4e","title":"Acceptance
-      Test Manage Status Widget Dashboard","url":"/dashboard/usz-wbp-s4e/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T09:13:14.341367+00:00","modified_at":"2020-07-28T09:13:14.341367+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
-      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1741153315041500}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3xw-jvn-uez","title":"Acceptance
+      Test Manage Status Widget Dashboard","url":"/dashboard/3xw-jvn-uez/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T11:47:03.475201+00:00","modified_at":"2020-07-28T11:47:03.475201+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
+      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5962647646151112}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -381,13 +431,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:13:18 GMT
+      - Tue, 28 Jul 2020 11:47:08 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:13:18 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:47:08 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -396,107 +446,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - rajJEfsboPljK0IoT6VG2bIDdCbTPfc4OT1rh+7d87tNdNhDpBYxlWejk8RqgKcK
-      X-Dd-Version:
-      - "35.2795924"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/usz-wbp-s4e
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"usz-wbp-s4e","title":"Acceptance
-      Test Manage Status Widget Dashboard","url":"/dashboard/usz-wbp-s4e/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T09:13:14.341367+00:00","modified_at":"2020-07-28T09:13:14.341367+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
-      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1741153315041500}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 28 Jul 2020 09:13:18 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:13:18 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - sajf01LxJwQCZMbBH5mYB3Lq0a+FOEj/vGI79qdxcco6zOoV3IzdxCfBjzpuIOjj
-      X-Dd-Version:
-      - "35.2795924"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/usz-wbp-s4e
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"usz-wbp-s4e","title":"Acceptance
-      Test Manage Status Widget Dashboard","url":"/dashboard/usz-wbp-s4e/acceptance-test-manage-status-widget-dashboard","created_at":"2020-07-28T09:13:14.341367+00:00","modified_at":"2020-07-28T09:13:14.341367+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"count":50,"sort":"triggered,desc","title_size":"20","title_align":"center","hide_zero_counts":true,"start":0,"summary_type":"combined","color_preference":"background","query":"env:prod
-      group_status:alert","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1741153315041500}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 28 Jul 2020 09:13:19 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:13:19 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - rajJEfsboPljK0IoT6VG2bIDdCbTPfc4OT1rh+7d87tNdNhDpBYxlWejk8RqgKcK
+      - 9mYEniFtS5+uMMpBgdc4g3j478B6BYCjAqkz+QgnFR0VklIj4kLmFYi5nYbdyaw/
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -514,10 +464,10 @@ interactions:
       - DeleteDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/usz-wbp-s4e
+    url: https://api.datadoghq.com/api/v1/dashboard/3xw-jvn-uez
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"usz-wbp-s4e"}'
+    body: '{"deleted_dashboard_id":"3xw-jvn-uez"}'
     headers:
       Cache-Control:
       - no-cache
@@ -528,13 +478,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:13:38 GMT
+      - Tue, 28 Jul 2020 11:47:33 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:13:20 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:47:09 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -543,7 +493,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - e5mDHCd2zzQdXJ87ni9L22dSgQ4GSpgr5UxzjJdcqQqnQ67iVcW7ODP10tLAdS/U
+      - 8JZG06jCUn+a7fRaMEDaZU70nqwQqnAG4CaaSqTVPNaow/491m+PqaJ5SjsRkzuU
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -561,10 +511,10 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/usz-wbp-s4e
+    url: https://api.datadoghq.com/api/v1/dashboard/3xw-jvn-uez
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID usz-wbp-s4e not found"]}'
+    body: '{"errors": ["Dashboard with ID 3xw-jvn-uez not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -575,7 +525,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:13:39 GMT
+      - Tue, 28 Jul 2020 11:47:34 GMT
       Dd-Pool:
       - dogweb
       Pragma:

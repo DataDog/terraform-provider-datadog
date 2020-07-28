@@ -18,9 +18,9 @@ interactions:
     method: POST
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"um6-evx-4gs","title":"Acceptance
-      Test Trace Service Widget Dashboard","url":"/dashboard/um6-evx-4gs/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T09:23:28.810906+00:00","modified_at":"2020-07-28T09:23:28.810906+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
-      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":961550563191118}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bhh-few-htx","title":"Acceptance
+      Test Trace Service Widget Dashboard","url":"/dashboard/bhh-few-htx/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T11:57:06.107014+00:00","modified_at":"2020-07-28T11:57:06.107014+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
+      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":3610940261046688}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -31,313 +31,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:23:28 GMT
+      - Tue, 28 Jul 2020 11:57:06 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:23:28 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 2xPouL1CjzBZdVIccnnb0Bd/+b62EioXU/uATEcYLYpH3/8SRYLoUc8F1fWZFVN8
-      X-Dd-Version:
-      - "35.2795924"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/um6-evx-4gs
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"um6-evx-4gs","title":"Acceptance
-      Test Trace Service Widget Dashboard","url":"/dashboard/um6-evx-4gs/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T09:23:28.810906+00:00","modified_at":"2020-07-28T09:23:28.810906+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
-      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":961550563191118}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 28 Jul 2020 09:23:29 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:23:29 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - Omw2HBtli6Fvv+m1GrrKYauxiZRRsmEallYCFjCXur8QlnmEuW2U9xJoVSDmbCuH
-      X-Dd-Version:
-      - "35.2795924"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/um6-evx-4gs
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"um6-evx-4gs","title":"Acceptance
-      Test Trace Service Widget Dashboard","url":"/dashboard/um6-evx-4gs/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T09:23:28.810906+00:00","modified_at":"2020-07-28T09:23:28.810906+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
-      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":961550563191118}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 28 Jul 2020 09:23:29 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:23:29 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - dUhA68ZA7mkGHV2dJPsBisZQA9cP5/pWOJ1IjAkmqFq1G06LpBBViCvakBPj4ars
-      X-Dd-Version:
-      - "35.2795924"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/um6-evx-4gs
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"um6-evx-4gs","title":"Acceptance
-      Test Trace Service Widget Dashboard","url":"/dashboard/um6-evx-4gs/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T09:23:28.810906+00:00","modified_at":"2020-07-28T09:23:28.810906+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
-      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":961550563191118}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 28 Jul 2020 09:23:30 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:23:30 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - RaA4l/GtcoykmA2yxpuFw01QJ8FlvGRIbJctw2NOZf5pynR/SHN3I//CJwn8M/jv
-      X-Dd-Version:
-      - "35.2795924"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/um6-evx-4gs
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"um6-evx-4gs","title":"Acceptance
-      Test Trace Service Widget Dashboard","url":"/dashboard/um6-evx-4gs/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T09:23:28.810906+00:00","modified_at":"2020-07-28T09:23:28.810906+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
-      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":961550563191118}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 28 Jul 2020 09:23:31 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:23:31 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - rpB/2GMZHvzTHZxhwmnNa1XnSQuif7FV+gIndoDc8IvUeRNb65r4x+P7Djp1119C
-      X-Dd-Version:
-      - "35.2795924"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/um6-evx-4gs
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"um6-evx-4gs","title":"Acceptance
-      Test Trace Service Widget Dashboard","url":"/dashboard/um6-evx-4gs/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T09:23:28.810906+00:00","modified_at":"2020-07-28T09:23:28.810906+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
-      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":961550563191118}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 28 Jul 2020 09:23:32 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:23:32 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - SxoanfhUZNcxsD3lnA3j+up2jAgZV05RpnWjR/qtgMkjy5UIlkbs0WqFT6yaBwwR
-      X-Dd-Version:
-      - "35.2795924"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/um6-evx-4gs
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"um6-evx-4gs","title":"Acceptance
-      Test Trace Service Widget Dashboard","url":"/dashboard/um6-evx-4gs/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T09:23:28.810906+00:00","modified_at":"2020-07-28T09:23:28.810906+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
-      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":961550563191118}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 28 Jul 2020 09:23:33 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:23:33 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:57:06 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -348,7 +48,7 @@ interactions:
       X-Dd-Debug:
       - PmHvY/3hQMkfpa77/JZnP4KMfnxMfBhgkFNufz5cMPJxCH+vl36FPdNqJbnHJlPP
       X-Dd-Version:
-      - "35.2795924"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -364,13 +64,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/um6-evx-4gs
+    url: https://api.datadoghq.com/api/v1/dashboard/bhh-few-htx
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"um6-evx-4gs","title":"Acceptance
-      Test Trace Service Widget Dashboard","url":"/dashboard/um6-evx-4gs/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T09:23:28.810906+00:00","modified_at":"2020-07-28T09:23:28.810906+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
-      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":961550563191118}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bhh-few-htx","title":"Acceptance
+      Test Trace Service Widget Dashboard","url":"/dashboard/bhh-few-htx/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T11:57:06.107014+00:00","modified_at":"2020-07-28T11:57:06.107014+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
+      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":3610940261046688}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -381,13 +81,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:23:33 GMT
+      - Tue, 28 Jul 2020 11:57:06 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:23:33 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:57:06 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -396,9 +96,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - +uDsNkatsgSGLErx/kplBzSeYc84+Se11zgumBBGSysIuKt2VRujYjfu6ST+zP2j
+      - fFk0sZgwwse+ZeEmqVGZPgcNG+SDXdM7Y74n6iOGuvoZenvaYEqZOvpOSMu1XDXx
       X-Dd-Version:
-      - "35.2795924"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -414,13 +114,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/um6-evx-4gs
+    url: https://api.datadoghq.com/api/v1/dashboard/bhh-few-htx
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"um6-evx-4gs","title":"Acceptance
-      Test Trace Service Widget Dashboard","url":"/dashboard/um6-evx-4gs/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T09:23:28.810906+00:00","modified_at":"2020-07-28T09:23:28.810906+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
-      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":961550563191118}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bhh-few-htx","title":"Acceptance
+      Test Trace Service Widget Dashboard","url":"/dashboard/bhh-few-htx/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T11:57:06.107014+00:00","modified_at":"2020-07-28T11:57:06.107014+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
+      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":3610940261046688}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -431,13 +131,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:23:34 GMT
+      - Tue, 28 Jul 2020 11:57:07 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:23:34 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:57:07 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -446,9 +146,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - hABsPq9DIvV7yAEiU7rMxs7UCRuTbRH/kYpwue4a0q9qmwd4SUh9bBZ5SHPkBLc6
+      - ISRExHElHntqNwZXbi16eoU4xsZRA8TTPWYn6rCV+4Pd0NBog+VXfSTgjW68Cljw
       X-Dd-Version:
-      - "35.2795924"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -464,13 +164,13 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/um6-evx-4gs
+    url: https://api.datadoghq.com/api/v1/dashboard/bhh-few-htx
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"um6-evx-4gs","title":"Acceptance
-      Test Trace Service Widget Dashboard","url":"/dashboard/um6-evx-4gs/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T09:23:28.810906+00:00","modified_at":"2020-07-28T09:23:28.810906+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
-      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":961550563191118}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bhh-few-htx","title":"Acceptance
+      Test Trace Service Widget Dashboard","url":"/dashboard/bhh-few-htx/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T11:57:06.107014+00:00","modified_at":"2020-07-28T11:57:06.107014+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
+      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":3610940261046688}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -481,13 +181,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:23:34 GMT
+      - Tue, 28 Jul 2020 11:57:08 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:23:34 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:57:08 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -496,9 +196,259 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 70XaWeaQvpcLJhvCTAqT4hHsqdm1UQrPhYlUoOuxIMHjzhNLG/kbMFjSjTsMEqRh
+      - qvq1iqw/IUtxZIj6xOGwcQcgojLCDnPCErRpEib++sLUQPUIVCXlu3B6uaiT7gpC
       X-Dd-Version:
-      - "35.2795924"
+      - "35.2796563"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/bhh-few-htx
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bhh-few-htx","title":"Acceptance
+      Test Trace Service Widget Dashboard","url":"/dashboard/bhh-few-htx/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T11:57:06.107014+00:00","modified_at":"2020-07-28T11:57:06.107014+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
+      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":3610940261046688}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 28 Jul 2020 11:57:09 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:57:09 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 8DZFg4ER87RBRXwEgX/O83QG9v6eaSWCsY6Jh1EgS9bUZ3NHHXsHxQlI/ewOnvkJ
+      X-Dd-Version:
+      - "35.2796563"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/bhh-few-htx
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bhh-few-htx","title":"Acceptance
+      Test Trace Service Widget Dashboard","url":"/dashboard/bhh-few-htx/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T11:57:06.107014+00:00","modified_at":"2020-07-28T11:57:06.107014+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
+      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":3610940261046688}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 28 Jul 2020 11:57:10 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:57:09 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - Tbp06bN8k5CN2G7dSd/Yt6OmUiE+oaO885kQguDj0mgkf924xmeRKMe6ehCO+qtb
+      X-Dd-Version:
+      - "35.2796563"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/bhh-few-htx
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bhh-few-htx","title":"Acceptance
+      Test Trace Service Widget Dashboard","url":"/dashboard/bhh-few-htx/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T11:57:06.107014+00:00","modified_at":"2020-07-28T11:57:06.107014+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
+      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":3610940261046688}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 28 Jul 2020 11:57:10 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:57:10 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - Tbp06bN8k5CN2G7dSd/Yt6OmUiE+oaO885kQguDj0mgkf924xmeRKMe6ehCO+qtb
+      X-Dd-Version:
+      - "35.2796563"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/bhh-few-htx
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bhh-few-htx","title":"Acceptance
+      Test Trace Service Widget Dashboard","url":"/dashboard/bhh-few-htx/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T11:57:06.107014+00:00","modified_at":"2020-07-28T11:57:06.107014+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
+      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":3610940261046688}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 28 Jul 2020 11:57:10 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:57:10 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - gVNIdapHKPO8AYjdy9S3maZRld1MJJMdw86uJT0dbFxfgM962NNYbwXfVmG/LFBa
+      X-Dd-Version:
+      - "35.2796563"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/bhh-few-htx
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bhh-few-htx","title":"Acceptance
+      Test Trace Service Widget Dashboard","url":"/dashboard/bhh-few-htx/acceptance-test-trace-service-widget-dashboard","created_at":"2020-07-28T11:57:06.107014+00:00","modified_at":"2020-07-28T11:57:06.107014+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"span_name":"postgres.connection.rollback","title_size":"16","service":"postgres","title":"postgres
+      #env:datadoghq.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datadoghq.com","time":{"live_span":"30m"},"show_distribution":true,"display_format":"three_column","show_latency":true,"show_resource_list":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":3610940261046688}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 28 Jul 2020 11:57:11 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:57:11 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 4ZutoXjD1dtrPYR8YKRovF2eKpb8tYXyHMBf1sluqqFFWp3GqAYhbsyigyK3Zy4D
+      X-Dd-Version:
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -514,10 +464,10 @@ interactions:
       - DeleteDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/um6-evx-4gs
+    url: https://api.datadoghq.com/api/v1/dashboard/bhh-few-htx
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"um6-evx-4gs"}'
+    body: '{"deleted_dashboard_id":"bhh-few-htx"}'
     headers:
       Cache-Control:
       - no-cache
@@ -528,13 +478,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:23:56 GMT
+      - Tue, 28 Jul 2020 11:57:35 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:23:35 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:57:12 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -543,9 +493,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 8A8KYFunHmbMGoUhAhh0dcNSwu/a9C1pi6AdKbsYpSx+6BCco+7UDhhLwyOB1aEg
+      - o2W9V5T/qDjQIsSq+5+Siudf4EOlRpUX+M15fPRYz8gZybuDtsu6qWHXbn0dIxp6
       X-Dd-Version:
-      - "35.2795924"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -561,10 +511,10 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/um6-evx-4gs
+    url: https://api.datadoghq.com/api/v1/dashboard/bhh-few-htx
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID um6-evx-4gs not found"]}'
+    body: '{"errors": ["Dashboard with ID bhh-few-htx not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -575,7 +525,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:23:56 GMT
+      - Tue, 28 Jul 2020 11:57:36 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -587,7 +537,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.2795924"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found

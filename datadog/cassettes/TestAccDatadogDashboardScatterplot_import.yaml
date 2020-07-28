@@ -18,13 +18,13 @@ interactions:
     method: POST
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"iit-89j-3ws","title":"Acceptance
-      Test Scatterplot Widget Dashboard","url":"/dashboard/iit-89j-3ws/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T09:16:53.054467+00:00","modified_at":"2020-07-28T09:16:53.054467+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"w7j-scx-yvt","title":"Acceptance
+      Test Scatterplot Widget Dashboard","url":"/dashboard/w7j-scx-yvt/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T11:50:40.694776+00:00","modified_at":"2020-07-28T11:50:40.694776+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
       (Gib)"},"title_align":"right","color_by_groups":["app"],"xaxis":{"include_zero":false,"max":"100","min":"0","scale":"log","label":"cpu
       (%)"},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user
       by service,team,app colored by app","requests":{"y":{"q":"avg:system.mem.used{env:prod}
       by {service, team, app}","aggregator":"avg"},"x":{"q":"avg:system.cpu.user{account:prod}
-      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":5250490972254572}],"layout_type":"ordered"}'
+      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":7297717143217980}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -35,13 +35,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:16:53 GMT
+      - Tue, 28 Jul 2020 11:50:40 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:16:52 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:50:40 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -50,7 +50,61 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - jicUVFbc66OIYAq7IAkmB2WpJ70vxjY6p18cm0vyR+TPMp9r4hmzTC1Ixas9xAHp
+      - 1VJ/JBZjQ3psCDX9vMO0iyJg70xEGWg24478mDq1snnclNYRLSCEVhKQ00cAiMiD
+      X-Dd-Version:
+      - "35.2796563"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/w7j-scx-yvt
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"w7j-scx-yvt","title":"Acceptance
+      Test Scatterplot Widget Dashboard","url":"/dashboard/w7j-scx-yvt/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T11:50:40.694776+00:00","modified_at":"2020-07-28T11:50:40.694776+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
+      (Gib)"},"title_align":"right","color_by_groups":["app"],"xaxis":{"include_zero":false,"max":"100","min":"0","scale":"log","label":"cpu
+      (%)"},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user
+      by service,team,app colored by app","requests":{"y":{"q":"avg:system.mem.used{env:prod}
+      by {service, team, app}","aggregator":"avg"},"x":{"q":"avg:system.cpu.user{account:prod}
+      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":7297717143217980}],"layout_type":"ordered"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 28 Jul 2020 11:50:40 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:50:40 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - XYajWeWSqH4hXGfPgl32Hg5Rji9m/szj+w0AkHXc7UGEyc6pStzGTC7wpJZNWzMv
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -68,17 +122,17 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/iit-89j-3ws
+    url: https://api.datadoghq.com/api/v1/dashboard/w7j-scx-yvt
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"iit-89j-3ws","title":"Acceptance
-      Test Scatterplot Widget Dashboard","url":"/dashboard/iit-89j-3ws/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T09:16:53.054467+00:00","modified_at":"2020-07-28T09:16:53.054467+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"w7j-scx-yvt","title":"Acceptance
+      Test Scatterplot Widget Dashboard","url":"/dashboard/w7j-scx-yvt/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T11:50:40.694776+00:00","modified_at":"2020-07-28T11:50:40.694776+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
       (Gib)"},"title_align":"right","color_by_groups":["app"],"xaxis":{"include_zero":false,"max":"100","min":"0","scale":"log","label":"cpu
       (%)"},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user
       by service,team,app colored by app","requests":{"y":{"q":"avg:system.mem.used{env:prod}
       by {service, team, app}","aggregator":"avg"},"x":{"q":"avg:system.cpu.user{account:prod}
-      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":5250490972254572}],"layout_type":"ordered"}'
+      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":7297717143217980}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -89,13 +143,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:16:53 GMT
+      - Tue, 28 Jul 2020 11:50:42 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:16:53 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:50:42 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -104,9 +158,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 4JftXV+eFbaZ/bUDGXltfUw9qS53RGIa0z5jie46djHsJef56QQ1lKjWA9X7MeMS
+      - F11u7JCZTPrHz8VfzL5YeXThxcQSR6CdLGgk2tF52+EbYWhXciN8nv9vA8oQ9C9A
       X-Dd-Version:
-      - "35.2795924"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -122,17 +176,17 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/iit-89j-3ws
+    url: https://api.datadoghq.com/api/v1/dashboard/w7j-scx-yvt
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"iit-89j-3ws","title":"Acceptance
-      Test Scatterplot Widget Dashboard","url":"/dashboard/iit-89j-3ws/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T09:16:53.054467+00:00","modified_at":"2020-07-28T09:16:53.054467+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"w7j-scx-yvt","title":"Acceptance
+      Test Scatterplot Widget Dashboard","url":"/dashboard/w7j-scx-yvt/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T11:50:40.694776+00:00","modified_at":"2020-07-28T11:50:40.694776+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
       (Gib)"},"title_align":"right","color_by_groups":["app"],"xaxis":{"include_zero":false,"max":"100","min":"0","scale":"log","label":"cpu
       (%)"},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user
       by service,team,app colored by app","requests":{"y":{"q":"avg:system.mem.used{env:prod}
       by {service, team, app}","aggregator":"avg"},"x":{"q":"avg:system.cpu.user{account:prod}
-      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":5250490972254572}],"layout_type":"ordered"}'
+      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":7297717143217980}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -143,13 +197,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:16:53 GMT
+      - Tue, 28 Jul 2020 11:50:42 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:16:53 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:50:42 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -158,9 +212,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - VOqdfFb1L6r4WA5qZJuA7ciJpbji0TP/2B0yt480hOsTwwlUma48sZp+h4PPwBuu
+      - cj7uytaySn+lI42WNBqQqklcygNsoO6Bu+bYPEuFW6E1QU8AHsXeloQyFcOsDjxM
       X-Dd-Version:
-      - "35.2795924"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -176,17 +230,17 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/iit-89j-3ws
+    url: https://api.datadoghq.com/api/v1/dashboard/w7j-scx-yvt
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"iit-89j-3ws","title":"Acceptance
-      Test Scatterplot Widget Dashboard","url":"/dashboard/iit-89j-3ws/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T09:16:53.054467+00:00","modified_at":"2020-07-28T09:16:53.054467+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"w7j-scx-yvt","title":"Acceptance
+      Test Scatterplot Widget Dashboard","url":"/dashboard/w7j-scx-yvt/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T11:50:40.694776+00:00","modified_at":"2020-07-28T11:50:40.694776+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
       (Gib)"},"title_align":"right","color_by_groups":["app"],"xaxis":{"include_zero":false,"max":"100","min":"0","scale":"log","label":"cpu
       (%)"},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user
       by service,team,app colored by app","requests":{"y":{"q":"avg:system.mem.used{env:prod}
       by {service, team, app}","aggregator":"avg"},"x":{"q":"avg:system.cpu.user{account:prod}
-      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":5250490972254572}],"layout_type":"ordered"}'
+      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":7297717143217980}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -197,13 +251,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:16:55 GMT
+      - Tue, 28 Jul 2020 11:50:43 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:16:55 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:50:43 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -212,9 +266,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - tIQ/LE3bREn8bmdjC5pLQRzRlO9OCkagvkOh7X48czDuOGRM9jFNMxM68+8VnEmp
+      - e5mDHCd2zzQdXJ87ni9L22dSgQ4GSpgr5UxzjJdcqQqnQ67iVcW7ODP10tLAdS/U
       X-Dd-Version:
-      - "35.2795924"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -230,17 +284,17 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/iit-89j-3ws
+    url: https://api.datadoghq.com/api/v1/dashboard/w7j-scx-yvt
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"iit-89j-3ws","title":"Acceptance
-      Test Scatterplot Widget Dashboard","url":"/dashboard/iit-89j-3ws/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T09:16:53.054467+00:00","modified_at":"2020-07-28T09:16:53.054467+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"w7j-scx-yvt","title":"Acceptance
+      Test Scatterplot Widget Dashboard","url":"/dashboard/w7j-scx-yvt/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T11:50:40.694776+00:00","modified_at":"2020-07-28T11:50:40.694776+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
       (Gib)"},"title_align":"right","color_by_groups":["app"],"xaxis":{"include_zero":false,"max":"100","min":"0","scale":"log","label":"cpu
       (%)"},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user
       by service,team,app colored by app","requests":{"y":{"q":"avg:system.mem.used{env:prod}
       by {service, team, app}","aggregator":"avg"},"x":{"q":"avg:system.cpu.user{account:prod}
-      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":5250490972254572}],"layout_type":"ordered"}'
+      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":7297717143217980}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -251,13 +305,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:16:55 GMT
+      - Tue, 28 Jul 2020 11:50:44 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:16:55 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:50:44 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -266,9 +320,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Ibwt1LOMazDUZo/NkqtIyT001dZxiPruSKHOyBiCNyqNWAUjrw1TErmlQNwQ5uoW
+      - MZP0PcaX9dH/DjZhXTwlBn6Pk3A69T07Bs4hPMy2cWmQUYTL4O3b0G/AxWzbdyaO
       X-Dd-Version:
-      - "35.2795924"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -284,17 +338,17 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/iit-89j-3ws
+    url: https://api.datadoghq.com/api/v1/dashboard/w7j-scx-yvt
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"iit-89j-3ws","title":"Acceptance
-      Test Scatterplot Widget Dashboard","url":"/dashboard/iit-89j-3ws/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T09:16:53.054467+00:00","modified_at":"2020-07-28T09:16:53.054467+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"w7j-scx-yvt","title":"Acceptance
+      Test Scatterplot Widget Dashboard","url":"/dashboard/w7j-scx-yvt/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T11:50:40.694776+00:00","modified_at":"2020-07-28T11:50:40.694776+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
       (Gib)"},"title_align":"right","color_by_groups":["app"],"xaxis":{"include_zero":false,"max":"100","min":"0","scale":"log","label":"cpu
       (%)"},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user
       by service,team,app colored by app","requests":{"y":{"q":"avg:system.mem.used{env:prod}
       by {service, team, app}","aggregator":"avg"},"x":{"q":"avg:system.cpu.user{account:prod}
-      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":5250490972254572}],"layout_type":"ordered"}'
+      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":7297717143217980}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -305,13 +359,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:16:56 GMT
+      - Tue, 28 Jul 2020 11:50:44 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:16:56 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:50:44 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -320,9 +374,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - aC8qcH2mS/zUiJTlLtiTZIVBE/Le2rHoU2QsuB2T7M2UnE5FaKBJ6Qf4HaqqvcfF
+      - C1wPZc/e+nXf4MvxtJydD7BZdHWbhiZqXx0eeGvAhJ5VDmuXMem/y36Amb0cNToP
       X-Dd-Version:
-      - "35.2795924"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -338,17 +392,17 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/iit-89j-3ws
+    url: https://api.datadoghq.com/api/v1/dashboard/w7j-scx-yvt
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"iit-89j-3ws","title":"Acceptance
-      Test Scatterplot Widget Dashboard","url":"/dashboard/iit-89j-3ws/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T09:16:53.054467+00:00","modified_at":"2020-07-28T09:16:53.054467+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"w7j-scx-yvt","title":"Acceptance
+      Test Scatterplot Widget Dashboard","url":"/dashboard/w7j-scx-yvt/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T11:50:40.694776+00:00","modified_at":"2020-07-28T11:50:40.694776+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
       (Gib)"},"title_align":"right","color_by_groups":["app"],"xaxis":{"include_zero":false,"max":"100","min":"0","scale":"log","label":"cpu
       (%)"},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user
       by service,team,app colored by app","requests":{"y":{"q":"avg:system.mem.used{env:prod}
       by {service, team, app}","aggregator":"avg"},"x":{"q":"avg:system.cpu.user{account:prod}
-      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":5250490972254572}],"layout_type":"ordered"}'
+      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":7297717143217980}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -359,13 +413,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:16:56 GMT
+      - Tue, 28 Jul 2020 11:50:45 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:16:56 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:50:45 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -374,9 +428,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - /1fAs/CdNQA1UfBxct16x8hCT/Ihsq9Vczk8HxW+wOLbgrFaTw05486O8QNjhsKE
+      - ELTun2XqIEAYoBp2BtBf6ZVUcDLUs7Meb/wSlIWJXGbzTLrCMnPJmd6X3VfYJEJo
       X-Dd-Version:
-      - "35.2795924"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -392,17 +446,17 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/iit-89j-3ws
+    url: https://api.datadoghq.com/api/v1/dashboard/w7j-scx-yvt
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"iit-89j-3ws","title":"Acceptance
-      Test Scatterplot Widget Dashboard","url":"/dashboard/iit-89j-3ws/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T09:16:53.054467+00:00","modified_at":"2020-07-28T09:16:53.054467+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"w7j-scx-yvt","title":"Acceptance
+      Test Scatterplot Widget Dashboard","url":"/dashboard/w7j-scx-yvt/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T11:50:40.694776+00:00","modified_at":"2020-07-28T11:50:40.694776+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
       (Gib)"},"title_align":"right","color_by_groups":["app"],"xaxis":{"include_zero":false,"max":"100","min":"0","scale":"log","label":"cpu
       (%)"},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user
       by service,team,app colored by app","requests":{"y":{"q":"avg:system.mem.used{env:prod}
       by {service, team, app}","aggregator":"avg"},"x":{"q":"avg:system.cpu.user{account:prod}
-      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":5250490972254572}],"layout_type":"ordered"}'
+      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":7297717143217980}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -413,13 +467,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:16:56 GMT
+      - Tue, 28 Jul 2020 11:50:45 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:16:56 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:50:45 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -428,117 +482,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - L5yd3v29mZzDtdpTLB/OLdaP/nm856X8oKVK7IsHIbLmKRYkqq5Jv7+SBx/bs1VS
+      - IUIG1jlrSHQkc9feHBACFJXPy2i1FZzcbW7VarMYajKpBYkQIdS6RX76uPj2FYKJ
       X-Dd-Version:
-      - "35.2795924"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/iit-89j-3ws
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"iit-89j-3ws","title":"Acceptance
-      Test Scatterplot Widget Dashboard","url":"/dashboard/iit-89j-3ws/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T09:16:53.054467+00:00","modified_at":"2020-07-28T09:16:53.054467+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
-      (Gib)"},"title_align":"right","color_by_groups":["app"],"xaxis":{"include_zero":false,"max":"100","min":"0","scale":"log","label":"cpu
-      (%)"},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user
-      by service,team,app colored by app","requests":{"y":{"q":"avg:system.mem.used{env:prod}
-      by {service, team, app}","aggregator":"avg"},"x":{"q":"avg:system.cpu.user{account:prod}
-      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":5250490972254572}],"layout_type":"ordered"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 28 Jul 2020 09:16:57 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:16:57 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - uuig48mIKpMsZwlr8FXRQHKSo2wI0m7ajAgK7C+mJu60cjxQJ9/Mo/I4LrRtkMaw
-      X-Dd-Version:
-      - "35.2795924"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/iit-89j-3ws
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"iit-89j-3ws","title":"Acceptance
-      Test Scatterplot Widget Dashboard","url":"/dashboard/iit-89j-3ws/acceptance-test-scatterplot-widget-dashboard","created_at":"2020-07-28T09:16:53.054467+00:00","modified_at":"2020-07-28T09:16:53.054467+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem
-      (Gib)"},"title_align":"right","color_by_groups":["app"],"xaxis":{"include_zero":false,"max":"100","min":"0","scale":"log","label":"cpu
-      (%)"},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user
-      by service,team,app colored by app","requests":{"y":{"q":"avg:system.mem.used{env:prod}
-      by {service, team, app}","aggregator":"avg"},"x":{"q":"avg:system.cpu.user{account:prod}
-      by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":5250490972254572}],"layout_type":"ordered"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 28 Jul 2020 09:16:57 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:16:57 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - or2/rWmxLrmJ7TBZ8AnY49F5r/zsIVWKoWWln22xAuunThJ/njhoGk3FOyAt2XGC
-      X-Dd-Version:
-      - "35.2795924"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -554,10 +500,10 @@ interactions:
       - DeleteDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/iit-89j-3ws
+    url: https://api.datadoghq.com/api/v1/dashboard/w7j-scx-yvt
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"iit-89j-3ws"}'
+    body: '{"deleted_dashboard_id":"w7j-scx-yvt"}'
     headers:
       Cache-Control:
       - no-cache
@@ -568,13 +514,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:17:21 GMT
+      - Tue, 28 Jul 2020 11:51:06 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:16:58 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:50:46 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -583,7 +529,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - URuEGeGWIDvCpv/GZ0JObE6fVYtpiDDtKlj4r11t+xUAnl+NB2s4SIIsr5lrqCJP
+      - Iq+PCudgbL86AsCtEhGk1g+0wAKNJYW3pFOjBo0Ed8a5aVFBuDvJ68L2xH/RXAPf
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -601,10 +547,10 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/iit-89j-3ws
+    url: https://api.datadoghq.com/api/v1/dashboard/w7j-scx-yvt
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID iit-89j-3ws not found"]}'
+    body: '{"errors": ["Dashboard with ID w7j-scx-yvt not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -615,7 +561,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:17:21 GMT
+      - Tue, 28 Jul 2020 11:51:06 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -627,7 +573,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.2795924"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found

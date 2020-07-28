@@ -18,11 +18,11 @@ interactions:
     method: POST
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"jnd-evu-46t","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/jnd-evu-46t/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T09:02:02.607366+00:00","modified_at":"2020-07-28T09:02:02.607366+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2318256058784434},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wev-75h-uth","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/wev-75h-uth/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T11:35:30.413142+00:00","modified_at":"2020-07-28T11:35:30.413142+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2597470063922750},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1290674678566709}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1382313792812211}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -33,13 +33,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:02:02 GMT
+      - Tue, 28 Jul 2020 11:35:30 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:02:02 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:35:30 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -48,7 +48,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - PoGJpP1BEAFX5aSiGOJR6oXkvUXFiVKs61rDsbvTxI5BwO9/Q/62yPtI4GfxRLVM
+      - c0iIf+8od+LWFc1nNL0N8AQWojGfJ/JnxWgSmjrPehpU3RSufBX7dVgVD11pOk4o
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -66,15 +66,15 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/jnd-evu-46t
+    url: https://api.datadoghq.com/api/v1/dashboard/wev-75h-uth
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"jnd-evu-46t","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/jnd-evu-46t/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T09:02:02.607366+00:00","modified_at":"2020-07-28T09:02:02.607366+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2318256058784434},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wev-75h-uth","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/wev-75h-uth/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T11:35:30.413142+00:00","modified_at":"2020-07-28T11:35:30.413142+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2597470063922750},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1290674678566709}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1382313792812211}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -85,13 +85,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:02:02 GMT
+      - Tue, 28 Jul 2020 11:35:30 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:02:02 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:35:30 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -100,7 +100,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 1FWMmPoJiTyRk/TBxW+wJxr0ELulYySex1/Fb+CHQd/1AXyAGQmmMRUoKsUNAri2
+      - qvq1iqw/IUtxZIj6xOGwcQcgojLCDnPCErRpEib++sLUQPUIVCXlu3B6uaiT7gpC
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -118,15 +118,15 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/jnd-evu-46t
+    url: https://api.datadoghq.com/api/v1/dashboard/wev-75h-uth
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"jnd-evu-46t","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/jnd-evu-46t/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T09:02:02.607366+00:00","modified_at":"2020-07-28T09:02:02.607366+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2318256058784434},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wev-75h-uth","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/wev-75h-uth/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T11:35:30.413142+00:00","modified_at":"2020-07-28T11:35:30.413142+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2597470063922750},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1290674678566709}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1382313792812211}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -137,13 +137,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:02:03 GMT
+      - Tue, 28 Jul 2020 11:35:32 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:02:03 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:35:32 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -152,7 +152,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - QO3HutZQjgMDp/HqClcLon+qq5lEghb3LRV+gXMIQ2Jivd1m1eEGCh0RxplUQMIV
+      - l1H8/veMc9uaJ6/zwIQ3/enwUumdwDP7t4tetz2IE2KQwgedkG9MW+zsj4bTQZao
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -170,15 +170,15 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/jnd-evu-46t
+    url: https://api.datadoghq.com/api/v1/dashboard/wev-75h-uth
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"jnd-evu-46t","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/jnd-evu-46t/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T09:02:02.607366+00:00","modified_at":"2020-07-28T09:02:02.607366+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2318256058784434},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wev-75h-uth","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/wev-75h-uth/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T11:35:30.413142+00:00","modified_at":"2020-07-28T11:35:30.413142+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2597470063922750},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1290674678566709}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1382313792812211}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -189,13 +189,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:02:04 GMT
+      - Tue, 28 Jul 2020 11:35:32 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:02:04 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:35:32 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -204,7 +204,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - z/ez10RrF4r6d78uUYqSlZLhWiCXp8fpJI19IFzUOZtgzmrM3bioOEWZ/tvSKB+O
+      - OveI9gDJZLFmIyTmIvZDrhiC8qspaFiNY09/dxBVYsK8+lEpH1h/0VJhDIy8BEfo
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -222,15 +222,15 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/jnd-evu-46t
+    url: https://api.datadoghq.com/api/v1/dashboard/wev-75h-uth
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"jnd-evu-46t","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/jnd-evu-46t/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T09:02:02.607366+00:00","modified_at":"2020-07-28T09:02:02.607366+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2318256058784434},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wev-75h-uth","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/wev-75h-uth/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T11:35:30.413142+00:00","modified_at":"2020-07-28T11:35:30.413142+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2597470063922750},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1290674678566709}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1382313792812211}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -241,13 +241,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:02:05 GMT
+      - Tue, 28 Jul 2020 11:35:33 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:02:05 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:35:33 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -256,7 +256,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - dJ1k0vE6N2QAqKKr5+3OfRWQwLSb6j4uP6j4Bl+7j1ZSiaodXUBMXWo/xK3ZKOrQ
+      - B4NH/mCxObqn4O5jv7XHTkOx3wexdskicA8gFX/CbXL/9OzTSL7phxFivTfuVz5T
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -274,15 +274,15 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/jnd-evu-46t
+    url: https://api.datadoghq.com/api/v1/dashboard/wev-75h-uth
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"jnd-evu-46t","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/jnd-evu-46t/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T09:02:02.607366+00:00","modified_at":"2020-07-28T09:02:02.607366+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2318256058784434},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wev-75h-uth","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/wev-75h-uth/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T11:35:30.413142+00:00","modified_at":"2020-07-28T11:35:30.413142+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2597470063922750},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1290674678566709}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1382313792812211}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -293,13 +293,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:02:06 GMT
+      - Tue, 28 Jul 2020 11:35:34 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:02:06 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:35:34 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -308,7 +308,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - r8lNxi7BNK74poVlrwue/NOIwi0yq4wLy3DATToamCYXBl6jiI+rjEUZgm0JJ+f1
+      - ks/xUXjr4afqxDNM1zeevYlZbVpq01AoUv91oxQvkrfMG5+654NmX2BT/QU3E/9i
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -326,15 +326,15 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/jnd-evu-46t
+    url: https://api.datadoghq.com/api/v1/dashboard/wev-75h-uth
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"jnd-evu-46t","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/jnd-evu-46t/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T09:02:02.607366+00:00","modified_at":"2020-07-28T09:02:02.607366+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2318256058784434},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wev-75h-uth","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/wev-75h-uth/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T11:35:30.413142+00:00","modified_at":"2020-07-28T11:35:30.413142+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2597470063922750},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1290674678566709}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1382313792812211}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -345,13 +345,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:02:06 GMT
+      - Tue, 28 Jul 2020 11:35:34 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:02:06 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:35:34 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -360,7 +360,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - oVsUL9/YxuJ1yLDaJ4B+3h5DPSK01ZqUm1gZyQ4X+jL6AyqXd6t1+esYDTJj/CxK
+      - 8DZFg4ER87RBRXwEgX/O83QG9v6eaSWCsY6Jh1EgS9bUZ3NHHXsHxQlI/ewOnvkJ
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -378,15 +378,15 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/jnd-evu-46t
+    url: https://api.datadoghq.com/api/v1/dashboard/wev-75h-uth
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"jnd-evu-46t","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/jnd-evu-46t/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T09:02:02.607366+00:00","modified_at":"2020-07-28T09:02:02.607366+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2318256058784434},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wev-75h-uth","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/wev-75h-uth/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T11:35:30.413142+00:00","modified_at":"2020-07-28T11:35:30.413142+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2597470063922750},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1290674678566709}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1382313792812211}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -397,13 +397,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:02:06 GMT
+      - Tue, 28 Jul 2020 11:35:35 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:02:06 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:35:35 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -412,7 +412,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - +IAiD9q4/Ev4r3fVLFhYkYCPq+oUgBMYEEJS53pvquEiqOvPth2AwK0XJbkWcrb9
+      - or2/rWmxLrmJ7TBZ8AnY49F5r/zsIVWKoWWln22xAuunThJ/njhoGk3FOyAt2XGC
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -430,15 +430,15 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/jnd-evu-46t
+    url: https://api.datadoghq.com/api/v1/dashboard/wev-75h-uth
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"jnd-evu-46t","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/jnd-evu-46t/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T09:02:02.607366+00:00","modified_at":"2020-07-28T09:02:02.607366+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2318256058784434},{"definition":{"title_size":"16","title":"Sum
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wev-75h-uth","title":"Acceptance
+      Test Change Widget Dashboard","url":"/dashboard/wev-75h-uth/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T11:35:30.413142+00:00","modified_at":"2020-07-28T11:35:30.413142+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
+      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2597470063922750},{"definition":{"title_size":"16","title":"Sum
       of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1290674678566709}],"layout_type":"ordered"}'
+      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1382313792812211}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -449,13 +449,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:02:07 GMT
+      - Tue, 28 Jul 2020 11:35:35 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:02:07 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:35:35 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -464,59 +464,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Iq+PCudgbL86AsCtEhGk1g+0wAKNJYW3pFOjBo0Ed8a5aVFBuDvJ68L2xH/RXAPf
-      X-Dd-Version:
-      - "35.2795924"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/jnd-evu-46t
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"jnd-evu-46t","title":"Acceptance
-      Test Change Widget Dashboard","url":"/dashboard/jnd-evu-46t/acceptance-test-change-widget-dashboard","created_at":"2020-07-28T09:02:02.607366+00:00","modified_at":"2020-07-28T09:02:02.607366+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":2318256058784434},{"definition":{"title_size":"16","title":"Sum
-      of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*}
-      by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":1290674678566709}],"layout_type":"ordered"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 28 Jul 2020 09:02:07 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:02:07 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - K1yJHFFWTuLsZrH9EicIcBNQbXN2WAmKfekXYtza4wc8LLPL6LWk24ijajTz07Iw
+      - ISRExHElHntqNwZXbi16eoU4xsZRA8TTPWYn6rCV+4Pd0NBog+VXfSTgjW68Cljw
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -534,10 +482,10 @@ interactions:
       - DeleteDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/jnd-evu-46t
+    url: https://api.datadoghq.com/api/v1/dashboard/wev-75h-uth
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"jnd-evu-46t"}'
+    body: '{"deleted_dashboard_id":"wev-75h-uth"}'
     headers:
       Cache-Control:
       - no-cache
@@ -548,13 +496,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:02:25 GMT
+      - Tue, 28 Jul 2020 11:35:53 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 09:02:08 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:35:36 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -563,7 +511,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 8MRR0NkVw49W3uATmHo+0FNQyvV4WacRTAbi5VJvavh4E9gzYjuOfcDmi6q2E5fz
+      - gbC8GhXMRPcFjT0Gzb8LOn48Qb7SagR35DPOiCZ2y1uLjZ3aGTSLOWamS5eoiBXE
       X-Dd-Version:
       - "35.2795924"
       X-Frame-Options:
@@ -581,10 +529,10 @@ interactions:
       - GetDashboard
       User-Agent:
       - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/jnd-evu-46t
+    url: https://api.datadoghq.com/api/v1/dashboard/wev-75h-uth
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID jnd-evu-46t not found"]}'
+    body: '{"errors": ["Dashboard with ID wev-75h-uth not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -595,7 +543,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 28 Jul 2020 09:02:25 GMT
+      - Tue, 28 Jul 2020 11:35:53 GMT
       Dd-Pool:
       - dogweb
       Pragma:
