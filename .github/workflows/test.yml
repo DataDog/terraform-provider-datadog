@@ -28,9 +28,5 @@ jobs:
       uses: actions/checkout@v2
     - name: Vet
       run: make vet
-    - name: Website test
-      if: matrix.platform == 'ubuntu-latest'
-      shell: bash
-      run: make -e GOPATH="$(go env GOPATH)" website-test 
     - name: Test
       run: make test
