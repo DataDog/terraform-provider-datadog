@@ -9,6 +9,7 @@ description: |-
 # datadog_synthetics_locations
 
 Use this data source to retrieve Datadog's Synthetics Locations (to be used in Synthetics tests).
+
 ## Example Usage
 
 ```hcl
@@ -22,4 +23,4 @@ resource "datadog_synthetics_test" "test_api" {
 
 ## Attributes Reference
 
- * `locations` - An map of available Synthetics location IDs to names for Synthetics tests.
+ * `locations` - A map of available Synthetics location IDs to names for Synthetics tests.
