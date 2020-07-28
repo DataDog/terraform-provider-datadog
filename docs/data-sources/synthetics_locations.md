@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
 page_title: "Datadog: datadog_synthetics_locations"
-sidebar_current: "docs-datadog-datasource-synthetics-locations"
-description: |-
-  Get information on Datadog's Synthetics locations for Synthetics tests
 ---
 
-# datadog_synthetics_locations
+# datadog_synthetics_locations Data source
 
 Use this data source to retrieve Datadog's Synthetics Locations (to be used in Synthetics tests).
 
