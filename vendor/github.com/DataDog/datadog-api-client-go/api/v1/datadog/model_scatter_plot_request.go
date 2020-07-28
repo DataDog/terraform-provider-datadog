@@ -21,8 +21,9 @@ type ScatterPlotRequest struct {
 	NetworkQuery *LogQueryDefinition     `json:"network_query,omitempty"`
 	ProcessQuery *ProcessQueryDefinition `json:"process_query,omitempty"`
 	// Query definition.
-	Q        *string             `json:"q,omitempty"`
-	RumQuery *LogQueryDefinition `json:"rum_query,omitempty"`
+	Q             *string             `json:"q,omitempty"`
+	RumQuery      *LogQueryDefinition `json:"rum_query,omitempty"`
+	SecurityQuery *LogQueryDefinition `json:"security_query,omitempty"`
 }
 
 // NewScatterPlotRequest instantiates a new ScatterPlotRequest object
@@ -298,6 +299,38 @@ func (o *ScatterPlotRequest) SetRumQuery(v LogQueryDefinition) {
 	o.RumQuery = &v
 }
 
+// GetSecurityQuery returns the SecurityQuery field value if set, zero value otherwise.
+func (o *ScatterPlotRequest) GetSecurityQuery() LogQueryDefinition {
+	if o == nil || o.SecurityQuery == nil {
+		var ret LogQueryDefinition
+		return ret
+	}
+	return *o.SecurityQuery
+}
+
+// GetSecurityQueryOk returns a tuple with the SecurityQuery field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ScatterPlotRequest) GetSecurityQueryOk() (*LogQueryDefinition, bool) {
+	if o == nil || o.SecurityQuery == nil {
+		return nil, false
+	}
+	return o.SecurityQuery, true
+}
+
+// HasSecurityQuery returns a boolean if a field has been set.
+func (o *ScatterPlotRequest) HasSecurityQuery() bool {
+	if o != nil && o.SecurityQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSecurityQuery gets a reference to the given LogQueryDefinition and assigns it to the SecurityQuery field.
+func (o *ScatterPlotRequest) SetSecurityQuery(v LogQueryDefinition) {
+	o.SecurityQuery = &v
+}
+
 func (o ScatterPlotRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Aggregator != nil {
@@ -323,6 +356,9 @@ func (o ScatterPlotRequest) MarshalJSON() ([]byte, error) {
 	}
 	if o.RumQuery != nil {
 		toSerialize["rum_query"] = o.RumQuery
+	}
+	if o.SecurityQuery != nil {
+		toSerialize["security_query"] = o.SecurityQuery
 	}
 	return json.Marshal(toSerialize)
 }
