@@ -1,14 +1,11 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_ip_ranges"
-sidebar_current: "docs-datadog-datasource-ip-ranges"
-description: |-
-  Get information on Datadog's IP addresses.
+page_title: "datadog_ip_ranges"
 ---
 
-# datadog_ip_ranges
+# datadog_ip_ranges Data Source
 
 Use this data source to retrieve information about Datadog's IP addresses.
+
 ## Example Usage
 
 ```

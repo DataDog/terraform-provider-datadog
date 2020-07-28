@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_integration_azure"
-sidebar_current: "docs-datadog-resource-integration_azure"
-description: |-
-  Provides a Datadog - Microsoft Azure integration resource. This can be used to create and manage the integrations.
+page_title: "datadog_integration_azure"
 ---
 
-# datadog_integration_azure
+# datadog_integration_azure Resource
 
 Provides a Datadog - Microsoft Azure integration resource. This can be used to create and manage the integrations.
 

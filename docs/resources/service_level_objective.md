@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_service_level_objective"
-sidebar_current: "docs-datadog-resource-service_level_objective"
-description: |-
-  Provides a Datadog service level objective resource. This can be used to create and manage service level objectives.
+page_title: "datadog_service_level_objective"
 ---
 
-# datadog_service_level_objective
+# datadog_service_level_objective Resource
 
 Provides a Datadog service level objective resource. This can be used to create and manage Datadog service level objectives.
 

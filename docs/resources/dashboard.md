@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_dashboard"
-sidebar_current: "docs-datadog-resource-dashboard"
-description: |-
-  Provides a Datadog dashboard resource. This can be used to create and manage dashboards.
+page_title: " datadog_dashboard"
 ---
 
-# datadog_dashboard
+# datadog_dashboard Resource
 
 Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.
 

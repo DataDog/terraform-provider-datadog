@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_screenboard"
-sidebar_current: "docs-datadog-resource-screenboard"
-description: |-
-  Provides a Datadog screenboard resource. This can be used to create and manage screenboards.
+page_title: "datadog_screenboard"
 ---
 
-# datadog_screenboard
+# datadog_screenboard Resource
 
 Provides a Datadog screenboard resource. This can be used to create and manage Datadog screenboards.
 

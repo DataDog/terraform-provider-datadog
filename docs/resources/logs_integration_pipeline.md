@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_logs_integration_pipeline"
-sidebar_current: "docs-datadog-resource-logs-integration-pipeline"
-description: |-
-  Provides a Datadog logs integration pipeline resource, which is used to create and manage logs integration pipelines.
+page_title: "datadog_logs_integration_pipeline"
 ---
 
-# datadog_logs_integration_pipeline
+# datadog_logs_integration_pipeline Resource
 
 Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/) resource to manage
 the [integrations](https://docs.datadoghq.com/logs/log_collection/?tab=tcpussite).

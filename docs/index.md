@@ -1,9 +1,5 @@
 ---
-layout: "datadog"
 page_title: "Provider: Datadog"
-sidebar_current: "docs-datadog-index"
-description: |-
-  The Datadog provider is used to interact with the resources supported by Datadog. The provider needs to be configured with the proper credentials before it can be used.
 ---
 
 # Datadog Provider

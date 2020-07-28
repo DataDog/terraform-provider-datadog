@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_dashboard_list"
-sidebar_current: "docs-datadog-resource-dashboard-list"
-description: |-
-  Provides a Datadog dashboard list resource. This can be used to create and manage dashboard lists and their sub elements.
+page_title: "datadog_dashboard_list"
 ---
 
-# datadog_dashboard_list
+# datadog_dashboard_list Resource
 
 Provides a Datadog dashboard_list resource. This can be used to create and manage Datadog Dashboard Lists and the individual dashboards within them.
 
