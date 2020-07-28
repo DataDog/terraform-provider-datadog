@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_integration_aws"
-sidebar_current: "docs-datadog-resource-integration_aws"
-description: |-
-  Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage the integrations.
+page_title: "datadog_integration_aws"
 ---
 
-# datadog_integration_aws
+# datadog_integration_aws Resource
 
 Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.
 

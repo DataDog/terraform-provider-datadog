@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_integration_pagerduty"
-sidebar_current: "docs-datadog-resource-integration_pagerduty"
-description: |-
-  Provides a Datadog - PagerDuty integration resource. This can be used to create and manage the integration.
+page_title: "datadog_integration_pagerduty"
 ---
 
-# datadog_integration_pagerduty
+# datadog_integration_pagerduty Resource
 
 Provides a Datadog - PagerDuty resource. This can be used to create and manage Datadog - PagerDuty integration. This resource is deprecated and should only be used for legacy purposes.
 

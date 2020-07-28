@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_logs_custom_pipeline"
-sidebar_current: "docs-datadog-resource-logs-custom-pipeline"
-description: |-
-  Provides a Datadog logs custom pipeline resource, which is used to create and manage logs custom pipelines.
+page_title: "datadog_logs_custom_pipeline"
 ---
 
-# datadog_logs_custom_pipeline
+# datadog_logs_custom_pipeline Resource
 
 Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/) resource, which is used to create and manage Datadog logs custom pipelines.
 

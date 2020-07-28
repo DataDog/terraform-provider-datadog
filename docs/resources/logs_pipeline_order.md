@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_logs_pipeline_order"
-sidebar_current: "docs-datadog-resource-logs-pipeline-order"
-description: |-
-  Provides a Datadog logs pipeline order resource, which is used to manage the order of log pipelines.
+page_title: "datadog_logs_pipeline_order"
 ---
 
-# datadog_logs_pipeline_order
+# datadog_logs_pipeline_order Resource
 
 Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/) resource, which is used to manage Datadog log pipelines order.
 

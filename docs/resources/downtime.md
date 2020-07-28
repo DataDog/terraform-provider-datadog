@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_downtime"
-sidebar_current: "docs-datadog-resource-downtime"
-description: |-
-  Provides a Datadog downtime resource. This can be used to create and manage downtimes.
+page_title: "datadog_downtime"
 ---
 
-# datadog_downtime
+# datadog_downtime Resource
 
 Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.
 

@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_monitor"
-sidebar_current: "docs-datadog-resource-monitor"
-description: |-
-  Provides a Datadog monitor resource. This can be used to create and manage monitors.
+page_title: "datadog_monitor"
 ---
 
-# datadog_monitor
+# datadog_monitor Resource
 
 Provides a Datadog monitor resource. This can be used to create and manage Datadog monitors.
 

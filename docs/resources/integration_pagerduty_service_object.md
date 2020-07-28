@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_integration_pagerduty_service_object"
-sidebar_current: "docs-datadog-resource-integration_pagerduty_service_object"
-description: |-
-  Provides a Datadog - PagerDuty integration resource. This can be used to create and manage the integration.
+page_title: "datadog_integration_pagerduty_service_object"
 ---
 
-# datadog_integration_pagerduty_service_object
+# datadog_integration_pagerduty_service_object Resource
 
 Provides access to individual Service Objects of Datadog - PagerDuty integrations. Note that the Datadog - PagerDuty integration must be activated in the Datadog UI in order for this resource to be usable.
 

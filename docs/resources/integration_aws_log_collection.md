@@ -1,13 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_integration_aws_log_collection"
-sidebar_current: "docs-datadog-resource-integration_aws_log_collection"
-description: |-
-  Provides a Datadog - Amazon Web Services integration log collection resource. This can be used to manage which
-  AWS services logs are collected from for an account.
+page_title: "datadog_integration_aws_log_collection"
 ---
 
-# datadog_integration_aws_log_collection
+# datadog_integration_aws_log_collection Resource
 
 Provides a Datadog - Amazon Web Services integration log collection resource. This can be used to manage which
 AWS services logs are collected from for an account.

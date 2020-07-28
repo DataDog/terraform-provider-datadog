@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_monitor"
-sidebar_current: "docs-datadog-datasource-monitor"
-description: |-
-  Retrieve information about an existing monitor.
+page_title: "datadog_monitor"
 ---
 
-# datadog_monitor
+# datadog_monitor Data Source
 
 Use this data source to retrieve information about an existing monitor for use in other resources.
 

@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_integration_gcp"
-sidebar_current: "docs-datadog-resource-integration_gcp"
-description: |-
-  Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage the integrations.
+page_title: "datadog_integration_gcp"
 ---
 
-# datadog_integration_gcp
+# datadog_integration_gcp Resource
 
 Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.
 

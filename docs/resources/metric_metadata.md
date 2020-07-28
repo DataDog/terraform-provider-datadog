@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_metric_metadata"
-sidebar_current: "docs-datadog-resource-metric_metadata"
-description: |-
-  Provides a Datadog metric metadata resource. This can be used to manage a metric's metadata.
+page_title: "datadog_metric_metadata"
 ---
 
-# datadog_metric_metadata
+# datadog_metric_metadata Resource
 
 Provides a Datadog metric_metadata resource. This can be used to manage a metric's metadata.
 

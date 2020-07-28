@@ -1,13 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_integration_aws_lambda_arn"
-sidebar_current: "docs-datadog-resource-integration_aws_lambda_arn"
-description: |-
-  Provides a Datadog - Amazon Web Services integration Lambda ARN resource. This can be used to create and manage the
-  log collection Lambdas for an account.
+page_title: "datadog_integration_aws_lambda_arn"
 ---
 
-# datadog_integration_aws_lambda_arn
+# datadog_integration_aws_lambda_arn Resource
 
 Provides a Datadog - Amazon Web Services integration Lambda ARN resource. This can be used to create and manage the
 log collection Lambdas for an account.

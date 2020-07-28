@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_logs_index"
-sidebar_current: "docs-datadog-resource-logs-index"
-description: |-
-  Provides a Datadog logs index resource. This can be used to create and manage logs indexes.
+page_title: "datadog_logs_index"
 ---
 
-# datadog_logs_index
+# datadog_logs_index Resource
 
 Provides a Datadog [Logs Index API](https://docs.datadoghq.com/api/v1/logs-indexes/) resource. This can be used to create and manage Datadog logs indexes.
 
