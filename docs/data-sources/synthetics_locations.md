@@ -2,7 +2,7 @@
 page_title: "Datadog: datadog_synthetics_locations"
 ---
 
-# datadog_synthetics_locations Data source
+# datadog_synthetics_locations Data Source
 
 Use this data source to retrieve Datadog's Synthetics Locations (to be used in Synthetics tests).
 
