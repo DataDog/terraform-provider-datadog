@@ -14,6 +14,8 @@ cloud.google.com/go/storage
 github.com/DataDog/datadog-api-client-go
 github.com/DataDog/datadog-api-client-go/api/v1/datadog
 github.com/DataDog/datadog-api-client-go/api/v2/datadog
+# github.com/DataDog/datadog-go v3.6.0+incompatible
+github.com/DataDog/datadog-go/statsd
 # github.com/agext/levenshtein v1.2.2
 github.com/agext/levenshtein
 # github.com/apparentlymart/go-cidr v1.0.1
@@ -222,6 +224,8 @@ github.com/mitchellh/mapstructure
 github.com/mitchellh/reflectwalk
 # github.com/oklog/run v1.0.0
 github.com/oklog/run
+# github.com/philhofer/fwd v1.0.0
+github.com/philhofer/fwd
 # github.com/posener/complete v1.2.1
 github.com/posener/complete
 github.com/posener/complete/cmd
@@ -230,6 +234,8 @@ github.com/posener/complete/match
 # github.com/spf13/afero v1.2.2
 github.com/spf13/afero
 github.com/spf13/afero/mem
+# github.com/tinylib/msgp v1.1.2
+github.com/tinylib/msgp/msgp
 # github.com/ulikunitz/xz v0.5.5
 github.com/ulikunitz/xz
 github.com/ulikunitz/xz/internal/hash
@@ -295,11 +301,17 @@ golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
 # golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f
 golang.org/x/sys/unix
+golang.org/x/sys/windows
 # golang.org/x/text v0.3.3
 golang.org/x/text/secure/bidirule
 golang.org/x/text/transform
 golang.org/x/text/unicode/bidi
 golang.org/x/text/unicode/norm
+# golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1
+golang.org/x/time/rate
+# golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543
+golang.org/x/xerrors
+golang.org/x/xerrors/internal
 # google.golang.org/api v0.9.0
 google.golang.org/api/gensupport
 google.golang.org/api/googleapi
@@ -371,5 +383,16 @@ google.golang.org/grpc/stats
 google.golang.org/grpc/status
 google.golang.org/grpc/tap
 google.golang.org/grpc/test/bufconn
+# gopkg.in/DataDog/dd-trace-go.v1 v1.25.0
+gopkg.in/DataDog/dd-trace-go.v1/contrib/internal/httputil
+gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http
+gopkg.in/DataDog/dd-trace-go.v1/ddtrace
+gopkg.in/DataDog/dd-trace-go.v1/ddtrace/ext
+gopkg.in/DataDog/dd-trace-go.v1/ddtrace/internal
+gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer
+gopkg.in/DataDog/dd-trace-go.v1/internal
+gopkg.in/DataDog/dd-trace-go.v1/internal/globalconfig
+gopkg.in/DataDog/dd-trace-go.v1/internal/log
+gopkg.in/DataDog/dd-trace-go.v1/internal/version
 # gopkg.in/yaml.v2 v2.2.8
 gopkg.in/yaml.v2
