@@ -5,7 +5,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/version"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
@@ -18,7 +17,7 @@ func TestMain(m *testing.M) {
 	}
 	tracer.Start(
 		tracer.WithService(service),
-		tracer.WithServiceVersion(version.ProviderVersion),
+		// tracer.WithServiceVersion(version.ProviderVersion),
 	)
 	code := m.Run()
 	tracer.Stop()
