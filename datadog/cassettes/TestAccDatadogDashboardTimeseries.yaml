@@ -13,18 +13,18 @@ interactions:
       Dd-Operation-Id:
       - CreateDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"7dt-tj5-jve","title":"Acceptance
-      Test Timeseries Widget Dashboard","url":"/dashboard/7dt-tj5-jve/acceptance-test-timeseries-widget-dashboard","created_at":"2020-06-23T14:21:25.291668+00:00","modified_at":"2020-06-23T14:21:25.291668+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":true,"min":"0","max":"599999"},"title_align":"left","markers":[{"display_type":"error
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"zns-2sg-ers","title":"Acceptance
+      Test Timeseries Widget Dashboard","url":"/dashboard/zns-2sg-ers/acceptance-test-timeseries-widget-dashboard","created_at":"2020-07-28T11:54:41.447699+00:00","modified_at":"2020-07-28T11:54:41.447699+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":true,"min":"0","max":"599999"},"title_align":"left","markers":[{"display_type":"error
       dashed","value":"y=500000","label":"y=500000"},{"display_type":"warning dashed","value":"y=400000","label":"y=400000"}],"events":[{"q":"sources:test
       tags:1","tags_execution":"and"}],"show_legend":true,"time":{"live_span":"5m"},"title":"system.cpu.user,
       env, process.stat.cpu.total_pct.norm, network.bytes_read, @d...","legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{env:prod}
       by {app}","style":{"line_width":"thin","palette":"dog_classic","line_type":"solid"},"display_type":"line"},{"style":{"line_width":"normal","palette":"cool","line_type":"solid"},"display_type":"line","log_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"aggregation":"count","order":"desc"},"limit":10}],"compute":{"aggregation":"count"}}},{"style":{"line_width":"thick","palette":"warm","line_type":"dashed"},"apm_query":{"index":"trace-search","search":{"query":""},"group_by":[{"facet":"status","sort":{"facet":"env","aggregation":"cardinality","order":"desc"},"limit":10}],"compute":{"facet":"env","interval":1000,"aggregation":"cardinality"}},"display_type":"line"},{"style":{"line_width":"normal","palette":"purple","line_type":"solid"},"process_query":{"metric":"process.stat.cpu.total_pct.norm","limit":10,"filter_by":["account:prod"]},"display_type":"line"},{"style":{"line_width":"normal","palette":"orange","line_type":"solid"},"display_type":"area","network_query":{"index":"netflow-search","search":{"query":"network.transport:udp
-      network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"}]},"id":7271163944451687}],"layout_type":"ordered"}'
+      network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"}]},"id":5347202337620324}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -35,13 +35,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Jun 2020 14:21:25 GMT
+      - Tue, 28 Jul 2020 11:54:41 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 14:21:25 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:54:41 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -50,9 +50,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - DAk/CQntZmry+u4cYsuVOELuKFo1I3NzKRNwPlY9WvlbH+rffk5VylB8tKDaSRWP
+      - gbC8GhXMRPcFjT0Gzb8LOn48Qb7SagR35DPOiCZ2y1uLjZ3aGTSLOWamS5eoiBXE
       X-Dd-Version:
-      - "35.2655219"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -67,18 +67,18 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/7dt-tj5-jve
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/zns-2sg-ers
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"7dt-tj5-jve","title":"Acceptance
-      Test Timeseries Widget Dashboard","url":"/dashboard/7dt-tj5-jve/acceptance-test-timeseries-widget-dashboard","created_at":"2020-06-23T14:21:25.291668+00:00","modified_at":"2020-06-23T14:21:25.291668+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":true,"min":"0","max":"599999"},"title_align":"left","markers":[{"display_type":"error
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"zns-2sg-ers","title":"Acceptance
+      Test Timeseries Widget Dashboard","url":"/dashboard/zns-2sg-ers/acceptance-test-timeseries-widget-dashboard","created_at":"2020-07-28T11:54:41.447699+00:00","modified_at":"2020-07-28T11:54:41.447699+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":true,"min":"0","max":"599999"},"title_align":"left","markers":[{"display_type":"error
       dashed","value":"y=500000","label":"y=500000"},{"display_type":"warning dashed","value":"y=400000","label":"y=400000"}],"events":[{"q":"sources:test
       tags:1","tags_execution":"and"}],"show_legend":true,"time":{"live_span":"5m"},"title":"system.cpu.user,
       env, process.stat.cpu.total_pct.norm, network.bytes_read, @d...","legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{env:prod}
       by {app}","style":{"line_width":"thin","palette":"dog_classic","line_type":"solid"},"display_type":"line"},{"style":{"line_width":"normal","palette":"cool","line_type":"solid"},"display_type":"line","log_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"aggregation":"count","order":"desc"},"limit":10}],"compute":{"aggregation":"count"}}},{"style":{"line_width":"thick","palette":"warm","line_type":"dashed"},"apm_query":{"index":"trace-search","search":{"query":""},"group_by":[{"facet":"status","sort":{"facet":"env","aggregation":"cardinality","order":"desc"},"limit":10}],"compute":{"facet":"env","interval":1000,"aggregation":"cardinality"}},"display_type":"line"},{"style":{"line_width":"normal","palette":"purple","line_type":"solid"},"process_query":{"metric":"process.stat.cpu.total_pct.norm","limit":10,"filter_by":["account:prod"]},"display_type":"line"},{"style":{"line_width":"normal","palette":"orange","line_type":"solid"},"display_type":"area","network_query":{"index":"netflow-search","search":{"query":"network.transport:udp
-      network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"}]},"id":7271163944451687}],"layout_type":"ordered"}'
+      network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"}]},"id":5347202337620324}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -89,13 +89,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Jun 2020 14:21:25 GMT
+      - Tue, 28 Jul 2020 11:54:41 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 14:21:25 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:54:41 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -104,9 +104,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - tp1qdVxoUmtlsVp6hgBWraWfL5vEbA116VZkaWKWIZtgPr5Ima8zysCBv+o2WoZ/
+      - 07I6cASTpK0gNSKa89u7OH4LI9CUVOGiU++pDRp3h2uaY3MzZI6r9a7m/VUuy7Uw
       X-Dd-Version:
-      - "35.2655219"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -121,18 +121,18 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/7dt-tj5-jve
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/zns-2sg-ers
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"7dt-tj5-jve","title":"Acceptance
-      Test Timeseries Widget Dashboard","url":"/dashboard/7dt-tj5-jve/acceptance-test-timeseries-widget-dashboard","created_at":"2020-06-23T14:21:25.291668+00:00","modified_at":"2020-06-23T14:21:25.291668+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":true,"min":"0","max":"599999"},"title_align":"left","markers":[{"display_type":"error
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"zns-2sg-ers","title":"Acceptance
+      Test Timeseries Widget Dashboard","url":"/dashboard/zns-2sg-ers/acceptance-test-timeseries-widget-dashboard","created_at":"2020-07-28T11:54:41.447699+00:00","modified_at":"2020-07-28T11:54:41.447699+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":true,"min":"0","max":"599999"},"title_align":"left","markers":[{"display_type":"error
       dashed","value":"y=500000","label":"y=500000"},{"display_type":"warning dashed","value":"y=400000","label":"y=400000"}],"events":[{"q":"sources:test
       tags:1","tags_execution":"and"}],"show_legend":true,"time":{"live_span":"5m"},"title":"system.cpu.user,
       env, process.stat.cpu.total_pct.norm, network.bytes_read, @d...","legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{env:prod}
       by {app}","style":{"line_width":"thin","palette":"dog_classic","line_type":"solid"},"display_type":"line"},{"style":{"line_width":"normal","palette":"cool","line_type":"solid"},"display_type":"line","log_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"aggregation":"count","order":"desc"},"limit":10}],"compute":{"aggregation":"count"}}},{"style":{"line_width":"thick","palette":"warm","line_type":"dashed"},"apm_query":{"index":"trace-search","search":{"query":""},"group_by":[{"facet":"status","sort":{"facet":"env","aggregation":"cardinality","order":"desc"},"limit":10}],"compute":{"facet":"env","interval":1000,"aggregation":"cardinality"}},"display_type":"line"},{"style":{"line_width":"normal","palette":"purple","line_type":"solid"},"process_query":{"metric":"process.stat.cpu.total_pct.norm","limit":10,"filter_by":["account:prod"]},"display_type":"line"},{"style":{"line_width":"normal","palette":"orange","line_type":"solid"},"display_type":"area","network_query":{"index":"netflow-search","search":{"query":"network.transport:udp
-      network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"}]},"id":7271163944451687}],"layout_type":"ordered"}'
+      network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"}]},"id":5347202337620324}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -143,13 +143,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Jun 2020 14:21:26 GMT
+      - Tue, 28 Jul 2020 11:54:42 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 14:21:26 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:54:42 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -158,9 +158,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - FAXIqEyJyWWDyUDKgR+Td75IkfWeu40aSEpg9NtrH84gUkIxi84nk9RHrJt3rVD3
+      - 9KqlMq3gTLpkJSVJyvAwXe8+x8jjzLiadKiJ+urXt2iPIG7RDD8GegNJYYpRqZOo
       X-Dd-Version:
-      - "35.2655219"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -175,18 +175,18 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/7dt-tj5-jve
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/zns-2sg-ers
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"7dt-tj5-jve","title":"Acceptance
-      Test Timeseries Widget Dashboard","url":"/dashboard/7dt-tj5-jve/acceptance-test-timeseries-widget-dashboard","created_at":"2020-06-23T14:21:25.291668+00:00","modified_at":"2020-06-23T14:21:25.291668+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":true,"min":"0","max":"599999"},"title_align":"left","markers":[{"display_type":"error
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"zns-2sg-ers","title":"Acceptance
+      Test Timeseries Widget Dashboard","url":"/dashboard/zns-2sg-ers/acceptance-test-timeseries-widget-dashboard","created_at":"2020-07-28T11:54:41.447699+00:00","modified_at":"2020-07-28T11:54:41.447699+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":true,"min":"0","max":"599999"},"title_align":"left","markers":[{"display_type":"error
       dashed","value":"y=500000","label":"y=500000"},{"display_type":"warning dashed","value":"y=400000","label":"y=400000"}],"events":[{"q":"sources:test
       tags:1","tags_execution":"and"}],"show_legend":true,"time":{"live_span":"5m"},"title":"system.cpu.user,
       env, process.stat.cpu.total_pct.norm, network.bytes_read, @d...","legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{env:prod}
       by {app}","style":{"line_width":"thin","palette":"dog_classic","line_type":"solid"},"display_type":"line"},{"style":{"line_width":"normal","palette":"cool","line_type":"solid"},"display_type":"line","log_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"aggregation":"count","order":"desc"},"limit":10}],"compute":{"aggregation":"count"}}},{"style":{"line_width":"thick","palette":"warm","line_type":"dashed"},"apm_query":{"index":"trace-search","search":{"query":""},"group_by":[{"facet":"status","sort":{"facet":"env","aggregation":"cardinality","order":"desc"},"limit":10}],"compute":{"facet":"env","interval":1000,"aggregation":"cardinality"}},"display_type":"line"},{"style":{"line_width":"normal","palette":"purple","line_type":"solid"},"process_query":{"metric":"process.stat.cpu.total_pct.norm","limit":10,"filter_by":["account:prod"]},"display_type":"line"},{"style":{"line_width":"normal","palette":"orange","line_type":"solid"},"display_type":"area","network_query":{"index":"netflow-search","search":{"query":"network.transport:udp
-      network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"}]},"id":7271163944451687}],"layout_type":"ordered"}'
+      network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"}]},"id":5347202337620324}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -197,13 +197,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Jun 2020 14:21:29 GMT
+      - Tue, 28 Jul 2020 11:54:43 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 14:21:29 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:54:43 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -212,9 +212,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - xuqj9hdWDkSD9EtpcqPe+eGtJAYYHPEMbUsHJUlu4ckBMffeXAIJAOyY354PYCG0
+      - nC7bHorJA8jHyObBvgfYmPexUKKMqr4ffpAmR9q45ZQgTarOdDklQvZjx01r2wal
       X-Dd-Version:
-      - "35.2655219"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -229,18 +229,18 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/7dt-tj5-jve
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/zns-2sg-ers
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"7dt-tj5-jve","title":"Acceptance
-      Test Timeseries Widget Dashboard","url":"/dashboard/7dt-tj5-jve/acceptance-test-timeseries-widget-dashboard","created_at":"2020-06-23T14:21:25.291668+00:00","modified_at":"2020-06-23T14:21:25.291668+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":true,"min":"0","max":"599999"},"title_align":"left","markers":[{"display_type":"error
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"zns-2sg-ers","title":"Acceptance
+      Test Timeseries Widget Dashboard","url":"/dashboard/zns-2sg-ers/acceptance-test-timeseries-widget-dashboard","created_at":"2020-07-28T11:54:41.447699+00:00","modified_at":"2020-07-28T11:54:41.447699+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":true,"min":"0","max":"599999"},"title_align":"left","markers":[{"display_type":"error
       dashed","value":"y=500000","label":"y=500000"},{"display_type":"warning dashed","value":"y=400000","label":"y=400000"}],"events":[{"q":"sources:test
       tags:1","tags_execution":"and"}],"show_legend":true,"time":{"live_span":"5m"},"title":"system.cpu.user,
       env, process.stat.cpu.total_pct.norm, network.bytes_read, @d...","legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{env:prod}
       by {app}","style":{"line_width":"thin","palette":"dog_classic","line_type":"solid"},"display_type":"line"},{"style":{"line_width":"normal","palette":"cool","line_type":"solid"},"display_type":"line","log_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"aggregation":"count","order":"desc"},"limit":10}],"compute":{"aggregation":"count"}}},{"style":{"line_width":"thick","palette":"warm","line_type":"dashed"},"apm_query":{"index":"trace-search","search":{"query":""},"group_by":[{"facet":"status","sort":{"facet":"env","aggregation":"cardinality","order":"desc"},"limit":10}],"compute":{"facet":"env","interval":1000,"aggregation":"cardinality"}},"display_type":"line"},{"style":{"line_width":"normal","palette":"purple","line_type":"solid"},"process_query":{"metric":"process.stat.cpu.total_pct.norm","limit":10,"filter_by":["account:prod"]},"display_type":"line"},{"style":{"line_width":"normal","palette":"orange","line_type":"solid"},"display_type":"area","network_query":{"index":"netflow-search","search":{"query":"network.transport:udp
-      network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"}]},"id":7271163944451687}],"layout_type":"ordered"}'
+      network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"}]},"id":5347202337620324}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -251,13 +251,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Jun 2020 14:21:30 GMT
+      - Tue, 28 Jul 2020 11:54:43 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 14:21:30 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:54:43 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -266,9 +266,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - x4m73yTAj65OpCjnvpw3RBJyiFQpkDOBZ7rE/UM6Q4o0837nUb4ZsWFNJUD0Xh0e
+      - awZeljDiNgyEIB6/VHeBhFMla7VFIL4m0XXdPVd8LsAON6qQJQfUrS/lzICGNvQQ
       X-Dd-Version:
-      - "35.2655219"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -283,18 +283,18 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/7dt-tj5-jve
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/zns-2sg-ers
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"7dt-tj5-jve","title":"Acceptance
-      Test Timeseries Widget Dashboard","url":"/dashboard/7dt-tj5-jve/acceptance-test-timeseries-widget-dashboard","created_at":"2020-06-23T14:21:25.291668+00:00","modified_at":"2020-06-23T14:21:25.291668+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":true,"min":"0","max":"599999"},"title_align":"left","markers":[{"display_type":"error
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"zns-2sg-ers","title":"Acceptance
+      Test Timeseries Widget Dashboard","url":"/dashboard/zns-2sg-ers/acceptance-test-timeseries-widget-dashboard","created_at":"2020-07-28T11:54:41.447699+00:00","modified_at":"2020-07-28T11:54:41.447699+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":true,"min":"0","max":"599999"},"title_align":"left","markers":[{"display_type":"error
       dashed","value":"y=500000","label":"y=500000"},{"display_type":"warning dashed","value":"y=400000","label":"y=400000"}],"events":[{"q":"sources:test
       tags:1","tags_execution":"and"}],"show_legend":true,"time":{"live_span":"5m"},"title":"system.cpu.user,
       env, process.stat.cpu.total_pct.norm, network.bytes_read, @d...","legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{env:prod}
       by {app}","style":{"line_width":"thin","palette":"dog_classic","line_type":"solid"},"display_type":"line"},{"style":{"line_width":"normal","palette":"cool","line_type":"solid"},"display_type":"line","log_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"aggregation":"count","order":"desc"},"limit":10}],"compute":{"aggregation":"count"}}},{"style":{"line_width":"thick","palette":"warm","line_type":"dashed"},"apm_query":{"index":"trace-search","search":{"query":""},"group_by":[{"facet":"status","sort":{"facet":"env","aggregation":"cardinality","order":"desc"},"limit":10}],"compute":{"facet":"env","interval":1000,"aggregation":"cardinality"}},"display_type":"line"},{"style":{"line_width":"normal","palette":"purple","line_type":"solid"},"process_query":{"metric":"process.stat.cpu.total_pct.norm","limit":10,"filter_by":["account:prod"]},"display_type":"line"},{"style":{"line_width":"normal","palette":"orange","line_type":"solid"},"display_type":"area","network_query":{"index":"netflow-search","search":{"query":"network.transport:udp
-      network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"}]},"id":7271163944451687}],"layout_type":"ordered"}'
+      network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"}]},"id":5347202337620324}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -305,13 +305,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Jun 2020 14:21:33 GMT
+      - Tue, 28 Jul 2020 11:54:45 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 14:21:33 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:54:45 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -320,9 +320,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - FkKIRCzyOlcTfevOWu/Pn0jzNwYGEOKsDSSLLIk1UH0umdv3B3q8BoRMqfK8ce37
+      - YKTh0ggvrihaNwHubpYS21ZZNAy3l2vcJRqDBxI/L67KD6FUdpMCNgVlY3xO/nFh
       X-Dd-Version:
-      - "35.2655219"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -337,18 +337,18 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/7dt-tj5-jve
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/zns-2sg-ers
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"7dt-tj5-jve","title":"Acceptance
-      Test Timeseries Widget Dashboard","url":"/dashboard/7dt-tj5-jve/acceptance-test-timeseries-widget-dashboard","created_at":"2020-06-23T14:21:25.291668+00:00","modified_at":"2020-06-23T14:21:25.291668+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":true,"min":"0","max":"599999"},"title_align":"left","markers":[{"display_type":"error
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"zns-2sg-ers","title":"Acceptance
+      Test Timeseries Widget Dashboard","url":"/dashboard/zns-2sg-ers/acceptance-test-timeseries-widget-dashboard","created_at":"2020-07-28T11:54:41.447699+00:00","modified_at":"2020-07-28T11:54:41.447699+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","yaxis":{"include_zero":true,"min":"0","max":"599999"},"title_align":"left","markers":[{"display_type":"error
       dashed","value":"y=500000","label":"y=500000"},{"display_type":"warning dashed","value":"y=400000","label":"y=400000"}],"events":[{"q":"sources:test
       tags:1","tags_execution":"and"}],"show_legend":true,"time":{"live_span":"5m"},"title":"system.cpu.user,
       env, process.stat.cpu.total_pct.norm, network.bytes_read, @d...","legend_size":"2","type":"timeseries","requests":[{"q":"avg:system.cpu.user{env:prod}
       by {app}","style":{"line_width":"thin","palette":"dog_classic","line_type":"solid"},"display_type":"line"},{"style":{"line_width":"normal","palette":"cool","line_type":"solid"},"display_type":"line","log_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"aggregation":"count","order":"desc"},"limit":10}],"compute":{"aggregation":"count"}}},{"style":{"line_width":"thick","palette":"warm","line_type":"dashed"},"apm_query":{"index":"trace-search","search":{"query":""},"group_by":[{"facet":"status","sort":{"facet":"env","aggregation":"cardinality","order":"desc"},"limit":10}],"compute":{"facet":"env","interval":1000,"aggregation":"cardinality"}},"display_type":"line"},{"style":{"line_width":"normal","palette":"purple","line_type":"solid"},"process_query":{"metric":"process.stat.cpu.total_pct.norm","limit":10,"filter_by":["account:prod"]},"display_type":"line"},{"style":{"line_width":"normal","palette":"orange","line_type":"solid"},"display_type":"area","network_query":{"index":"netflow-search","search":{"query":"network.transport:udp
-      network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"}]},"id":7271163944451687}],"layout_type":"ordered"}'
+      network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"}]},"id":5347202337620324}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -359,13 +359,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Jun 2020 14:21:34 GMT
+      - Tue, 28 Jul 2020 11:54:45 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 14:21:34 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:54:45 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -374,9 +374,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - tp1qdVxoUmtlsVp6hgBWraWfL5vEbA116VZkaWKWIZtgPr5Ima8zysCBv+o2WoZ/
+      - 2xPouL1CjzBZdVIccnnb0Bd/+b62EioXU/uATEcYLYpH3/8SRYLoUc8F1fWZFVN8
       X-Dd-Version:
-      - "35.2655219"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -391,11 +391,11 @@ interactions:
       Dd-Operation-Id:
       - DeleteDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/7dt-tj5-jve
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/zns-2sg-ers
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"7dt-tj5-jve"}'
+    body: '{"deleted_dashboard_id":"zns-2sg-ers"}'
     headers:
       Cache-Control:
       - no-cache
@@ -406,13 +406,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Jun 2020 14:21:48 GMT
+      - Tue, 28 Jul 2020 11:55:09 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 14:21:36 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 04-Aug-2020 11:54:46 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -421,9 +421,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - sAPKocoLMDEnM5qY2PL6SCQ+dkENYAR/6IistAQ5iiTU/UnJHAba158nxOvVRvKJ
+      - gcKgX1WR+CXmtKh3jz53z9v6PvcBXqGbaWKl42IxrqnxHrrSBTLJRhEs2ZAbZzgp
       X-Dd-Version:
-      - "35.2655219"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -438,11 +438,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/7dt-tj5-jve
+      - datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/zns-2sg-ers
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID 7dt-tj5-jve not found"]}'
+    body: '{"errors": ["Dashboard with ID zns-2sg-ers not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -453,7 +453,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Jun 2020 14:21:48 GMT
+      - Tue, 28 Jul 2020 11:55:10 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -465,7 +465,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.2655219"
+      - "35.2796563"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found
