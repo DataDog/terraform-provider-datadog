@@ -6,6 +6,7 @@ import (
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 )
 
 const (
@@ -126,11 +127,8 @@ var categoryProcessor = &schema.Schema{
 					"filter": {
 						Type:     schema.TypeList,
 						Required: true,
-						Elem: &schema.Resource{
-							Schema: map[string]*schema.Schema{
-								"query": {Type: schema.TypeString, Required: true},
-							},
-						},
+						MaxItems: 1,
+						Elem:     getFilterSchema(),
 					},
 					"name": {Type: schema.TypeString, Required: true},
 				},
@@ -657,7 +655,11 @@ func buildDatadogPipeline(d *schema.ResourceData) (*datadogV1.LogsPipeline, erro
 	ddPipeline.SetName(d.Get("name").(string))
 	ddPipeline.SetIsEnabled(d.Get("is_enabled").(bool))
 	if tfFilter := d.Get("filter").([]interface{}); len(tfFilter) > 0 {
-		ddPipeline.SetFilter(buildDatadogFilter(tfFilter[0].(map[string]interface{})))
+		filter, ok := tfFilter[0].(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf("Couldn't build filter, is query empty?")
+		}
+		ddPipeline.SetFilter(buildDatadogFilter(filter))
 	}
 	ddProcessors, err := buildDatadogProcessors(d.Get("processor").([]interface{}))
 	if err != nil {
@@ -1068,11 +1070,7 @@ func getPipelineSchema(isNested bool) map[string]*schema.Schema {
 		"filter": {
 			Type:     schema.TypeList,
 			Required: true,
-			Elem: &schema.Resource{
-				Schema: map[string]*schema.Schema{
-					"query": {Type: schema.TypeString, Required: true},
-				},
-			},
+			Elem:     getFilterSchema(),
 		},
 		"processor": {
 			Type:     schema.TypeList,
@@ -1100,4 +1098,16 @@ func getProcessorSchema(isNested bool) map[string]*schema.Schema {
 		processorsSchema[tfProcessorType] = processor
 	}
 	return processorsSchema
+}
+
+func getFilterSchema() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"query": {
+				Type:         schema.TypeString,
+				Required:     true,
+				ValidateFunc: validation.StringIsNotEmpty,
+			},
+		},
+	}
 }
