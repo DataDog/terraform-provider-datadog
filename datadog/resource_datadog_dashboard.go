@@ -8,6 +8,7 @@ import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 )
 
 func resourceDatadogDashboard() *schema.Resource {
@@ -2905,8 +2906,9 @@ func buildTerraformManageStatusDefinition(datadogDefinition datadogV1.MonitorSum
 func getNoteDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"content": {
-			Type:     schema.TypeString,
-			Required: true,
+			Type:         schema.TypeString,
+			Required:     true,
+			ValidateFunc: validation.StringIsNotEmpty,
 		},
 		"background_color": {
 			Type:     schema.TypeString,
