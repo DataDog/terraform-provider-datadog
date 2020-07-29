@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_timeboard"
-sidebar_current: "docs-datadog-resource-timeboard"
-description: |-
-  Provides a Datadog timeboard resource. This can be used to create and manage timeboards.
+page_title: "datadog_timeboard"
 ---
 
-# datadog_timeboard
+# datadog_timeboard Resource
 
 Provides a Datadog timeboard resource. This can be used to create and manage Datadog timeboards.
 

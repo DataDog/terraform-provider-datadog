@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_user"
-sidebar_current: "docs-datadog-resource-user"
-description: |-
-  Provides a Datadog user resource. This can be used to create and manage users.
+page_title: "datadog_user"
 ---
 
-# datadog_user
+# datadog_user Resource
 
 Provides a Datadog user resource. This can be used to create and manage Datadog users.
 

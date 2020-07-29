@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_synthetics_test"
-sidebar_current: "docs-datadog-resource-synthetics_test"
-description: |-
-  Provides a Datadog synthetics resource. This can be used to create and manage synthetics.
+page_title: "datadog_synthetics_test"
 ---
 
-# datadog_synthetics_test
+# datadog_synthetics_test Resource
 
 Provides a Datadog synthetics test resource. This can be used to create and manage Datadog synthetics test.
 

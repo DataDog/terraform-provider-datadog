@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_logs_archive"
-sidebar_current: "docs-datadog-resource-logs-archive"
-description: |-
-  Provides a Datadog logs archive resource, which is used to create and manage logs archives.
+page_title: "datadog_logs_archive"
 ---
 
-# datadog_logs_archive
+# datadog_logs_archive Resource
 
 Provides a Datadog [Logs Archive API](https://docs.datadoghq.com/api/v2/logs-archives/) resource, which is used to create and manage Datadog logs archives.
 

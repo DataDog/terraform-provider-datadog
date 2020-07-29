@@ -1,12 +1,8 @@
 ---
-layout: "datadog"
-page_title: "Datadog: datadog_logs_index_order"
-sidebar_current: "docs-datadog-resource-logs-index-order"
-description: |-
-  Provides a Datadog logs index order resource. This can be used to manage the order of logs indexes.
+page_title: "datadog_logs_index_order"
 ---
 
-# datadog_logs_index_order
+# datadog_logs_index_order Resource
 
 Provides a Datadog [Logs Index API](https://docs.datadoghq.com/api/v1/logs-indexes/) resource. This can be used to manage the order of Datadog logs indexes.
 
