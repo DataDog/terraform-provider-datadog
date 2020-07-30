@@ -29,6 +29,96 @@ import (
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
+var testFiles2EndpointTags = map[string]string{
+	"data_source_datadog_ip_ranges_test":                         "ip-ranges",
+	"data_source_datadog_monitor_test":                           "monitors",
+	"data_source_datadog_synthetics_locations_test":              "synthetics",
+	"import_datadog_downtime_test":                               "downtimes",
+	"import_datadog_integration_pagerduty_test":                  "integration-pagerduty",
+	"import_datadog_logs_pipeline_test":                          "logs-pipelines",
+	"import_datadog_monitor_test":                                "monitors",
+	"import_datadog_user_test":                                   "users",
+	"provider_test":                                              "terraform",
+	"resource_datadog_dashboard_alert_graph_test":                "dashboards",
+	"resource_datadog_dashboard_alert_value_test":                "dashboards",
+	"resource_datadog_dashboard_change_test":                     "dashboards",
+	"resource_datadog_dashboard_check_status_test":               "dashboards",
+	"resource_datadog_dashboard_distribution_test":               "dashboards",
+	"resource_datadog_dashboard_event_stream_test":               "dashboards",
+	"resource_datadog_dashboard_event_timeline_test":             "dashboards",
+	"resource_datadog_dashboard_free_text_test":                  "dashboards",
+	"resource_datadog_dashboard_heatmap_test":                    "dashboards",
+	"resource_datadog_dashboard_hostmap_test":                    "dashboards",
+	"resource_datadog_dashboard_iframe_test":                     "dashboards",
+	"resource_datadog_dashboard_image_test":                      "dashboards",
+	"resource_datadog_dashboard_list_test":                       "dashboard-lists",
+	"resource_datadog_dashboard_log_stream_test":                 "dashboards",
+	"resource_datadog_dashboard_manage_status_test":              "dashboards",
+	"resource_datadog_dashboard_note_test":                       "dashboards",
+	"resource_datadog_dashboard_query_table_test":                "dashboards",
+	"resource_datadog_dashboard_query_value_test":                "dashboards",
+	"resource_datadog_dashboard_scatterplot_test":                "dashboards",
+	"resource_datadog_dashboard_service_map_test":                "dashboards",
+	"resource_datadog_dashboard_slo_test":                        "dashboards",
+	"resource_datadog_dashboard_test":                            "dashboards",
+	"resource_datadog_dashboard_timeseries_test":                 "dashboards",
+	"resource_datadog_dashboard_top_list_test":                   "dashboards",
+	"resource_datadog_dashboard_trace_service_test":              "dashboards",
+	"resource_datadog_downtime_test":                             "downtimes",
+	"resource_datadog_integration_aws_lambda_arn_test":           "integration-aws",
+	"resource_datadog_integration_aws_log_collection_test":       "integration-aws",
+	"resource_datadog_integration_aws_test":                      "integration-aws",
+	"resource_datadog_integration_azure_test":                    "integration-azure",
+	"resource_datadog_integration_gcp_test":                      "integration-gcp",
+	"resource_datadog_integration_pagerduty_service_object_test": "integration-pagerduty",
+	"resource_datadog_integration_pagerduty_test":                "integration-pagerduty",
+	"resource_datadog_logs_archive_test":                         "logs-archive",
+	"resource_datadog_logs_custom_pipeline_test":                 "logs-pipelines",
+	"resource_datadog_metric_metadata_test":                      "metrics",
+	"resource_datadog_monitor_test":                              "monitors",
+	"resource_datadog_screenboard_test":                          "dashboards",
+	"resource_datadog_service_level_objective_test":              "service-level-objectives",
+	"resource_datadog_synthetics_test_test":                      "synthetics",
+	"resource_datadog_timeboard_test":                            "dashboards",
+	"resource_datadog_user_test":                                 "users",
+}
+
+// getEndpointTagValue traverses callstack frames to find the test function that invoked this call;
+// it then matches the file defining this function against testFiles2EndpointTags to figure out
+// the tag value to set on span
+func getEndpointTagValue(t *testing.T) (string, error) {
+	var pcs [512]uintptr
+	var frame runtime.Frame
+	more := true
+	n := runtime.Callers(1, pcs[:])
+	frames := runtime.CallersFrames(pcs[:n])
+	functionFile := ""
+	for more {
+		frame, more = frames.Next()
+		// nested test functions like `TestAuthenticationValidate/200_Valid` will have frame.Function ending with
+		// ".funcX", `e.g. datadog.TestAuthenticationValidate.func1`, so trim everything after last "/" in test name
+		// and everything after last "." in frame function name
+		frameFunction := frame.Function
+		testName := t.Name()
+		if strings.Contains(testName, "/") {
+			testName = testName[:strings.LastIndex(testName, "/")]
+			frameFunction = frameFunction[:strings.LastIndex(frameFunction, ".")]
+		}
+		if strings.HasSuffix(frameFunction, "."+testName) {
+			functionFile = frame.File
+			// when we find the frame with the current test function, match it against testFiles2EndpointTags
+			for file, tag := range testFiles2EndpointTags {
+				if strings.HasSuffix(frame.File, fmt.Sprintf("datadog/%s.go", file)) {
+					return tag, nil
+				}
+			}
+		}
+	}
+	return "", fmt.Errorf(
+		"Endpoint tag for test file %s not found in datadog/provider_test.go, please add it to `testFiles2EndpointTags`",
+		functionFile)
+}
+
 func isRecording() bool {
 	return os.Getenv("RECORD") == "true"
 }
@@ -138,6 +228,10 @@ func initRecorder(t *testing.T) *recorder.Recorder {
 
 func testSpan(ctx context.Context, t *testing.T) (context.Context, func()) {
 	t.Helper()
+	tag, err := getEndpointTagValue(t)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 	span, ctx := tracer.StartSpanFromContext(
 		ctx,
 		"test",
@@ -146,7 +240,7 @@ func testSpan(ctx context.Context, t *testing.T) (context.Context, func()) {
 		tracer.Tag(ext.AnalyticsEvent, true),
 		tracer.Measured(),
 	)
-	// span.SetTag("version", tag)
+	span.SetTag("version", tag)
 	return ctx, func() {
 		span.SetTag(ext.Error, t.Failed())
 		span.Finish()
