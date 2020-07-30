@@ -17,7 +17,7 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -75,7 +75,7 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -130,7 +130,7 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -173,7 +173,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -308,7 +308,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -438,7 +438,7 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -480,7 +480,7 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -523,7 +523,7 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -561,7 +561,7 @@ func TestAccDatadogMonitor_NoThresholdWindows(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -584,7 +584,7 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -637,7 +637,7 @@ func TestAccDatadogMonitor_MuteUnmuteSpecificScopes(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -669,7 +669,7 @@ func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -717,7 +717,7 @@ func TestAccDatadogMonitor_SilencedRemove(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -759,7 +759,7 @@ func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -793,7 +793,7 @@ func TestAccDatadogMonitor_SilencedUpdatePastTimestamp(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),

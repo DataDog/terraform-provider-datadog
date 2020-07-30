@@ -12,7 +12,7 @@ func TestDatadogMonitor_import(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -35,7 +35,7 @@ func TestDatadogMonitor_import_no_recovery(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),

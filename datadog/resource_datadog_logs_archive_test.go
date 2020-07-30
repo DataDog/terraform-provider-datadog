@@ -39,7 +39,7 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckArchiveAndIntegrationAzureDestroy(accProvider),
@@ -97,7 +97,7 @@ func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckArchiveAndIntegrationGCSDestroy(accProvider),
@@ -148,7 +148,7 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
@@ -199,7 +199,7 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 	accProviders, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
