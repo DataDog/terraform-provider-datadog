@@ -1,0 +1,36 @@
+# See https://help.github.com/articles/about-codeowners/ for syntax
+# Rules are matched bottom-to-top, so one team can own subdirectories
+# and another the rest of the directory.
+
+# All your base
+*                                         @DataDog/integrations-tools-and-libraries
+
+datadog/*datadog_dashboard*               @DataDog/integrations-tools-and-libraries @DataDog/dashboards
+docs/resources/dashboard*                 @DataDog/integrations-tools-and-libraries @DataDog/dashboards
+datadog/*datadog_downtime*                @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
+docs/resources/downtime*                  @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
+datadog/*datadog_integration_aws*         @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
+docs/resources/integration_aws*           @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
+datadog/*datadog_integration_gcp*         @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
+docs/resources/integration_gcp*           @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
+datadog/*datadog_integration_pagerduty*   @DataDog/integrations-tools-and-libraries @DataDog/web-integrations
+docs/resources/integration_pagerduty*     @DataDog/integrations-tools-and-libraries @DataDog/web-integrations
+datadog/*datadog_ip_ranges*               @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
+docs/data-sources/ip_ranges*              @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
+datadog/*datadog_logs*                    @DataDog/integrations-tools-and-libraries @DataDog/logs-intake
+docs/resources/logs*                      @DataDog/integrations-tools-and-libraries @DataDog/logs-intake
+datadog/*datadog_metric*                  @DataDog/integrations-tools-and-libraries @DataDog/metrics-intake @DataDog/metrics-query
+docs/resources/metric*                    @DataDog/integrations-tools-and-libraries @DataDog/metrics-intake @DataDog/metrics-query
+datadog/*datadog_monitor*                 @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
+docs/data-sources/monitor*                @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
+docs/resources/monitor*                   @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
+datadog/*datadog_screenboard*             @DataDog/integrations-tools-and-libraries @DataDog/dashboards
+docs/resources/screenboard*               @DataDog/integrations-tools-and-libraries @DataDog/dashboards
+datadog/*datadog_service_level_objective* @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
+docs/resources/service_level_objective*   @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
+datadog/*datadog_synthetics_test*         @DataDog/integrations-tools-and-libraries @DataDog/synthetics-app
+docs/resources/synthetics*                @DataDog/integrations-tools-and-libraries @DataDog/synthetics-app
+datadog/*datadog_timeboard*               @DataDog/integrations-tools-and-libraries @DataDog/dashboards
+docs/resources/timeboard*                 @DataDog/integrations-tools-and-libraries @DataDog/dashboards
+datadog/*datadog_user*                    @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
+docs/resources/user*                      @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
