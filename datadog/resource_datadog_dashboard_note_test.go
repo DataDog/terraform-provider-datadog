@@ -1,7 +1,10 @@
 package datadog
 
 import (
+	"regexp"
 	"testing"
+
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
 // JSON export used as test scenario
@@ -62,6 +65,21 @@ resource "datadog_dashboard" "note_dashboard" {
 }
 `
 
+const datadogDashboardNoteConfigNoContent = `
+resource "datadog_dashboard" "note_dashboard" {
+	title         = "Acceptance Test Notes Widget Dashboard"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+
+	widget {
+		note_definition {
+			content = ""
+		}
+	}
+}
+`
+
 var datadogDashboardNoteAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.note_definition.0.content = This is a note widget",
@@ -82,4 +100,20 @@ func TestAccDatadogDashboardNote(t *testing.T) {
 
 func TestAccDatadogDashboardNote_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardNoteConfig, "datadog_dashboard.note_dashboard")
+}
+
+func TestAccDatadogDashboardNoteContentError(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
+		Providers: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      datadogDashboardNoteConfigNoContent,
+				ExpectError: regexp.MustCompile("expected \"widget.0.note_definition.0.content\" to not be an empty string"),
+			},
+		},
+	})
 }
