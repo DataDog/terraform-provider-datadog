@@ -1,0 +1,37 @@
+version: '3'
+services:
+  test:
+    image: golang:latest
+    depends_on:
+     - datadog
+    networks:
+      - test
+    command: make test
+    working_dir: /terraform-datadog-provider
+    environment:
+      DD_AGENT_HOST: datadog
+      DD_SERVICE: terraform-datadog-provider
+      DATADOG_API_KEY: ${DATADOG_API_KEY}
+      DATADOG_APP_KEY: ${DATADOG_APP_KEY}
+    labels:
+      com.datadoghq.ad.logs: '[{"source": "docker-compose.yml", "service": "terraform-datadog-provider"}]'
+    volumes:
+      - ./:/terraform-datadog-provider
+  datadog:
+    image: datadog/agent:latest
+    networks:
+      - test
+    environment:
+      DD_API_KEY: ${DATADOG_API_KEY}
+      DD_APM_ENABLED: "true"
+      DD_APM_NON_LOCAL_TRAFFIC: "true"
+      DD_LOGS_ENABLED: "true"
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: "true"
+      DD_AC_EXCLUDE: "name:datadog"
+    volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+     - /proc/:/host/proc/:ro
+     - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+
+networks:
+  test:
