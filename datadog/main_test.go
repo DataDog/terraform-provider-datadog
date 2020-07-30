@@ -1,7 +1,6 @@
 package datadog
 
 import (
-	"fmt"
 	"os"
 	"testing"
 
@@ -10,7 +9,6 @@ import (
 
 // TestMain starts the tracer.
 func TestMain(m *testing.M) {
-	fmt.Println("Hello world")
 	service, ok := os.LookupEnv("DD_SERVICE")
 	if !ok {
 		service = "terraform-datadog-provider"
@@ -21,6 +19,5 @@ func TestMain(m *testing.M) {
 	)
 	code := m.Run()
 	tracer.Stop()
-	fmt.Println("Bye world")
 	os.Exit(code)
 }
