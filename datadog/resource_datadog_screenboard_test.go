@@ -1867,7 +1867,7 @@ func TestAccDatadogScreenboard_update(t *testing.T) {
 		),
 	}
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkScreenboardDestroy(accProvider),
