@@ -23,8 +23,8 @@ test: get-test-deps fmtcheck
 		xargs -t -n4 gotestsum --format testname -- $(TESTARGS) -timeout=30s -parallel=4
 	DD_API_KEY=fake DD_APP_KEY=fake RECORD=false TF_ACC=1 gotestsum --format testname -- $(TEST) -v $(TESTARGS) -timeout=15m
 
-testacc: fmtcheck
-	RECORD=none TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m
+testacc: get-test-deps fmtcheck
+	TF_ACC=1 gotestsum --format testname -- $(TEST) -v $(TESTARGS) -timeout 120m
 
 cassettes: get-test-deps fmtcheck
 	RECORD=true TF_ACC=1 gotestsum --format testname -- $(TEST) -v $(TESTARGS) -timeout 120m
