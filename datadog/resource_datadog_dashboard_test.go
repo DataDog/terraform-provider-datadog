@@ -983,7 +983,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
@@ -1003,7 +1003,7 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
@@ -1023,7 +1023,7 @@ func TestAccDatadogDashboard_import(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
@@ -1087,7 +1087,7 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
@@ -1107,7 +1107,7 @@ func testAccDatadogDashboardWidgetUtil_import(t *testing.T, config string, name 
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
+	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
