@@ -45,6 +45,7 @@ resource "datadog_integration_pagerduty" "pd" {
 			service_key = services.value
 		}
 	}
+  schedules = ["https://ddog.pagerduty.com/schedules/X123VF"]
   subdomain = "testdomain"
 }
 `

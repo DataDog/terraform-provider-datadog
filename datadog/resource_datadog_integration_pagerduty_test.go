@@ -34,6 +34,8 @@ func TestAccDatadogIntegrationPagerduty_Basic(t *testing.T) {
 						"datadog_integration_pagerduty.foo", "services.0.service_name", "test_service"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "services.0.service_key", "*****"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_pagerduty.foo", "schedules.0", "https://ddog.pagerduty.com/schedules/X123VF"),
 				),
 			},
 		},
@@ -66,6 +68,8 @@ func TestAccDatadogIntegrationPagerduty_TwoServices(t *testing.T) {
 						"datadog_integration_pagerduty.foo", "services.1.service_name", "test_service_2"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "services.1.service_key", "*****"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_pagerduty.foo", "schedules.0", "https://ddog.pagerduty.com/schedules/X123VF"),
 				),
 			},
 		},
@@ -153,6 +157,9 @@ func testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider *schema.Provider
 	}
 }
 
+// NOTE: Don't create configs with no schedules. If there's a leftover schedule from some previous test run,
+// the test will fail on non-empty diff after apply, as the resource is (unfortunately) created in a way
+// to not overwrite existing schedules with empty list on creation.
 const testAccCheckDatadogIntegrationPagerdutyConfig = `
  resource "datadog_integration_pagerduty" "foo" {
    services {
@@ -160,6 +167,7 @@ const testAccCheckDatadogIntegrationPagerdutyConfig = `
         service_key  = "*****"
     }
 
+   schedules = ["https://ddog.pagerduty.com/schedules/X123VF"]
    subdomain = "testdomain"
    api_token = "secret"
  }
@@ -181,6 +189,7 @@ const testAccCheckDatadogIntegrationPagerdutyConfigTwoServices = `
 		}
 	}
 
+   schedules = ["https://ddog.pagerduty.com/schedules/X123VF"]
    subdomain = "testdomain"
    api_token = "secret"
 }
