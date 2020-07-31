@@ -35,7 +35,7 @@ resource "datadog_logs_archive" "my_azure_archive" {
 `
 
 func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -93,7 +93,7 @@ resource "datadog_logs_archive" "my_gcs_archive" {
 `
 
 func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -144,7 +144,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
 `
 
 func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -196,7 +196,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
 `
 
 func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 	resource.ParallelTest(t, resource.TestCase{

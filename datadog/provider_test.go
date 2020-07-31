@@ -365,11 +365,11 @@ func testAccProvidersWithHTTPClient(t *testing.T, httpClient *http.Client) (map[
 	}, finish
 }
 
-func testAccProviders(t *testing.T, rec *recorder.Recorder) (map[string]terraform.ResourceProvider, func(t *testing.T)) {
+func testAccProviders(t *testing.T, rec *recorder.Recorder) (map[string]terraform.ResourceProvider, clockwork.FakeClock, func(t *testing.T)) {
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", rec)
 	p, finish := testAccProvidersWithHTTPClient(t, c)
-	return p, func(t *testing.T) {
+	return p, testClock(t), func(t *testing.T) {
 		rec.Stop()
 		finish()
 	}

@@ -64,7 +64,7 @@ resource "datadog_integration_aws" "account" {
 `
 
 func TestAccDatadogIntegrationAWS(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 

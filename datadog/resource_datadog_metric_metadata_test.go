@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"fmt"
+	"github.com/jonboulle/clockwork"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
@@ -11,7 +12,7 @@ import (
 )
 
 func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -22,7 +23,7 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
-					checkPostEvent(t, accProvider),
+					checkPostEvent(t, accProvider, clock),
 					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
@@ -43,7 +44,7 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -54,7 +55,7 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
-					checkPostEvent(t, accProvider),
+					checkPostEvent(t, accProvider, clock),
 					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
@@ -109,11 +110,10 @@ func checkMetricMetadataExists(accProvider *schema.Provider) resource.TestCheckF
 	}
 }
 
-func checkPostEvent(t *testing.T, accProvider *schema.Provider) resource.TestCheckFunc {
+func checkPostEvent(t *testing.T, accProvider *schema.Provider, clock clockwork.FakeClock) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
 		client := providerConf.CommunityClient
-		clock := testClock(t)
 		datapointUnixTime := float64(clock.Now().Unix())
 		datapointValue := float64(1)
 		metric := datadog.Metric{

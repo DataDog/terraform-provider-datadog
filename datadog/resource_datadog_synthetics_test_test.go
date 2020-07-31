@@ -11,7 +11,7 @@ import (
 )
 
 func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -35,7 +35,7 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_importBasicNewAssertions(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -57,7 +57,7 @@ func TestAccDatadogSyntheticsAPITest_importBasicNewAssertions(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -81,7 +81,7 @@ func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -103,7 +103,7 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -118,7 +118,7 @@ func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -134,7 +134,7 @@ func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_BasicNewAssertions(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -149,7 +149,7 @@ func TestAccDatadogSyntheticsAPITest_BasicNewAssertions(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertions(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -165,7 +165,7 @@ func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertions(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -180,7 +180,7 @@ func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -196,7 +196,7 @@ func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -211,7 +211,7 @@ func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 

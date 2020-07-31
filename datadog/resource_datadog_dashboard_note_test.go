@@ -103,7 +103,7 @@ func TestAccDatadogDashboardNote_import(t *testing.T) {
 }
 
 func TestAccDatadogDashboardNoteContentError(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 
 	resource.Test(t, resource.TestCase{

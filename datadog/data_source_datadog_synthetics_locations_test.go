@@ -7,7 +7,7 @@ import (
 )
 
 func TestAccDatatogSyntheticsLocation_existing(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 
 	resource.ParallelTest(t, resource.TestCase{
