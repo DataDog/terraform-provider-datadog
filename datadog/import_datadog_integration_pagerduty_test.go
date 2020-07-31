@@ -8,7 +8,7 @@ import (
 
 func TestDatadogIntegrationPagerduty_import(t *testing.T) {
 	resourceName := "datadog_integration_pagerduty.pd"
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 

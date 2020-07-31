@@ -23,7 +23,7 @@ resource "datadog_integration_azure" "an_azure_integration" {
 `
 
 func TestAccDatadogIntegrationAzure(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 

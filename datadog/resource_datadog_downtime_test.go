@@ -16,7 +16,7 @@ import (
 )
 
 func TestAccDatadogDowntime_Basic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -54,11 +54,10 @@ func TestAccDatadogDowntime_Basic(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicWithMonitor(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	clock := testClock(t)
 	start := clock.Now().Local().Add(time.Hour * time.Duration(3))
 	end := start.Add(time.Hour * time.Duration(1))
 
@@ -80,11 +79,10 @@ func TestAccDatadogDowntime_BasicWithMonitor(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicWithMonitorTags(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	clock := testClock(t)
 	start := clock.Now().Local().Add(time.Hour * time.Duration(3))
 	end := start.Add(time.Hour * time.Duration(1))
 
@@ -106,7 +104,7 @@ func TestAccDatadogDowntime_BasicWithMonitorTags(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicMultiScope(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -142,7 +140,7 @@ func TestAccDatadogDowntime_BasicMultiScope(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicNoRecurrence(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -172,7 +170,7 @@ func TestAccDatadogDowntime_BasicNoRecurrence(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicUntilDateRecurrence(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -208,7 +206,7 @@ func TestAccDatadogDowntime_BasicUntilDateRecurrence(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -244,7 +242,7 @@ func TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -282,7 +280,7 @@ func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_Updated(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -338,7 +336,7 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -372,7 +370,7 @@ func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_DiffStart(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -418,7 +416,7 @@ func testAccCheckDatadogDowntimeExists(accProvider *schema.Provider, n string) r
 }
 
 func TestAccDatadogDowntimeDates(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -452,7 +450,7 @@ func TestAccDatadogDowntimeDates(t *testing.T) {
 }
 
 func TestAccDatadogDowntimeDatesConflict(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 

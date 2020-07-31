@@ -13,7 +13,7 @@ import (
 // We're not testing for schedules because Datadog actively verifies it with Pagerduty
 
 func TestAccDatadogIntegrationPagerduty_Basic(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -43,7 +43,7 @@ func TestAccDatadogIntegrationPagerduty_Basic(t *testing.T) {
 }
 
 func TestAccDatadogIntegrationPagerduty_TwoServices(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -77,7 +77,7 @@ func TestAccDatadogIntegrationPagerduty_TwoServices(t *testing.T) {
 }
 
 func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
-	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
