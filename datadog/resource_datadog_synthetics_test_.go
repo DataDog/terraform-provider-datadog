@@ -253,14 +253,6 @@ func syntheticsTestOptions() *schema.Schema {
 					errs = append(errs, fmt.Errorf("%q.allow_insecure must be either true or false, got: %s", key, allowInsecureStr))
 				}
 			}
-			// retryRaw, ok := val.(map[string]interface{})["retry"]
-			// if ok {
-			// 	retryInt := int
-			// }
-			// if v < 0 || v > 3 {
-			// 	errs = append(errs, fmt.Errorf("%q must be between 0 and 3 inclusive, got: %d", key, v))
-			// }
-			// return
 			return
 		},
 		Optional: true,
