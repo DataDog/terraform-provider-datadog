@@ -42,16 +42,18 @@ func TestAccountAndRoleFromID(t *testing.T) {
 	}
 }
 
-const testAccDatadogIntegrationAWSConfig = `
+func testAccDatadogIntegrationAWSConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_integration_aws" "account" {
-  	account_id                       = "001234567888"
+  	account_id                       = "%s"
   	role_name                        = "testacc-datadog-integration-role"
+}`, uniq)
 }
-`
 
-const testAccDatadogIntegrationAWSUpdateConfig = `
+func testAccDatadogIntegrationAWSUpdateConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_integration_aws" "account" {
-  	account_id                       = "001234567889"
+  	account_id                       = "%s"
   	role_name                        = "testacc-datadog-integration-role"
 	filter_tags                      = ["key:value"]
   	host_tags                        = ["key:value", "key2:value2"]
@@ -60,11 +62,12 @@ resource "datadog_integration_aws" "account" {
     	    opsworks = true
   	}
   	excluded_regions                 = ["us-east-1", "us-west-2"]
+}`, uniq)
 }
-`
 
 func TestAccDatadogIntegrationAWS(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	accountID := uniqueAWSAccountID(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -74,23 +77,23 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 		CheckDestroy: checkIntegrationAWSDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatadogIntegrationAWSConfig,
+				Config: testAccDatadogIntegrationAWSConfig(accountID),
 				Check: resource.ComposeTestCheckFunc(
 					checkIntegrationAWSExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
-						"account_id", "001234567888"),
+						"account_id", accountID),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"role_name", "testacc-datadog-integration-role"),
 				),
 			}, {
-				Config: testAccDatadogIntegrationAWSUpdateConfig,
+				Config: testAccDatadogIntegrationAWSUpdateConfig(accountID),
 				Check: resource.ComposeTestCheckFunc(
 					checkIntegrationAWSExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
-						"account_id", "001234567889"),
+						"account_id", accountID),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"role_name", "testacc-datadog-integration-role"),

@@ -2,13 +2,16 @@ package datadog
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -151,6 +154,11 @@ func isAPPKeySet() bool {
 	return false
 }
 
+// isCIRun returns true if the CI environment variable is set to "true"
+func isCIRun() bool {
+	return os.Getenv("CI") == "true"
+}
+
 func setClock(t *testing.T) clockwork.FakeClock {
 	os.MkdirAll("cassettes", 0755)
 	f, err := os.Create(fmt.Sprintf("cassettes/%s.freeze", t.Name()))
@@ -184,6 +192,53 @@ func testClock(t *testing.T) clockwork.FakeClock {
 	}
 	// do not set or restore frozen time
 	return clockwork.NewFakeClockAt(clockwork.NewRealClock().Now())
+}
+
+// uniqueEntityName will return a unique string that can be used as a title/description/summary/...
+// of an API entity. When used in Azure Pipelines and RECORD=true or RECORD=none, it will include
+// BuildId to enable mapping resources that weren't deleted to builds.
+func uniqueEntityName(clock clockwork.FakeClock, t *testing.T) string {
+	name := withUniqueSurrounding(clock, t.Name())
+	return name
+}
+
+// SecurePath replaces all dangerous characters in the path.
+func SecurePath(path string) string {
+	badChars := []string{"\\", "?", "%", "*", ":", "|", `"`, "<", ">"}
+	for _, c := range badChars {
+		path = strings.ReplaceAll(path, c, "_")
+	}
+	return filepath.Clean(path)
+}
+
+// withUniqueSurrounding will wrap a string that can be used as a title/description/summary/...
+// of an API entity. When used in Azure Pipelines and RECORD=true or RECORD=none, it will include
+// BuildId to enable mapping resources that weren't deleted to builds.
+func withUniqueSurrounding(clock clockwork.FakeClock, name string) string {
+	buildID, present := os.LookupEnv("BUILD_BUILDID")
+	if !present || !isCIRun() || isReplaying() {
+		buildID = "local"
+	}
+
+	// NOTE: some endpoints have limits on certain fields (e.g. Roles V2 names can only be 55 chars long),
+	// so we need to keep this short
+	result := fmt.Sprintf("tf-%s-%s-%d", SecurePath(name), buildID, clock.Now().Unix())
+	// In case this is used in URL, make sure we replace the slash that is added by subtests
+	result = strings.ReplaceAll(result, "/", "-")
+	return result
+}
+
+// uniqueAWSAccountID takes uniqueEntityName result, hashes it to get a unique string
+// and then returns first 12 characters (numerical only), so that the value can be used
+// as AWS account ID and is still as unique as possible, it changes in CI, but is stable locally
+func uniqueAWSAccountID(clock clockwork.FakeClock, t *testing.T) string {
+	uniq := uniqueEntityName(clock, t)
+	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniq)))
+	result := ""
+	for _, r := range hash {
+		result = fmt.Sprintf("%s%s", result, strconv.Itoa(int(r)))
+	}
+	return result[:12]
 }
 
 func removeURLSecrets(u *url.URL) *url.URL {

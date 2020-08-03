@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
@@ -9,7 +10,8 @@ import (
 )
 
 func TestAccDatadogMonitorDatasource(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	uniq := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -19,41 +21,41 @@ func TestAccDatadogMonitorDatasource(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatasourceMonitorNameFilterConfig,
+				Config: testAccDatasourceMonitorNameFilterConfig(uniq),
 				// Because of the `depends_on` in the datasource, the plan cannot be empty.
 				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
 				ExpectNonEmptyPlan: true,
-				Check:              checkDatasourceAttrs(accProvider),
+				Check:              checkDatasourceAttrs(accProvider, uniq),
 			},
 			{
-				Config: testAccDatasourceMonitorTagsFilterConfig,
+				Config: testAccDatasourceMonitorTagsFilterConfig(uniq),
 				// Because of the `depends_on` in the datasource, the plan cannot be empty.
 				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
 				ExpectNonEmptyPlan: true,
-				Check:              checkDatasourceAttrs(accProvider),
+				Check:              checkDatasourceAttrs(accProvider, uniq),
 			},
 			{
-				Config: testAccDatasourceMonitorMonitorTagsFilterConfig,
+				Config: testAccDatasourceMonitorMonitorTagsFilterConfig(uniq),
 				// Because of the `depends_on` in the datasource, the plan cannot be empty.
 				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
 				ExpectNonEmptyPlan: true,
-				Check:              checkDatasourceAttrs(accProvider),
+				Check:              checkDatasourceAttrs(accProvider, uniq),
 			},
 		},
 	})
 }
 
-func checkDatasourceAttrs(accProvider *schema.Provider) resource.TestCheckFunc {
+func checkDatasourceAttrs(accProvider *schema.Provider, uniq string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "name", "monitor for datasource test"),
+			"data.datadog_monitor.foo", "name", uniq),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "type", "query alert"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:foo} by {host} > 2"),
+			"data.datadog_monitor.foo", "query", fmt.Sprintf("avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:%s} by {host} > 2", uniq)),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "notify_no_data", "false"),
 		resource.TestCheckResourceAttr(
@@ -85,14 +87,15 @@ func checkDatasourceAttrs(accProvider *schema.Provider) resource.TestCheckFunc {
 	)
 }
 
-var testAccMonitorConfig = `
+func testAccMonitorConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name = "monitor for datasource test"
+  name = "%s"
   type = "query alert"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
 
-  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:foo} by {host} > 2"
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:%s} by {host} > 2"
 
   thresholds = {
 	warning = "1.0"
@@ -110,40 +113,45 @@ resource "datadog_monitor" "foo" {
   include_tags = true
   require_full_window = true
   locked = false
-  tags = ["test_datasource_monitor:foo", "baz"]
+  tags = ["test_datasource_monitor:%s", "baz"]
+}`, uniq, uniq, uniq)
 }
-`
 
-var testAccDatasourceMonitorNameFilterConfig = fmt.Sprintf(`
+func testAccDatasourceMonitorNameFilterConfig(uniq string) string {
+	return fmt.Sprintf(`
 %s
 data "datadog_monitor" "foo" {
   depends_on = [
     datadog_monitor.foo,
   ]
-  name_filter = "monitor for datasource test"
+  name_filter = "%s"
+}`, testAccMonitorConfig(uniq), uniq)
 }
-`, testAccMonitorConfig)
 
-var testAccDatasourceMonitorTagsFilterConfig = fmt.Sprintf(`
+func testAccDatasourceMonitorTagsFilterConfig(uniq string) string {
+	return fmt.Sprintf(`
 %s
 data "datadog_monitor" "foo" {
   depends_on = [
     datadog_monitor.foo,
   ]
   tags_filter = [
-    "test_datasource_monitor_scope:foo",
+    "test_datasource_monitor_scope:%s",
   ]
 }
-`, testAccMonitorConfig)
+`, testAccMonitorConfig(uniq), uniq)
+}
 
-var testAccDatasourceMonitorMonitorTagsFilterConfig = fmt.Sprintf(`
+func testAccDatasourceMonitorMonitorTagsFilterConfig(uniq string) string {
+	return fmt.Sprintf(`
 %s
 data "datadog_monitor" "foo" {
   depends_on = [
     datadog_monitor.foo,
   ]
   monitor_tags_filter = [
-    "test_datasource_monitor:foo",
+    "test_datasource_monitor:%s",
   ]
 }
-`, testAccMonitorConfig)
+`, testAccMonitorConfig(uniq), uniq)
+}

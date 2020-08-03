@@ -11,21 +11,24 @@ import (
 	"testing"
 )
 
-const testAccDatadogIntegrationAWSLogCollectionConfig = `
+func testAccDatadogIntegrationAWSLogCollectionConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_integration_aws" "account" {
-  account_id                       = "1234567890"
+  account_id                       = "%s"
   role_name                        = "testacc-datadog-integration-role"
 }
 
 resource "datadog_integration_aws_log_collection" "main" {
-  account_id = "1234567890"
+  account_id = "%s"
   services = ["lambda"]
   depends_on = [datadog_integration_aws.account]
+}`, uniq, uniq)
 }
-`
 
 func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	accountID := uniqueAWSAccountID(clock, t)
+	accountID = "1234567890"
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -35,12 +38,12 @@ func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
 		CheckDestroy: checkIntegrationAWSLogCollectionDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatadogIntegrationAWSLogCollectionConfig,
+				Config: testAccDatadogIntegrationAWSLogCollectionConfig(accountID),
 				Check: resource.ComposeTestCheckFunc(
 					checkIntegrationAWSLogCollectionExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_log_collection.main",
-						"account_id", "1234567890"),
+						"account_id", accountID),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_log_collection.main",
 						"services.0", "lambda"),
