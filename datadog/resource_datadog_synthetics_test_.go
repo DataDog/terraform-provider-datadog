@@ -253,6 +253,14 @@ func syntheticsTestOptions() *schema.Schema {
 					errs = append(errs, fmt.Errorf("%q.allow_insecure must be either true or false, got: %s", key, allowInsecureStr))
 				}
 			}
+			// retryRaw, ok := val.(map[string]interface{})["retry"]
+			// if ok {
+			// 	retryInt := int
+			// }
+			// if v < 0 || v > 3 {
+			// 	errs = append(errs, fmt.Errorf("%q must be between 0 and 3 inclusive, got: %d", key, v))
+			// }
+			// return
 			return
 		},
 		Optional: true,
@@ -280,6 +288,10 @@ func syntheticsTestOptions() *schema.Schema {
 				},
 				"allow_insecure": {
 					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"retry": {
+					Type:     schema.TypeInt,
 					Optional: true,
 				},
 			},
@@ -523,6 +535,13 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		allowInsecure, _ := strconv.ParseBool(attr.(string))
 		options.SetAllowInsecure(allowInsecure)
 	}
+	if attr, ok := d.GetOk("options.retry"); ok {
+		retryCount, _ := strconv.Atoi(attr.(string))
+		retry := datadogV1.SyntheticsTestOptionsRetry{}
+		retry.SetCount(int64(retryCount))
+		retry.SetInterval(300)
+		options.SetRetry(retry)
+	}
 	if attr, ok := d.GetOk("device_ids"); ok {
 		var deviceIds []datadogV1.SyntheticsDeviceID
 		for _, s := range attr.([]interface{}) {
@@ -682,6 +701,10 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 	if actualOptions.HasAllowInsecure() {
 		localOptions["allow_insecure"] = convertToString(actualOptions.GetAllowInsecure())
+	}
+	if actualOptions.HasRetry() {
+		retry := actualOptions.GetRetry()
+		localOptions["retry"] = convertToString(retry.GetCount())
 	}
 
 	d.Set("options", localOptions)
