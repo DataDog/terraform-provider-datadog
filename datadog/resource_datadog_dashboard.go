@@ -4498,6 +4498,10 @@ func getWidgetConditionalFormatSchema() map[string]*schema.Schema {
 			Type:     schema.TypeString,
 			Optional: true,
 		},
+		"metric": {
+			Type:     schema.TypeString,
+			Optional: true,
+		},
 	}
 }
 func buildDatadogWidgetConditionalFormat(terraformWidgetConditionalFormat *[]interface{}) *[]datadogV1.WidgetConditionalFormat {
@@ -4523,6 +4527,9 @@ func buildDatadogWidgetConditionalFormat(terraformWidgetConditionalFormat *[]int
 		}
 		if v, ok := terraformConditionalFormat["timeframe"].(string); ok && len(v) != 0 {
 			datadogConditionalFormat.SetTimeframe(v)
+		}
+		if v, ok := terraformConditionalFormat["metric"].(string); ok && len(v) != 0 {
+			datadogConditionalFormat.SetMetric(v)
 		}
 		datadogWidgetConditionalFormat[i] = *datadogConditionalFormat
 	}
@@ -4551,6 +4558,9 @@ func buildTerraformWidgetConditionalFormat(datadogWidgetConditionalFormat *[]dat
 		}
 		if v, ok := datadogConditionalFormat.GetTimeframeOk(); ok {
 			terraformConditionalFormat["timeframe"] = v
+		}
+		if v, ok := datadogConditionalFormat.GetMetricOk(); ok {
+			terraformConditionalFormat["metric"] = v
 		}
 		terraformWidgetConditionalFormat[i] = terraformConditionalFormat
 	}

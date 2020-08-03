@@ -142,11 +142,13 @@ resource "datadog_dashboard" "ordered_dashboard" {
 					comparator = "<"
 					value = "2"
 					palette = "white_on_green"
+					metric = "system.load.1"
 				}
 				conditional_formats {
 					comparator = ">"
 					value = "2.2"
 					palette = "white_on_red"
+					metric = "system.load.1"
 				}
 			}
 			autoscale = true
@@ -697,9 +699,11 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.8.query_value_definition.0.request.0.conditional_formats.0.comparator = <",
 	"widget.8.query_value_definition.0.request.0.conditional_formats.0.value = 2",
 	"widget.8.query_value_definition.0.request.0.conditional_formats.0.palette = white_on_green",
+	"widget.8.query_value_definition.0.request.0.conditional_formats.0.metric = system.load.1",
 	"widget.8.query_value_definition.0.request.0.conditional_formats.1.comparator = >",
 	"widget.8.query_value_definition.0.request.0.conditional_formats.1.value = 2.2",
 	"widget.8.query_value_definition.0.request.0.conditional_formats.1.palette = white_on_red",
+	"widget.8.query_value_definition.0.request.0.conditional_formats.1.metric = system.load.1",
 	"widget.8.query_value_definition.0.autoscale = true",
 	"widget.8.query_value_definition.0.custom_unit = xx",
 	"widget.8.query_value_definition.0.precision = 4",

@@ -927,7 +927,9 @@ Nested `conditional_formats` blocks have the following structure:
 - `custom_bg_color` - (Optional) Color palette to apply to the background, same values available as palette.
 - `custom_fg_color` - (Optional) Color palette to apply to the foreground, same values available as palette.
 - `image_url` - (Optional) Displays an image as the background.
-.
+- `hide_value` - (Optional) Setting this to `True` hides values.
+- `timeframe` - (Optional) Defines the displayed timeframe.
+- `metric` - (Optional) Metric from the request to correlate this conditional format with.
 
 ### Nested `widget` `time` blocks
 Nested `widget` `time` blocks have the following structure:
