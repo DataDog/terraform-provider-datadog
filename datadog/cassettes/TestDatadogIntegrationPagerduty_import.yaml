@@ -2,7 +2,7 @@
 version: 1
 interactions:
 - request:
-    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"subdomain":"testdomain","schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"api_token":""}'
+    body: '{"services":[{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238","service_key":"*****"},{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238_2","service_key":"*****"}],"subdomain":"testdomain","schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"api_token":""}'
     form: {}
     headers:
       Content-Type:
@@ -11,11 +11,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "1719239927922026538"
+      - "8912878848229460911"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "1719239927922026538"
+      - "8912878848229460911"
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: PUT
   response:
@@ -28,20 +28,20 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Fri, 31 Jul 2020 13:07:03 GMT
+      - Mon, 03 Aug 2020 15:40:40 GMT
       Dd-Pool:
       - dogweb
       Set-Cookie:
-      - DD-PSHARD=89; Max-Age=604800; Path=/; expires=Fri, 07-Aug-2020 13:07:03 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:40:39 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - X7myyUne6w1tXRXi0BZSVotJEk5hU81Ej5AYU6s48rTNRJpmjMCFc9/qYg/QcaqZ
+      - D4YGpHBa274QPqLVsm9EvB9JpmSqtJ+o4QngHQ79f28avQpw6x1QKNKZtlHTcHEg
       X-Dd-Version:
-      - "35.2815510"
+      - "35.2824963"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -55,15 +55,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4454364902456997039"
+      - "491561535573429832"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "4454364902456997039"
+      - "491561535573429832"
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238","service_key":"*****"},{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -74,13 +74,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 Jul 2020 13:07:03 GMT
+      - Mon, 03 Aug 2020 15:40:40 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=89; Max-Age=604800; Path=/; expires=Fri, 07-Aug-2020 13:07:03 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:40:40 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -89,9 +89,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - p4NmCafosmibz8IWdrnaytb4VFg52vrRAwg7ZpVpA960oaVmtBmDKqK2J4VV/O6l
+      - GJtzEaMzv1y+1IVRYZ/OAsS6HYfEsrJCFOkuri9DBky2SabVP4p4Xq9xLTYsLIgq
       X-Dd-Version:
-      - "35.2815510"
+      - "35.2824963"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -105,15 +105,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "991170460974156972"
+      - "507277637422719213"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "991170460974156972"
+      - "507277637422719213"
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238","service_key":"*****"},{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -124,13 +124,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 Jul 2020 13:07:04 GMT
+      - Mon, 03 Aug 2020 15:40:40 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=89; Max-Age=604800; Path=/; expires=Fri, 07-Aug-2020 13:07:04 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:40:40 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -139,9 +139,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 09WN0zeEvlQvDabxv/j8/k3HlRg2TEnRPPfgdei6Dbo4CnjorUJx0dtr1bYCi5wY
+      - lVvvF3fDCdWkuO0XuOtdIVI7t7URub5MfVWcZ/gFHPf88UmKJrBYTXlUDXZHcHAt
       X-Dd-Version:
-      - "35.2815510"
+      - "35.2824963"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -155,15 +155,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "7908233430266431747"
+      - "1060608262899122892"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "7908233430266431747"
+      - "1060608262899122892"
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238","service_key":"*****"},{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -174,13 +174,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 Jul 2020 13:07:04 GMT
+      - Mon, 03 Aug 2020 15:40:40 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=89; Max-Age=604800; Path=/; expires=Fri, 07-Aug-2020 13:07:04 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:40:40 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -189,9 +189,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - cqwmUHOyW+p7rZMHoPHfBQiYcr5B53SMxptYY4mRvM+/RwpX5mM9nb+6HInmqZDD
+      - nuA6oIOwEyzQMkmK3WIf9ajLpdP0w0Xxbaz0IjpW1AMBH3Ul2dMZ+aapHAQF86De
       X-Dd-Version:
-      - "35.2815510"
+      - "35.2824963"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -205,15 +205,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "142466926740559970"
+      - "620955146125433582"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "142466926740559970"
+      - "620955146125433582"
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238","service_key":"*****"},{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -224,13 +224,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 Jul 2020 13:07:05 GMT
+      - Mon, 03 Aug 2020 15:40:41 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=89; Max-Age=604800; Path=/; expires=Fri, 07-Aug-2020 13:07:04 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:40:41 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -239,9 +239,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - p4NmCafosmibz8IWdrnaytb4VFg52vrRAwg7ZpVpA960oaVmtBmDKqK2J4VV/O6l
+      - qQB7kRvtce1EjV8zg+1IdFTZqLi2KnfaqKBf6LqG1Ows1q7ryO69U7szfq7Nv6dG
       X-Dd-Version:
-      - "35.2815510"
+      - "35.2824963"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -255,15 +255,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3960656930021168562"
+      - "5382039317052752117"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3960656930021168562"
+      - "5382039317052752117"
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238","service_key":"*****"},{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -274,13 +274,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 Jul 2020 13:07:05 GMT
+      - Mon, 03 Aug 2020 15:40:41 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=89; Max-Age=604800; Path=/; expires=Fri, 07-Aug-2020 13:07:05 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:40:41 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -289,9 +289,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 8N7OSXffWxOavKCsDUMSGUd5RVDtbVI6fG9yPCW9R+s3wgWGpYMGgSLOoTXnLVFK
+      - 7Xb1IJ1Uixy5la4YBB2E44YpaJGG1TNl9ZxHDUIR8+68+U1TW9qaZp85gUktftNL
       X-Dd-Version:
-      - "35.2815510"
+      - "35.2824963"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -305,15 +305,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6995449606242792580"
+      - "1021664350839691297"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6995449606242792580"
+      - "1021664350839691297"
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238","service_key":"*****"},{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -324,13 +324,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 Jul 2020 13:07:05 GMT
+      - Mon, 03 Aug 2020 15:40:41 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=89; Max-Age=604800; Path=/; expires=Fri, 07-Aug-2020 13:07:05 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:40:41 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -339,9 +339,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 5pGTW5HIxhsUrtOKVzGncGRHqdtTrMwC3ZKMMzs7Oxe0cvxAV7ZSSHX0RZv/l/Bh
+      - jCyUBKsWeViAURiT4DJERigoUxZ62dcTikP6hRx62JyjokAzgUBy8w3a6RUplz3R
       X-Dd-Version:
-      - "35.2815510"
+      - "35.2824963"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -355,15 +355,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6486967082699556713"
+      - "7393360948210336751"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6486967082699556713"
+      - "7393360948210336751"
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238","service_key":"*****"},{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -374,13 +374,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 Jul 2020 13:07:05 GMT
+      - Mon, 03 Aug 2020 15:40:42 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=89; Max-Age=604800; Path=/; expires=Fri, 07-Aug-2020 13:07:05 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:40:42 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -389,9 +389,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 7rj9L+epA5MUpewdBEGuUjDAjReCz0RUKpqZYbT1HlQSD/OfAeoS6xPMZ3kIkwPK
+      - cwde14fQpgAku8FElYab+seNeG1y6g0qnIovz4z//DnGgT0mg0AgCT9f2TUYtGt4
       X-Dd-Version:
-      - "35.2815510"
+      - "35.2824963"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -405,15 +405,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "8292169981488303796"
+      - "6740461169719446490"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8292169981488303796"
+      - "6740461169719446490"
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238","service_key":"*****"},{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1596469238_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -424,13 +424,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 31 Jul 2020 13:07:06 GMT
+      - Mon, 03 Aug 2020 15:40:42 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=89; Max-Age=604800; Path=/; expires=Fri, 07-Aug-2020 13:07:06 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:40:42 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -439,9 +439,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - goS0GGI4bIkm21q0jm3ic0TY0KJjLZvIY8Zsq3hDLEF1JadeKVko1RI1cg60A0y5
+      - t6n50Hoqa8idIqZOqHf4eYuUBEOrqoSf1Nsd32gYDIDyJqiaQ5Ws982bX6+xfwH+
       X-Dd-Version:
-      - "35.2815510"
+      - "35.2824963"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
