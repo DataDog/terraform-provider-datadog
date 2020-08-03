@@ -245,7 +245,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
       title = "env: prod, datacenter:us1.prod.dog, service: master-db"
       title_size = "16"
       title_align = "left"
-        
     }
     layout = {
       height = 43
@@ -528,7 +527,7 @@ resource "datadog_dashboard" "free_dashboard" {
 
   widget {
     log_stream_definition {
-      logset = "19"
+      indexes = ["main"]
       query = "error"
       columns = ["core_host", "core_service", "tag_source"]
       show_date_column = true
@@ -753,7 +752,8 @@ Nested `widget` blocks have the following structure:
       - `sizing` - (Optional) The preferred method to adapt the dimensions of the image to those of the widget. One of "center" (center the image in the tile), "zoom" (zoom the image to cover the whole tile) or "fit" (fit the image dimensions to those of the tile).
       - `margin` - (Optional) The margins to use around the image. Either "small" or "large".
   - `log_stream_definition`: The definition for a Log Stream widget. Exactly one nested block is allowed with the following structure:
-      - `logset` - (Required) ID of the logset to use.
+      - `logset` - (Optionals) ID of the logset to use. **Deprecated** Use `indexes` instead.
+      - `indexes` - (Optional) An array of index names to query in the stream.
       - `query`: (Optional) The query to use in the widget.
       - `columns` - (Optional) Stringified list of columns to use. Example: `"["column1","column2","column3"]"`.
       - `show_date_column` - (Optional) If the date column should be displayed.
@@ -850,7 +850,7 @@ Nested `widget` blocks have the following structure:
             - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
             - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
             - `network_query`: (Optional) The network query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            - `rum_query`: (Optional) The rum query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).           
+            - `rum_query`: (Optional) The rum query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
             - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             - `display_type` - (Optional) Type of display to use for the request. Available values are: `area`, `bars`, or `line`.
             - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
