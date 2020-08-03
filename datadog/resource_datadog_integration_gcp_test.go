@@ -9,28 +9,32 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 )
 
-const testAccCheckDatadogIntegrationGCPConfig = `
+func testAccCheckDatadogIntegrationGCPConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
-  project_id     = "super-awesome-project-id"
+  project_id     = "%s"
   private_key_id = "1234567890123456789012345678901234567890"
   private_key    = "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
-  client_email   = "awesome-service-account@awesome-project-id.iam.gserviceaccount.com"
+  client_email   = "%s@awesome-project-id.iam.gserviceaccount.com"
   client_id      = "123456789012345678901"
   host_filters   = "foo:bar,buzz:lightyear"
+}`, uniq, uniq)
 }
-`
-const testAccCheckDatadogIntegrationGCPEmptyHostFiltersConfig = `
+
+func testAccCheckDatadogIntegrationGCPEmptyHostFiltersConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
-  project_id     = "super-awesome-project-id"
+  project_id     = "%s"
   private_key_id = "1234567890123456789012345678901234567890"
   private_key    = "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
-  client_email   = "awesome-service-account@awesome-project-id.iam.gserviceaccount.com"
+  client_email   = "%s@awesome-project-id.iam.gserviceaccount.com"
   client_id      = "123456789012345678901"
+}`, uniq, uniq)
 }
-`
 
 func TestAccDatadogIntegrationGCP(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	client := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -40,12 +44,12 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 		CheckDestroy: checkIntegrationGCPDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogIntegrationGCPConfig,
+				Config: testAccCheckDatadogIntegrationGCPConfig(client),
 				Check: resource.ComposeTestCheckFunc(
 					checkIntegrationGCPExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
-						"project_id", "super-awesome-project-id"),
+						"project_id", client),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"private_key_id", "1234567890123456789012345678901234567890"),
@@ -54,7 +58,7 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 						"private_key", "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
-						"client_email", "awesome-service-account@awesome-project-id.iam.gserviceaccount.com"),
+						"client_email", fmt.Sprintf("%s@awesome-project-id.iam.gserviceaccount.com", client)),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"client_id", "123456789012345678901"),
@@ -64,12 +68,12 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogIntegrationGCPEmptyHostFiltersConfig,
+				Config: testAccCheckDatadogIntegrationGCPEmptyHostFiltersConfig(client),
 				Check: resource.ComposeTestCheckFunc(
 					checkIntegrationGCPExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
-						"project_id", "super-awesome-project-id"),
+						"project_id", client),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"private_key_id", "1234567890123456789012345678901234567890"),
@@ -78,7 +82,7 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 						"private_key", "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
-						"client_email", "awesome-service-account@awesome-project-id.iam.gserviceaccount.com"),
+						"client_email", fmt.Sprintf("%s@awesome-project-id.iam.gserviceaccount.com", client)),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"client_id", "123456789012345678901"),
