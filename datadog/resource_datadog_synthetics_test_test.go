@@ -282,6 +282,12 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.monitor_options.renotify_interval", "500"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.retry.count", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.retry.interval", "500"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", "name for synthetics test foo"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "message", "Notify @datadog.user"),
@@ -347,6 +353,15 @@ resource "datadog_synthetics_test" "foo" {
 		follow_redirects = true
 		min_failure_duration = 0
 		min_location_failed = 1
+
+		monitor_options = {
+			renotify_interval = 500
+		}
+
+		retry = {
+			count: 1
+			interval: 500
+		}
 	}
 
 	name = "name for synthetics test foo"
@@ -526,13 +541,19 @@ func updateSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.tick_every", "900"),
+				"datadog_synthetics_test.foo", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.follow_redirects", "false"),
+				"datadog_synthetics_test.foo", "options_list.0.follow_redirects", "false"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.min_failure_duration", "10"),
+				"datadog_synthetics_test.foo", "options_list.0.min_failure_duration", "10"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
+				"datadog_synthetics_test.foo", "options_list.0.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.monitor_options.renotify_interval", "700"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.retry.count", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.retry.interval", "1000"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", "updated name"),
 			resource.TestCheckResourceAttr(
@@ -574,11 +595,20 @@ resource "datadog_synthetics_test" "foo" {
 
 	locations = [ "aws:eu-central-1" ]
 
-	options = {
+	options_list {
 		tick_every = 900
 		follow_redirects = false
 		min_failure_duration = 10
 		min_location_failed = 1
+
+		monitor_options = {
+			renotify_interval = 700
+		}
+
+		retry = {
+			count = 1
+			interval = 1000
+		}
 	}
 
 	name = "updated name"

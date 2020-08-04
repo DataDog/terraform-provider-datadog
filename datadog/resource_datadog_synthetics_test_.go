@@ -328,6 +328,37 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Type:     schema.TypeInt,
 					Optional: true,
 				},
+				"monitor_options": {
+					Type:     schema.TypeMap,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"renotify_interval": {
+								Type:     schema.TypeInt,
+								Default:  0,
+								Optional: true,
+							},
+						},
+					},
+				},
+				"retry": {
+					Type:     schema.TypeMap,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"count": {
+								Type:     schema.TypeInt,
+								Default:  0,
+								Optional: true,
+							},
+							"interval": {
+								Type:     schema.TypeInt,
+								Default:  300,
+								Optional: true,
+							},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -540,23 +571,49 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	options := datadogV1.NewSyntheticsTestOptions()
 
 	// use new options_list first, then fallback to legacy options
-	if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
-		options.SetTickEvery(datadogV1.SyntheticsTickInterval(attr.(int)))
-	}
-	if attr, ok := d.GetOk("options_list.0.accept_self_signed"); ok {
-		options.SetAcceptSelfSigned(attr.(bool))
-	}
-	if attr, ok := d.GetOk("options_list.0.min_location_failed"); ok {
-		options.SetMinLocationFailed(int64(attr.(int)))
-	}
-	if attr, ok := d.GetOk("options_list.0.min_failure_duration"); ok {
-		options.SetMinFailureDuration(int64(attr.(int)))
-	}
-	if attr, ok := d.GetOk("options_list.0.follow_redirects"); ok {
-		options.SetFollowRedirects(attr.(bool))
-	}
-	if attr, ok := d.GetOk("options_list.0.allow_insecure"); ok {
-		options.SetAllowInsecure(attr.(bool))
+	if attr, ok := d.GetOk("options_list"); ok {
+		optionsLists := attr.([]interface{})
+		if len(optionsLists) > 0 {
+			optionsList := optionsLists[0].(map[string]interface{})
+
+			if monitorOptionsRaw, ok := optionsList["monitor_options"].(map[string]interface{}); ok {
+				monitorOptions := datadogV1.SyntheticsTestOptionsMonitorOptions{}
+
+				if renotifyInterval, err := strconv.ParseInt(monitorOptionsRaw["renotify_interval"].(string), 10, 64); err == nil {
+					monitorOptions.SetRenotifyInterval(renotifyInterval)
+				}
+				options.SetMonitorOptions(monitorOptions)
+			}
+			if retryRaw, ok := optionsList["retry"].(map[string]interface{}); ok {
+				retry := datadogV1.SyntheticsTestOptionsRetry{}
+
+				if retryCount, err := strconv.ParseInt(retryRaw["count"].(string), 10, 64); err == nil {
+					retry.SetCount(retryCount)
+				}
+				if retryInterval, err := strconv.ParseFloat(retryRaw["interval"].(string), 64); err == nil {
+					retry.SetInterval(retryInterval)
+				}
+				options.SetRetry(retry)
+			}
+			if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
+				options.SetTickEvery(datadogV1.SyntheticsTickInterval(attr.(int)))
+			}
+			if attr, ok := d.GetOk("options_list.0.accept_self_signed"); ok {
+				options.SetAcceptSelfSigned(attr.(bool))
+			}
+			if attr, ok := d.GetOk("options_list.0.min_location_failed"); ok {
+				options.SetMinLocationFailed(int64(attr.(int)))
+			}
+			if attr, ok := d.GetOk("options_list.0.min_failure_duration"); ok {
+				options.SetMinFailureDuration(int64(attr.(int)))
+			}
+			if attr, ok := d.GetOk("options_list.0.follow_redirects"); ok {
+				options.SetFollowRedirects(attr.(bool))
+			}
+			if attr, ok := d.GetOk("options_list.0.allow_insecure"); ok {
+				options.SetAllowInsecure(attr.(bool))
+			}
+		}
 	}
 
 	if attr, ok := d.GetOk("options.tick_every"); ok {
@@ -731,8 +788,8 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("locations", syntheticsTest.Locations)
 
 	actualOptions := syntheticsTest.GetOptions()
-	localOptions := make([]map[string]string, 1)
-	localOption := make(map[string]string)
+	localOptions := make([]map[string]interface{}, 1)
+	localOption := make(map[string]interface{})
 	if actualOptions.HasFollowRedirects() {
 		localOption["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
 	}
@@ -750,6 +807,19 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 	if actualOptions.HasAllowInsecure() {
 		localOption["allow_insecure"] = convertToString(actualOptions.GetAllowInsecure())
+	}
+	if actualOptions.HasRetry() {
+		actualRetry := actualOptions.GetRetry()
+		retry := make(map[string]interface{})
+		retry["count"] = actualRetry.GetCount()
+		retry["interval"] = actualRetry.GetInterval()
+		localOption["retry"] = retry
+	}
+	if actualOptions.HasMonitorOptions() {
+		actualMonitorOptions := actualOptions.GetMonitorOptions()
+		monitorOptions := make(map[string]int64)
+		monitorOptions["renotify_interval"] = actualMonitorOptions.GetRenotifyInterval()
+		localOption["monitor_options"] = monitorOptions
 	}
 	localOptions = append(localOptions, localOption)
 	d.Set("options", localOption)
