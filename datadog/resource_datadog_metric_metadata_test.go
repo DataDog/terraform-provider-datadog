@@ -16,7 +16,7 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: accProviders,
 		Steps: []resource.TestStep{
@@ -48,7 +48,7 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: accProviders,
 		Steps: []resource.TestStep{

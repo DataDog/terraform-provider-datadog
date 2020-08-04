@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -10,7 +11,8 @@ import (
 // We're not testing for schedules because Datadog actively verifies it with Pagerduty
 
 func TestAccDatadogIntegrationPagerdutyServiceObject_Basic(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	serviceName := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -20,7 +22,7 @@ func TestAccDatadogIntegrationPagerdutyServiceObject_Basic(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogIntegrationPagerdutyServiceObjectConfig,
+				Config: testAccCheckDatadogIntegrationPagerdutyServiceObjectConfig(serviceName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIntegrationPagerdutyExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -32,37 +34,38 @@ func TestAccDatadogIntegrationPagerdutyServiceObject_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "schedules.0", "https://ddog.pagerduty.com/schedules/X123VF"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty_service_object.testing_foo", "service_name", "testing_foo"),
+						"datadog_integration_pagerduty_service_object.testing_foo", "service_name", serviceName+"_foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty_service_object.testing_foo", "service_key", "9876543210123456789"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty_service_object.testing_bar", "service_name", "testing_bar"),
+						"datadog_integration_pagerduty_service_object.testing_bar", "service_name", serviceName+"_bar"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty_service_object.testing_bar", "service_key", "54321098765432109876"),
 				),
 			},
 			{
-				Config: testAccCheckDatadogIntegrationPagerdutyServiceObjectUpdatedConfig,
+				Config: testAccCheckDatadogIntegrationPagerdutyServiceObjectUpdatedConfig(serviceName),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty_service_object.testing_foo", "service_name", "testing_foo_2"),
+						"datadog_integration_pagerduty_service_object.testing_foo", "service_name", serviceName+"_foo_2"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty_service_object.testing_foo", "service_key", "9876543210123456789_2"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty_service_object.testing_bar", "service_name", "testing_bar_2"),
+						"datadog_integration_pagerduty_service_object.testing_bar", "service_name", serviceName+"_bar_2"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty_service_object.testing_bar", "service_key", "54321098765432109876_2"),
 				),
 			},
 			{
 				// make sure that updating the PD resource itself doesn't delete the individual service objects
-				Config: strings.Replace(testAccCheckDatadogIntegrationPagerdutyServiceObjectUpdatedConfig, "testdomain", "testdomain2", -1),
+				Config: strings.Replace(testAccCheckDatadogIntegrationPagerdutyServiceObjectUpdatedConfig(serviceName), "testdomain", "testdomain2", -1),
 			},
 		},
 	})
 }
 
-const testAccCheckDatadogIntegrationPagerdutyServiceObjectConfig = `
+func testAccCheckDatadogIntegrationPagerdutyServiceObjectConfig(uniq string) string {
+	return fmt.Sprintf(`
  resource "datadog_integration_pagerduty" "foo" {
   individual_services = true
 
@@ -75,18 +78,19 @@ const testAccCheckDatadogIntegrationPagerdutyServiceObjectConfig = `
   # when creating the integration object for the first time, the service
   # objects have to be created *after* the integration
   depends_on = ["datadog_integration_pagerduty.foo"]
-  service_name = "testing_foo"
+  service_name = "%s_foo"
   service_key  = "9876543210123456789"
 }
 
 resource "datadog_integration_pagerduty_service_object" "testing_bar" {
   depends_on = ["datadog_integration_pagerduty.foo"]
-  service_name = "testing_bar"
+  service_name = "%s_bar"
   service_key  = "54321098765432109876"
+}`, uniq, uniq)
 }
-`
 
-const testAccCheckDatadogIntegrationPagerdutyServiceObjectUpdatedConfig = `
+func testAccCheckDatadogIntegrationPagerdutyServiceObjectUpdatedConfig(uniq string) string {
+	return fmt.Sprintf(`
  resource "datadog_integration_pagerduty" "foo" {
   individual_services = true
 
@@ -99,13 +103,13 @@ const testAccCheckDatadogIntegrationPagerdutyServiceObjectUpdatedConfig = `
   # when creating the integration object for the first time, the service
   # objects have to be created *after* the integration
   depends_on = ["datadog_integration_pagerduty.foo"]
-  service_name = "testing_foo_2"
+  service_name = "%s_foo_2"
   service_key  = "9876543210123456789_2"
 }
 
 resource "datadog_integration_pagerduty_service_object" "testing_bar" {
   depends_on = ["datadog_integration_pagerduty.foo"]
-  service_name = "testing_bar_2"
+  service_name = "%s_bar_2"
   service_key  = "54321098765432109876_2"
+}`, uniq, uniq)
 }
-`

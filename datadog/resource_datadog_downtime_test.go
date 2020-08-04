@@ -279,6 +279,38 @@ func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
 	})
 }
 
+func TestAccDatadogDowntime_RRule(t *testing.T) {
+	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDowntimeConfigRRule,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "scope.0", "RRuleRecurrence"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "start", "1735646400"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "end", "1735732799"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "recurrence.0.rrule", "FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogDowntime_Updated(t *testing.T) {
 	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
@@ -656,6 +688,22 @@ resource "datadog_downtime" "foo" {
     period    = 1
     type      = "weeks"
     week_days = ["Sat", "Sun"]
+  }
+
+  message = "Example Datadog downtime message."
+  monitor_tags = ["*"]
+}
+`
+
+const testAccCheckDatadogDowntimeConfigRRule = `
+resource "datadog_downtime" "foo" {
+  scope = ["RRuleRecurrence"]
+  start = 1735646400
+  end   = 1735732799
+
+  recurrence {
+    type     = "rrule"
+    rrule    = "FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"
   }
 
   message = "Example Datadog downtime message."
