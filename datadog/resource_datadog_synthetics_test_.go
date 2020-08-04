@@ -138,7 +138,8 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"options": syntheticsTestOptions(),
+			"options":      syntheticsTestOptions(),
+			"options_list": syntheticsTestOptionsList(),
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -204,8 +205,15 @@ func syntheticsTestRequest() *schema.Schema {
 
 func syntheticsTestOptions() *schema.Schema {
 	return &schema.Schema{
-		Type: schema.TypeMap,
+		Type:          schema.TypeMap,
+		ConflictsWith: []string{"options_list"},
+		Deprecated:    "This parameter is deprecated, please use `options_list`",
 		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
+			_, isOptionsV2 := d.GetOk("options_list")
+			// DiffSuppressFunc is useless if options_list exists
+			if isOptionsV2 {
+				return isOptionsV2
+			}
 			if key == "options.follow_redirects" || key == "options.accept_self_signed" || key == "options.allow_insecure" {
 				// TF nested schemas is limited to string values only
 				// follow_redirects, accept_self_signed and allow_insecure being booleans in Datadog json api
@@ -287,6 +295,44 @@ func syntheticsTestOptions() *schema.Schema {
 					Optional: true,
 				},
 				"retry_interval": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+			},
+		},
+	}
+}
+
+func syntheticsTestOptionsList() *schema.Schema {
+	return &schema.Schema{
+		Type:          schema.TypeList,
+		Optional:      true,
+		MaxItems:      1,
+		ConflictsWith: []string{"options"},
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"allow_insecure": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"follow_redirects": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"tick_every": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+				"accept_self_signed": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"min_location_failed": {
+					Type:     schema.TypeInt,
+					Default:  1,
+					Optional: true,
+				},
+				"min_failure_duration": {
 					Type:     schema.TypeInt,
 					Optional: true,
 				},
@@ -500,6 +546,27 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	}
 
 	options := datadogV1.NewSyntheticsTestOptions()
+
+	// use new options_list first, then fallback to legacy options
+	if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
+		options.SetTickEvery(datadogV1.SyntheticsTickInterval(attr.(int)))
+	}
+	if attr, ok := d.GetOk("options_list.0.accept_self_signed"); ok {
+		options.SetAcceptSelfSigned(attr.(bool))
+	}
+	if attr, ok := d.GetOk("options_list.0.min_location_failed"); ok {
+		options.SetMinLocationFailed(int64(attr.(int)))
+	}
+	if attr, ok := d.GetOk("options_list.0.min_failure_duration"); ok {
+		options.SetMinFailureDuration(int64(attr.(int)))
+	}
+	if attr, ok := d.GetOk("options_list.0.follow_redirects"); ok {
+		options.SetFollowRedirects(attr.(bool))
+	}
+	if attr, ok := d.GetOk("options_list.0.allow_insecure"); ok {
+		options.SetAllowInsecure(attr.(bool))
+	}
+
 	if attr, ok := d.GetOk("options.tick_every"); ok {
 		tickEvery, _ := strconv.Atoi(attr.(string))
 		options.SetTickEvery(datadogV1.SyntheticsTickInterval(tickEvery))
@@ -684,24 +751,25 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("locations", syntheticsTest.Locations)
 
 	actualOptions := syntheticsTest.GetOptions()
-	localOptions := make(map[string]string)
+	localOptions := make([]map[string]string, 1)
+	localOption := make(map[string]string)
 	if actualOptions.HasFollowRedirects() {
-		localOptions["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
+		localOption["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
 	}
 	if actualOptions.HasMinFailureDuration() {
-		localOptions["min_failure_duration"] = convertToString(actualOptions.GetMinFailureDuration())
+		localOption["min_failure_duration"] = convertToString(actualOptions.GetMinFailureDuration())
 	}
 	if actualOptions.HasMinLocationFailed() {
-		localOptions["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
+		localOption["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
 	}
 	if actualOptions.HasTickEvery() {
-		localOptions["tick_every"] = convertToString(actualOptions.GetTickEvery())
+		localOption["tick_every"] = convertToString(actualOptions.GetTickEvery())
 	}
 	if actualOptions.HasAcceptSelfSigned() {
-		localOptions["accept_self_signed"] = convertToString(actualOptions.GetAcceptSelfSigned())
+		localOption["accept_self_signed"] = convertToString(actualOptions.GetAcceptSelfSigned())
 	}
 	if actualOptions.HasAllowInsecure() {
-		localOptions["allow_insecure"] = convertToString(actualOptions.GetAllowInsecure())
+		localOption["allow_insecure"] = convertToString(actualOptions.GetAllowInsecure())
 	}
 	if actualOptions.HasRetry() {
 		retry := actualOptions.GetRetry()
@@ -712,7 +780,9 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		}
 	}
 
-	d.Set("options", localOptions)
+	localOptions = append(localOptions, localOption)
+	d.Set("options", localOption)
+	d.Set("options_list", localOptions)
 
 	d.Set("name", syntheticsTest.GetName())
 	d.Set("message", syntheticsTest.GetMessage())

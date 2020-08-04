@@ -278,13 +278,15 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.tick_every", "60"),
+				"datadog_synthetics_test.foo", "options_list.0.allow_insecure", "true"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.follow_redirects", "true"),
+				"datadog_synthetics_test.foo", "options_list.0.tick_every", "60"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.min_failure_duration", "0"),
+				"datadog_synthetics_test.foo", "options_list.0.follow_redirects", "true"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
+				"datadog_synthetics_test.foo", "options_list.0.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.retry_count", "1"),
 			resource.TestCheckResourceAttr(
@@ -347,7 +349,9 @@ resource "datadog_synthetics_test" "foo" {
 	]
 
 	locations = [ "aws:eu-central-1" ]
-	options = {
+
+	options_list {
+		allow_insecure = true
 		tick_every = 60
 		follow_redirects = true
 		min_failure_duration = 0
