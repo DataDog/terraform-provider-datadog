@@ -5156,7 +5156,7 @@ func validateTimeseriesWidgetLegendSize(val interface{}, key string) (warns []st
 		break
 	default:
 		errs = append(errs, fmt.Errorf(
-			"%q contains an invalid value %q. Valud values are `2`, `4`, `8`, `16`, or `auto`", key, value))
+			"%q contains an invalid value %q. Valid values are `0`, `2`, `4`, `8`, `16`, or `auto`", key, value))
 	}
 	return
 }
