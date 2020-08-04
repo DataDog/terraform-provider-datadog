@@ -48,7 +48,7 @@ import (
 
 const datadogDashboardManageStatusConfig = `
 resource "datadog_dashboard" "manage_status_dashboard" {
-	title         = "Acceptance Test Manage Status Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
 	is_read_only  = "true"
@@ -97,7 +97,7 @@ var datadogDashboardManageStatusAsserts = []string{
 	"widget.0.manage_status_definition.0.title_align = center",
 	"widget.0.manage_status_definition.0.start = 0",
 	"widget.0.manage_status_definition.0.count = 50",
-	"title = Acceptance Test Manage Status Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.manage_status_definition.0.query = env:prod group_status:alert",
 }
 

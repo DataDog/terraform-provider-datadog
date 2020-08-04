@@ -53,7 +53,7 @@ import (
 
 const datadogDashboardChangeConfig = `
 resource "datadog_dashboard" "change_dashboard" {
-   	title         = "Acceptance Test Change Widget Dashboard"
+   	title         = "{{uniq}}"
    	description   = "Created using the Datadog provider in Terraform"
    	layout_type   = "ordered"
    	is_read_only  = true
@@ -93,7 +93,7 @@ var datadogDashboardChangeAsserts = []string{
 	"widget.1.change_definition.0.request.0.change_type = absolute",
 	"widget.0.change_definition.0.request.0.order_dir =",
 	"widget.0.change_definition.0.title_size =",
-	"title = Acceptance Test Change Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.change_definition.0.request.0.change_type =",
 	"widget.1.change_definition.0.title = Sum of system.cpu.user over * by service,account",
 	"widget.1.change_definition.0.title_size = 16",

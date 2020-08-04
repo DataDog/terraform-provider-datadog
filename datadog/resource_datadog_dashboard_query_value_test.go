@@ -63,7 +63,7 @@ import (
 
 const datadogDashboardQueryValueConfig = `
 resource "datadog_dashboard" "query_value_dashboard" {
-	title         = "Acceptance Test Query Value Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = "true"
@@ -129,6 +129,7 @@ var datadogDashboardQueryValueAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.query_value_definition.0.request.0.conditional_formats.0.custom_fg_color =",
 	"is_read_only = true",
+	"title = {{uniq}}",
 }
 
 func TestAccDatadogDashboardQueryValue(t *testing.T) {

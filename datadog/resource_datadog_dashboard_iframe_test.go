@@ -37,7 +37,7 @@ import (
 
 const datadogDashboardIFrameConfig = `
 resource "datadog_dashboard" "iframe_dashboard" {
-	title         = "Acceptance Test IFrame Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
 	is_read_only  = "true"
@@ -61,7 +61,7 @@ var datadogDashboardIFrameAsserts = []string{
 	"is_read_only = true",
 	"widget.0.iframe_definition.0.url = https://en.wikipedia.org/wiki/Datadog",
 	"widget.0.layout.height = 43",
-	"title = Acceptance Test IFrame Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.layout.x = 5",
 	"widget.0.layout.y = 5",
 	"layout_type = free",

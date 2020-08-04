@@ -61,7 +61,7 @@ import (
 
 const datadogDashboardHeatMapConfig = `
 resource "datadog_dashboard" "heatmap_dashboard" {
-	title         = "Acceptance Test Heatmap Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = "true"
@@ -96,7 +96,7 @@ resource "datadog_dashboard" "heatmap_dashboard" {
 `
 
 var datadogDashboardHeatMapAsserts = []string{
-	"title = Acceptance Test Heatmap Widget Dashboard",
+	"title = {{uniq}}",
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
 	"is_read_only = true",
