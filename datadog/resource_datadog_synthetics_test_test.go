@@ -280,7 +280,7 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.retry", "1"),
+				"datadog_synthetics_test.foo", "options.retry_count", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", "name for synthetics test foo"),
 			resource.TestCheckResourceAttr(
@@ -345,7 +345,7 @@ resource "datadog_synthetics_test" "foo" {
 		follow_redirects = true
 		min_failure_duration = 0
 		min_location_failed = 1
-		retry = 1
+		retry_count = 1
 	}
 
 	name = "name for synthetics test foo"
@@ -420,7 +420,7 @@ func createSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider) reso
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.retry", "1"),
+				"datadog_synthetics_test.bar", "options.retry_count", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", "name for synthetics test foo"),
 			resource.TestCheckResourceAttr(
@@ -489,7 +489,7 @@ resource "datadog_synthetics_test" "bar" {
 		follow_redirects = true
 		min_failure_duration = 0
 		min_location_failed = 1
-		retry = 1
+		retry_count = 1
 	}
 
 	name = "name for synthetics test foo"
@@ -536,7 +536,9 @@ func updateSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.retry", "1"),
+				"datadog_synthetics_test.foo", "options.retry_count", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.retry_interval", "400"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", "updated name"),
 			resource.TestCheckResourceAttr(
@@ -583,7 +585,8 @@ resource "datadog_synthetics_test" "foo" {
 		follow_redirects = false
 		min_failure_duration = 10
 		min_location_failed = 1
-		retry = 1
+		retry_count = 1
+		retry_interval = 400
 	}
 
 	name = "updated name"
@@ -636,7 +639,7 @@ func updateSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider) reso
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.retry", "1"),
+				"datadog_synthetics_test.bar", "options.retry_count", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", "updated name"),
 			resource.TestCheckResourceAttr(
@@ -685,7 +688,7 @@ resource "datadog_synthetics_test" "bar" {
 		follow_redirects = false
 		min_failure_duration = 10
 		min_location_failed = 1
-		retry = 1
+		retry_count = 1
 	}
 
 	name = "updated name"
