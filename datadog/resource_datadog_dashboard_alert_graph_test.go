@@ -44,7 +44,7 @@ import (
 
 const datadogDashboardAlertGraphConfig = `
 resource "datadog_dashboard" "alert_graph_dashboard" {
-	title         = "Acceptance Test Alert Graph Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = true
@@ -70,7 +70,7 @@ resource "datadog_dashboard" "alert_graph_dashboard" {
 `
 
 var datadogDashboardAlertGraphAsserts = []string{
-	"title = Acceptance Test Alert Graph Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.alert_graph_definition.0.alert_id = 895605",
 	"widget.1.alert_graph_definition.0.time.% = 1",
 	"widget.1.alert_graph_definition.0.title = Widget Title",

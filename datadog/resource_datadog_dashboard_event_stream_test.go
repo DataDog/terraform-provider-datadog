@@ -45,7 +45,7 @@ import (
 
 const datadogDashboardEventStreamConfig = `
 resource "datadog_dashboard" "event_stream_dashboard" {
-	title         = "Acceptance Test Event Stream Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
 	is_read_only  = "true"
@@ -76,7 +76,7 @@ var datadogDashboardEventStreamAsserts = []string{
 	"widget.0.layout.x = 5",
 	"widget.0.event_stream_definition.0.title_size = 16",
 	"widget.0.event_stream_definition.0.tags_execution = and",
-	"title = Acceptance Test Event Stream Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.layout.y = 5",
 	"widget.0.event_stream_definition.0.title_align = right",
 	"widget.0.event_stream_definition.0.time.live_span = 4h",
