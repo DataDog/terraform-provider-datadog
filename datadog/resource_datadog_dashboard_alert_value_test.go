@@ -43,7 +43,7 @@ import (
 
 const datadogDashboardAlertValueConfig = `
 resource "datadog_dashboard" "alert_value_dashboard" {
-	title         = "Acceptance Test Alert Value Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = true
@@ -71,7 +71,7 @@ var datadogDashboardAlertValueAsserts = []string{
 	"widget.1.alert_value_definition.0.title_align = center",
 	"widget.1.alert_value_definition.0.text_align = center",
 	"widget.1.layout.% = 0",
-	"title = Acceptance Test Alert Value Widget Dashboard",
+	"title = {{uniq}}",
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.alert_value_definition.0.precision = 0",
 	"widget.1.alert_value_definition.0.title_size = 16",

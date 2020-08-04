@@ -45,7 +45,7 @@ import (
 
 const datadogDashboardEventTimelineConfig = `
 resource "datadog_dashboard" "event_timeline_dashboard" {
-	title         = "Acceptance Test Event Timeline Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
 	is_read_only  = "true"
@@ -77,7 +77,7 @@ var datadogDashboardEventTimelineAsserts = []string{
 	"widget.0.layout.x = 5",
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.event_timeline_definition.0.time.live_span = 1h",
-	"title = Acceptance Test Event Timeline Widget Dashboard",
+	"title = {{uniq}}",
 	"is_read_only = true",
 	"widget.0.layout.width = 32",
 	"widget.0.event_timeline_definition.0.title_size = 16",

@@ -48,7 +48,7 @@ import (
 
 const datadogDashboardSLOConfig = `
 resource "datadog_dashboard" "slo_dashboard" {
-	title         = "Acceptance Test SLO Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = "true"
@@ -71,7 +71,7 @@ resource "datadog_dashboard" "slo_dashboard" {
 var datadogDashboardSLOAsserts = []string{
 	"widget.0.service_level_objective_definition.0.title_size = 16",
 	"is_read_only = true",
-	"title = Acceptance Test SLO Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.service_level_objective_definition.0.slo_id = b4c7739b2af25f9d947f828730357832",
 	"widget.0.service_level_objective_definition.0.view_mode = both",
 	"description = Created using the Datadog provider in Terraform",

@@ -13,14 +13,15 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 )
 
-const testAccCheckDatadogDashListConfig = `
+func testAccCheckDatadogDashListConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_dashboard_list" "new_list" {
 	depends_on = [
 		"datadog_dashboard.screen",
 		"datadog_dashboard.time"
 	]
 
-    name = "Terraform newest Created List"
+    name = "%s"
     dash_item {
         type = "custom_timeboard"
         dash_id = "${datadog_dashboard.time.id}"
@@ -32,7 +33,7 @@ resource "datadog_dashboard_list" "new_list" {
 }
 
 resource "datadog_dashboard" "time" {
-	title         = "TF Test Layout Dashboard"
+	title         = "%s-time"
 	# NOTE: this dependency is present to make sure the dashboards are created in
 	# a predictable order and thus the recorder test cassettes always work
 	depends_on    = ["datadog_dashboard.screen"]
@@ -53,7 +54,7 @@ resource "datadog_dashboard" "time" {
 }
 
 resource "datadog_dashboard" "screen" {
-	title         = "TF Test Free Layout Dashboard"
+	title         = "%s-screen"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
 	is_read_only  = false
@@ -76,12 +77,13 @@ resource "datadog_dashboard" "screen" {
 		}
 	  }
 
+}`, uniq, uniq, uniq)
 }
-`
 
 func TestDatadogDashListImport(t *testing.T) {
 	resourceName := "datadog_dashboard_list.new_list"
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	uniqueName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -93,7 +95,7 @@ func TestDatadogDashListImport(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogDashListDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDashListConfig,
+				Config: testAccCheckDatadogDashListConfig(uniqueName),
 			},
 			{
 				ResourceName:      resourceName,

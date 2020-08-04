@@ -39,7 +39,7 @@ import (
 
 const datadogDashboardImageConfig = `
 resource "datadog_dashboard" "image_dashboard" {
-	title         = "Acceptance Test Image Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
 	is_read_only  = "true"
@@ -62,7 +62,7 @@ resource "datadog_dashboard" "image_dashboard" {
 
 var datadogDashboardImageAsserts = []string{
 	"widget.0.image_definition.0.sizing = fit",
-	"title = Acceptance Test Image Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.layout.y = 5",
 	"widget.0.layout.x = 5",
 	"widget.0.image_definition.0.margin = small",

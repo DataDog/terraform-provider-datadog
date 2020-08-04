@@ -68,7 +68,7 @@ import (
 
 const datadogDashboardScatterplotConfig = `
 resource "datadog_dashboard" "scatterplot_dashboard" {
-	title         = "Acceptance Test Scatterplot Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = "true"
@@ -124,7 +124,7 @@ var datadogDashboardScatterplotAsserts = []string{
 	"widget.0.scatterplot_definition.0.request.0.x.0.q = avg:system.cpu.user{account:prod} by {service, team, app}",
 	"widget.0.scatterplot_definition.0.title_align = right",
 	"layout_type = ordered",
-	"title = Acceptance Test Scatterplot Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.scatterplot_definition.0.request.0.x.0.aggregator = avg",
 	"widget.0.scatterplot_definition.0.yaxis.0.include_zero = false",
 	"widget.0.scatterplot_definition.0.time.live_span = 15m",
