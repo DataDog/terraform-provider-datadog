@@ -1,6 +1,8 @@
 package datadog
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
@@ -8,7 +10,8 @@ import (
 
 func TestDatadogIntegrationPagerduty_import(t *testing.T) {
 	resourceName := "datadog_integration_pagerduty.pd"
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	serviceName := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -18,7 +21,7 @@ func TestDatadogIntegrationPagerduty_import(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogIntegrationPagerdutyConfigImported,
+				Config: testAccCheckDatadogIntegrationPagerdutyConfigImported(serviceName),
 			},
 			{
 				ResourceName:      resourceName,
@@ -29,11 +32,12 @@ func TestDatadogIntegrationPagerduty_import(t *testing.T) {
 	})
 }
 
-const testAccCheckDatadogIntegrationPagerdutyConfigImported = `
+func testAccCheckDatadogIntegrationPagerdutyConfigImported(uniq string) string {
+	return fmt.Sprintf(`
 locals {
 	pd_services = {
-		test_service = "*****"
-		test_service_2 = "*****"
+		%s = "*****"
+		%s_2 = "*****"
 	}
 }
 
@@ -47,5 +51,5 @@ resource "datadog_integration_pagerduty" "pd" {
 	}
   schedules = ["https://ddog.pagerduty.com/schedules/X123VF"]
   subdomain = "testdomain"
+}`, uniq, uniq)
 }
-`

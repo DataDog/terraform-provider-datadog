@@ -12,7 +12,8 @@ import (
 )
 
 func TestAccDatadogUser_Updated(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	username := strings.ToLower(uniqueEntityName(clock, t)) + "@example.com"
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -22,13 +23,13 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogUserDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogUserConfigRequired,
+				Config: testAccCheckDatadogUserConfigRequired(username),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogUserExists(accProvider, "datadog_user.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_user.foo", "email", "tftestuser@example.com"),
+						"datadog_user.foo", "email", username),
 					resource.TestCheckResourceAttr(
-						"datadog_user.foo", "handle", "tftestuser@example.com"),
+						"datadog_user.foo", "handle", username),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr(
@@ -36,16 +37,16 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogUserConfigUpdated,
+				Config: testAccCheckDatadogUserConfigUpdated(username),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogUserExists(accProvider, "datadog_user.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "disabled", "true"),
 					// NOTE: it's not possible ATM to update email of another user
 					resource.TestCheckResourceAttr(
-						"datadog_user.foo", "email", "tftestuser@example.com"),
+						"datadog_user.foo", "email", username),
 					resource.TestCheckResourceAttr(
-						"datadog_user.foo", "handle", "tftestuser@example.com"),
+						"datadog_user.foo", "handle", username),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "is_admin", "true"),
 					resource.TestCheckResourceAttr(
@@ -84,25 +85,27 @@ func testAccCheckDatadogUserExists(accProvider *schema.Provider, n string) resou
 	}
 }
 
-const testAccCheckDatadogUserConfigRequired = `
+func testAccCheckDatadogUserConfigRequired(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_user" "foo" {
-  email     = "tftestuser@example.com"
-  handle    = "tftestuser@example.com"
+  email     = "%s"
+  handle    = "%s"
   name      = "Test User"
+}`, uniq, uniq)
 }
-`
 
-const testAccCheckDatadogUserConfigUpdated = `
+func testAccCheckDatadogUserConfigUpdated(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_user" "foo" {
   disabled    = true
   // NOTE: it's not possible ATM to update email of another user
-  email       = "tftestuser@example.com"
-  handle      = "tftestuser@example.com"
+  email       = "%s"
+  handle      = "%s"
   is_admin    = true
   access_role = "adm"
   name        = "Updated User"
+}`, uniq, uniq)
 }
-`
 
 func datadogUserDestroyHelper(s *terraform.State, client *datadog.Client) error {
 	for _, r := range s.RootModule().Resources {

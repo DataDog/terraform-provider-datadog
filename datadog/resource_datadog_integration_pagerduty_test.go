@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
@@ -13,7 +14,8 @@ import (
 // We're not testing for schedules because Datadog actively verifies it with Pagerduty
 
 func TestAccDatadogIntegrationPagerduty_Basic(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	serviceName := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -23,7 +25,7 @@ func TestAccDatadogIntegrationPagerduty_Basic(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogIntegrationPagerdutyConfig,
+				Config: testAccCheckDatadogIntegrationPagerdutyConfig(serviceName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIntegrationPagerdutyExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -31,7 +33,7 @@ func TestAccDatadogIntegrationPagerduty_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "api_token", "secret"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty.foo", "services.0.service_name", "test_service"),
+						"datadog_integration_pagerduty.foo", "services.0.service_name", serviceName),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "services.0.service_key", "*****"),
 					resource.TestCheckResourceAttr(
@@ -43,7 +45,8 @@ func TestAccDatadogIntegrationPagerduty_Basic(t *testing.T) {
 }
 
 func TestAccDatadogIntegrationPagerduty_TwoServices(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	serviceName := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -53,7 +56,7 @@ func TestAccDatadogIntegrationPagerduty_TwoServices(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogIntegrationPagerdutyConfigTwoServices,
+				Config: testAccCheckDatadogIntegrationPagerdutyConfigTwoServices(serviceName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIntegrationPagerdutyExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -61,11 +64,11 @@ func TestAccDatadogIntegrationPagerduty_TwoServices(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "api_token", "secret"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty.foo", "services.0.service_name", "test_service"),
+						"datadog_integration_pagerduty.foo", "services.0.service_name", serviceName),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "services.0.service_key", "*****"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty.foo", "services.1.service_name", "test_service_2"),
+						"datadog_integration_pagerduty.foo", "services.1.service_name", serviceName+"_2"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "services.1.service_key", "*****"),
 					resource.TestCheckResourceAttr(
@@ -77,7 +80,8 @@ func TestAccDatadogIntegrationPagerduty_TwoServices(t *testing.T) {
 }
 
 func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	serviceName := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -87,7 +91,7 @@ func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogIntegrationPagerdutyConfigBeforeMigration,
+				Config: testAccCheckDatadogIntegrationPagerdutyConfigBeforeMigration(serviceName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIntegrationPagerdutyExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -95,11 +99,11 @@ func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.pd", "api_token", "secret"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty.pd", "services.0.service_name", "testing_bar"),
+						"datadog_integration_pagerduty.pd", "services.0.service_name", serviceName+"_bar"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.pd", "services.0.service_key", "*****"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty.pd", "services.1.service_name", "testing_foo"),
+						"datadog_integration_pagerduty.pd", "services.1.service_name", serviceName+"_foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.pd", "services.1.service_key", "*****"),
 				),
@@ -107,10 +111,10 @@ func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
 			{
 				// this represents the intermediary step which will ensure the old
 				// inline-defined service objects get removed
-				Config: testAccCheckDatadogIntegrationPagerdutyConfigDuringMigration,
+				Config: testAccCheckDatadogIntegrationPagerdutyConfigDuringMigration(serviceName),
 			},
 			{
-				Config: testAccCheckDatadogIntegrationPagerdutyConfigAfterMigration,
+				Config: testAccCheckDatadogIntegrationPagerdutyConfigAfterMigration(serviceName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIntegrationPagerdutyExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -118,11 +122,11 @@ func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.pd", "api_token", "secret"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty_service_object.testing_foo", "service_name", "testing_foo"),
+						"datadog_integration_pagerduty_service_object.testing_foo", "service_name", serviceName+"_foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty_service_object.testing_foo", "service_key", "9876543210123456789"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty_service_object.testing_bar", "service_name", "testing_bar"),
+						"datadog_integration_pagerduty_service_object.testing_bar", "service_name", serviceName+"_bar"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty_service_object.testing_bar", "service_key", "54321098765432109876"),
 				),
@@ -160,24 +164,26 @@ func testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider *schema.Provider
 // NOTE: Don't create configs with no schedules. If there's a leftover schedule from some previous test run,
 // the test will fail on non-empty diff after apply, as the resource is (unfortunately) created in a way
 // to not overwrite existing schedules with empty list on creation.
-const testAccCheckDatadogIntegrationPagerdutyConfig = `
+func testAccCheckDatadogIntegrationPagerdutyConfig(uniq string) string {
+	return fmt.Sprintf(`
  resource "datadog_integration_pagerduty" "foo" {
    services {
-        service_name = "test_service"
+        service_name = "%s"
         service_key  = "*****"
     }
 
    schedules = ["https://ddog.pagerduty.com/schedules/X123VF"]
    subdomain = "testdomain"
    api_token = "secret"
- }
- `
+ }`, uniq)
+}
 
-const testAccCheckDatadogIntegrationPagerdutyConfigTwoServices = `
+func testAccCheckDatadogIntegrationPagerdutyConfigTwoServices(uniq string) string {
+	return fmt.Sprintf(`
  locals {
 	 pd_services = {
-		 test_service = "*****"
-		 test_service_2 = "*****"
+		 %s = "*****"
+		 %s_2 = "*****"
 	 }
  }
  resource "datadog_integration_pagerduty" "foo" {
@@ -192,14 +198,15 @@ const testAccCheckDatadogIntegrationPagerdutyConfigTwoServices = `
    schedules = ["https://ddog.pagerduty.com/schedules/X123VF"]
    subdomain = "testdomain"
    api_token = "secret"
+}`, uniq, uniq)
 }
-`
 
-const testAccCheckDatadogIntegrationPagerdutyConfigBeforeMigration = `
+func testAccCheckDatadogIntegrationPagerdutyConfigBeforeMigration(uniq string) string {
+	return fmt.Sprintf(`
 locals {
   pd_services = {
-	  testing_foo = "*****"
-	  testing_bar = "*****"
+	  %s_foo = "*****"
+	  %s_bar = "*****"
 	}
 }
 
@@ -218,9 +225,11 @@ resource "datadog_integration_pagerduty" "pd" {
 	]
   subdomain = "ddog"
   api_token = "secret"
-}`
+}`, uniq, uniq)
+}
 
-const testAccCheckDatadogIntegrationPagerdutyConfigDuringMigration = `
+func testAccCheckDatadogIntegrationPagerdutyConfigDuringMigration(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_integration_pagerduty" "pd" {
   schedules = [
 	  "https://ddog.pagerduty.com/schedules/X123VF",
@@ -228,9 +237,11 @@ resource "datadog_integration_pagerduty" "pd" {
 	]
   subdomain = "ddog"
   api_token = "secret"
-}`
+}`)
+}
 
-const testAccCheckDatadogIntegrationPagerdutyConfigAfterMigration = `
+func testAccCheckDatadogIntegrationPagerdutyConfigAfterMigration(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_integration_pagerduty" "pd" {
   individual_services = true
   schedules = [
@@ -243,12 +254,13 @@ resource "datadog_integration_pagerduty" "pd" {
 
 resource "datadog_integration_pagerduty_service_object" "testing_foo" {
   depends_on = ["datadog_integration_pagerduty.pd"]
-  service_name = "testing_foo"
+  service_name = "%s_foo"
   service_key  = "9876543210123456789"
 }
 
 resource "datadog_integration_pagerduty_service_object" "testing_bar" {
   depends_on = ["datadog_integration_pagerduty.pd"]
-  service_name = "testing_bar"
+  service_name = "%s_bar"
   service_key  = "54321098765432109876"
-}`
+}`, uniq, uniq)
+}
