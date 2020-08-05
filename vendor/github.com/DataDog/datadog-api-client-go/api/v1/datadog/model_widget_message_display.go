@@ -37,7 +37,7 @@ func (v *WidgetMessageDisplay) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetMessageDisplay", *v)
+	return fmt.Errorf("%+v is not a valid WidgetMessageDisplay", value)
 }
 
 // Ptr returns reference to WidgetMessageDisplay value

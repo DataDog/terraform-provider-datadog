@@ -39,7 +39,7 @@ func (v *WidgetAggregator) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetAggregator", *v)
+	return fmt.Errorf("%+v is not a valid WidgetAggregator", value)
 }
 
 // Ptr returns reference to WidgetAggregator value

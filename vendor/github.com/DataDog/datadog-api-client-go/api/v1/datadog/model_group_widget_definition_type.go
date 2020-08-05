@@ -35,7 +35,7 @@ func (v *GroupWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid GroupWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid GroupWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to GroupWidgetDefinitionType value

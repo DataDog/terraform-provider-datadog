@@ -53,7 +53,7 @@ func (v *SyntheticsStepType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SyntheticsStepType", *v)
+	return fmt.Errorf("%+v is not a valid SyntheticsStepType", value)
 }
 
 // Ptr returns reference to SyntheticsStepType value

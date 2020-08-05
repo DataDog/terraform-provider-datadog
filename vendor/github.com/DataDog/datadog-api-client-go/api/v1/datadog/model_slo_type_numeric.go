@@ -36,7 +36,7 @@ func (v *SLOTypeNumeric) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SLOTypeNumeric", *v)
+	return fmt.Errorf("%+v is not a valid SLOTypeNumeric", value)
 }
 
 // Ptr returns reference to SLOTypeNumeric value

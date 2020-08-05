@@ -41,7 +41,7 @@ func (v *HTTPMethod) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid HTTPMethod", *v)
+	return fmt.Errorf("%+v is not a valid HTTPMethod", value)
 }
 
 // Ptr returns reference to HTTPMethod value

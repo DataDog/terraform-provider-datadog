@@ -35,7 +35,7 @@ func (v *LogsGrokParserType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid LogsGrokParserType", *v)
+	return fmt.Errorf("%+v is not a valid LogsGrokParserType", value)
 }
 
 // Ptr returns reference to LogsGrokParserType value

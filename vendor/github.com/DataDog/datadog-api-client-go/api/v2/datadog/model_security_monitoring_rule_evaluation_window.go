@@ -42,7 +42,7 @@ func (v *SecurityMonitoringRuleEvaluationWindow) UnmarshalJSON(src []byte) error
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SecurityMonitoringRuleEvaluationWindow", *v)
+	return fmt.Errorf("%+v is not a valid SecurityMonitoringRuleEvaluationWindow", value)
 }
 
 // Ptr returns reference to SecurityMonitoringRuleEvaluationWindow value

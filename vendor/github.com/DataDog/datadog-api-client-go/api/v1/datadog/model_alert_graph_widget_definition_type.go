@@ -35,7 +35,7 @@ func (v *AlertGraphWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid AlertGraphWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid AlertGraphWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to AlertGraphWidgetDefinitionType value

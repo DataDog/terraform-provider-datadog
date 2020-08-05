@@ -36,7 +36,7 @@ func (v *DashboardLayoutType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid DashboardLayoutType", *v)
+	return fmt.Errorf("%+v is not a valid DashboardLayoutType", value)
 }
 
 // Ptr returns reference to DashboardLayoutType value

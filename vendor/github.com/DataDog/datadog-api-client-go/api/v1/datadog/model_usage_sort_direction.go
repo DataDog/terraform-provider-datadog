@@ -36,7 +36,7 @@ func (v *UsageSortDirection) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid UsageSortDirection", *v)
+	return fmt.Errorf("%+v is not a valid UsageSortDirection", value)
 }
 
 // Ptr returns reference to UsageSortDirection value

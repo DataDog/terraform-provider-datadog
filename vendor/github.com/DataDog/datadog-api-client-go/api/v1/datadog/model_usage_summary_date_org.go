@@ -52,6 +52,8 @@ type UsageSummaryDateOrg struct {
 	NetflowIndexedEventsCountSum *int64 `json:"netflow_indexed_events_count_sum,omitempty"`
 	// Shows the 99th percentile of all distinct Networks hosts over all hours in the current date for the given org.
 	NpmHostTop99p *int64 `json:"npm_host_top99p,omitempty"`
+	// Shows the 99th percentile of all profiled hosts over all hours in the current date for all organizations.
+	ProfilingHostTop99p *int64 `json:"profiling_host_top99p,omitempty"`
 	// The organization public id.
 	PublicId *string `json:"public_id,omitempty"`
 	// Shows the sum of all RUM Sessions over all hours in the current date for the given org.
@@ -689,6 +691,38 @@ func (o *UsageSummaryDateOrg) SetNpmHostTop99p(v int64) {
 	o.NpmHostTop99p = &v
 }
 
+// GetProfilingHostTop99p returns the ProfilingHostTop99p field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetProfilingHostTop99p() int64 {
+	if o == nil || o.ProfilingHostTop99p == nil {
+		var ret int64
+		return ret
+	}
+	return *o.ProfilingHostTop99p
+}
+
+// GetProfilingHostTop99pOk returns a tuple with the ProfilingHostTop99p field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetProfilingHostTop99pOk() (*int64, bool) {
+	if o == nil || o.ProfilingHostTop99p == nil {
+		return nil, false
+	}
+	return o.ProfilingHostTop99p, true
+}
+
+// HasProfilingHostTop99p returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasProfilingHostTop99p() bool {
+	if o != nil && o.ProfilingHostTop99p != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetProfilingHostTop99p gets a reference to the given int64 and assigns it to the ProfilingHostTop99p field.
+func (o *UsageSummaryDateOrg) SetProfilingHostTop99p(v int64) {
+	o.ProfilingHostTop99p = &v
+}
+
 // GetPublicId returns the PublicId field value if set, zero value otherwise.
 func (o *UsageSummaryDateOrg) GetPublicId() string {
 	if o == nil || o.PublicId == nil {
@@ -907,6 +941,9 @@ func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 	}
 	if o.NpmHostTop99p != nil {
 		toSerialize["npm_host_top99p"] = o.NpmHostTop99p
+	}
+	if o.ProfilingHostTop99p != nil {
+		toSerialize["profiling_host_top99p"] = o.ProfilingHostTop99p
 	}
 	if o.PublicId != nil {
 		toSerialize["public_id"] = o.PublicId

@@ -38,7 +38,7 @@ func (v *WidgetCompareTo) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetCompareTo", *v)
+	return fmt.Errorf("%+v is not a valid WidgetCompareTo", value)
 }
 
 // Ptr returns reference to WidgetCompareTo value

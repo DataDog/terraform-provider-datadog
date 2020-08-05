@@ -15,33 +15,32 @@ import (
 // SecurityMonitoringRuleCreatePayload Create a new rule.
 type SecurityMonitoringRuleCreatePayload struct {
 	// Cases for generating signals.
-	Cases []SecurityMonitoringRuleCase `json:"cases"`
+	Cases []SecurityMonitoringRuleCaseCreate `json:"cases"`
 	// Whether the rule is enabled.
-	Enabled bool `json:"enabled"`
+	IsEnabled bool `json:"isEnabled"`
 	// Message for generated signals.
 	Message string `json:"message"`
-	// The name of the rule
+	// The name of the rule.
 	Name    string                        `json:"name"`
 	Options SecurityMonitoringRuleOptions `json:"options"`
 	// Queries for selecting logs which are part of the rule.
-	Queries []SecurityMonitoringRuleQuery `json:"queries"`
+	Queries []SecurityMonitoringRuleQueryCreate `json:"queries"`
 	// Tags for generated signals.
-	Tags []string `json:"tags"`
+	Tags *[]string `json:"tags,omitempty"`
 }
 
 // NewSecurityMonitoringRuleCreatePayload instantiates a new SecurityMonitoringRuleCreatePayload object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSecurityMonitoringRuleCreatePayload(cases []SecurityMonitoringRuleCase, enabled bool, message string, name string, options SecurityMonitoringRuleOptions, queries []SecurityMonitoringRuleQuery, tags []string) *SecurityMonitoringRuleCreatePayload {
+func NewSecurityMonitoringRuleCreatePayload(cases []SecurityMonitoringRuleCaseCreate, isEnabled bool, message string, name string, options SecurityMonitoringRuleOptions, queries []SecurityMonitoringRuleQueryCreate) *SecurityMonitoringRuleCreatePayload {
 	this := SecurityMonitoringRuleCreatePayload{}
 	this.Cases = cases
-	this.Enabled = enabled
+	this.IsEnabled = isEnabled
 	this.Message = message
 	this.Name = name
 	this.Options = options
 	this.Queries = queries
-	this.Tags = tags
 	return &this
 }
 
@@ -54,9 +53,9 @@ func NewSecurityMonitoringRuleCreatePayloadWithDefaults() *SecurityMonitoringRul
 }
 
 // GetCases returns the Cases field value
-func (o *SecurityMonitoringRuleCreatePayload) GetCases() []SecurityMonitoringRuleCase {
+func (o *SecurityMonitoringRuleCreatePayload) GetCases() []SecurityMonitoringRuleCaseCreate {
 	if o == nil {
-		var ret []SecurityMonitoringRuleCase
+		var ret []SecurityMonitoringRuleCaseCreate
 		return ret
 	}
 
@@ -65,7 +64,7 @@ func (o *SecurityMonitoringRuleCreatePayload) GetCases() []SecurityMonitoringRul
 
 // GetCasesOk returns a tuple with the Cases field value
 // and a boolean to check if the value has been set.
-func (o *SecurityMonitoringRuleCreatePayload) GetCasesOk() (*[]SecurityMonitoringRuleCase, bool) {
+func (o *SecurityMonitoringRuleCreatePayload) GetCasesOk() (*[]SecurityMonitoringRuleCaseCreate, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -73,32 +72,32 @@ func (o *SecurityMonitoringRuleCreatePayload) GetCasesOk() (*[]SecurityMonitorin
 }
 
 // SetCases sets field value
-func (o *SecurityMonitoringRuleCreatePayload) SetCases(v []SecurityMonitoringRuleCase) {
+func (o *SecurityMonitoringRuleCreatePayload) SetCases(v []SecurityMonitoringRuleCaseCreate) {
 	o.Cases = v
 }
 
-// GetEnabled returns the Enabled field value
-func (o *SecurityMonitoringRuleCreatePayload) GetEnabled() bool {
+// GetIsEnabled returns the IsEnabled field value
+func (o *SecurityMonitoringRuleCreatePayload) GetIsEnabled() bool {
 	if o == nil {
 		var ret bool
 		return ret
 	}
 
-	return o.Enabled
+	return o.IsEnabled
 }
 
-// GetEnabledOk returns a tuple with the Enabled field value
+// GetIsEnabledOk returns a tuple with the IsEnabled field value
 // and a boolean to check if the value has been set.
-func (o *SecurityMonitoringRuleCreatePayload) GetEnabledOk() (*bool, bool) {
+func (o *SecurityMonitoringRuleCreatePayload) GetIsEnabledOk() (*bool, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Enabled, true
+	return &o.IsEnabled, true
 }
 
-// SetEnabled sets field value
-func (o *SecurityMonitoringRuleCreatePayload) SetEnabled(v bool) {
-	o.Enabled = v
+// SetIsEnabled sets field value
+func (o *SecurityMonitoringRuleCreatePayload) SetIsEnabled(v bool) {
+	o.IsEnabled = v
 }
 
 // GetMessage returns the Message field value
@@ -174,9 +173,9 @@ func (o *SecurityMonitoringRuleCreatePayload) SetOptions(v SecurityMonitoringRul
 }
 
 // GetQueries returns the Queries field value
-func (o *SecurityMonitoringRuleCreatePayload) GetQueries() []SecurityMonitoringRuleQuery {
+func (o *SecurityMonitoringRuleCreatePayload) GetQueries() []SecurityMonitoringRuleQueryCreate {
 	if o == nil {
-		var ret []SecurityMonitoringRuleQuery
+		var ret []SecurityMonitoringRuleQueryCreate
 		return ret
 	}
 
@@ -185,7 +184,7 @@ func (o *SecurityMonitoringRuleCreatePayload) GetQueries() []SecurityMonitoringR
 
 // GetQueriesOk returns a tuple with the Queries field value
 // and a boolean to check if the value has been set.
-func (o *SecurityMonitoringRuleCreatePayload) GetQueriesOk() (*[]SecurityMonitoringRuleQuery, bool) {
+func (o *SecurityMonitoringRuleCreatePayload) GetQueriesOk() (*[]SecurityMonitoringRuleQueryCreate, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -193,32 +192,40 @@ func (o *SecurityMonitoringRuleCreatePayload) GetQueriesOk() (*[]SecurityMonitor
 }
 
 // SetQueries sets field value
-func (o *SecurityMonitoringRuleCreatePayload) SetQueries(v []SecurityMonitoringRuleQuery) {
+func (o *SecurityMonitoringRuleCreatePayload) SetQueries(v []SecurityMonitoringRuleQueryCreate) {
 	o.Queries = v
 }
 
-// GetTags returns the Tags field value
+// GetTags returns the Tags field value if set, zero value otherwise.
 func (o *SecurityMonitoringRuleCreatePayload) GetTags() []string {
-	if o == nil {
+	if o == nil || o.Tags == nil {
 		var ret []string
 		return ret
 	}
-
-	return o.Tags
+	return *o.Tags
 }
 
-// GetTagsOk returns a tuple with the Tags field value
+// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SecurityMonitoringRuleCreatePayload) GetTagsOk() (*[]string, bool) {
-	if o == nil {
+	if o == nil || o.Tags == nil {
 		return nil, false
 	}
-	return &o.Tags, true
+	return o.Tags, true
 }
 
-// SetTags sets field value
+// HasTags returns a boolean if a field has been set.
+func (o *SecurityMonitoringRuleCreatePayload) HasTags() bool {
+	if o != nil && o.Tags != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTags gets a reference to the given []string and assigns it to the Tags field.
 func (o *SecurityMonitoringRuleCreatePayload) SetTags(v []string) {
-	o.Tags = v
+	o.Tags = &v
 }
 
 func (o SecurityMonitoringRuleCreatePayload) MarshalJSON() ([]byte, error) {
@@ -227,7 +234,7 @@ func (o SecurityMonitoringRuleCreatePayload) MarshalJSON() ([]byte, error) {
 		toSerialize["cases"] = o.Cases
 	}
 	if true {
-		toSerialize["enabled"] = o.Enabled
+		toSerialize["isEnabled"] = o.IsEnabled
 	}
 	if true {
 		toSerialize["message"] = o.Message
@@ -241,7 +248,7 @@ func (o SecurityMonitoringRuleCreatePayload) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["queries"] = o.Queries
 	}
-	if true {
+	if o.Tags != nil {
 		toSerialize["tags"] = o.Tags
 	}
 	return json.Marshal(toSerialize)

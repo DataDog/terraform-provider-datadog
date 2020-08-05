@@ -38,7 +38,7 @@ func (v *WidgetTickEdge) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetTickEdge", *v)
+	return fmt.Errorf("%+v is not a valid WidgetTickEdge", value)
 }
 
 // Ptr returns reference to WidgetTickEdge value

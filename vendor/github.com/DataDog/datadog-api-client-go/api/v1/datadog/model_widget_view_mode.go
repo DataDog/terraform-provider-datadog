@@ -37,7 +37,7 @@ func (v *WidgetViewMode) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetViewMode", *v)
+	return fmt.Errorf("%+v is not a valid WidgetViewMode", value)
 }
 
 // Ptr returns reference to WidgetViewMode value

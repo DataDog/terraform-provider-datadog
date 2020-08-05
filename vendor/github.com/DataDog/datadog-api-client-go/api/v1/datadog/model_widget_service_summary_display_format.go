@@ -37,7 +37,7 @@ func (v *WidgetServiceSummaryDisplayFormat) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetServiceSummaryDisplayFormat", *v)
+	return fmt.Errorf("%+v is not a valid WidgetServiceSummaryDisplayFormat", value)
 }
 
 // Ptr returns reference to WidgetServiceSummaryDisplayFormat value

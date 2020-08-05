@@ -35,7 +35,7 @@ func (v *NoteWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid NoteWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid NoteWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to NoteWidgetDefinitionType value

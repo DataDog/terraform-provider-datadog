@@ -39,7 +39,7 @@ func (v *DashboardType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid DashboardType", *v)
+	return fmt.Errorf("%+v is not a valid DashboardType", value)
 }
 
 // Ptr returns reference to DashboardType value

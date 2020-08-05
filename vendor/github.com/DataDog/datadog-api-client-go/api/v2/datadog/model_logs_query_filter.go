@@ -10,42 +10,53 @@ package datadog
 
 import (
 	"encoding/json"
-	"time"
 )
 
-// LogsListRequestFilter Search filters for listing logs.
-type LogsListRequestFilter struct {
-	// Minimum timestamp for requested logs.
-	From *time.Time `json:"from,omitempty"`
-	// For customers with multiple indexes, the indexes to search. Defaults to '*' which means all indexes.
+// LogsQueryFilter The search and filter query settings
+type LogsQueryFilter struct {
+	// The minimum time for the requested logs, supports date math and regular timestamps
+	From *string `json:"from,omitempty"`
+	// For customers with multiple indexes, the indexes to search. Defaults to ['*'] which means all indexes.
 	Indexes *[]string `json:"indexes,omitempty"`
-	// Search query following logs syntax.
+	// The search query - following the log search syntax.
 	Query *string `json:"query,omitempty"`
-	// Maximum timestamp for requested logs.
-	To *time.Time `json:"to,omitempty"`
+	// The maximum time for the requested logs, supports date math and regular timestamps
+	To *string `json:"to,omitempty"`
 }
 
-// NewLogsListRequestFilter instantiates a new LogsListRequestFilter object
+// NewLogsQueryFilter instantiates a new LogsQueryFilter object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogsListRequestFilter() *LogsListRequestFilter {
-	this := LogsListRequestFilter{}
+func NewLogsQueryFilter() *LogsQueryFilter {
+	this := LogsQueryFilter{}
+	var from string = "now-15m"
+	this.From = &from
+	var query string = "*"
+	this.Query = &query
+	var to string = "now"
+	this.To = &to
 	return &this
 }
 
-// NewLogsListRequestFilterWithDefaults instantiates a new LogsListRequestFilter object
+// NewLogsQueryFilterWithDefaults instantiates a new LogsQueryFilter object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewLogsListRequestFilterWithDefaults() *LogsListRequestFilter {
-	this := LogsListRequestFilter{}
+func NewLogsQueryFilterWithDefaults() *LogsQueryFilter {
+	this := LogsQueryFilter{}
+	var from string = "now-15m"
+	this.From = &from
+	var query string = "*"
+	this.Query = &query
+	var to string = "now"
+	this.To = &to
 	return &this
 }
 
 // GetFrom returns the From field value if set, zero value otherwise.
-func (o *LogsListRequestFilter) GetFrom() time.Time {
+func (o *LogsQueryFilter) GetFrom() string {
 	if o == nil || o.From == nil {
-		var ret time.Time
+		var ret string
 		return ret
 	}
 	return *o.From
@@ -53,7 +64,7 @@ func (o *LogsListRequestFilter) GetFrom() time.Time {
 
 // GetFromOk returns a tuple with the From field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LogsListRequestFilter) GetFromOk() (*time.Time, bool) {
+func (o *LogsQueryFilter) GetFromOk() (*string, bool) {
 	if o == nil || o.From == nil {
 		return nil, false
 	}
@@ -61,7 +72,7 @@ func (o *LogsListRequestFilter) GetFromOk() (*time.Time, bool) {
 }
 
 // HasFrom returns a boolean if a field has been set.
-func (o *LogsListRequestFilter) HasFrom() bool {
+func (o *LogsQueryFilter) HasFrom() bool {
 	if o != nil && o.From != nil {
 		return true
 	}
@@ -69,13 +80,13 @@ func (o *LogsListRequestFilter) HasFrom() bool {
 	return false
 }
 
-// SetFrom gets a reference to the given time.Time and assigns it to the From field.
-func (o *LogsListRequestFilter) SetFrom(v time.Time) {
+// SetFrom gets a reference to the given string and assigns it to the From field.
+func (o *LogsQueryFilter) SetFrom(v string) {
 	o.From = &v
 }
 
 // GetIndexes returns the Indexes field value if set, zero value otherwise.
-func (o *LogsListRequestFilter) GetIndexes() []string {
+func (o *LogsQueryFilter) GetIndexes() []string {
 	if o == nil || o.Indexes == nil {
 		var ret []string
 		return ret
@@ -85,7 +96,7 @@ func (o *LogsListRequestFilter) GetIndexes() []string {
 
 // GetIndexesOk returns a tuple with the Indexes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LogsListRequestFilter) GetIndexesOk() (*[]string, bool) {
+func (o *LogsQueryFilter) GetIndexesOk() (*[]string, bool) {
 	if o == nil || o.Indexes == nil {
 		return nil, false
 	}
@@ -93,7 +104,7 @@ func (o *LogsListRequestFilter) GetIndexesOk() (*[]string, bool) {
 }
 
 // HasIndexes returns a boolean if a field has been set.
-func (o *LogsListRequestFilter) HasIndexes() bool {
+func (o *LogsQueryFilter) HasIndexes() bool {
 	if o != nil && o.Indexes != nil {
 		return true
 	}
@@ -102,12 +113,12 @@ func (o *LogsListRequestFilter) HasIndexes() bool {
 }
 
 // SetIndexes gets a reference to the given []string and assigns it to the Indexes field.
-func (o *LogsListRequestFilter) SetIndexes(v []string) {
+func (o *LogsQueryFilter) SetIndexes(v []string) {
 	o.Indexes = &v
 }
 
 // GetQuery returns the Query field value if set, zero value otherwise.
-func (o *LogsListRequestFilter) GetQuery() string {
+func (o *LogsQueryFilter) GetQuery() string {
 	if o == nil || o.Query == nil {
 		var ret string
 		return ret
@@ -117,7 +128,7 @@ func (o *LogsListRequestFilter) GetQuery() string {
 
 // GetQueryOk returns a tuple with the Query field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LogsListRequestFilter) GetQueryOk() (*string, bool) {
+func (o *LogsQueryFilter) GetQueryOk() (*string, bool) {
 	if o == nil || o.Query == nil {
 		return nil, false
 	}
@@ -125,7 +136,7 @@ func (o *LogsListRequestFilter) GetQueryOk() (*string, bool) {
 }
 
 // HasQuery returns a boolean if a field has been set.
-func (o *LogsListRequestFilter) HasQuery() bool {
+func (o *LogsQueryFilter) HasQuery() bool {
 	if o != nil && o.Query != nil {
 		return true
 	}
@@ -134,14 +145,14 @@ func (o *LogsListRequestFilter) HasQuery() bool {
 }
 
 // SetQuery gets a reference to the given string and assigns it to the Query field.
-func (o *LogsListRequestFilter) SetQuery(v string) {
+func (o *LogsQueryFilter) SetQuery(v string) {
 	o.Query = &v
 }
 
 // GetTo returns the To field value if set, zero value otherwise.
-func (o *LogsListRequestFilter) GetTo() time.Time {
+func (o *LogsQueryFilter) GetTo() string {
 	if o == nil || o.To == nil {
-		var ret time.Time
+		var ret string
 		return ret
 	}
 	return *o.To
@@ -149,7 +160,7 @@ func (o *LogsListRequestFilter) GetTo() time.Time {
 
 // GetToOk returns a tuple with the To field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LogsListRequestFilter) GetToOk() (*time.Time, bool) {
+func (o *LogsQueryFilter) GetToOk() (*string, bool) {
 	if o == nil || o.To == nil {
 		return nil, false
 	}
@@ -157,7 +168,7 @@ func (o *LogsListRequestFilter) GetToOk() (*time.Time, bool) {
 }
 
 // HasTo returns a boolean if a field has been set.
-func (o *LogsListRequestFilter) HasTo() bool {
+func (o *LogsQueryFilter) HasTo() bool {
 	if o != nil && o.To != nil {
 		return true
 	}
@@ -165,12 +176,12 @@ func (o *LogsListRequestFilter) HasTo() bool {
 	return false
 }
 
-// SetTo gets a reference to the given time.Time and assigns it to the To field.
-func (o *LogsListRequestFilter) SetTo(v time.Time) {
+// SetTo gets a reference to the given string and assigns it to the To field.
+func (o *LogsQueryFilter) SetTo(v string) {
 	o.To = &v
 }
 
-func (o LogsListRequestFilter) MarshalJSON() ([]byte, error) {
+func (o LogsQueryFilter) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.From != nil {
 		toSerialize["from"] = o.From
@@ -187,38 +198,38 @@ func (o LogsListRequestFilter) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableLogsListRequestFilter struct {
-	value *LogsListRequestFilter
+type NullableLogsQueryFilter struct {
+	value *LogsQueryFilter
 	isSet bool
 }
 
-func (v NullableLogsListRequestFilter) Get() *LogsListRequestFilter {
+func (v NullableLogsQueryFilter) Get() *LogsQueryFilter {
 	return v.value
 }
 
-func (v *NullableLogsListRequestFilter) Set(val *LogsListRequestFilter) {
+func (v *NullableLogsQueryFilter) Set(val *LogsQueryFilter) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableLogsListRequestFilter) IsSet() bool {
+func (v NullableLogsQueryFilter) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableLogsListRequestFilter) Unset() {
+func (v *NullableLogsQueryFilter) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableLogsListRequestFilter(val *LogsListRequestFilter) *NullableLogsListRequestFilter {
-	return &NullableLogsListRequestFilter{value: val, isSet: true}
+func NewNullableLogsQueryFilter(val *LogsQueryFilter) *NullableLogsQueryFilter {
+	return &NullableLogsQueryFilter{value: val, isSet: true}
 }
 
-func (v NullableLogsListRequestFilter) MarshalJSON() ([]byte, error) {
+func (v NullableLogsQueryFilter) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableLogsListRequestFilter) UnmarshalJSON(src []byte) error {
+func (v *NullableLogsQueryFilter) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

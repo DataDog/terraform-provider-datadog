@@ -41,7 +41,7 @@ func (v *MonitorOverallStates) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid MonitorOverallStates", *v)
+	return fmt.Errorf("%+v is not a valid MonitorOverallStates", value)
 }
 
 // Ptr returns reference to MonitorOverallStates value

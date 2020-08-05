@@ -46,7 +46,7 @@ func (v *SecurityMonitoringRuleMaxSignalDuration) UnmarshalJSON(src []byte) erro
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SecurityMonitoringRuleMaxSignalDuration", *v)
+	return fmt.Errorf("%+v is not a valid SecurityMonitoringRuleMaxSignalDuration", value)
 }
 
 // Ptr returns reference to SecurityMonitoringRuleMaxSignalDuration value

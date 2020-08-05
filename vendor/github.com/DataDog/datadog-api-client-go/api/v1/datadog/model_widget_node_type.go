@@ -36,7 +36,7 @@ func (v *WidgetNodeType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetNodeType", *v)
+	return fmt.Errorf("%+v is not a valid WidgetNodeType", value)
 }
 
 // Ptr returns reference to WidgetNodeType value
