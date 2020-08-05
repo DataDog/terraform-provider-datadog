@@ -62,7 +62,7 @@ import (
 
 const datadogDashboardHostMapConfig = `
 resource "datadog_dashboard" "hostmap_dashboard" {
-	title         = "Acceptance Test Host Map Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = "true"
@@ -113,7 +113,7 @@ var datadogDashboardHostMapAsserts = []string{
 	"widget.0.hostmap_definition.0.no_group_hosts = true",
 	"widget.0.hostmap_definition.0.request.0.size.0.q = max:system.cpu.user{env:prod} by {host}",
 	"is_read_only = true",
-	"title = Acceptance Test Host Map Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.hostmap_definition.0.group.0 = region",
 }
 

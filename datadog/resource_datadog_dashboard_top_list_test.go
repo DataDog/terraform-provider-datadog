@@ -54,7 +54,7 @@ import (
 
 const datadogDashboardTopListConfig = `
 resource "datadog_dashboard" "top_list_dashboard" {
-	title         = "Acceptance Test Top List Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = "true"
@@ -86,7 +86,7 @@ var datadogDashboardTopListAsserts = []string{
 	"widget.0.toplist_definition.0.request.0.conditional_formats.0.image_url =",
 	"layout_type = ordered",
 	"widget.0.toplist_definition.0.request.0.conditional_formats.0.comparator = >",
-	"title = Acceptance Test Top List Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.toplist_definition.0.request.0.conditional_formats.0.custom_bg_color =",
 	"widget.0.toplist_definition.0.request.0.conditional_formats.0.palette = white_on_red",
 	"is_read_only = true",

@@ -47,7 +47,7 @@ import (
 
 const datadogDashboardCheckStatusConfig = `
 resource "datadog_dashboard" "check_status_dashboard" {
-	title         = "Acceptance Test Check Status Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = "true"
@@ -74,7 +74,7 @@ var datadogDashboardCheckStatusAsserts = []string{
 	"widget.0.check_status_definition.0.title = Agent Up",
 	"widget.0.check_status_definition.0.title_align = center",
 	"widget.0.check_status_definition.0.group =",
-	"title = Acceptance Test Check Status Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.check_status_definition.0.grouping = cluster",
 	"widget.0.check_status_definition.0.tags.0 = account:prod",
 	"layout_type = ordered",

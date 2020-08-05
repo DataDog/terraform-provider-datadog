@@ -55,7 +55,7 @@ import (
 
 const datadogDashboardLogStreamConfig = `
 resource "datadog_dashboard" "log_stream_dashboard" {
-	title         = "Acceptance Test Log Stream Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
 	is_read_only  = "true"
@@ -103,7 +103,7 @@ var datadogDashboardLogStreamAsserts = []string{
 	"is_read_only = true",
 	"widget.0.log_stream_definition.0.message_display = expanded-md",
 	"widget.0.layout.height = 43",
-	"title = Acceptance Test Log Stream Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.log_stream_definition.0.columns.1 = core_service",
 	"widget.0.log_stream_definition.0.title_size = 16",
 	"widget.0.log_stream_definition.0.logset =",

@@ -52,7 +52,7 @@ import (
 
 const datadogDashboardDistributionConfig = `
 resource "datadog_dashboard" "distribution_dashboard" {
-	title         = "Acceptance Test Distribution Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = "true"
@@ -79,7 +79,7 @@ resource "datadog_dashboard" "distribution_dashboard" {
 `
 
 var datadogDashboardDistributionAsserts = []string{
-	"title = Acceptance Test Distribution Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.distribution_definition.0.time.live_span = 1h",
 	"widget.0.distribution_definition.0.title = Avg of system.cpu.user over account:prod by service,account",
 	"widget.0.distribution_definition.0.title_size = 16",
