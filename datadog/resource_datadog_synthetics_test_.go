@@ -773,10 +773,10 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 	if actualOptions.HasRetry() {
 		retry := actualOptions.GetRetry()
-		localOptions["retry_count"] = convertToString(retry.GetCount())
+		localOption["retry_count"] = convertToString(retry.GetCount())
 
 		if interval, ok := retry.GetIntervalOk(); ok {
-			localOptions["retry_interval"] = convertToString(interval)
+			localOption["retry_interval"] = convertToString(interval)
 		}
 	}
 
