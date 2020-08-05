@@ -11,9 +11,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 )
 
-const config1 = `
+func config1(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_timeboard" "acceptance_test" {
-  title = "Acceptance Test Timeboard"
+  title = "%s"
   description = "Created using the Datadog provider in Terraform"
   read_only = true
   graph {
@@ -37,12 +38,13 @@ resource "datadog_timeboard" "acceptance_test" {
     }
   }
 
+}`, uniq)
 }
-`
 
-const config2 = `
+func config2(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_timeboard" "acceptance_test" {
-  title = "Acceptance Test Timeboard"
+  title = "%s"
   description = "Created using the Datadog provider in Terraform"
   graph {
     title = "Redis latency (ms)"
@@ -80,12 +82,13 @@ resource "datadog_timeboard" "acceptance_test" {
     name = "host"
     prefix = "host"
   }
+}`, uniq)
 }
-`
 
-const config3 = `
+func config3(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_timeboard" "acceptance_test" {
-  title = "Acceptance Test Timeboard"
+  title = "%s"
   description = "Created using the Datadog provider in Terraform"
   graph {
     title = "Redis latency (ms)"
@@ -133,12 +136,13 @@ resource "datadog_timeboard" "acceptance_test" {
     name = "host"
     prefix = "host"
   }
+}`, uniq)
 }
-`
 
-const config4 = `
+func config4(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_timeboard" "acceptance_test" {
-  title = "Acceptance Test Timeboard"
+  title = "%s"
   description = "Created using the Datadog provider in Terraform"
   graph {
     title = "Widget with Multiple Queries"
@@ -213,19 +217,20 @@ resource "datadog_timeboard" "acceptance_test" {
       type = "area"
     }
   }
+}`, uniq)
 }
-`
 
 func TestAccDatadogTimeboard_update(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	tbName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	step0 := resource.TestStep{
-		Config: config1,
+		Config: config1(tbName),
 		Check: resource.ComposeTestCheckFunc(
 			checkExists(accProvider),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "title", "Acceptance Test Timeboard"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "title", tbName),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "description", "Created using the Datadog provider in Terraform"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "read_only", "true"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.title", "Top System CPU by Docker container"),
@@ -237,10 +242,10 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 	}
 
 	step1 := resource.TestStep{
-		Config: config2,
+		Config: config2(tbName),
 		Check: resource.ComposeTestCheckFunc(
 			checkExists(accProvider),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "title", "Acceptance Test Timeboard"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "title", tbName),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "description", "Created using the Datadog provider in Terraform"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.title", "Redis latency (ms)"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.viz", "timeseries"),
@@ -263,10 +268,10 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 	}
 
 	step2 := resource.TestStep{
-		Config: config3,
+		Config: config3(tbName),
 		Check: resource.ComposeTestCheckFunc(
 			checkExists(accProvider),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "title", "Acceptance Test Timeboard"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "title", tbName),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "description", "Created using the Datadog provider in Terraform"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.title", "Redis latency (ms)"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.viz", "timeseries"),
@@ -299,10 +304,10 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 	}
 
 	step3 := resource.TestStep{
-		Config: config4,
+		Config: config4(tbName),
 		Check: resource.ComposeTestCheckFunc(
 			checkExists(accProvider),
-			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "title", "Acceptance Test Timeboard"),
+			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "title", tbName),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "description", "Created using the Datadog provider in Terraform"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.title", "Widget with Multiple Queries"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.viz", "timeseries"),

@@ -1,15 +1,18 @@
 package datadog
 
-const pipelinesConfig = `
+import "fmt"
+
+func pipelinesConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_logs_custom_pipeline" "pipeline_1" {
-	name = "my first pipeline"
+	name = "%s-first"
 	is_enabled = true
 	filter {
 		query = "source:redis"
 	}
 }
 resource "datadog_logs_custom_pipeline" "pipeline_2" {
-	name = "my second pipeline"
+	name = "%s-second"
 	is_enabled = true
 	filter {
 		query = "source:agent"
@@ -21,24 +24,25 @@ resource "datadog_logs_pipeline_order" "pipelines" {
 		"datadog_logs_custom_pipeline.pipeline_1",
 		"datadog_logs_custom_pipeline.pipeline_2"
 	]
-	name = "pipelines"
+	name = "%s"
 	pipelines = [
 		"${datadog_logs_custom_pipeline.pipeline_1.id}",
 		"${datadog_logs_custom_pipeline.pipeline_2.id}"
 	]
+}`, uniq, uniq, uniq)
 }
-`
 
-const orderUpdateConfig = `
+func orderUpdateConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_logs_custom_pipeline" "pipeline_1" {
-	name = "my first pipeline"
+	name = "%s-first"
 	is_enabled = true
 	filter {
 		query = "source:redis"
 	}
 }
 resource "datadog_logs_custom_pipeline" "pipeline_2" {
-	name = "my second pipeline"
+	name = "%s-second"
 	is_enabled = true
 	filter {
 		query = "source:agent"
@@ -50,10 +54,10 @@ resource "datadog_logs_pipeline_order" "pipelines" {
 		"datadog_logs_custom_pipeline.pipeline_1",
 		"datadog_logs_custom_pipeline.pipeline_2"
 	]
-	name = "pipelines"
+	name = "%s"
 	pipelines = [
 		"${datadog_logs_custom_pipeline.pipeline_2.id}",
 		"${datadog_logs_custom_pipeline.pipeline_1.id}"
 	]
+}`, uniq, uniq, uniq)
 }
-`

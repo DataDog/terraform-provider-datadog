@@ -16,7 +16,8 @@ import (
 )
 
 func TestAccDatadogDowntime_Basic(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	downtimeMessage := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -26,7 +27,7 @@ func TestAccDatadogDowntime_Basic(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDowntimeConfig,
+				Config: testAccCheckDatadogDowntimeConfig(downtimeMessage),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
@@ -40,7 +41,7 @@ func TestAccDatadogDowntime_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "recurrence.0.period", "1"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+						"datadog_downtime.foo", "message", downtimeMessage),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "monitor_tags.#", "2"),
 					resource.TestCheckResourceAttr(
@@ -55,13 +56,14 @@ func TestAccDatadogDowntime_Basic(t *testing.T) {
 
 func TestAccDatadogDowntime_BasicWithMonitor(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	downtimeMessage := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	start := clock.Now().Local().Add(time.Hour * time.Duration(3))
 	end := start.Add(time.Hour * time.Duration(1))
 
-	config := testAccCheckDatadogDowntimeConfigWithMonitor(start.Unix(), end.Unix())
+	config := testAccCheckDatadogDowntimeConfigWithMonitor(downtimeMessage, start.Unix(), end.Unix())
 
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -80,13 +82,14 @@ func TestAccDatadogDowntime_BasicWithMonitor(t *testing.T) {
 
 func TestAccDatadogDowntime_BasicWithMonitorTags(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	downtimeMessage := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	start := clock.Now().Local().Add(time.Hour * time.Duration(3))
 	end := start.Add(time.Hour * time.Duration(1))
 
-	config := testAccCheckDatadogDowntimeConfigWithMonitorTags(start.Unix(), end.Unix())
+	config := testAccCheckDatadogDowntimeConfigWithMonitorTags(downtimeMessage, start.Unix(), end.Unix())
 
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -104,7 +107,8 @@ func TestAccDatadogDowntime_BasicWithMonitorTags(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicMultiScope(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	downtimeMessage := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -114,7 +118,7 @@ func TestAccDatadogDowntime_BasicMultiScope(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDowntimeConfigMultiScope,
+				Config: testAccCheckDatadogDowntimeConfigMultiScope(downtimeMessage),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
@@ -130,7 +134,7 @@ func TestAccDatadogDowntime_BasicMultiScope(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "recurrence.0.period", "1"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+						"datadog_downtime.foo", "message", downtimeMessage),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
@@ -140,7 +144,8 @@ func TestAccDatadogDowntime_BasicMultiScope(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicNoRecurrence(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	downtimeMessage := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -150,7 +155,7 @@ func TestAccDatadogDowntime_BasicNoRecurrence(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDowntimeConfigNoRecurrence,
+				Config: testAccCheckDatadogDowntimeConfigNoRecurrence(downtimeMessage),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
@@ -160,7 +165,7 @@ func TestAccDatadogDowntime_BasicNoRecurrence(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "end", "1735765200"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+						"datadog_downtime.foo", "message", downtimeMessage),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
@@ -170,7 +175,8 @@ func TestAccDatadogDowntime_BasicNoRecurrence(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicUntilDateRecurrence(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	downtimeMessage := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -180,7 +186,7 @@ func TestAccDatadogDowntime_BasicUntilDateRecurrence(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDowntimeConfigUntilDateRecurrence,
+				Config: testAccCheckDatadogDowntimeConfigUntilDateRecurrence(downtimeMessage),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
@@ -196,7 +202,7 @@ func TestAccDatadogDowntime_BasicUntilDateRecurrence(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "recurrence.0.until_date", "1736226000"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+						"datadog_downtime.foo", "message", downtimeMessage),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
@@ -206,7 +212,8 @@ func TestAccDatadogDowntime_BasicUntilDateRecurrence(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	downtimeMessage := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -216,7 +223,7 @@ func TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDowntimeConfigUntilOccurrencesRecurrence,
+				Config: testAccCheckDatadogDowntimeConfigUntilOccurrencesRecurrence(downtimeMessage),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
@@ -232,7 +239,7 @@ func TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "recurrence.0.until_occurrences", "5"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+						"datadog_downtime.foo", "message", downtimeMessage),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
@@ -242,7 +249,8 @@ func TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	downtimeMessage := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -252,7 +260,7 @@ func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDowntimeConfigWeekDaysRecurrence,
+				Config: testAccCheckDatadogDowntimeConfigWeekDaysRecurrence(downtimeMessage),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
@@ -270,7 +278,7 @@ func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "recurrence.0.week_days.1", "Sun"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+						"datadog_downtime.foo", "message", downtimeMessage),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
@@ -280,7 +288,8 @@ func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_RRule(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	downtimeMessage := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -290,7 +299,7 @@ func TestAccDatadogDowntime_RRule(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDowntimeConfigRRule,
+				Config: testAccCheckDatadogDowntimeConfigRRule(downtimeMessage),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
@@ -302,7 +311,7 @@ func TestAccDatadogDowntime_RRule(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "recurrence.0.rrule", "FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+						"datadog_downtime.foo", "message", downtimeMessage),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
@@ -312,7 +321,8 @@ func TestAccDatadogDowntime_RRule(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_Updated(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	downtimeMessage := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -322,7 +332,7 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDowntimeConfig,
+				Config: testAccCheckDatadogDowntimeConfig(downtimeMessage),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
@@ -336,7 +346,7 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "recurrence.0.period", "1"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+						"datadog_downtime.foo", "message", downtimeMessage),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "monitor_tags.2925324183", "app:webserver"),
 					resource.TestCheckResourceAttr(
@@ -344,7 +354,7 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogDowntimeConfigUpdated,
+				Config: testAccCheckDatadogDowntimeConfigUpdated(downtimeMessage),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
@@ -358,7 +368,7 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "recurrence.0.period", "3"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+						"datadog_downtime.foo", "message", downtimeMessage),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
@@ -368,7 +378,8 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	downtimeMessage := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -378,7 +389,7 @@ func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDowntimeConfigWhitespace,
+				Config: testAccCheckDatadogDowntimeConfigWhitespace(downtimeMessage),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
@@ -392,7 +403,7 @@ func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "recurrence.0.period", "1"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+						"datadog_downtime.foo", "message", downtimeMessage),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
@@ -402,7 +413,8 @@ func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_DiffStart(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	downtimeMessage := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -412,7 +424,7 @@ func TestAccDatadogDowntime_DiffStart(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDowntimeConfigDiffStart,
+				Config: testAccCheckDatadogDowntimeConfigDiffStart(downtimeMessage),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 				),
@@ -448,7 +460,8 @@ func testAccCheckDatadogDowntimeExists(accProvider *schema.Provider, n string) r
 }
 
 func TestAccDatadogDowntimeDates(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	downtimeMessage := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -458,7 +471,7 @@ func TestAccDatadogDowntimeDates(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDowntimeConfigDates,
+				Config: testAccCheckDatadogDowntimeConfigDates(downtimeMessage),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
@@ -472,7 +485,7 @@ func TestAccDatadogDowntimeDates(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "recurrence.0.period", "1"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "message", "Example Datadog downtime message."),
+						"datadog_downtime.foo", "message", downtimeMessage),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "monitor_tags.2679715827", "*"),
 				),
@@ -482,7 +495,8 @@ func TestAccDatadogDowntimeDates(t *testing.T) {
 }
 
 func TestAccDatadogDowntimeDatesConflict(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	downtimeMessage := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -492,18 +506,19 @@ func TestAccDatadogDowntimeDatesConflict(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config:      testAccCheckDatadogDowntimeConfigDatesConflict,
+				Config:      testAccCheckDatadogDowntimeConfigDatesConflict(downtimeMessage),
 				ExpectError: regexp.MustCompile("\"start_date\": conflicts with start"),
 			},
 			{
-				Config:      testAccCheckDatadogDowntimeConfigDatesConflict,
+				Config:      testAccCheckDatadogDowntimeConfigDatesConflict(downtimeMessage),
 				ExpectError: regexp.MustCompile("\"end_date\": conflicts with end"),
 			},
 		},
 	})
 }
 
-const testAccCheckDatadogDowntimeConfigDates = `
+func testAccCheckDatadogDowntimeConfigDates(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
   scope = ["*"]
   start_date = "2099-10-31T11:11:00+01:00"
@@ -514,12 +529,13 @@ resource "datadog_downtime" "foo" {
     period = 1
   }
 
-  message = "Example Datadog downtime message."
+  message = "%s"
   monitor_tags = ["*"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogDowntimeConfigDatesConflict = `
+func testAccCheckDatadogDowntimeConfigDatesConflict(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
   scope = ["*"]
   start_date = "2099-10-31T11:11:00+01:00"
@@ -532,12 +548,13 @@ resource "datadog_downtime" "foo" {
     period = 1
   }
 
-  message = "Example Datadog downtime message."
+  message = "%s"
   monitor_tags = ["*"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogDowntimeConfig = `
+func testAccCheckDatadogDowntimeConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
   scope = ["*"]
   start = 1735707600
@@ -548,17 +565,17 @@ resource "datadog_downtime" "foo" {
     period = 1
   }
 
-  message = "Example Datadog downtime message."
+  message = "%s"
   monitor_tags = ["service", "app:webserver"]
+}`, uniq)
 }
-`
 
-func testAccCheckDatadogDowntimeConfigWithMonitor(start int64, end int64) string {
+func testAccCheckDatadogDowntimeConfigWithMonitor(uniq string, start int64, end int64) string {
 	//When scheduling downtime, Datadog switches the silenced property of monitor to the "end" property of downtime.
 	//If that is omitted, the plan doesn't become empty after removing the downtime.
 	return fmt.Sprintf(`
 resource "datadog_monitor" "downtime_monitor" {
-  name = "name for monitor foo"
+  name = "%s"
   type = "metric alert"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
@@ -579,18 +596,18 @@ resource "datadog_downtime" "foo" {
   start = %d
   end   = %d
 
-  message = "Example Datadog downtime message."
+  message = "%s"
   monitor_id = "${datadog_monitor.downtime_monitor.id}"
 }
-`, end, start, end)
+`, uniq, end, start, end, uniq)
 }
 
-func testAccCheckDatadogDowntimeConfigWithMonitorTags(start int64, end int64) string {
+func testAccCheckDatadogDowntimeConfigWithMonitorTags(uniq string, start int64, end int64) string {
 	//When scheduling downtime, Datadog switches the silenced property of monitor to the "end" property of downtime.
 	//If that is omitted, the plan doesn't become empty after removing the downtime.
 	return fmt.Sprintf(`
 resource "datadog_monitor" "downtime_monitor" {
-  name = "name for monitor foo"
+  name = "%s"
   type = "metric alert"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
@@ -612,13 +629,14 @@ resource "datadog_downtime" "foo" {
   start = %d
   end   = %d
 
-  message = "Example Datadog downtime message."
+  message = "%s"
   monitor_tags = ["app:webserver"]
 }
-`, end, start, end)
+`, uniq, end, start, end, uniq)
 }
 
-const testAccCheckDatadogDowntimeConfigMultiScope = `
+func testAccCheckDatadogDowntimeConfigMultiScope(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
   scope = ["host:A", "host:B"]
   start = 1735707600
@@ -629,22 +647,24 @@ resource "datadog_downtime" "foo" {
     period = 1
   }
 
-  message = "Example Datadog downtime message."
+  message = "%s"
   monitor_tags = ["*"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogDowntimeConfigNoRecurrence = `
+func testAccCheckDatadogDowntimeConfigNoRecurrence(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
   scope = ["host:NoRecurrence"]
   start = 1735707600
   end   = 1735765200
-  message = "Example Datadog downtime message."
+  message = "%s"
   monitor_tags = ["*"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogDowntimeConfigUntilDateRecurrence = `
+func testAccCheckDatadogDowntimeConfigUntilDateRecurrence(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
   scope = ["host:UntilDateRecurrence"]
   start = 1735707600
@@ -656,12 +676,13 @@ resource "datadog_downtime" "foo" {
     until_date = 1736226000
   }
 
-  message = "Example Datadog downtime message."
+  message = "%s"
   monitor_tags = ["*"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogDowntimeConfigUntilOccurrencesRecurrence = `
+func testAccCheckDatadogDowntimeConfigUntilOccurrencesRecurrence(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
   scope = ["host:UntilOccurrencesRecurrence"]
   start = 1735707600
@@ -673,12 +694,13 @@ resource "datadog_downtime" "foo" {
     until_occurrences = 5
   }
 
-  message = "Example Datadog downtime message."
+  message = "%s"
   monitor_tags = ["*"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogDowntimeConfigWeekDaysRecurrence = `
+func testAccCheckDatadogDowntimeConfigWeekDaysRecurrence(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
   scope = ["WeekDaysRecurrence"]
   start = 1735646400
@@ -690,12 +712,13 @@ resource "datadog_downtime" "foo" {
     week_days = ["Sat", "Sun"]
   }
 
-  message = "Example Datadog downtime message."
+  message = "%s"
   monitor_tags = ["*"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogDowntimeConfigRRule = `
+func testAccCheckDatadogDowntimeConfigRRule(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
   scope = ["RRuleRecurrence"]
   start = 1735646400
@@ -706,12 +729,13 @@ resource "datadog_downtime" "foo" {
     rrule    = "FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"
   }
 
-  message = "Example Datadog downtime message."
+  message = "%s"
   monitor_tags = ["*"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogDowntimeConfigUpdated = `
+func testAccCheckDatadogDowntimeConfigUpdated(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
   scope = ["Updated"]
   start = 1735707600
@@ -722,12 +746,13 @@ resource "datadog_downtime" "foo" {
     period = 3
   }
 
-  message = "Example Datadog downtime message."
+  message = "%s"
   monitor_tags = ["*"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogDowntimeConfigWhitespace = `
+func testAccCheckDatadogDowntimeConfigWhitespace(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
   scope = ["host:Whitespace"]
   start = 1735707600
@@ -739,20 +764,22 @@ resource "datadog_downtime" "foo" {
   }
 
   message = <<EOF
-Example Datadog downtime message.
+%s
 EOF
   monitor_tags = ["*"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogDowntimeConfigDiffStart = `
+func testAccCheckDatadogDowntimeConfigDiffStart(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
   scope = ["somescope"]
 
   monitor_tags = ["*"]
   active = true
+  message = "%s"
+}`, uniq)
 }
-`
 
 func TestResourceDatadogDowntimeRecurrenceTypeValidation(t *testing.T) {
 	cases := []struct {

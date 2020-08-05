@@ -1,14 +1,16 @@
 package datadog
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
-const pipelineConfigForImport = `
+func pipelineConfigForImport(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_logs_custom_pipeline" "test_import" {
-	name = "imported pipeline"
+	name = "%s"
 	is_enabled = false
 	filter {
 		query = "source:kafka"
@@ -102,7 +104,7 @@ resource "datadog_logs_custom_pipeline" "test_import" {
 					source = "message"
 					grok {
 						support_rules = ""
-						match_rules = "Rule %%{word:my_word2} %%{number:my_float2}"
+						match_rules = "Rule %%%%{word:my_word2} %%%%{number:my_float2}" # all percent chars are doubled because this is format string
 					}
 				}
 			}
@@ -124,11 +126,12 @@ resource "datadog_logs_custom_pipeline" "test_import" {
 			is_encoded = false
 		}
 	}
+}`, uniq)
 }
-`
 
 func TestAccLogsCustomPipeline_importBasic(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	pipelineName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -138,11 +141,11 @@ func TestAccLogsCustomPipeline_importBasic(t *testing.T) {
 		CheckDestroy: testAccCheckPipelineDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: pipelineConfigForImport,
+				Config: pipelineConfigForImport(pipelineName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPipelineExists(accProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_custom_pipeline.test_import", "name", "imported pipeline"),
+						"datadog_logs_custom_pipeline.test_import", "name", pipelineName),
 				),
 			},
 			{
