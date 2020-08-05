@@ -159,6 +159,11 @@ The following arguments are supported:
   - `min_failure_duration` - (Optional) How long the test should be in failure before alerting (integer, number of seconds, max 7200). Default is 0.
   - `min_location_failed` - (Optional) Threshold below which a synthetics test is allowed to fail before sending notifications. Default is 1.
   - `accept_self_signed` - (Optional) For type=ssl, true or false
+  - `retry` - (Optional)
+      - `count` - (Optional) Number of retries needed to consider a location as failed before sending a notification alert.
+      - `interval` - (Optional) Interval between a failed test and the next retry in milliseconds.
+    - `monitor_options` - (Optional)
+      - `renotify_interval` - (Required) The number of minutes after the last notification before a monitor re-notifies on the current status. It only re-notifies if it’s not resolved.
 - `locations` - (Required) Please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#request) for available locations (e.g. "aws:eu-central-1")
 - `device_ids` - (Optional) "laptop_large", "tablet" or "mobile_small" (only available if type=browser)
 - `status` - (Required) "live", "paused"
