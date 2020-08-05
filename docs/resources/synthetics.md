@@ -28,8 +28,12 @@ resource "datadog_synthetics_test" "test_api" {
       target = "200"
   }
   locations = [ "aws:eu-central-1" ]
-  options = {
+  options_list {
     tick_every = 900
+
+    retry = {
+      count = 2
+    }
   }
   name = "An API test on example.org"
   message = "Notify @pagerduty"
@@ -57,9 +61,13 @@ resource "datadog_synthetics_test" "test_ssl" {
       target = 30
   }
   locations = [ "aws:eu-central-1" ]
-  options = {
+  options_list {
     tick_every = 900
     accept_self_signed = true
+
+    retry = {
+      count = 2
+    }
   }
   name = "An API test on example.org"
   message = "Notify @pagerduty"
@@ -86,8 +94,12 @@ resource "datadog_synthetics_test" "test_browser" {
   device_ids = ["laptop_large"]
   locations  = ["aws:eu-central-1"]
 
-  options = {
+  options_list {
     tick_every = 3600
+
+    retry = {
+      count = 2
+    }
   }
 
   name = "A Browser test on example.org"
@@ -134,7 +146,7 @@ The following arguments are supported:
     - `targetvalue` - (Required) Expected matching value
     - `jsonpath` - (Required) The JSON path to assert
   - `property` - (Optional) if assertion type is "header", this is a the header name
-- `options` - (Required)
+- `options` - (Required) **Deprecated**
   - `tick_every` - (Required)  How often the test should run (in seconds). Current possible values are 900, 1800, 3600, 21600, 43200, 86400, 604800 plus 60 if type=api or 300 if type=browser
   - `follow_redirects` - (Optional) For type=api, true or false
   - `min_failure_duration` - (Optional) How long the test should be in failure before alerting (integer, number of seconds, max 7200). Default is 0.
@@ -143,6 +155,12 @@ The following arguments are supported:
   - `allow_insecure` - (Optional) For type=api, true or false. Allow your HTTP test go on with connection even if there is an error when validating the certificate.
   - `retry_count` - (Optional) Number of retries needed to consider a location as failed before sending a notification alert.
   - `retry_interval` - (Optional) Interval between a failed test and the next retry in milliseconds.
+- `options_list` - (Optional)
+  - `tick_every` - (Optional)  How often the test should run (in seconds). Current possible values are 900, 1800, 3600, 21600, 43200, 86400, 604800 plus 60 if type=api or 300 if type=browser
+  - `follow_redirects` - (Optional) For type=api, true or false
+  - `min_failure_duration` - (Optional) How long the test should be in failure before alerting (integer, number of seconds, max 7200). Default is 0.
+  - `min_location_failed` - (Optional) Threshold below which a synthetics test is allowed to fail before sending notifications. Default is 1.
+  - `accept_self_signed` - (Optional) For type=ssl, true or false
 - `locations` - (Required) Please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#request) for available locations (e.g. "aws:eu-central-1")
 - `device_ids` - (Optional) "laptop_large", "tablet" or "mobile_small" (only available if type=browser)
 - `status` - (Required) "live", "paused"
