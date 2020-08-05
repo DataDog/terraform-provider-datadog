@@ -257,7 +257,7 @@ import (
 
 const datadogDashboardTimeseriesConfig = `
 resource "datadog_dashboard" "timeseries_dashboard" {
-	title         = "Acceptance Test Timeseries Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = "true"
@@ -479,7 +479,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 `
 
 var datadogDashboardTimeseriesAsserts = []string{
-	"title = Acceptance Test Timeseries Widget Dashboard",
+	"title = {{uniq}}",
 	"is_read_only = true",
 	"layout_type = ordered",
 	"description = Created using the Datadog provider in Terraform",

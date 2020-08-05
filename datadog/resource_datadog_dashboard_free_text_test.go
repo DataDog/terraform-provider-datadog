@@ -40,7 +40,7 @@ import (
 
 const datadogDashboardFreeTextConfig = `
 resource "datadog_dashboard" "free_text_dashboard" {
-	title         = "Acceptance Test Free Text Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
 	is_read_only  = "true"
@@ -73,7 +73,7 @@ var datadogDashboardFreeTextAsserts = []string{
 	"widget.0.layout.width = 32",
 	"widget.0.layout.height = 43",
 	"widget.0.free_text_definition.0.text_align = left",
-	"title = Acceptance Test Free Text Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.layout.x = 5",
 }
 

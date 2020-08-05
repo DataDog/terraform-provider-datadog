@@ -10,9 +10,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 )
 
-const datadogOrderedDashboardConfig = `
+func datadogOrderedDashboardConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_dashboard" "ordered_dashboard" {
-	title         = "Acceptance Test Ordered Dashboard"
+	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = true
@@ -130,7 +131,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			text_align = "center"
 			show_tick = true
 			tick_edge = "left"
-			tick_pos = "50%"
+			tick_pos = "50%%" # string escaped as this is used as a format string
 		}
 	}
 	widget {
@@ -354,7 +355,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 					text_align = "left"
 					show_tick = false
 					tick_edge = "left"
-					tick_pos = "50%"
+					tick_pos = "50%%" # string escaped as this is used as a format string
 				}
 			}
 			widget {
@@ -432,12 +433,13 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			value = "var_1_value"
 		}
 	}
+}`, uniq)
 }
-`
 
-const datadogFreeDashboardConfig = `
+func datadogFreeDashboardConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_dashboard" "free_dashboard" {
-	title         = "Acceptance Test Free Dashboard"
+	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
 	is_read_only  = false
@@ -613,12 +615,11 @@ resource "datadog_dashboard" "free_dashboard" {
 			value = "var_1_value"
 		}
 	}
+}`, uniq)
 }
-`
 
 var datadogOrderedDashboardAsserts = []string{
 	// Dashboard metadata
-	"title = Acceptance Test Ordered Dashboard",
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
 	"is_read_only = true",
@@ -866,7 +867,6 @@ var datadogOrderedDashboardAsserts = []string{
 
 var datadogFreeDashboardAsserts = []string{
 	// Dashboard metadata
-	"title = Acceptance Test Free Dashboard",
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = free",
 	"is_read_only = false",
@@ -983,7 +983,10 @@ var datadogFreeDashboardAsserts = []string{
 }
 
 func TestAccDatadogDashboard_update(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	dbName := uniqueEntityName(clock, t)
+	asserts := datadogOrderedDashboardAsserts
+	asserts = append(asserts, fmt.Sprintf("title = %s", dbName))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -993,9 +996,9 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: datadogOrderedDashboardConfig,
+				Config: datadogOrderedDashboardConfig(dbName),
 				Check: resource.ComposeTestCheckFunc(
-					testCheckResourceAttrs("datadog_dashboard.ordered_dashboard", checkDashboardExists(accProvider), datadogOrderedDashboardAsserts)...,
+					testCheckResourceAttrs("datadog_dashboard.ordered_dashboard", checkDashboardExists(accProvider), asserts)...,
 				),
 			},
 		},
@@ -1003,7 +1006,10 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 }
 
 func TestAccDatadogFreeDashboard(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	dbName := uniqueEntityName(clock, t)
+	asserts := datadogFreeDashboardAsserts
+	asserts = append(asserts, fmt.Sprintf("title = %s", dbName))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -1013,9 +1019,9 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: datadogFreeDashboardConfig,
+				Config: datadogFreeDashboardConfig(dbName),
 				Check: resource.ComposeTestCheckFunc(
-					testCheckResourceAttrs("datadog_dashboard.free_dashboard", checkDashboardExists(accProvider), datadogFreeDashboardAsserts)...,
+					testCheckResourceAttrs("datadog_dashboard.free_dashboard", checkDashboardExists(accProvider), asserts)...,
 				),
 			},
 		},
@@ -1023,7 +1029,8 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 }
 
 func TestAccDatadogDashboard_import(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	dbName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -1033,7 +1040,7 @@ func TestAccDatadogDashboard_import(t *testing.T) {
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: datadogOrderedDashboardConfig,
+				Config: datadogOrderedDashboardConfig(dbName),
 			},
 			{
 				ResourceName:      "datadog_dashboard.ordered_dashboard",
@@ -1041,7 +1048,7 @@ func TestAccDatadogDashboard_import(t *testing.T) {
 				ImportStateVerify: true,
 			},
 			{
-				Config: datadogFreeDashboardConfig,
+				Config: datadogFreeDashboardConfig(dbName),
 			},
 			{
 				ResourceName:      "datadog_dashboard.free_dashboard",
@@ -1087,7 +1094,13 @@ func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc 
 }
 
 func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string, assertions []string) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	uniq := uniqueEntityName(clock, t)
+	replacer := strings.NewReplacer("{{uniq}}", uniq)
+	config = replacer.Replace(config)
+	for i := range assertions {
+		assertions[i] = replacer.Replace(assertions[i])
+	}
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -1107,7 +1120,10 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 }
 
 func testAccDatadogDashboardWidgetUtil_import(t *testing.T, config string, name string) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	uniq := uniqueEntityName(clock, t)
+	replacer := strings.NewReplacer("{{uniq}}", uniq)
+	config = replacer.Replace(config)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 

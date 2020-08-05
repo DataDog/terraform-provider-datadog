@@ -53,7 +53,7 @@ import (
 
 const datadogDashboardTraceServiceConfig = `
 resource "datadog_dashboard" "trace_service_dashboard" {
-	title         = "Acceptance Test Trace Service Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
 	is_read_only  = "true"
@@ -111,7 +111,7 @@ var datadogDashboardTraceServiceAsserts = []string{
 	"widget.0.layout.y = 5",
 	"widget.0.trace_service_definition.0.show_latency = true",
 	"widget.0.trace_service_definition.0.service = postgres",
-	"title = Acceptance Test Trace Service Widget Dashboard",
+	"title = {{uniq}}",
 }
 
 func TestAccDatadogDashboardTraceService(t *testing.T) {

@@ -75,7 +75,7 @@ import (
 
 const datadogDashboardQueryTableConfig = `
 resource "datadog_dashboard" "query_table_dashboard" {
-	title         = "Acceptance Test Query Table Widget Dashboard"
+	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = "true"
@@ -137,7 +137,7 @@ var datadogDashboardQueryTableAsserts = []string{
 	"widget.0.query_table_definition.0.request.0.conditional_formats.0.palette = white_on_green",
 	"widget.0.query_table_definition.0.request.0.conditional_formats.0.custom_bg_color =",
 	"widget.0.query_table_definition.0.request.1.q = avg:system.load.1{*} by {service, team}",
-	"title = Acceptance Test Query Table Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.query_table_definition.0.request.0.conditional_formats.1.value = 90",
 	"widget.0.query_table_definition.0.request.0.conditional_formats.1.custom_bg_color =",
 	"widget.0.query_table_definition.0.request.1.aggregator = last",

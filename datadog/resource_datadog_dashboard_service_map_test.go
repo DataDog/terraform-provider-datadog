@@ -42,7 +42,7 @@ import "testing"
 
 const datadogDashboardServiceMapConfig = `
 resource "datadog_dashboard" "service_map_dashboard" {
-  title         = "Acceptance Test Service Map Widget Dashboard"
+  title         = "{{uniq}}"
   description   = "Created using the Datadog provider in Terraform"
   layout_type   = "free"
   is_read_only  = "true"
@@ -67,7 +67,7 @@ resource "datadog_dashboard" "service_map_dashboard" {
 `
 
 var datadogDashboardServiceMapAsserts = []string{
-	"title = Acceptance Test Service Map Widget Dashboard",
+	"title = {{uniq}}",
 	"widget.0.layout.width = 32",
 	"widget.0.servicemap_definition.0.title_align = left",
 	"description = Created using the Datadog provider in Terraform",
