@@ -142,7 +142,7 @@ The following arguments are supported:
   - `accept_self_signed` - (Optional) For type=ssl, true or false
   - `allow_insecure` - (Optional) For type=api, true or false. Allow your HTTP test go on with connection even if there is an error when validating the certificate.
   - `retry_count` - (Optional) Number of retries needed to consider a location as failed before sending a notification alert.
-  - `retry_interval` - (Optional) Interval between a failed test and the next retry.
+  - `retry_interval` - (Optional) Interval between a failed test and the next retry in milliseconds.
 - `locations` - (Required) Please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#request) for available locations (e.g. "aws:eu-central-1")
 - `device_ids` - (Optional) "laptop_large", "tablet" or "mobile_small" (only available if type=browser)
 - `status` - (Required) "live", "paused"
