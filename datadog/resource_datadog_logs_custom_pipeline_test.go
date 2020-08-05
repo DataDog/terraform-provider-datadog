@@ -12,9 +12,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 )
 
-const pipelineConfigForCreation = `
+func pipelineConfigForCreation(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
-	name = "my first pipeline"
+	name = "%s"
 	is_enabled = true
 	filter {
 		query = "source:redis"
@@ -60,8 +61,8 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			is_enabled = true
 			source = "message"
 			grok {
-				support_rules = "date_parser %%{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"
-				match_rules = "rule %%{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"
+				support_rules = "date_parser %%%%{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"
+				match_rules = "rule %%%%{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"
 			}
 		}
 	}
@@ -117,11 +118,12 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			default_lookup = "default"
 		}
 	}
+}`, uniq)
 }
-`
-const pipelineConfigForUpdate = `
+func pipelineConfigForUpdate(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
-	name = "updated pipeline"
+	name = "%s"
 	is_enabled = false
 	filter {
 		query = "source:kafka"
@@ -158,8 +160,8 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			source = "message"
 			samples = ["sample1", "sample2"]
 			grok {
-				support_rules = "date_parser %%{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"
-				match_rules = "rule %%{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"
+				support_rules = "date_parser %%%%{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"
+				match_rules = "rule %%%%{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"
 			}
 		}
 	}
@@ -167,7 +169,7 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 		string_builder_processor {
 			name = "string builder"
 			is_enabled = true
-			template = "%%{user.name} is awesome"
+			template = "%%%%{user.name} is awesome"
 			target = "user.name"
 			is_replace_missing = true
 		}
@@ -197,12 +199,14 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			default_lookup = "default"
 		}
 	}
+}`, uniq)
 }
-`
 
 func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 	rec := initRecorder(t)
-	accProviders, _, cleanup := testAccProviders(t, rec)
+	accProviders, clock, cleanup := testAccProviders(t, rec)
+	pipelineName := uniqueEntityName(clock, t)
+	pipelineName2 := pipelineName + "-updated"
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -212,11 +216,11 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 		CheckDestroy: testAccCheckPipelineDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: pipelineConfigForCreation,
+				Config: pipelineConfigForCreation(pipelineName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPipelineExists(accProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_custom_pipeline.my_pipeline_test", "name", "my first pipeline"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "name", pipelineName),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "is_enabled", "true"),
 					resource.TestCheckResourceAttr(
@@ -245,11 +249,11 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.7.lookup_processor.0.lookup_table.#", "1"),
 				),
 			}, {
-				Config: pipelineConfigForUpdate,
+				Config: pipelineConfigForUpdate(pipelineName2),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPipelineExists(accProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_custom_pipeline.my_pipeline_test", "name", "updated pipeline"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "name", pipelineName2),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "is_enabled", "false"),
 					resource.TestCheckResourceAttr(

@@ -11,9 +11,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 )
 
-const config = `
+func config(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_screenboard" "acceptance_test" {
-	title = "Acceptance Test Screenboard"
+	title = "%s"
 	read_only = true
 	width = "640"
 	height = 480
@@ -184,7 +185,7 @@ resource "datadog_screenboard" "acceptance_test" {
 				aggregator = "max"
 			}
 
-			custom_unit = "%"
+			custom_unit = "%%"
 			autoscale   = false
 			precision   = "6"
 			text_align  = "right"
@@ -289,7 +290,7 @@ resource "datadog_screenboard" "acceptance_test" {
 		font_size  = "36"
 		tick       = true
 		tick_edge  = "bottom"
-		tick_pos   = "50%"
+		tick_pos   = "50%%"
 		html       = "<b>test note</b>"
 	}
 
@@ -446,16 +447,17 @@ resource "datadog_screenboard" "acceptance_test" {
 			}
 		}
 	}
+}`, uniq)
 }
-`
 
 func TestAccDatadogScreenboard_update(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	sbName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	step1 := resource.TestStep{
-		Config: config,
+		Config: config(sbName),
 		Check: resource.ComposeTestCheckFunc(
 			checkScreenboardExists(accProvider),
 			resource.TestCheckResourceAttr("datadog_screenboard.acceptance_test", "width", "640"),
