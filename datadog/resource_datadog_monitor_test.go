@@ -13,7 +13,8 @@ import (
 )
 
 func TestAccDatadogMonitor_Basic(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -23,11 +24,11 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfig,
+				Config: testAccCheckDatadogMonitorConfig(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", "name for monitor foo"),
+						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
@@ -71,7 +72,8 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -81,11 +83,11 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorServiceCheckConfig,
+				Config: testAccCheckDatadogMonitorServiceCheckConfig(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", "name for monitor foo"),
+						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
@@ -126,7 +128,8 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -136,11 +139,11 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigNoThresholds,
+				Config: testAccCheckDatadogMonitorConfigNoThresholds(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", "name for monitor foo"),
+						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
@@ -169,7 +172,9 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_Updated(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
+	monitorNameUpdated := monitorName + "-updated"
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -179,11 +184,11 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfig,
+				Config: testAccCheckDatadogMonitorConfig(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", "name for monitor foo"),
+						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
@@ -228,11 +233,11 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigUpdated,
+				Config: testAccCheckDatadogMonitorConfigUpdated(monitorNameUpdated),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", "name for monitor bar"),
+						"datadog_monitor.foo", "name", monitorNameUpdated),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "a different message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
@@ -283,7 +288,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated,
+				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated(monitorNameUpdated),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.complex_metric_alert_example_monitor"),
 					// even though this is defined as a metric alert, the API will actually return query alert
@@ -292,7 +297,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigQueryAlertNotUpdated,
+				Config: testAccCheckDatadogMonitorConfigQueryAlertNotUpdated(monitorNameUpdated),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.complex_query_alert_example_monitor"),
 					resource.TestCheckResourceAttr(
@@ -304,7 +309,9 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
+	monitorNameUpdated := monitorName + "-updated"
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -314,11 +321,11 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfig,
+				Config: testAccCheckDatadogMonitorConfig(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", "name for monitor foo"),
+						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
@@ -363,11 +370,11 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigUpdatedWithTagsRemoved,
+				Config: testAccCheckDatadogMonitorConfigUpdatedWithTagsRemoved(monitorNameUpdated),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", "name for monitor bar"),
+						"datadog_monitor.foo", "name", monitorNameUpdated),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "a different message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
@@ -413,7 +420,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated,
+				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated(monitorNameUpdated),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.complex_metric_alert_example_monitor"),
 					// even though this is defined as a metric alert, the API will actually return query alert
@@ -422,7 +429,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigQueryAlertNotUpdated,
+				Config: testAccCheckDatadogMonitorConfigQueryAlertNotUpdated(monitorNameUpdated),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.complex_query_alert_example_monitor"),
 					resource.TestCheckResourceAttr(
@@ -434,7 +441,8 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -444,11 +452,11 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigWhitespace,
+				Config: testAccCheckDatadogMonitorConfigWhitespace(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", "name for monitor foo"),
+						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
@@ -476,7 +484,8 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -486,7 +495,7 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigInts,
+				Config: testAccCheckDatadogMonitorConfigInts(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
@@ -501,7 +510,7 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 			},
 
 			{
-				Config: testAccCheckDatadogMonitorConfigIntsMixed,
+				Config: testAccCheckDatadogMonitorConfigIntsMixed(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
@@ -519,7 +528,8 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_Log(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -529,11 +539,11 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigLogAlert,
+				Config: testAccCheckDatadogMonitorConfigLogAlert(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", "name for monitor foo"),
+						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
@@ -557,7 +567,8 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_NoThresholdWindows(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -567,10 +578,10 @@ func TestAccDatadogMonitor_NoThresholdWindows(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigNoThresholdWindows,
+				Config: testAccCheckDatadogMonitorConfigNoThresholdWindows(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "name", "test bug 259"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "message", "test"),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "type", "query alert"),
 				),
@@ -580,7 +591,8 @@ func TestAccDatadogMonitor_NoThresholdWindows(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -590,11 +602,11 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigThresholdWindows,
+				Config: testAccCheckDatadogMonitorConfigThresholdWindows(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", "name for monitor foo"),
+						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
@@ -633,7 +645,8 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_MuteUnmuteSpecificScopes(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -643,7 +656,7 @@ func TestAccDatadogMonitor_MuteUnmuteSpecificScopes(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigMuteSpecificScopes,
+				Config: testAccCheckDatadogMonitorConfigMuteSpecificScopes(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
@@ -653,7 +666,7 @@ func TestAccDatadogMonitor_MuteUnmuteSpecificScopes(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigUnmuteSpecificScopes,
+				Config: testAccCheckDatadogMonitorConfigUnmuteSpecificScopes(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckNoResourceAttr(
@@ -665,7 +678,8 @@ func TestAccDatadogMonitor_MuteUnmuteSpecificScopes(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -675,12 +689,12 @@ func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorComposeWithSyntheticsTest,
+				Config: testAccCheckDatadogMonitorComposeWithSyntheticsTest(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", "foo"),
+						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
-						"datadog_synthetics_test.foo", "name", "foo"),
+						"datadog_synthetics_test.foo", "name", monitorName),
 					resource.TestCheckResourceAttrSet(
 						"datadog_monitor.bar", "query"),
 				),
@@ -713,7 +727,8 @@ func testAccCheckDatadogMonitorExists(accProvider *schema.Provider, n string) re
 }
 
 func TestAccDatadogMonitor_SilencedRemove(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -723,11 +738,11 @@ func TestAccDatadogMonitor_SilencedRemove(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorSilenceZero,
+				Config: testAccCheckDatadogMonitorSilenceZero(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", "name for monitor foo"),
+						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
@@ -739,11 +754,11 @@ func TestAccDatadogMonitor_SilencedRemove(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorSilenceUnmute,
+				Config: testAccCheckDatadogMonitorSilenceUnmute(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", "name for monitor foo"),
+						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "type", "query alert"),
 					resource.TestCheckResourceAttr(
@@ -755,7 +770,8 @@ func TestAccDatadogMonitor_SilencedRemove(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -765,11 +781,11 @@ func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorSilenceZero,
+				Config: testAccCheckDatadogMonitorSilenceZero(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", "name for monitor foo"),
+						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
@@ -781,7 +797,7 @@ func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
 				),
 			},
 			{
-				Config:             testAccCheckDatadogMonitorSilenceZero,
+				Config:             testAccCheckDatadogMonitorSilenceZero(monitorName),
 				ExpectNonEmptyPlan: false,
 			},
 		},
@@ -789,7 +805,8 @@ func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_SilencedUpdatePastTimestamp(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -799,11 +816,11 @@ func TestAccDatadogMonitor_SilencedUpdatePastTimestamp(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorSilenceZero,
+				Config: testAccCheckDatadogMonitorSilenceZero(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", "name for monitor foo"),
+						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
@@ -815,7 +832,7 @@ func TestAccDatadogMonitor_SilencedUpdatePastTimestamp(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorSilencePastTimestamp,
+				Config: testAccCheckDatadogMonitorSilencePastTimestamp(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "silenced.*", "1559759717",
@@ -823,16 +840,17 @@ func TestAccDatadogMonitor_SilencedUpdatePastTimestamp(t *testing.T) {
 				),
 			},
 			{
-				Config:             testAccCheckDatadogMonitorSilencePastTimestamp,
+				Config:             testAccCheckDatadogMonitorSilencePastTimestamp(monitorName),
 				ExpectNonEmptyPlan: false,
 			},
 		},
 	})
 }
 
-const testAccCheckDatadogMonitorSilenceZero = `
+func testAccCheckDatadogMonitorSilenceZero(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-	name = "name for monitor foo"
+	name = "%s"
 	type = "query alert"
 	message = "some message Notify: @hipchat-channel"
 
@@ -841,12 +859,13 @@ resource "datadog_monitor" "foo" {
 	silenced = {
     "*" = 0
   }
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorSilenceUnmute = `
+func testAccCheckDatadogMonitorSilenceUnmute(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-	name = "name for monitor foo"
+	name = "%s"
 	type = "query alert"
 	message = "some message Notify: @hipchat-channel"
 
@@ -855,12 +874,13 @@ resource "datadog_monitor" "foo" {
 	silenced = {
     "*" = -1
   }
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorSilencePastTimestamp = `
+func testAccCheckDatadogMonitorSilencePastTimestamp(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-	name = "name for monitor foo"
+	name = "%s"
 	type = "query alert"
 	message = "some message Notify: @hipchat-channel"
 
@@ -869,12 +889,13 @@ resource "datadog_monitor" "foo" {
 	silenced = {
     "*" = 1559759717
   }
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorConfig = `
+func testAccCheckDatadogMonitorConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name = "name for monitor foo"
+  name = "%s"
   type = "query alert"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
@@ -898,11 +919,12 @@ resource "datadog_monitor" "foo" {
   require_full_window = true
   locked = false
   tags = ["foo:bar", "baz"]
+}`, uniq)
 }
-`
-const testAccCheckDatadogMonitorConfigNoThresholds = `
+func testAccCheckDatadogMonitorConfigNoThresholds(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name = "name for monitor foo"
+  name = "%s"
   type = "query alert"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
@@ -918,12 +940,13 @@ resource "datadog_monitor" "foo" {
   require_full_window = true
   locked = false
   tags = ["foo:bar", "bar:baz"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorServiceCheckConfig = `
+func testAccCheckDatadogMonitorServiceCheckConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name = "name for monitor foo"
+  name = "%s"
   type = "service check"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
@@ -947,12 +970,13 @@ resource "datadog_monitor" "foo" {
   require_full_window = true
   locked = false
   tags = ["foo:bar", "baz"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorConfigInts = `
+func testAccCheckDatadogMonitorConfigInts(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name               = "name for monitor foo"
+  name               = "%s"
   type               = "query alert"
   message            = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
@@ -976,12 +1000,13 @@ resource "datadog_monitor" "foo" {
   locked              = false
 
   tags = ["foo:bar", "baz"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorConfigIntsMixed = `
+func testAccCheckDatadogMonitorConfigIntsMixed(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name               = "name for monitor foo"
+  name               = "%s"
   type               = "query alert"
   message            = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
@@ -1005,12 +1030,13 @@ resource "datadog_monitor" "foo" {
   locked              = false
 
   tags = ["foo:bar", "baz"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorConfigUpdated = `
+func testAccCheckDatadogMonitorConfigUpdated(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name = "name for monitor bar"
+  name = "%s"
   type = "query alert"
   message = "a different message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated! @pagerduty"
@@ -1039,12 +1065,13 @@ resource "datadog_monitor" "foo" {
 	"*" = 0
   }
   tags = ["baz:qux", "quux"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorConfigUpdatedWithTagsRemoved = `
+func testAccCheckDatadogMonitorConfigUpdatedWithTagsRemoved(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name = "name for monitor bar"
+  name = "%s"
   type = "query alert"
   message = "a different message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated! @pagerduty"
@@ -1072,32 +1099,35 @@ resource "datadog_monitor" "foo" {
   silenced = {
 	"*" = 0
   }
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorConfigMetricAlertNotUpdated = `
+func testAccCheckDatadogMonitorConfigMetricAlertNotUpdated(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "complex_metric_alert_example_monitor" {
-  name = "Terraform provider datadog complex metrics example Monitor"
+  name = "%s"
   type = "metric alert"
   message = "a message"
 
   query = "change(min(last_1m),last_5m):sum:org.eclipse.jetty.servlet.ServletContextHandler.5xx_responses{example,framework:chronos} + sum:org.eclipse.jetty.servlet.ServletContextHandler.4xx_responses{example,framework:chronos} + sum:org.eclipse.jetty.servlet.ServletContextHandler.3xx_responses{example,framework:chronos} > 5"
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorConfigQueryAlertNotUpdated = `
+func testAccCheckDatadogMonitorConfigQueryAlertNotUpdated(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "complex_query_alert_example_monitor" {
-  name = "Terraform provider datadog complex query example Monitor"
+  name = "%s"
   type = "query alert"
   message = "a message"
 
   query = "change(min(last_1m),last_5m):sum:org.eclipse.jetty.servlet.ServletContextHandler.5xx_responses{example,framework:chronos} + sum:org.eclipse.jetty.servlet.ServletContextHandler.4xx_responses{example,framework:chronos} + sum:org.eclipse.jetty.servlet.ServletContextHandler.3xx_responses{example,framework:chronos} > 5"
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorConfigWhitespace = `
+func testAccCheckDatadogMonitorConfigWhitespace(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name = "name for monitor foo"
+  name = "%s"
   type = "query alert"
   message = <<EOF
 some message Notify: @hipchat-channel
@@ -1122,12 +1152,13 @@ EOF
   notify_audit = false
   timeout_h = 60
   include_tags = true
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorConfigLogAlert = `
+func testAccCheckDatadogMonitorConfigLogAlert(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name = "name for monitor foo"
+  name = "%s"
   type = "log alert"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
@@ -1150,12 +1181,13 @@ resource "datadog_monitor" "foo" {
   locked = false
   tags = ["foo:bar", "baz"]
 	enable_logs_sample = true
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorConfigNoThresholdWindows = `
+func testAccCheckDatadogMonitorConfigNoThresholdWindows(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-	name = "test bug 259"
+	name = "%s"
 	type = "query alert"
 	message = "test"
 	query = "avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') >= 1"
@@ -1173,12 +1205,13 @@ resource "datadog_monitor" "foo" {
 	notify_audit = false
 	timeout_h = 60
 	include_tags = true
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorConfigThresholdWindows = `
+func testAccCheckDatadogMonitorConfigThresholdWindows(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-	name = "name for monitor foo"
+	name = "%s"
 	type = "query alert"
 	message = "some message Notify: @hipchat-channel"
 	escalation_message = "the situation has escalated @pagerduty"
@@ -1202,12 +1235,13 @@ resource "datadog_monitor" "foo" {
 		recovery_window = "last_5m"
 		trigger_window = "last_5m"
 	}
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorConfigMuteSpecificScopes = `
+func testAccCheckDatadogMonitorConfigMuteSpecificScopes(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-    name = "foo"
+    name = "%s"
     type = "metric alert"
     message = "test"
 
@@ -1220,12 +1254,13 @@ resource "datadog_monitor" "foo" {
     silenced = {
       "host:myserver" = 0
     }
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorConfigUnmuteSpecificScopes = `
+func testAccCheckDatadogMonitorConfigUnmuteSpecificScopes(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-    name = "foo"
+    name = "%s"
     type = "metric alert"
     message = "test"
 
@@ -1234,12 +1269,13 @@ resource "datadog_monitor" "foo" {
     thresholds = {
         critical = 100
     }
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorComposeWithSyntheticsTest = `
+func testAccCheckDatadogMonitorComposeWithSyntheticsTest(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name = "foo"
+  name = "%s"
   type = "metric alert"
   message = "test"
 
@@ -1275,7 +1311,7 @@ resource "datadog_synthetics_test" "foo" {
 		min_location_failed = 1
 	}
 
-	name = "foo"
+	name = "%s"
 	message = "Notify @pagerduty"
 	tags = ["foo:bar", "foo", "env:test"]
 
@@ -1283,13 +1319,13 @@ resource "datadog_synthetics_test" "foo" {
 }
 
 resource "datadog_monitor" "bar" {
-  name = "composite monitor"
+  name = "%s-composite"
   type = "composite"
   message = "test"
 
 	query = "${datadog_monitor.foo.id} || ${datadog_synthetics_test.foo.monitor_id}"
+}`, uniq, uniq, uniq)
 }
-`
 
 func destroyHelper(s *terraform.State, client *datadog.Client) error {
 	for _, r := range s.RootModule().Resources {

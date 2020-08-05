@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"fmt"
+	"github.com/jonboulle/clockwork"
 	"strings"
 	"testing"
 
@@ -11,7 +12,8 @@ import (
 )
 
 func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	testName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -21,7 +23,7 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: createSyntheticsAPITestConfig,
+				Config: createSyntheticsAPITestConfig(testName),
 			},
 			{
 				ResourceName:      "datadog_synthetics_test.foo",
@@ -35,7 +37,8 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_importBasicNewAssertions(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	testName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -45,7 +48,7 @@ func TestAccDatadogSyntheticsAPITest_importBasicNewAssertions(t *testing.T) {
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: createSyntheticsAPITestConfigNewAssertions,
+				Config: createSyntheticsAPITestConfigNewAssertions(testName),
 			},
 			{
 				ResourceName:      "datadog_synthetics_test.bar",
@@ -57,7 +60,8 @@ func TestAccDatadogSyntheticsAPITest_importBasicNewAssertions(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	testName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -67,7 +71,7 @@ func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: createSyntheticsSSLTestConfig,
+				Config: createSyntheticsSSLTestConfig(testName),
 			},
 			{
 				ResourceName:      "datadog_synthetics_test.ssl",
@@ -81,7 +85,8 @@ func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	testName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -91,7 +96,7 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: createSyntheticsBrowserTestConfig,
+				Config: createSyntheticsBrowserTestConfig(testName),
 			},
 			{
 				ResourceName:      "datadog_synthetics_test.bar",
@@ -103,7 +108,7 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -112,13 +117,13 @@ func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsAPITestStep(accProvider),
+			createSyntheticsAPITestStep(accProvider, clock, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -127,14 +132,14 @@ func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsAPITestStep(accProvider),
-			updateSyntheticsAPITestStep(accProvider),
+			createSyntheticsAPITestStep(accProvider, clock, t),
+			updateSyntheticsAPITestStep(accProvider, clock, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsAPITest_BasicNewAssertions(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -143,13 +148,13 @@ func TestAccDatadogSyntheticsAPITest_BasicNewAssertions(t *testing.T) {
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsAPITestStepNewAssertions(accProvider),
+			createSyntheticsAPITestStepNewAssertions(accProvider, clock, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertions(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -158,14 +163,14 @@ func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertions(t *testing.T) {
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsAPITestStepNewAssertions(accProvider),
-			updateSyntheticsAPITestStepNewAssertions(accProvider),
+			createSyntheticsAPITestStepNewAssertions(accProvider, clock, t),
+			updateSyntheticsAPITestStepNewAssertions(accProvider, clock, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -174,13 +179,13 @@ func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsSSLTestStep(accProvider),
+			createSyntheticsSSLTestStep(accProvider, clock, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -189,14 +194,14 @@ func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsSSLTestStep(accProvider),
-			updateSyntheticsSSLTestStep(accProvider),
+			createSyntheticsSSLTestStep(accProvider, clock, t),
+			updateSyntheticsSSLTestStep(accProvider, clock, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -205,13 +210,13 @@ func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsBrowserTestStep(accProvider),
+			createSyntheticsBrowserTestStep(accProvider, clock, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -220,15 +225,16 @@ func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsBrowserTestStep(accProvider),
-			updateSyntheticsBrowserTestStep(accProvider),
+			createSyntheticsBrowserTestStep(accProvider, clock, t),
+			updateSyntheticsBrowserTestStep(accProvider, clock, t),
 		},
 	})
 }
 
-func createSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep {
+func createSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(clock, t)
 	return resource.TestStep{
-		Config: createSyntheticsAPITestConfig,
+		Config: createSyntheticsAPITestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -284,7 +290,7 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.retry_count", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "name", "name for synthetics test foo"),
+				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "message", "Notify @datadog.user"),
 			resource.TestCheckResourceAttr(
@@ -301,7 +307,8 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 	}
 }
 
-const createSyntheticsAPITestConfig = `
+func createSyntheticsAPITestConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_synthetics_test" "foo" {
 	type = "api"
 	subtype = "http"
@@ -352,17 +359,18 @@ resource "datadog_synthetics_test" "foo" {
 		retry_count = 1
 	}
 
-	name = "name for synthetics test foo"
+	name = "%s"
 	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
+}`, uniq)
 }
-`
 
-func createSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider) resource.TestStep {
+func createSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(clock, t)
 	return resource.TestStep{
-		Config: createSyntheticsAPITestConfigNewAssertions,
+		Config: createSyntheticsAPITestConfigNewAssertions(testName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -426,7 +434,7 @@ func createSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider) reso
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.retry_count", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "name", "name for synthetics test foo"),
+				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
 			resource.TestCheckResourceAttr(
@@ -443,7 +451,8 @@ func createSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider) reso
 	}
 }
 
-const createSyntheticsAPITestConfigNewAssertions = `
+func createSyntheticsAPITestConfigNewAssertions(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_synthetics_test" "bar" {
 	type = "api"
 	subtype = "http"
@@ -496,17 +505,18 @@ resource "datadog_synthetics_test" "bar" {
 		retry_count = 1
 	}
 
-	name = "name for synthetics test foo"
+	name = "%s"
 	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
+}`, uniq)
 }
-`
 
-func updateSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep {
+func updateSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(clock, t) + "-updated"
 	return resource.TestStep{
-		Config: updateSyntheticsAPITestConfig,
+		Config: updateSyntheticsAPITestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -544,7 +554,7 @@ func updateSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.retry_interval", "400"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "name", "updated name"),
+				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "message", "Notify @pagerduty"),
 			resource.TestCheckResourceAttr(
@@ -563,7 +573,8 @@ func updateSyntheticsAPITestStep(accProvider *schema.Provider) resource.TestStep
 	}
 }
 
-const updateSyntheticsAPITestConfig = `
+func updateSyntheticsAPITestConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_synthetics_test" "foo" {
 	type = "api"
 	subtype = "http"
@@ -593,17 +604,18 @@ resource "datadog_synthetics_test" "foo" {
 		retry_interval = 400
 	}
 
-	name = "updated name"
+	name = "%s"
 	message = "Notify @pagerduty"
 	tags = ["foo:bar", "foo", "env:test"]
 
 	status = "live"
+}`, uniq)
 }
-`
 
-func updateSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider) resource.TestStep {
+func updateSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(clock, t) + "updated"
 	return resource.TestStep{
-		Config: updateSyntheticsAPITestConfigNewAssertions,
+		Config: updateSyntheticsAPITestConfigNewAssertions(testName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -645,7 +657,7 @@ func updateSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider) reso
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.retry_count", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "name", "updated name"),
+				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @pagerduty"),
 			resource.TestCheckResourceAttr(
@@ -664,7 +676,8 @@ func updateSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider) reso
 	}
 }
 
-const updateSyntheticsAPITestConfigNewAssertions = `
+func updateSyntheticsAPITestConfigNewAssertions(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_synthetics_test" "bar" {
 	type = "api"
 	subtype = "http"
@@ -695,17 +708,18 @@ resource "datadog_synthetics_test" "bar" {
 		retry_count = 1
 	}
 
-	name = "updated name"
+	name = "%s"
 	message = "Notify @pagerduty"
 	tags = ["foo:bar", "foo", "env:test"]
 
 	status = "live"
+}`, uniq)
 }
-`
 
-func createSyntheticsSSLTestStep(accProvider *schema.Provider) resource.TestStep {
+func createSyntheticsSSLTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(clock, t)
 	return resource.TestStep{
-		Config: createSyntheticsSSLTestConfig,
+		Config: createSyntheticsSSLTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -733,7 +747,7 @@ func createSyntheticsSSLTestStep(accProvider *schema.Provider) resource.TestStep
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options.accept_self_signed", "true"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "name", "name for synthetics test ssl"),
+				"datadog_synthetics_test.ssl", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "message", "Notify @datadog.user"),
 			resource.TestCheckResourceAttr(
@@ -750,7 +764,8 @@ func createSyntheticsSSLTestStep(accProvider *schema.Provider) resource.TestStep
 	}
 }
 
-const createSyntheticsSSLTestConfig = `
+func createSyntheticsSSLTestConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_synthetics_test" "ssl" {
 	type = "api"
 	subtype = "ssl"
@@ -774,17 +789,18 @@ resource "datadog_synthetics_test" "ssl" {
 		accept_self_signed = true
 	}
 
-	name = "name for synthetics test ssl"
+	name = "%s"
 	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
+}`, uniq)
 }
-`
 
-func updateSyntheticsSSLTestStep(accProvider *schema.Provider) resource.TestStep {
+func updateSyntheticsSSLTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(clock, t) + "-updated"
 	return resource.TestStep{
-		Config: updateSyntheticsSSLTestConfig,
+		Config: updateSyntheticsSSLTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -812,7 +828,7 @@ func updateSyntheticsSSLTestStep(accProvider *schema.Provider) resource.TestStep
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options.accept_self_signed", "false"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "name", "updated name"),
+				"datadog_synthetics_test.ssl", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "message", "Notify @pagerduty"),
 			resource.TestCheckResourceAttr(
@@ -831,7 +847,8 @@ func updateSyntheticsSSLTestStep(accProvider *schema.Provider) resource.TestStep
 	}
 }
 
-const updateSyntheticsSSLTestConfig = `
+func updateSyntheticsSSLTestConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_synthetics_test" "ssl" {
 	type = "api"
 	subtype = "ssl"
@@ -856,17 +873,18 @@ resource "datadog_synthetics_test" "ssl" {
 		accept_self_signed = false
 	}
 
-	name = "updated name"
+	name = "%s"
 	message = "Notify @pagerduty"
 	tags = ["foo:bar", "foo", "env:test"]
 
 	status = "live"
+}`, uniq)
 }
-`
 
-func createSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.TestStep {
+func createSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(clock, t)
 	return resource.TestStep{
-		Config: createSyntheticsBrowserTestConfig,
+		Config: createSyntheticsBrowserTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -904,7 +922,7 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "name", "name for synthetics browser test bar"),
+				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
 			resource.TestCheckResourceAttr(
@@ -919,7 +937,8 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 	}
 }
 
-const createSyntheticsBrowserTestConfig = `
+func createSyntheticsBrowserTestConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_synthetics_test" "bar" {
 	type = "browser"
 
@@ -942,17 +961,18 @@ resource "datadog_synthetics_test" "bar" {
 		min_location_failed = 1
 	}
 
-	name = "name for synthetics browser test bar"
+	name = "%s"
 	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
+}`, uniq)
 }
-`
 
-func updateSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.TestStep {
+func updateSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(clock, t) + "-updated"
 	return resource.TestStep{
-		Config: updateSyntheticsBrowserTestConfig,
+		Config: updateSyntheticsBrowserTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -990,7 +1010,7 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "name", "updated name for synthetics browser test bar"),
+				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @pagerduty"),
 			resource.TestCheckResourceAttr(
@@ -1005,7 +1025,8 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider) resource.Test
 	}
 }
 
-const updateSyntheticsBrowserTestConfig = `
+func updateSyntheticsBrowserTestConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_synthetics_test" "bar" {
 	type = "browser"
 	request = {
@@ -1025,12 +1046,12 @@ resource "datadog_synthetics_test" "bar" {
 		min_failure_duration = 10
 		min_location_failed = 1
 	}
-	name = "updated name for synthetics browser test bar"
+	name = "%s"
 	message = "Notify @pagerduty"
 	tags = ["foo:bar", "buz"]
 	status = "live"
+}`, uniq)
 }
-`
 
 func testSyntheticsTestExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {

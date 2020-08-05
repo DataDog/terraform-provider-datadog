@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
@@ -8,7 +9,8 @@ import (
 
 func TestDatadogMonitor_import(t *testing.T) {
 	resourceName := "datadog_monitor.foo"
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -18,7 +20,7 @@ func TestDatadogMonitor_import(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigImported,
+				Config: testAccCheckDatadogMonitorConfigImported(monitorName),
 			},
 			{
 				ResourceName:      resourceName,
@@ -31,7 +33,8 @@ func TestDatadogMonitor_import(t *testing.T) {
 
 func TestDatadogMonitor_import_no_recovery(t *testing.T) {
 	resourceName := "datadog_monitor.foo"
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -41,7 +44,7 @@ func TestDatadogMonitor_import_no_recovery(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigImportedNoRecovery,
+				Config: testAccCheckDatadogMonitorConfigImportedNoRecovery(monitorName),
 			},
 			{
 				ResourceName:      resourceName,
@@ -52,9 +55,10 @@ func TestDatadogMonitor_import_no_recovery(t *testing.T) {
 	})
 }
 
-const testAccCheckDatadogMonitorConfigImported = `
+func testAccCheckDatadogMonitorConfigImported(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name = "name for monitor foo"
+  name = "%s"
   type = "query alert"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
@@ -79,12 +83,13 @@ resource "datadog_monitor" "foo" {
   require_full_window = true
   locked = false
   tags = ["foo:bar", "bar:baz"]
+}`, uniq)
 }
-`
 
-const testAccCheckDatadogMonitorConfigImportedNoRecovery = `
+func testAccCheckDatadogMonitorConfigImportedNoRecovery(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name = "name for monitor foo"
+  name = "%s"
   type = "query alert"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
@@ -107,5 +112,5 @@ resource "datadog_monitor" "foo" {
   require_full_window = true
   locked = false
   tags = ["foo:bar", "bar:baz"]
+}`, uniq)
 }
-`
