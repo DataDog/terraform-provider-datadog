@@ -153,6 +153,8 @@ The following arguments are supported:
   - `min_location_failed` - (Optional) Threshold below which a synthetics test is allowed to fail before sending notifications
   - `accept_self_signed` - (Optional) For type=ssl, true or false
   - `allow_insecure` - (Optional) For type=api, true or false. Allow your HTTP test go on with connection even if there is an error when validating the certificate.
+  - `retry_count` - (Optional) Number of retries needed to consider a location as failed before sending a notification alert.
+  - `retry_interval` - (Optional) Interval between a failed test and the next retry in milliseconds.
 - `options_list` - (Optional)
   - `tick_every` - (Optional)  How often the test should run (in seconds). Current possible values are 900, 1800, 3600, 21600, 43200, 86400, 604800 plus 60 if type=api or 300 if type=browser
   - `follow_redirects` - (Optional) For type=api, true or false
