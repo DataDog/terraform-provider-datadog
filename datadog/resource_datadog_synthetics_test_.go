@@ -207,7 +207,6 @@ func syntheticsTestOptions() *schema.Schema {
 	return &schema.Schema{
 		Type:          schema.TypeMap,
 		ConflictsWith: []string{"options_list"},
-		Deprecated:    "This parameter is deprecated, please use `options_list`",
 		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
 			_, isOptionsV2 := d.GetOk("options_list")
 			// DiffSuppressFunc is useless if options_list exists
@@ -781,8 +780,17 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 
 	localOptions = append(localOptions, localOption)
-	d.Set("options", localOption)
-	d.Set("options_list", localOptions)
+
+	// If the config still uses assertions, keep using that in the state to not generate useless diffs
+	if attr, ok := d.GetOk("options"); ok && attr != nil && len(attr.(map[string]interface{})) > 0 {
+		if err := d.Set("options_list", localOption); err != nil {
+			return err
+		}
+	} else {
+		if err := d.Set("options_list", localOptions); err != nil {
+			return err
+		}
+	}
 
 	d.Set("name", syntheticsTest.GetName())
 	d.Set("message", syntheticsTest.GetMessage())
