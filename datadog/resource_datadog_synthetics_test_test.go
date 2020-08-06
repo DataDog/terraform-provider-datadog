@@ -356,7 +356,6 @@ resource "datadog_synthetics_test" "foo" {
 		follow_redirects = true
 		min_failure_duration = 0
 		min_location_failed = 1
-		retry_count = 1
 	}
 
 	name = "%s"
