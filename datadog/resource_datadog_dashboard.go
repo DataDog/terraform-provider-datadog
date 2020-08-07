@@ -4827,6 +4827,7 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1
 	// Multi-compute
 	terraformMultiCompute := terraformQuery["multi_compute"].([]interface{})
 	if len(terraformMultiCompute) > 0 {
+		// TODO: raise an error if compute is already set
 		datadogComputeList := make([]datadogV1.LogsQueryCompute, len(terraformMultiCompute))
 		for i, terraformCompute := range terraformMultiCompute {
 			terraformComputeMap := terraformCompute.(map[string]interface{})
