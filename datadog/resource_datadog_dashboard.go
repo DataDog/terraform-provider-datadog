@@ -4713,7 +4713,27 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 				},
 				"compute": {
 					Type:     schema.TypeMap,
-					Required: true,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"aggregation": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"facet": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"interval": {
+								Type:     schema.TypeInt,
+								Optional: true,
+							},
+						},
+					},
+				},
+				"multi_compute": {
+					Type:     schema.TypeList,
+					Optional: true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"aggregation": {
@@ -4789,20 +4809,41 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1
 	datadogQuery.SetIndex(terraformQuery["index"].(string))
 
 	// Compute
-	terraformCompute := terraformQuery["compute"].(map[string]interface{})
-	datadogCompute := datadogV1.NewLogsQueryComputeWithDefaults()
-	if aggr, ok := terraformCompute["aggregation"].(string); ok && len(aggr) != 0 {
-		datadogCompute.SetAggregation(aggr)
-	}
-	if facet, ok := terraformCompute["facet"].(string); ok && len(facet) != 0 {
-		datadogCompute.SetFacet(facet)
-	}
-	if interval, ok := terraformCompute["interval"].(string); ok {
-		if v, err := strconv.ParseInt(interval, 10, 64); err == nil {
-			datadogCompute.SetInterval(v)
+	if terraformCompute, ok := terraformQuery["compute"].(map[string]interface{}); ok {
+		datadogCompute := datadogV1.NewLogsQueryComputeWithDefaults()
+		if aggr, ok := terraformCompute["aggregation"].(string); ok && len(aggr) != 0 {
+			datadogCompute.SetAggregation(aggr)
+			if facet, ok := terraformCompute["facet"].(string); ok && len(facet) != 0 {
+				datadogCompute.SetFacet(facet)
+			}
+			if interval, ok := terraformCompute["interval"].(string); ok {
+				if v, err := strconv.ParseInt(interval, 10, 64); err == nil {
+					datadogCompute.SetInterval(v)
+				}
+			}
+			datadogQuery.SetCompute(*datadogCompute)
 		}
 	}
-	datadogQuery.SetCompute(*datadogCompute)
+	// Multi-compute
+	terraformMultiCompute := terraformQuery["multi_compute"].([]interface{})
+	if len(terraformMultiCompute) > 0 {
+		datadogComputeList := make([]datadogV1.LogsQueryCompute, len(terraformMultiCompute))
+		for i, terraformCompute := range terraformMultiCompute {
+			terraformComputeMap := terraformCompute.(map[string]interface{})
+			datadogCompute := datadogV1.NewLogsQueryComputeWithDefaults()
+			if aggr, ok := terraformComputeMap["aggregation"].(string); ok && len(aggr) != 0 {
+				datadogCompute.SetAggregation(aggr)
+			}
+			if facet, ok := terraformComputeMap["facet"].(string); ok && len(facet) != 0 {
+				datadogCompute.SetFacet(facet)
+			}
+			if interval, ok := terraformComputeMap["interval"].(int); ok && interval != 0 {
+				datadogCompute.SetInterval(int64(interval))
+			}
+			datadogComputeList[i] = *datadogCompute
+		}
+		datadogQuery.SetMultiCompute(datadogComputeList)
+	}
 	// Search
 	if terraformSearch, ok := terraformQuery["search"].(map[string]interface{}); ok && len(terraformSearch) > 0 {
 		datadogQuery.Search = &datadogV1.LogQueryDefinitionSearch{
@@ -4845,16 +4886,35 @@ func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition) map[
 	// Index
 	terraformQuery["index"] = datadogQuery.GetIndex()
 	// Compute
-	terraformCompute := map[string]interface{}{
-		"aggregation": datadogQuery.Compute.GetAggregation(),
+	if compute, ok := datadogQuery.GetComputeOk(); ok {
+		terraformCompute := map[string]interface{}{
+			"aggregation": compute.GetAggregation(),
+		}
+		if v, ok := compute.GetFacetOk(); ok {
+			terraformCompute["facet"] = *v
+		}
+		if compute.Interval != nil {
+			terraformCompute["interval"] = strconv.FormatInt(*compute.Interval, 10)
+		}
+		terraformQuery["compute"] = terraformCompute
 	}
-	if v, ok := datadogQuery.Compute.GetFacetOk(); ok {
-		terraformCompute["facet"] = *v
+	// Multi-compute
+	if multiCompute, ok := datadogQuery.GetMultiComputeOk(); ok {
+		terraformComputeList := make([]map[string]interface{}, len(*multiCompute))
+		for i, compute := range *multiCompute {
+			terraformCompute := map[string]interface{}{
+				"aggregation": compute.GetAggregation(),
+			}
+			if v, ok := compute.GetFacetOk(); ok {
+				terraformCompute["facet"] = *v
+			}
+			if compute.Interval != nil {
+				terraformCompute["interval"] = *compute.Interval
+			}
+			terraformComputeList[i] = terraformCompute
+		}
+		terraformQuery["multi_compute"] = terraformComputeList
 	}
-	if datadogQuery.Compute.Interval != nil {
-		terraformCompute["interval"] = strconv.FormatInt(*datadogQuery.Compute.Interval, 10)
-	}
-	terraformQuery["compute"] = terraformCompute
 	// Search
 	if datadogQuery.Search != nil {
 		terraformQuery["search"] = map[string]interface{}{
