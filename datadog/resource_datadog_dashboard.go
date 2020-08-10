@@ -4714,42 +4714,12 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 				"compute": {
 					Type:     schema.TypeMap,
 					Optional: true,
-					Elem: &schema.Resource{
-						Schema: map[string]*schema.Schema{
-							"aggregation": {
-								Type:     schema.TypeString,
-								Required: true,
-							},
-							"facet": {
-								Type:     schema.TypeString,
-								Optional: true,
-							},
-							"interval": {
-								Type:     schema.TypeInt,
-								Optional: true,
-							},
-						},
-					},
+					Elem:     getComputeSchema(),
 				},
 				"multi_compute": {
 					Type:     schema.TypeList,
 					Optional: true,
-					Elem: &schema.Resource{
-						Schema: map[string]*schema.Schema{
-							"aggregation": {
-								Type:     schema.TypeString,
-								Required: true,
-							},
-							"facet": {
-								Type:     schema.TypeString,
-								Optional: true,
-							},
-							"interval": {
-								Type:     schema.TypeInt,
-								Optional: true,
-							},
-						},
-					},
+					Elem:     getComputeSchema(),
 				},
 				"search": {
 					Type:     schema.TypeMap,
@@ -4803,6 +4773,26 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 		},
 	}
 }
+
+func getComputeSchema() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"aggregation": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"facet": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"interval": {
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
+		},
+	}
+}
+
 func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1.LogQueryDefinition {
 	// Index
 	datadogQuery := datadogV1.NewLogQueryDefinition()
