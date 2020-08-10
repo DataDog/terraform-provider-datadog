@@ -944,7 +944,7 @@ Nested `apm_query`, `log_query`, `network_query` and `rum_query` blocks have the
     - `aggregation` - (Required)
     - `facet` - (Optional)
     - `interval` - (Optional)
-  - `multi_compute` - (Optional). One of `compute` and `multi_compute` is required. Multiple nested blocks are allow with the following structure:
+  - `multi_compute` - (Optional). One of `compute` and `multi_compute` is required. Multiple nested blocks are allowed with the following structure:
     - `aggregation` - (Required)
     - `facet` - (Optional)
     - `interval` - (Optional)
