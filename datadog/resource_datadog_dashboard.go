@@ -308,8 +308,8 @@ func buildTerraformTemplateVariables(datadogTemplateVariables *[]datadogV1.Dashb
 		if v, ok := templateVariable.GetNameOk(); ok {
 			terraformTemplateVariable["name"] = *v
 		}
-		if v, ok := templateVariable.GetPrefixOk(); ok {
-			terraformTemplateVariable["prefix"] = *v
+		if v := templateVariable.GetPrefix(); len(v) > 0 {
+			terraformTemplateVariable["prefix"] = v
 		}
 		if v, ok := templateVariable.GetDefaultOk(); ok {
 			terraformTemplateVariable["default"] = *v
