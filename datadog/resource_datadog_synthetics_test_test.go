@@ -84,6 +84,31 @@ func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsTCPTest_importBasic(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	testName := uniqueEntityName(clock, t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: createSyntheticsTCPTestConfig(testName),
+			},
+			{
+				ResourceName:      "datadog_synthetics_test.tcp",
+				ImportState:       true,
+				ImportStateVerify: true,
+				// Assertions will be imported into the new schema by default, but we can ignore them as users need to update the local config in this case
+				ImportStateVerifyIgnore: []string{"assertions", "assertion"},
+			},
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	testName := uniqueEntityName(clock, t)
@@ -196,6 +221,37 @@ func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
 		Steps: []resource.TestStep{
 			createSyntheticsSSLTestStep(accProvider, clock, t),
 			updateSyntheticsSSLTestStep(accProvider, clock, t),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsTCPTest_Basic(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsTCPTestStep(accProvider, clock, t),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsTCPTest_Updated(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsTCPTestStep(accProvider, clock, t),
+			updateSyntheticsTCPTestStep(accProvider, clock, t),
 		},
 	})
 }
@@ -872,6 +928,164 @@ resource "datadog_synthetics_test" "ssl" {
 	name = "%s"
 	message = "Notify @pagerduty"
 	tags = ["foo:bar", "foo", "env:test"]
+
+	status = "live"
+}`, uniq)
+}
+
+func createSyntheticsTCPTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(clock, t)
+	return resource.TestStep{
+		Config: createSyntheticsTCPTestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "subtype", "tcp"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "request.host", "agent-intake.logs.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "request.port", "443"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "assertions.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "assertions.0.type", "responseTime"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "assertions.0.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "assertions.0.target", "2000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "options.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.tcp", "monitor_id"),
+		),
+	}
+}
+
+func createSyntheticsTCPTestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "tcp" {
+	type = "api"
+	subtype = "tcp"
+
+	request = {
+		host = "agent-intake.logs.datadoghq.com"
+		port = 443
+	}
+
+	assertions = [
+		{
+			type = "responseTime"
+			operator = "lessThan"
+			target = 2000
+		}
+	]
+
+	locations = [ "aws:eu-central-1" ]
+	options = {
+		tick_every = 60
+	}
+
+	name = "%s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+
+	status = "paused"
+}`, uniq)
+}
+
+func updateSyntheticsTCPTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(clock, t) + "-updated"
+	return resource.TestStep{
+		Config: updateSyntheticsTCPTestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "subtype", "tcp"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "request.host", "agent-intake.logs.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "request.port", "443"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "assertions.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "assertions.0.type", "responseTime"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "assertions.0.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "assertions.0.target", "3000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "options.tick_every", "300"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "tags.#", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "tags.2", "env:test"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "status", "live"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.tcp", "monitor_id"),
+		),
+	}
+}
+
+func updateSyntheticsTCPTestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "tcp" {
+	type = "api"
+	subtype = "tcp"
+
+	request = {
+		host = "agent-intake.logs.datadoghq.com"
+		port = 443
+	}
+
+	assertions = [
+		{
+			type = "responseTime"
+			operator = "lessThan"
+			target = 3000
+		}
+	]
+
+	locations = [ "aws:eu-central-1" ]
+	options = {
+		tick_every = 300
+	}
+
+	name = "%s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz", "env:test"]
 
 	status = "live"
 }`, uniq)
