@@ -618,3 +618,127 @@ func TestAccDatadogDashboardTimeseries(t *testing.T) {
 func TestAccDatadogDashboardTimeseries_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTimeseriesConfig, "datadog_dashboard.timeseries_dashboard")
 }
+
+const datadogDashboardTimeseriesMultiComputeConfig = `
+resource "datadog_dashboard" "timeseries_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+	widget {
+		timeseries_definition {
+			title_size = "16"
+			title_align = "left"
+			show_legend = "true"
+			title = "system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d..."
+			legend_size = "2"
+			yaxis {
+				label = ""
+				min = "0"
+				include_zero = "true"
+				max = "599999"
+				scale = ""
+			}
+			marker {
+				display_type = "error dashed"
+				value = "y=500000"
+				label = "y=500000"
+			}
+			marker {
+				display_type = "warning dashed"
+				value = "y=400000"
+				label = "y=400000"
+			}
+			time = {
+				live_span = "5m"
+			}
+			event {
+				q = "sources:test tags:1"
+				tags_execution = "and"
+			}
+			request {
+				style {
+					line_width = "normal"
+					palette = "cool"
+					line_type = "solid"
+				}
+				display_type = "line"
+				log_query {
+					index = "*"
+					search = {
+						query = ""
+					}
+					group_by {
+						facet = "service"
+						sort = {
+							aggregation = "count"
+							order = "desc"
+						}
+						limit = "10"
+					}
+					multi_compute {
+						aggregation = "count"
+					}
+					multi_compute {
+						facet = "env"
+						interval = "1000"
+						aggregation = "cardinality"
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+var datadogDashboardTimeseriesMultiComputeAsserts = []string{
+	"title = {{uniq}}",
+	"is_read_only = true",
+	"layout_type = ordered",
+	"description = Created using the Datadog provider in Terraform",
+	"widget.0.timeseries_definition.0.event.0.q = sources:test tags:1",
+	"widget.0.timeseries_definition.0.event.0.tags_execution = and",
+	"widget.0.timeseries_definition.0.legend_size = 2",
+	"widget.0.timeseries_definition.0.marker.# = 2",
+	"widget.0.timeseries_definition.0.marker.0.display_type = error dashed",
+	"widget.0.timeseries_definition.0.marker.0.label = y=500000",
+	"widget.0.timeseries_definition.0.marker.0.value = y=500000",
+	"widget.0.timeseries_definition.0.marker.1.display_type = warning dashed",
+	"widget.0.timeseries_definition.0.marker.1.label = y=400000",
+	"widget.0.timeseries_definition.0.marker.1.value = y=400000",
+	"widget.0.timeseries_definition.0.request.# = 1",
+	"widget.0.timeseries_definition.0.request.0.display_type = line",
+	"widget.0.timeseries_definition.0.request.0.log_query.# = 1",
+	"widget.0.timeseries_definition.0.request.0.log_query.0.multi_compute.# = 2",
+	"widget.0.timeseries_definition.0.request.0.log_query.0.multi_compute.0.aggregation = count",
+	"widget.0.timeseries_definition.0.request.0.log_query.0.multi_compute.1.aggregation = cardinality",
+	"widget.0.timeseries_definition.0.request.0.log_query.0.multi_compute.1.facet = env",
+	"widget.0.timeseries_definition.0.request.0.log_query.0.multi_compute.1.interval = 1000",
+	"widget.0.timeseries_definition.0.request.0.log_query.0.group_by.# = 1",
+	"widget.0.timeseries_definition.0.request.0.log_query.0.group_by.0.facet = service",
+	"widget.0.timeseries_definition.0.request.0.log_query.0.group_by.0.limit = 10",
+	"widget.0.timeseries_definition.0.request.0.log_query.0.group_by.0.sort.aggregation = count",
+	"widget.0.timeseries_definition.0.request.0.log_query.0.group_by.0.sort.order = desc",
+	"widget.0.timeseries_definition.0.request.0.log_query.0.index = *",
+	"widget.0.timeseries_definition.0.request.0.style.# = 1",
+	"widget.0.timeseries_definition.0.request.0.style.0.line_type = solid",
+	"widget.0.timeseries_definition.0.request.0.style.0.line_width = normal",
+	"widget.0.timeseries_definition.0.request.0.style.0.palette = cool",
+	"widget.0.timeseries_definition.0.show_legend = true",
+	"widget.0.timeseries_definition.0.time.live_span = 5m",
+	"widget.0.timeseries_definition.0.title = system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d...",
+	"widget.0.timeseries_definition.0.title_align = left",
+	"widget.0.timeseries_definition.0.title_size = 16",
+	"widget.0.timeseries_definition.0.yaxis.# = 1",
+	"widget.0.timeseries_definition.0.yaxis.0.include_zero = true",
+	"widget.0.timeseries_definition.0.yaxis.0.max = 599999",
+	"widget.0.timeseries_definition.0.yaxis.0.min = 0",
+}
+
+func TestAccDatadogDashboardTimeseriesMultiCompute(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardTimeseriesMultiComputeConfig, "datadog_dashboard.timeseries_dashboard", datadogDashboardTimeseriesMultiComputeAsserts)
+}
+
+func TestAccDatadogDashboardTimeseriesMultiCompute_import(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTimeseriesMultiComputeConfig, "datadog_dashboard.timeseries_dashboard")
+}
