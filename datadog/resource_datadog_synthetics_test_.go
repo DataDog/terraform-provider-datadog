@@ -734,7 +734,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		}
 		localAssertions[i] = localAssertion
 	}
-	// If the config still uses assertions, keep using that in the state to not generate useless diffs
+	// If the existing state still uses assertions, keep using that in the state to not generate useless diffs
 	if attr, ok := d.GetOk("assertions"); ok && attr != nil && len(attr.([]interface{})) > 0 {
 		if err := d.Set("assertions", localAssertions); err != nil {
 			return err
@@ -750,25 +750,31 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("locations", syntheticsTest.Locations)
 
 	actualOptions := syntheticsTest.GetOptions()
-	localOptions := make([]map[string]string, 1)
+	localOptionsList := make(map[string]interface{})
 	localOption := make(map[string]string)
 	if actualOptions.HasFollowRedirects() {
 		localOption["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
+		localOptionsList["follow_redirects"] = actualOptions.GetFollowRedirects()
 	}
 	if actualOptions.HasMinFailureDuration() {
 		localOption["min_failure_duration"] = convertToString(actualOptions.GetMinFailureDuration())
+		localOptionsList["min_failure_duration"] = actualOptions.GetMinFailureDuration()
 	}
 	if actualOptions.HasMinLocationFailed() {
 		localOption["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
+		localOptionsList["min_location_failed"] = actualOptions.GetMinLocationFailed()
 	}
 	if actualOptions.HasTickEvery() {
 		localOption["tick_every"] = convertToString(actualOptions.GetTickEvery())
+		localOptionsList["tick_every"] = actualOptions.GetTickEvery()
 	}
 	if actualOptions.HasAcceptSelfSigned() {
 		localOption["accept_self_signed"] = convertToString(actualOptions.GetAcceptSelfSigned())
+		localOptionsList["accept_self_signed"] = actualOptions.GetAcceptSelfSigned()
 	}
 	if actualOptions.HasAllowInsecure() {
 		localOption["allow_insecure"] = convertToString(actualOptions.GetAllowInsecure())
+		localOptionsList["allow_insecure"] = actualOptions.GetAllowInsecure()
 	}
 	if actualOptions.HasRetry() {
 		retry := actualOptions.GetRetry()
@@ -778,15 +784,16 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 			localOption["retry_interval"] = convertToString(interval)
 		}
 	}
-	localOptions = append(localOptions, localOption)
 
-	// If the config still uses assertions, keep using that in the state to not generate useless diffs
+	// If the existing state still uses options, keep using that in the state to not generate useless diffs
 	if attr, ok := d.GetOk("options"); ok && attr != nil && len(attr.(map[string]interface{})) > 0 {
-		if err := d.Set("options_list", localOption); err != nil {
+		if err := d.Set("options", localOption); err != nil {
 			return err
 		}
 	} else {
-		if err := d.Set("options_list", localOptions); err != nil {
+		localOptionsLists := make([]map[string]interface{}, 1)
+		localOptionsLists = append(localOptionsLists, localOptionsList)
+		if err := d.Set("options_list", localOptionsLists); err != nil {
 			return err
 		}
 	}
