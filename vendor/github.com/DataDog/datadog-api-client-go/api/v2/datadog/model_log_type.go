@@ -35,7 +35,7 @@ func (v *LogType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid LogType", *v)
+	return fmt.Errorf("%+v is not a valid LogType", value)
 }
 
 // Ptr returns reference to LogType value

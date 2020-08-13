@@ -17,7 +17,7 @@ type LogsListResponse struct {
 	// Array of logs matching the request.
 	Data  *[]Log                 `json:"data,omitempty"`
 	Links *LogsListResponseLinks `json:"links,omitempty"`
-	Meta  *LogsListResponseMeta  `json:"meta,omitempty"`
+	Meta  *LogsResponseMetadata  `json:"meta,omitempty"`
 }
 
 // NewLogsListResponse instantiates a new LogsListResponse object
@@ -102,9 +102,9 @@ func (o *LogsListResponse) SetLinks(v LogsListResponseLinks) {
 }
 
 // GetMeta returns the Meta field value if set, zero value otherwise.
-func (o *LogsListResponse) GetMeta() LogsListResponseMeta {
+func (o *LogsListResponse) GetMeta() LogsResponseMetadata {
 	if o == nil || o.Meta == nil {
-		var ret LogsListResponseMeta
+		var ret LogsResponseMetadata
 		return ret
 	}
 	return *o.Meta
@@ -112,7 +112,7 @@ func (o *LogsListResponse) GetMeta() LogsListResponseMeta {
 
 // GetMetaOk returns a tuple with the Meta field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LogsListResponse) GetMetaOk() (*LogsListResponseMeta, bool) {
+func (o *LogsListResponse) GetMetaOk() (*LogsResponseMetadata, bool) {
 	if o == nil || o.Meta == nil {
 		return nil, false
 	}
@@ -128,8 +128,8 @@ func (o *LogsListResponse) HasMeta() bool {
 	return false
 }
 
-// SetMeta gets a reference to the given LogsListResponseMeta and assigns it to the Meta field.
-func (o *LogsListResponse) SetMeta(v LogsListResponseMeta) {
+// SetMeta gets a reference to the given LogsResponseMetadata and assigns it to the Meta field.
+func (o *LogsListResponse) SetMeta(v LogsResponseMetadata) {
 	o.Meta = &v
 }
 

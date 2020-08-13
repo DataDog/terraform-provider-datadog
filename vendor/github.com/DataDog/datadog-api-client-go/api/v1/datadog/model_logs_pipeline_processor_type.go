@@ -35,7 +35,7 @@ func (v *LogsPipelineProcessorType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid LogsPipelineProcessorType", *v)
+	return fmt.Errorf("%+v is not a valid LogsPipelineProcessorType", value)
 }
 
 // Ptr returns reference to LogsPipelineProcessorType value

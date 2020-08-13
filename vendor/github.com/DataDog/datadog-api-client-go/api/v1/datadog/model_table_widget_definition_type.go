@@ -35,7 +35,7 @@ func (v *TableWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid TableWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid TableWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to TableWidgetDefinitionType value

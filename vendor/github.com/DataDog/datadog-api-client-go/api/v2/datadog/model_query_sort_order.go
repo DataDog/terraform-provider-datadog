@@ -36,7 +36,7 @@ func (v *QuerySortOrder) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid QuerySortOrder", *v)
+	return fmt.Errorf("%+v is not a valid QuerySortOrder", value)
 }
 
 // Ptr returns reference to QuerySortOrder value

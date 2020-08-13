@@ -36,7 +36,7 @@ func (v *WidgetVizType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetVizType", *v)
+	return fmt.Errorf("%+v is not a valid WidgetVizType", value)
 }
 
 // Ptr returns reference to WidgetVizType value

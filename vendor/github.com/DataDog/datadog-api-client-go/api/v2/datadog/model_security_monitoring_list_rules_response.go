@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SecurityMonitoringListRulesResponse List of rules
+// SecurityMonitoringListRulesResponse List of rules.
 type SecurityMonitoringListRulesResponse struct {
 	// TODO.
 	Data *[]SecurityMonitoringRuleResponse `json:"data,omitempty"`

@@ -55,6 +55,8 @@ type UsageSummaryResponse struct {
 	NetflowIndexedEventsCountAggSum *int64 `json:"netflow_indexed_events_count_agg_sum,omitempty"`
 	// Shows the 99th percentile of all distinct Networks hosts over all hours in the current month(s) for all organizations.
 	NpmHostTop99pSum *int64 `json:"npm_host_top99p_sum,omitempty"`
+	// Shows the 99th percentile of all profiled hosts over all hours in the current month(s) for all organizations.
+	ProfilingHostCountTop99pSum *int64 `json:"profiling_host_count_top99p_sum,omitempty"`
 	// Shows the sum of all RUM Sessions over all hours in the current month(s) for all organizations.
 	RumSessionCountAggSum *int64 `json:"rum_session_count_agg_sum,omitempty"`
 	// Shows the first date of usage in the current month(s) for all organizations.
@@ -726,6 +728,38 @@ func (o *UsageSummaryResponse) SetNpmHostTop99pSum(v int64) {
 	o.NpmHostTop99pSum = &v
 }
 
+// GetProfilingHostCountTop99pSum returns the ProfilingHostCountTop99pSum field value if set, zero value otherwise.
+func (o *UsageSummaryResponse) GetProfilingHostCountTop99pSum() int64 {
+	if o == nil || o.ProfilingHostCountTop99pSum == nil {
+		var ret int64
+		return ret
+	}
+	return *o.ProfilingHostCountTop99pSum
+}
+
+// GetProfilingHostCountTop99pSumOk returns a tuple with the ProfilingHostCountTop99pSum field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryResponse) GetProfilingHostCountTop99pSumOk() (*int64, bool) {
+	if o == nil || o.ProfilingHostCountTop99pSum == nil {
+		return nil, false
+	}
+	return o.ProfilingHostCountTop99pSum, true
+}
+
+// HasProfilingHostCountTop99pSum returns a boolean if a field has been set.
+func (o *UsageSummaryResponse) HasProfilingHostCountTop99pSum() bool {
+	if o != nil && o.ProfilingHostCountTop99pSum != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetProfilingHostCountTop99pSum gets a reference to the given int64 and assigns it to the ProfilingHostCountTop99pSum field.
+func (o *UsageSummaryResponse) SetProfilingHostCountTop99pSum(v int64) {
+	o.ProfilingHostCountTop99pSum = &v
+}
+
 // GetRumSessionCountAggSum returns the RumSessionCountAggSum field value if set, zero value otherwise.
 func (o *UsageSummaryResponse) GetRumSessionCountAggSum() int64 {
 	if o == nil || o.RumSessionCountAggSum == nil {
@@ -979,6 +1013,9 @@ func (o UsageSummaryResponse) MarshalJSON() ([]byte, error) {
 	}
 	if o.NpmHostTop99pSum != nil {
 		toSerialize["npm_host_top99p_sum"] = o.NpmHostTop99pSum
+	}
+	if o.ProfilingHostCountTop99pSum != nil {
+		toSerialize["profiling_host_count_top99p_sum"] = o.ProfilingHostCountTop99pSum
 	}
 	if o.RumSessionCountAggSum != nil {
 		toSerialize["rum_session_count_agg_sum"] = o.RumSessionCountAggSum

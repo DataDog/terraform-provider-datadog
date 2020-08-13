@@ -19,8 +19,8 @@ type Event struct {
 	AlertType      *EventAlertType `json:"alert_type,omitempty"`
 	// POSIX timestamp of the event. Must be sent as an integer (i.e. no quotes). Limited to events no older than 7 days.
 	DateHappened *int64 `json:"date_happened,omitempty"`
-	// A list of device names to post the event with.
-	DeviceName *[]string `json:"device_name,omitempty"`
+	// A device name.
+	DeviceName *string `json:"device_name,omitempty"`
 	// Host name to associate with the event. Any tags associated with the host are also applied to this event.
 	Host *string `json:"host,omitempty"`
 	// Integer ID of the event.
@@ -158,9 +158,9 @@ func (o *Event) SetDateHappened(v int64) {
 }
 
 // GetDeviceName returns the DeviceName field value if set, zero value otherwise.
-func (o *Event) GetDeviceName() []string {
+func (o *Event) GetDeviceName() string {
 	if o == nil || o.DeviceName == nil {
-		var ret []string
+		var ret string
 		return ret
 	}
 	return *o.DeviceName
@@ -168,7 +168,7 @@ func (o *Event) GetDeviceName() []string {
 
 // GetDeviceNameOk returns a tuple with the DeviceName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Event) GetDeviceNameOk() (*[]string, bool) {
+func (o *Event) GetDeviceNameOk() (*string, bool) {
 	if o == nil || o.DeviceName == nil {
 		return nil, false
 	}
@@ -184,8 +184,8 @@ func (o *Event) HasDeviceName() bool {
 	return false
 }
 
-// SetDeviceName gets a reference to the given []string and assigns it to the DeviceName field.
-func (o *Event) SetDeviceName(v []string) {
+// SetDeviceName gets a reference to the given string and assigns it to the DeviceName field.
+func (o *Event) SetDeviceName(v string) {
 	o.DeviceName = &v
 }
 

@@ -35,7 +35,7 @@ func (v *LogsArchiveDestinationAzureType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid LogsArchiveDestinationAzureType", *v)
+	return fmt.Errorf("%+v is not a valid LogsArchiveDestinationAzureType", value)
 }
 
 // Ptr returns reference to LogsArchiveDestinationAzureType value

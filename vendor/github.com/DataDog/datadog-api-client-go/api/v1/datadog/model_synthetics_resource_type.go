@@ -41,7 +41,7 @@ func (v *SyntheticsResourceType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SyntheticsResourceType", *v)
+	return fmt.Errorf("%+v is not a valid SyntheticsResourceType", value)
 }
 
 // Ptr returns reference to SyntheticsResourceType value

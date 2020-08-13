@@ -40,7 +40,7 @@ func (v *SyntheticsAssertionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SyntheticsAssertionType", *v)
+	return fmt.Errorf("%+v is not a valid SyntheticsAssertionType", value)
 }
 
 // Ptr returns reference to SyntheticsAssertionType value

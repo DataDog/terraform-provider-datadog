@@ -36,7 +36,7 @@ func (v *LogsSort) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid LogsSort", *v)
+	return fmt.Errorf("%+v is not a valid LogsSort", value)
 }
 
 // Ptr returns reference to LogsSort value

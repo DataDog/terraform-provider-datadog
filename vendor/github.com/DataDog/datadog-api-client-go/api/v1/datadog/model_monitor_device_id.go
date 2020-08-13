@@ -43,7 +43,7 @@ func (v *MonitorDeviceID) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid MonitorDeviceID", *v)
+	return fmt.Errorf("%+v is not a valid MonitorDeviceID", value)
 }
 
 // Ptr returns reference to MonitorDeviceID value

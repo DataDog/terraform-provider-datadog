@@ -12,35 +12,35 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsTestRequestBasicAuth Object to handle basic authentication when performing the test.
-type SyntheticsTestRequestBasicAuth struct {
+// SyntheticsBasicAuth Object to handle basic authentication when performing the test.
+type SyntheticsBasicAuth struct {
 	// Password to use for the basic authentication.
 	Password string `json:"password"`
 	// Username to use for the basic authentication.
 	Username string `json:"username"`
 }
 
-// NewSyntheticsTestRequestBasicAuth instantiates a new SyntheticsTestRequestBasicAuth object
+// NewSyntheticsBasicAuth instantiates a new SyntheticsBasicAuth object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSyntheticsTestRequestBasicAuth(password string, username string) *SyntheticsTestRequestBasicAuth {
-	this := SyntheticsTestRequestBasicAuth{}
+func NewSyntheticsBasicAuth(password string, username string) *SyntheticsBasicAuth {
+	this := SyntheticsBasicAuth{}
 	this.Password = password
 	this.Username = username
 	return &this
 }
 
-// NewSyntheticsTestRequestBasicAuthWithDefaults instantiates a new SyntheticsTestRequestBasicAuth object
+// NewSyntheticsBasicAuthWithDefaults instantiates a new SyntheticsBasicAuth object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewSyntheticsTestRequestBasicAuthWithDefaults() *SyntheticsTestRequestBasicAuth {
-	this := SyntheticsTestRequestBasicAuth{}
+func NewSyntheticsBasicAuthWithDefaults() *SyntheticsBasicAuth {
+	this := SyntheticsBasicAuth{}
 	return &this
 }
 
 // GetPassword returns the Password field value
-func (o *SyntheticsTestRequestBasicAuth) GetPassword() string {
+func (o *SyntheticsBasicAuth) GetPassword() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -51,7 +51,7 @@ func (o *SyntheticsTestRequestBasicAuth) GetPassword() string {
 
 // GetPasswordOk returns a tuple with the Password field value
 // and a boolean to check if the value has been set.
-func (o *SyntheticsTestRequestBasicAuth) GetPasswordOk() (*string, bool) {
+func (o *SyntheticsBasicAuth) GetPasswordOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -59,12 +59,12 @@ func (o *SyntheticsTestRequestBasicAuth) GetPasswordOk() (*string, bool) {
 }
 
 // SetPassword sets field value
-func (o *SyntheticsTestRequestBasicAuth) SetPassword(v string) {
+func (o *SyntheticsBasicAuth) SetPassword(v string) {
 	o.Password = v
 }
 
 // GetUsername returns the Username field value
-func (o *SyntheticsTestRequestBasicAuth) GetUsername() string {
+func (o *SyntheticsBasicAuth) GetUsername() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -75,7 +75,7 @@ func (o *SyntheticsTestRequestBasicAuth) GetUsername() string {
 
 // GetUsernameOk returns a tuple with the Username field value
 // and a boolean to check if the value has been set.
-func (o *SyntheticsTestRequestBasicAuth) GetUsernameOk() (*string, bool) {
+func (o *SyntheticsBasicAuth) GetUsernameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -83,11 +83,11 @@ func (o *SyntheticsTestRequestBasicAuth) GetUsernameOk() (*string, bool) {
 }
 
 // SetUsername sets field value
-func (o *SyntheticsTestRequestBasicAuth) SetUsername(v string) {
+func (o *SyntheticsBasicAuth) SetUsername(v string) {
 	o.Username = v
 }
 
-func (o SyntheticsTestRequestBasicAuth) MarshalJSON() ([]byte, error) {
+func (o SyntheticsBasicAuth) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["password"] = o.Password
@@ -98,38 +98,38 @@ func (o SyntheticsTestRequestBasicAuth) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableSyntheticsTestRequestBasicAuth struct {
-	value *SyntheticsTestRequestBasicAuth
+type NullableSyntheticsBasicAuth struct {
+	value *SyntheticsBasicAuth
 	isSet bool
 }
 
-func (v NullableSyntheticsTestRequestBasicAuth) Get() *SyntheticsTestRequestBasicAuth {
+func (v NullableSyntheticsBasicAuth) Get() *SyntheticsBasicAuth {
 	return v.value
 }
 
-func (v *NullableSyntheticsTestRequestBasicAuth) Set(val *SyntheticsTestRequestBasicAuth) {
+func (v *NullableSyntheticsBasicAuth) Set(val *SyntheticsBasicAuth) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableSyntheticsTestRequestBasicAuth) IsSet() bool {
+func (v NullableSyntheticsBasicAuth) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableSyntheticsTestRequestBasicAuth) Unset() {
+func (v *NullableSyntheticsBasicAuth) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableSyntheticsTestRequestBasicAuth(val *SyntheticsTestRequestBasicAuth) *NullableSyntheticsTestRequestBasicAuth {
-	return &NullableSyntheticsTestRequestBasicAuth{value: val, isSet: true}
+func NewNullableSyntheticsBasicAuth(val *SyntheticsBasicAuth) *NullableSyntheticsBasicAuth {
+	return &NullableSyntheticsBasicAuth{value: val, isSet: true}
 }
 
-func (v NullableSyntheticsTestRequestBasicAuth) MarshalJSON() ([]byte, error) {
+func (v NullableSyntheticsBasicAuth) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableSyntheticsTestRequestBasicAuth) UnmarshalJSON(src []byte) error {
+func (v *NullableSyntheticsBasicAuth) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

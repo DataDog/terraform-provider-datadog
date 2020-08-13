@@ -39,7 +39,7 @@ func (v *SecurityMonitoringRuleSeverity) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SecurityMonitoringRuleSeverity", *v)
+	return fmt.Errorf("%+v is not a valid SecurityMonitoringRuleSeverity", value)
 }
 
 // Ptr returns reference to SecurityMonitoringRuleSeverity value

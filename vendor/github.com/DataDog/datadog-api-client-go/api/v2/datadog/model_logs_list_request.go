@@ -14,9 +14,10 @@ import (
 
 // LogsListRequest The request for a logs list.
 type LogsListRequest struct {
-	Filter *LogsListRequestFilter `json:"filter,omitempty"`
-	Page   *LogsListRequestPage   `json:"page,omitempty"`
-	Sort   *LogsSort              `json:"sort,omitempty"`
+	Filter  *LogsQueryFilter     `json:"filter,omitempty"`
+	Options *LogsQueryOptions    `json:"options,omitempty"`
+	Page    *LogsListRequestPage `json:"page,omitempty"`
+	Sort    *LogsSort            `json:"sort,omitempty"`
 }
 
 // NewLogsListRequest instantiates a new LogsListRequest object
@@ -37,9 +38,9 @@ func NewLogsListRequestWithDefaults() *LogsListRequest {
 }
 
 // GetFilter returns the Filter field value if set, zero value otherwise.
-func (o *LogsListRequest) GetFilter() LogsListRequestFilter {
+func (o *LogsListRequest) GetFilter() LogsQueryFilter {
 	if o == nil || o.Filter == nil {
-		var ret LogsListRequestFilter
+		var ret LogsQueryFilter
 		return ret
 	}
 	return *o.Filter
@@ -47,7 +48,7 @@ func (o *LogsListRequest) GetFilter() LogsListRequestFilter {
 
 // GetFilterOk returns a tuple with the Filter field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LogsListRequest) GetFilterOk() (*LogsListRequestFilter, bool) {
+func (o *LogsListRequest) GetFilterOk() (*LogsQueryFilter, bool) {
 	if o == nil || o.Filter == nil {
 		return nil, false
 	}
@@ -63,9 +64,41 @@ func (o *LogsListRequest) HasFilter() bool {
 	return false
 }
 
-// SetFilter gets a reference to the given LogsListRequestFilter and assigns it to the Filter field.
-func (o *LogsListRequest) SetFilter(v LogsListRequestFilter) {
+// SetFilter gets a reference to the given LogsQueryFilter and assigns it to the Filter field.
+func (o *LogsListRequest) SetFilter(v LogsQueryFilter) {
 	o.Filter = &v
+}
+
+// GetOptions returns the Options field value if set, zero value otherwise.
+func (o *LogsListRequest) GetOptions() LogsQueryOptions {
+	if o == nil || o.Options == nil {
+		var ret LogsQueryOptions
+		return ret
+	}
+	return *o.Options
+}
+
+// GetOptionsOk returns a tuple with the Options field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogsListRequest) GetOptionsOk() (*LogsQueryOptions, bool) {
+	if o == nil || o.Options == nil {
+		return nil, false
+	}
+	return o.Options, true
+}
+
+// HasOptions returns a boolean if a field has been set.
+func (o *LogsListRequest) HasOptions() bool {
+	if o != nil && o.Options != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetOptions gets a reference to the given LogsQueryOptions and assigns it to the Options field.
+func (o *LogsListRequest) SetOptions(v LogsQueryOptions) {
+	o.Options = &v
 }
 
 // GetPage returns the Page field value if set, zero value otherwise.
@@ -136,6 +169,9 @@ func (o LogsListRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Filter != nil {
 		toSerialize["filter"] = o.Filter
+	}
+	if o.Options != nil {
+		toSerialize["options"] = o.Options
 	}
 	if o.Page != nil {
 		toSerialize["page"] = o.Page

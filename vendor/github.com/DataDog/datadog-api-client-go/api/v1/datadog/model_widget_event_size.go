@@ -36,7 +36,7 @@ func (v *WidgetEventSize) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetEventSize", *v)
+	return fmt.Errorf("%+v is not a valid WidgetEventSize", value)
 }
 
 // Ptr returns reference to WidgetEventSize value

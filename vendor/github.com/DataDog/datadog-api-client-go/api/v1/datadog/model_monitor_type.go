@@ -45,7 +45,7 @@ func (v *MonitorType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid MonitorType", *v)
+	return fmt.Errorf("%+v is not a valid MonitorType", value)
 }
 
 // Ptr returns reference to MonitorType value

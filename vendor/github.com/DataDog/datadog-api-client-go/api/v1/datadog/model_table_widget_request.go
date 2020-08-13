@@ -16,8 +16,9 @@ import (
 type TableWidgetRequest struct {
 	Aggregator *WidgetAggregator `json:"aggregator,omitempty"`
 	// The column name (defaults to the metric name).
-	Alias    *string             `json:"alias,omitempty"`
-	ApmQuery *LogQueryDefinition `json:"apm_query,omitempty"`
+	Alias             *string                      `json:"alias,omitempty"`
+	ApmQuery          *LogQueryDefinition          `json:"apm_query,omitempty"`
+	ApmResourcesQuery *ApmResourcesQueryDefinition `json:"apm_resources_query,omitempty"`
 	// List of conditional formats.
 	ConditionalFormats *[]WidgetConditionalFormat `json:"conditional_formats,omitempty"`
 	EventQuery         *EventQueryDefinition      `json:"event_query,omitempty"`
@@ -144,6 +145,38 @@ func (o *TableWidgetRequest) HasApmQuery() bool {
 // SetApmQuery gets a reference to the given LogQueryDefinition and assigns it to the ApmQuery field.
 func (o *TableWidgetRequest) SetApmQuery(v LogQueryDefinition) {
 	o.ApmQuery = &v
+}
+
+// GetApmResourcesQuery returns the ApmResourcesQuery field value if set, zero value otherwise.
+func (o *TableWidgetRequest) GetApmResourcesQuery() ApmResourcesQueryDefinition {
+	if o == nil || o.ApmResourcesQuery == nil {
+		var ret ApmResourcesQueryDefinition
+		return ret
+	}
+	return *o.ApmResourcesQuery
+}
+
+// GetApmResourcesQueryOk returns a tuple with the ApmResourcesQuery field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TableWidgetRequest) GetApmResourcesQueryOk() (*ApmResourcesQueryDefinition, bool) {
+	if o == nil || o.ApmResourcesQuery == nil {
+		return nil, false
+	}
+	return o.ApmResourcesQuery, true
+}
+
+// HasApmResourcesQuery returns a boolean if a field has been set.
+func (o *TableWidgetRequest) HasApmResourcesQuery() bool {
+	if o != nil && o.ApmResourcesQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetApmResourcesQuery gets a reference to the given ApmResourcesQueryDefinition and assigns it to the ApmResourcesQuery field.
+func (o *TableWidgetRequest) SetApmResourcesQuery(v ApmResourcesQueryDefinition) {
+	o.ApmResourcesQuery = &v
 }
 
 // GetConditionalFormats returns the ConditionalFormats field value if set, zero value otherwise.
@@ -476,6 +509,9 @@ func (o TableWidgetRequest) MarshalJSON() ([]byte, error) {
 	}
 	if o.ApmQuery != nil {
 		toSerialize["apm_query"] = o.ApmQuery
+	}
+	if o.ApmResourcesQuery != nil {
+		toSerialize["apm_resources_query"] = o.ApmResourcesQuery
 	}
 	if o.ConditionalFormats != nil {
 		toSerialize["conditional_formats"] = o.ConditionalFormats

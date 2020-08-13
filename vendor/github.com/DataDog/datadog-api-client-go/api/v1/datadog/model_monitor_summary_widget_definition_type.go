@@ -35,7 +35,7 @@ func (v *MonitorSummaryWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid MonitorSummaryWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid MonitorSummaryWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to MonitorSummaryWidgetDefinitionType value

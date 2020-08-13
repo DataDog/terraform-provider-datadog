@@ -36,7 +36,7 @@ func (v *WidgetChangeType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetChangeType", *v)
+	return fmt.Errorf("%+v is not a valid WidgetChangeType", value)
 }
 
 // Ptr returns reference to WidgetChangeType value

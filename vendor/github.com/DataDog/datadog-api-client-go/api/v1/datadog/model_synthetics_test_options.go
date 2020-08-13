@@ -25,9 +25,10 @@ type SyntheticsTestOptions struct {
 	// Minimum amount of time in failure required to trigger an alert.
 	MinFailureDuration *int64 `json:"min_failure_duration,omitempty"`
 	// Minimum number of locations in failure required to trigger an alert.
-	MinLocationFailed *int64                      `json:"min_location_failed,omitempty"`
-	Retry             *SyntheticsTestOptionsRetry `json:"retry,omitempty"`
-	TickEvery         *SyntheticsTickInterval     `json:"tick_every,omitempty"`
+	MinLocationFailed *int64                               `json:"min_location_failed,omitempty"`
+	MonitorOptions    *SyntheticsTestOptionsMonitorOptions `json:"monitor_options,omitempty"`
+	Retry             *SyntheticsTestOptionsRetry          `json:"retry,omitempty"`
+	TickEvery         *SyntheticsTickInterval              `json:"tick_every,omitempty"`
 }
 
 // NewSyntheticsTestOptions instantiates a new SyntheticsTestOptions object
@@ -239,6 +240,38 @@ func (o *SyntheticsTestOptions) SetMinLocationFailed(v int64) {
 	o.MinLocationFailed = &v
 }
 
+// GetMonitorOptions returns the MonitorOptions field value if set, zero value otherwise.
+func (o *SyntheticsTestOptions) GetMonitorOptions() SyntheticsTestOptionsMonitorOptions {
+	if o == nil || o.MonitorOptions == nil {
+		var ret SyntheticsTestOptionsMonitorOptions
+		return ret
+	}
+	return *o.MonitorOptions
+}
+
+// GetMonitorOptionsOk returns a tuple with the MonitorOptions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsTestOptions) GetMonitorOptionsOk() (*SyntheticsTestOptionsMonitorOptions, bool) {
+	if o == nil || o.MonitorOptions == nil {
+		return nil, false
+	}
+	return o.MonitorOptions, true
+}
+
+// HasMonitorOptions returns a boolean if a field has been set.
+func (o *SyntheticsTestOptions) HasMonitorOptions() bool {
+	if o != nil && o.MonitorOptions != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMonitorOptions gets a reference to the given SyntheticsTestOptionsMonitorOptions and assigns it to the MonitorOptions field.
+func (o *SyntheticsTestOptions) SetMonitorOptions(v SyntheticsTestOptionsMonitorOptions) {
+	o.MonitorOptions = &v
+}
+
 // GetRetry returns the Retry field value if set, zero value otherwise.
 func (o *SyntheticsTestOptions) GetRetry() SyntheticsTestOptionsRetry {
 	if o == nil || o.Retry == nil {
@@ -322,6 +355,9 @@ func (o SyntheticsTestOptions) MarshalJSON() ([]byte, error) {
 	}
 	if o.MinLocationFailed != nil {
 		toSerialize["min_location_failed"] = o.MinLocationFailed
+	}
+	if o.MonitorOptions != nil {
+		toSerialize["monitor_options"] = o.MonitorOptions
 	}
 	if o.Retry != nil {
 		toSerialize["retry"] = o.Retry

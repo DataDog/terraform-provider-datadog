@@ -37,7 +37,7 @@ func (v *WidgetLineWidth) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetLineWidth", *v)
+	return fmt.Errorf("%+v is not a valid WidgetLineWidth", value)
 }
 
 // Ptr returns reference to WidgetLineWidth value

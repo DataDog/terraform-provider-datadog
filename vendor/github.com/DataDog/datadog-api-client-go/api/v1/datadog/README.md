@@ -172,8 +172,11 @@ Class | Method | HTTP request | Description
 *ServiceLevelObjectivesApi* | [**ListSLOs**](docs/ServiceLevelObjectivesApi.md#listslos) | **Get** /api/v1/slo | Search SLOs
 *ServiceLevelObjectivesApi* | [**UpdateSLO**](docs/ServiceLevelObjectivesApi.md#updateslo) | **Put** /api/v1/slo/{slo_id} | Update a SLO
 *SnapshotsApi* | [**GetGraphSnapshot**](docs/SnapshotsApi.md#getgraphsnapshot) | **Get** /api/v1/graph/snapshot | Take graph snapshots
+*SyntheticsApi* | [**CreateGlobalVariable**](docs/SyntheticsApi.md#createglobalvariable) | **Post** /api/v1/synthetics/variables | Create a global variable
 *SyntheticsApi* | [**CreateTest**](docs/SyntheticsApi.md#createtest) | **Post** /api/v1/synthetics/tests | Create a test
+*SyntheticsApi* | [**DeleteGlobalVariable**](docs/SyntheticsApi.md#deleteglobalvariable) | **Delete** /api/v1/synthetics/variables/{variable_id} | Delete a global variable
 *SyntheticsApi* | [**DeleteTests**](docs/SyntheticsApi.md#deletetests) | **Post** /api/v1/synthetics/tests/delete | Delete tests
+*SyntheticsApi* | [**EditGlobalVariable**](docs/SyntheticsApi.md#editglobalvariable) | **Put** /api/v1/synthetics/variables/{variable_id} | Edit a global variable
 *SyntheticsApi* | [**GetAPITestLatestResults**](docs/SyntheticsApi.md#getapitestlatestresults) | **Get** /api/v1/synthetics/tests/{public_id}/results | Get the test&#39;s latest results summaries (API)
 *SyntheticsApi* | [**GetAPITestResult**](docs/SyntheticsApi.md#getapitestresult) | **Get** /api/v1/synthetics/tests/{public_id}/results/{result_id} | Get a test result (API)
 *SyntheticsApi* | [**GetBrowserTest**](docs/SyntheticsApi.md#getbrowsertest) | **Get** /api/v1/synthetics/tests/browser/{public_id} | Get a test configuration (browser)
@@ -182,6 +185,7 @@ Class | Method | HTTP request | Description
 *SyntheticsApi* | [**GetTest**](docs/SyntheticsApi.md#gettest) | **Get** /api/v1/synthetics/tests/{public_id} | Get a test configuration (API)
 *SyntheticsApi* | [**ListLocations**](docs/SyntheticsApi.md#listlocations) | **Get** /api/v1/synthetics/locations | Get all locations (public and private)
 *SyntheticsApi* | [**ListTests**](docs/SyntheticsApi.md#listtests) | **Get** /api/v1/synthetics/tests | Get a list of tests
+*SyntheticsApi* | [**TriggerCITests**](docs/SyntheticsApi.md#triggercitests) | **Post** /api/v1/synthetics/tests/trigger/ci | Trigger some Synthetics tests for CI
 *SyntheticsApi* | [**UpdateTest**](docs/SyntheticsApi.md#updatetest) | **Put** /api/v1/synthetics/tests/{public_id} | Edit a test
 *SyntheticsApi* | [**UpdateTestPauseStatus**](docs/SyntheticsApi.md#updatetestpausestatus) | **Put** /api/v1/synthetics/tests/{public_id}/status | Pause or start a test
 *TagsApi* | [**CreateHostTags**](docs/TagsApi.md#createhosttags) | **Post** /api/v1/tags/hosts/{host_name} | Add tags to a host
@@ -239,6 +243,7 @@ Class | Method | HTTP request | Description
  - [ApiKey](docs/ApiKey.md)
  - [ApiKeyListResponse](docs/ApiKeyListResponse.md)
  - [ApiKeyResponse](docs/ApiKeyResponse.md)
+ - [ApmResourcesQueryDefinition](docs/ApmResourcesQueryDefinition.md)
  - [ApplicationKey](docs/ApplicationKey.md)
  - [ApplicationKeyListResponse](docs/ApplicationKeyListResponse.md)
  - [ApplicationKeyResponse](docs/ApplicationKeyResponse.md)
@@ -460,6 +465,7 @@ Class | Method | HTTP request | Description
  - [SyntheticsAssertionOperator](docs/SyntheticsAssertionOperator.md)
  - [SyntheticsAssertionTarget](docs/SyntheticsAssertionTarget.md)
  - [SyntheticsAssertionType](docs/SyntheticsAssertionType.md)
+ - [SyntheticsBasicAuth](docs/SyntheticsBasicAuth.md)
  - [SyntheticsBrowserError](docs/SyntheticsBrowserError.md)
  - [SyntheticsBrowserErrorType](docs/SyntheticsBrowserErrorType.md)
  - [SyntheticsBrowserTestResultData](docs/SyntheticsBrowserTestResultData.md)
@@ -469,6 +475,11 @@ Class | Method | HTTP request | Description
  - [SyntheticsBrowserTestResultShortResult](docs/SyntheticsBrowserTestResultShortResult.md)
  - [SyntheticsBrowserVariable](docs/SyntheticsBrowserVariable.md)
  - [SyntheticsBrowserVariableType](docs/SyntheticsBrowserVariableType.md)
+ - [SyntheticsCITest](docs/SyntheticsCITest.md)
+ - [SyntheticsCITestBody](docs/SyntheticsCITestBody.md)
+ - [SyntheticsCITestMetadata](docs/SyntheticsCITestMetadata.md)
+ - [SyntheticsCITestMetadataCi](docs/SyntheticsCITestMetadataCi.md)
+ - [SyntheticsCITestMetadataGit](docs/SyntheticsCITestMetadataGit.md)
  - [SyntheticsCheckType](docs/SyntheticsCheckType.md)
  - [SyntheticsDeleteTestsPayload](docs/SyntheticsDeleteTestsPayload.md)
  - [SyntheticsDeleteTestsResponse](docs/SyntheticsDeleteTestsResponse.md)
@@ -478,6 +489,8 @@ Class | Method | HTTP request | Description
  - [SyntheticsErrorCode](docs/SyntheticsErrorCode.md)
  - [SyntheticsGetAPITestLatestResultsResponse](docs/SyntheticsGetAPITestLatestResultsResponse.md)
  - [SyntheticsGetBrowserTestLatestResultsResponse](docs/SyntheticsGetBrowserTestLatestResultsResponse.md)
+ - [SyntheticsGlobalVariable](docs/SyntheticsGlobalVariable.md)
+ - [SyntheticsGlobalVariableValue](docs/SyntheticsGlobalVariableValue.md)
  - [SyntheticsListTestsResponse](docs/SyntheticsListTestsResponse.md)
  - [SyntheticsLocation](docs/SyntheticsLocation.md)
  - [SyntheticsLocations](docs/SyntheticsLocations.md)
@@ -497,13 +510,16 @@ Class | Method | HTTP request | Description
  - [SyntheticsTestDetailsType](docs/SyntheticsTestDetailsType.md)
  - [SyntheticsTestMonitorStatus](docs/SyntheticsTestMonitorStatus.md)
  - [SyntheticsTestOptions](docs/SyntheticsTestOptions.md)
+ - [SyntheticsTestOptionsMonitorOptions](docs/SyntheticsTestOptionsMonitorOptions.md)
  - [SyntheticsTestOptionsRetry](docs/SyntheticsTestOptionsRetry.md)
  - [SyntheticsTestPauseStatus](docs/SyntheticsTestPauseStatus.md)
  - [SyntheticsTestProcessStatus](docs/SyntheticsTestProcessStatus.md)
  - [SyntheticsTestRequest](docs/SyntheticsTestRequest.md)
- - [SyntheticsTestRequestBasicAuth](docs/SyntheticsTestRequestBasicAuth.md)
  - [SyntheticsTickInterval](docs/SyntheticsTickInterval.md)
  - [SyntheticsTiming](docs/SyntheticsTiming.md)
+ - [SyntheticsTriggerCITestsResponse](docs/SyntheticsTriggerCITestsResponse.md)
+ - [SyntheticsTriggerCITestsResponseLocations](docs/SyntheticsTriggerCITestsResponseLocations.md)
+ - [SyntheticsTriggerCITestsResponseResults](docs/SyntheticsTriggerCITestsResponseResults.md)
  - [SyntheticsUpdateTestPauseStatusPayload](docs/SyntheticsUpdateTestPauseStatusPayload.md)
  - [SyntheticsWarningType](docs/SyntheticsWarningType.md)
  - [TableWidgetDefinition](docs/TableWidgetDefinition.md)

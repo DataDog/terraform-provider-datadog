@@ -37,7 +37,7 @@ func (v *SyntheticsTestMonitorStatus) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SyntheticsTestMonitorStatus", *v)
+	return fmt.Errorf("%+v is not a valid SyntheticsTestMonitorStatus", value)
 }
 
 // Ptr returns reference to SyntheticsTestMonitorStatus value

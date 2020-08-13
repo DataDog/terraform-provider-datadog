@@ -35,7 +35,7 @@ func (v *LogsLookupProcessorType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid LogsLookupProcessorType", *v)
+	return fmt.Errorf("%+v is not a valid LogsLookupProcessorType", value)
 }
 
 // Ptr returns reference to LogsLookupProcessorType value

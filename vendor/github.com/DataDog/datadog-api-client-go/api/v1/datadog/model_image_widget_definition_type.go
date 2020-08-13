@@ -35,7 +35,7 @@ func (v *ImageWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid ImageWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid ImageWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to ImageWidgetDefinitionType value

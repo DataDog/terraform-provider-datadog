@@ -36,7 +36,7 @@ func (v *WidgetMargin) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetMargin", *v)
+	return fmt.Errorf("%+v is not a valid WidgetMargin", value)
 }
 
 // Ptr returns reference to WidgetMargin value

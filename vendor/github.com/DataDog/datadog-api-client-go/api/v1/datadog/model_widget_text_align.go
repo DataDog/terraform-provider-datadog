@@ -37,7 +37,7 @@ func (v *WidgetTextAlign) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetTextAlign", *v)
+	return fmt.Errorf("%+v is not a valid WidgetTextAlign", value)
 }
 
 // Ptr returns reference to WidgetTextAlign value

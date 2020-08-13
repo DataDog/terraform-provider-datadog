@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SecurityMonitoringRuleResponse Detection rule
+// SecurityMonitoringRuleResponse Detection rule.
 type SecurityMonitoringRuleResponse struct {
 	// Cases for generating signals.
 	Cases *[]SecurityMonitoringRuleCase `json:"cases,omitempty"`

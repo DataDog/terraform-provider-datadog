@@ -39,7 +39,7 @@ func (v *SyntheticsPlayingTab) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SyntheticsPlayingTab", *v)
+	return fmt.Errorf("%+v is not a valid SyntheticsPlayingTab", value)
 }
 
 // Ptr returns reference to SyntheticsPlayingTab value
