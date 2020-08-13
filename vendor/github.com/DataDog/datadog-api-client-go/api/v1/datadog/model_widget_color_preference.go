@@ -36,7 +36,7 @@ func (v *WidgetColorPreference) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetColorPreference", *v)
+	return fmt.Errorf("%+v is not a valid WidgetColorPreference", value)
 }
 
 // Ptr returns reference to WidgetColorPreference value

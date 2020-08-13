@@ -36,7 +36,7 @@ func (v *EventPriority) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid EventPriority", *v)
+	return fmt.Errorf("%+v is not a valid EventPriority", value)
 }
 
 // Ptr returns reference to EventPriority value

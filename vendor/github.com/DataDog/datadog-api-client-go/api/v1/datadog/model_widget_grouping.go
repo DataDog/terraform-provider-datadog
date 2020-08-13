@@ -36,7 +36,7 @@ func (v *WidgetGrouping) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetGrouping", *v)
+	return fmt.Errorf("%+v is not a valid WidgetGrouping", value)
 }
 
 // Ptr returns reference to WidgetGrouping value

@@ -35,7 +35,7 @@ func (v *HeatMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid HeatMapWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid HeatMapWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to HeatMapWidgetDefinitionType value

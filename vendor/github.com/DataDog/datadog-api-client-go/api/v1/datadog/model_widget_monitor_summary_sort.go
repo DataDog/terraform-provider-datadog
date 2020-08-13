@@ -49,7 +49,7 @@ func (v *WidgetMonitorSummarySort) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetMonitorSummarySort", *v)
+	return fmt.Errorf("%+v is not a valid WidgetMonitorSummarySort", value)
 }
 
 // Ptr returns reference to WidgetMonitorSummarySort value

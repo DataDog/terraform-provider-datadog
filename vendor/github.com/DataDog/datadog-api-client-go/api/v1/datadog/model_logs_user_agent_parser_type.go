@@ -35,7 +35,7 @@ func (v *LogsUserAgentParserType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid LogsUserAgentParserType", *v)
+	return fmt.Errorf("%+v is not a valid LogsUserAgentParserType", value)
 }
 
 // Ptr returns reference to LogsUserAgentParserType value

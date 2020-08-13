@@ -41,7 +41,7 @@ func (v *SyntheticsErrorCode) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SyntheticsErrorCode", *v)
+	return fmt.Errorf("%+v is not a valid SyntheticsErrorCode", value)
 }
 
 // Ptr returns reference to SyntheticsErrorCode value

@@ -38,7 +38,7 @@ func (v *WidgetComparator) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetComparator", *v)
+	return fmt.Errorf("%+v is not a valid WidgetComparator", value)
 }
 
 // Ptr returns reference to WidgetComparator value

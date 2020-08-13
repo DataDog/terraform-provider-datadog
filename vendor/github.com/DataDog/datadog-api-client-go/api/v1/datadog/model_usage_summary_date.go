@@ -53,6 +53,8 @@ type UsageSummaryDate struct {
 	NpmHostTop99p *int64 `json:"npm_host_top99p,omitempty"`
 	// Organizations associated with a user.
 	Orgs *[]UsageSummaryDateOrg `json:"orgs,omitempty"`
+	// Shows the 99th percentile of all profiled hosts over all hours in the current date for all organizations.
+	ProfilingHostTop99p *int64 `json:"profiling_host_top99p,omitempty"`
 	// Shows the sum of all RUM Sessions over all hours in the current date for all organizations
 	RumSessionCountSum *int64 `json:"rum_session_count_sum,omitempty"`
 	// Shows the sum of all Synthetic browser tests over all hours in the current date for all organizations.
@@ -688,6 +690,38 @@ func (o *UsageSummaryDate) SetOrgs(v []UsageSummaryDateOrg) {
 	o.Orgs = &v
 }
 
+// GetProfilingHostTop99p returns the ProfilingHostTop99p field value if set, zero value otherwise.
+func (o *UsageSummaryDate) GetProfilingHostTop99p() int64 {
+	if o == nil || o.ProfilingHostTop99p == nil {
+		var ret int64
+		return ret
+	}
+	return *o.ProfilingHostTop99p
+}
+
+// GetProfilingHostTop99pOk returns a tuple with the ProfilingHostTop99p field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDate) GetProfilingHostTop99pOk() (*int64, bool) {
+	if o == nil || o.ProfilingHostTop99p == nil {
+		return nil, false
+	}
+	return o.ProfilingHostTop99p, true
+}
+
+// HasProfilingHostTop99p returns a boolean if a field has been set.
+func (o *UsageSummaryDate) HasProfilingHostTop99p() bool {
+	if o != nil && o.ProfilingHostTop99p != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetProfilingHostTop99p gets a reference to the given int64 and assigns it to the ProfilingHostTop99p field.
+func (o *UsageSummaryDate) SetProfilingHostTop99p(v int64) {
+	o.ProfilingHostTop99p = &v
+}
+
 // GetRumSessionCountSum returns the RumSessionCountSum field value if set, zero value otherwise.
 func (o *UsageSummaryDate) GetRumSessionCountSum() int64 {
 	if o == nil || o.RumSessionCountSum == nil {
@@ -874,6 +908,9 @@ func (o UsageSummaryDate) MarshalJSON() ([]byte, error) {
 	}
 	if o.Orgs != nil {
 		toSerialize["orgs"] = o.Orgs
+	}
+	if o.ProfilingHostTop99p != nil {
+		toSerialize["profiling_host_top99p"] = o.ProfilingHostTop99p
 	}
 	if o.RumSessionCountSum != nil {
 		toSerialize["rum_session_count_sum"] = o.RumSessionCountSum

@@ -35,7 +35,7 @@ func (v *ServiceSummaryWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid ServiceSummaryWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid ServiceSummaryWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to ServiceSummaryWidgetDefinitionType value

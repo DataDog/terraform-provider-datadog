@@ -35,7 +35,7 @@ func (v *AlertValueWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid AlertValueWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid AlertValueWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to AlertValueWidgetDefinitionType value

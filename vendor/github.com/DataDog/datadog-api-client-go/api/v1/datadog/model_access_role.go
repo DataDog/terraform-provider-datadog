@@ -38,7 +38,7 @@ func (v *AccessRole) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid AccessRole", *v)
+	return fmt.Errorf("%+v is not a valid AccessRole", value)
 }
 
 // Ptr returns reference to AccessRole value

@@ -35,7 +35,7 @@ func (v *ToplistWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid ToplistWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid ToplistWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to ToplistWidgetDefinitionType value

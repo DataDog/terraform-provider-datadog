@@ -35,7 +35,7 @@ func (v *LogsArchiveDestinationS3Type) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid LogsArchiveDestinationS3Type", *v)
+	return fmt.Errorf("%+v is not a valid LogsArchiveDestinationS3Type", value)
 }
 
 // Ptr returns reference to LogsArchiveDestinationS3Type value

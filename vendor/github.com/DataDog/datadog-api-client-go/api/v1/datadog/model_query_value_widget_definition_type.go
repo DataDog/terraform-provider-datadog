@@ -35,7 +35,7 @@ func (v *QueryValueWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid QueryValueWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid QueryValueWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to QueryValueWidgetDefinitionType value

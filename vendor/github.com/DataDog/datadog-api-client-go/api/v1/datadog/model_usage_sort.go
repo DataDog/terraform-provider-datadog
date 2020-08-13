@@ -38,7 +38,7 @@ func (v *UsageSort) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid UsageSort", *v)
+	return fmt.Errorf("%+v is not a valid UsageSort", value)
 }
 
 // Ptr returns reference to UsageSort value

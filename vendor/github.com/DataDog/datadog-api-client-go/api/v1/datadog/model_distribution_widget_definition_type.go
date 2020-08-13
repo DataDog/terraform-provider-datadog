@@ -35,7 +35,7 @@ func (v *DistributionWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid DistributionWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid DistributionWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to DistributionWidgetDefinitionType value

@@ -35,7 +35,7 @@ func (v *FreeTextWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid FreeTextWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid FreeTextWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to FreeTextWidgetDefinitionType value

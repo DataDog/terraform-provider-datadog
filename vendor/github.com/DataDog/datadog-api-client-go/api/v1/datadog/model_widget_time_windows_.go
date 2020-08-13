@@ -41,7 +41,7 @@ func (v *WidgetTimeWindows) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetTimeWindows", *v)
+	return fmt.Errorf("%+v is not a valid WidgetTimeWindows", value)
 }
 
 // Ptr returns reference to WidgetTimeWindows value

@@ -14,7 +14,7 @@ import (
 
 // SyntheticsTestRequest Object describing the Synthetic test request.
 type SyntheticsTestRequest struct {
-	BasicAuth *SyntheticsTestRequestBasicAuth `json:"basicAuth,omitempty"`
+	BasicAuth *SyntheticsBasicAuth `json:"basicAuth,omitempty"`
 	// Body to include in the test.
 	Body *string `json:"body,omitempty"`
 	// Headers to include when performing the test.
@@ -50,9 +50,9 @@ func NewSyntheticsTestRequestWithDefaults() *SyntheticsTestRequest {
 }
 
 // GetBasicAuth returns the BasicAuth field value if set, zero value otherwise.
-func (o *SyntheticsTestRequest) GetBasicAuth() SyntheticsTestRequestBasicAuth {
+func (o *SyntheticsTestRequest) GetBasicAuth() SyntheticsBasicAuth {
 	if o == nil || o.BasicAuth == nil {
-		var ret SyntheticsTestRequestBasicAuth
+		var ret SyntheticsBasicAuth
 		return ret
 	}
 	return *o.BasicAuth
@@ -60,7 +60,7 @@ func (o *SyntheticsTestRequest) GetBasicAuth() SyntheticsTestRequestBasicAuth {
 
 // GetBasicAuthOk returns a tuple with the BasicAuth field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SyntheticsTestRequest) GetBasicAuthOk() (*SyntheticsTestRequestBasicAuth, bool) {
+func (o *SyntheticsTestRequest) GetBasicAuthOk() (*SyntheticsBasicAuth, bool) {
 	if o == nil || o.BasicAuth == nil {
 		return nil, false
 	}
@@ -76,8 +76,8 @@ func (o *SyntheticsTestRequest) HasBasicAuth() bool {
 	return false
 }
 
-// SetBasicAuth gets a reference to the given SyntheticsTestRequestBasicAuth and assigns it to the BasicAuth field.
-func (o *SyntheticsTestRequest) SetBasicAuth(v SyntheticsTestRequestBasicAuth) {
+// SetBasicAuth gets a reference to the given SyntheticsBasicAuth and assigns it to the BasicAuth field.
+func (o *SyntheticsTestRequest) SetBasicAuth(v SyntheticsBasicAuth) {
 	o.BasicAuth = &v
 }
 
