@@ -908,11 +908,11 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.tick_every", "900"),
+				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.min_failure_duration", "0"),
+				"datadog_synthetics_test.bar", "options_list.0.min_failure_duration", "0"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
+				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -947,7 +947,7 @@ resource "datadog_synthetics_test" "bar" {
 
 	device_ids = [ "laptop_large", "mobile_small" ]
 	locations = [ "aws:eu-central-1" ]
-	options = {
+	options_list {
 		tick_every = 900
 		min_failure_duration = 0
 		min_location_failed = 1
@@ -996,11 +996,11 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.tick_every", "1800"),
+				"datadog_synthetics_test.bar", "options_list.0.tick_every", "1800"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.min_failure_duration", "10"),
+				"datadog_synthetics_test.bar", "options_list.0.min_failure_duration", "10"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
+				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -1033,7 +1033,7 @@ resource "datadog_synthetics_test" "bar" {
 	}
 	device_ids = [ "laptop_large", "tablet" ]
 	locations = [ "aws:eu-central-1" ]
-	options = {
+	options_list {
 		tick_every = 1800
 		min_failure_duration = 10
 		min_location_failed = 1
