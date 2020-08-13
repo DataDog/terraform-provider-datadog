@@ -51,9 +51,10 @@ func TestAccDatadogSyntheticsAPITest_importBasicNewAssertions(t *testing.T) {
 				Config: createSyntheticsAPITestConfigNewAssertions(testName),
 			},
 			{
-				ResourceName:      "datadog_synthetics_test.bar",
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:            "datadog_synthetics_test.bar",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"options"},
 			},
 		},
 	})
@@ -539,17 +540,13 @@ func updateSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.tick_every", "900"),
+				"datadog_synthetics_test.foo", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.follow_redirects", "false"),
+				"datadog_synthetics_test.foo", "options_list.0.follow_redirects", "false"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.min_failure_duration", "10"),
+				"datadog_synthetics_test.foo", "options_list.0.min_failure_duration", "10"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.retry_count", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.retry_interval", "400"),
+				"datadog_synthetics_test.foo", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -592,13 +589,11 @@ resource "datadog_synthetics_test" "foo" {
 
 	locations = [ "aws:eu-central-1" ]
 
-	options = {
+	options_list {
 		tick_every = 900
 		follow_redirects = false
 		min_failure_duration = 10
 		min_location_failed = 1
-		retry_count = 1
-		retry_interval = 400
 	}
 
 	name = "%s"
