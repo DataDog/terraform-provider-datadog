@@ -30,7 +30,7 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 				ImportState:       true,
 				ImportStateVerify: true,
 				// Assertions will be imported into the new schema by default, but we can ignore them as users need to update the local config in this case
-				ImportStateVerifyIgnore: []string{"assertions", "assertion"},
+				ImportStateVerifyIgnore: []string{"assertions", "assertion", "options"},
 			},
 		},
 	})
@@ -78,7 +78,7 @@ func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 				ImportState:       true,
 				ImportStateVerify: true,
 				// Assertions will be imported into the new schema by default, but we can ignore them as users need to update the local config in this case
-				ImportStateVerifyIgnore: []string{"assertions", "assertion"},
+				ImportStateVerifyIgnore: []string{"assertions", "assertion", "options"},
 			},
 		},
 	})
@@ -287,8 +287,6 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 				"datadog_synthetics_test.foo", "options_list.0.min_failure_duration", "0"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.min_location_failed", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.retry_count", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
