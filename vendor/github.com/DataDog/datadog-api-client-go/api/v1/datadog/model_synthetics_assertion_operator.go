@@ -45,7 +45,7 @@ func (v *SyntheticsAssertionOperator) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SyntheticsAssertionOperator", *v)
+	return fmt.Errorf("%+v is not a valid SyntheticsAssertionOperator", value)
 }
 
 // Ptr returns reference to SyntheticsAssertionOperator value

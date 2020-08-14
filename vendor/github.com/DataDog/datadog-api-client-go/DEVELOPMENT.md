@@ -27,7 +27,7 @@ This project contains both Integration and Unit tests.
 __Never__ run the test suite against an organization with production data.
 
 Tests can be executed via [`go test`](https://golang.org/pkg/testing/#hdr-Subtests_and_Sub_benchmarks).
-You can optionally add `-run <testName>` to run individual tests/files.
+You can optionally add `-run <testName>` to run individual tests.
 
 Tests for a single file or method can be executed via:
 

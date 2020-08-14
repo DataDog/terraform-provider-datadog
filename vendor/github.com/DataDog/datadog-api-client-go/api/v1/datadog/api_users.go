@@ -256,7 +256,7 @@ func (r apiDisableUserRequest) Execute() (UserDisableResponse, *_nethttp.Respons
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"applcation/json"}
+	localVarHTTPHeaderAccepts := []string{"application/json"}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)

@@ -35,7 +35,7 @@ func (v *LogsCategoryProcessorType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid LogsCategoryProcessorType", *v)
+	return fmt.Errorf("%+v is not a valid LogsCategoryProcessorType", value)
 }
 
 // Ptr returns reference to LogsCategoryProcessorType value

@@ -35,7 +35,7 @@ func (v *LogsMessageRemapperType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid LogsMessageRemapperType", *v)
+	return fmt.Errorf("%+v is not a valid LogsMessageRemapperType", value)
 }
 
 // Ptr returns reference to LogsMessageRemapperType value

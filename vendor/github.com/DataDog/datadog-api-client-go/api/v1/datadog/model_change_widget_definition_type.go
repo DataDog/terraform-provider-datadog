@@ -35,7 +35,7 @@ func (v *ChangeWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid ChangeWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid ChangeWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to ChangeWidgetDefinitionType value

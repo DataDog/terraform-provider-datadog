@@ -42,7 +42,7 @@ func (v *SecurityMonitoringRuleKeepAlive) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SecurityMonitoringRuleKeepAlive", *v)
+	return fmt.Errorf("%+v is not a valid SecurityMonitoringRuleKeepAlive", value)
 }
 
 // Ptr returns reference to SecurityMonitoringRuleKeepAlive value

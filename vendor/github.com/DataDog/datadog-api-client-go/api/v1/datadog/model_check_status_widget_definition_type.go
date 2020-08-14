@@ -35,7 +35,7 @@ func (v *CheckStatusWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid CheckStatusWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid CheckStatusWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to CheckStatusWidgetDefinitionType value

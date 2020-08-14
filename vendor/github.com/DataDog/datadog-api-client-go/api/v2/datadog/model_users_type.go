@@ -35,7 +35,7 @@ func (v *UsersType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid UsersType", *v)
+	return fmt.Errorf("%+v is not a valid UsersType", value)
 }
 
 // Ptr returns reference to UsersType value

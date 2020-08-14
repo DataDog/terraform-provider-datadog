@@ -35,7 +35,7 @@ func (v *WidgetLayoutType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetLayoutType", *v)
+	return fmt.Errorf("%+v is not a valid WidgetLayoutType", value)
 }
 
 // Ptr returns reference to WidgetLayoutType value

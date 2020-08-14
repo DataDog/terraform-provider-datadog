@@ -35,7 +35,7 @@ func (v *LogsArithmeticProcessorType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid LogsArithmeticProcessorType", *v)
+	return fmt.Errorf("%+v is not a valid LogsArithmeticProcessorType", value)
 }
 
 // Ptr returns reference to LogsArithmeticProcessorType value

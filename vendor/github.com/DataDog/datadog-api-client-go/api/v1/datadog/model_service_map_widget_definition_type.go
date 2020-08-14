@@ -35,7 +35,7 @@ func (v *ServiceMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid ServiceMapWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid ServiceMapWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to ServiceMapWidgetDefinitionType value

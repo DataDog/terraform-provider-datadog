@@ -14,11 +14,13 @@ import (
 
 // SecurityMonitoringRuleQuery Query for matching rule.
 type SecurityMonitoringRuleQuery struct {
+	// Field for which the cardinality is measured. Sent as an array.
+	DistinctFields *[]string `json:"distinctFields,omitempty"`
 	// Fields to group by.
 	GroupByFields *[]string `json:"groupByFields,omitempty"`
-	// Name of the query
+	// Name of the query.
 	Name *string `json:"name,omitempty"`
-	// Query to run on logs
+	// Query to run on logs.
 	Query *string `json:"query,omitempty"`
 }
 
@@ -37,6 +39,38 @@ func NewSecurityMonitoringRuleQuery() *SecurityMonitoringRuleQuery {
 func NewSecurityMonitoringRuleQueryWithDefaults() *SecurityMonitoringRuleQuery {
 	this := SecurityMonitoringRuleQuery{}
 	return &this
+}
+
+// GetDistinctFields returns the DistinctFields field value if set, zero value otherwise.
+func (o *SecurityMonitoringRuleQuery) GetDistinctFields() []string {
+	if o == nil || o.DistinctFields == nil {
+		var ret []string
+		return ret
+	}
+	return *o.DistinctFields
+}
+
+// GetDistinctFieldsOk returns a tuple with the DistinctFields field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringRuleQuery) GetDistinctFieldsOk() (*[]string, bool) {
+	if o == nil || o.DistinctFields == nil {
+		return nil, false
+	}
+	return o.DistinctFields, true
+}
+
+// HasDistinctFields returns a boolean if a field has been set.
+func (o *SecurityMonitoringRuleQuery) HasDistinctFields() bool {
+	if o != nil && o.DistinctFields != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetDistinctFields gets a reference to the given []string and assigns it to the DistinctFields field.
+func (o *SecurityMonitoringRuleQuery) SetDistinctFields(v []string) {
+	o.DistinctFields = &v
 }
 
 // GetGroupByFields returns the GroupByFields field value if set, zero value otherwise.
@@ -137,6 +171,9 @@ func (o *SecurityMonitoringRuleQuery) SetQuery(v string) {
 
 func (o SecurityMonitoringRuleQuery) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.DistinctFields != nil {
+		toSerialize["distinctFields"] = o.DistinctFields
+	}
 	if o.GroupByFields != nil {
 		toSerialize["groupByFields"] = o.GroupByFields
 	}

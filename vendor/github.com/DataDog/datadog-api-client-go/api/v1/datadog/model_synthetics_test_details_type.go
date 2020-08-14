@@ -36,7 +36,7 @@ func (v *SyntheticsTestDetailsType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SyntheticsTestDetailsType", *v)
+	return fmt.Errorf("%+v is not a valid SyntheticsTestDetailsType", value)
 }
 
 // Ptr returns reference to SyntheticsTestDetailsType value

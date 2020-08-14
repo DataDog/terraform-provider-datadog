@@ -35,7 +35,7 @@ func (v *HostMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid HostMapWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid HostMapWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to HostMapWidgetDefinitionType value

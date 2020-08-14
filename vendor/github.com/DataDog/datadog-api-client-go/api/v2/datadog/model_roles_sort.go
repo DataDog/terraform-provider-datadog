@@ -40,7 +40,7 @@ func (v *RolesSort) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid RolesSort", *v)
+	return fmt.Errorf("%+v is not a valid RolesSort", value)
 }
 
 // Ptr returns reference to RolesSort value

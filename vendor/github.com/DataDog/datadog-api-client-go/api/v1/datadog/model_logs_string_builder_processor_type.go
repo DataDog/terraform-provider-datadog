@@ -35,7 +35,7 @@ func (v *LogsStringBuilderProcessorType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid LogsStringBuilderProcessorType", *v)
+	return fmt.Errorf("%+v is not a valid LogsStringBuilderProcessorType", value)
 }
 
 // Ptr returns reference to LogsStringBuilderProcessorType value

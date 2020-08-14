@@ -35,7 +35,7 @@ func (v *UsageReportsType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid UsageReportsType", *v)
+	return fmt.Errorf("%+v is not a valid UsageReportsType", value)
 }
 
 // Ptr returns reference to UsageReportsType value

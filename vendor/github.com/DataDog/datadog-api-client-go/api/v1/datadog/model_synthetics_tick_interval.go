@@ -43,7 +43,7 @@ func (v *SyntheticsTickInterval) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SyntheticsTickInterval", *v)
+	return fmt.Errorf("%+v is not a valid SyntheticsTickInterval", value)
 }
 
 // Ptr returns reference to SyntheticsTickInterval value

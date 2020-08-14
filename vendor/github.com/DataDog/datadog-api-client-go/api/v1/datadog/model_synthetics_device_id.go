@@ -43,7 +43,7 @@ func (v *SyntheticsDeviceID) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SyntheticsDeviceID", *v)
+	return fmt.Errorf("%+v is not a valid SyntheticsDeviceID", value)
 }
 
 // Ptr returns reference to SyntheticsDeviceID value

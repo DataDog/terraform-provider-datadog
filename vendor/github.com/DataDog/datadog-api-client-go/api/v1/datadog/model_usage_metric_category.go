@@ -36,7 +36,7 @@ func (v *UsageMetricCategory) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid UsageMetricCategory", *v)
+	return fmt.Errorf("%+v is not a valid UsageMetricCategory", value)
 }
 
 // Ptr returns reference to UsageMetricCategory value

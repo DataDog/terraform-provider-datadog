@@ -17,7 +17,7 @@ type SecurityMonitoringRuleUpdatePayload struct {
 	// Cases for generating signals.
 	Cases *[]SecurityMonitoringRuleCase `json:"cases,omitempty"`
 	// Whether the rule is enabled.
-	Enabled *bool `json:"enabled,omitempty"`
+	IsEnabled *bool `json:"isEnabled,omitempty"`
 	// Message for generated signals.
 	Message *string `json:"message,omitempty"`
 	// Name of the rule.
@@ -78,36 +78,36 @@ func (o *SecurityMonitoringRuleUpdatePayload) SetCases(v []SecurityMonitoringRul
 	o.Cases = &v
 }
 
-// GetEnabled returns the Enabled field value if set, zero value otherwise.
-func (o *SecurityMonitoringRuleUpdatePayload) GetEnabled() bool {
-	if o == nil || o.Enabled == nil {
+// GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
+func (o *SecurityMonitoringRuleUpdatePayload) GetIsEnabled() bool {
+	if o == nil || o.IsEnabled == nil {
 		var ret bool
 		return ret
 	}
-	return *o.Enabled
+	return *o.IsEnabled
 }
 
-// GetEnabledOk returns a tuple with the Enabled field value if set, nil otherwise
+// GetIsEnabledOk returns a tuple with the IsEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SecurityMonitoringRuleUpdatePayload) GetEnabledOk() (*bool, bool) {
-	if o == nil || o.Enabled == nil {
+func (o *SecurityMonitoringRuleUpdatePayload) GetIsEnabledOk() (*bool, bool) {
+	if o == nil || o.IsEnabled == nil {
 		return nil, false
 	}
-	return o.Enabled, true
+	return o.IsEnabled, true
 }
 
-// HasEnabled returns a boolean if a field has been set.
-func (o *SecurityMonitoringRuleUpdatePayload) HasEnabled() bool {
-	if o != nil && o.Enabled != nil {
+// HasIsEnabled returns a boolean if a field has been set.
+func (o *SecurityMonitoringRuleUpdatePayload) HasIsEnabled() bool {
+	if o != nil && o.IsEnabled != nil {
 		return true
 	}
 
 	return false
 }
 
-// SetEnabled gets a reference to the given bool and assigns it to the Enabled field.
-func (o *SecurityMonitoringRuleUpdatePayload) SetEnabled(v bool) {
-	o.Enabled = &v
+// SetIsEnabled gets a reference to the given bool and assigns it to the IsEnabled field.
+func (o *SecurityMonitoringRuleUpdatePayload) SetIsEnabled(v bool) {
+	o.IsEnabled = &v
 }
 
 // GetMessage returns the Message field value if set, zero value otherwise.
@@ -275,8 +275,8 @@ func (o SecurityMonitoringRuleUpdatePayload) MarshalJSON() ([]byte, error) {
 	if o.Cases != nil {
 		toSerialize["cases"] = o.Cases
 	}
-	if o.Enabled != nil {
-		toSerialize["enabled"] = o.Enabled
+	if o.IsEnabled != nil {
+		toSerialize["isEnabled"] = o.IsEnabled
 	}
 	if o.Message != nil {
 		toSerialize["message"] = o.Message

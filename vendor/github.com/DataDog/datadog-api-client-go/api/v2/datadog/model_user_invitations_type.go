@@ -35,7 +35,7 @@ func (v *UserInvitationsType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid UserInvitationsType", *v)
+	return fmt.Errorf("%+v is not a valid UserInvitationsType", value)
 }
 
 // Ptr returns reference to UserInvitationsType value

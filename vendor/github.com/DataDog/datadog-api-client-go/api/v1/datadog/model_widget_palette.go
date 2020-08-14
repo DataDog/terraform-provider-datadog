@@ -50,7 +50,7 @@ func (v *WidgetPalette) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetPalette", *v)
+	return fmt.Errorf("%+v is not a valid WidgetPalette", value)
 }
 
 // Ptr returns reference to WidgetPalette value

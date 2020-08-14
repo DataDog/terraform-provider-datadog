@@ -38,7 +38,7 @@ func (v *SyntheticsBrowserVariableType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SyntheticsBrowserVariableType", *v)
+	return fmt.Errorf("%+v is not a valid SyntheticsBrowserVariableType", value)
 }
 
 // Ptr returns reference to SyntheticsBrowserVariableType value

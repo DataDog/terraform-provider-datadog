@@ -12,31 +12,31 @@ import (
 	"encoding/json"
 )
 
-// LogsListResponseMetaPage Paging attributes.
-type LogsListResponseMetaPage struct {
-	// Cursor to use to get next results, if any. To make the next request, use the same parameters with the addition of the `page[cursor]`.
+// LogsAggregateRequestPaging Paging settings
+type LogsAggregateRequestPaging struct {
+	// The returned paging point to use to get the next results
 	After *string `json:"after,omitempty"`
 }
 
-// NewLogsListResponseMetaPage instantiates a new LogsListResponseMetaPage object
+// NewLogsAggregateRequestPaging instantiates a new LogsAggregateRequestPaging object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogsListResponseMetaPage() *LogsListResponseMetaPage {
-	this := LogsListResponseMetaPage{}
+func NewLogsAggregateRequestPaging() *LogsAggregateRequestPaging {
+	this := LogsAggregateRequestPaging{}
 	return &this
 }
 
-// NewLogsListResponseMetaPageWithDefaults instantiates a new LogsListResponseMetaPage object
+// NewLogsAggregateRequestPagingWithDefaults instantiates a new LogsAggregateRequestPaging object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewLogsListResponseMetaPageWithDefaults() *LogsListResponseMetaPage {
-	this := LogsListResponseMetaPage{}
+func NewLogsAggregateRequestPagingWithDefaults() *LogsAggregateRequestPaging {
+	this := LogsAggregateRequestPaging{}
 	return &this
 }
 
 // GetAfter returns the After field value if set, zero value otherwise.
-func (o *LogsListResponseMetaPage) GetAfter() string {
+func (o *LogsAggregateRequestPaging) GetAfter() string {
 	if o == nil || o.After == nil {
 		var ret string
 		return ret
@@ -46,7 +46,7 @@ func (o *LogsListResponseMetaPage) GetAfter() string {
 
 // GetAfterOk returns a tuple with the After field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LogsListResponseMetaPage) GetAfterOk() (*string, bool) {
+func (o *LogsAggregateRequestPaging) GetAfterOk() (*string, bool) {
 	if o == nil || o.After == nil {
 		return nil, false
 	}
@@ -54,7 +54,7 @@ func (o *LogsListResponseMetaPage) GetAfterOk() (*string, bool) {
 }
 
 // HasAfter returns a boolean if a field has been set.
-func (o *LogsListResponseMetaPage) HasAfter() bool {
+func (o *LogsAggregateRequestPaging) HasAfter() bool {
 	if o != nil && o.After != nil {
 		return true
 	}
@@ -63,11 +63,11 @@ func (o *LogsListResponseMetaPage) HasAfter() bool {
 }
 
 // SetAfter gets a reference to the given string and assigns it to the After field.
-func (o *LogsListResponseMetaPage) SetAfter(v string) {
+func (o *LogsAggregateRequestPaging) SetAfter(v string) {
 	o.After = &v
 }
 
-func (o LogsListResponseMetaPage) MarshalJSON() ([]byte, error) {
+func (o LogsAggregateRequestPaging) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.After != nil {
 		toSerialize["after"] = o.After
@@ -75,38 +75,38 @@ func (o LogsListResponseMetaPage) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableLogsListResponseMetaPage struct {
-	value *LogsListResponseMetaPage
+type NullableLogsAggregateRequestPaging struct {
+	value *LogsAggregateRequestPaging
 	isSet bool
 }
 
-func (v NullableLogsListResponseMetaPage) Get() *LogsListResponseMetaPage {
+func (v NullableLogsAggregateRequestPaging) Get() *LogsAggregateRequestPaging {
 	return v.value
 }
 
-func (v *NullableLogsListResponseMetaPage) Set(val *LogsListResponseMetaPage) {
+func (v *NullableLogsAggregateRequestPaging) Set(val *LogsAggregateRequestPaging) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableLogsListResponseMetaPage) IsSet() bool {
+func (v NullableLogsAggregateRequestPaging) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableLogsListResponseMetaPage) Unset() {
+func (v *NullableLogsAggregateRequestPaging) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableLogsListResponseMetaPage(val *LogsListResponseMetaPage) *NullableLogsListResponseMetaPage {
-	return &NullableLogsListResponseMetaPage{value: val, isSet: true}
+func NewNullableLogsAggregateRequestPaging(val *LogsAggregateRequestPaging) *NullableLogsAggregateRequestPaging {
+	return &NullableLogsAggregateRequestPaging{value: val, isSet: true}
 }
 
-func (v NullableLogsListResponseMetaPage) MarshalJSON() ([]byte, error) {
+func (v NullableLogsAggregateRequestPaging) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableLogsListResponseMetaPage) UnmarshalJSON(src []byte) error {
+func (v *NullableLogsAggregateRequestPaging) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

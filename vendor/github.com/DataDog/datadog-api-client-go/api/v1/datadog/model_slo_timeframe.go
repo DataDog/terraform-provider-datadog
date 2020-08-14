@@ -37,7 +37,7 @@ func (v *SLOTimeframe) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SLOTimeframe", *v)
+	return fmt.Errorf("%+v is not a valid SLOTimeframe", value)
 }
 
 // Ptr returns reference to SLOTimeframe value

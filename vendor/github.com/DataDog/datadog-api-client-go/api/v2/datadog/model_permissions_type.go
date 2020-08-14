@@ -35,7 +35,7 @@ func (v *PermissionsType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid PermissionsType", *v)
+	return fmt.Errorf("%+v is not a valid PermissionsType", value)
 }
 
 // Ptr returns reference to PermissionsType value

@@ -35,7 +35,7 @@ func (v *SyntheticsWarningType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SyntheticsWarningType", *v)
+	return fmt.Errorf("%+v is not a valid SyntheticsWarningType", value)
 }
 
 // Ptr returns reference to SyntheticsWarningType value

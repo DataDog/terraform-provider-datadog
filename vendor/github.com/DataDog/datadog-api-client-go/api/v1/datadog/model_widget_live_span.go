@@ -49,7 +49,7 @@ func (v *WidgetLiveSpan) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetLiveSpan", *v)
+	return fmt.Errorf("%+v is not a valid WidgetLiveSpan", value)
 }
 
 // Ptr returns reference to WidgetLiveSpan value

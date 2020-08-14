@@ -77,6 +77,7 @@ Class | Method | HTTP request | Description
 *DashboardListsApi* | [**DeleteDashboardListItems**](docs/DashboardListsApi.md#deletedashboardlistitems) | **Delete** /api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards | Delete items from a dashboard list
 *DashboardListsApi* | [**GetDashboardListItems**](docs/DashboardListsApi.md#getdashboardlistitems) | **Get** /api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards | Get a Dashboard List
 *DashboardListsApi* | [**UpdateDashboardListItems**](docs/DashboardListsApi.md#updatedashboardlistitems) | **Put** /api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards | Update items of a dashboard list
+*LogsApi* | [**AggregateLogs**](docs/LogsApi.md#aggregatelogs) | **Post** /api/v2/logs/analytics/aggregate | Aggregate events
 *LogsApi* | [**ListLogs**](docs/LogsApi.md#listlogs) | **Post** /api/v2/logs/events/search | Get a list of logs
 *LogsApi* | [**ListLogsGet**](docs/LogsApi.md#listlogsget) | **Get** /api/v2/logs/events | Get a quick list of logs
 *LogsArchivesApi* | [**AddReadRoleToArchive**](docs/LogsArchivesApi.md#addreadroletoarchive) | **Post** /api/v2/logs/config/archives/{archive_id}/readers | Grant role to an archive
@@ -103,6 +104,8 @@ Class | Method | HTTP request | Description
 *SecurityMonitoringApi* | [**DeleteSecurityMonitoringRule**](docs/SecurityMonitoringApi.md#deletesecuritymonitoringrule) | **Delete** /api/v2/security_monitoring/rules/{rule_id} | Delete an existing rule
 *SecurityMonitoringApi* | [**GetSecurityMonitoringRule**](docs/SecurityMonitoringApi.md#getsecuritymonitoringrule) | **Get** /api/v2/security_monitoring/rules/{rule_id} | Get a rule&#39;s details
 *SecurityMonitoringApi* | [**ListSecurityMonitoringRules**](docs/SecurityMonitoringApi.md#listsecuritymonitoringrules) | **Get** /api/v2/security_monitoring/rules | List rules
+*SecurityMonitoringApi* | [**ListSecurityMonitoringSignals**](docs/SecurityMonitoringApi.md#listsecuritymonitoringsignals) | **Get** /api/v2/security_monitoring/signals | Get a quick list of security signals
+*SecurityMonitoringApi* | [**SearchSecurityMonitoringSignals**](docs/SecurityMonitoringApi.md#searchsecuritymonitoringsignals) | **Post** /api/v2/security_monitoring/signals/search | Get a list of security signals
 *SecurityMonitoringApi* | [**UpdateSecurityMonitoringRule**](docs/SecurityMonitoringApi.md#updatesecuritymonitoringrule) | **Put** /api/v2/security_monitoring/rules/{rule_id} | Update an existing rule
 *UsersApi* | [**CreateUser**](docs/UsersApi.md#createuser) | **Post** /api/v2/users | Create a user
 *UsersApi* | [**DisableUser**](docs/UsersApi.md#disableuser) | **Delete** /api/v2/users/{user_id} | Disable a user
@@ -133,6 +136,18 @@ Class | Method | HTTP request | Description
  - [Log](docs/Log.md)
  - [LogAttributes](docs/LogAttributes.md)
  - [LogType](docs/LogType.md)
+ - [LogsAggregateBucket](docs/LogsAggregateBucket.md)
+ - [LogsAggregateBucketValue](docs/LogsAggregateBucketValue.md)
+ - [LogsAggregateBucketValueTimeseries](docs/LogsAggregateBucketValueTimeseries.md)
+ - [LogsAggregateBucketValueTimeseriesPoint](docs/LogsAggregateBucketValueTimeseriesPoint.md)
+ - [LogsAggregateRequest](docs/LogsAggregateRequest.md)
+ - [LogsAggregateRequestPaging](docs/LogsAggregateRequestPaging.md)
+ - [LogsAggregateResponse](docs/LogsAggregateResponse.md)
+ - [LogsAggregateResponseData](docs/LogsAggregateResponseData.md)
+ - [LogsAggregateResponseStatus](docs/LogsAggregateResponseStatus.md)
+ - [LogsAggregateSort](docs/LogsAggregateSort.md)
+ - [LogsAggregateSortType](docs/LogsAggregateSortType.md)
+ - [LogsAggregationFunction](docs/LogsAggregationFunction.md)
  - [LogsArchive](docs/LogsArchive.md)
  - [LogsArchiveAttributes](docs/LogsArchiveAttributes.md)
  - [LogsArchiveCreateRequest](docs/LogsArchiveCreateRequest.md)
@@ -152,14 +167,23 @@ Class | Method | HTTP request | Description
  - [LogsArchiveIntegrationS3](docs/LogsArchiveIntegrationS3.md)
  - [LogsArchiveState](docs/LogsArchiveState.md)
  - [LogsArchives](docs/LogsArchives.md)
+ - [LogsCompute](docs/LogsCompute.md)
+ - [LogsComputeType](docs/LogsComputeType.md)
+ - [LogsGroupBy](docs/LogsGroupBy.md)
+ - [LogsGroupByHistogram](docs/LogsGroupByHistogram.md)
+ - [LogsGroupByMissing](docs/LogsGroupByMissing.md)
+ - [LogsGroupByTotal](docs/LogsGroupByTotal.md)
  - [LogsListRequest](docs/LogsListRequest.md)
- - [LogsListRequestFilter](docs/LogsListRequestFilter.md)
  - [LogsListRequestPage](docs/LogsListRequestPage.md)
  - [LogsListResponse](docs/LogsListResponse.md)
  - [LogsListResponseLinks](docs/LogsListResponseLinks.md)
- - [LogsListResponseMeta](docs/LogsListResponseMeta.md)
- - [LogsListResponseMetaPage](docs/LogsListResponseMetaPage.md)
+ - [LogsQueryFilter](docs/LogsQueryFilter.md)
+ - [LogsQueryOptions](docs/LogsQueryOptions.md)
+ - [LogsResponseMetadata](docs/LogsResponseMetadata.md)
+ - [LogsResponseMetadataPage](docs/LogsResponseMetadataPage.md)
  - [LogsSort](docs/LogsSort.md)
+ - [LogsSortOrder](docs/LogsSortOrder.md)
+ - [LogsWarning](docs/LogsWarning.md)
  - [Organization](docs/Organization.md)
  - [OrganizationAttributes](docs/OrganizationAttributes.md)
  - [OrganizationsType](docs/OrganizationsType.md)
@@ -202,15 +226,28 @@ Class | Method | HTTP request | Description
  - [RolesType](docs/RolesType.md)
  - [SecurityMonitoringListRulesResponse](docs/SecurityMonitoringListRulesResponse.md)
  - [SecurityMonitoringRuleCase](docs/SecurityMonitoringRuleCase.md)
+ - [SecurityMonitoringRuleCaseCreate](docs/SecurityMonitoringRuleCaseCreate.md)
  - [SecurityMonitoringRuleCreatePayload](docs/SecurityMonitoringRuleCreatePayload.md)
  - [SecurityMonitoringRuleEvaluationWindow](docs/SecurityMonitoringRuleEvaluationWindow.md)
  - [SecurityMonitoringRuleKeepAlive](docs/SecurityMonitoringRuleKeepAlive.md)
  - [SecurityMonitoringRuleMaxSignalDuration](docs/SecurityMonitoringRuleMaxSignalDuration.md)
  - [SecurityMonitoringRuleOptions](docs/SecurityMonitoringRuleOptions.md)
  - [SecurityMonitoringRuleQuery](docs/SecurityMonitoringRuleQuery.md)
+ - [SecurityMonitoringRuleQueryCreate](docs/SecurityMonitoringRuleQueryCreate.md)
  - [SecurityMonitoringRuleResponse](docs/SecurityMonitoringRuleResponse.md)
  - [SecurityMonitoringRuleSeverity](docs/SecurityMonitoringRuleSeverity.md)
  - [SecurityMonitoringRuleUpdatePayload](docs/SecurityMonitoringRuleUpdatePayload.md)
+ - [SecurityMonitoringSignal](docs/SecurityMonitoringSignal.md)
+ - [SecurityMonitoringSignalAttributes](docs/SecurityMonitoringSignalAttributes.md)
+ - [SecurityMonitoringSignalListRequest](docs/SecurityMonitoringSignalListRequest.md)
+ - [SecurityMonitoringSignalListRequestFilter](docs/SecurityMonitoringSignalListRequestFilter.md)
+ - [SecurityMonitoringSignalListRequestPage](docs/SecurityMonitoringSignalListRequestPage.md)
+ - [SecurityMonitoringSignalType](docs/SecurityMonitoringSignalType.md)
+ - [SecurityMonitoringSignalsListResponse](docs/SecurityMonitoringSignalsListResponse.md)
+ - [SecurityMonitoringSignalsListResponseLinks](docs/SecurityMonitoringSignalsListResponseLinks.md)
+ - [SecurityMonitoringSignalsListResponseMeta](docs/SecurityMonitoringSignalsListResponseMeta.md)
+ - [SecurityMonitoringSignalsListResponseMetaPage](docs/SecurityMonitoringSignalsListResponseMetaPage.md)
+ - [SecurityMonitoringSignalsSort](docs/SecurityMonitoringSignalsSort.md)
  - [User](docs/User.md)
  - [UserAttributes](docs/UserAttributes.md)
  - [UserCreateAttributes](docs/UserCreateAttributes.md)

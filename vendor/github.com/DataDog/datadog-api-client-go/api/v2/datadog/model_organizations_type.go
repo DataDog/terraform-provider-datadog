@@ -35,7 +35,7 @@ func (v *OrganizationsType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid OrganizationsType", *v)
+	return fmt.Errorf("%+v is not a valid OrganizationsType", value)
 }
 
 // Ptr returns reference to OrganizationsType value
