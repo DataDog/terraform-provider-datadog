@@ -146,7 +146,7 @@ The following arguments are supported:
     - `targetvalue` - (Required) Expected matching value
     - `jsonpath` - (Required) The JSON path to assert
   - `property` - (Optional) if assertion type is "header", this is a the header name
-- `options` - (Required) **Deprecated**
+- `options` - (Required)
   - `tick_every` - (Required)  How often the test should run (in seconds). Current possible values are 900, 1800, 3600, 21600, 43200, 86400, 604800 plus 60 if type=api or 300 if type=browser
   - `follow_redirects` - (Optional) For type=api, true or false
   - `min_failure_duration` - (Optional) How long the test should be in failure before alerting (integer, number of seconds, max 7200). Default is 0.
@@ -161,6 +161,7 @@ The following arguments are supported:
   - `min_failure_duration` - (Optional) How long the test should be in failure before alerting (integer, number of seconds, max 7200). Default is 0.
   - `min_location_failed` - (Optional) Threshold below which a synthetics test is allowed to fail before sending notifications. Default is 1.
   - `accept_self_signed` - (Optional) For type=ssl, true or false
+  - `allow_insecure` - (Optional) For type=api, true or false. Allow your HTTP test go on with connection even if there is an error when validating the certificate.
 - `locations` - (Required) Please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#request) for available locations (e.g. "aws:eu-central-1")
 - `device_ids` - (Optional) "laptop_large", "tablet" or "mobile_small" (only available if type=browser)
 - `status` - (Required) "live", "paused"
