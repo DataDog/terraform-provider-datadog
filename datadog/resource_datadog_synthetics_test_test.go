@@ -950,7 +950,7 @@ func createSyntheticsTCPTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "options.tick_every", "60"),
+				"datadog_synthetics_test.tcp", "options_list.0.tick_every", "60"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -987,7 +987,7 @@ resource "datadog_synthetics_test" "tcp" {
 	}
 
 	locations = [ "aws:eu-central-1" ]
-	options = {
+	options_list {
 		tick_every = 60
 	}
 
@@ -1026,7 +1026,7 @@ func updateSyntheticsTCPTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "options.tick_every", "300"),
+				"datadog_synthetics_test.tcp", "options_list.0.tick_every", "300"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -1065,7 +1065,7 @@ resource "datadog_synthetics_test" "tcp" {
 	  }
 
 	locations = [ "aws:eu-central-1" ]
-	options = {
+	options_list {
 		tick_every = 300
 	}
 

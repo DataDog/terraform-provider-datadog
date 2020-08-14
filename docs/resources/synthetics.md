@@ -87,7 +87,7 @@ resource "datadog_synthetics_test" "test_tcp" {
       target = 2000
   }
   locations = [ "aws:eu-central-1" ]
-  options = {
+  options_list {
     tick_every = 900
   }
   name = "An API test on example.org"
