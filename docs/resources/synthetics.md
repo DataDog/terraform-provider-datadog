@@ -30,10 +30,6 @@ resource "datadog_synthetics_test" "test_api" {
   locations = [ "aws:eu-central-1" ]
   options_list {
     tick_every = 900
-
-    retry = {
-      count = 2
-    }
   }
   name = "An API test on example.org"
   message = "Notify @pagerduty"
@@ -64,10 +60,6 @@ resource "datadog_synthetics_test" "test_ssl" {
   options_list {
     tick_every = 900
     accept_self_signed = true
-
-    retry = {
-      count = 2
-    }
   }
   name = "An API test on example.org"
   message = "Notify @pagerduty"
@@ -96,10 +88,6 @@ resource "datadog_synthetics_test" "test_browser" {
 
   options_list {
     tick_every = 3600
-
-    retry = {
-      count = 2
-    }
   }
 
   name = "A Browser test on example.org"
