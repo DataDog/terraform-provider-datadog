@@ -433,7 +433,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.monitor_options.renotify_interval", "100"),
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "100"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -504,7 +504,7 @@ resource "datadog_synthetics_test" "bar" {
 		min_failure_duration = 0
 		min_location_failed = 1
 
-		monitor_options = {
+		monitor_options {
 			renotify_interval = 100
 		}
 	}
@@ -554,11 +554,11 @@ func updateSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options_list.0.retry.count", "3"),
+				"datadog_synthetics_test.foo", "options_list.0.retry.0.count", "3"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options_list.0.retry.interval", "500"),
+				"datadog_synthetics_test.foo", "options_list.0.retry.0.interval", "500"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options_list.0.monitor_options.renotify_interval", "100"),
+				"datadog_synthetics_test.foo", "options_list.0.monitor_options.0.renotify_interval", "100"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -607,12 +607,12 @@ resource "datadog_synthetics_test" "foo" {
 		min_failure_duration = 10
 		min_location_failed = 1
 
-		retry = {
+		retry {
 			count = 3
 			interval = 500
 		}
 
-		monitor_options = {
+		monitor_options {
 			renotify_interval = 100
 		}
 	}
@@ -668,7 +668,7 @@ func updateSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.monitor_options.renotify_interval", "120"),
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "120"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -719,7 +719,7 @@ resource "datadog_synthetics_test" "bar" {
 		min_failure_duration = 10
 		min_location_failed = 1
 
-		monitor_options = {
+		monitor_options {
 			renotify_interval = 120
 		}
 	}
@@ -938,11 +938,11 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.retry.count", "2"),
+				"datadog_synthetics_test.bar", "options_list.0.retry.0.count", "2"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.retry.interval", "300"),
+				"datadog_synthetics_test.bar", "options_list.0.retry.0.interval", "300"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.monitor_options.renotify_interval", "100"),
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "100"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -982,12 +982,12 @@ resource "datadog_synthetics_test" "bar" {
 		min_failure_duration = 0
 		min_location_failed = 1
 
-		retry = {
+		retry {
 			count = 2
 			interval = 300
 		}
 
-		monitor_options = {
+		monitor_options {
 			renotify_interval = 100
 		}
 	}
@@ -1041,11 +1041,11 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.retry.count", "3"),
+				"datadog_synthetics_test.bar", "options_list.0.retry.0.count", "3"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.retry.interval", "500"),
+				"datadog_synthetics_test.bar", "options_list.0.retry.0.interval", "500"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.monitor_options.renotify_interval", "120"),
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "120"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -1083,12 +1083,12 @@ resource "datadog_synthetics_test" "bar" {
 		min_failure_duration = 10
 		min_location_failed = 1
 
-		retry = {
+		retry {
 			count = 3
 			interval = 500
 		}
 
-		monitor_options = {
+		monitor_options {
 			renotify_interval = 120
 		}
 	}
