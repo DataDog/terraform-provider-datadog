@@ -102,8 +102,6 @@ func TestAccDatadogSyntheticsTCPTest_importBasic(t *testing.T) {
 				ResourceName:      "datadog_synthetics_test.tcp",
 				ImportState:       true,
 				ImportStateVerify: true,
-				// Assertions will be imported into the new schema by default, but we can ignore them as users need to update the local config in this case
-				ImportStateVerifyIgnore: []string{"assertions", "assertion"},
 			},
 		},
 	})
@@ -948,13 +946,13 @@ func createSyntheticsTCPTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "request.port", "443"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "assertions.#", "1"),
+				"datadog_synthetics_test.tcp", "assertion.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "assertions.0.type", "responseTime"),
+				"datadog_synthetics_test.tcp", "assertion.0.type", "responseTime"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "assertions.0.operator", "lessThan"),
+				"datadog_synthetics_test.tcp", "assertion.0.operator", "lessThan"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "assertions.0.target", "2000"),
+				"datadog_synthetics_test.tcp", "assertion.0.target", "2000"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -990,13 +988,11 @@ resource "datadog_synthetics_test" "tcp" {
 		port = 443
 	}
 
-	assertions = [
-		{
-			type = "responseTime"
-			operator = "lessThan"
-			target = 2000
-		}
-	]
+	assertion {
+		type = "responseTime"
+		operator = "lessThan"
+		target = 2000
+	}
 
 	locations = [ "aws:eu-central-1" ]
 	options = {
@@ -1026,13 +1022,13 @@ func updateSyntheticsTCPTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "request.port", "443"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "assertions.#", "1"),
+				"datadog_synthetics_test.tcp", "assertion.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "assertions.0.type", "responseTime"),
+				"datadog_synthetics_test.tcp", "assertion.0.type", "responseTime"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "assertions.0.operator", "lessThan"),
+				"datadog_synthetics_test.tcp", "assertion.0.operator", "lessThan"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "assertions.0.target", "3000"),
+				"datadog_synthetics_test.tcp", "assertion.0.target", "3000"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -1070,13 +1066,11 @@ resource "datadog_synthetics_test" "tcp" {
 		port = 443
 	}
 
-	assertions = [
-		{
-			type = "responseTime"
-			operator = "lessThan"
-			target = 3000
-		}
-	]
+	assertion {
+		type = "responseTime"
+		operator = "lessThan"
+		target = 3000
+	  }
 
 	locations = [ "aws:eu-central-1" ]
 	options = {
