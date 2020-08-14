@@ -30,7 +30,7 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 				ImportState:       true,
 				ImportStateVerify: true,
 				// Assertions will be imported into the new schema by default, but we can ignore them as users need to update the local config in this case
-				ImportStateVerifyIgnore: []string{"assertions", "assertion", "options"},
+				ImportStateVerifyIgnore: []string{"assertions", "assertion", "options", "options_list"},
 			},
 		},
 	})
@@ -51,10 +51,9 @@ func TestAccDatadogSyntheticsAPITest_importBasicNewAssertions(t *testing.T) {
 				Config: createSyntheticsAPITestConfigNewAssertions(testName),
 			},
 			{
-				ResourceName:            "datadog_synthetics_test.bar",
-				ImportState:             true,
-				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"options"},
+				ResourceName:      "datadog_synthetics_test.bar",
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 		},
 	})
@@ -139,7 +138,7 @@ func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
 	})
 }
 
-func TestAccDatadogSyntheticsAPITest_BasicNewAssertions(t *testing.T) {
+func TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
@@ -149,12 +148,12 @@ func TestAccDatadogSyntheticsAPITest_BasicNewAssertions(t *testing.T) {
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsAPITestStepNewAssertions(accProvider, clock, t),
+			createSyntheticsAPITestStepNewAssertionsOptions(accProvider, clock, t),
 		},
 	})
 }
 
-func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertions(t *testing.T) {
+func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
@@ -164,8 +163,8 @@ func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertions(t *testing.T) {
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsAPITestStepNewAssertions(accProvider, clock, t),
-			updateSyntheticsAPITestStepNewAssertions(accProvider, clock, t),
+			createSyntheticsAPITestStepNewAssertionsOptions(accProvider, clock, t),
+			updateSyntheticsAPITestStepNewAssertionsOptions(accProvider, clock, t),
 		},
 	})
 }
@@ -279,15 +278,17 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options_list.0.allow_insecure", "true"),
+				"datadog_synthetics_test.foo", "options.allow_insecure", "true"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options_list.0.tick_every", "60"),
+				"datadog_synthetics_test.foo", "options.tick_every", "60"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options_list.0.follow_redirects", "true"),
+				"datadog_synthetics_test.foo", "options.follow_redirects", "true"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options_list.0.min_failure_duration", "0"),
+				"datadog_synthetics_test.foo", "options.min_failure_duration", "0"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options_list.0.min_location_failed", "1"),
+				"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options.retry_count", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -349,12 +350,13 @@ resource "datadog_synthetics_test" "foo" {
 
 	locations = [ "aws:eu-central-1" ]
 
-	options_list {
+	options = {
 		allow_insecure = true
 		tick_every = 60
 		follow_redirects = true
 		min_failure_duration = 0
 		min_location_failed = 1
+		retry_count =1
 	}
 
 	name = "%s"
@@ -365,10 +367,10 @@ resource "datadog_synthetics_test" "foo" {
 }`, uniq)
 }
 
-func createSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+func createSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(clock, t)
 	return resource.TestStep{
-		Config: createSyntheticsAPITestConfigNewAssertions(testName),
+		Config: createSyntheticsAPITestConfigNewAssertionsOptions(testName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -422,15 +424,13 @@ func createSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider, cloc
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.tick_every", "60"),
+				"datadog_synthetics_test.bar", "options_list.0.tick_every", "60"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.follow_redirects", "true"),
+				"datadog_synthetics_test.bar", "options_list.0.follow_redirects", "true"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.min_failure_duration", "0"),
+				"datadog_synthetics_test.bar", "options_list.0.min_failure_duration", "0"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.retry_count", "1"),
+				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -449,7 +449,7 @@ func createSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider, cloc
 	}
 }
 
-func createSyntheticsAPITestConfigNewAssertions(uniq string) string {
+func createSyntheticsAPITestConfigNewAssertionsOptions(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_synthetics_test" "bar" {
 	type = "api"
@@ -495,12 +495,11 @@ resource "datadog_synthetics_test" "bar" {
 	}
 
 	locations = [ "aws:eu-central-1" ]
-	options = {
+	options_list {
 		tick_every = 60
 		follow_redirects = true
 		min_failure_duration = 0
 		min_location_failed = 1
-		retry_count = 1
 	}
 
 	name = "%s"
@@ -604,10 +603,10 @@ resource "datadog_synthetics_test" "foo" {
 }`, uniq)
 }
 
-func updateSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+func updateSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(clock, t) + "updated"
 	return resource.TestStep{
-		Config: updateSyntheticsAPITestConfigNewAssertions(testName),
+		Config: updateSyntheticsAPITestConfigNewAssertionsOptions(testName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -639,15 +638,13 @@ func updateSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider, cloc
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.tick_every", "900"),
+				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.follow_redirects", "false"),
+				"datadog_synthetics_test.bar", "options_list.0.follow_redirects", "false"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.min_failure_duration", "10"),
+				"datadog_synthetics_test.bar", "options_list.0.min_failure_duration", "10"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.min_location_failed", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options.retry_count", "1"),
+				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -668,7 +665,7 @@ func updateSyntheticsAPITestStepNewAssertions(accProvider *schema.Provider, cloc
 	}
 }
 
-func updateSyntheticsAPITestConfigNewAssertions(uniq string) string {
+func updateSyntheticsAPITestConfigNewAssertionsOptions(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_synthetics_test" "bar" {
 	type = "api"
@@ -692,12 +689,11 @@ resource "datadog_synthetics_test" "bar" {
 
 	locations = [ "aws:eu-central-1" ]
 
-	options = {
+	options_list {
 		tick_every = 900
 		follow_redirects = false
 		min_failure_duration = 10
 		min_location_failed = 1
-		retry_count = 1
 	}
 
 	name = "%s"

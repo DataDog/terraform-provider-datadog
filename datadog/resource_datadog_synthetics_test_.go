@@ -208,11 +208,11 @@ func syntheticsTestOptions() *schema.Schema {
 		Type:          schema.TypeMap,
 		ConflictsWith: []string{"options_list"},
 		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
-			_, isOptionsV2 := d.GetOk("options_list")
 			// DiffSuppressFunc is useless if options_list exists
-			if isOptionsV2 {
+			if _, isOptionsV2 := d.GetOk("options_list"); isOptionsV2 {
 				return isOptionsV2
 			}
+
 			if key == "options.follow_redirects" || key == "options.accept_self_signed" || key == "options.allow_insecure" {
 				// TF nested schemas is limited to string values only
 				// follow_redirects, accept_self_signed and allow_insecure being booleans in Datadog json api
