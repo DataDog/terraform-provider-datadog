@@ -36,7 +36,7 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 	})
 }
 
-func TestAccDatadogSyntheticsAPITest_importBasicNewAssertions(t *testing.T) {
+func TestAccDatadogSyntheticsAPITest_importBasicNewAssertionsOptions(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	testName := uniqueEntityName(clock, t)
 	defer cleanup(t)
@@ -48,7 +48,7 @@ func TestAccDatadogSyntheticsAPITest_importBasicNewAssertions(t *testing.T) {
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: createSyntheticsAPITestConfigNewAssertions(testName),
+				Config: createSyntheticsAPITestConfigNewAssertionsOptions(testName),
 			},
 			{
 				ResourceName:      "datadog_synthetics_test.bar",
@@ -356,7 +356,7 @@ resource "datadog_synthetics_test" "foo" {
 		follow_redirects = true
 		min_failure_duration = 0
 		min_location_failed = 1
-		retry_count =1
+		retry_count = 1
 	}
 
 	name = "%s"
