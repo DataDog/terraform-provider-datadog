@@ -545,7 +545,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		silencedList := m.Options.GetSilenced()
 		for _, scope := range unmutedScopes {
 			if _, ok := silencedList[scope]; ok {
-				delete(silencedList, string(silencedList[scope]))
+				delete(silencedList, scope)
 			}
 		}
 		if _, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute(); err != nil {
