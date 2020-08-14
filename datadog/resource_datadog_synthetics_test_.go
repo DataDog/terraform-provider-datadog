@@ -138,7 +138,8 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"options": syntheticsTestOptions(),
+			"options":      syntheticsTestOptions(),
+			"options_list": syntheticsTestOptionsList(),
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -204,8 +205,14 @@ func syntheticsTestRequest() *schema.Schema {
 
 func syntheticsTestOptions() *schema.Schema {
 	return &schema.Schema{
-		Type: schema.TypeMap,
+		Type:          schema.TypeMap,
+		ConflictsWith: []string{"options_list"},
 		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
+			// DiffSuppressFunc is useless if options_list exists
+			if _, isOptionsV2 := d.GetOk("options_list"); isOptionsV2 {
+				return isOptionsV2
+			}
+
 			if key == "options.follow_redirects" || key == "options.accept_self_signed" || key == "options.allow_insecure" {
 				// TF nested schemas is limited to string values only
 				// follow_redirects, accept_self_signed and allow_insecure being booleans in Datadog json api
@@ -287,6 +294,44 @@ func syntheticsTestOptions() *schema.Schema {
 					Optional: true,
 				},
 				"retry_interval": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+			},
+		},
+	}
+}
+
+func syntheticsTestOptionsList() *schema.Schema {
+	return &schema.Schema{
+		Type:          schema.TypeList,
+		Optional:      true,
+		MaxItems:      1,
+		ConflictsWith: []string{"options"},
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"allow_insecure": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"follow_redirects": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"tick_every": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+				"accept_self_signed": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"min_location_failed": {
+					Type:     schema.TypeInt,
+					Default:  1,
+					Optional: true,
+				},
+				"min_failure_duration": {
 					Type:     schema.TypeInt,
 					Optional: true,
 				},
@@ -500,49 +545,73 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	}
 
 	options := datadogV1.NewSyntheticsTestOptions()
-	if attr, ok := d.GetOk("options.tick_every"); ok {
-		tickEvery, _ := strconv.Atoi(attr.(string))
-		options.SetTickEvery(datadogV1.SyntheticsTickInterval(tickEvery))
-	}
-	if attr, ok := d.GetOk("options.follow_redirects"); ok {
-		// follow_redirects is a string ("true" or "false") in TF state
-		// it used to be "1" and "0" but it does not play well with the API
-		// we support both for retro-compatibility
-		followRedirects, _ := strconv.ParseBool(attr.(string))
-		options.SetFollowRedirects(followRedirects)
-	}
-	if attr, ok := d.GetOk("options.min_failure_duration"); ok {
-		minFailureDuration, _ := strconv.Atoi(attr.(string))
-		options.SetMinFailureDuration(int64(minFailureDuration))
-	}
-	if attr, ok := d.GetOk("options.min_location_failed"); ok {
-		minLocationFailed, _ := strconv.Atoi(attr.(string))
-		options.SetMinLocationFailed(int64(minLocationFailed))
-	}
-	if attr, ok := d.GetOk("options.accept_self_signed"); ok {
-		// for some reason, attr is equal to "1" or "0" in TF 0.11
-		// so ParseBool is required for retro-compatibility
-		acceptSelfSigned, _ := strconv.ParseBool(attr.(string))
-		options.SetAcceptSelfSigned(acceptSelfSigned)
-	}
-	if attr, ok := d.GetOk("options.allow_insecure"); ok {
-		// for some reason, attr is equal to "1" or "0" in TF 0.11
-		// so ParseBool is required for retro-compatibility
-		allowInsecure, _ := strconv.ParseBool(attr.(string))
-		options.SetAllowInsecure(allowInsecure)
-	}
-	if attr, ok := d.GetOk("options.retry_count"); ok {
-		retryCount, _ := strconv.Atoi(attr.(string))
-		retry := datadogV1.SyntheticsTestOptionsRetry{}
-		retry.SetCount(int64(retryCount))
 
-		if retryIntervalRaw, ok := d.GetOk("options.retry_interval"); ok {
-			retryInterval, _ := strconv.Atoi(retryIntervalRaw.(string))
-			retry.SetInterval(float64(retryInterval))
+	// use new options_list first, then fallback to legacy options
+	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
+		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
+			options.SetTickEvery(datadogV1.SyntheticsTickInterval(attr.(int)))
 		}
+		if attr, ok := d.GetOk("options_list.0.accept_self_signed"); ok {
+			options.SetAcceptSelfSigned(attr.(bool))
+		}
+		if attr, ok := d.GetOk("options_list.0.min_location_failed"); ok {
+			options.SetMinLocationFailed(int64(attr.(int)))
+		}
+		if attr, ok := d.GetOk("options_list.0.min_failure_duration"); ok {
+			options.SetMinFailureDuration(int64(attr.(int)))
+		}
+		if attr, ok := d.GetOk("options_list.0.follow_redirects"); ok {
+			options.SetFollowRedirects(attr.(bool))
+		}
+		if attr, ok := d.GetOk("options_list.0.allow_insecure"); ok {
+			options.SetAllowInsecure(attr.(bool))
+		}
+	} else {
+		if attr, ok := d.GetOk("options.tick_every"); ok {
+			tickEvery, _ := strconv.Atoi(attr.(string))
+			options.SetTickEvery(datadogV1.SyntheticsTickInterval(tickEvery))
+		}
+		if attr, ok := d.GetOk("options.follow_redirects"); ok {
+			// follow_redirects is a string ("true" or "false") in TF state
+			// it used to be "1" and "0" but it does not play well with the API
+			// we support both for retro-compatibility
+			followRedirects, _ := strconv.ParseBool(attr.(string))
+			options.SetFollowRedirects(followRedirects)
+		}
+		if attr, ok := d.GetOk("options.min_failure_duration"); ok {
+			minFailureDuration, _ := strconv.Atoi(attr.(string))
+			options.SetMinFailureDuration(int64(minFailureDuration))
+		}
+		if attr, ok := d.GetOk("options.min_location_failed"); ok {
+			minLocationFailed, _ := strconv.Atoi(attr.(string))
+			options.SetMinLocationFailed(int64(minLocationFailed))
+		}
+		if attr, ok := d.GetOk("options.accept_self_signed"); ok {
+			// for some reason, attr is equal to "1" or "0" in TF 0.11
+			// so ParseBool is required for retro-compatibility
+			acceptSelfSigned, _ := strconv.ParseBool(attr.(string))
+			options.SetAcceptSelfSigned(acceptSelfSigned)
+		}
+		if attr, ok := d.GetOk("options.allow_insecure"); ok {
+			// for some reason, attr is equal to "1" or "0" in TF 0.11
+			// so ParseBool is required for retro-compatibility
+			allowInsecure, _ := strconv.ParseBool(attr.(string))
+			options.SetAllowInsecure(allowInsecure)
+		}
+		if attr, ok := d.GetOk("options.retry_count"); ok {
+			retryCount, _ := strconv.Atoi(attr.(string))
+			retry := datadogV1.SyntheticsTestOptionsRetry{}
+			retry.SetCount(int64(retryCount))
 
-		options.SetRetry(retry)
+			if retryIntervalRaw, ok := d.GetOk("options.retry_interval"); ok {
+				retryInterval, _ := strconv.Atoi(retryIntervalRaw.(string))
+				retry.SetInterval(float64(retryInterval))
+			}
+
+			options.SetRetry(retry)
+		}
 	}
+
 	if attr, ok := d.GetOk("device_ids"); ok {
 		var deviceIds []datadogV1.SyntheticsDeviceID
 		for _, s := range attr.([]interface{}) {
@@ -668,7 +737,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		}
 		localAssertions[i] = localAssertion
 	}
-	// If the config still uses assertions, keep using that in the state to not generate useless diffs
+	// If the existing state still uses assertions, keep using that in the state to not generate useless diffs
 	if attr, ok := d.GetOk("assertions"); ok && attr != nil && len(attr.([]interface{})) > 0 {
 		if err := d.Set("assertions", localAssertions); err != nil {
 			return err
@@ -684,35 +753,53 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	d.Set("locations", syntheticsTest.Locations)
 
 	actualOptions := syntheticsTest.GetOptions()
-	localOptions := make(map[string]string)
+	localOptionsList := make(map[string]interface{})
+	localOption := make(map[string]string)
 	if actualOptions.HasFollowRedirects() {
-		localOptions["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
+		localOption["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
+		localOptionsList["follow_redirects"] = actualOptions.GetFollowRedirects()
 	}
 	if actualOptions.HasMinFailureDuration() {
-		localOptions["min_failure_duration"] = convertToString(actualOptions.GetMinFailureDuration())
+		localOption["min_failure_duration"] = convertToString(actualOptions.GetMinFailureDuration())
+		localOptionsList["min_failure_duration"] = actualOptions.GetMinFailureDuration()
 	}
 	if actualOptions.HasMinLocationFailed() {
-		localOptions["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
+		localOption["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
+		localOptionsList["min_location_failed"] = actualOptions.GetMinLocationFailed()
 	}
 	if actualOptions.HasTickEvery() {
-		localOptions["tick_every"] = convertToString(actualOptions.GetTickEvery())
+		localOption["tick_every"] = convertToString(actualOptions.GetTickEvery())
+		localOptionsList["tick_every"] = actualOptions.GetTickEvery()
 	}
 	if actualOptions.HasAcceptSelfSigned() {
-		localOptions["accept_self_signed"] = convertToString(actualOptions.GetAcceptSelfSigned())
+		localOption["accept_self_signed"] = convertToString(actualOptions.GetAcceptSelfSigned())
+		localOptionsList["accept_self_signed"] = actualOptions.GetAcceptSelfSigned()
 	}
 	if actualOptions.HasAllowInsecure() {
-		localOptions["allow_insecure"] = convertToString(actualOptions.GetAllowInsecure())
+		localOption["allow_insecure"] = convertToString(actualOptions.GetAllowInsecure())
+		localOptionsList["allow_insecure"] = actualOptions.GetAllowInsecure()
 	}
 	if actualOptions.HasRetry() {
 		retry := actualOptions.GetRetry()
-		localOptions["retry_count"] = convertToString(retry.GetCount())
+		localOption["retry_count"] = convertToString(retry.GetCount())
 
 		if interval, ok := retry.GetIntervalOk(); ok {
-			localOptions["retry_interval"] = convertToString(interval)
+			localOption["retry_interval"] = convertToString(interval)
 		}
 	}
 
-	d.Set("options", localOptions)
+	// If the existing state still uses options, keep using that in the state to not generate useless diffs
+	if attr, ok := d.GetOk("options"); ok && attr != nil && len(attr.(map[string]interface{})) > 0 {
+		if err := d.Set("options", localOption); err != nil {
+			return err
+		}
+	} else {
+		localOptionsLists := make([]map[string]interface{}, 1)
+		localOptionsLists[0] = localOptionsList
+		if err := d.Set("options_list", localOptionsLists); err != nil {
+			return err
+		}
+	}
 
 	d.Set("name", syntheticsTest.GetName())
 	d.Set("message", syntheticsTest.GetMessage())
