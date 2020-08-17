@@ -78,6 +78,35 @@ resource "datadog_synthetics_test" "test_ssl" {
 }
 ```
 
+## Example Usage (Synthetics TCP test)
+
+Create a new Datadog Synthetics API/TCP test on example.org
+
+```hcl
+resource "datadog_synthetics_test" "test_tcp" {
+  type = "api"
+  subtype = "tcp"
+  request = {
+    host = "example.org"
+    port = 443
+  }
+  assertion {
+      type = "responseTime"
+      operator = "lessThan"
+      target = 2000
+  }
+  locations = [ "aws:eu-central-1" ]
+  options_list {
+    tick_every = 900
+  }
+  name = "An API test on example.org"
+  message = "Notify @pagerduty"
+  tags = ["foo:bar", "foo", "env:test"]
+
+  status = "live"
+}
+```
+
 ## Example Usage (Synthetics Browser test)
 
 Support for Synthetics Browser test is limited (see [below](#synthetics-browser-test))
@@ -112,7 +141,7 @@ resource "datadog_synthetics_test" "test_browser" {
 The following arguments are supported:
 
 - `type` - (Required) Synthetics test type (api or browser)
-- `subtype` - (Optional) For type=api, http or ssl (Default = http)
+- `subtype` - (Optional) For type=api, http, ssl or tcp (Default = http)
 - `name` - (Required) Name of Datadog synthetics test
 - `message` - (Required) A message to include with notifications for this synthetics test.
   Email notifications can be sent to specific users by using the same '@username' notation as events.
@@ -122,7 +151,7 @@ The following arguments are supported:
   - `url` - (Required) Any url
   - `timeout` - (Optional) For type=api, any value between 0 and 60 (Default = 60)
   - `body` - (Optional) Request body
-- `request` - (Required) if type=api and subtype=ssl
+- `request` - (Required) if type=api and subtype=ssl or subtype=tcp
   - `host` - (Required) host name
   - `port` - (Required) port number
   - `timeout` - (Optional) For type=api, any value between 0 and 60 (Default = 60)
