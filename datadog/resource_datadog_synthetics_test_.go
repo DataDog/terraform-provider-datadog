@@ -162,6 +162,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
+			"step": syntheticsTestStep(),
 		},
 	}
 }
@@ -374,6 +375,37 @@ func syntheticsTestOptionsList() *schema.Schema {
 	}
 }
 
+func syntheticsTestStep() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"type": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"allow_failure": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"timeout": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+				"params": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+			},
+		},
+	}
+}
+
 func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -399,7 +431,16 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	syntheticsTest, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id()).Execute()
+	var syntheticsTest datadogV1.SyntheticsTestDetails
+	var err error
+
+	if d.Get("type") == "browser" {
+		syntheticsTest, _, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id()).Execute()
+	} else {
+		syntheticsTest, _, err = datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id()).Execute()
+	}
+
+	// syntheticsTest, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id()).Execute()
 	if err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			// Delete the resource from the local state since it doesn't exist anymore in the actual state
@@ -712,6 +753,27 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		}
 	}
 
+	if attr, ok := d.GetOk("step"); ok && syntheticsTest.GetType() == "browser" {
+		steps := []datadogV1.SyntheticsStep{}
+
+		for _, s := range attr.([]interface{}) {
+			step := datadogV1.SyntheticsStep{}
+			stepMap := s.(map[string]interface{})
+
+			step.SetName(stepMap["name"].(string))
+			step.SetType(datadogV1.SyntheticsStepType(stepMap["type"].(string)))
+			step.SetAllowFailure(stepMap["allow_failure"].(bool))
+			step.SetTimeout(float32(stepMap["timeout"].(int)))
+			params := make(map[string]interface{})
+			getMetadataFromJSON([]byte(stepMap["params"].(string)), &params)
+			step.SetParams(params)
+
+			steps = append(steps, step)
+		}
+
+		syntheticsTest.SetSteps(steps)
+	}
+
 	return syntheticsTest
 }
 
@@ -871,6 +933,28 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		if err := d.Set("options_list", localOptionsLists); err != nil {
 			return err
 		}
+	}
+
+	if syntheticsTest.GetType() == "browser" {
+		steps := syntheticsTest.GetSteps()
+		var localSteps []map[string]interface{}
+
+		for _, step := range steps {
+			localStep := make(map[string]interface{})
+			localStep["name"] = step.GetName()
+			localStep["type"] = string(step.GetType())
+			localStep["timeout"] = step.GetTimeout()
+
+			if allowFailure, ok := step.GetAllowFailureOk(); ok {
+				localStep["allow_failure"] = allowFailure
+			}
+
+			localStep["params"] = convertToString(step.GetParams().(interface{}))
+
+			localSteps = append(localSteps, localStep)
+		}
+
+		d.Set("step", localSteps)
 	}
 
 	d.Set("name", syntheticsTest.GetName())

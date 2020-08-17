@@ -119,7 +119,7 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: createSyntheticsBrowserTestConfig(testName),
+				Config: createSyntheticsBrowserTestConfig(testName, false),
 			},
 			{
 				ResourceName:            "datadog_synthetics_test.bar",
@@ -1108,7 +1108,7 @@ resource "datadog_synthetics_test" "tcp" {
 func createSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(clock, t)
 	return resource.TestStep{
-		Config: createSyntheticsBrowserTestConfig(testName),
+		Config: createSyntheticsBrowserTestConfig(testName, true),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -1161,13 +1161,36 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.0.name", "first step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.0.type", "assertCurrentUrl"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.0.params", "{\"check\":\"contains\",\"value\":\"content\"}"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 		),
 	}
 }
 
-func createSyntheticsBrowserTestConfig(uniq string) string {
+func createSyntheticsBrowserTestConfig(uniq string, withSteps bool) string {
+	stepsConfig := ""
+
+	if withSteps {
+		stepsConfig = `
+    step {
+        name = "first step"
+        type = "assertCurrentUrl"
+        params = jsonencode({
+            "check": "contains",
+            "value": "content"
+        })
+    }
+`
+	}
+
 	return fmt.Sprintf(`
 resource "datadog_synthetics_test" "bar" {
 	type = "browser"
@@ -1205,7 +1228,9 @@ resource "datadog_synthetics_test" "bar" {
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
-}`, uniq)
+
+	%s
+}`, uniq, stepsConfig)
 }
 
 func updateSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
@@ -1264,6 +1289,20 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "buz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.0.name", "first step updated"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.0.type", "assertCurrentUrl"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.0.params", "{\"check\":\"contains\",\"value\":\"content\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1.name", "press key step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1.type", "pressKey"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1.params", "{\"value\":\"1\"}"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 		),
@@ -1304,6 +1343,25 @@ resource "datadog_synthetics_test" "bar" {
 	message = "Notify @pagerduty"
 	tags = ["foo:bar", "buz"]
 	status = "live"
+
+	step {
+	    name = "first step updated"
+	    type = "assertCurrentUrl"
+
+	    params = jsonencode({
+	        "check": "contains",
+	        "value": "content"
+	    })
+	}
+
+	step {
+	    name = "press key step"
+	    type = "pressKey"
+
+	    params = jsonencode({
+	        "value": "1"
+	    })
+	}
 }`, uniq)
 }
 
