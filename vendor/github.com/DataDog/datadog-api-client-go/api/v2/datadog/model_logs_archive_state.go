@@ -38,7 +38,7 @@ func (v *LogsArchiveState) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid LogsArchiveState", *v)
+	return fmt.Errorf("%+v is not a valid LogsArchiveState", value)
 }
 
 // Ptr returns reference to LogsArchiveState value

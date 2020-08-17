@@ -35,7 +35,7 @@ func (v *EventTimelineWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid EventTimelineWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid EventTimelineWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to EventTimelineWidgetDefinitionType value

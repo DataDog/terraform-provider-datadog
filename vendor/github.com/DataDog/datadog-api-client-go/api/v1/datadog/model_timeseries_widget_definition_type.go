@@ -35,7 +35,7 @@ func (v *TimeseriesWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid TimeseriesWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid TimeseriesWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to TimeseriesWidgetDefinitionType value

@@ -38,7 +38,7 @@ func (v *SLOErrorTimeframe) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SLOErrorTimeframe", *v)
+	return fmt.Errorf("%+v is not a valid SLOErrorTimeframe", value)
 }
 
 // Ptr returns reference to SLOErrorTimeframe value

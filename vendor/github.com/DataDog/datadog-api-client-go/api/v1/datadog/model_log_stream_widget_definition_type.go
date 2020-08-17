@@ -35,7 +35,7 @@ func (v *LogStreamWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid LogStreamWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid LogStreamWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to LogStreamWidgetDefinitionType value

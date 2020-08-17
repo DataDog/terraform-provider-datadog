@@ -37,7 +37,7 @@ func (v *WidgetLineType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetLineType", *v)
+	return fmt.Errorf("%+v is not a valid WidgetLineType", value)
 }
 
 // Ptr returns reference to WidgetLineType value

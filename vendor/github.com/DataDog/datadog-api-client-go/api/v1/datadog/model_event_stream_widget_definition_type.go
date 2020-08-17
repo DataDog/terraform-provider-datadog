@@ -35,7 +35,7 @@ func (v *EventStreamWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid EventStreamWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid EventStreamWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to EventStreamWidgetDefinitionType value

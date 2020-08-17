@@ -35,7 +35,7 @@ func (v *ScatterPlotWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid ScatterPlotWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid ScatterPlotWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to ScatterPlotWidgetDefinitionType value

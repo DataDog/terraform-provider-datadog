@@ -35,7 +35,7 @@ func (v *SLOWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SLOWidgetDefinitionType", *v)
+	return fmt.Errorf("%+v is not a valid SLOWidgetDefinitionType", value)
 }
 
 // Ptr returns reference to SLOWidgetDefinitionType value

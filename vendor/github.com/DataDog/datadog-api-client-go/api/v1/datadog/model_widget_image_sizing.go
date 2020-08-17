@@ -37,7 +37,7 @@ func (v *WidgetImageSizing) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetImageSizing", *v)
+	return fmt.Errorf("%+v is not a valid WidgetImageSizing", value)
 }
 
 // Ptr returns reference to WidgetImageSizing value

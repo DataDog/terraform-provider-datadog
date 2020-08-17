@@ -38,7 +38,7 @@ func (v *WidgetOrderBy) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetOrderBy", *v)
+	return fmt.Errorf("%+v is not a valid WidgetOrderBy", value)
 }
 
 // Ptr returns reference to WidgetOrderBy value

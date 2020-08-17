@@ -35,7 +35,7 @@ func (v *RolesType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid RolesType", *v)
+	return fmt.Errorf("%+v is not a valid RolesType", value)
 }
 
 // Ptr returns reference to RolesType value

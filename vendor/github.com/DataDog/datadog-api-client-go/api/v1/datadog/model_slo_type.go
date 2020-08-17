@@ -36,7 +36,7 @@ func (v *SLOType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SLOType", *v)
+	return fmt.Errorf("%+v is not a valid SLOType", value)
 }
 
 // Ptr returns reference to SLOType value

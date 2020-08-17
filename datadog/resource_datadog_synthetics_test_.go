@@ -207,6 +207,7 @@ func syntheticsTestOptions() *schema.Schema {
 	return &schema.Schema{
 		Type:          schema.TypeMap,
 		ConflictsWith: []string{"options_list"},
+		Deprecated:    "This parameter is deprecated, please use `options_list`",
 		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
 			// DiffSuppressFunc is useless if options_list exists
 			if _, isOptionsV2 := d.GetOk("options_list"); isOptionsV2 {
@@ -335,6 +336,39 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Type:     schema.TypeInt,
 					Optional: true,
 				},
+				"monitor_options": {
+					Type:     schema.TypeList,
+					MaxItems: 1,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"renotify_interval": {
+								Type:     schema.TypeInt,
+								Default:  0,
+								Optional: true,
+							},
+						},
+					},
+				},
+				"retry": {
+					Type:     schema.TypeList,
+					MaxItems: 1,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"count": {
+								Type:     schema.TypeInt,
+								Default:  0,
+								Optional: true,
+							},
+							"interval": {
+								Type:     schema.TypeInt,
+								Default:  300,
+								Optional: true,
+							},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -447,7 +481,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	}
 	if username, ok := d.GetOk("request_basicauth.0.username"); ok {
 		if password, ok := d.GetOk("request_basicauth.0.password"); ok {
-			basicAuth := datadogV1.NewSyntheticsTestRequestBasicAuth(password.(string), username.(string))
+			basicAuth := datadogV1.NewSyntheticsBasicAuth(password.(string), username.(string))
 			request.SetBasicAuth(*basicAuth)
 		}
 	}
@@ -565,6 +599,31 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		}
 		if attr, ok := d.GetOk("options_list.0.allow_insecure"); ok {
 			options.SetAllowInsecure(attr.(bool))
+		}
+
+		if retryRaw, ok := d.GetOk("options_list.0.retry"); ok {
+			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
+			retry := retryRaw.([]interface{})[0]
+
+			if count, ok := retry.(map[string]interface{})["count"]; ok {
+				optionsRetry.SetCount(int64(count.(int)))
+			}
+			if interval, ok := retry.(map[string]interface{})["interval"]; ok {
+				optionsRetry.SetInterval(float64(interval.(int)))
+			}
+
+			options.SetRetry(optionsRetry)
+		}
+
+		if monitorOptionsRaw, ok := d.GetOk("options_list.0.monitor_options"); ok {
+			monitorOptions := monitorOptionsRaw.([]interface{})[0]
+			optionsMonitorOptions := datadogV1.SyntheticsTestOptionsMonitorOptions{}
+
+			if renotifyInterval, ok := monitorOptions.(map[string]interface{})["renotify_interval"]; ok {
+				optionsMonitorOptions.SetRenotifyInterval(int64(renotifyInterval.(int)))
+			}
+
+			options.SetMonitorOptions(optionsMonitorOptions)
 		}
 	} else {
 		if attr, ok := d.GetOk("options.tick_every"); ok {
@@ -781,11 +840,24 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 	if actualOptions.HasRetry() {
 		retry := actualOptions.GetRetry()
+		optionsListRetry := make(map[string]interface{})
 		localOption["retry_count"] = convertToString(retry.GetCount())
+		optionsListRetry["count"] = retry.GetCount()
 
 		if interval, ok := retry.GetIntervalOk(); ok {
 			localOption["retry_interval"] = convertToString(interval)
+			optionsListRetry["interval"] = interval
 		}
+
+		localOptionsList["retry"] = []map[string]interface{}{optionsListRetry}
+	}
+	if actualOptions.HasMonitorOptions() {
+		actualMonitorOptions := actualOptions.GetMonitorOptions()
+		renotifyInterval := actualMonitorOptions.GetRenotifyInterval()
+
+		optionsListMonitorOptions := make(map[string]int64)
+		optionsListMonitorOptions["renotify_interval"] = renotifyInterval
+		localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
 	}
 
 	// If the existing state still uses options, keep using that in the state to not generate useless diffs

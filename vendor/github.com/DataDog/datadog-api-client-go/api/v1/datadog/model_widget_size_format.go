@@ -37,7 +37,7 @@ func (v *WidgetSizeFormat) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetSizeFormat", *v)
+	return fmt.Errorf("%+v is not a valid WidgetSizeFormat", value)
 }
 
 // Ptr returns reference to WidgetSizeFormat value

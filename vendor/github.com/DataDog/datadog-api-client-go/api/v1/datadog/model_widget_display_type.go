@@ -37,7 +37,7 @@ func (v *WidgetDisplayType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetDisplayType", *v)
+	return fmt.Errorf("%+v is not a valid WidgetDisplayType", value)
 }
 
 // Ptr returns reference to WidgetDisplayType value

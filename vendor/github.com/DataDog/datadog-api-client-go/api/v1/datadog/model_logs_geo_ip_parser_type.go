@@ -35,7 +35,7 @@ func (v *LogsGeoIPParserType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid LogsGeoIPParserType", *v)
+	return fmt.Errorf("%+v is not a valid LogsGeoIPParserType", value)
 }
 
 // Ptr returns reference to LogsGeoIPParserType value

@@ -45,7 +45,7 @@ func (v *SyntheticsCheckType) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid SyntheticsCheckType", *v)
+	return fmt.Errorf("%+v is not a valid SyntheticsCheckType", value)
 }
 
 // Ptr returns reference to SyntheticsCheckType value

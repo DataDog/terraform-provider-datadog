@@ -40,7 +40,7 @@ func (v *WidgetLegendSize) UnmarshalJSON(src []byte) error {
 		}
 	}
 
-	return fmt.Errorf("%+v is not a valid WidgetLegendSize", *v)
+	return fmt.Errorf("%+v is not a valid WidgetLegendSize", value)
 }
 
 // Ptr returns reference to WidgetLegendSize value
