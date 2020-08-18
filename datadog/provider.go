@@ -102,10 +102,6 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		return nil, errors.New("api_key and app_key must be set unless validate = false")
 	}
 
-	if !validate && (apiKey != "" || appKey != "") {
-		return nil, errors.New("api_key and app_key must not be set when validate = false")
-	}
-
 	// Initialize the community client
 	communityClient := datadogCommunity.NewClient(apiKey, appKey)
 
