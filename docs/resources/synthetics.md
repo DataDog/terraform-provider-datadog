@@ -208,7 +208,7 @@ The following arguments are supported:
 - `step` - (Optional) Steps for browser tests.
   - `name` - (Required) Name of the step.
   - `type` - (Required) Type of step. Please refer to [Datadog documentation](https://docs.datadoghq.com/api/v1/synthetics/#create-a-test) for the complete list of step type available.
-  - `params` - (Required) Parameters for the step.
+  - `params` - (Required) Parameters for the step as JSON string.
   - `allow_failure` - (Optional) Determines if the step should be allowed to fail.
   - `timeout` - (Optional) Used to override the default timeout of a step.
 

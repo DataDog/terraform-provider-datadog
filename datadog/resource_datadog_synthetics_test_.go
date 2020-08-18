@@ -438,9 +438,13 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 		syntheticsTest, _, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id()).Execute()
 	} else {
 		syntheticsTest, _, err = datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id()).Execute()
+
+		// re-fetch test if it was actually a browser but we didn't have the info earlier
+		if syntheticsTest.GetType() == "browser" {
+			syntheticsTest, _, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id()).Execute()
+		}
 	}
 
-	// syntheticsTest, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id()).Execute()
 	if err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			// Delete the resource from the local state since it doesn't exist anymore in the actual state
