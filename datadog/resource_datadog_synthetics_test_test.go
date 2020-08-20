@@ -1161,6 +1161,14 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.0.name", "first step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.0.type", "assertCurrentUrl"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.0.params", "{\"check\":\"contains\",\"value\":\"content\"}"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 		),
@@ -1205,6 +1213,15 @@ resource "datadog_synthetics_test" "bar" {
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
+
+	step {
+	    name = "first step"
+	    type = "assertCurrentUrl"
+	    params = jsonencode({
+	        "check": "contains",
+	        "value": "content"
+	    })
+	}
 }`, uniq)
 }
 
@@ -1264,6 +1281,20 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "buz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.0.name", "first step updated"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.0.type", "assertCurrentUrl"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.0.params", "{\"check\":\"contains\",\"value\":\"content\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1.name", "press key step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1.type", "pressKey"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.1.params", "{\"value\":\"1\"}"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 		),
@@ -1304,6 +1335,25 @@ resource "datadog_synthetics_test" "bar" {
 	message = "Notify @pagerduty"
 	tags = ["foo:bar", "buz"]
 	status = "live"
+
+	step {
+	    name = "first step updated"
+	    type = "assertCurrentUrl"
+
+	    params = jsonencode({
+	        "check": "contains",
+	        "value": "content"
+	    })
+	}
+
+	step {
+	    name = "press key step"
+	    type = "pressKey"
+
+	    params = jsonencode({
+	        "value": "1"
+	    })
+	}
 }`, uniq)
 }
 
