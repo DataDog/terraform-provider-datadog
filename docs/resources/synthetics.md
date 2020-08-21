@@ -31,7 +31,7 @@ resource "datadog_synthetics_test" "test_api" {
   options_list {
     tick_every = 900
 
-    retry = {
+    retry {
       count = 2
       interval = 300
     }
@@ -109,7 +109,7 @@ resource "datadog_synthetics_test" "test_tcp" {
 
 ## Example Usage (Synthetics Browser test)
 
-Support for Synthetics Browser test is limited (see [below](#synthetics-browser-test))
+Support for Synthetics Browser test steps is limited (see [below](#synthetics-browser-test))
 
 ```hcl
 # Create a new Datadog Synthetics Browser test starting on https://www.example.org
@@ -133,6 +133,15 @@ resource "datadog_synthetics_test" "test_browser" {
   tags    = []
 
   status = "paused"
+
+  step {
+    name = "Check current url"
+    type = "assertCurrentUrl"
+    params = jsonencode({
+        "check": "contains",
+        "value": "datadoghq"
+    })
+  }
 }
 ```
 
@@ -163,14 +172,14 @@ The following arguments are supported:
 - `request_basicauth` - (Optional) Array of 1 item containing HTTP basic authentication credentials
   - `username` - (Required) Username for authentication
   - `password` - (Required) Password for authentication
-- `assertion` - (Required) Array of 1 to 10 items, only some combinations of type/operator are valid (please refer to Datadog documentation)
+- `assertion` - (Required) Array of 1 to 10 items, only some combinations of type/operator are valid (please refer to Datadog documentation).
   - `type` - (Required) body, header, responseTime, statusCode
   - `operator` - (Required) Please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation) as operator depend on assertion type
   - `target` - (Optional) Expected value, please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation) as target depend on assertion type
   - `targetjsonpath` - (Optional) Expected structure if `operator` is `validatesJSONPath`
-    - `operator` - (Required) The specific operator to use on the path
-    - `targetvalue` - (Required) Expected matching value
-    - `jsonpath` - (Required) The JSON path to assert
+      - `operator` - (Required) The specific operator to use on the path
+      - `targetvalue` - (Required) Expected matching value
+      - `jsonpath` - (Required) The JSON path to assert
   - `property` - (Optional) if assertion type is "header", this is a the header name
 - `options` - (Required) **Deprecated**
   - `tick_every` - (Required)  How often the test should run (in seconds). Current possible values are 900, 1800, 3600, 21600, 43200, 86400, 604800 plus 60 if type=api or 300 if type=browser
@@ -189,13 +198,19 @@ The following arguments are supported:
   - `accept_self_signed` - (Optional) For type=ssl, true or false
   - `allow_insecure` - (Optional) For type=api, true or false. Allow your HTTP test go on with connection even if there is an error when validating the certificate.
   - `retry` - (Optional)
-    - `count` - (Optional) Number of retries needed to consider a location as failed before sending a notification alert.
-    - `interval` - (Optional) Interval between a failed test and the next retry in milliseconds.
+      - `count` - (Optional) Number of retries needed to consider a location as failed before sending a notification alert.
+      - `interval` - (Optional) Interval between a failed test and the next retry in milliseconds.
   - `monitor_options` - (Optional)
-    - `renotification_interval` - (Optional) Specify a renotification frequency.
+      - `renotification_interval` - (Optional) Specify a renotification frequency.
 - `locations` - (Required) Please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#request) for available locations (e.g. "aws:eu-central-1")
 - `device_ids` - (Optional) "laptop_large", "tablet" or "mobile_small" (only available if type=browser)
 - `status` - (Required) "live", "paused"
+- `step` - (Optional) Steps for browser tests.
+  - `name` - (Required) Name of the step.
+  - `type` - (Required) Type of step. Please refer to [Datadog documentation](https://docs.datadoghq.com/api/v1/synthetics/#create-a-test) for the complete list of step type available.
+  - `params` - (Required) Parameters for the step as JSON string.
+  - `allow_failure` - (Optional) Determines if the step should be allowed to fail.
+  - `timeout` - (Optional) Used to override the default timeout of a step.
 
 ## Attributes Reference
 
@@ -214,11 +229,7 @@ $ terraform import datadog_synthetics_test.fizz abc-123-xyz
 
 ## Synthetics Browser test
 
-Support for Synthetics Browser test is limited to creating shallow Synthetics Browser test (cf. [example usage below](#example-usage-synthetics-browser-test-))
-
-You cannot create/edit/delete steps or assertions via Terraform unless you use [Datadog WebUI](https://app.datadoghq.com/synthetics/list) in conjunction with Terraform.
-
-We are considering adding support for Synthetics Browser test steps and assertions in the future but can't share any release date on that matter.
+Support for Synthetics Browser test is limited when creating steps. Some steps types (like steps involving elements) cannot be created, but they can be imported.
 
 ## Assertion format
 

@@ -16,21 +16,21 @@ Requirements
 Building The Provider
 ---------------------
 
-Clone repository to: `$GOPATH/src/github.com/terraform-providers/terraform-provider-datadog`
+Clone repository to: `$GOPATH/src/github.com/DataDog/terraform-provider-datadog`
 
 ```sh
-$ mkdir -p $GOPATH/src/github.com/terraform-providers; cd $GOPATH/src/github.com/terraform-providers
-$ git clone git@github.com:terraform-providers/terraform-provider-datadog
+$ mkdir -p $GOPATH/src/github.com/DataDog; cd $GOPATH/src/github.com/DataDog
+$ git clone git@github.com:DataDog/terraform-provider-datadog
 ```
 
 Enter the provider directory and build the provider
 
 ```sh
-$ cd $GOPATH/src/github.com/terraform-providers/terraform-provider-datadog
+$ cd $GOPATH/src/github.com/DataDog/terraform-provider-datadog
 $ make build
 ```
 
-**Note**: For contributions created from forks, the repository should still be cloned under the `$GOPATH/src/github.com/terraform-providers/terraform-provider-datadog` directory to allow the provided `make` commands to properly run, build, and test this project.
+**Note**: For contributions created from forks, the repository should still be cloned under the `$GOPATH/src/github.com/DataDog/terraform-provider-datadog` directory to allow the provided `make` commands to properly run, build, and test this project.
 
 Using the provider
 ----------------------
@@ -67,7 +67,7 @@ manipulated in a predictable order. When creating a testing Terraform config tha
 resources at the same time, you need to set inter-resource dependencies (using `depends_on`)
 in such a way that there is only one way for Terraform to manipulate them. For example, given
 resources A, B and C in the same config string, you can achieve this by making A depend on B
-and B depend on C. See [PR #442](https://github.com/terraform-providers/terraform-provider-datadog/pull/442)
+and B depend on C. See [PR #442](https://github.com/DataDog/terraform-provider-datadog/pull/442)
 for an example of this.
 
 *Note:* Recording cassettes creates/updates/destroys real resources. Never run this on
