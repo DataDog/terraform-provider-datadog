@@ -205,7 +205,6 @@ func resourceDatadogMonitor() *schema.Resource {
 			"validate": {
 				Type:     schema.TypeBool,
 				Optional: true,
-				Default:  true,
 			},
 		},
 	}
@@ -364,7 +363,7 @@ func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interfa
 		// Same for type
 		return nil
 	}
-	if !diff.Get("validate").(bool) {
+	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
 		// Explicitly skip validation
 		return nil
 	}
