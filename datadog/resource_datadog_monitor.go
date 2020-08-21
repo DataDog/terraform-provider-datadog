@@ -202,6 +202,11 @@ func resourceDatadogMonitor() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
+			"validate": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
 		},
 	}
 }
@@ -349,9 +354,18 @@ func resourceDatadogMonitorExists(d *schema.ResourceData, meta interface{}) (b b
 	return true, nil
 }
 
+// Use CustomizeDiff to do monitor validation
 func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interface{}) error {
 	if _, ok := diff.GetOk("query"); !ok {
 		// If query depends on previous resources, we can't validate
+		return nil
+	}
+	if _, ok := diff.GetOk("type"); !ok {
+		// Same for type
+		return nil
+	}
+	if !diff.Get("validate").(bool) {
+		// Explicitly skip validation
 		return nil
 	}
 	m, _ := buildMonitorStruct(diff)
