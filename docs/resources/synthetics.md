@@ -31,7 +31,7 @@ resource "datadog_synthetics_test" "test_api" {
   options_list {
     tick_every = 900
 
-    retry = {
+    retry {
       count = 2
       interval = 300
     }
