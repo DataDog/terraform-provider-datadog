@@ -360,7 +360,7 @@ func resourceDatadogMonitorExists(d *schema.ResourceData, meta interface{}) (b b
 // Use CustomizeDiff to do monitor validation
 func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interface{}) error {
 	if _, ok := diff.GetOk("query"); !ok {
-		// If query depends on previous resources, we can't validate
+		// If "query" depends on other resources, we can't validate as the variables may not be interpolated yet.
 		return nil
 	}
 	if _, ok := diff.GetOk("type"); !ok {
