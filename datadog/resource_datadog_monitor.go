@@ -205,6 +205,10 @@ func resourceDatadogMonitor() *schema.Resource {
 			"validate": {
 				Type:     schema.TypeBool,
 				Optional: true,
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// This is never sent to the backend, so it should never generate a diff
+					return true
+				},
 			},
 		},
 	}
