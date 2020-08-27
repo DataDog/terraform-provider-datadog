@@ -821,11 +821,7 @@ func createSyntheticsSSLTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "message", "Notify @datadog.user"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "tags.#", "2"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "tags.0", "foo:bar"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "tags.1", "baz"),
+				"datadog_synthetics_test.ssl", "tags.#", "0"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "status", "paused"),
 			resource.TestCheckResourceAttrSet(
@@ -861,7 +857,7 @@ resource "datadog_synthetics_test" "ssl" {
 
 	name = "%s"
 	message = "Notify @datadog.user"
-	tags = ["foo:bar", "baz"]
+	tags = []
 
 	status = "paused"
 }`, uniq)

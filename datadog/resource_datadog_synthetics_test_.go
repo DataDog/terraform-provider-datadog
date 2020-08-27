@@ -740,7 +740,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		syntheticsTest.SetLocations(locations)
 	}
 
-	var tags []string
+	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
 		for _, s := range attr.([]interface{}) {
 			tags = append(tags, s.(string))
