@@ -13,13 +13,20 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
+// Minimal interface between ResourceData and ResourceDiff so that we can use them interchangeably in buildMonitorStruct
+type BuiltResource interface {
+	Get(string) interface{}
+	GetOk(string) (interface{}, bool)
+}
+
 func resourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogMonitorCreate,
-		Read:   resourceDatadogMonitorRead,
-		Update: resourceDatadogMonitorUpdate,
-		Delete: resourceDatadogMonitorDelete,
-		Exists: resourceDatadogMonitorExists,
+		Create:        resourceDatadogMonitorCreate,
+		Read:          resourceDatadogMonitorRead,
+		Update:        resourceDatadogMonitorUpdate,
+		Delete:        resourceDatadogMonitorDelete,
+		Exists:        resourceDatadogMonitorExists,
+		CustomizeDiff: resourceDatadogMonitorCustomizeDiff,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogMonitorImport,
 		},
@@ -195,11 +202,19 @@ func resourceDatadogMonitor() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
+			"validate": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// This is never sent to the backend, so it should never generate a diff
+					return true
+				},
+			},
 		},
 	}
 }
 
-func buildMonitorStruct(d *schema.ResourceData) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
+func buildMonitorStruct(d BuiltResource) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
 
 	var thresholds datadogV1.MonitorThresholds
 
@@ -340,6 +355,31 @@ func resourceDatadogMonitorExists(d *schema.ResourceData, meta interface{}) (b b
 	}
 
 	return true, nil
+}
+
+// Use CustomizeDiff to do monitor validation
+func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interface{}) error {
+	if _, ok := diff.GetOk("query"); !ok {
+		// If "query" depends on other resources, we can't validate as the variables may not be interpolated yet.
+		return nil
+	}
+	if _, ok := diff.GetOk("type"); !ok {
+		// Same for type
+		return nil
+	}
+	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
+		// Explicitly skip validation
+		return nil
+	}
+	m, _ := buildMonitorStruct(diff)
+
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+	if _, _, err := datadogClientV1.MonitorsApi.ValidateMonitor(authV1).Body(*m).Execute(); err != nil {
+		return translateClientError(err, "error validating monitor")
+	}
+	return nil
 }
 
 func getUnmutedScopes(d *schema.ResourceData) []string {
