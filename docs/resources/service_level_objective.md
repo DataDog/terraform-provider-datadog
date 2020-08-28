@@ -110,7 +110,7 @@ query {
 
 The following attributes are exported:
 
-- `id` - ID of the Datadog service level objective
+- `id` : ID of the Datadog service level objective
 
 ## Import
 

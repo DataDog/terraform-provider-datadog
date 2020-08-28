@@ -47,7 +47,7 @@ The following arguments are supported:
 
 The following attributes are exported:
 
-- `external_id` - AWS External ID
+- `external_id` : AWS External ID
 
 **NOTE** This provider will not be able to detect changes made to the `external_id` field from outside Terraform.
 

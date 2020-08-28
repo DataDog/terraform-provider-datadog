@@ -52,8 +52,8 @@ The following arguments are supported:
 - `end_date`: (Optional) String representing date and time to end the downtime in RFC3339 format.
 - `timezone` (Optional) The timezone for the downtime, default UTC. It must be a valid IANA Time Zone.
 - `recurrence`: (Optional) A dictionary to configure the downtime to be recurring.
-  - `type` - days, weeks, months, or years
-  - `period` - How often to repeat as an integer. For example to repeat every 3 days, select a type of days and a period of 3.
+  - `type` : days, weeks, months, or years
+  - `period` : How often to repeat as an integer. For example to repeat every 3 days, select a type of days and a period of 3.
   - `week_days`: (Optional) A list of week days to repeat on. Choose from: Mon, Tue, Wed, Thu, Fri, Sat or Sun. Only applicable when type is weeks. First letter must be capitalized.
   - `until_occurrences`: (Optional) How many times the downtime will be rescheduled. `until_occurrences` and `until_date` are mutually exclusive.
   - `until_date`: (Optional) The date at which the recurrence should end as a POSIX timestamp. `until_occurrences` and `until_date` are mutually exclusive.
@@ -66,9 +66,9 @@ The following arguments are supported:
 
 The following attributes are exported:
 
-- `id` - ID of the Datadog downtime. On updates this can sometime change based on API logic. For recurring downtimes it would be recommended to `ignore_changes` on this field.
-- `active` - If true this indicates the downtime is currently active.
-- `disabled` - If true this indicates the downtime is currently disabled.
+- `id` : ID of the Datadog downtime. On updates this can sometime change based on API logic. For recurring downtimes it would be recommended to `ignore_changes` on this field.
+- `active` : If true this indicates the downtime is currently active.
+- `disabled` : If true this indicates the downtime is currently disabled.
 
 ## Import
 

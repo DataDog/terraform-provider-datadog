@@ -40,9 +40,9 @@ The following arguments are supported:
 
 The following attributes are exported:
 
-- `project_id` - Google Cloud project ID
-- `client_email` - Google Cloud project service account email
-- `host_filters` - Host filters
+- `project_id` : Google Cloud project ID
+- `client_email` : Google Cloud project service account email
+- `host_filters` : Host filters
 
 ## Import
 

@@ -183,7 +183,7 @@ This issue doesn't apply to multi-monitor downtimes (those that don't contain `m
 
 The following attributes are exported:
 
-- `id` - ID of the Datadog monitor
+- `id` : ID of the Datadog monitor
 
 ## Import
 

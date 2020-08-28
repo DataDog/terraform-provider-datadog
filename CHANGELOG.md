@@ -380,13 +380,13 @@ BUG FIXES:
 
 IMPROVEMENTS:
 
-- `datadog_downtime` - adding support for setting `monitor_id` ([#18](https://github.com/terraform-providers/terraform-provider-datadog/issues/18))
+- `datadog_downtime` : adding support for setting `monitor_id` ([#18](https://github.com/terraform-providers/terraform-provider-datadog/issues/18))
 
 ## 1.0.2 (December 19, 2017)
 
 IMPROVEMENTS:
 
-- `datadog_monitor` - Add support for monitor recovery thresholds ([#37](https://github.com/terraform-providers/terraform-provider-datadog/issues/37))
+- `datadog_monitor` : Add support for monitor recovery thresholds ([#37](https://github.com/terraform-providers/terraform-provider-datadog/issues/37))
 
 BUG FIXES:
 
