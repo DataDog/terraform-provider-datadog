@@ -6,6 +6,23 @@ on:
       - master
 
 jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    if: github.event.action != 'closed' && github.event.pull_request.merged != true
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+      - name: Install pre-commit
+        run: python -m pip install pre-commit
+      - name: set PY
+        run: echo "::set-env name=PY::$(python -c 'import hashlib, sys;print(hashlib.sha256(sys.version.encode()+sys.executable.encode()).hexdigest())')"
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
+      - name: Run pre-commit
+        run: pre-commit run --all-files --show-diff-on-failure --color=always
+
   test:
     env:
       GOFLAGS: "-mod=vendor"
