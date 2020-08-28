@@ -24,24 +24,25 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
 
 The following arguments are supported:
 
-* `project_id` - (Required) Your Google Cloud project ID found in your JSON service account key.
-* `private_key_id` - (Required) Your private key ID found in your JSON service account key.
-* `private_key` - (Required) Your private key name found in your JSON service account key.
-* `client_email` - (Required) Your email found in your JSON service account key.
-* `client_id` - (Required) Your ID found in your JSON service account key.
-* `host_filters` - (Optional) Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.
+- `project_id`: (Required) Your Google Cloud project ID found in your JSON service account key.
+- `private_key_id`: (Required) Your private key ID found in your JSON service account key.
+- `private_key`: (Required) Your private key name found in your JSON service account key.
+- `client_email`: (Required) Your email found in your JSON service account key.
+- `client_id`: (Required) Your ID found in your JSON service account key.
+- `host_filters`: (Optional) Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.
 
 ### See also
-* [Google Cloud > Creating and Managing Service Account Keys](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
-* [Datadog API Reference > Integrations > Google Cloud Platform](https://docs.datadoghq.com/api/v1/gcp-integration/)
+
+- [Google Cloud > Creating and Managing Service Account Keys](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
+- [Datadog API Reference > Integrations > Google Cloud Platform](https://docs.datadoghq.com/api/v1/gcp-integration/)
 
 ## Attributes Reference
 
 The following attributes are exported:
 
-* `project_id` - Google Cloud project ID
-* `client_email` - Google Cloud project service account email
-* `host_filters` - Host filters
+- `project_id`: Google Cloud project ID
+- `client_email`: Google Cloud project service account email
+- `host_filters`: Host filters
 
 ## Import
 

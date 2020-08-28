@@ -24,5 +24,5 @@ resource "datadog_integration_pagerduty_service_object" "testing_bar" {
 
 The following arguments are supported:
 
-* `service_name` - (Required) Your Service name in PagerDuty.
-* `service_key` - (Required) Your Service name associated service key in PagerDuty. Note: Since the Datadog API never returns service keys, it is impossible to detect [drifts](https://www.hashicorp.com/blog/detecting-and-managing-drift-with-terraform). The best way to solve a drift is to manually mark the Service Object resource with [terraform taint](https://www.terraform.io/docs/commands/taint.html) to have it destroyed and recreated.
+- `service_name`: (Required) Your Service name in PagerDuty.
+- `service_key`: (Required) Your Service name associated service key in PagerDuty. Note: Since the Datadog API never returns service keys, it is impossible to detect [drifts](https://www.hashicorp.com/blog/detecting-and-managing-drift-with-terraform). The best way to solve a drift is to manually mark the Service Object resource with [terraform taint](https://www.terraform.io/docs/commands/taint.html) to have it destroyed and recreated.

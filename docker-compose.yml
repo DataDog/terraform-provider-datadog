@@ -1,9 +1,9 @@
-version: '3'
+version: "3"
 services:
   test:
     image: golang:latest
     depends_on:
-     - datadog
+      - datadog
     networks:
       - test
     command: make test
@@ -29,9 +29,9 @@ services:
       DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: "true"
       DD_AC_EXCLUDE: "name:datadog"
     volumes:
-     - /var/run/docker.sock:/var/run/docker.sock
-     - /proc/:/host/proc/:ro
-     - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
 
 networks:
   test:
