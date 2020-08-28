@@ -768,9 +768,9 @@ Nested `widget` blocks have the following structure:
       - `query`: (Required) The query to use in the widget.
       - `summary_type` - (Optional) The monitor summary type to use. One of "monitors", "groups", or "combined". Defaults to "monitors".
       - `sort` - (Optional) The method to use to sort monitors. Example: "status,asc".
-      - `display_format` - (Optional") The display setting to use. One of "counts", "list", or "countsAndList".
-      - `color_preference` - (Optional") Whether to colorize text or background. One of "text", "background".
-      - `hide_zero_counts` - (Optional") Boolean indicating whether to hide empty categories.
+      - `display_format` - (Optional) The display setting to use. One of "counts", "list", or "countsAndList".
+      - `color_preference` - (Optional) Whether to colorize text or background. One of "text", "background".
+      - `hide_zero_counts` - (Optional) Boolean indicating whether to hide empty categories.
       - `show_last_triggered` - (Optional) Boolean indicating whether to show when monitors/groups last triggered.
       - `title`: (Optional) The title of the widget.
       - `title_size`: (Optional) The size of the widget's title. Default is 16.
@@ -781,8 +781,8 @@ Nested `widget` blocks have the following structure:
       - `font_size` - (Optional) Size of the text.
       - `text_align` - (Optional) How to align the text on the widget. Available values are: `center`, `left`, or `right`.
       - `show_tick` - (Optional) Whether to show a tick or not.
-      - `tick_pos` - (Optional") When tick = true, string with a percent sign indicating the position of the tick. Example: use tick_pos = "50%" for centered alignment.
-      - `tick_edge` - (Optional") When tick = true, string indicating on which side of the widget the tick should be displayed. One of "bottom", "top", "left", "right".
+      - `tick_pos` - (Optional) When tick = true, string with a percent sign indicating the position of the tick. Example: use tick_pos = "50%" for centered alignment.
+      - `tick_edge` - (Optional) When tick = true, string indicating on which side of the widget the tick should be displayed. One of "bottom", "top", "left", "right".
   - `query_value_definition`: The definition for a Query Value widget. Exactly one nested block is allowed with the following structure:
         - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
             - `q`: (Optional) The metric query to use in the widget.
