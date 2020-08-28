@@ -2,3 +2,4 @@
   rev: 2.1.1
   hooks:
     - id: prettier
+      args: [--prose-wrap=never, --embedded-language-formatting=off]
