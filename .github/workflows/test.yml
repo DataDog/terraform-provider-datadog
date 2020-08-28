@@ -31,19 +31,19 @@ jobs:
         platform: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-    # if we don't do this, `gofmt` will want to rewrite all Go files due to bad line endings,
-    # because Git will convert all line endings to CRLF when cloning on windows
-    - name: Set Git to use Linux-style line endings
-      run: |
-        git config --global core.autocrlf false
-        git config --global core.eol lf
-    - name: Install Go
-      uses: actions/setup-go@v2-beta
-      with:
-        go-version: 1.15
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Vet
-      run: make vet
-    - name: Test
-      run: make test
+      # if we don't do this, `gofmt` will want to rewrite all Go files due to bad line endings,
+      # because Git will convert all line endings to CRLF when cloning on windows
+      - name: Set Git to use Linux-style line endings
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Install Go
+        uses: actions/setup-go@v2-beta
+        with:
+          go-version: 1.15
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Vet
+        run: make vet
+      - name: Test
+        run: make test

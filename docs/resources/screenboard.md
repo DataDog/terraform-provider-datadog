@@ -591,8 +591,7 @@ Nested `widget` `tile_def` `event` blocks have the following structure:
 
 ### Nested `widget` `tile_def` `request` blocks
 
-Only for widgets of type "timeseries", "query_value", "toplist", "change", "hostmap", "process".
-Nested `widget` `tile_def` `request` blocks have the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
+Only for widgets of type "timeseries", "query_value", "toplist", "change", "hostmap", "process". Nested `widget` `tile_def` `request` blocks have the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
 
 - `q`: (Optional) Only for widgets of type "timeseries", "query_value", "toplist", "change", "hostmap") The query of the request. Pro tip: Use the JSON tab inside the Datadog UI to help build you query strings.
 - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](screenboard.html#nested-widget-tile_def-request-apm_query-and-log_query-blocks).
@@ -613,7 +612,9 @@ Nested `widget` `tile_def` `request` blocks have the following structure (exactl
 - `increase_good`: (Optional, only for widgets of type "change") Boolean indicating whether an increase in the value is good (thus displayed in green) or not (thus displayed in red).
 - `style`: (Optional, only for widgets of type "timeseries", "query_value", "toplist", "process") describing how to display the widget. The structure of this block is described below. At most one such block should be present in a given request block.
 - `conditional_format`: (Optional) Nested block to customize the style if certain conditions are met. Currently only applies to `Query Value` and `Top List` type graphs.
+
 * `metadata_json`: (Optional) A JSON blob (preferrably created using [jsonencode](https://www.terraform.io/docs/configuration/functions/jsonencode.html)) representing mapping of query expressions to alias names. Note that the query expressions in `metadata_json` will be ignored if they're not present in the query. For example, this is how you define `metadata_json` with Terraform >= 0.12:
+
   ```
   metadata_json = jsonencode({
     "avg:redis.info.latency_ms{$host}": {
@@ -621,7 +622,9 @@ Nested `widget` `tile_def` `request` blocks have the following structure (exactl
     }
   })
   ```
+
   And here's how you define `metadata_json` with Terraform < 0.12:
+
   ```
   variable "my_metadata" {
     default = {
@@ -636,6 +639,7 @@ Nested `widget` `tile_def` `request` blocks have the following structure (exactl
           metadata_json = "${jsonencode(var.my_metadata)}"
   }
   ```
+
   Note that this has to be a JSON blob because of [limitations](https://github.com/hashicorp/terraform/issues/6215) of Terraform's handling complex nested structures. This is also why the key is called `metadata_json` even though it sets `metadata` attribute on the API call.
 
 ### Nested `widget` `tile_def` `request` `style` block
