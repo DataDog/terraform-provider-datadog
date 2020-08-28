@@ -20,14 +20,14 @@ data "datadog_monitor" "test" {
  * `name_filter` - (Optional) A monitor name to limit the search.
  * `tags_filter` - (Optional) A list of tags to limit the search. This filters on the monitor scope.
  * `monitor_tags_filter` - (Optional) A list of monitor tags to limit the search. This filters on the tags set on the monitor itself.
- 
+
  ~> **NOTE:** If more or less than a single match is returned by the search, Terraform will fail.
  Ensure that your search is specific enough to return a single monitor.
 
 ## Attributes Reference
 
 * `id` - ID of the Datadog monitor
-* `name` - Name of the monitor. 
+* `name` - Name of the monitor.
 * `type` - Type of the monitor.
 * `query` - Query of the monitor.
 * `message` - Message included with notifications for this monitor.

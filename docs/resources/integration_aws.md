@@ -48,7 +48,7 @@ The following attributes are exported:
 
 * `external_id` - AWS External ID
 
-**NOTE** This provider will not be able to detect changes made to the `external_id` field from outside Terraform. 
+**NOTE** This provider will not be able to detect changes made to the `external_id` field from outside Terraform.
 
 ## Import
 

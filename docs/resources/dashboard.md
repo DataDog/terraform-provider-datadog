@@ -642,263 +642,263 @@ Nested `widget` blocks have the following structure:
 - `layout` - (Required for widgets in dashboards with `free` layout_type only). The structure of this block is described [below](dashboard.html#nested-widget-layout-blocks)
 - A widget should have exactly one of the following nested blocks describing the widget definition:
   - `alert_graph_definition`: The definition for a Alert Graph widget. Exactly one nested block is allowed with the following structure:
-      - `alert_id`: (Required) The ID of the monitor used by the widget.
-      - `viz_type`: (Required) Type of visualization to use when displaying the widget. Either "timeseries" or "toplist".
-      - `title`: (Optional) The title of the widget.
-      - `title_size`: (Optional) The size of the widget's title. Default is 16.
-      - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right"
-      - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    -`alert_id`: (Required) The ID of the monitor used by the widget.
+    -`viz_type`: (Required) Type of visualization to use when displaying the widget. Either "timeseries" or "toplist".
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right"
+    -`time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
   - `alert_value_definition`: The definition for an Alert Value widget. Exactly one nested block is allowed with the following structure:
-      - `alert_id`: (Required) The ID of the monitor used by the widget.
-      - `precision`: (Optional) The precision to use when displaying the value. Use "*" for maximum precision.
-      - `unit`: (Optional) The unit for the value displayed in the widget.
-      - `text_align`: (Optional) The alignment of the text in the widget.
-      - `title`: (Optional) The title of the widget.
-      - `title_size`: (Optional) The size of the widget's title. Default is 16.
-      - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right"
+    -`alert_id`: (Required) The ID of the monitor used by the widget.
+    -`precision`: (Optional) The precision to use when displaying the value. Use "*" for maximum precision.
+    -`unit`: (Optional) The unit for the value displayed in the widget.
+    -`text_align`: (Optional) The alignment of the text in the widget.
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right"
   - `change_definition`: The definition for a Change widget. Exactly one nested block is allowed with the following structure:
-      - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
-          - `q`: (Required) The metric query to use in the widget.
-          - `change_type`: (Optional) Whether to show absolute or relative change. One of "absolute", "relative".
-          - `compare_to` - (Optional) Choose from when to compare current data to. One of "hour_before", "day_before", "week_before" or "month_before".
-          - `increase_good` - (Optional) Boolean indicating whether an increase in the value is good (thus displayed in green) or not (thus displayed in red).
-          - `order_by` - (Optional) One of "change", "name", "present" (present value) or "past" (past value).
-          - `order_dir` - (Optional) Either "asc" (ascending) or "desc" (descending).
-          - `show_present` - (Optional) If set to "true", displays current value.
-      - `title`: (Optional) The title of the widget.
-      - `title_size`: (Optional) The size of the widget's title. Default is 16.
-      - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
-      - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    -`request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
+      -`q`: (Required) The metric query to use in the widget.
+      -`change_type`: (Optional) Whether to show absolute or relative change. One of "absolute", "relative".
+      -`compare_to` - (Optional) Choose from when to compare current data to. One of "hour_before", "day_before", "week_before" or "month_before".
+      -`increase_good` - (Optional) Boolean indicating whether an increase in the value is good (thus displayed in green) or not (thus displayed in red).
+      -`order_by` - (Optional) One of "change", "name", "present" (present value) or "past" (past value).
+      -`order_dir` - (Optional) Either "asc" (ascending) or "desc" (descending).
+      -`show_present` - (Optional) If set to "true", displays current value.
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
   - `check_status_definition`: The definition for a Check Status widget. Exactly one nested block is allowed with the following structure:
-      - `check` - (Optional) The check to use in the widget.
-      - `grouping` - (Optional) Either "check" or "cluster", depending on whether the widget should use a single check or a cluster of checks.
-      - `group` - (Optional) The check group to use in the widget.
-      - `group_by` - (Optional) When grouping = "cluster", indicates a list of tags to use for grouping.
-      - `tags` - (Optional) List of tags to use in the widget.
-      - `title`: (Optional) The title of the widget.
-      - `title`: (Optional) The title of the widget.
-      - `title_size`: (Optional) The size of the widget's title. Default is 16.
-      - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
-      - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    -`check` - (Optional) The check to use in the widget.
+    -`grouping` - (Optional) Either "check" or "cluster", depending on whether the widget should use a single check or a cluster of checks.
+    -`group` - (Optional) The check group to use in the widget.
+    -`group_by` - (Optional) When grouping = "cluster", indicates a list of tags to use for grouping.
+    -`tags` - (Optional) List of tags to use in the widget.
+    -`title`: (Optional) The title of the widget.
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
   - `distribution_definition`: The definition for a Distribution widget. Exactly one nested block is allowed with the following structure:
-      - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
-          - `q`: (Required) The metric query to use in the widget.
-          - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
-              - `palette` - (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
-      - `title`: (Optional) The title of the widget.
-      - `title_size`: (Optional) The size of the widget's title. Default is 16.
-      - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
-      - `show_legend`: (Optional) Whether or not to show the legend on this widget.
-      - `legend_size`: (Optional) The size of the legend displayed in the widget.
-      - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    -`request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
+      -`q`: (Required) The metric query to use in the widget.
+      -`style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
+        -`palette` - (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`show_legend`: (Optional) Whether or not to show the legend on this widget.
+    -`legend_size`: (Optional) The size of the legend displayed in the widget.
+    -`time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
   - `event_stream_definition`: The definition for a Event Stream widget. Exactly one nested block is allowed with the following structure:
-      - `query`: (Required) The query to use in the widget.
-      - `event_size` - (Optional) The size of the events in the widget. Either "s" (small, title only) or "l" (large, full event).
-      - `title`: (Optional) The title of the widget.
-      - `title_size`: (Optional) The size of the widget's title. Default is 16.
-      - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
-      - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
-      - `tags_execution`: (Optional) The execution method for multi-value filters. Can be either "and" or "or".
+    -`query`: (Required) The query to use in the widget.
+    -`event_size` - (Optional) The size of the events in the widget. Either "s" (small, title only) or "l" (large, full event).
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    -`tags_execution`: (Optional) The execution method for multi-value filters. Can be either "and" or "or".
   - `event_timeline_definition`: The definition for a Event Timeline widget. Exactly one nested block is allowed with the following structure:
-      - `query`: (Required) The query to use in the widget.
-      - `title`: (Optional) The title of the widget.
-      - `title_size`: (Optional) The size of the widget's title. Default is 16.
-      - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
-      - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
-      - `tags_execution`: (Optional) The execution method for multi-value filters. Can be either "and" or "or".
+    -`query`: (Required) The query to use in the widget.
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    -`tags_execution`: (Optional) The execution method for multi-value filters. Can be either "and" or "or".
   - `free_text_definition`: The definition for a Free Text. Exactly one nested block is allowed with the following structure:
-      - `text` - (Required) The text to display in the widget.
-      - `color` - (Optional) The color of the text in the widget.
-      - `font_size` - (Optional, "note") The size of the text in the widget.
-      - `text_align` - (Optional, "alert_value", "note") The alignment of the text in the widget.
+    -`text` - (Required) The text to display in the widget.
+    -`color` - (Optional) The color of the text in the widget.
+    -`font_size` - (Optional, "note") The size of the text in the widget.
+    -`text_align` - (Optional, "alert_value", "note") The alignment of the text in the widget.
   - `heatmap_definition`: The definition for a Heatmap widget. Exactly one nested block is allowed with the following structure:
-      - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
-          - `q`: (Required) The metric query to use in the widget.
-          - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
-              - `palette` - (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
-      - `yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
-      - `show_legend`: (Optional) Whether or not to show the legend on this widget.
-      - `legend_size`: (Optional) The size of the legend displayed in the widget.
-      - `event`: (Optional) The definition of the event to overlay on the graph. Includes the following structure:
-            - `q`: (Required) The event query to use in the widget.
-            - `tags_execution`: (Optional) The execution method for multi-value filters.
-      - `title`: (Optional) The title of the widget.
-      - `title_size`: (Optional) The size of the widget's title. Default is 16.
-      - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
-      - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    -`request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
+      -`q`: (Required) The metric query to use in the widget.
+      -`style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
+        -`palette` - (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
+    -`yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
+    -`show_legend`: (Optional) Whether or not to show the legend on this widget.
+    -`legend_size`: (Optional) The size of the legend displayed in the widget.
+    -`event`: (Optional) The definition of the event to overlay on the graph. Includes the following structure:
+      -`q`: (Required) The event query to use in the widget.
+      -`tags_execution`: (Optional) The execution method for multi-value filters.
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
   - `hostmap_definition`: The definition for a Hostmap widget. Exactly one nested block is allowed with the following structure:
-      - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
-          - `fill`: (Optional) The query used to fill the map. Exactly one nested block is allowed with the following structure:
-              - `q`: (Required) The metric query to use in the widget.
-          - `size`: (Optional) The query used to size the map. Exactly one nested block is allowed with the following structure:
-              - `q`: (Required) The metric query to use in the widget.
-      - `node_type` - (Optional) The type of node used. Either "host" or "container".
-      - `no_metric_hosts` - (Optional) Boolean indicating whether to show nodes with no metrics.
-      - `no_group_hosts` - (Optional) Boolean indicating whether to show ungrouped nodes.
-      - `group` - (Optional) The list of tags to group nodes by.
-      - `scope` - (Optional) The list of tags to filter nodes by.
-      - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
-              - `palette` - (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
-              - `palette_flip` - (Optional) Boolean indicating whether to flip the palette tones.
-              - `fill_min` - (Optional) Min value to use to color the map.
-              - `fill_max` - (Optional) Max value to use to color the map.
-      - `title`: (Optional) The title of the widget.
-      - `title_size`: (Optional) The size of the widget's title. Default is 16.
-      - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
+      -`fill`: (Optional) The query used to fill the map. Exactly one nested block is allowed with the following structure:
+        -`q`: (Required) The metric query to use in the widget.
+      -`size`: (Optional) The query used to size the map. Exactly one nested block is allowed with the following structure:
+        -`q`: (Required) The metric query to use in the widget.
+    -`node_type` - (Optional) The type of node used. Either "host" or "container".
+    -`no_metric_hosts` - (Optional) Boolean indicating whether to show nodes with no metrics.
+    -`no_group_hosts` - (Optional) Boolean indicating whether to show ungrouped nodes.
+    -`group` - (Optional) The list of tags to group nodes by.
+    -`scope` - (Optional) The list of tags to filter nodes by.
+    -`style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
+        -`palette` - (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
+        -`palette_flip` - (Optional) Boolean indicating whether to flip the palette tones.
+        -`fill_min` - (Optional) Min value to use to color the map.
+        -`fill_max` - (Optional) Max value to use to color the map.
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
   - `iframe_definition`: The definition for a Iframe widget. Exactly one nested block is allowed with the following structure:
-      - `url` - (Rquired) The URL to use as a data source for the widget.
+    -`url` - (Rquired) The URL to use as a data source for the widget.
   - `image_definition`: The definition for a Image widget. Exactly one nested block is allowed with the following structure:
-      - `url` - (Rquired) The URL to use as a data source for the widget.
-      - `sizing` - (Optional) The preferred method to adapt the dimensions of the image to those of the widget. One of "center" (center the image in the tile), "zoom" (zoom the image to cover the whole tile) or "fit" (fit the image dimensions to those of the tile).
-      - `margin` - (Optional) The margins to use around the image. Either "small" or "large".
+    -`url` - (Rquired) The URL to use as a data source for the widget.
+    -`sizing` - (Optional) The preferred method to adapt the dimensions of the image to those of the widget. One of "center" (center the image in the tile), "zoom" (zoom the image to cover the whole tile) or "fit" (fit the image dimensions to those of the tile).
+    -`margin` - (Optional) The margins to use around the image. Either "small" or "large".
   - `log_stream_definition`: The definition for a Log Stream widget. Exactly one nested block is allowed with the following structure:
-      - `logset` - (Optionals) ID of the logset to use. **Deprecated** Use `indexes` instead.
-      - `indexes` - (Optional) An array of index names to query in the stream.
-      - `query`: (Optional) The query to use in the widget.
-      - `columns` - (Optional) Stringified list of columns to use. Example: `"["column1","column2","column3"]"`.
-      - `show_date_column` - (Optional) If the date column should be displayed.
-      - `show_message_column` - (Optional) If the message column should be displayed.
-      - `message_display` - (Optional) The amount of lines the message column should display. One of: `inline`, `expanded-md`, and `expanded-lg`.
-      - `sort` - (Optional) The facet and order to sort the data based upon. Example: `"{"column": "time", "order": "desc"}"`.
-      - `title`: (Optional) The title of the widget.
-      - `title_size`: (Optional) The size of the widget's title. Default is 16.
-      - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
-      - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    -`logset` - (Optionals) ID of the logset to use. **Deprecated** Use `indexes` instead.
+    -`indexes` - (Optional) An array of index names to query in the stream.
+    -`query`: (Optional) The query to use in the widget.
+    -`columns` - (Optional) Stringified list of columns to use. Example: `"["column1","column2","column3"]"`.
+    -`show_date_column` - (Optional) If the date column should be displayed.
+    -`show_message_column` - (Optional) If the message column should be displayed.
+    -`message_display` - (Optional) The amount of lines the message column should display. One of: `inline`, `expanded-md`, and `expanded-lg`.
+    -`sort` - (Optional) The facet and order to sort the data based upon. Example: `"{"column": "time", "order": "desc"}"`.
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
   - `manage_status_definition`: The definition for a Manage Status, aka Monitor Summary, widget. Exactly one nested block is allowed with the following structure:
-      - `query`: (Required) The query to use in the widget.
-      - `summary_type` - (Optional) The monitor summary type to use. One of "monitors", "groups", or "combined". Defaults to "monitors".
-      - `sort` - (Optional) The method to use to sort monitors. Example: "status,asc".
-      - `display_format` - (Optional) The display setting to use. One of "counts", "list", or "countsAndList".
-      - `color_preference` - (Optional) Whether to colorize text or background. One of "text", "background".
-      - `hide_zero_counts` - (Optional) Boolean indicating whether to hide empty categories.
-      - `show_last_triggered` - (Optional) Boolean indicating whether to show when monitors/groups last triggered.
-      - `title`: (Optional) The title of the widget.
-      - `title_size`: (Optional) The size of the widget's title. Default is 16.
-      - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`query`: (Required) The query to use in the widget.
+    -`summary_type` - (Optional) The monitor summary type to use. One of "monitors", "groups", or "combined". Defaults to "monitors".
+    -`sort` - (Optional) The method to use to sort monitors. Example: "status,asc".
+    -`display_format` - (Optional) The display setting to use. One of "counts", "list", or "countsAndList".
+    -`color_preference` - (Optional) Whether to colorize text or background. One of "text", "background".
+    -`hide_zero_counts` - (Optional) Boolean indicating whether to hide empty categories.
+    -`show_last_triggered` - (Optional) Boolean indicating whether to show when monitors/groups last triggered.
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
   - `note_definition`: The definition for a Note widget. Exactly one nested block is allowed with the following structure:
-      - `content` - (Required) Content of the note.
-      - `background_color` - (Optional) Background color of the note.
-      - `font_size` - (Optional) Size of the text.
-      - `text_align` - (Optional) How to align the text on the widget. Available values are: `center`, `left`, or `right`.
-      - `show_tick` - (Optional) Whether to show a tick or not.
-      - `tick_pos` - (Optional) When tick = true, string with a percent sign indicating the position of the tick. Example: use tick_pos = "50%" for centered alignment.
-      - `tick_edge` - (Optional) When tick = true, string indicating on which side of the widget the tick should be displayed. One of "bottom", "top", "left", "right".
+    -`content` - (Required) Content of the note.
+    -`background_color` - (Optional) Background color of the note.
+    -`font_size` - (Optional) Size of the text.
+    -`text_align` - (Optional) How to align the text on the widget. Available values are: `center`, `left`, or `right`.
+    -`show_tick` - (Optional) Whether to show a tick or not.
+    -`tick_pos` - (Optional) When tick = true, string with a percent sign indicating the position of the tick. Example: use tick_pos = "50%" for centered alignment.
+    -`tick_edge` - (Optional) When tick = true, string indicating on which side of the widget the tick should be displayed. One of "bottom", "top", "left", "right".
   - `query_value_definition`: The definition for a Query Value widget. Exactly one nested block is allowed with the following structure:
-        - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
-            - `q`: (Optional) The metric query to use in the widget.
-            - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
-            - `conditional_formats` - (Optional) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple request blocks are allowed. The structure of this block is described [below](dashboard.html#nested-widget-conditional_formats-blocks).
-            - `aggregator` - (Optional) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
-        - `autoscale` - (Optional) Boolean indicating whether to automatically scale the tile.
-        - `custom_unit` - (Optional) The unit for the value displayed in the widget.
-        - `precision` - (Optional) The precision to use when displaying the tile.
-        - `text_align` - (Optional, "alert_value", "note") The alignment of the text in the widget.
-        - `title`: (Optional) The title of the widget.
-        - `title_size`: (Optional) The size of the widget's title. Default is 16.
-        - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
-        - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    -`request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
+      -`q`: (Optional) The metric query to use in the widget.
+      -`apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+      -`log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+      -`process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
+      -`conditional_formats` - (Optional) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple request blocks are allowed. The structure of this block is described [below](dashboard.html#nested-widget-conditional_formats-blocks).
+      -`aggregator` - (Optional) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
+    -`autoscale` - (Optional) Boolean indicating whether to automatically scale the tile.
+    -`custom_unit` - (Optional) The unit for the value displayed in the widget.
+    -`precision` - (Optional) The precision to use when displaying the tile.
+    -`text_align` - (Optional, "alert_value", "note") The alignment of the text in the widget.
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
   - `query_table_definition`: The definition for a Query Table widget. Exactly one nested block is allowed with the following structure:
-        - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
-            - `q`: (Optional) The metric query to use in the widget
-            - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
-            - `conditional_formats` - (Optional) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple request blocks are allowed. The structure of this block is described [below](dashboard.html#nested-widget-conditional_formats-blocks).
-            - `alias` - (Optional) The alias for the column name. Default is the metric name.
-            - `aggregator` - (Optional) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
-            - `limit` - (Required) The number of lines to show in the table.
-            - `order` - (Optional) The sort order for the rows. One of `desc` or `asc`.
-        - `title`: (Optional) The title of the widget.
-        - `title_size`: (Optional) The size of the widget's title. Default is 16.
-        - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
-        - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    -`request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
+      -`q`: (Optional) The metric query to use in the widget
+      -`apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+      -`log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+      -`process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
+      -`conditional_formats` - (Optional) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple request blocks are allowed. The structure of this block is described [below](dashboard.html#nested-widget-conditional_formats-blocks).
+      -`alias` - (Optional) The alias for the column name. Default is the metric name.
+      -`aggregator` - (Optional) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
+      -`limit` - (Required) The number of lines to show in the table.
+      -`order` - (Optional) The sort order for the rows. One of `desc` or `asc`.
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
   - `scatterplot_definition`: The definition for a Scatterplot widget. Exactly one nested block is allowed with the following structure:
-        - `request`: (Required) Nested block describing the request to use when displaying the widget. Exactly one request block is allowed with the following structure:
-            - `x`: (Optional) The query used for the X-Axis. Exactly one nested block is allowed with the following structure:
+    -`request`: (Required) Nested block describing the request to use when displaying the widget. Exactly one request block is allowed with the following structure:
+      -`x`: (Optional) The query used for the X-Axis. Exactly one nested block is allowed with the following structure:
                 - `q`: (Required) The metric query to use in the widget.
                 - `aggregator` - (Optional) Aggregator used for the request. One of "avg", "min", "max", "sum", "last".
-            - `y`: (Optional) The query used for the Y-Axis. Exactly one nested block is allowed with the following structure:
+      -`y`: (Optional) The query used for the Y-Axis. Exactly one nested block is allowed with the following structure:
                 - `q`: (Required) The metric query to use in the widget.
                 - `aggregator` - (Optional) Aggregator used for the request. One of "avg", "min", "max", "sum", "last".
-        - `xaxis`: (Optional) Nested block describing the X-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
-        - `yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
-        - `color_by_groups` - (Optional) List of groups used for colors.
-        - `title`: (Optional) The title of the widget.
-        - `title_size`: (Optional) The size of the widget's title. Default is 16.
-        - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
-        - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    -`xaxis`: (Optional) Nested block describing the X-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
+    -`yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
+    -`color_by_groups` - (Optional) List of groups used for colors.
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
   - `servicemap_definition`: The definition for a Service Map widget. Exactly one nested block is allowed with the following structure:
-          - `filters`: (Required) Your environment and primary tag (or * if enabled for your account).
-          - `service`: (Required) The ID of the service you want to map.
-          - `title`: (Optional) The title of the widget.
-          - `title_size`: (Optional) The size of the widget's title. Default is 16.
-          - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+      -`filters`: (Required) Your environment and primary tag (or * if enabled for your account).
+      -`service`: (Required) The ID of the service you want to map.
+      -`title`: (Optional) The title of the widget.
+      -`title_size`: (Optional) The size of the widget's title. Default is 16.
+      -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
   - `service_level_objective_definition`: The definition for a Service Level Objective widget. Exactly one nested block is allowed with the following structure:
-        - `view_type`: (Required) Type of view to use when displaying the widget. Only "detail" is currently supported.
-        - `slo_id`: (Required) The ID of the service level objective used by the widget.
-        - `show_error_budget`: (Optional) Whether to show the error budget or not.
-        - `view_mode`: (Required) View mode for the widget. One of "overall", "component", or "both".
-        - `time_windows`: (Required) List of time windows to display in the widget. Each value in the list must be one of "7d", "30d", "90d", "week_to_date",  "previous_week", "month_to_date", or "previous_month".
-        - `title`: (Optional) The title of the widget.
-        - `title_size`: (Optional) The size of the widget's title. Default is 16.
-        - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`view_type`: (Required) Type of view to use when displaying the widget. Only "detail" is currently supported.
+    -`slo_id`: (Required) The ID of the service level objective used by the widget.
+    -`show_error_budget`: (Optional) Whether to show the error budget or not.
+    -`view_mode`: (Required) View mode for the widget. One of "overall", "component", or "both".
+    -`time_windows`: (Required) List of time windows to display in the widget. Each value in the list must be one of "7d", "30d", "90d", "week_to_date",  "previous_week", "month_to_date", or "previous_month".
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
   - `timeseries_definition`: The definition for a Timeseries  widget. Exactly one nested block is allowed with the following structure:
-        - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
-            - `q`: (Optional) The metric query to use in the widget.
-            - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            - `network_query`: (Optional) The network query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            - `rum_query`: (Optional) The rum query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
-            - `display_type` - (Optional) Type of display to use for the request. Available values are: `area`, `bars`, or `line`.
-            - `style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
-              - `palette` - (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
-              - `line_type` - (Optional) Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.
-              - `line_width` - (Optional) Width of line displayed. Available values are: `normal`, `thick`, or `thin`.
-            - `metadata` - (Optional). Used to define expression aliases. Multiple nested blocks are allowed with the following structure:
-              - `expression` - (Required)
-              - `alias_name` - (Optional)
-        - `marker` - (Optional) Nested block describing the marker to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widgetmarker-blocks). Multiple marker blocks are allowed within a given tile_def block.
-        - `title`: (Optional) The title of the widget.
-        - `title_size`: (Optional) The size of the widget's title. Default is 16.
-        - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
-        - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
-        - `show_legend`: (Optional) Whether or not to show the legend on this widget.
-        - `legend_size`: (Optional) The size of the legend displayed in the widget.
-        - `event`: (Optional) The definition of the event to overlay on the graph. Includes the following structure:
-          - `q`: (Required) The event query to use in the widget.
-          - `tags_execution`: (Optional) The execution method for multi-value filters.
-        - `yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
+    -`request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
+      -`q`: (Optional) The metric query to use in the widget.
+      -`apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+      -`log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+      -`network_query`: (Optional) The network query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+      -`rum_query`: (Optional) The rum query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+      -`process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
+      -`display_type` - (Optional) Type of display to use for the request. Available values are: `area`, `bars`, or `line`.
+      -`style` - (Optional) Style of the widget graph. One nested block is allowed with the following structure:
+        -`palette` - (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
+        -`line_type` - (Optional) Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.
+        -`line_width` - (Optional) Width of line displayed. Available values are: `normal`, `thick`, or `thin`.
+      -`metadata` - (Optional). Used to define expression aliases. Multiple nested blocks are allowed with the following structure:
+        -`expression` - (Required)
+        -`alias_name` - (Optional)
+    -`marker` - (Optional) Nested block describing the marker to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widgetmarker-blocks). Multiple marker blocks are allowed within a given tile_def block.
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    -`show_legend`: (Optional) Whether or not to show the legend on this widget.
+    -`legend_size`: (Optional) The size of the legend displayed in the widget.
+    -`event`: (Optional) The definition of the event to overlay on the graph. Includes the following structure:
+      -`q`: (Required) The event query to use in the widget.
+      -`tags_execution`: (Optional) The execution method for multi-value filters.
+    -`yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
   - `toplist_definition`: The definition for a Toplist  widget. Exactly one nested block is allowed with the following structure:
-        - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
-            - `q`: (Optional) The metric query to use in the widget.
-            - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#ested-apm_query-log_query-network_query-and-rum_query-blocks).
-            - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
-            - `conditional_formats` - (Optional) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple request blocks are allowed. The structure of this block is described [below](dashboard.html#nested-widget-conditional_formats-blocks).
-        - `title`: (Optional) The title of the widget.
-        - `title_size`: (Optional) The size of the widget's title. Default is 16.
-        - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
-        - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    -`request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
+      -`q`: (Optional) The metric query to use in the widget.
+      -`apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+      -`log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#ested-apm_query-log_query-network_query-and-rum_query-blocks).
+      -`process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
+      -`conditional_formats` - (Optional) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple request blocks are allowed. The structure of this block is described [below](dashboard.html#nested-widget-conditional_formats-blocks).
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
   - `trace_service_definition`: The definition for a Trace Service widget. Exactly one nested block is allowed with the following structure:
-        - `env`: (Required) APM environment.
-        - `service`: (Required) APM service.
-        - `span_name`: (Required) APM span name.
-        - `show_hits`: (Optional) APM span name.
-        - `show_hits`: (Optional) Whether to show the hits metrics or not.
-        - `show_errors`: (Optional) Whether to show the error metrics or not.
-        - `show_latency`: (Optional) Whether to show the latency metrics or not.
-        - `show_breakdown`: (Optional) Whether to show the latency breakdown or not.
-        - `show_distribution`: (Optional) Whether to show the latency distribution or not.
-        - `show_resource_list`: (Optional) Whether to show the resource list or not.
-        - `size_format`: (Optional) Size of the widget. Available values are: `small`, `medium`, or `large`.
-        - `display_format`: (Optional) Number of columns to display. Available values are: `one_column`, `two_column`, or `three_column`.
-        - `title`: (Optional) The title of the widget.
-        - `title_size`: (Optional) The size of the widget's title. Default is 16.
-        - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
-        - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    -`env`: (Required) APM environment.
+    -`service`: (Required) APM service.
+    -`span_name`: (Required) APM span name.
+    -`show_hits`: (Optional) APM span name.
+    -`show_hits`: (Optional) Whether to show the hits metrics or not.
+    -`show_errors`: (Optional) Whether to show the error metrics or not.
+    -`show_latency`: (Optional) Whether to show the latency metrics or not.
+    -`show_breakdown`: (Optional) Whether to show the latency breakdown or not.
+    -`show_distribution`: (Optional) Whether to show the latency distribution or not.
+    -`show_resource_list`: (Optional) Whether to show the resource list or not.
+    -`size_format`: (Optional) Size of the widget. Available values are: `small`, `medium`, or `large`.
+    -`display_format`: (Optional) Number of columns to display. Available values are: `one_column`, `two_column`, or `three_column`.
+    -`title`: (Optional) The title of the widget.
+    -`title_size`: (Optional) The size of the widget's title. Default is 16.
+    -`title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    -`time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
 
 
 ### Nested `widget` `layout` blocks
@@ -954,9 +954,9 @@ Nested `apm_query`, `log_query`, `network_query` and `rum_query` blocks have the
     - `facet` - (Optional)
     - `limit` - (Optional)
     - `sort` - (Optional). One map is allowed with the following keys:
-      - `aggregation` - (Required)
-      - `order` - (Required)
-      - `facet` - (Optional)
+      -`aggregation` - (Required)
+      -`order` - (Required)
+      -`facet` - (Optional)
 
 
 ### Nested  `process_query` blocks
