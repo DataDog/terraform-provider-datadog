@@ -33,9 +33,9 @@ The following arguments are supported:
 
 The following attributes are exported:
 
-- `disabled` : Returns true if Datadog user is disabled (NOTE: Datadog does not actually delete users so this will be true for those as well)
-- `id` : ID of the Datadog user
-- `verified` : Returns true if Datadog user is verified
+- `disabled`: Returns true if Datadog user is disabled (NOTE: Datadog does not actually delete users so this will be true for those as well)
+- `id`: ID of the Datadog user
+- `verified`: Returns true if Datadog user is verified
 
 ## Import
 

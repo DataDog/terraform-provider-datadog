@@ -215,8 +215,8 @@ The following arguments are supported:
 
 The following attributes are exported:
 
-- `id` : ID (public_id) of the Datadog synthetics test
-- `monitor_id` : ID of the monitor associated with the Datadog synthetics test
+- `id`: ID (public_id) of the Datadog synthetics test
+- `monitor_id`: ID of the monitor associated with the Datadog synthetics test
 
 ## Import
 

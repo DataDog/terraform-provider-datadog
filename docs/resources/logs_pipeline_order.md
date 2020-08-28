@@ -31,7 +31,7 @@ The following arguments are supported:
 
 ## Attributes Reference
 
-- `pipelines` : The `pipelines` list contains the IDs of resources created and imported by the [datadog_logs_custom_pipeline](logs_custom_pipeline.html#datadog_logs_custom_pipeline) and [datadog_logs_integration_pipeline](logs_integration_pipeline.html#datadog_logs_integration_pipeline). Updating the order of pipelines in this list reflects the application order of the pipelines. You cannot delete or create pipeline by deleting or adding IDs to this list.
+- `pipelines`: The `pipelines` list contains the IDs of resources created and imported by the [datadog_logs_custom_pipeline](logs_custom_pipeline.html#datadog_logs_custom_pipeline) and [datadog_logs_integration_pipeline](logs_integration_pipeline.html#datadog_logs_integration_pipeline). Updating the order of pipelines in this list reflects the application order of the pipelines. You cannot delete or create pipeline by deleting or adding IDs to this list.
 
 ## Import
 
