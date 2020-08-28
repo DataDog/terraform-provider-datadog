@@ -167,13 +167,13 @@ resource "datadog_integration_pagerduty_service_object" "testing_bar" {
 
 The following arguments are supported:
 
-* `individual_services` - (Optional) Boolean to specify whether or not individual service objects specified by [datadog_integration_pagerduty_service_object](/docs/providers/datadog/r/integration_pagerduty_service_object.html) resource are to be used. Mutually exclusive with `services` key.
-* `services` - (Optional) Array of PagerDuty service objects. **Deprecated** The `services` list is now deprecated in favour of [datadog_integration_pagerduty_service_object](/docs/providers/datadog/r/integration_pagerduty_service_object.html) resource. Note that `individual_services` must be set to `true` to ignore the `service` attribute and use individual services properly.
-  * `service_name` - (Required) Your Service name in PagerDuty.
-  * `service_key` - (Required) Your Service name associated service key in Pagerduty.
-* `schedules` - (Optional)  Array of your schedule URLs.
-* `subdomain` - (Required) Your PagerDuty account’s personalized subdomain name.
-* `api_token` - (Optional) Your PagerDuty API token.
+* `individual_services`: (Optional) Boolean to specify whether or not individual service objects specified by [datadog_integration_pagerduty_service_object](/docs/providers/datadog/r/integration_pagerduty_service_object.html) resource are to be used. Mutually exclusive with `services` key.
+* `services`: (Optional) Array of PagerDuty service objects. **Deprecated** The `services` list is now deprecated in favour of [datadog_integration_pagerduty_service_object](/docs/providers/datadog/r/integration_pagerduty_service_object.html) resource. Note that `individual_services` must be set to `true` to ignore the `service` attribute and use individual services properly.
+  * `service_name`: (Required) Your Service name in PagerDuty.
+  * `service_key`: (Required) Your Service name associated service key in Pagerduty.
+* `schedules`: (Optional)  Array of your schedule URLs.
+* `subdomain`: (Required) Your PagerDuty account’s personalized subdomain name.
+* `api_token`: (Optional) Your PagerDuty API token.
 
 ### See also
 * [PagerDuty Integration Guide](https://www.pagerduty.com/docs/guides/datadog-integration-guide/)

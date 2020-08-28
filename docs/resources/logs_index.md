@@ -41,15 +41,15 @@ resource "datadog_logs_index" "sample_index" {
 
 The following arguments are supported:
 
-* `name` - (Required) The name of the index.
-* `filter` - (Required) Logs filter.
-  * `query` - (Required) Logs filter criteria. Only logs matching this filter criteria are considered for this index.
-* `exclusion_filter` - (Optional) List of exclusion filters.
-  * `filter` - (Optional)
-      * `query` - (Optional) Only logs matching the filter criteria and the query of the parent index will be considered for this exclusion filter.
-      * `sample_rate` - (Optional, default = 0.0) The fraction of logs excluded by the exclusion filter, when active.
-  * `name` - (Optional) The name of the exclusion filter.
-  * `is_enabled` - (Optional, default = false) A boolean stating if the exclusion is active or not.
+* `name`: (Required) The name of the index.
+* `filter`: (Required) Logs filter.
+  * `query`: (Required) Logs filter criteria. Only logs matching this filter criteria are considered for this index.
+* `exclusion_filter`: (Optional) List of exclusion filters.
+  * `filter`: (Optional)
+      * `query`: (Optional) Only logs matching the filter criteria and the query of the parent index will be considered for this exclusion filter.
+      * `sample_rate`: (Optional, default = 0.0) The fraction of logs excluded by the exclusion filter, when active.
+  * `name`: (Optional) The name of the exclusion filter.
+  * `is_enabled`: (Optional, default = false) A boolean stating if the exclusion is active or not.
 
 ## Import
 

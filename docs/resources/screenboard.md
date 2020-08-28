@@ -449,78 +449,78 @@ resource "datadog_screenboard" "acceptance_test" {
 
 The following arguments are supported:
 
-- `title` - (Required) The name of the screenboard.
-- `height` - (Optional) The screenboard's height.
-- `width` - (Optional) The screenboard's width.
-- `read_only` - (Optional) The read-only status of the screenboard. Default is false.
-- `shared` - (Optional) Whether the screenboard is shared or not. Default is false.
-- `widget` - (Required) Nested block describing a widget. The structure of this block is described below. Multiple widget blocks are allowed within a datadog_screenboard resource.
-- `template_variable` - (Optional) Nested block describing a template variable. The structure of this block is described below. Multiple template_variable blocks are allowed within a datadog_screenboard resource.
+- `title`: (Required) The name of the screenboard.
+- `height`: (Optional) The screenboard's height.
+- `width`: (Optional) The screenboard's width.
+- `read_only`: (Optional) The read-only status of the screenboard. Default is false.
+- `shared`: (Optional) Whether the screenboard is shared or not. Default is false.
+- `widget`: (Required) Nested block describing a widget. The structure of this block is described below. Multiple widget blocks are allowed within a datadog_screenboard resource.
+- `template_variable`: (Optional) Nested block describing a template variable. The structure of this block is described below. Multiple template_variable blocks are allowed within a datadog_screenboard resource.
 
 ### Nested `widget` blocks
 
 Nested `widget` blocks have the following structure:
 
-- `type` - (Required) The type of the widget. One of "free_text", "timeseries", "query_value", "toplist", "change", "event_timeline", "event_stream", "image", "note", "alert_graph", "alert_value", "iframe", "check_status", "trace_service", "hostmap", "manage_status", "log_stream", or "process".
-- `x` - (Required) The position of the widget on the x (horizontal) axis. Should be greater or equal to 0.
-- `y` - (Required) The position of the widget on the y (vertical) axis. Should be greater or equal to 0.
-- `title` - (Optional) The title of the widget.
-- `title_align` - (Optional) The alignment of the widget's title. One of "left", "center", or "right".
-- `title_size` - (Optional) The size of the widget's title. Default is 16.
-- `height` - (Optional) The height of the widget. Default is 15.
-- `width` - (Optional) The width of the widget. Default is 50.
-- `text` - (Optional, only for widgets of type "free_text") The text to display in the widget.
-- `color` - (Optional, only for widgets of type "free_text") The color of the text in the widget.
-- `font_size` - (Optional, only for widgets of type "free_text", "note") The size of the text in the widget.
-- `text_size` - (Optional, only for widgets of type "alert_value") The size of the text in the widget.
-- `unit` - (Optional, only for widgets of type "alert_value") The unit for the value displayed in the widget.
-- `precision` - (Optional, only for widgets of type "alert_value") The precision to use when displaying the value. Use "\*" for maximum precision.
-- `text_align` - (Optional, only for widgets of type "free_text", "alert_value", "note") The alignment of the text in the widget.
-- `alert_id` - (Optional, only for widgets of type "alert_value", "alert_graph") The ID of the monitor used by the widget.
-- `auto_refresh` - (Optional, only for widgets of type "alert_value", "alert_graph") Boolean indicating whether the widget is refreshed automatically.
-- `legend` - (Optional, only for widgets of type "timeseries", "query_value", "toplist") Boolean indicating whether to display a legend in the widget.
-- `legend_size` - (Optional, only for widgets of type "timeseries", "query_value", "toplist") The size of the legend displayed in the widget.
-- `query` - (Optional, only for widgets of type "event_timeline", "event_stream", "hostmap", "log_stream") The query to use in the widget.
-- `url` - (Optional, only for widgets of type "image", "iframe") The URL to use as a data source for the widget.
-- `viz_type` - (Optional, only for widgets of type "alert_graph") Type of visualization to use when displaying the widget. Either "timeseries" or "toplist".
-- `tags` - (Optional, only for widgets of type "check_status") List of tags to use in the widget.
-- `check` - (Optional, only for widgets of type "check_status") The check to use in the widget.
-- `group` - (Optional, only for widgets of type "check_status") The check group to use in the widget.
-- `grouping` - (Optional, only for widgets of type "check_status") Either "check" or "cluster", depending on whether the widget should use a single check or a cluster of checks.
-- `group_by` - (Optional, only for widgets of type "check_status") When grouping = "cluster", indicates a list of tags to use for grouping.
-- `tick` - (Optional, only for widgets of type "note") Boolean indicating whether a tick should be displayed on the border of the widget.
-- `tick_pos` - (Optional, only for widgets of type "note") When tick = true, string with a percent sign indicating the position of the tick. Example: use tick_pos = "50%" for centered alignment.
-- `tick_edge` - (Optional, only for widgets of type "note") When tick = true, string indicating on which side of the widget the tick should be displayed. One of "bottom", "top", "left", "right".
-- `html` - (Optional, only for widgets of type "note") The content of the widget. HTML tags supported.
-- `bgcolor` - (Optional, only for widgets of type "note") The color of the background of the widget.
-- `event_size` - (Optional, only for widgets of type "event_stream") The size of the events in the widget. Either "s" (small, title only) or "l" (large, full event).
-- `sizing` - (Optional, only for widgets of type "image") The preferred method to adapt the dimensions of the image to those of the widget. One of "center" (center the image in the tile), "zoom" (zoom the image to cover the whole tile) or "fit" (fit the image dimensions to those of the tile).
-- `margin` - (Optional, only for widgets of type "image") The margins to use around the image. Either "small" or "large".
-- `env` - (Optional, only for widgets of type "trace_service") The environment to use.
-- `service_service` - (Optional, only for widgets of type "trace_service") The trace service to use.
-- `service_name` - (Optional, only for widgets of type "trace_service") The name of the service to use.
-- `size_version` - (Optional, only for widgets of type "trace_service") The size of the widget. One of "small", "medium", "large".
-- `layout_version` - (Optional, only for widgets of type "trace_service") The number of columns to use when displaying values. One of "one_column", "two_column", "three_column".
-- `must_show_hits` - (Optional, only for widgets of type "trace_service") Boolean indicating whether to display hits.
-- `must_show_errors` - (Optional, only for widgets of type "trace_service") Boolean indicating whether to display errors.
-- `must_show_latency` - (Optional, only for widgets of type "trace_service") Boolean indicating whether to display latency.
-- `must_show_breakdown` - (Optional, only for widgets of type "trace_service") Boolean indicating whether to display breakdown.
-- `must_show_distribution` - (Optional, only for widgets of type "trace_service") Boolean indicating whether to display distribution.
-- `must_show_resource_list` - (Optional, only for widgets of type "trace_service") Boolean indicating whether to display resources.
-- `summary_type` - (Optional, only for widgets of type "manage_status") The monitor summary type to use. One of "monitors", "groups", or "combined". Defaults to "monitors".
-- `display_format` - (Optional, only for widgets of type "manage_status") The display setting to use. One of "counts", "list", or "countsAndList".
-- `color_preference` - (Optional, only for widgets of type "manage_status") Whether to colorize text or background. One of "text", "background".
-- `hide_zero_counts` - (Optional, only for widgets of type "manage_status") Boolean indicating whether to hide empty categories.
-- `show_last_triggered` - (Optional, only for widgets of type "manage_status") Boolean indicating whether to show when monitors/groups last triggered.
-- `manage_status_show_title` - (Optional, only for widgets of type "manage_status") Boolean indicating whether to show a title.
-- `manage_status_title_text` - (Optional, only for widgets of type "manage_status") The title of the widget.
-- `manage_status_title_size` - (Optional, only for widgets of type "manage_status") The size of the widget's title.
-- `manage_status_title_align` - (Optional, only for widgets of type "manage_status") The alignment of the widget's title. One of "left", "center", or "right".
-- `columns` - (Optional, only for widgets of type "log_stream") Stringified list of columns to use. Example: `"[\"column1\",\"column2\",\"column3\"]"`
-- `logset` - (Optional, only for widgets of type "log_stream") ID of the logset to use.
-- `time` - (Optional, only for widgets of type "timeseries", "toplist", "event_timeline", "event_stream", "alert_graph", "check_status", "trace_service", "log_stream") Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. At most one such block should be present in a given widget.
-- `tile_def` - (Optional, only for widgets of type "timeseries", "query_value", "hostmap", "change", "toplist", "process") Nested block describing the content to display in the widget. The structure of this block is described below. At most one such block should be present in a given widget.
-- `params` - (Optional, only for widgets of type "manage_status") Nested block describing the monitors to display. The structure of this block is described below. At most one such block should be present in a given widget.
+- `type`: (Required) The type of the widget. One of "free_text", "timeseries", "query_value", "toplist", "change", "event_timeline", "event_stream", "image", "note", "alert_graph", "alert_value", "iframe", "check_status", "trace_service", "hostmap", "manage_status", "log_stream", or "process".
+- `x`: (Required) The position of the widget on the x (horizontal) axis. Should be greater or equal to 0.
+- `y`: (Required) The position of the widget on the y (vertical) axis. Should be greater or equal to 0.
+- `title`: (Optional) The title of the widget.
+- `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+- `title_size`: (Optional) The size of the widget's title. Default is 16.
+- `height`: (Optional) The height of the widget. Default is 15.
+- `width`: (Optional) The width of the widget. Default is 50.
+- `text`: (Optional, only for widgets of type "free_text") The text to display in the widget.
+- `color`: (Optional, only for widgets of type "free_text") The color of the text in the widget.
+- `font_size`: (Optional, only for widgets of type "free_text", "note") The size of the text in the widget.
+- `text_size`: (Optional, only for widgets of type "alert_value") The size of the text in the widget.
+- `unit`: (Optional, only for widgets of type "alert_value") The unit for the value displayed in the widget.
+- `precision`: (Optional, only for widgets of type "alert_value") The precision to use when displaying the value. Use "\*" for maximum precision.
+- `text_align`: (Optional, only for widgets of type "free_text", "alert_value", "note") The alignment of the text in the widget.
+- `alert_id`: (Optional, only for widgets of type "alert_value", "alert_graph") The ID of the monitor used by the widget.
+- `auto_refresh`: (Optional, only for widgets of type "alert_value", "alert_graph") Boolean indicating whether the widget is refreshed automatically.
+- `legend`: (Optional, only for widgets of type "timeseries", "query_value", "toplist") Boolean indicating whether to display a legend in the widget.
+- `legend_size`: (Optional, only for widgets of type "timeseries", "query_value", "toplist") The size of the legend displayed in the widget.
+- `query`: (Optional, only for widgets of type "event_timeline", "event_stream", "hostmap", "log_stream") The query to use in the widget.
+- `url`: (Optional, only for widgets of type "image", "iframe") The URL to use as a data source for the widget.
+- `viz_type`: (Optional, only for widgets of type "alert_graph") Type of visualization to use when displaying the widget. Either "timeseries" or "toplist".
+- `tags`: (Optional, only for widgets of type "check_status") List of tags to use in the widget.
+- `check`: (Optional, only for widgets of type "check_status") The check to use in the widget.
+- `group`: (Optional, only for widgets of type "check_status") The check group to use in the widget.
+- `grouping`: (Optional, only for widgets of type "check_status") Either "check" or "cluster", depending on whether the widget should use a single check or a cluster of checks.
+- `group_by`: (Optional, only for widgets of type "check_status") When grouping = "cluster", indicates a list of tags to use for grouping.
+- `tick`: (Optional, only for widgets of type "note") Boolean indicating whether a tick should be displayed on the border of the widget.
+- `tick_pos`: (Optional, only for widgets of type "note") When tick = true, string with a percent sign indicating the position of the tick. Example: use tick_pos = "50%" for centered alignment.
+- `tick_edge`: (Optional, only for widgets of type "note") When tick = true, string indicating on which side of the widget the tick should be displayed. One of "bottom", "top", "left", "right".
+- `html`: (Optional, only for widgets of type "note") The content of the widget. HTML tags supported.
+- `bgcolor`: (Optional, only for widgets of type "note") The color of the background of the widget.
+- `event_size`: (Optional, only for widgets of type "event_stream") The size of the events in the widget. Either "s" (small, title only) or "l" (large, full event).
+- `sizing`: (Optional, only for widgets of type "image") The preferred method to adapt the dimensions of the image to those of the widget. One of "center" (center the image in the tile), "zoom" (zoom the image to cover the whole tile) or "fit" (fit the image dimensions to those of the tile).
+- `margin`: (Optional, only for widgets of type "image") The margins to use around the image. Either "small" or "large".
+- `env`: (Optional, only for widgets of type "trace_service") The environment to use.
+- `service_service`: (Optional, only for widgets of type "trace_service") The trace service to use.
+- `service_name`: (Optional, only for widgets of type "trace_service") The name of the service to use.
+- `size_version`: (Optional, only for widgets of type "trace_service") The size of the widget. One of "small", "medium", "large".
+- `layout_version`: (Optional, only for widgets of type "trace_service") The number of columns to use when displaying values. One of "one_column", "two_column", "three_column".
+- `must_show_hits`: (Optional, only for widgets of type "trace_service") Boolean indicating whether to display hits.
+- `must_show_errors`: (Optional, only for widgets of type "trace_service") Boolean indicating whether to display errors.
+- `must_show_latency`: (Optional, only for widgets of type "trace_service") Boolean indicating whether to display latency.
+- `must_show_breakdown`: (Optional, only for widgets of type "trace_service") Boolean indicating whether to display breakdown.
+- `must_show_distribution`: (Optional, only for widgets of type "trace_service") Boolean indicating whether to display distribution.
+- `must_show_resource_list`: (Optional, only for widgets of type "trace_service") Boolean indicating whether to display resources.
+- `summary_type`: (Optional, only for widgets of type "manage_status") The monitor summary type to use. One of "monitors", "groups", or "combined". Defaults to "monitors".
+- `display_format`: (Optional, only for widgets of type "manage_status") The display setting to use. One of "counts", "list", or "countsAndList".
+- `color_preference`: (Optional, only for widgets of type "manage_status") Whether to colorize text or background. One of "text", "background".
+- `hide_zero_counts`: (Optional, only for widgets of type "manage_status") Boolean indicating whether to hide empty categories.
+- `show_last_triggered`: (Optional, only for widgets of type "manage_status") Boolean indicating whether to show when monitors/groups last triggered.
+- `manage_status_show_title`: (Optional, only for widgets of type "manage_status") Boolean indicating whether to show a title.
+- `manage_status_title_text`: (Optional, only for widgets of type "manage_status") The title of the widget.
+- `manage_status_title_size`: (Optional, only for widgets of type "manage_status") The size of the widget's title.
+- `manage_status_title_align`: (Optional, only for widgets of type "manage_status") The alignment of the widget's title. One of "left", "center", or "right".
+- `columns`: (Optional, only for widgets of type "log_stream") Stringified list of columns to use. Example: `"[\"column1\",\"column2\",\"column3\"]"`
+- `logset`: (Optional, only for widgets of type "log_stream") ID of the logset to use.
+- `time`: (Optional, only for widgets of type "timeseries", "toplist", "event_timeline", "event_stream", "alert_graph", "check_status", "trace_service", "log_stream") Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. At most one such block should be present in a given widget.
+- `tile_def`: (Optional, only for widgets of type "timeseries", "query_value", "hostmap", "change", "toplist", "process") Nested block describing the content to display in the widget. The structure of this block is described below. At most one such block should be present in a given widget.
+- `params`: (Optional, only for widgets of type "manage_status") Nested block describing the monitors to display. The structure of this block is described below. At most one such block should be present in a given widget.
 
 ### Nested `widget` `time` blocks
 
@@ -528,7 +528,7 @@ Only for widgets of type "timeseries", "toplist", "event_timeline", "event_strea
 
 Nested `widget` `time` blocks have the following structure:
 
-- `live_span` - (Required) The timeframe to use when displaying the widget. One of "10m", "30m", "1h", "4h", "1d", "2d", "1w".
+- `live_span`: (Required) The timeframe to use when displaying the widget. One of "10m", "30m", "1h", "4h", "1d", "2d", "1w".
 
 ### Nested `widget` `params` blocks
 
@@ -536,8 +536,8 @@ Only for widgets of type "manage_status".
 
 Nested `widget` `params` blocks have the following structure:
 
-- `sort` - (Optional) The method to use to sort monitors. Example: "status,asc".
-- `text` - (Optional) The query to use to get monitors. Example: "status:alert".
+- `sort`: (Optional) The method to use to sort monitors. Example: "status,asc".
+- `text`: (Optional) The query to use to get monitors. Example: "status:alert".
 
 ### Nested `widget` `tile_def` blocks
 
@@ -545,20 +545,20 @@ Only for widgets of type "timeseries", "query_value", "hostmap", "change", "topl
 
 Nested `widget` `tile_def` blocks have the following structure:
 
-- `viz` - (Required) Should be the same as the widget's type. One of "timeseries", "query_value", "hostmap", "change", "toplist", "process".
-- `request` - (Required) Nested block describing the request to use when displaying the widget. The structure of this block is described below. Multiple request blocks are allowed within a given tile_def block.
-- `marker` - (Optional, only for widgets of type "timeseries") Nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple marker blocks are allowed within a given tile_def block.
-- `event` - (Optional, only for widgets of type "timeseries") Nested block describing the event overlays to use when displaying the widget. The structure of this block is described below. At most one such block should be present in a given tile_def block.
-- `custom_unit` - (Optional, only for widgets of type "query_value") The unit for the value displayed in the widget
-- `autoscale` - (Optional, only for widgets of type "query_value") Boolean indicating whether to automatically scale the tile.
-- `precision` - (Optional, only for widgets of type "query_value") The precision to use when displaying the tile.
-- `text_align` - (Optional, only for widgets of type "query_value") The alignment of the text.
-- `node_type` - (Optional, only for widgets of type "hostmap") The type of node used. Either "host" or "container".
-- `scope` - (Optional, only for widgets of type "hostmap") The list of tags to filter nodes by.
-- `group` - (Optional, only for widgets of type "hostmap") The list of tags to group nodes by.
-- `no_group_hosts` - (Optional, only for widgets of type "hostmap") Boolean indicating whether to show ungrouped nodes.
-- `no_metric_hosts` - (Optional, only for widgets of type "hostmap") Boolean indicating whether to show nodes with no metrics.
-- `style` - (Optional, only for widgets of type "hostmap") Nested block describing how to display the widget. The structure of this block is described below. At most one such block should be present in a given tile_def block.
+- `viz`: (Required) Should be the same as the widget's type. One of "timeseries", "query_value", "hostmap", "change", "toplist", "process".
+- `request`: (Required) Nested block describing the request to use when displaying the widget. The structure of this block is described below. Multiple request blocks are allowed within a given tile_def block.
+- `marker`: (Optional, only for widgets of type "timeseries") Nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple marker blocks are allowed within a given tile_def block.
+- `event`: (Optional, only for widgets of type "timeseries") Nested block describing the event overlays to use when displaying the widget. The structure of this block is described below. At most one such block should be present in a given tile_def block.
+- `custom_unit`: (Optional, only for widgets of type "query_value") The unit for the value displayed in the widget
+- `autoscale`: (Optional, only for widgets of type "query_value") Boolean indicating whether to automatically scale the tile.
+- `precision`: (Optional, only for widgets of type "query_value") The precision to use when displaying the tile.
+- `text_align`: (Optional, only for widgets of type "query_value") The alignment of the text.
+- `node_type`: (Optional, only for widgets of type "hostmap") The type of node used. Either "host" or "container".
+- `scope`: (Optional, only for widgets of type "hostmap") The list of tags to filter nodes by.
+- `group`: (Optional, only for widgets of type "hostmap") The list of tags to group nodes by.
+- `no_group_hosts`: (Optional, only for widgets of type "hostmap") Boolean indicating whether to show ungrouped nodes.
+- `no_metric_hosts`: (Optional, only for widgets of type "hostmap") Boolean indicating whether to show nodes with no metrics.
+- `style`: (Optional, only for widgets of type "hostmap") Nested block describing how to display the widget. The structure of this block is described below. At most one such block should be present in a given tile_def block.
 
 ### Nested `widget` `tile_def` `style` blocks
 
@@ -566,10 +566,10 @@ Only for widgets of type "hostmap".
 
 Nested `widget` `tile_def` `style` blocks have the following structure:
 
-- `palette` - (Optional) Color set to use to display nodes. One of "green_to_orange", "yellow_to_green", "YlOrRd" (warm), "hostmap_blues" (cool).
-- `palette_flip` - (Optional) Boolean indicating whether to flip how the hostmap is rendered. For example, with the default palette, low values are represented as green, with high values as orange. If palette_flip is "true", then low values will be orange, and high values will be green.
-- `fill_min` - (Optional) Metric value corresponding to minimum color fill.
-- `fill_max` - (Optional) Metric value corresponding to maximum color fill.
+- `palette`: (Optional) Color set to use to display nodes. One of "green_to_orange", "yellow_to_green", "YlOrRd" (warm), "hostmap_blues" (cool).
+- `palette_flip`: (Optional) Boolean indicating whether to flip how the hostmap is rendered. For example, with the default palette, low values are represented as green, with high values as orange. If palette_flip is "true", then low values will be orange, and high values will be green.
+- `fill_min`: (Optional) Metric value corresponding to minimum color fill.
+- `fill_max`: (Optional) Metric value corresponding to maximum color fill.
 
 ### Nested `widget` `tile_def` `marker` blocks
 
@@ -577,9 +577,9 @@ Only for widgets of type "timeseries".
 
 Nested `widget` `tile_def` `marker` blocks have the following structure:
 
-- `type` - (Required) How the marker lines will look. Possible values are {"error", "warning", "info", "ok"} {"dashed", "solid", "bold"}. Example: "error dashed".
-- `value` - (Required) Mathematical expression describing the marker. Examples: "y > 1", "-5 < y < 0", "y = 19".
-- `label` - (Optional) A label for the line or range.
+- `type`: (Required) How the marker lines will look. Possible values are {"error", "warning", "info", "ok"} {"dashed", "solid", "bold"}. Example: "error dashed".
+- `value`: (Required) Mathematical expression describing the marker. Examples: "y > 1", "-5 < y < 0", "y = 19".
+- `label`: (Optional) A label for the line or range.
 
 ### Nested `widget` `tile_def` `event` block
 
@@ -587,33 +587,33 @@ Only for widgets of type "timeseries".
 
 Nested `widget` `tile_def` `event` blocks have the following structure:
 
-- `q` - (Required) The search query for event overlays.
+- `q`: (Required) The search query for event overlays.
 
 ### Nested `widget` `tile_def` `request` blocks
 
 Only for widgets of type "timeseries", "query_value", "toplist", "change", "hostmap", "process".
 Nested `widget` `tile_def` `request` blocks have the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
 
-- `q` - (Optional) Only for widgets of type "timeseries", "query_value", "toplist", "change", "hostmap") The query of the request. Pro tip: Use the JSON tab inside the Datadog UI to help build you query strings.
-- `apm_query` - (Optional) The APM query to use in the widget. The structure of this block is described [below](screenboard.html#nested-widget-tile_def-request-apm_query-and-log_query-blocks).
-- `log_query` - (Optional) The log query to use in the widget. The structure of this block is described [below](screenboard.html#nested-widget-tile_def-request-apm_query-and-log_query-blocks).
-- `process_query` - (Optional) The process query to use in the widget. The structure of this block is described [below](screenboard.html#nested-widget-tile_def-request-process_query-blocks).
-- `type` - (Optional, only for widgets of type "timeseries", "query_value", "hostmap") Choose the type of representation to use for this query. For widgets of type "timeseries" and "query_value", use one of "line", "bars" or "area". For widgets of type "hostmap", use "fill" or "size".
-- `query_type` - (Optional, only for widgets of type "process") Use "process".
-- `metric` - (Optional, only for widgets of type "process") The metric you want to use for the widget.
-- `text_filter` - (Optional, only for widgets of type "process") The search query for the widget.
-- `tag_filters` - (Optional, only for widgets of type "process") Tags to use for filtering.
-- `limit` - (Optional, only for widgets of type "process") Integer indicating the number of hosts to limit to.
-- `aggregator` - (Optional, only for widgets of type "query_value") The aggregator to use for time aggregation. One of "avg", "min", "max", "sum", "last".
-- `compare_to` - (Optional, only for widgets of type "change") Choose from when to compare current data to. One of "hour_before", "day_before", "week_before" or "month_before".
-- `change_type` - (Optional, only for widgets of type "change") Whether to show absolute or relative change. One of "absolute", "relative".
-- `order_by` - (Optional, only for widgets of type "change") One of "change", "name", "present" (present value) or "past" (past value).
-- `order_dir` - (Optional, only for widgets of type "change") Either "asc" (ascending) or "desc" (descending).
-- `extra_col` - (Optional, only for widgets of type "change") If set to "present", displays current value. Can be left empty otherwise.
-- `increase_good` - (Optional, only for widgets of type "change") Boolean indicating whether an increase in the value is good (thus displayed in green) or not (thus displayed in red).
-- `style` - (Optional, only for widgets of type "timeseries", "query_value", "toplist", "process") describing how to display the widget. The structure of this block is described below. At most one such block should be present in a given request block.
-- `conditional_format` - (Optional) Nested block to customize the style if certain conditions are met. Currently only applies to `Query Value` and `Top List` type graphs.
-* `metadata_json` - (Optional) A JSON blob (preferrably created using [jsonencode](https://www.terraform.io/docs/configuration/functions/jsonencode.html)) representing mapping of query expressions to alias names. Note that the query expressions in `metadata_json` will be ignored if they're not present in the query. For example, this is how you define `metadata_json` with Terraform >= 0.12:
+- `q`: (Optional) Only for widgets of type "timeseries", "query_value", "toplist", "change", "hostmap") The query of the request. Pro tip: Use the JSON tab inside the Datadog UI to help build you query strings.
+- `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](screenboard.html#nested-widget-tile_def-request-apm_query-and-log_query-blocks).
+- `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](screenboard.html#nested-widget-tile_def-request-apm_query-and-log_query-blocks).
+- `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](screenboard.html#nested-widget-tile_def-request-process_query-blocks).
+- `type`: (Optional, only for widgets of type "timeseries", "query_value", "hostmap") Choose the type of representation to use for this query. For widgets of type "timeseries" and "query_value", use one of "line", "bars" or "area". For widgets of type "hostmap", use "fill" or "size".
+- `query_type`: (Optional, only for widgets of type "process") Use "process".
+- `metric`: (Optional, only for widgets of type "process") The metric you want to use for the widget.
+- `text_filter`: (Optional, only for widgets of type "process") The search query for the widget.
+- `tag_filters`: (Optional, only for widgets of type "process") Tags to use for filtering.
+- `limit`: (Optional, only for widgets of type "process") Integer indicating the number of hosts to limit to.
+- `aggregator`: (Optional, only for widgets of type "query_value") The aggregator to use for time aggregation. One of "avg", "min", "max", "sum", "last".
+- `compare_to`: (Optional, only for widgets of type "change") Choose from when to compare current data to. One of "hour_before", "day_before", "week_before" or "month_before".
+- `change_type`: (Optional, only for widgets of type "change") Whether to show absolute or relative change. One of "absolute", "relative".
+- `order_by`: (Optional, only for widgets of type "change") One of "change", "name", "present" (present value) or "past" (past value).
+- `order_dir`: (Optional, only for widgets of type "change") Either "asc" (ascending) or "desc" (descending).
+- `extra_col`: (Optional, only for widgets of type "change") If set to "present", displays current value. Can be left empty otherwise.
+- `increase_good`: (Optional, only for widgets of type "change") Boolean indicating whether an increase in the value is good (thus displayed in green) or not (thus displayed in red).
+- `style`: (Optional, only for widgets of type "timeseries", "query_value", "toplist", "process") describing how to display the widget. The structure of this block is described below. At most one such block should be present in a given request block.
+- `conditional_format`: (Optional) Nested block to customize the style if certain conditions are met. Currently only applies to `Query Value` and `Top List` type graphs.
+* `metadata_json`: (Optional) A JSON blob (preferrably created using [jsonencode](https://www.terraform.io/docs/configuration/functions/jsonencode.html)) representing mapping of query expressions to alias names. Note that the query expressions in `metadata_json` will be ignored if they're not present in the query. For example, this is how you define `metadata_json` with Terraform >= 0.12:
   ```
   metadata_json = jsonencode({
     "avg:redis.info.latency_ms{$host}": {
@@ -644,55 +644,55 @@ Only for widgets of type "timeseries", "query_value", "toplist", "process".
 
 The nested `style` blocks has the following structure:
 
-- `palette` - (Optional) Color of the line drawn. For widgets of type "timeseries", "query_value", "toplist", one of: "classic", "cool", "warm", "purple", "orange" or "gray". For widgets of type "process", one of: "dog_classic_area", "YlOrRd", "GnBu", "Reds", "Oranges", "Greens", "Blues", "Purples".
-- `width` - (Optional) Line width. Possible values: "thin", "normal", "thick". Default: "normal".
-- `type` - (Optional) Type of line drawn. Possible values: "dashed", "solid", "dotted". Default: "solid".
+- `palette`: (Optional) Color of the line drawn. For widgets of type "timeseries", "query_value", "toplist", one of: "classic", "cool", "warm", "purple", "orange" or "gray". For widgets of type "process", one of: "dog_classic_area", "YlOrRd", "GnBu", "Reds", "Oranges", "Greens", "Blues", "Purples".
+- `width`: (Optional) Line width. Possible values: "thin", "normal", "thick". Default: "normal".
+- `type`: (Optional) Type of line drawn. Possible values: "dashed", "solid", "dotted". Default: "solid".
 
 ### Nested `widget` `tile_def` `request` `apm_query` and `log_query` blocks
 
 Nested `apm_query` and `log_query` blocks have the following structure (Visit the [ Graph Primer](https://docs.datadoghq.com/graphing/) for more information about these values):
 
-- `index` - (Required)
-- `compute` - (Required). Exactly one nested block is required with the following structure:
-  - `aggregation` - (Required)
-  - `facet` - (Optional)
-  - `interval` - (Optional)
-- `search` - (Optional). One nested block is allowed with the following structure:
-  - `query` - (Optional)
-- `group_by` - (Optional). Multiple nested blocks are allowed with the following structure:
-  - `facet` - (Optional)
-  - `limit` - (Optional)
-  - `sort` - (Optional). One nested block is allowed with the following structure:
-    - `aggregation` - (Optional)
-    - `order` - (Optional)
-    - `facet` - (Optional)
+- `index`: (Required)
+- `compute`: (Required). Exactly one nested block is required with the following structure:
+  - `aggregation`: (Required)
+  - `facet`: (Optional)
+  - `interval`: (Optional)
+- `search`: (Optional). One nested block is allowed with the following structure:
+  - `query`: (Optional)
+- `group_by`: (Optional). Multiple nested blocks are allowed with the following structure:
+  - `facet`: (Optional)
+  - `limit`: (Optional)
+  - `sort`: (Optional). One nested block is allowed with the following structure:
+    - `aggregation`: (Optional)
+    - `order`: (Optional)
+    - `facet`: (Optional)
 
 ### Nested `widget` `tile_def` `request` `process_query` blocks
 
 Nested `process_query` blocks have the following structure (Visit the [ Graph Primer](https://docs.datadoghq.com/graphing/) for more information about these values):
 
-- `metric` - (Required)
-- `search_by` - (Required)
-- `filter_by` - (Required)
-- `limit` - (Required)
+- `metric`: (Required)
+- `search_by`: (Required)
+- `filter_by`: (Required)
+- `limit`: (Required)
 
 ### Nested `widget` `tile_def` `request` `conditional_format` block
 
 The nested `conditional_format` blocks has the following structure:
 
-- `palette` - (Optional) Color scheme to be used if the condition is met. One of: "red_on_white", "white_on_red", "yellow_on_white", "white_on_yellow", "green_on_white", "white_on_green", "gray_on_white", "white_on_gray", "custom_text", "custom_bg", "custom_image".
-- `comparator` - (Required) Comparison operator. Example: ">", "<".
-- `value` - (Optional) Value that is the threshold for the conditional format.
-- `color` - (Optional) Custom color (e.g., #205081).
-- `invert` - (Optional) Boolean indicating whether to invert color scheme.
+- `palette`: (Optional) Color scheme to be used if the condition is met. One of: "red_on_white", "white_on_red", "yellow_on_white", "white_on_yellow", "green_on_white", "white_on_green", "gray_on_white", "white_on_gray", "custom_text", "custom_bg", "custom_image".
+- `comparator`: (Required) Comparison operator. Example: ">", "<".
+- `value`: (Optional) Value that is the threshold for the conditional format.
+- `color`: (Optional) Custom color (e.g., #205081).
+- `invert`: (Optional) Boolean indicating whether to invert color scheme.
 
 ### Nested `template_variable` blocks
 
 Nested `template_variable` blocks have the following structure:
 
-- `name` - (Required) The variable name. Can be referenced as \$name in `graph` `request` `q` query strings.
-- `prefix` - (Optional) The tag group. Default: no tag group.
-- `default` - (Optional) The default tag. Default: "\*" (match all).
+- `name`: (Required) The variable name. Can be referenced as \$name in `graph` `request` `q` query strings.
+- `prefix`: (Optional) The tag group. Default: no tag group.
+- `default`: (Optional) The default tag. Default: "\*" (match all).
 
 ## Attributes Reference
 

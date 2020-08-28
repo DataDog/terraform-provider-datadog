@@ -24,8 +24,8 @@ resource "datadog_integration_aws_lambda_arn" "main_collector" {
 
 The following arguments are supported:
 
-* `account_id` - (Required) Your AWS Account ID without dashes.
-* `lambda_arn` - (Required) The ARN of the Datadog forwarder Lambda.
+* `account_id`: (Required) Your AWS Account ID without dashes.
+* `lambda_arn`: (Required) The ARN of the Datadog forwarder Lambda.
 
 ### See also
 * [Datadog API Reference > Integrations > AWS](https://docs.datadoghq.com/api/v1/aws-integration/)
