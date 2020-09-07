@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
@@ -80,6 +81,12 @@ func resourceDatadogDashboard() *schema.Resource {
 				Description: "The list of handles of users to notify when changes are made to this dashboard.",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
+			"dashboard_lists": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "The list of dashboard lists this dashboard belongs to",
+				Elem:        &schema.Schema{Type: schema.TypeInt},
+			},
 		},
 	}
 }
@@ -106,6 +113,28 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 			}
 			return resource.NonRetryableError(err)
 		}
+		if v, ok := d.GetOk("dashboard_lists"); ok && len(v.([]int64)) > 0 {
+			itemsRequest := make([]datadogV2.DashboardListItemRequest, 1)
+			dashTypeString := "custom_screenboard"
+			if d.Get("layout_type").(string) == "free" {
+				dashTypeString = "custom_timeboard"
+			}
+
+			dashType := datadogV2.DashboardType(dashTypeString)
+			itemsRequest[0] = *datadogV2.NewDashboardListItemRequest(*dashboard.Id, dashType)
+			items := datadogV2.NewDashboardListAddItemsRequest()
+			items.SetDashboards(itemsRequest)
+
+			datadogClientV2 := providerConf.DatadogClientV2
+			authV2 := providerConf.AuthV2
+			for _, id := range v.([]int64) {
+				_, _, err := datadogClientV2.DashboardListsApi.CreateDashboardListItems(authV2, id).Body(*items).Execute()
+				if err != nil {
+					return resource.NonRetryableError(err)
+				}
+			}
+		}
+
 		return resource.NonRetryableError(loadDatadogDashboard(d, getDashboard))
 	})
 }
