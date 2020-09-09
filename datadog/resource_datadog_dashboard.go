@@ -157,7 +157,7 @@ func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) er
 
 func updateDashboarLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardId string) {
 	dashTypeString := "custom_screenboard"
-	if d.Get("layout_type").(string) == "free" {
+	if d.Get("layout_type").(string) == "ordered" {
 		dashTypeString = "custom_timeboard"
 	}
 	dashType := datadogV2.DashboardType(dashTypeString)
