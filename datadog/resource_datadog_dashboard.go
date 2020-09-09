@@ -129,27 +129,9 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 			}
 			return resource.NonRetryableError(err)
 		}
-		if v, ok := d.GetOk("dashboard_lists"); ok && v.(*schema.Set).Len() > 0 {
-			itemsRequest := make([]datadogV2.DashboardListItemRequest, 1)
-			dashTypeString := "custom_screenboard"
-			if d.Get("layout_type").(string) == "free" {
-				dashTypeString = "custom_timeboard"
-			}
 
-			dashType := datadogV2.DashboardType(dashTypeString)
-			itemsRequest[0] = *datadogV2.NewDashboardListItemRequest(*dashboard.Id, dashType)
-			items := datadogV2.NewDashboardListAddItemsRequest()
-			items.SetDashboards(itemsRequest)
-
-			datadogClientV2 := providerConf.DatadogClientV2
-			authV2 := providerConf.AuthV2
-			for _, id := range v.(*schema.Set).List() {
-				_, _, err := datadogClientV2.DashboardListsApi.CreateDashboardListItems(authV2, int64(id.(int))).Body(*items).Execute()
-				if err != nil {
-					log.Printf("[DEBUG] Got error updating dashboard list %d: %v", id.(int), err)
-				}
-			}
-		}
+		// We only log the error, as failing to update the list shouldn't fail dashboard creation
+		updateDashboarLists(d, providerConf, *dashboard.Id)
 
 		return resource.NonRetryableError(loadDatadogDashboard(d, getDashboard))
 	})
@@ -168,51 +150,44 @@ func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) er
 		return translateClientError(err, "error updating dashboard")
 	}
 
-	if v, ok := d.GetOk("dashboard_lists"); ok && v.(*schema.Set).Len() > 0 {
-		itemsRequest := make([]datadogV2.DashboardListItemRequest, 1)
-		dashTypeString := "custom_screenboard"
-		if d.Get("layout_type").(string) == "free" {
-			dashTypeString = "custom_timeboard"
-		}
+	updateDashboarLists(d, providerConf, *dashboard.Id)
 
-		dashType := datadogV2.DashboardType(dashTypeString)
-		itemsRequest[0] = *datadogV2.NewDashboardListItemRequest(*dashboard.Id, dashType)
+	return resourceDatadogDashboardRead(d, meta)
+}
+
+func updateDashboarLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardId string) {
+	dashTypeString := "custom_screenboard"
+	if d.Get("layout_type").(string) == "free" {
+		dashTypeString = "custom_timeboard"
+	}
+	dashType := datadogV2.DashboardType(dashTypeString)
+	itemsRequest := []datadogV2.DashboardListItemRequest{*datadogV2.NewDashboardListItemRequest(dashboardId, dashType)}
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
+
+	if v, ok := d.GetOk("dashboard_lists"); ok && v.(*schema.Set).Len() > 0 {
 		items := datadogV2.NewDashboardListAddItemsRequest()
 		items.SetDashboards(itemsRequest)
 
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
 		for _, id := range v.(*schema.Set).List() {
 			_, _, err := datadogClientV2.DashboardListsApi.CreateDashboardListItems(authV2, int64(id.(int))).Body(*items).Execute()
 			if err != nil {
-				log.Printf("[DEBUG] Got error updating dashboard list %d: %v", id.(int), err)
+				log.Printf("[DEBUG] Got error adding to dashboard list %d: %v", id.(int), err)
 			}
 		}
 	}
 
 	if v, ok := d.GetOk("dashboard_lists_removed"); ok && v.(*schema.Set).Len() > 0 {
-		itemsRequest := make([]datadogV2.DashboardListItemRequest, 1)
-		dashTypeString := "custom_screenboard"
-		if d.Get("layout_type").(string) == "free" {
-			dashTypeString = "custom_timeboard"
-		}
-
-		dashType := datadogV2.DashboardType(dashTypeString)
-		itemsRequest[0] = *datadogV2.NewDashboardListItemRequest(*dashboard.Id, dashType)
 		items := datadogV2.NewDashboardListDeleteItemsRequest()
 		items.SetDashboards(itemsRequest)
 
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
 		for _, id := range v.(*schema.Set).List() {
 			_, _, err := datadogClientV2.DashboardListsApi.DeleteDashboardListItems(authV2, int64(id.(int))).Body(*items).Execute()
 			if err != nil {
-				log.Printf("[DEBUG] Got error updating dashboard list %d: %v", id.(int), err)
+				log.Printf("[DEBUG] Got error removing from dashboard list %d: %v", id.(int), err)
 			}
 		}
 	}
-
-	return resourceDatadogDashboardRead(d, meta)
 }
 
 func loadDatadogDashboard(d *schema.ResourceData, dashboard datadogV1.Dashboard) error {
