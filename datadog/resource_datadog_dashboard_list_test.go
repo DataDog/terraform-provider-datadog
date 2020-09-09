@@ -21,63 +21,110 @@ resource "datadog_dashboard_list" "new_list" {
 		"datadog_dashboard.time"
 	]
 
-    name = "%s"
-    dash_item {
-        type = "custom_timeboard"
-        dash_id = "${datadog_dashboard.time.id}"
-    }
-    dash_item {
-        type = "custom_screenboard"
-        dash_id = "${datadog_dashboard.screen.id}"
+	name = "%s"
+	dash_item {
+		type = "custom_timeboard"
+		dash_id = "${datadog_dashboard.time.id}"
+	}
+	dash_item {
+		type = "custom_screenboard"
+		dash_id = "${datadog_dashboard.screen.id}"
 	}
 }
 
 resource "datadog_dashboard" "time" {
-	title         = "%s-time"
+	title        = "%s-time"
 	# NOTE: this dependency is present to make sure the dashboards are created in
 	# a predictable order and thus the recorder test cassettes always work
-	depends_on    = ["datadog_dashboard.screen"]
-	description   = "Created using the Datadog provider in Terraform"
-	layout_type   = "ordered"
-	is_read_only  = true
+	depends_on   = ["datadog_dashboard.screen"]
+	description  = "Created using the Datadog provider in Terraform"
+	layout_type  = "ordered"
+	is_read_only = true
 	widget {
 		alert_graph_definition {
-		  alert_id = "1234"
-		  viz_type = "timeseries"
-		  title = "Widget Title"
-		  time = {
-			live_span = "1h"
-		  }
+			alert_id = "1234"
+			viz_type = "timeseries"
+			title = "Widget Title"
+			time = {
+				live_span = "1h"
+			}
 		}
-	  }
-
+	}
 }
 
 resource "datadog_dashboard" "screen" {
-	title         = "%s-screen"
-	description   = "Created using the Datadog provider in Terraform"
-	layout_type   = "free"
-	is_read_only  = false
+	title        = "%s-screen"
+	description  = "Created using the Datadog provider in Terraform"
+	layout_type  = "free"
+	is_read_only = false
 	widget {
 		event_stream_definition {
-		  query = "*"
-		  event_size = "l"
-		  title = "Widget Title"
-		  title_size = 16
-		  title_align = "left"
-		  time = {
-			live_span = "1h"
-		  }
+			query = "*"
+			event_size = "l"
+			title = "Widget Title"
+			title_size = 16
+			title_align = "left"
+			time = {
+				live_span = "1h"
+			}
 		}
 		layout = {
-		  height = 43
-		  width = 32
-		  x = 5
-		  y = 5
+			height = 43
+			width = 32
+			x = 5
+			y = 5
 		}
-	  }
-
+	}
 }`, uniq, uniq, uniq)
+}
+
+func testAccCheckDatadogDashListConfigInDashboard(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard_list" "new_list" {
+	name = "%s"
+}
+
+resource "datadog_dashboard" "time" {
+	title        = "%s-time"
+	description  = "Created using the Datadog provider in Terraform"
+	layout_type  = "ordered"
+	is_read_only = true
+	widget {
+		alert_graph_definition {
+			alert_id = "1234"
+			viz_type = "timeseries"
+			title = "Widget Title"
+			time = {
+				live_span = "1h"
+			}
+		}
+	}
+	dashboard_lists = ["${datadog_dashboard_list.new_list.id}"]
+}`, uniq, uniq)
+}
+
+func testAccCheckDatadogDashListConfigRemoveFromDashboard(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard_list" "new_list" {
+	name = "%s"
+}
+
+resource "datadog_dashboard" "time" {
+	title        = "%s-time"
+	description  = "Created using the Datadog provider in Terraform"
+	layout_type  = "ordered"
+	is_read_only = true
+	widget {
+		alert_graph_definition {
+			alert_id = "1234"
+			viz_type = "timeseries"
+			title = "Widget Title"
+			time = {
+				live_span = "1h"
+			}
+		}
+	}
+}`, uniq, uniq)
 }
 
 func TestDatadogDashListImport(t *testing.T) {
@@ -101,6 +148,41 @@ func TestDatadogDashListImport(t *testing.T) {
 				ResourceName:      resourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func TestDatadogDashListInDashboard(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	uniqueName := uniqueEntityName(clock, t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDashListDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDashListConfigInDashboard(uniqueName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_dashboard.time", "dashboard_lists.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_dashboard.time", "dashboard_lists_removed.#", "0"),
+				),
+				// The plan is non empty, because in this case the list is the same file
+				ExpectNonEmptyPlan: true,
+			},
+			{
+				Config: testAccCheckDatadogDashListConfigRemoveFromDashboard(uniqueName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_dashboard.time", "dashboard_lists.#", "0"),
+					resource.TestCheckResourceAttr(
+						"datadog_dashboard.time", "dashboard_lists_removed.#", "1"),
+				),
 			},
 		},
 	})
@@ -131,35 +213,6 @@ func datadogDashListDestroyHelper(s *terraform.State, authV1 context.Context, da
 		}
 
 		return fmt.Errorf("dashoard List still exists")
-	}
-	return nil
-}
-
-func testAccCheckDatadogDashListExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
-
-		return datadogDashListExistsHelper(s, authV1, datadogClientV1)
-	}
-}
-
-func datadogDashListExistsHelper(s *terraform.State, authV1 context.Context, datadogClientV1 *datadogV1.APIClient) error {
-	for _, r := range s.RootModule().Resources {
-		if !strings.Contains(r.Primary.Attributes["name"], "List") {
-			continue
-		}
-		id, _ := strconv.Atoi(r.Primary.ID)
-		_, _, errList := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, int64(id)).Execute()
-		if errList != nil {
-			if strings.Contains(strings.ToLower(errList.Error()), "not found") {
-				continue
-			}
-			return fmt.Errorf("received an error retrieving Dash List %s", errList)
-		}
-
-		return nil
 	}
 	return nil
 }
