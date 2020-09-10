@@ -636,6 +636,7 @@ The following arguments are supported:
 - `notify_list`: (Optional) List of handles of users to notify when changes are made to this dashboard.
 - `template_variables`: (Optional) Nested block describing a template variable. The structure of this block is described [below](dashboard.html#nested-template_variable-blocks). Multiple template_variable blocks are allowed within a `datadog_dashboard` resource.
 - `template_variable_presets`: (Optional) Nested block describing saved configurations of existing template variables. The structure of this block is described [below](dashboard.html#nested-template_variable_preset-blocks). Multiple template_variable_preset blocks are allowed within a `datadog_dashboard` resource, and multiple template_variables can be described by each template_variable_preset.
+- `dashboard_lists`: (Optional) List of dashboard list IDs this dashboard belongs to.
 
 ### Nested `widget` blocks
 

@@ -2,10 +2,12 @@ package datadog
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
@@ -18,6 +20,15 @@ func resourceDatadogDashboard() *schema.Resource {
 		Read:   resourceDatadogDashboardRead,
 		Delete: resourceDatadogDashboardDelete,
 		Exists: resourceDatadogDashboardExists,
+		CustomizeDiff: func(diff *schema.ResourceDiff, meta interface{}) error {
+			old, new := diff.GetChange("dashboard_lists")
+			if !old.(*schema.Set).Equal(new.(*schema.Set)) {
+				// Only calculate removed when the list change, to no create useless diffs
+				removed := old.(*schema.Set).Difference(new.(*schema.Set))
+				diff.SetNew("dashboard_lists_removed", removed)
+			}
+			return nil
+		},
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogDashboardImport,
 		},
@@ -80,6 +91,18 @@ func resourceDatadogDashboard() *schema.Resource {
 				Description: "The list of handles of users to notify when changes are made to this dashboard.",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
+			"dashboard_lists": {
+				Type:        schema.TypeSet,
+				Optional:    true,
+				Description: "The list of dashboard lists this dashboard belongs to.",
+				Elem:        &schema.Schema{Type: schema.TypeInt},
+			},
+			"dashboard_lists_removed": {
+				Type:        schema.TypeSet,
+				Computed:    true,
+				Description: "The list of dashboard lists this dashboard should be removed from. Internal only.",
+				Elem:        &schema.Schema{Type: schema.TypeInt},
+			},
 		},
 	}
 }
@@ -106,6 +129,10 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 			}
 			return resource.NonRetryableError(err)
 		}
+
+		// We only log the error, as failing to update the list shouldn't fail dashboard creation
+		updateDashboarLists(d, providerConf, *dashboard.Id)
+
 		return resource.NonRetryableError(loadDatadogDashboard(d, getDashboard))
 	})
 }
@@ -122,7 +149,45 @@ func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) er
 	if _, _, err = datadogClientV1.DashboardsApi.UpdateDashboard(authV1, id).Body(*dashboard).Execute(); err != nil {
 		return translateClientError(err, "error updating dashboard")
 	}
+
+	updateDashboarLists(d, providerConf, *dashboard.Id)
+
 	return resourceDatadogDashboardRead(d, meta)
+}
+
+func updateDashboarLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardId string) {
+	dashTypeString := "custom_screenboard"
+	if d.Get("layout_type").(string) == "ordered" {
+		dashTypeString = "custom_timeboard"
+	}
+	dashType := datadogV2.DashboardType(dashTypeString)
+	itemsRequest := []datadogV2.DashboardListItemRequest{*datadogV2.NewDashboardListItemRequest(dashboardId, dashType)}
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
+
+	if v, ok := d.GetOk("dashboard_lists"); ok && v.(*schema.Set).Len() > 0 {
+		items := datadogV2.NewDashboardListAddItemsRequest()
+		items.SetDashboards(itemsRequest)
+
+		for _, id := range v.(*schema.Set).List() {
+			_, _, err := datadogClientV2.DashboardListsApi.CreateDashboardListItems(authV2, int64(id.(int))).Body(*items).Execute()
+			if err != nil {
+				log.Printf("[DEBUG] Got error adding to dashboard list %d: %v", id.(int), err)
+			}
+		}
+	}
+
+	if v, ok := d.GetOk("dashboard_lists_removed"); ok && v.(*schema.Set).Len() > 0 {
+		items := datadogV2.NewDashboardListDeleteItemsRequest()
+		items.SetDashboards(itemsRequest)
+
+		for _, id := range v.(*schema.Set).List() {
+			_, _, err := datadogClientV2.DashboardListsApi.DeleteDashboardListItems(authV2, int64(id.(int))).Body(*items).Execute()
+			if err != nil {
+				log.Printf("[DEBUG] Got error removing from dashboard list %d: %v", id.(int), err)
+			}
+		}
+	}
 }
 
 func loadDatadogDashboard(d *schema.ResourceData, dashboard datadogV1.Dashboard) error {
