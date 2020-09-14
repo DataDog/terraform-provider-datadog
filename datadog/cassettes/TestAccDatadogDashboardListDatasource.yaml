@@ -1,0 +1,649 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"name":"tf-TestAccDatadogDashboardListDatasource-local-1599828824"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - CreateDashboardList
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.7; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "4352514525261998551"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2237542284615179951"
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual
+    method: POST
+  response:
+    body: '{"is_favorite":false,"name":"tf-TestAccDatadogDashboardListDatasource-local-1599828824","dashboard_count":0,"author":{"handle":"frog@datadoghq.com","name":null},"created":"2020-09-11T12:53:45.060991+00:00","type":"manual_dashboard_list","dashboards":null,"modified":"2020-09-11T12:53:45.061010+00:00","id":127818}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 11 Sep 2020 12:53:45 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 18-Sep-2020 12:53:45 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - /zsHFtprINVUw1ZfiUHr4QWG6zSvk60pEDgkQ/xkZhwKs+OLoOIF/qAdvuquXjy7
+      X-Dd-Version:
+      - "35.3019561"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboardList
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.7; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "2527081069261504253"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2237542284615179951"
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/127818
+    method: GET
+  response:
+    body: '{"is_favorite":false,"name":"tf-TestAccDatadogDashboardListDatasource-local-1599828824","dashboard_count":0,"author":{"handle":"frog@datadoghq.com","name":null},"created":"2020-09-11T12:53:45.060991+00:00","type":"manual_dashboard_list","dashboards":null,"modified":"2020-09-11T12:53:45.061010+00:00","id":127818}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 11 Sep 2020 12:53:45 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 18-Sep-2020 12:53:45 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 4zw1NnYiZt4wp0syhFEidO9Mcjc6rfPz6lIvXBSwWuplBSXLVyoWV6VIuyPxYSUD
+      X-Dd-Version:
+      - "35.3019561"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboardListItems
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.7; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "3945557143471689673"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2237542284615179951"
+    url: https://api.datadoghq.com/api/v2/dashboard/lists/manual/127818/dashboards
+    method: GET
+  response:
+    body: '{"total":0,"dashboards":[]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 11 Sep 2020 12:53:45 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 18-Sep-2020 12:53:45 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 7ZZAowMV9z1Vr+0y/WbNkvcDUXbHQ7uNKkyZU3E6k00RqTwxh53CgITxXoDQsQqv
+      X-Dd-Version:
+      - "35.3019561"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListDashboardLists
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.7; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "5123750137543296333"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2237542284615179951"
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual
+    method: GET
+  response:
+    body: '{"dashboard_lists":[{"is_favorite":true,"name":"frog''s List","dashboard_count":0,"author":{"handle":"frog@datadoghq.com","name":null},"created":"2020-09-08T07:12:57.679027+00:00","type":"manual_dashboard_list","dashboards":null,"modified":"2020-09-09T08:48:11.523877+00:00","id":126798},{"is_favorite":false,"name":"tf-TestAccDatadogDashboardListDatasource-local-1599828824","dashboard_count":0,"author":{"handle":"frog@datadoghq.com","name":null},"created":"2020-09-11T12:53:45.060991+00:00","type":"manual_dashboard_list","dashboards":null,"modified":"2020-09-11T12:53:45.061010+00:00","id":127818}]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 11 Sep 2020 12:53:45 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 18-Sep-2020 12:53:45 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - oARhNtI/6EvWShO4AFzODjV25iS4y9uHctlNmddhrc7oiR5CBUO6OzfRiwtsABEM
+      X-Dd-Version:
+      - "35.3019561"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboardList
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.7; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "5260388658701195877"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2237542284615179951"
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/127818
+    method: GET
+  response:
+    body: '{"is_favorite":false,"name":"tf-TestAccDatadogDashboardListDatasource-local-1599828824","dashboard_count":0,"author":{"handle":"frog@datadoghq.com","name":null},"created":"2020-09-11T12:53:45.060991+00:00","type":"manual_dashboard_list","dashboards":null,"modified":"2020-09-11T12:53:45.061010+00:00","id":127818}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 11 Sep 2020 12:53:45 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 18-Sep-2020 12:53:45 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - wKjjJ7menKUqTHAcYTdr0SOQo0b3P4CmzpFjM3FDFgRGChOJ69pF+uNoU3+noH1U
+      X-Dd-Version:
+      - "35.3019561"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboardList
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.7; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "8178130336101041759"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2237542284615179951"
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/127818
+    method: GET
+  response:
+    body: '{"is_favorite":false,"name":"tf-TestAccDatadogDashboardListDatasource-local-1599828824","dashboard_count":0,"author":{"handle":"frog@datadoghq.com","name":null},"created":"2020-09-11T12:53:45.060991+00:00","type":"manual_dashboard_list","dashboards":null,"modified":"2020-09-11T12:53:45.061010+00:00","id":127818}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 11 Sep 2020 12:53:45 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 18-Sep-2020 12:53:45 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 4XEHrKCjPbSbs1iu1F78+tH4eaIPZCq+IGDoHN/GQcOsLq6w3Zzz7ZK1RqpTUzFS
+      X-Dd-Version:
+      - "35.3019561"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboardListItems
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.7; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "3346759087718181394"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2237542284615179951"
+    url: https://api.datadoghq.com/api/v2/dashboard/lists/manual/127818/dashboards
+    method: GET
+  response:
+    body: '{"total":0,"dashboards":[]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 11 Sep 2020 12:53:45 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 18-Sep-2020 12:53:45 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - sbJ6i3VupQQcT7EDgPAdOxGmcKsvZJqf4l3SlQaWZNaaFfahh7BdNF3x5CttmH4Q
+      X-Dd-Version:
+      - "35.3019561"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboardList
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.7; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "3155513180772353189"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2237542284615179951"
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/127818
+    method: GET
+  response:
+    body: '{"is_favorite":false,"name":"tf-TestAccDatadogDashboardListDatasource-local-1599828824","dashboard_count":0,"author":{"handle":"frog@datadoghq.com","name":null},"created":"2020-09-11T12:53:45.060991+00:00","type":"manual_dashboard_list","dashboards":null,"modified":"2020-09-11T12:53:45.061010+00:00","id":127818}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 11 Sep 2020 12:53:46 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 18-Sep-2020 12:53:46 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - nFyTUry7tLSCWgKgQTsGO10dBCh8TOEhHGgwdexQMnQchHPTOyo6yaXIidoJXR1X
+      X-Dd-Version:
+      - "35.3019561"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboardList
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.7; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "7441541948025171712"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2237542284615179951"
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/127818
+    method: GET
+  response:
+    body: '{"is_favorite":false,"name":"tf-TestAccDatadogDashboardListDatasource-local-1599828824","dashboard_count":0,"author":{"handle":"frog@datadoghq.com","name":null},"created":"2020-09-11T12:53:45.060991+00:00","type":"manual_dashboard_list","dashboards":null,"modified":"2020-09-11T12:53:45.061010+00:00","id":127818}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 11 Sep 2020 12:53:46 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 18-Sep-2020 12:53:46 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - I0yEH4xFhLuk+yM2GIR/dtCF29+DEBKb58kq6TOpApqsa53yIh0t7lSVmFnrgEx+
+      X-Dd-Version:
+      - "35.3019561"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboardListItems
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.7; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "8769318282832612740"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2237542284615179951"
+    url: https://api.datadoghq.com/api/v2/dashboard/lists/manual/127818/dashboards
+    method: GET
+  response:
+    body: '{"total":0,"dashboards":[]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 11 Sep 2020 12:53:46 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 18-Sep-2020 12:53:46 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - gr+QII7IFZVxhXS35BsEOrW9Uz3gs+l7g2tB1FOjy4hKCe3rtnWg3KfE74dirBtE
+      X-Dd-Version:
+      - "35.3019561"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - DeleteDashboardList
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.7; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "1620433924585810212"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2237542284615179951"
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/127818
+    method: DELETE
+  response:
+    body: '{"deleted_dashboard_list_id":127818}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 11 Sep 2020 12:54:17 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 18-Sep-2020 12:53:46 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - oARhNtI/6EvWShO4AFzODjV25iS4y9uHctlNmddhrc7oiR5CBUO6OzfRiwtsABEM
+      X-Dd-Version:
+      - "35.3019561"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboardList
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.8+dev (go go1.14.7; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "5353003033948258786"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2237542284615179951"
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/127818
+    method: GET
+  response:
+    body: '{"errors": ["Manual Dashboard List with id 127818 not found"]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 11 Sep 2020 12:54:17 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.3019561"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 404 Not Found
+    code: 404
+    duration: ""
