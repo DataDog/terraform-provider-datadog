@@ -26,7 +26,10 @@ func resourceDatadogDashboard() *schema.Resource {
 				// Only calculate removed when the list change, to no create useless diffs
 				removed := old.(*schema.Set).Difference(new.(*schema.Set))
 				diff.SetNew("dashboard_lists_removed", removed)
+			} else {
+				diff.Clear("dashboard_lists_removed")
 			}
+
 			return nil
 		},
 		Importer: &schema.ResourceImporter{
