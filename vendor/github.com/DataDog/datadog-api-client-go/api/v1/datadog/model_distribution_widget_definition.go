@@ -14,7 +14,8 @@ import (
 
 // DistributionWidgetDefinition The Distribution visualization is another way of showing metrics aggregated across one or several tags, such as hosts. Unlike the heat map, a distribution graph’s x-axis is quantity rather than time.
 type DistributionWidgetDefinition struct {
-	LegendSize *WidgetLegendSize `json:"legend_size,omitempty"`
+	// Available legend sizes for a widget. Should be one of \"0\", \"2\", \"4\", \"8\", \"16\", or \"auto\".
+	LegendSize *string `json:"legend_size,omitempty"`
 	// Array of one request object to display in the widget.  See the dedicated [Request JSON schema documentation](https://docs.datadoghq.com/dashboards/graphing_json/request_json)  to learn how to build the `REQUEST_SCHEMA`.
 	Requests []DistributionWidgetRequest `json:"requests"`
 	// Whether or not to display the legend on this widget.
@@ -50,9 +51,9 @@ func NewDistributionWidgetDefinitionWithDefaults() *DistributionWidgetDefinition
 }
 
 // GetLegendSize returns the LegendSize field value if set, zero value otherwise.
-func (o *DistributionWidgetDefinition) GetLegendSize() WidgetLegendSize {
+func (o *DistributionWidgetDefinition) GetLegendSize() string {
 	if o == nil || o.LegendSize == nil {
-		var ret WidgetLegendSize
+		var ret string
 		return ret
 	}
 	return *o.LegendSize
@@ -60,7 +61,7 @@ func (o *DistributionWidgetDefinition) GetLegendSize() WidgetLegendSize {
 
 // GetLegendSizeOk returns a tuple with the LegendSize field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DistributionWidgetDefinition) GetLegendSizeOk() (*WidgetLegendSize, bool) {
+func (o *DistributionWidgetDefinition) GetLegendSizeOk() (*string, bool) {
 	if o == nil || o.LegendSize == nil {
 		return nil, false
 	}
@@ -76,8 +77,8 @@ func (o *DistributionWidgetDefinition) HasLegendSize() bool {
 	return false
 }
 
-// SetLegendSize gets a reference to the given WidgetLegendSize and assigns it to the LegendSize field.
-func (o *DistributionWidgetDefinition) SetLegendSize(v WidgetLegendSize) {
+// SetLegendSize gets a reference to the given string and assigns it to the LegendSize field.
+func (o *DistributionWidgetDefinition) SetLegendSize(v string) {
 	o.LegendSize = &v
 }
 

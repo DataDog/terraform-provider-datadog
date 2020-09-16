@@ -50,7 +50,7 @@ func (a *DashboardListsApiService) CreateDashboardList(ctx _context.Context) api
 
 /*
 Execute executes the request
- @return DashboardList
+@return DashboardList
 */
 func (r apiCreateDashboardListRequest) Execute() (DashboardList, *_nethttp.Response, error) {
 	var (
@@ -72,7 +72,6 @@ func (r apiCreateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -206,7 +205,7 @@ func (a *DashboardListsApiService) DeleteDashboardList(ctx _context.Context, lis
 
 /*
 Execute executes the request
- @return DashboardListDeleteResponse
+@return DashboardListDeleteResponse
 */
 func (r apiDeleteDashboardListRequest) Execute() (DashboardListDeleteResponse, *_nethttp.Response, error) {
 	var (
@@ -357,7 +356,7 @@ func (a *DashboardListsApiService) GetDashboardList(ctx _context.Context, listId
 
 /*
 Execute executes the request
- @return DashboardList
+@return DashboardList
 */
 func (r apiGetDashboardListRequest) Execute() (DashboardList, *_nethttp.Response, error) {
 	var (
@@ -505,7 +504,7 @@ func (a *DashboardListsApiService) ListDashboardLists(ctx _context.Context) apiL
 
 /*
 Execute executes the request
- @return DashboardListListResponse
+@return DashboardListListResponse
 */
 func (r apiListDashboardListsRequest) Execute() (DashboardListListResponse, *_nethttp.Response, error) {
 	var (
@@ -651,7 +650,7 @@ func (a *DashboardListsApiService) UpdateDashboardList(ctx _context.Context, lis
 
 /*
 Execute executes the request
- @return DashboardList
+@return DashboardList
 */
 func (r apiUpdateDashboardListRequest) Execute() (DashboardList, *_nethttp.Response, error) {
 	var (
@@ -674,7 +673,6 @@ func (r apiUpdateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}

@@ -55,7 +55,6 @@ func (a *LogsArchivesApiService) AddReadRoleToArchive(ctx _context.Context, arch
 
 /*
 Execute executes the request
-
 */
 func (r apiAddReadRoleToArchiveRequest) Execute() (*_nethttp.Response, error) {
 	var (
@@ -217,7 +216,7 @@ func (a *LogsArchivesApiService) CreateLogsArchive(ctx _context.Context) apiCrea
 
 /*
 Execute executes the request
- @return LogsArchive
+@return LogsArchive
 */
 func (r apiCreateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, error) {
 	var (
@@ -239,7 +238,6 @@ func (r apiCreateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -373,7 +371,6 @@ func (a *LogsArchivesApiService) DeleteLogsArchive(ctx _context.Context, archive
 
 /*
 Execute executes the request
-
 */
 func (r apiDeleteLogsArchiveRequest) Execute() (*_nethttp.Response, error) {
 	var (
@@ -524,7 +521,7 @@ func (a *LogsArchivesApiService) GetLogsArchive(ctx _context.Context, archiveId 
 
 /*
 Execute executes the request
- @return LogsArchive
+@return LogsArchive
 */
 func (r apiGetLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, error) {
 	var (
@@ -685,7 +682,7 @@ func (a *LogsArchivesApiService) ListArchiveReadRoles(ctx _context.Context, arch
 
 /*
 Execute executes the request
- @return RolesResponse
+@return RolesResponse
 */
 func (r apiListArchiveReadRolesRequest) Execute() (RolesResponse, *_nethttp.Response, error) {
 	var (
@@ -849,7 +846,7 @@ func (a *LogsArchivesApiService) ListLogsArchives(ctx _context.Context) apiListL
 
 /*
 Execute executes the request
- @return LogsArchives
+@return LogsArchives
 */
 func (r apiListLogsArchivesRequest) Execute() (LogsArchives, *_nethttp.Response, error) {
 	var (
@@ -995,7 +992,6 @@ func (a *LogsArchivesApiService) RemoveRoleFromArchive(ctx _context.Context, arc
 
 /*
 Execute executes the request
-
 */
 func (r apiRemoveRoleFromArchiveRequest) Execute() (*_nethttp.Response, error) {
 	var (
@@ -1163,7 +1159,7 @@ func (a *LogsArchivesApiService) UpdateLogsArchive(ctx _context.Context, archive
 
 /*
 Execute executes the request
- @return LogsArchive
+@return LogsArchive
 */
 func (r apiUpdateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, error) {
 	var (
@@ -1186,7 +1182,6 @@ func (r apiUpdateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}

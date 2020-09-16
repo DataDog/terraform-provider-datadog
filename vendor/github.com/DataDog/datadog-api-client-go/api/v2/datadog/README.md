@@ -233,6 +233,7 @@ Class | Method | HTTP request | Description
  - [SecurityMonitoringRuleMaxSignalDuration](docs/SecurityMonitoringRuleMaxSignalDuration.md)
  - [SecurityMonitoringRuleOptions](docs/SecurityMonitoringRuleOptions.md)
  - [SecurityMonitoringRuleQuery](docs/SecurityMonitoringRuleQuery.md)
+ - [SecurityMonitoringRuleQueryAggregation](docs/SecurityMonitoringRuleQueryAggregation.md)
  - [SecurityMonitoringRuleQueryCreate](docs/SecurityMonitoringRuleQueryCreate.md)
  - [SecurityMonitoringRuleResponse](docs/SecurityMonitoringRuleResponse.md)
  - [SecurityMonitoringRuleSeverity](docs/SecurityMonitoringRuleSeverity.md)

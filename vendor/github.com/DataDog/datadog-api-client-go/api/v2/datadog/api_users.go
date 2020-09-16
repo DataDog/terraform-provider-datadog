@@ -50,7 +50,7 @@ func (a *UsersApiService) CreateUser(ctx _context.Context) apiCreateUserRequest 
 
 /*
 Execute executes the request
- @return UserResponse
+@return UserResponse
 */
 func (r apiCreateUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
 	var (
@@ -202,7 +202,6 @@ func (a *UsersApiService) DisableUser(ctx _context.Context, userId string) apiDi
 
 /*
 Execute executes the request
-
 */
 func (r apiDisableUserRequest) Execute() (*_nethttp.Response, error) {
 	var (
@@ -343,7 +342,7 @@ func (a *UsersApiService) GetInvitation(ctx _context.Context, userInvitationUuid
 
 /*
 Execute executes the request
- @return UserInvitationResponse
+@return UserInvitationResponse
 */
 func (r apiGetInvitationRequest) Execute() (UserInvitationResponse, *_nethttp.Response, error) {
 	var (
@@ -494,7 +493,7 @@ func (a *UsersApiService) GetUser(ctx _context.Context, userId string) apiGetUse
 
 /*
 Execute executes the request
- @return UserResponse
+@return UserResponse
 */
 func (r apiGetUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
 	var (
@@ -645,7 +644,7 @@ func (a *UsersApiService) ListUserOrganizations(ctx _context.Context, userId str
 
 /*
 Execute executes the request
- @return UserResponse
+@return UserResponse
 */
 func (r apiListUserOrganizationsRequest) Execute() (UserResponse, *_nethttp.Response, error) {
 	var (
@@ -796,7 +795,7 @@ func (a *UsersApiService) ListUserPermissions(ctx _context.Context, userId strin
 
 /*
 Execute executes the request
- @return PermissionsResponse
+@return PermissionsResponse
 */
 func (r apiListUserPermissionsRequest) Execute() (PermissionsResponse, *_nethttp.Response, error) {
 	var (
@@ -939,27 +938,22 @@ func (r apiListUsersRequest) PageSize(pageSize int64) apiListUsersRequest {
 	r.pageSize = &pageSize
 	return r
 }
-
 func (r apiListUsersRequest) PageNumber(pageNumber int64) apiListUsersRequest {
 	r.pageNumber = &pageNumber
 	return r
 }
-
 func (r apiListUsersRequest) Sort(sort string) apiListUsersRequest {
 	r.sort = &sort
 	return r
 }
-
 func (r apiListUsersRequest) SortDir(sortDir QuerySortOrder) apiListUsersRequest {
 	r.sortDir = &sortDir
 	return r
 }
-
 func (r apiListUsersRequest) Filter(filter string) apiListUsersRequest {
 	r.filter = &filter
 	return r
 }
-
 func (r apiListUsersRequest) FilterStatus(filterStatus string) apiListUsersRequest {
 	r.filterStatus = &filterStatus
 	return r
@@ -980,7 +974,7 @@ func (a *UsersApiService) ListUsers(ctx _context.Context) apiListUsersRequest {
 
 /*
 Execute executes the request
- @return UsersResponse
+@return UsersResponse
 */
 func (r apiListUsersRequest) Execute() (UsersResponse, *_nethttp.Response, error) {
 	var (
@@ -1151,7 +1145,7 @@ func (a *UsersApiService) SendInvitations(ctx _context.Context) apiSendInvitatio
 
 /*
 Execute executes the request
- @return UserInvitationsResponse
+@return UserInvitationsResponse
 */
 func (r apiSendInvitationsRequest) Execute() (UserInvitationsResponse, *_nethttp.Response, error) {
 	var (
@@ -1309,20 +1303,21 @@ func (a *UsersApiService) UpdateUser(ctx _context.Context, userId string) apiUpd
 
 /*
 Execute executes the request
-
+@return UserResponse
 */
-func (r apiUpdateUserRequest) Execute() (*_nethttp.Response, error) {
+func (r apiUpdateUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPatch
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
+		localVarReturnValue  UserResponse
 	)
 
 	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.UpdateUser")
 	if err != nil {
-		return nil, GenericOpenAPIError{error: err.Error()}
+		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
 
 	localVarPath := localBasePath + "/api/v2/users/{user_id}"
@@ -1385,18 +1380,18 @@ func (r apiUpdateUserRequest) Execute() (*_nethttp.Response, error) {
 	}
 	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
-		return nil, err
+		return localVarReturnValue, nil, err
 	}
 
 	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
-		return localVarHTTPResponse, err
+		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
 	if err != nil {
-		return localVarHTTPResponse, err
+		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
 	if localVarHTTPResponse.StatusCode >= 300 {
@@ -1409,42 +1404,51 @@ func (r apiUpdateUserRequest) Execute() (*_nethttp.Response, error) {
 			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
+				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.model = v
-			return localVarHTTPResponse, newErr
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
 			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
+				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.model = v
-			return localVarHTTPResponse, newErr
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
 			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
+				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.model = v
-			return localVarHTTPResponse, newErr
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 422 {
 			var v APIErrorResponse
 			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
+				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.model = v
 		}
-		return localVarHTTPResponse, newErr
+		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	return localVarHTTPResponse, nil
+	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
 }

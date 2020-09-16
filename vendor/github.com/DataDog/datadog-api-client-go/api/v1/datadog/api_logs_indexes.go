@@ -49,7 +49,7 @@ func (a *LogsIndexesApiService) GetLogsIndex(ctx _context.Context, name string) 
 
 /*
 Execute executes the request
- @return LogsIndex
+@return LogsIndex
 */
 func (r apiGetLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, error) {
 	var (
@@ -203,7 +203,7 @@ func (a *LogsIndexesApiService) GetLogsIndexOrder(ctx _context.Context) apiGetLo
 
 /*
 Execute executes the request
- @return LogsIndexesOrder
+@return LogsIndexesOrder
 */
 func (r apiGetLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.Response, error) {
 	var (
@@ -347,7 +347,7 @@ func (a *LogsIndexesApiService) ListLogIndexes(ctx _context.Context) apiListLogI
 
 /*
 Execute executes the request
- @return LogsIndexListResponse
+@return LogsIndexListResponse
 */
 func (r apiListLogIndexesRequest) Execute() (LogsIndexListResponse, *_nethttp.Response, error) {
 	var (
@@ -503,7 +503,7 @@ func (a *LogsIndexesApiService) UpdateLogsIndex(ctx _context.Context, name strin
 
 /*
 Execute executes the request
- @return LogsIndex
+@return LogsIndex
 */
 func (r apiUpdateLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, error) {
 	var (
@@ -676,7 +676,7 @@ func (a *LogsIndexesApiService) UpdateLogsIndexOrder(ctx _context.Context) apiUp
 
 /*
 Execute executes the request
- @return LogsIndexesOrder
+@return LogsIndexesOrder
 */
 func (r apiUpdateLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.Response, error) {
 	var (

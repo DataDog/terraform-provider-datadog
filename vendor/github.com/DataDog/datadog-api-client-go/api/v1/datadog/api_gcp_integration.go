@@ -49,7 +49,7 @@ func (a *GCPIntegrationApiService) CreateGCPIntegration(ctx _context.Context) ap
 
 /*
 Execute executes the request
- @return interface{}
+@return interface{}
 */
 func (r apiCreateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
 	var (
@@ -71,7 +71,6 @@ func (r apiCreateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -208,7 +207,7 @@ func (a *GCPIntegrationApiService) DeleteGCPIntegration(ctx _context.Context) ap
 
 /*
 Execute executes the request
- @return interface{}
+@return interface{}
 */
 func (r apiDeleteGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
 	var (
@@ -230,7 +229,6 @@ func (r apiDeleteGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -361,7 +359,7 @@ func (a *GCPIntegrationApiService) ListGCPIntegration(ctx _context.Context) apiL
 
 /*
 Execute executes the request
- @return []GCPAccount
+@return []GCPAccount
 */
 func (r apiListGCPIntegrationRequest) Execute() ([]GCPAccount, *_nethttp.Response, error) {
 	var (
@@ -517,7 +515,7 @@ func (a *GCPIntegrationApiService) UpdateGCPIntegration(ctx _context.Context) ap
 
 /*
 Execute executes the request
- @return interface{}
+@return interface{}
 */
 func (r apiUpdateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
 	var (
@@ -539,7 +537,6 @@ func (r apiUpdateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}

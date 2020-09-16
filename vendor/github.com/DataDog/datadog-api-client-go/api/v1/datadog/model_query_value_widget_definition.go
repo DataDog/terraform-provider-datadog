@@ -16,6 +16,8 @@ import (
 type QueryValueWidgetDefinition struct {
 	// Whether to use auto-scaling or not.
 	Autoscale *bool `json:"autoscale,omitempty"`
+	// List of custom links.
+	CustomLinks *[]WidgetCustomLink `json:"custom_links,omitempty"`
 	// Display a unit of your choice on the widget.
 	CustomUnit *string `json:"custom_unit,omitempty"`
 	// Number of decimals to show. If not defined, the widget uses the raw value.
@@ -83,6 +85,38 @@ func (o *QueryValueWidgetDefinition) HasAutoscale() bool {
 // SetAutoscale gets a reference to the given bool and assigns it to the Autoscale field.
 func (o *QueryValueWidgetDefinition) SetAutoscale(v bool) {
 	o.Autoscale = &v
+}
+
+// GetCustomLinks returns the CustomLinks field value if set, zero value otherwise.
+func (o *QueryValueWidgetDefinition) GetCustomLinks() []WidgetCustomLink {
+	if o == nil || o.CustomLinks == nil {
+		var ret []WidgetCustomLink
+		return ret
+	}
+	return *o.CustomLinks
+}
+
+// GetCustomLinksOk returns a tuple with the CustomLinks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryValueWidgetDefinition) GetCustomLinksOk() (*[]WidgetCustomLink, bool) {
+	if o == nil || o.CustomLinks == nil {
+		return nil, false
+	}
+	return o.CustomLinks, true
+}
+
+// HasCustomLinks returns a boolean if a field has been set.
+func (o *QueryValueWidgetDefinition) HasCustomLinks() bool {
+	if o != nil && o.CustomLinks != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomLinks gets a reference to the given []WidgetCustomLink and assigns it to the CustomLinks field.
+func (o *QueryValueWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
+	o.CustomLinks = &v
 }
 
 // GetCustomUnit returns the CustomUnit field value if set, zero value otherwise.
@@ -361,6 +395,9 @@ func (o QueryValueWidgetDefinition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Autoscale != nil {
 		toSerialize["autoscale"] = o.Autoscale
+	}
+	if o.CustomLinks != nil {
+		toSerialize["custom_links"] = o.CustomLinks
 	}
 	if o.CustomUnit != nil {
 		toSerialize["custom_unit"] = o.CustomUnit

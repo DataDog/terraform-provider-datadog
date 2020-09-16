@@ -60,7 +60,7 @@ func (a *OrganizationsApiService) CreateChildOrg(ctx _context.Context) apiCreate
 
 /*
 Execute executes the request
- @return OrganizationCreateResponse
+@return OrganizationCreateResponse
 */
 func (r apiCreateChildOrgRequest) Execute() (OrganizationCreateResponse, *_nethttp.Response, error) {
 	var (
@@ -82,7 +82,6 @@ func (r apiCreateChildOrgRequest) Execute() (OrganizationCreateResponse, *_netht
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -216,7 +215,7 @@ func (a *OrganizationsApiService) GetOrg(ctx _context.Context, publicId string) 
 
 /*
 Execute executes the request
- @return OrganizationResponse
+@return OrganizationResponse
 */
 func (r apiGetOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response, error) {
 	var (
@@ -364,7 +363,7 @@ func (a *OrganizationsApiService) ListOrgs(ctx _context.Context) apiListOrgsRequ
 
 /*
 Execute executes the request
- @return OrganizationListResponse
+@return OrganizationListResponse
 */
 func (r apiListOrgsRequest) Execute() (OrganizationListResponse, *_nethttp.Response, error) {
 	var (
@@ -510,7 +509,7 @@ func (a *OrganizationsApiService) UpdateOrg(ctx _context.Context, publicId strin
 
 /*
 Execute executes the request
- @return OrganizationResponse
+@return OrganizationResponse
 */
 func (r apiUpdateOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response, error) {
 	var (
@@ -533,7 +532,6 @@ func (r apiUpdateOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -678,7 +676,7 @@ func (a *OrganizationsApiService) UploadIdPForOrg(ctx _context.Context, publicId
 
 /*
 Execute executes the request
- @return IdpResponse
+@return IdpResponse
 */
 func (r apiUploadIdPForOrgRequest) Execute() (IdpResponse, *_nethttp.Response, error) {
 	var (
@@ -701,7 +699,6 @@ func (r apiUploadIdPForOrgRequest) Execute() (IdpResponse, *_nethttp.Response, e
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.idpFile == nil {
 		return localVarReturnValue, nil, reportError("idpFile is required and must be specified")
 	}

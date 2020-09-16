@@ -50,7 +50,7 @@ func (a *LogsPipelinesApiService) CreateLogsPipeline(ctx _context.Context) apiCr
 
 /*
 Execute executes the request
- @return LogsPipeline
+@return LogsPipeline
 */
 func (r apiCreateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, error) {
 	var (
@@ -72,7 +72,6 @@ func (r apiCreateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -207,7 +206,6 @@ func (a *LogsPipelinesApiService) DeleteLogsPipeline(ctx _context.Context, pipel
 
 /*
 Execute executes the request
-
 */
 func (r apiDeleteLogsPipelineRequest) Execute() (*_nethttp.Response, error) {
 	var (
@@ -349,7 +347,7 @@ func (a *LogsPipelinesApiService) GetLogsPipeline(ctx _context.Context, pipeline
 
 /*
 Execute executes the request
- @return LogsPipeline
+@return LogsPipeline
 */
 func (r apiGetLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, error) {
 	var (
@@ -498,7 +496,7 @@ func (a *LogsPipelinesApiService) GetLogsPipelineOrder(ctx _context.Context) api
 
 /*
 Execute executes the request
- @return LogsPipelinesOrder
+@return LogsPipelinesOrder
 */
 func (r apiGetLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_nethttp.Response, error) {
 	var (
@@ -636,7 +634,7 @@ func (a *LogsPipelinesApiService) ListLogsPipelines(ctx _context.Context) apiLis
 
 /*
 Execute executes the request
- @return []LogsPipeline
+@return []LogsPipeline
 */
 func (r apiListLogsPipelinesRequest) Execute() ([]LogsPipeline, *_nethttp.Response, error) {
 	var (
@@ -785,7 +783,7 @@ func (a *LogsPipelinesApiService) UpdateLogsPipeline(ctx _context.Context, pipel
 
 /*
 Execute executes the request
- @return LogsPipeline
+@return LogsPipeline
 */
 func (r apiUpdateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, error) {
 	var (
@@ -808,7 +806,6 @@ func (r apiUpdateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -949,7 +946,7 @@ func (a *LogsPipelinesApiService) UpdateLogsPipelineOrder(ctx _context.Context) 
 
 /*
 Execute executes the request
- @return LogsPipelinesOrder
+@return LogsPipelinesOrder
 */
 func (r apiUpdateLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_nethttp.Response, error) {
 	var (
@@ -971,7 +968,6 @@ func (r apiUpdateLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_neth
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}

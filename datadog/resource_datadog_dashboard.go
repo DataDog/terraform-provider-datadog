@@ -1555,7 +1555,7 @@ func buildDatadogDistributionDefinition(terraformDefinition map[string]interface
 		datadogDefinition.SetShowLegend(v)
 	}
 	if v, ok := terraformDefinition["legend_size"].(string); ok && len(v) != 0 {
-		datadogDefinition.SetLegendSize(datadogV1.WidgetLegendSize(v))
+		datadogDefinition.SetLegendSize(v)
 	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
@@ -2117,7 +2117,7 @@ func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *
 		datadogDefinition.SetShowLegend(v)
 	}
 	if v, ok := terraformDefinition["legend_size"].(string); ok && len(v) != 0 {
-		datadogDefinition.SetLegendSize(datadogV1.WidgetLegendSize(v))
+		datadogDefinition.SetLegendSize(v)
 	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
@@ -3987,7 +3987,7 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 		datadogDefinition.SetShowLegend(v)
 	}
 	if v, ok := terraformDefinition["legend_size"].(string); ok && len(v) != 0 {
-		datadogDefinition.SetLegendSize(datadogV1.WidgetLegendSize(v))
+		datadogDefinition.SetLegendSize(v)
 	}
 	return datadogDefinition
 }
