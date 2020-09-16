@@ -14,9 +14,12 @@ import (
 
 // HeatMapWidgetDefinition The heat map visualization shows metrics aggregated across many tags, such as hosts. The more hosts that have a particular value, the darker that square is.
 type HeatMapWidgetDefinition struct {
+	// List of custom links.
+	CustomLinks *[]WidgetCustomLink `json:"custom_links,omitempty"`
 	// List of widget events.
-	Events     *[]WidgetEvent    `json:"events,omitempty"`
-	LegendSize *WidgetLegendSize `json:"legend_size,omitempty"`
+	Events *[]WidgetEvent `json:"events,omitempty"`
+	// Available legend sizes for a widget. Should be one of \"0\", \"2\", \"4\", \"8\", \"16\", or \"auto\".
+	LegendSize *string `json:"legend_size,omitempty"`
 	// List of widget types.
 	Requests []HeatMapWidgetRequest `json:"requests"`
 	// Whether or not to display the legend on this widget.
@@ -52,6 +55,38 @@ func NewHeatMapWidgetDefinitionWithDefaults() *HeatMapWidgetDefinition {
 	return &this
 }
 
+// GetCustomLinks returns the CustomLinks field value if set, zero value otherwise.
+func (o *HeatMapWidgetDefinition) GetCustomLinks() []WidgetCustomLink {
+	if o == nil || o.CustomLinks == nil {
+		var ret []WidgetCustomLink
+		return ret
+	}
+	return *o.CustomLinks
+}
+
+// GetCustomLinksOk returns a tuple with the CustomLinks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *HeatMapWidgetDefinition) GetCustomLinksOk() (*[]WidgetCustomLink, bool) {
+	if o == nil || o.CustomLinks == nil {
+		return nil, false
+	}
+	return o.CustomLinks, true
+}
+
+// HasCustomLinks returns a boolean if a field has been set.
+func (o *HeatMapWidgetDefinition) HasCustomLinks() bool {
+	if o != nil && o.CustomLinks != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomLinks gets a reference to the given []WidgetCustomLink and assigns it to the CustomLinks field.
+func (o *HeatMapWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
+	o.CustomLinks = &v
+}
+
 // GetEvents returns the Events field value if set, zero value otherwise.
 func (o *HeatMapWidgetDefinition) GetEvents() []WidgetEvent {
 	if o == nil || o.Events == nil {
@@ -85,9 +120,9 @@ func (o *HeatMapWidgetDefinition) SetEvents(v []WidgetEvent) {
 }
 
 // GetLegendSize returns the LegendSize field value if set, zero value otherwise.
-func (o *HeatMapWidgetDefinition) GetLegendSize() WidgetLegendSize {
+func (o *HeatMapWidgetDefinition) GetLegendSize() string {
 	if o == nil || o.LegendSize == nil {
-		var ret WidgetLegendSize
+		var ret string
 		return ret
 	}
 	return *o.LegendSize
@@ -95,7 +130,7 @@ func (o *HeatMapWidgetDefinition) GetLegendSize() WidgetLegendSize {
 
 // GetLegendSizeOk returns a tuple with the LegendSize field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *HeatMapWidgetDefinition) GetLegendSizeOk() (*WidgetLegendSize, bool) {
+func (o *HeatMapWidgetDefinition) GetLegendSizeOk() (*string, bool) {
 	if o == nil || o.LegendSize == nil {
 		return nil, false
 	}
@@ -111,8 +146,8 @@ func (o *HeatMapWidgetDefinition) HasLegendSize() bool {
 	return false
 }
 
-// SetLegendSize gets a reference to the given WidgetLegendSize and assigns it to the LegendSize field.
-func (o *HeatMapWidgetDefinition) SetLegendSize(v WidgetLegendSize) {
+// SetLegendSize gets a reference to the given string and assigns it to the LegendSize field.
+func (o *HeatMapWidgetDefinition) SetLegendSize(v string) {
 	o.LegendSize = &v
 }
 
@@ -358,6 +393,9 @@ func (o *HeatMapWidgetDefinition) SetYaxis(v WidgetAxis) {
 
 func (o HeatMapWidgetDefinition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.CustomLinks != nil {
+		toSerialize["custom_links"] = o.CustomLinks
+	}
 	if o.Events != nil {
 		toSerialize["events"] = o.Events
 	}

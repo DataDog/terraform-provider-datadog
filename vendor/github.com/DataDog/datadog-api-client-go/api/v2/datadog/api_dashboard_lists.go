@@ -53,7 +53,7 @@ func (a *DashboardListsApiService) CreateDashboardListItems(ctx _context.Context
 
 /*
 Execute executes the request
- @return DashboardListAddItemsResponse
+@return DashboardListAddItemsResponse
 */
 func (r apiCreateDashboardListItemsRequest) Execute() (DashboardListAddItemsResponse, *_nethttp.Response, error) {
 	var (
@@ -76,7 +76,6 @@ func (r apiCreateDashboardListItemsRequest) Execute() (DashboardListAddItemsResp
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -226,7 +225,7 @@ func (a *DashboardListsApiService) DeleteDashboardListItems(ctx _context.Context
 
 /*
 Execute executes the request
- @return DashboardListDeleteItemsResponse
+@return DashboardListDeleteItemsResponse
 */
 func (r apiDeleteDashboardListItemsRequest) Execute() (DashboardListDeleteItemsResponse, *_nethttp.Response, error) {
 	var (
@@ -249,7 +248,6 @@ func (r apiDeleteDashboardListItemsRequest) Execute() (DashboardListDeleteItemsR
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -393,7 +391,7 @@ func (a *DashboardListsApiService) GetDashboardListItems(ctx _context.Context, d
 
 /*
 Execute executes the request
- @return DashboardListItems
+@return DashboardListItems
 */
 func (r apiGetDashboardListItemsRequest) Execute() (DashboardListItems, *_nethttp.Response, error) {
 	var (
@@ -550,7 +548,7 @@ func (a *DashboardListsApiService) UpdateDashboardListItems(ctx _context.Context
 
 /*
 Execute executes the request
- @return DashboardListUpdateItemsResponse
+@return DashboardListUpdateItemsResponse
 */
 func (r apiUpdateDashboardListItemsRequest) Execute() (DashboardListUpdateItemsResponse, *_nethttp.Response, error) {
 	var (
@@ -573,7 +571,6 @@ func (r apiUpdateDashboardListItemsRequest) Execute() (DashboardListUpdateItemsR
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}

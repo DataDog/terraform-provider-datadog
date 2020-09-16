@@ -3,7 +3,7 @@ GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 PKG_NAME=datadog
 DIR=~/.terraform.d/plugins
 ZORKIAN_VERSION=master
-API_CLIENT_VERSION=master
+API_CLIENT_VERSION=v1.0.0-beta.8
 
 default: build
 

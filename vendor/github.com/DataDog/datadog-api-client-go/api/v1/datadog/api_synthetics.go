@@ -51,7 +51,7 @@ func (a *SyntheticsApiService) CreateGlobalVariable(ctx _context.Context) apiCre
 
 /*
 Execute executes the request
- @return SyntheticsGlobalVariable
+@return SyntheticsGlobalVariable
 */
 func (r apiCreateGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_nethttp.Response, error) {
 	var (
@@ -73,7 +73,6 @@ func (r apiCreateGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_n
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -210,7 +209,7 @@ func (a *SyntheticsApiService) CreateTest(ctx _context.Context) apiCreateTestReq
 
 /*
 Execute executes the request
- @return SyntheticsTestDetails
+@return SyntheticsTestDetails
 */
 func (r apiCreateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response, error) {
 	var (
@@ -232,7 +231,6 @@ func (r apiCreateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -376,7 +374,6 @@ func (a *SyntheticsApiService) DeleteGlobalVariable(ctx _context.Context, variab
 
 /*
 Execute executes the request
-
 */
 func (r apiDeleteGlobalVariableRequest) Execute() (*_nethttp.Response, error) {
 	var (
@@ -530,7 +527,7 @@ func (a *SyntheticsApiService) DeleteTests(ctx _context.Context) apiDeleteTestsR
 
 /*
 Execute executes the request
- @return SyntheticsDeleteTestsResponse
+@return SyntheticsDeleteTestsResponse
 */
 func (r apiDeleteTestsRequest) Execute() (SyntheticsDeleteTestsResponse, *_nethttp.Response, error) {
 	var (
@@ -552,7 +549,6 @@ func (r apiDeleteTestsRequest) Execute() (SyntheticsDeleteTestsResponse, *_netht
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -702,7 +698,7 @@ func (a *SyntheticsApiService) EditGlobalVariable(ctx _context.Context, variable
 
 /*
 Execute executes the request
- @return SyntheticsGlobalVariable
+@return SyntheticsGlobalVariable
 */
 func (r apiEditGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_nethttp.Response, error) {
 	var (
@@ -725,7 +721,6 @@ func (r apiEditGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_net
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -849,12 +844,10 @@ func (r apiGetAPITestLatestResultsRequest) FromTs(fromTs int64) apiGetAPITestLat
 	r.fromTs = &fromTs
 	return r
 }
-
 func (r apiGetAPITestLatestResultsRequest) ToTs(toTs int64) apiGetAPITestLatestResultsRequest {
 	r.toTs = &toTs
 	return r
 }
-
 func (r apiGetAPITestLatestResultsRequest) ProbeDc(probeDc []string) apiGetAPITestLatestResultsRequest {
 	r.probeDc = &probeDc
 	return r
@@ -877,7 +870,7 @@ func (a *SyntheticsApiService) GetAPITestLatestResults(ctx _context.Context, pub
 
 /*
 Execute executes the request
- @return SyntheticsGetAPITestLatestResultsResponse
+@return SyntheticsGetAPITestLatestResultsResponse
 */
 func (r apiGetAPITestLatestResultsRequest) Execute() (SyntheticsGetAPITestLatestResultsResponse, *_nethttp.Response, error) {
 	var (
@@ -1048,7 +1041,7 @@ func (a *SyntheticsApiService) GetAPITestResult(ctx _context.Context, publicId s
 
 /*
 Execute executes the request
- @return SyntheticsAPITestResultFull
+@return SyntheticsAPITestResultFull
 */
 func (r apiGetAPITestResultRequest) Execute() (SyntheticsAPITestResultFull, *_nethttp.Response, error) {
 	var (
@@ -1200,7 +1193,7 @@ func (a *SyntheticsApiService) GetBrowserTest(ctx _context.Context, publicId str
 
 /*
 Execute executes the request
- @return SyntheticsTestDetails
+@return SyntheticsTestDetails
 */
 func (r apiGetBrowserTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response, error) {
 	var (
@@ -1341,12 +1334,10 @@ func (r apiGetBrowserTestLatestResultsRequest) FromTs(fromTs int64) apiGetBrowse
 	r.fromTs = &fromTs
 	return r
 }
-
 func (r apiGetBrowserTestLatestResultsRequest) ToTs(toTs int64) apiGetBrowserTestLatestResultsRequest {
 	r.toTs = &toTs
 	return r
 }
-
 func (r apiGetBrowserTestLatestResultsRequest) ProbeDc(probeDc []string) apiGetBrowserTestLatestResultsRequest {
 	r.probeDc = &probeDc
 	return r
@@ -1369,7 +1360,7 @@ func (a *SyntheticsApiService) GetBrowserTestLatestResults(ctx _context.Context,
 
 /*
 Execute executes the request
- @return SyntheticsGetBrowserTestLatestResultsResponse
+@return SyntheticsGetBrowserTestLatestResultsResponse
 */
 func (r apiGetBrowserTestLatestResultsRequest) Execute() (SyntheticsGetBrowserTestLatestResultsResponse, *_nethttp.Response, error) {
 	var (
@@ -1540,7 +1531,7 @@ func (a *SyntheticsApiService) GetBrowserTestResult(ctx _context.Context, public
 
 /*
 Execute executes the request
- @return SyntheticsBrowserTestResultFull
+@return SyntheticsBrowserTestResultFull
 */
 func (r apiGetBrowserTestResultRequest) Execute() (SyntheticsBrowserTestResultFull, *_nethttp.Response, error) {
 	var (
@@ -1692,7 +1683,7 @@ func (a *SyntheticsApiService) GetTest(ctx _context.Context, publicId string) ap
 
 /*
 Execute executes the request
- @return SyntheticsTestDetails
+@return SyntheticsTestDetails
 */
 func (r apiGetTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response, error) {
 	var (
@@ -1840,7 +1831,7 @@ func (a *SyntheticsApiService) ListLocations(ctx _context.Context) apiListLocati
 
 /*
 Execute executes the request
- @return SyntheticsLocations
+@return SyntheticsLocations
 */
 func (r apiListLocationsRequest) Execute() (SyntheticsLocations, *_nethttp.Response, error) {
 	var (
@@ -1974,7 +1965,7 @@ func (a *SyntheticsApiService) ListTests(ctx _context.Context) apiListTestsReque
 
 /*
 Execute executes the request
- @return SyntheticsListTestsResponse
+@return SyntheticsListTestsResponse
 */
 func (r apiListTestsRequest) Execute() (SyntheticsListTestsResponse, *_nethttp.Response, error) {
 	var (
@@ -2130,7 +2121,7 @@ func (a *SyntheticsApiService) TriggerCITests(ctx _context.Context) apiTriggerCI
 
 /*
 Execute executes the request
- @return SyntheticsTriggerCITestsResponse
+@return SyntheticsTriggerCITestsResponse
 */
 func (r apiTriggerCITestsRequest) Execute() (SyntheticsTriggerCITestsResponse, *_nethttp.Response, error) {
 	var (
@@ -2152,7 +2143,6 @@ func (r apiTriggerCITestsRequest) Execute() (SyntheticsTriggerCITestsResponse, *
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -2282,7 +2272,7 @@ func (a *SyntheticsApiService) UpdateTest(ctx _context.Context, publicId string)
 
 /*
 Execute executes the request
- @return SyntheticsTestDetails
+@return SyntheticsTestDetails
 */
 func (r apiUpdateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response, error) {
 	var (
@@ -2305,7 +2295,6 @@ func (r apiUpdateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -2455,7 +2444,7 @@ func (a *SyntheticsApiService) UpdateTestPauseStatus(ctx _context.Context, publi
 
 /*
 Execute executes the request
- @return bool
+@return bool
 */
 func (r apiUpdateTestPauseStatusRequest) Execute() (bool, *_nethttp.Response, error) {
 	var (
@@ -2478,7 +2467,6 @@ func (r apiUpdateTestPauseStatusRequest) Execute() (bool, *_nethttp.Response, er
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}

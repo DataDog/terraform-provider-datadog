@@ -14,6 +14,8 @@ import (
 
 // ChangeWidgetDefinition The Change graph shows you the change in a value over the time period chosen.
 type ChangeWidgetDefinition struct {
+	// List of custom links.
+	CustomLinks *[]WidgetCustomLink `json:"custom_links,omitempty"`
 	// Array of one request object to display in the widget.  See the dedicated [Request JSON schema documentation](https://docs.datadoghq.com/dashboards/graphing_json/request_json)  to learn how to build the `REQUEST_SCHEMA`.
 	Requests []ChangeWidgetRequest `json:"requests"`
 	Time     *WidgetTime           `json:"time,omitempty"`
@@ -44,6 +46,38 @@ func NewChangeWidgetDefinitionWithDefaults() *ChangeWidgetDefinition {
 	var type_ ChangeWidgetDefinitionType = "change"
 	this.Type = type_
 	return &this
+}
+
+// GetCustomLinks returns the CustomLinks field value if set, zero value otherwise.
+func (o *ChangeWidgetDefinition) GetCustomLinks() []WidgetCustomLink {
+	if o == nil || o.CustomLinks == nil {
+		var ret []WidgetCustomLink
+		return ret
+	}
+	return *o.CustomLinks
+}
+
+// GetCustomLinksOk returns a tuple with the CustomLinks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ChangeWidgetDefinition) GetCustomLinksOk() (*[]WidgetCustomLink, bool) {
+	if o == nil || o.CustomLinks == nil {
+		return nil, false
+	}
+	return o.CustomLinks, true
+}
+
+// HasCustomLinks returns a boolean if a field has been set.
+func (o *ChangeWidgetDefinition) HasCustomLinks() bool {
+	if o != nil && o.CustomLinks != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomLinks gets a reference to the given []WidgetCustomLink and assigns it to the CustomLinks field.
+func (o *ChangeWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
+	o.CustomLinks = &v
 }
 
 // GetRequests returns the Requests field value
@@ -224,6 +258,9 @@ func (o *ChangeWidgetDefinition) SetType(v ChangeWidgetDefinitionType) {
 
 func (o ChangeWidgetDefinition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.CustomLinks != nil {
+		toSerialize["custom_links"] = o.CustomLinks
+	}
 	if true {
 		toSerialize["requests"] = o.Requests
 	}

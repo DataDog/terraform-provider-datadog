@@ -14,6 +14,8 @@ import (
 
 // ServiceMapWidgetDefinition This widget displays a map of a service to all of the services that call it, and all of the services that it calls.
 type ServiceMapWidgetDefinition struct {
+	// List of custom links.
+	CustomLinks *[]WidgetCustomLink `json:"custom_links,omitempty"`
 	// Your environment and primary tag (or * if enabled for your account).
 	Filters []string `json:"filters"`
 	// The ID of the service you want to map.
@@ -46,6 +48,38 @@ func NewServiceMapWidgetDefinitionWithDefaults() *ServiceMapWidgetDefinition {
 	var type_ ServiceMapWidgetDefinitionType = "servicemap"
 	this.Type = type_
 	return &this
+}
+
+// GetCustomLinks returns the CustomLinks field value if set, zero value otherwise.
+func (o *ServiceMapWidgetDefinition) GetCustomLinks() []WidgetCustomLink {
+	if o == nil || o.CustomLinks == nil {
+		var ret []WidgetCustomLink
+		return ret
+	}
+	return *o.CustomLinks
+}
+
+// GetCustomLinksOk returns a tuple with the CustomLinks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServiceMapWidgetDefinition) GetCustomLinksOk() (*[]WidgetCustomLink, bool) {
+	if o == nil || o.CustomLinks == nil {
+		return nil, false
+	}
+	return o.CustomLinks, true
+}
+
+// HasCustomLinks returns a boolean if a field has been set.
+func (o *ServiceMapWidgetDefinition) HasCustomLinks() bool {
+	if o != nil && o.CustomLinks != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomLinks gets a reference to the given []WidgetCustomLink and assigns it to the CustomLinks field.
+func (o *ServiceMapWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
+	o.CustomLinks = &v
 }
 
 // GetFilters returns the Filters field value
@@ -218,6 +252,9 @@ func (o *ServiceMapWidgetDefinition) SetType(v ServiceMapWidgetDefinitionType) {
 
 func (o ServiceMapWidgetDefinition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.CustomLinks != nil {
+		toSerialize["custom_links"] = o.CustomLinks
+	}
 	if true {
 		toSerialize["filters"] = o.Filters
 	}

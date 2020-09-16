@@ -53,7 +53,7 @@ func (a *ServiceLevelObjectivesApiService) CheckCanDeleteSLO(ctx _context.Contex
 
 /*
 Execute executes the request
- @return CheckCanDeleteSLOResponse
+@return CheckCanDeleteSLOResponse
 */
 func (r apiCheckCanDeleteSLORequest) Execute() (CheckCanDeleteSLOResponse, *_nethttp.Response, error) {
 	var (
@@ -75,7 +75,6 @@ func (r apiCheckCanDeleteSLORequest) Execute() (CheckCanDeleteSLOResponse, *_net
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.ids == nil {
 		return localVarReturnValue, nil, reportError("ids is required and must be specified")
 	}
@@ -221,7 +220,7 @@ func (a *ServiceLevelObjectivesApiService) CreateSLO(ctx _context.Context) apiCr
 
 /*
 Execute executes the request
- @return SLOListResponse
+@return SLOListResponse
 */
 func (r apiCreateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, error) {
 	var (
@@ -243,7 +242,6 @@ func (r apiCreateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -386,7 +384,7 @@ func (a *ServiceLevelObjectivesApiService) DeleteSLO(ctx _context.Context, sloId
 
 /*
 Execute executes the request
- @return SLODeleteResponse
+@return SLODeleteResponse
 */
 func (r apiDeleteSLORequest) Execute() (SLODeleteResponse, *_nethttp.Response, error) {
 	var (
@@ -557,7 +555,7 @@ func (a *ServiceLevelObjectivesApiService) DeleteSLOTimeframeInBulk(ctx _context
 
 /*
 Execute executes the request
- @return SLOBulkDeleteResponse
+@return SLOBulkDeleteResponse
 */
 func (r apiDeleteSLOTimeframeInBulkRequest) Execute() (SLOBulkDeleteResponse, *_nethttp.Response, error) {
 	var (
@@ -579,7 +577,6 @@ func (r apiDeleteSLOTimeframeInBulkRequest) Execute() (SLOBulkDeleteResponse, *_
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -713,7 +710,7 @@ func (a *ServiceLevelObjectivesApiService) GetSLO(ctx _context.Context, sloId st
 
 /*
 Execute executes the request
- @return SLOResponse
+@return SLOResponse
 */
 func (r apiGetSLORequest) Execute() (SLOResponse, *_nethttp.Response, error) {
 	var (
@@ -853,7 +850,6 @@ func (r apiGetSLOHistoryRequest) FromTs(fromTs int64) apiGetSLOHistoryRequest {
 	r.fromTs = &fromTs
 	return r
 }
-
 func (r apiGetSLOHistoryRequest) ToTs(toTs int64) apiGetSLOHistoryRequest {
 	r.toTs = &toTs
 	return r
@@ -883,7 +879,7 @@ func (a *ServiceLevelObjectivesApiService) GetSLOHistory(ctx _context.Context, s
 
 /*
 Execute executes the request
- @return SLOHistoryResponse
+@return SLOHistoryResponse
 */
 func (r apiGetSLOHistoryRequest) Execute() (SLOHistoryResponse, *_nethttp.Response, error) {
 	var (
@@ -912,11 +908,9 @@ func (r apiGetSLOHistoryRequest) Execute() (SLOHistoryResponse, *_nethttp.Respon
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.fromTs == nil {
 		return localVarReturnValue, nil, reportError("fromTs is required and must be specified")
 	}
-
 	if r.toTs == nil {
 		return localVarReturnValue, nil, reportError("toTs is required and must be specified")
 	}
@@ -1063,7 +1057,7 @@ func (a *ServiceLevelObjectivesApiService) ListSLOs(ctx _context.Context) apiLis
 
 /*
 Execute executes the request
- @return SLOListResponse
+@return SLOListResponse
 */
 func (r apiListSLOsRequest) Execute() (SLOListResponse, *_nethttp.Response, error) {
 	var (
@@ -1085,7 +1079,6 @@ func (r apiListSLOsRequest) Execute() (SLOListResponse, *_nethttp.Response, erro
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.ids == nil {
 		return localVarReturnValue, nil, reportError("ids is required and must be specified")
 	}
@@ -1234,7 +1227,7 @@ func (a *ServiceLevelObjectivesApiService) UpdateSLO(ctx _context.Context, sloId
 
 /*
 Execute executes the request
- @return SLOListResponse
+@return SLOListResponse
 */
 func (r apiUpdateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, error) {
 	var (
@@ -1257,7 +1250,6 @@ func (r apiUpdateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}

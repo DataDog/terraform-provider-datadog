@@ -51,7 +51,7 @@ func (a *MonitorsApiService) CheckCanDeleteMonitor(ctx _context.Context) apiChec
 
 /*
 Execute executes the request
- @return CheckCanDeleteMonitorResponse
+@return CheckCanDeleteMonitorResponse
 */
 func (r apiCheckCanDeleteMonitorRequest) Execute() (CheckCanDeleteMonitorResponse, *_nethttp.Response, error) {
 	var (
@@ -73,7 +73,6 @@ func (r apiCheckCanDeleteMonitorRequest) Execute() (CheckCanDeleteMonitorRespons
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.monitorIds == nil {
 		return localVarReturnValue, nil, reportError("monitorIds is required and must be specified")
 	}
@@ -223,7 +222,7 @@ Create a monitor using the specified options.
 The type of monitor chosen from:
 
 - anomaly: `query alert`
-- APM: `query alert`
+- APM: `query alert` or `trace-analytics alert`
 - composite: `composite`
 - custom: `service check`
 - event: `event alert`
@@ -231,12 +230,12 @@ The type of monitor chosen from:
 - host: `service check`
 - integration: `query alert` or `service check`
 - live process: `process alert`
-- logs: `logs alert`
+- logs: `log alert`
 - metric: `metric alert`
 - network: `service check`
 - outlier: `query alert`
-- process: `service query`
-- rum: `alert`
+- process: `service check`
+- rum: `rum alert`
 - watchdog: `event alert`
 
 #### Query Types
@@ -333,7 +332,7 @@ func (a *MonitorsApiService) CreateMonitor(ctx _context.Context) apiCreateMonito
 
 /*
 Execute executes the request
- @return Monitor
+@return Monitor
 */
 func (r apiCreateMonitorRequest) Execute() (Monitor, *_nethttp.Response, error) {
 	var (
@@ -355,7 +354,6 @@ func (r apiCreateMonitorRequest) Execute() (Monitor, *_nethttp.Response, error) 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -495,7 +493,7 @@ func (a *MonitorsApiService) DeleteMonitor(ctx _context.Context, monitorId int64
 
 /*
 Execute executes the request
- @return DeletedMonitor
+@return DeletedMonitor
 */
 func (r apiDeleteMonitorRequest) Execute() (DeletedMonitor, *_nethttp.Response, error) {
 	var (
@@ -675,7 +673,7 @@ func (a *MonitorsApiService) GetMonitor(ctx _context.Context, monitorId int64) a
 
 /*
 Execute executes the request
- @return Monitor
+@return Monitor
 */
 func (r apiGetMonitorRequest) Execute() (Monitor, *_nethttp.Response, error) {
 	var (
@@ -833,37 +831,30 @@ func (r apiListMonitorsRequest) GroupStates(groupStates string) apiListMonitorsR
 	r.groupStates = &groupStates
 	return r
 }
-
 func (r apiListMonitorsRequest) Name(name string) apiListMonitorsRequest {
 	r.name = &name
 	return r
 }
-
 func (r apiListMonitorsRequest) Tags(tags string) apiListMonitorsRequest {
 	r.tags = &tags
 	return r
 }
-
 func (r apiListMonitorsRequest) MonitorTags(monitorTags string) apiListMonitorsRequest {
 	r.monitorTags = &monitorTags
 	return r
 }
-
 func (r apiListMonitorsRequest) WithDowntimes(withDowntimes bool) apiListMonitorsRequest {
 	r.withDowntimes = &withDowntimes
 	return r
 }
-
 func (r apiListMonitorsRequest) IdOffset(idOffset int64) apiListMonitorsRequest {
 	r.idOffset = &idOffset
 	return r
 }
-
 func (r apiListMonitorsRequest) Page(page int64) apiListMonitorsRequest {
 	r.page = &page
 	return r
 }
-
 func (r apiListMonitorsRequest) PageSize(pageSize int32) apiListMonitorsRequest {
 	r.pageSize = &pageSize
 	return r
@@ -884,7 +875,7 @@ func (a *MonitorsApiService) ListMonitors(ctx _context.Context) apiListMonitorsR
 
 /*
 Execute executes the request
- @return []Monitor
+@return []Monitor
 */
 func (r apiListMonitorsRequest) Execute() ([]Monitor, *_nethttp.Response, error) {
 	var (
@@ -1064,7 +1055,7 @@ func (a *MonitorsApiService) UpdateMonitor(ctx _context.Context, monitorId int64
 
 /*
 Execute executes the request
- @return Monitor
+@return Monitor
 */
 func (r apiUpdateMonitorRequest) Execute() (Monitor, *_nethttp.Response, error) {
 	var (
@@ -1087,7 +1078,6 @@ func (r apiUpdateMonitorRequest) Execute() (Monitor, *_nethttp.Response, error) 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -1244,7 +1234,7 @@ func (a *MonitorsApiService) ValidateMonitor(ctx _context.Context) apiValidateMo
 
 /*
 Execute executes the request
- @return Monitor
+@return Monitor
 */
 func (r apiValidateMonitorRequest) Execute() (Monitor, *_nethttp.Response, error) {
 	var (
@@ -1266,7 +1256,6 @@ func (r apiValidateMonitorRequest) Execute() (Monitor, *_nethttp.Response, error
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}

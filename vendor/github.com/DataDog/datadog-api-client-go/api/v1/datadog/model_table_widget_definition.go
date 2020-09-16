@@ -14,6 +14,8 @@ import (
 
 // TableWidgetDefinition The table visualization is available on timeboards and screenboards. It displays columns of metrics grouped by tag key.
 type TableWidgetDefinition struct {
+	// List of custom links.
+	CustomLinks *[]WidgetCustomLink `json:"custom_links,omitempty"`
 	// Widget definition.
 	Requests []TableWidgetRequest `json:"requests"`
 	Time     *WidgetTime          `json:"time,omitempty"`
@@ -44,6 +46,38 @@ func NewTableWidgetDefinitionWithDefaults() *TableWidgetDefinition {
 	var type_ TableWidgetDefinitionType = "query_table"
 	this.Type = type_
 	return &this
+}
+
+// GetCustomLinks returns the CustomLinks field value if set, zero value otherwise.
+func (o *TableWidgetDefinition) GetCustomLinks() []WidgetCustomLink {
+	if o == nil || o.CustomLinks == nil {
+		var ret []WidgetCustomLink
+		return ret
+	}
+	return *o.CustomLinks
+}
+
+// GetCustomLinksOk returns a tuple with the CustomLinks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TableWidgetDefinition) GetCustomLinksOk() (*[]WidgetCustomLink, bool) {
+	if o == nil || o.CustomLinks == nil {
+		return nil, false
+	}
+	return o.CustomLinks, true
+}
+
+// HasCustomLinks returns a boolean if a field has been set.
+func (o *TableWidgetDefinition) HasCustomLinks() bool {
+	if o != nil && o.CustomLinks != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomLinks gets a reference to the given []WidgetCustomLink and assigns it to the CustomLinks field.
+func (o *TableWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
+	o.CustomLinks = &v
 }
 
 // GetRequests returns the Requests field value
@@ -224,6 +258,9 @@ func (o *TableWidgetDefinition) SetType(v TableWidgetDefinitionType) {
 
 func (o TableWidgetDefinition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.CustomLinks != nil {
+		toSerialize["custom_links"] = o.CustomLinks
+	}
 	if true {
 		toSerialize["requests"] = o.Requests
 	}

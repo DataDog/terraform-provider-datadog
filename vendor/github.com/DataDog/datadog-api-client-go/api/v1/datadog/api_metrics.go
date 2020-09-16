@@ -47,7 +47,7 @@ func (a *MetricsApiService) GetMetricMetadata(ctx _context.Context, metricName s
 
 /*
 Execute executes the request
- @return MetricMetadata
+@return MetricMetadata
 */
 func (r apiGetMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Response, error) {
 	var (
@@ -186,7 +186,6 @@ func (r apiListActiveMetricsRequest) From(from int64) apiListActiveMetricsReques
 	r.from = &from
 	return r
 }
-
 func (r apiListActiveMetricsRequest) Host(host string) apiListActiveMetricsRequest {
 	r.host = &host
 	return r
@@ -207,7 +206,7 @@ func (a *MetricsApiService) ListActiveMetrics(ctx _context.Context) apiListActiv
 
 /*
 Execute executes the request
- @return MetricsListResponse
+@return MetricsListResponse
 */
 func (r apiListActiveMetricsRequest) Execute() (MetricsListResponse, *_nethttp.Response, error) {
 	var (
@@ -229,7 +228,6 @@ func (r apiListActiveMetricsRequest) Execute() (MetricsListResponse, *_nethttp.R
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.from == nil {
 		return localVarReturnValue, nil, reportError("from is required and must be specified")
 	}
@@ -368,7 +366,7 @@ func (a *MetricsApiService) ListMetrics(ctx _context.Context) apiListMetricsRequ
 
 /*
 Execute executes the request
- @return MetricSearchResponse
+@return MetricSearchResponse
 */
 func (r apiListMetricsRequest) Execute() (MetricSearchResponse, *_nethttp.Response, error) {
 	var (
@@ -390,7 +388,6 @@ func (r apiListMetricsRequest) Execute() (MetricSearchResponse, *_nethttp.Respon
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.q == nil {
 		return localVarReturnValue, nil, reportError("q is required and must be specified")
 	}
@@ -512,12 +509,10 @@ func (r apiQueryMetricsRequest) From(from int64) apiQueryMetricsRequest {
 	r.from = &from
 	return r
 }
-
 func (r apiQueryMetricsRequest) To(to int64) apiQueryMetricsRequest {
 	r.to = &to
 	return r
 }
-
 func (r apiQueryMetricsRequest) Query(query string) apiQueryMetricsRequest {
 	r.query = &query
 	return r
@@ -538,7 +533,7 @@ func (a *MetricsApiService) QueryMetrics(ctx _context.Context) apiQueryMetricsRe
 
 /*
 Execute executes the request
- @return MetricsQueryResponse
+@return MetricsQueryResponse
 */
 func (r apiQueryMetricsRequest) Execute() (MetricsQueryResponse, *_nethttp.Response, error) {
 	var (
@@ -560,15 +555,12 @@ func (r apiQueryMetricsRequest) Execute() (MetricsQueryResponse, *_nethttp.Respo
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.from == nil {
 		return localVarReturnValue, nil, reportError("from is required and must be specified")
 	}
-
 	if r.to == nil {
 		return localVarReturnValue, nil, reportError("to is required and must be specified")
 	}
-
 	if r.query == nil {
 		return localVarReturnValue, nil, reportError("query is required and must be specified")
 	}
@@ -709,7 +701,7 @@ func (a *MetricsApiService) UpdateMetricMetadata(ctx _context.Context, metricNam
 
 /*
 Execute executes the request
- @return MetricMetadata
+@return MetricMetadata
 */
 func (r apiUpdateMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Response, error) {
 	var (
@@ -732,7 +724,6 @@ func (r apiUpdateMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Res
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}

@@ -14,10 +14,13 @@ import (
 
 // SecurityMonitoringRuleQuery Query for matching rule.
 type SecurityMonitoringRuleQuery struct {
+	Aggregation *SecurityMonitoringRuleQueryAggregation `json:"aggregation,omitempty"`
 	// Field for which the cardinality is measured. Sent as an array.
 	DistinctFields *[]string `json:"distinctFields,omitempty"`
 	// Fields to group by.
 	GroupByFields *[]string `json:"groupByFields,omitempty"`
+	// The target field to aggregate over when using the sum or max aggregations.
+	Metric *string `json:"metric,omitempty"`
 	// Name of the query.
 	Name *string `json:"name,omitempty"`
 	// Query to run on logs.
@@ -39,6 +42,38 @@ func NewSecurityMonitoringRuleQuery() *SecurityMonitoringRuleQuery {
 func NewSecurityMonitoringRuleQueryWithDefaults() *SecurityMonitoringRuleQuery {
 	this := SecurityMonitoringRuleQuery{}
 	return &this
+}
+
+// GetAggregation returns the Aggregation field value if set, zero value otherwise.
+func (o *SecurityMonitoringRuleQuery) GetAggregation() SecurityMonitoringRuleQueryAggregation {
+	if o == nil || o.Aggregation == nil {
+		var ret SecurityMonitoringRuleQueryAggregation
+		return ret
+	}
+	return *o.Aggregation
+}
+
+// GetAggregationOk returns a tuple with the Aggregation field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringRuleQuery) GetAggregationOk() (*SecurityMonitoringRuleQueryAggregation, bool) {
+	if o == nil || o.Aggregation == nil {
+		return nil, false
+	}
+	return o.Aggregation, true
+}
+
+// HasAggregation returns a boolean if a field has been set.
+func (o *SecurityMonitoringRuleQuery) HasAggregation() bool {
+	if o != nil && o.Aggregation != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAggregation gets a reference to the given SecurityMonitoringRuleQueryAggregation and assigns it to the Aggregation field.
+func (o *SecurityMonitoringRuleQuery) SetAggregation(v SecurityMonitoringRuleQueryAggregation) {
+	o.Aggregation = &v
 }
 
 // GetDistinctFields returns the DistinctFields field value if set, zero value otherwise.
@@ -103,6 +138,38 @@ func (o *SecurityMonitoringRuleQuery) HasGroupByFields() bool {
 // SetGroupByFields gets a reference to the given []string and assigns it to the GroupByFields field.
 func (o *SecurityMonitoringRuleQuery) SetGroupByFields(v []string) {
 	o.GroupByFields = &v
+}
+
+// GetMetric returns the Metric field value if set, zero value otherwise.
+func (o *SecurityMonitoringRuleQuery) GetMetric() string {
+	if o == nil || o.Metric == nil {
+		var ret string
+		return ret
+	}
+	return *o.Metric
+}
+
+// GetMetricOk returns a tuple with the Metric field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringRuleQuery) GetMetricOk() (*string, bool) {
+	if o == nil || o.Metric == nil {
+		return nil, false
+	}
+	return o.Metric, true
+}
+
+// HasMetric returns a boolean if a field has been set.
+func (o *SecurityMonitoringRuleQuery) HasMetric() bool {
+	if o != nil && o.Metric != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMetric gets a reference to the given string and assigns it to the Metric field.
+func (o *SecurityMonitoringRuleQuery) SetMetric(v string) {
+	o.Metric = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -171,11 +238,17 @@ func (o *SecurityMonitoringRuleQuery) SetQuery(v string) {
 
 func (o SecurityMonitoringRuleQuery) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.Aggregation != nil {
+		toSerialize["aggregation"] = o.Aggregation
+	}
 	if o.DistinctFields != nil {
 		toSerialize["distinctFields"] = o.DistinctFields
 	}
 	if o.GroupByFields != nil {
 		toSerialize["groupByFields"] = o.GroupByFields
+	}
+	if o.Metric != nil {
+		toSerialize["metric"] = o.Metric
 	}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name

@@ -43,7 +43,7 @@ func (a *AuthenticationApiService) Validate(ctx _context.Context) apiValidateReq
 
 /*
 Execute executes the request
- @return AuthenticationValidationResponse
+@return AuthenticationValidationResponse
 */
 func (r apiValidateRequest) Execute() (AuthenticationValidationResponse, *_nethttp.Response, error) {
 	var (

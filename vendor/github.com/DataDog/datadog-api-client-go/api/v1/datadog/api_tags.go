@@ -36,7 +36,6 @@ func (r apiCreateHostTagsRequest) Body(body HostTags) apiCreateHostTagsRequest {
 	r.body = &body
 	return r
 }
-
 func (r apiCreateHostTagsRequest) Source(source string) apiCreateHostTagsRequest {
 	r.source = &source
 	return r
@@ -60,7 +59,7 @@ func (a *TagsApiService) CreateHostTags(ctx _context.Context, hostName string) a
 
 /*
 Execute executes the request
- @return HostTags
+@return HostTags
 */
 func (r apiCreateHostTagsRequest) Execute() (HostTags, *_nethttp.Response, error) {
 	var (
@@ -83,7 +82,6 @@ func (r apiCreateHostTagsRequest) Execute() (HostTags, *_nethttp.Response, error
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -227,7 +225,6 @@ func (a *TagsApiService) DeleteHostTags(ctx _context.Context, hostName string) a
 
 /*
 Execute executes the request
-
 */
 func (r apiDeleteHostTagsRequest) Execute() (*_nethttp.Response, error) {
 	var (
@@ -377,7 +374,7 @@ func (a *TagsApiService) GetHostTags(ctx _context.Context, hostName string) apiG
 
 /*
 Execute executes the request
- @return HostTags
+@return HostTags
 */
 func (r apiGetHostTagsRequest) Execute() (HostTags, *_nethttp.Response, error) {
 	var (
@@ -534,7 +531,7 @@ func (a *TagsApiService) ListHostTags(ctx _context.Context) apiListHostTagsReque
 
 /*
 Execute executes the request
- @return TagToHosts
+@return TagToHosts
 */
 func (r apiListHostTagsRequest) Execute() (TagToHosts, *_nethttp.Response, error) {
 	var (
@@ -676,7 +673,6 @@ func (r apiUpdateHostTagsRequest) Body(body HostTags) apiUpdateHostTagsRequest {
 	r.body = &body
 	return r
 }
-
 func (r apiUpdateHostTagsRequest) Source(source string) apiUpdateHostTagsRequest {
 	r.source = &source
 	return r
@@ -700,7 +696,7 @@ func (a *TagsApiService) UpdateHostTags(ctx _context.Context, hostName string) a
 
 /*
 Execute executes the request
- @return HostTags
+@return HostTags
 */
 func (r apiUpdateHostTagsRequest) Execute() (HostTags, *_nethttp.Response, error) {
 	var (
@@ -723,7 +719,6 @@ func (r apiUpdateHostTagsRequest) Execute() (HostTags, *_nethttp.Response, error
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}

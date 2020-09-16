@@ -53,7 +53,7 @@ func (a *UsersApiService) CreateUser(ctx _context.Context) apiCreateUserRequest 
 
 /*
 Execute executes the request
- @return UserResponse
+@return UserResponse
 */
 func (r apiCreateUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
 	var (
@@ -75,7 +75,6 @@ func (r apiCreateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -222,7 +221,7 @@ func (a *UsersApiService) DisableUser(ctx _context.Context, userHandle string) a
 
 /*
 Execute executes the request
- @return UserDisableResponse
+@return UserDisableResponse
 */
 func (r apiDisableUserRequest) Execute() (UserDisableResponse, *_nethttp.Response, error) {
 	var (
@@ -383,7 +382,7 @@ func (a *UsersApiService) GetUser(ctx _context.Context, userHandle string) apiGe
 
 /*
 Execute executes the request
- @return UserResponse
+@return UserResponse
 */
 func (r apiGetUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
 	var (
@@ -531,7 +530,7 @@ func (a *UsersApiService) ListUsers(ctx _context.Context) apiListUsersRequest {
 
 /*
 Execute executes the request
- @return UserListResponse
+@return UserListResponse
 */
 func (r apiListUsersRequest) Execute() (UserListResponse, *_nethttp.Response, error) {
 	var (
@@ -679,7 +678,7 @@ func (a *UsersApiService) UpdateUser(ctx _context.Context, userHandle string) ap
 
 /*
 Execute executes the request
- @return UserResponse
+@return UserResponse
 */
 func (r apiUpdateUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
 	var (
@@ -702,7 +701,6 @@ func (r apiUpdateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}

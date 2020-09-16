@@ -39,6 +39,7 @@ CreateAWSAccount Create an AWS integration
 Create a Datadog-Amazon Web Services integration.
 Using the `POST` method updates your integration configuration
 by adding your new configuration to the existing one in your Datadog organization.
+A unique AWS Account ID for role based authentication.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiCreateAWSAccountRequest
 */
@@ -51,7 +52,7 @@ func (a *AWSIntegrationApiService) CreateAWSAccount(ctx _context.Context) apiCre
 
 /*
 Execute executes the request
- @return AWSAccountCreateResponse
+@return AWSAccountCreateResponse
 */
 func (r apiCreateAWSAccountRequest) Execute() (AWSAccountCreateResponse, *_nethttp.Response, error) {
 	var (
@@ -73,7 +74,6 @@ func (r apiCreateAWSAccountRequest) Execute() (AWSAccountCreateResponse, *_netht
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -168,6 +168,16 @@ func (r apiCreateAWSAccountRequest) Execute() (AWSAccountCreateResponse, *_netht
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v APIErrorResponse
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -210,7 +220,7 @@ func (a *AWSIntegrationApiService) CreateNewAWSExternalID(ctx _context.Context) 
 
 /*
 Execute executes the request
- @return AWSAccountCreateResponse
+@return AWSAccountCreateResponse
 */
 func (r apiCreateNewAWSExternalIDRequest) Execute() (AWSAccountCreateResponse, *_nethttp.Response, error) {
 	var (
@@ -232,7 +242,6 @@ func (r apiCreateNewAWSExternalIDRequest) Execute() (AWSAccountCreateResponse, *
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -369,7 +378,7 @@ func (a *AWSIntegrationApiService) DeleteAWSAccount(ctx _context.Context) apiDel
 
 /*
 Execute executes the request
- @return interface{}
+@return interface{}
 */
 func (r apiDeleteAWSAccountRequest) Execute() (interface{}, *_nethttp.Response, error) {
 	var (
@@ -391,7 +400,6 @@ func (r apiDeleteAWSAccountRequest) Execute() (interface{}, *_nethttp.Response, 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -486,6 +494,16 @@ func (r apiDeleteAWSAccountRequest) Execute() (interface{}, *_nethttp.Response, 
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
+			var v APIErrorResponse
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -514,12 +532,10 @@ func (r apiListAWSAccountsRequest) AccountId(accountId string) apiListAWSAccount
 	r.accountId = &accountId
 	return r
 }
-
 func (r apiListAWSAccountsRequest) RoleName(roleName string) apiListAWSAccountsRequest {
 	r.roleName = &roleName
 	return r
 }
-
 func (r apiListAWSAccountsRequest) AccessKeyId(accessKeyId string) apiListAWSAccountsRequest {
 	r.accessKeyId = &accessKeyId
 	return r
@@ -540,7 +556,7 @@ func (a *AWSIntegrationApiService) ListAWSAccounts(ctx _context.Context) apiList
 
 /*
 Execute executes the request
- @return AWSAccountListResponse
+@return AWSAccountListResponse
 */
 func (r apiListAWSAccountsRequest) Execute() (AWSAccountListResponse, *_nethttp.Response, error) {
 	var (
@@ -696,7 +712,7 @@ func (a *AWSIntegrationApiService) ListAvailableAWSNamespaces(ctx _context.Conte
 
 /*
 Execute executes the request
- @return []string
+@return []string
 */
 func (r apiListAvailableAWSNamespacesRequest) Execute() ([]string, *_nethttp.Response, error) {
 	var (
@@ -826,17 +842,14 @@ func (r apiUpdateAWSAccountRequest) Body(body AWSAccount) apiUpdateAWSAccountReq
 	r.body = &body
 	return r
 }
-
 func (r apiUpdateAWSAccountRequest) AccountId(accountId string) apiUpdateAWSAccountRequest {
 	r.accountId = &accountId
 	return r
 }
-
 func (r apiUpdateAWSAccountRequest) RoleName(roleName string) apiUpdateAWSAccountRequest {
 	r.roleName = &roleName
 	return r
 }
-
 func (r apiUpdateAWSAccountRequest) AccessKeyId(accessKeyId string) apiUpdateAWSAccountRequest {
 	r.accessKeyId = &accessKeyId
 	return r
@@ -857,7 +870,7 @@ func (a *AWSIntegrationApiService) UpdateAWSAccount(ctx _context.Context) apiUpd
 
 /*
 Execute executes the request
- @return interface{}
+@return interface{}
 */
 func (r apiUpdateAWSAccountRequest) Execute() (interface{}, *_nethttp.Response, error) {
 	var (
@@ -879,7 +892,6 @@ func (r apiUpdateAWSAccountRequest) Execute() (interface{}, *_nethttp.Response, 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -976,6 +988,16 @@ func (r apiUpdateAWSAccountRequest) Execute() (interface{}, *_nethttp.Response, 
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
+			var v APIErrorResponse
+			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 409 {
 			var v APIErrorResponse
 			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

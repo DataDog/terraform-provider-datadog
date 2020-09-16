@@ -47,7 +47,6 @@ func (a *DowntimesApiService) CancelDowntime(ctx _context.Context, downtimeId in
 
 /*
 Execute executes the request
-
 */
 func (r apiCancelDowntimeRequest) Execute() (*_nethttp.Response, error) {
 	var (
@@ -191,7 +190,7 @@ func (a *DowntimesApiService) CancelDowntimesByScope(ctx _context.Context) apiCa
 
 /*
 Execute executes the request
- @return CanceledDowntimesIds
+@return CanceledDowntimesIds
 */
 func (r apiCancelDowntimesByScopeRequest) Execute() (CanceledDowntimesIds, *_nethttp.Response, error) {
 	var (
@@ -213,7 +212,6 @@ func (r apiCancelDowntimesByScopeRequest) Execute() (CanceledDowntimesIds, *_net
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -360,7 +358,7 @@ func (a *DowntimesApiService) CreateDowntime(ctx _context.Context) apiCreateDown
 
 /*
 Execute executes the request
- @return Downtime
+@return Downtime
 */
 func (r apiCreateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
 	var (
@@ -382,7 +380,6 @@ func (r apiCreateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -516,7 +513,7 @@ func (a *DowntimesApiService) GetDowntime(ctx _context.Context, downtimeId int64
 
 /*
 Execute executes the request
- @return Downtime
+@return Downtime
 */
 func (r apiGetDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
 	var (
@@ -670,7 +667,7 @@ func (a *DowntimesApiService) ListDowntimes(ctx _context.Context) apiListDowntim
 
 /*
 Execute executes the request
- @return []Downtime
+@return []Downtime
 */
 func (r apiListDowntimesRequest) Execute() ([]Downtime, *_nethttp.Response, error) {
 	var (
@@ -819,7 +816,7 @@ func (a *DowntimesApiService) UpdateDowntime(ctx _context.Context, downtimeId in
 
 /*
 Execute executes the request
- @return Downtime
+@return Downtime
 */
 func (r apiUpdateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
 	var (
@@ -842,7 +839,6 @@ func (r apiUpdateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
