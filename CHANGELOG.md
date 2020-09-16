@@ -1,3 +1,34 @@
+## 2.13.0 (September 16, 2020)
+
+FEATURES:
+
+- `datadog_dashboard_list`: Add a new datasource for dashboard lists ([#657](https://github.com/DataDog/terraform-provider-datadog/pull/657))
+- `datadog_synthetics_locations`: Add a new datasource for locations ([#309](https://github.com/DataDog/terraform-provider-datadog/pull/309))
+
+IMPROVEMENTS:
+
+- `datadog_dashboard`: A new `dashboard_lists` attribute allows adding dashboard to dashboard lists in the resource itself ([#654](https://github.com/DataDog/terraform-provider-datadog/pull/654)).
+- `datadog_dashboard`: Add support for `multi_compute` attribute ([#629](https://github.com/DataDog/terraform-provider-datadog/pull/629))
+- `datadog_dashboard`: Add support for `metric` in `conditional_formats` ([#617](https://github.com/DataDog/terraform-provider-datadog/pull/617))
+- `datadog_dashboard`: Add support for `rum_query` and `security_query` widget requests ([#416](https://github.com/DataDog/terraform-provider-datadog/pull/416))
+- `datadog_monitor`: Monitors are now validated during plan ([#639](https://github.com/DataDog/terraform-provider-datadog/pull/639))
+- `datadog_downtime`: Add support for recurrent rules ([#610](https://github.com/DataDog/terraform-provider-datadog/pull/610))
+- `datadog_synthetics_test`: Add support for steps for browser tests ([#638](https://github.com/DataDog/terraform-provider-datadog/pull/638))
+- `datadog_synthetics_test`: Add subtype TCP test support for API tests ([#632](https://github.com/DataDog/terraform-provider-datadog/pull/632))
+- `datadog_synthetics_test`: Add retry and monitor options ([#636](https://github.com/DataDog/terraform-provider-datadog/pull/636))
+
+BUGFIXES:
+
+- `datadog_dashboard`: Prevent nil pointer dereference with template variables without prefix ([#630](https://github.com/DataDog/terraform-provider-datadog/pull/630))
+- `datadog_dashboard`: Don't allow empty content in note widgets ([#607](https://github.com/DataDog/terraform-provider-datadog/pull/607))
+- `datadog_downtime`: Ignore useless diff on start attribute ([#597](https://github.com/DataDog/terraform-provider-datadog/pull/597))
+- `datadog_logs_custom_pipeline`: Don't allow empty pipeline filter ([#605](https://github.com/DataDog/terraform-provider-datadog/pull/605))
+- `provider`: Completely skip creds validation when validate is false ([#641](https://github.com/DataDog/terraform-provider-datadog/pull/641))
+
+NOTES:
+
+- `datadog_synthetics_test`: The `options` attribute has been deprecated by `options_list` ([#624](https://github.com/DataDog/terraform-provider-datadog/pull/624)
+
 ## 2.12.1 (July 23, 2020)
 
 This release doesn't contain any user-facing changes. It's done as a required part of process to finalize the transfer of the provider repository under DataDog GitHub organization: https://github.com/DataDog/terraform-provider-datadog.
@@ -6,12 +37,12 @@ This release doesn't contain any user-facing changes. It's done as a required pa
 
 FEATURES:
 
-- `datadog_monitor`: Add new datasource for monitors ([#569](https://github.com/terraform-providers/terraform-provider-datadog/issues/569)], [[#585](https://github.com/terraform-providers/terraform-provider-datadog/issues/585))
+- `datadog_monitor`: Add new datasource for monitors ([#569](https://github.com/terraform-providers/terraform-provider-datadog/issues/569)), ([#585](https://github.com/terraform-providers/terraform-provider-datadog/issues/585))
 
 IMPROVEMENTS:
 
 - `datadog_synthetics_test`: Enable usage of `validatesJSONPath` operator ([#571](https://github.com/terraform-providers/terraform-provider-datadog/issues/571))
-- `datadog_synthetics_test`: Allow usage of the new assertion format ([#571](https://github.com/terraform-providers/terraform-provider-datadog/issues/571)], [[#582](https://github.com/terraform-providers/terraform-provider-datadog/issues/582))
+- `datadog_synthetics_test`: Allow usage of the new assertion format ([#571](https://github.com/terraform-providers/terraform-provider-datadog/issues/571)), ([#582](https://github.com/terraform-providers/terraform-provider-datadog/issues/582))
 - `datadog_synthetics_test`: Add support for `basicAuth` and `query` ([#586](https://github.com/terraform-providers/terraform-provider-datadog/issues/586))
 
 BUGFIXES:
