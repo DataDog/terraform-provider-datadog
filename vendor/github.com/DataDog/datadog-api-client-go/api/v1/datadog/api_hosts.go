@@ -51,7 +51,7 @@ func (a *HostsApiService) GetHostTotals(ctx _context.Context) apiGetHostTotalsRe
 
 /*
 Execute executes the request
- @return HostTotals
+@return HostTotals
 */
 func (r apiGetHostTotalsRequest) Execute() (HostTotals, *_nethttp.Response, error) {
 	var (
@@ -198,37 +198,30 @@ func (r apiListHostsRequest) Filter(filter string) apiListHostsRequest {
 	r.filter = &filter
 	return r
 }
-
 func (r apiListHostsRequest) SortField(sortField string) apiListHostsRequest {
 	r.sortField = &sortField
 	return r
 }
-
 func (r apiListHostsRequest) SortDir(sortDir string) apiListHostsRequest {
 	r.sortDir = &sortDir
 	return r
 }
-
 func (r apiListHostsRequest) Start(start int64) apiListHostsRequest {
 	r.start = &start
 	return r
 }
-
 func (r apiListHostsRequest) Count(count int64) apiListHostsRequest {
 	r.count = &count
 	return r
 }
-
 func (r apiListHostsRequest) From(from int64) apiListHostsRequest {
 	r.from = &from
 	return r
 }
-
 func (r apiListHostsRequest) IncludeMutedHostsData(includeMutedHostsData bool) apiListHostsRequest {
 	r.includeMutedHostsData = &includeMutedHostsData
 	return r
 }
-
 func (r apiListHostsRequest) IncludeHostsMetadata(includeHostsMetadata bool) apiListHostsRequest {
 	r.includeHostsMetadata = &includeHostsMetadata
 	return r
@@ -252,7 +245,7 @@ func (a *HostsApiService) ListHosts(ctx _context.Context) apiListHostsRequest {
 
 /*
 Execute executes the request
- @return HostListResponse
+@return HostListResponse
 */
 func (r apiListHostsRequest) Execute() (HostListResponse, *_nethttp.Response, error) {
 	var (
@@ -432,7 +425,7 @@ func (a *HostsApiService) MuteHost(ctx _context.Context, hostName string) apiMut
 
 /*
 Execute executes the request
- @return HostMuteResponse
+@return HostMuteResponse
 */
 func (r apiMuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, error) {
 	var (
@@ -585,7 +578,7 @@ func (a *HostsApiService) UnmuteHost(ctx _context.Context, hostName string) apiU
 
 /*
 Execute executes the request
- @return HostMuteResponse
+@return HostMuteResponse
 */
 func (r apiUnmuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, error) {
 	var (

@@ -50,7 +50,7 @@ func (a *KeyManagementApiService) CreateAPIKey(ctx _context.Context) apiCreateAP
 
 /*
 Execute executes the request
- @return ApiKeyResponse
+@return ApiKeyResponse
 */
 func (r apiCreateAPIKeyRequest) Execute() (ApiKeyResponse, *_nethttp.Response, error) {
 	var (
@@ -72,7 +72,6 @@ func (r apiCreateAPIKeyRequest) Execute() (ApiKeyResponse, *_nethttp.Response, e
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -209,7 +208,7 @@ func (a *KeyManagementApiService) CreateApplicationKey(ctx _context.Context) api
 
 /*
 Execute executes the request
- @return ApplicationKeyResponse
+@return ApplicationKeyResponse
 */
 func (r apiCreateApplicationKeyRequest) Execute() (ApplicationKeyResponse, *_nethttp.Response, error) {
 	var (
@@ -231,7 +230,6 @@ func (r apiCreateApplicationKeyRequest) Execute() (ApplicationKeyResponse, *_net
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -375,7 +373,7 @@ func (a *KeyManagementApiService) DeleteAPIKey(ctx _context.Context, key string)
 
 /*
 Execute executes the request
- @return ApiKeyResponse
+@return ApiKeyResponse
 */
 func (r apiDeleteAPIKeyRequest) Execute() (ApiKeyResponse, *_nethttp.Response, error) {
 	var (
@@ -536,7 +534,7 @@ func (a *KeyManagementApiService) DeleteApplicationKey(ctx _context.Context, key
 
 /*
 Execute executes the request
- @return ApplicationKeyResponse
+@return ApplicationKeyResponse
 */
 func (r apiDeleteApplicationKeyRequest) Execute() (ApplicationKeyResponse, *_nethttp.Response, error) {
 	var (
@@ -687,7 +685,7 @@ func (a *KeyManagementApiService) GetAPIKey(ctx _context.Context, key string) ap
 
 /*
 Execute executes the request
- @return ApiKeyResponse
+@return ApiKeyResponse
 */
 func (r apiGetAPIKeyRequest) Execute() (ApiKeyResponse, *_nethttp.Response, error) {
 	var (
@@ -838,7 +836,7 @@ func (a *KeyManagementApiService) GetApplicationKey(ctx _context.Context, key st
 
 /*
 Execute executes the request
- @return ApplicationKeyResponse
+@return ApplicationKeyResponse
 */
 func (r apiGetApplicationKeyRequest) Execute() (ApplicationKeyResponse, *_nethttp.Response, error) {
 	var (
@@ -986,7 +984,7 @@ func (a *KeyManagementApiService) ListAPIKeys(ctx _context.Context) apiListAPIKe
 
 /*
 Execute executes the request
- @return ApiKeyListResponse
+@return ApiKeyListResponse
 */
 func (r apiListAPIKeysRequest) Execute() (ApiKeyListResponse, *_nethttp.Response, error) {
 	var (
@@ -1123,7 +1121,7 @@ func (a *KeyManagementApiService) ListApplicationKeys(ctx _context.Context) apiL
 
 /*
 Execute executes the request
- @return ApplicationKeyListResponse
+@return ApplicationKeyListResponse
 */
 func (r apiListApplicationKeysRequest) Execute() (ApplicationKeyListResponse, *_nethttp.Response, error) {
 	var (
@@ -1269,7 +1267,7 @@ func (a *KeyManagementApiService) UpdateAPIKey(ctx _context.Context, key string)
 
 /*
 Execute executes the request
- @return ApiKeyResponse
+@return ApiKeyResponse
 */
 func (r apiUpdateAPIKeyRequest) Execute() (ApiKeyResponse, *_nethttp.Response, error) {
 	var (
@@ -1292,7 +1290,6 @@ func (r apiUpdateAPIKeyRequest) Execute() (ApiKeyResponse, *_nethttp.Response, e
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -1442,7 +1439,7 @@ func (a *KeyManagementApiService) UpdateApplicationKey(ctx _context.Context, key
 
 /*
 Execute executes the request
- @return ApplicationKeyResponse
+@return ApplicationKeyResponse
 */
 func (r apiUpdateApplicationKeyRequest) Execute() (ApplicationKeyResponse, *_nethttp.Response, error) {
 	var (
@@ -1465,7 +1462,6 @@ func (r apiUpdateApplicationKeyRequest) Execute() (ApplicationKeyResponse, *_net
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}

@@ -52,7 +52,7 @@ type UsageSummaryDateOrg struct {
 	NetflowIndexedEventsCountSum *int64 `json:"netflow_indexed_events_count_sum,omitempty"`
 	// Shows the 99th percentile of all distinct Networks hosts over all hours in the current date for the given org.
 	NpmHostTop99p *int64 `json:"npm_host_top99p,omitempty"`
-	// Shows the 99th percentile of all profiled hosts over all hours in the current date for all organizations.
+	// Shows the 99th percentile of all profiled hosts over all hours in the current date for the given org.
 	ProfilingHostTop99p *int64 `json:"profiling_host_top99p,omitempty"`
 	// The organization public id.
 	PublicId *string `json:"public_id,omitempty"`
@@ -64,6 +64,8 @@ type UsageSummaryDateOrg struct {
 	SyntheticsCheckCallsCountSum *int64 `json:"synthetics_check_calls_count_sum,omitempty"`
 	// Shows the sum of all analyzed spans indexed over all hours in the current date for the given org.
 	TraceSearchIndexedEventsCountSum *int64 `json:"trace_search_indexed_events_count_sum,omitempty"`
+	// Shows the sum of all tracing without limits bytes ingested over all hours in the current date for the given org.
+	TwolIngestedEventsBytesSum *int64 `json:"twol_ingested_events_bytes_sum,omitempty"`
 }
 
 // NewUsageSummaryDateOrg instantiates a new UsageSummaryDateOrg object
@@ -883,6 +885,38 @@ func (o *UsageSummaryDateOrg) SetTraceSearchIndexedEventsCountSum(v int64) {
 	o.TraceSearchIndexedEventsCountSum = &v
 }
 
+// GetTwolIngestedEventsBytesSum returns the TwolIngestedEventsBytesSum field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetTwolIngestedEventsBytesSum() int64 {
+	if o == nil || o.TwolIngestedEventsBytesSum == nil {
+		var ret int64
+		return ret
+	}
+	return *o.TwolIngestedEventsBytesSum
+}
+
+// GetTwolIngestedEventsBytesSumOk returns a tuple with the TwolIngestedEventsBytesSum field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetTwolIngestedEventsBytesSumOk() (*int64, bool) {
+	if o == nil || o.TwolIngestedEventsBytesSum == nil {
+		return nil, false
+	}
+	return o.TwolIngestedEventsBytesSum, true
+}
+
+// HasTwolIngestedEventsBytesSum returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasTwolIngestedEventsBytesSum() bool {
+	if o != nil && o.TwolIngestedEventsBytesSum != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTwolIngestedEventsBytesSum gets a reference to the given int64 and assigns it to the TwolIngestedEventsBytesSum field.
+func (o *UsageSummaryDateOrg) SetTwolIngestedEventsBytesSum(v int64) {
+	o.TwolIngestedEventsBytesSum = &v
+}
+
 func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.AgentHostTop99p != nil {
@@ -959,6 +993,9 @@ func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 	}
 	if o.TraceSearchIndexedEventsCountSum != nil {
 		toSerialize["trace_search_indexed_events_count_sum"] = o.TraceSearchIndexedEventsCountSum
+	}
+	if o.TwolIngestedEventsBytesSum != nil {
+		toSerialize["twol_ingested_events_bytes_sum"] = o.TwolIngestedEventsBytesSum
 	}
 	return json.Marshal(toSerialize)
 }

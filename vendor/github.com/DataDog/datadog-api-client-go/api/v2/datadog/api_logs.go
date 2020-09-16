@@ -52,7 +52,7 @@ func (a *LogsApiService) AggregateLogs(ctx _context.Context) apiAggregateLogsReq
 
 /*
 Execute executes the request
- @return LogsAggregateResponse
+@return LogsAggregateResponse
 */
 func (r apiAggregateLogsRequest) Execute() (LogsAggregateResponse, *_nethttp.Response, error) {
 	var (
@@ -224,7 +224,7 @@ func (a *LogsApiService) ListLogs(ctx _context.Context) apiListLogsRequest {
 
 /*
 Execute executes the request
- @return LogsListResponse
+@return LogsListResponse
 */
 func (r apiListLogsRequest) Execute() (LogsListResponse, *_nethttp.Response, error) {
 	var (
@@ -375,32 +375,26 @@ func (r apiListLogsGetRequest) FilterQuery(filterQuery string) apiListLogsGetReq
 	r.filterQuery = &filterQuery
 	return r
 }
-
 func (r apiListLogsGetRequest) FilterIndex(filterIndex string) apiListLogsGetRequest {
 	r.filterIndex = &filterIndex
 	return r
 }
-
 func (r apiListLogsGetRequest) FilterFrom(filterFrom time.Time) apiListLogsGetRequest {
 	r.filterFrom = &filterFrom
 	return r
 }
-
 func (r apiListLogsGetRequest) FilterTo(filterTo time.Time) apiListLogsGetRequest {
 	r.filterTo = &filterTo
 	return r
 }
-
 func (r apiListLogsGetRequest) Sort(sort LogsSort) apiListLogsGetRequest {
 	r.sort = &sort
 	return r
 }
-
 func (r apiListLogsGetRequest) PageCursor(pageCursor string) apiListLogsGetRequest {
 	r.pageCursor = &pageCursor
 	return r
 }
-
 func (r apiListLogsGetRequest) PageLimit(pageLimit int32) apiListLogsGetRequest {
 	r.pageLimit = &pageLimit
 	return r
@@ -432,7 +426,7 @@ func (a *LogsApiService) ListLogsGet(ctx _context.Context) apiListLogsGetRequest
 
 /*
 Execute executes the request
- @return LogsListResponse
+@return LogsListResponse
 */
 func (r apiListLogsGetRequest) Execute() (LogsListResponse, *_nethttp.Response, error) {
 	var (

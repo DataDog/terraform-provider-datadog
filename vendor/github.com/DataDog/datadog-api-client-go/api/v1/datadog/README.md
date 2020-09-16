@@ -197,6 +197,7 @@ Class | Method | HTTP request | Description
 *UsageMeteringApi* | [**GetMonthlyCustomReports**](docs/UsageMeteringApi.md#getmonthlycustomreports) | **Get** /api/v1/monthly_custom_reports | Get the list of available monthly custom reports
 *UsageMeteringApi* | [**GetSpecifiedDailyCustomReports**](docs/UsageMeteringApi.md#getspecifieddailycustomreports) | **Get** /api/v1/daily_custom_reports/{report_id} | Get specified daily custom reports
 *UsageMeteringApi* | [**GetSpecifiedMonthlyCustomReports**](docs/UsageMeteringApi.md#getspecifiedmonthlycustomreports) | **Get** /api/v1/monthly_custom_reports/{report_id} | Get specified monthly custom reports
+*UsageMeteringApi* | [**GetTracingWithoutLimits**](docs/UsageMeteringApi.md#gettracingwithoutlimits) | **Get** /api/v1/usage/tracing-without-limits | Get hourly usage for tracing without limits
 *UsageMeteringApi* | [**GetUsageAnalyzedLogs**](docs/UsageMeteringApi.md#getusageanalyzedlogs) | **Get** /api/v1/usage/analyzed_logs | Get hourly usage for analyzed logs
 *UsageMeteringApi* | [**GetUsageBillableSummary**](docs/UsageMeteringApi.md#getusagebillablesummary) | **Get** /api/v1/usage/billable-summary | Get billable usage across your multi-org account
 *UsageMeteringApi* | [**GetUsageFargate**](docs/UsageMeteringApi.md#getusagefargate) | **Get** /api/v1/usage/fargate | Get hourly usage for Fargate
@@ -206,6 +207,7 @@ Class | Method | HTTP request | Description
 *UsageMeteringApi* | [**GetUsageLogsByIndex**](docs/UsageMeteringApi.md#getusagelogsbyindex) | **Get** /api/v1/usage/logs_by_index | Get hourly usage for Logs by Index
 *UsageMeteringApi* | [**GetUsageNetworkFlows**](docs/UsageMeteringApi.md#getusagenetworkflows) | **Get** /api/v1/usage/network_flows | Get hourly usage for Network Flows
 *UsageMeteringApi* | [**GetUsageNetworkHosts**](docs/UsageMeteringApi.md#getusagenetworkhosts) | **Get** /api/v1/usage/network_hosts | Get hourly usage for Network Hosts
+*UsageMeteringApi* | [**GetUsageProfiling**](docs/UsageMeteringApi.md#getusageprofiling) | **Get** /api/v1/usage/profiling | Get hourly usage for profiled hosts
 *UsageMeteringApi* | [**GetUsageRumSessions**](docs/UsageMeteringApi.md#getusagerumsessions) | **Get** /api/v1/usage/rum_sessions | Get hourly usage for RUM Sessions
 *UsageMeteringApi* | [**GetUsageSNMP**](docs/UsageMeteringApi.md#getusagesnmp) | **Get** /api/v1/usage/snmp | Get hourly usage for SNMP devices
 *UsageMeteringApi* | [**GetUsageSummary**](docs/UsageMeteringApi.md#getusagesummary) | **Get** /api/v1/usage/summary | Get usage across your multi-org account
@@ -559,6 +561,8 @@ Class | Method | HTTP request | Description
  - [UsageNetworkFlowsResponse](docs/UsageNetworkFlowsResponse.md)
  - [UsageNetworkHostsHour](docs/UsageNetworkHostsHour.md)
  - [UsageNetworkHostsResponse](docs/UsageNetworkHostsResponse.md)
+ - [UsageProfilingHour](docs/UsageProfilingHour.md)
+ - [UsageProfilingResponse](docs/UsageProfilingResponse.md)
  - [UsageReportsType](docs/UsageReportsType.md)
  - [UsageRumSessionsHour](docs/UsageRumSessionsHour.md)
  - [UsageRumSessionsResponse](docs/UsageRumSessionsResponse.md)
@@ -586,6 +590,8 @@ Class | Method | HTTP request | Description
  - [UsageTopAvgMetricsResponse](docs/UsageTopAvgMetricsResponse.md)
  - [UsageTraceHour](docs/UsageTraceHour.md)
  - [UsageTraceResponse](docs/UsageTraceResponse.md)
+ - [UsageTracingWithoutLimitsHour](docs/UsageTracingWithoutLimitsHour.md)
+ - [UsageTracingWithoutLimitsResponse](docs/UsageTracingWithoutLimitsResponse.md)
  - [User](docs/User.md)
  - [UserDisableResponse](docs/UserDisableResponse.md)
  - [UserListResponse](docs/UserListResponse.md)
@@ -598,6 +604,7 @@ Class | Method | HTTP request | Description
  - [WidgetComparator](docs/WidgetComparator.md)
  - [WidgetCompareTo](docs/WidgetCompareTo.md)
  - [WidgetConditionalFormat](docs/WidgetConditionalFormat.md)
+ - [WidgetCustomLink](docs/WidgetCustomLink.md)
  - [WidgetDefinition](docs/WidgetDefinition.md)
  - [WidgetDisplayType](docs/WidgetDisplayType.md)
  - [WidgetEvent](docs/WidgetEvent.md)
@@ -607,7 +614,6 @@ Class | Method | HTTP request | Description
  - [WidgetImageSizing](docs/WidgetImageSizing.md)
  - [WidgetLayout](docs/WidgetLayout.md)
  - [WidgetLayoutType](docs/WidgetLayoutType.md)
- - [WidgetLegendSize](docs/WidgetLegendSize.md)
  - [WidgetLineType](docs/WidgetLineType.md)
  - [WidgetLineWidth](docs/WidgetLineWidth.md)
  - [WidgetLiveSpan](docs/WidgetLiveSpan.md)

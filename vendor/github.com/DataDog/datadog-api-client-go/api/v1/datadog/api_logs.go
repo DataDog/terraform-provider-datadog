@@ -57,7 +57,7 @@ func (a *LogsApiService) ListLogs(ctx _context.Context) apiListLogsRequest {
 
 /*
 Execute executes the request
- @return LogsListResponse
+@return LogsListResponse
 */
 func (r apiListLogsRequest) Execute() (LogsListResponse, *_nethttp.Response, error) {
 	var (
@@ -79,7 +79,6 @@ func (r apiListLogsRequest) Execute() (LogsListResponse, *_nethttp.Response, err
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}

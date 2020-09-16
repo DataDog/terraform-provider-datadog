@@ -50,7 +50,7 @@ func (a *EventsApiService) GetEvent(ctx _context.Context, eventId int64) apiGetE
 
 /*
 Execute executes the request
- @return EventResponse
+@return EventResponse
 */
 func (r apiGetEventRequest) Execute() (EventResponse, *_nethttp.Response, error) {
 	var (
@@ -193,27 +193,22 @@ func (r apiListEventsRequest) Start(start int64) apiListEventsRequest {
 	r.start = &start
 	return r
 }
-
 func (r apiListEventsRequest) End(end int64) apiListEventsRequest {
 	r.end = &end
 	return r
 }
-
 func (r apiListEventsRequest) Priority(priority EventPriority) apiListEventsRequest {
 	r.priority = &priority
 	return r
 }
-
 func (r apiListEventsRequest) Sources(sources string) apiListEventsRequest {
 	r.sources = &sources
 	return r
 }
-
 func (r apiListEventsRequest) Tags(tags string) apiListEventsRequest {
 	r.tags = &tags
 	return r
 }
-
 func (r apiListEventsRequest) Unaggregated(unaggregated bool) apiListEventsRequest {
 	r.unaggregated = &unaggregated
 	return r
@@ -236,7 +231,7 @@ func (a *EventsApiService) ListEvents(ctx _context.Context) apiListEventsRequest
 
 /*
 Execute executes the request
- @return EventListResponse
+@return EventListResponse
 */
 func (r apiListEventsRequest) Execute() (EventListResponse, *_nethttp.Response, error) {
 	var (
@@ -258,11 +253,9 @@ func (r apiListEventsRequest) Execute() (EventListResponse, *_nethttp.Response, 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.start == nil {
 		return localVarReturnValue, nil, reportError("start is required and must be specified")
 	}
-
 	if r.end == nil {
 		return localVarReturnValue, nil, reportError("end is required and must be specified")
 	}

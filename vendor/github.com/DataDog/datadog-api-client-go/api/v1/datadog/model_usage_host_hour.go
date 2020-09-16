@@ -25,11 +25,11 @@ type UsageHostHour struct {
 	AwsHostCount *int64 `json:"aws_host_count,omitempty"`
 	// Contains the total number of hosts that reported via Azure integration (and were NOT running the Datadog Agent).
 	AzureHostCount *int64 `json:"azure_host_count,omitempty"`
-	// Contains the total number of billable infrastructure hosts reporting during a given hour. This is the sum of `agent_host_count`, `aws_host_count`, and `gcp_host_count`.
+	// Shows the total number of containers reported by the Docker integration during the hour.
 	ContainerCount *int64 `json:"container_count,omitempty"`
 	// Contains the total number of hosts that reported via the Google Cloud integration (and were NOT running the Datadog Agent).
 	GcpHostCount *int64 `json:"gcp_host_count,omitempty"`
-	// Shows the total number of containers reporting via the Docker integration during the hour.
+	// Contains the total number of billable infrastructure hosts reporting during a given hour. This is the sum of `agent_host_count`, `aws_host_count`, and `gcp_host_count`.
 	HostCount *int64 `json:"host_count,omitempty"`
 	// The hour for the usage.
 	Hour *time.Time `json:"hour,omitempty"`

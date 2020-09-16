@@ -53,7 +53,7 @@ func (a *RolesApiService) AddPermissionToRole(ctx _context.Context, roleId strin
 
 /*
 Execute executes the request
- @return PermissionsResponse
+@return PermissionsResponse
 */
 func (r apiAddPermissionToRoleRequest) Execute() (PermissionsResponse, *_nethttp.Response, error) {
 	var (
@@ -222,7 +222,7 @@ func (a *RolesApiService) AddUserToRole(ctx _context.Context, roleId string) api
 
 /*
 Execute executes the request
- @return UsersResponse
+@return UsersResponse
 */
 func (r apiAddUserToRoleRequest) Execute() (UsersResponse, *_nethttp.Response, error) {
 	var (
@@ -388,7 +388,7 @@ func (a *RolesApiService) CreateRole(ctx _context.Context) apiCreateRoleRequest 
 
 /*
 Execute executes the request
- @return RoleCreateResponse
+@return RoleCreateResponse
 */
 func (r apiCreateRoleRequest) Execute() (RoleCreateResponse, *_nethttp.Response, error) {
 	var (
@@ -540,7 +540,6 @@ func (a *RolesApiService) DeleteRole(ctx _context.Context, roleId string) apiDel
 
 /*
 Execute executes the request
-
 */
 func (r apiDeleteRoleRequest) Execute() (*_nethttp.Response, error) {
 	var (
@@ -681,7 +680,7 @@ func (a *RolesApiService) GetRole(ctx _context.Context, roleId string) apiGetRol
 
 /*
 Execute executes the request
- @return RoleResponse
+@return RoleResponse
 */
 func (r apiGetRoleRequest) Execute() (RoleResponse, *_nethttp.Response, error) {
 	var (
@@ -829,7 +828,7 @@ func (a *RolesApiService) ListPermissions(ctx _context.Context) apiListPermissio
 
 /*
 Execute executes the request
- @return PermissionsResponse
+@return PermissionsResponse
 */
 func (r apiListPermissionsRequest) Execute() (PermissionsResponse, *_nethttp.Response, error) {
 	var (
@@ -979,7 +978,7 @@ func (a *RolesApiService) ListRolePermissions(ctx _context.Context, roleId strin
 
 /*
 Execute executes the request
- @return PermissionsResponse
+@return PermissionsResponse
 */
 func (r apiListRolePermissionsRequest) Execute() (PermissionsResponse, *_nethttp.Response, error) {
 	var (
@@ -1121,17 +1120,14 @@ func (r apiListRoleUsersRequest) PageSize(pageSize int64) apiListRoleUsersReques
 	r.pageSize = &pageSize
 	return r
 }
-
 func (r apiListRoleUsersRequest) PageNumber(pageNumber int64) apiListRoleUsersRequest {
 	r.pageNumber = &pageNumber
 	return r
 }
-
 func (r apiListRoleUsersRequest) Sort(sort string) apiListRoleUsersRequest {
 	r.sort = &sort
 	return r
 }
-
 func (r apiListRoleUsersRequest) Filter(filter string) apiListRoleUsersRequest {
 	r.filter = &filter
 	return r
@@ -1154,7 +1150,7 @@ func (a *RolesApiService) ListRoleUsers(ctx _context.Context, roleId string) api
 
 /*
 Execute executes the request
- @return UsersResponse
+@return UsersResponse
 */
 func (r apiListRoleUsersRequest) Execute() (UsersResponse, *_nethttp.Response, error) {
 	var (
@@ -1307,17 +1303,14 @@ func (r apiListRolesRequest) PageSize(pageSize int64) apiListRolesRequest {
 	r.pageSize = &pageSize
 	return r
 }
-
 func (r apiListRolesRequest) PageNumber(pageNumber int64) apiListRolesRequest {
 	r.pageNumber = &pageNumber
 	return r
 }
-
 func (r apiListRolesRequest) Sort(sort RolesSort) apiListRolesRequest {
 	r.sort = &sort
 	return r
 }
-
 func (r apiListRolesRequest) Filter(filter string) apiListRolesRequest {
 	r.filter = &filter
 	return r
@@ -1338,7 +1331,7 @@ func (a *RolesApiService) ListRoles(ctx _context.Context) apiListRolesRequest {
 
 /*
 Execute executes the request
- @return RolesResponse
+@return RolesResponse
 */
 func (r apiListRolesRequest) Execute() (RolesResponse, *_nethttp.Response, error) {
 	var (
@@ -1496,7 +1489,7 @@ func (a *RolesApiService) RemovePermissionFromRole(ctx _context.Context, roleId 
 
 /*
 Execute executes the request
- @return PermissionsResponse
+@return PermissionsResponse
 */
 func (r apiRemovePermissionFromRoleRequest) Execute() (PermissionsResponse, *_nethttp.Response, error) {
 	var (
@@ -1665,7 +1658,7 @@ func (a *RolesApiService) RemoveUserFromRole(ctx _context.Context, roleId string
 
 /*
 Execute executes the request
- @return UsersResponse
+@return UsersResponse
 */
 func (r apiRemoveUserFromRoleRequest) Execute() (UsersResponse, *_nethttp.Response, error) {
 	var (
@@ -1834,7 +1827,7 @@ func (a *RolesApiService) UpdateRole(ctx _context.Context, roleId string) apiUpd
 
 /*
 Execute executes the request
- @return RoleUpdateResponse
+@return RoleUpdateResponse
 */
 func (r apiUpdateRoleRequest) Execute() (RoleUpdateResponse, *_nethttp.Response, error) {
 	var (

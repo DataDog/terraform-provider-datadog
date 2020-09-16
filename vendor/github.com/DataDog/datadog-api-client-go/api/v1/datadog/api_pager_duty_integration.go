@@ -50,7 +50,7 @@ func (a *PagerDutyIntegrationApiService) CreatePagerDutyIntegrationService(ctx _
 
 /*
 Execute executes the request
- @return PagerDutyServiceName
+@return PagerDutyServiceName
 */
 func (r apiCreatePagerDutyIntegrationServiceRequest) Execute() (PagerDutyServiceName, *_nethttp.Response, error) {
 	var (
@@ -72,7 +72,6 @@ func (r apiCreatePagerDutyIntegrationServiceRequest) Execute() (PagerDutyService
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -206,7 +205,6 @@ func (a *PagerDutyIntegrationApiService) DeletePagerDutyIntegrationService(ctx _
 
 /*
 Execute executes the request
-
 */
 func (r apiDeletePagerDutyIntegrationServiceRequest) Execute() (*_nethttp.Response, error) {
 	var (
@@ -347,7 +345,7 @@ func (a *PagerDutyIntegrationApiService) GetPagerDutyIntegrationService(ctx _con
 
 /*
 Execute executes the request
- @return PagerDutyServiceName
+@return PagerDutyServiceName
 */
 func (r apiGetPagerDutyIntegrationServiceRequest) Execute() (PagerDutyServiceName, *_nethttp.Response, error) {
 	var (
@@ -504,7 +502,6 @@ func (a *PagerDutyIntegrationApiService) UpdatePagerDutyIntegrationService(ctx _
 
 /*
 Execute executes the request
-
 */
 func (r apiUpdatePagerDutyIntegrationServiceRequest) Execute() (*_nethttp.Response, error) {
 	var (
@@ -526,7 +523,6 @@ func (r apiUpdatePagerDutyIntegrationServiceRequest) Execute() (*_nethttp.Respon
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return nil, reportError("body is required and must be specified")
 	}

@@ -38,27 +38,22 @@ func (r apiGetGraphSnapshotRequest) Start(start int64) apiGetGraphSnapshotReques
 	r.start = &start
 	return r
 }
-
 func (r apiGetGraphSnapshotRequest) End(end int64) apiGetGraphSnapshotRequest {
 	r.end = &end
 	return r
 }
-
 func (r apiGetGraphSnapshotRequest) MetricQuery(metricQuery string) apiGetGraphSnapshotRequest {
 	r.metricQuery = &metricQuery
 	return r
 }
-
 func (r apiGetGraphSnapshotRequest) EventQuery(eventQuery string) apiGetGraphSnapshotRequest {
 	r.eventQuery = &eventQuery
 	return r
 }
-
 func (r apiGetGraphSnapshotRequest) GraphDef(graphDef string) apiGetGraphSnapshotRequest {
 	r.graphDef = &graphDef
 	return r
 }
-
 func (r apiGetGraphSnapshotRequest) Title(title string) apiGetGraphSnapshotRequest {
 	r.title = &title
 	return r
@@ -80,7 +75,7 @@ func (a *SnapshotsApiService) GetGraphSnapshot(ctx _context.Context) apiGetGraph
 
 /*
 Execute executes the request
- @return GraphSnapshot
+@return GraphSnapshot
 */
 func (r apiGetGraphSnapshotRequest) Execute() (GraphSnapshot, *_nethttp.Response, error) {
 	var (
@@ -102,11 +97,9 @@ func (r apiGetGraphSnapshotRequest) Execute() (GraphSnapshot, *_nethttp.Response
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.start == nil {
 		return localVarReturnValue, nil, reportError("start is required and must be specified")
 	}
-
 	if r.end == nil {
 		return localVarReturnValue, nil, reportError("end is required and must be specified")
 	}

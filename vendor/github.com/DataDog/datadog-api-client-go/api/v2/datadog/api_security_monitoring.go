@@ -53,7 +53,7 @@ func (a *SecurityMonitoringApiService) CreateSecurityMonitoringRule(ctx _context
 
 /*
 Execute executes the request
- @return SecurityMonitoringRuleResponse
+@return SecurityMonitoringRuleResponse
 */
 func (r apiCreateSecurityMonitoringRuleRequest) Execute() (SecurityMonitoringRuleResponse, *_nethttp.Response, error) {
 	var (
@@ -205,7 +205,6 @@ func (a *SecurityMonitoringApiService) DeleteSecurityMonitoringRule(ctx _context
 
 /*
 Execute executes the request
-
 */
 func (r apiDeleteSecurityMonitoringRuleRequest) Execute() (*_nethttp.Response, error) {
 	var (
@@ -346,7 +345,7 @@ func (a *SecurityMonitoringApiService) GetSecurityMonitoringRule(ctx _context.Co
 
 /*
 Execute executes the request
- @return SecurityMonitoringRuleResponse
+@return SecurityMonitoringRuleResponse
 */
 func (r apiGetSecurityMonitoringRuleRequest) Execute() (SecurityMonitoringRuleResponse, *_nethttp.Response, error) {
 	var (
@@ -475,7 +474,6 @@ func (r apiListSecurityMonitoringRulesRequest) PageSize(pageSize int64) apiListS
 	r.pageSize = &pageSize
 	return r
 }
-
 func (r apiListSecurityMonitoringRulesRequest) PageNumber(pageNumber int64) apiListSecurityMonitoringRulesRequest {
 	r.pageNumber = &pageNumber
 	return r
@@ -496,7 +494,7 @@ func (a *SecurityMonitoringApiService) ListSecurityMonitoringRules(ctx _context.
 
 /*
 Execute executes the request
- @return SecurityMonitoringListRulesResponse
+@return SecurityMonitoringListRulesResponse
 */
 func (r apiListSecurityMonitoringRulesRequest) Execute() (SecurityMonitoringListRulesResponse, *_nethttp.Response, error) {
 	var (
@@ -634,27 +632,22 @@ func (r apiListSecurityMonitoringSignalsRequest) FilterQuery(filterQuery string)
 	r.filterQuery = &filterQuery
 	return r
 }
-
 func (r apiListSecurityMonitoringSignalsRequest) FilterFrom(filterFrom time.Time) apiListSecurityMonitoringSignalsRequest {
 	r.filterFrom = &filterFrom
 	return r
 }
-
 func (r apiListSecurityMonitoringSignalsRequest) FilterTo(filterTo time.Time) apiListSecurityMonitoringSignalsRequest {
 	r.filterTo = &filterTo
 	return r
 }
-
 func (r apiListSecurityMonitoringSignalsRequest) Sort(sort SecurityMonitoringSignalsSort) apiListSecurityMonitoringSignalsRequest {
 	r.sort = &sort
 	return r
 }
-
 func (r apiListSecurityMonitoringSignalsRequest) PageCursor(pageCursor string) apiListSecurityMonitoringSignalsRequest {
 	r.pageCursor = &pageCursor
 	return r
 }
-
 func (r apiListSecurityMonitoringSignalsRequest) PageLimit(pageLimit int32) apiListSecurityMonitoringSignalsRequest {
 	r.pageLimit = &pageLimit
 	return r
@@ -677,7 +670,7 @@ func (a *SecurityMonitoringApiService) ListSecurityMonitoringSignals(ctx _contex
 
 /*
 Execute executes the request
- @return SecurityMonitoringSignalsListResponse
+@return SecurityMonitoringSignalsListResponse
 */
 func (r apiListSecurityMonitoringSignalsRequest) Execute() (SecurityMonitoringSignalsListResponse, *_nethttp.Response, error) {
 	var (
@@ -856,7 +849,7 @@ func (a *SecurityMonitoringApiService) SearchSecurityMonitoringSignals(ctx _cont
 
 /*
 Execute executes the request
- @return SecurityMonitoringSignalsListResponse
+@return SecurityMonitoringSignalsListResponse
 */
 func (r apiSearchSecurityMonitoringSignalsRequest) Execute() (SecurityMonitoringSignalsListResponse, *_nethttp.Response, error) {
 	var (
@@ -1022,7 +1015,7 @@ func (a *SecurityMonitoringApiService) UpdateSecurityMonitoringRule(ctx _context
 
 /*
 Execute executes the request
- @return SecurityMonitoringRuleResponse
+@return SecurityMonitoringRuleResponse
 */
 func (r apiUpdateSecurityMonitoringRuleRequest) Execute() (SecurityMonitoringRuleResponse, *_nethttp.Response, error) {
 	var (

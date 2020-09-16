@@ -43,7 +43,7 @@ func (a *IPRangesApiService) GetIPRanges(ctx _context.Context) apiGetIPRangesReq
 
 /*
 Execute executes the request
- @return IPRanges
+@return IPRanges
 */
 func (r apiGetIPRangesRequest) Execute() (IPRanges, *_nethttp.Response, error) {
 	var (

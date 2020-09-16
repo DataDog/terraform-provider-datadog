@@ -50,7 +50,7 @@ func (a *DashboardsApiService) CreateDashboard(ctx _context.Context) apiCreateDa
 
 /*
 Execute executes the request
- @return Dashboard
+@return Dashboard
 */
 func (r apiCreateDashboardRequest) Execute() (Dashboard, *_nethttp.Response, error) {
 	var (
@@ -72,7 +72,6 @@ func (r apiCreateDashboardRequest) Execute() (Dashboard, *_nethttp.Response, err
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -206,7 +205,7 @@ func (a *DashboardsApiService) DeleteDashboard(ctx _context.Context, dashboardId
 
 /*
 Execute executes the request
- @return DashboardDeleteResponse
+@return DashboardDeleteResponse
 */
 func (r apiDeleteDashboardRequest) Execute() (DashboardDeleteResponse, *_nethttp.Response, error) {
 	var (
@@ -357,7 +356,7 @@ func (a *DashboardsApiService) GetDashboard(ctx _context.Context, dashboardId st
 
 /*
 Execute executes the request
- @return Dashboard
+@return Dashboard
 */
 func (r apiGetDashboardRequest) Execute() (Dashboard, *_nethttp.Response, error) {
 	var (
@@ -508,7 +507,7 @@ func (a *DashboardsApiService) ListDashboards(ctx _context.Context) apiListDashb
 
 /*
 Execute executes the request
- @return DashboardSummary
+@return DashboardSummary
 */
 func (r apiListDashboardsRequest) Execute() (DashboardSummary, *_nethttp.Response, error) {
 	var (
@@ -654,7 +653,7 @@ func (a *DashboardsApiService) UpdateDashboard(ctx _context.Context, dashboardId
 
 /*
 Execute executes the request
- @return Dashboard
+@return Dashboard
 */
 func (r apiUpdateDashboardRequest) Execute() (Dashboard, *_nethttp.Response, error) {
 	var (
@@ -677,7 +676,6 @@ func (r apiUpdateDashboardRequest) Execute() (Dashboard, *_nethttp.Response, err
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}

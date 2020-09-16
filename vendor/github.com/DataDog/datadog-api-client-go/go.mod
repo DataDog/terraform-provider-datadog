@@ -8,7 +8,7 @@ require (
 	github.com/go-bdd/gobdd v1.1.2-0.20200703080921-409b71954655
 	github.com/google/go-cmp v0.4.0 // indirect
 	github.com/jonboulle/clockwork v0.1.0
-	github.com/mcuadros/go-lookup v0.0.0-20200513230334-5988786b5617
+	github.com/mcuadros/go-lookup v0.0.0-20200831155250-80f87a4fa5ee
 	github.com/opentracing/opentracing-go v1.1.0 // indirect
 	github.com/philhofer/fwd v1.0.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect

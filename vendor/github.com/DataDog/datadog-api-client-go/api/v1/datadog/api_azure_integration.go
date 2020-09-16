@@ -55,7 +55,7 @@ func (a *AzureIntegrationApiService) CreateAzureIntegration(ctx _context.Context
 
 /*
 Execute executes the request
- @return interface{}
+@return interface{}
 */
 func (r apiCreateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
 	var (
@@ -77,7 +77,6 @@ func (r apiCreateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -214,7 +213,7 @@ func (a *AzureIntegrationApiService) DeleteAzureIntegration(ctx _context.Context
 
 /*
 Execute executes the request
- @return interface{}
+@return interface{}
 */
 func (r apiDeleteAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
 	var (
@@ -236,7 +235,6 @@ func (r apiDeleteAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -367,7 +365,7 @@ func (a *AzureIntegrationApiService) ListAzureIntegration(ctx _context.Context) 
 
 /*
 Execute executes the request
- @return []AzureAccount
+@return []AzureAccount
 */
 func (r apiListAzureIntegrationRequest) Execute() ([]AzureAccount, *_nethttp.Response, error) {
 	var (
@@ -520,7 +518,7 @@ func (a *AzureIntegrationApiService) UpdateAzureHostFilters(ctx _context.Context
 
 /*
 Execute executes the request
- @return interface{}
+@return interface{}
 */
 func (r apiUpdateAzureHostFiltersRequest) Execute() (interface{}, *_nethttp.Response, error) {
 	var (
@@ -542,7 +540,6 @@ func (r apiUpdateAzureHostFiltersRequest) Execute() (interface{}, *_nethttp.Resp
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -681,7 +678,7 @@ func (a *AzureIntegrationApiService) UpdateAzureIntegration(ctx _context.Context
 
 /*
 Execute executes the request
- @return interface{}
+@return interface{}
 */
 func (r apiUpdateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
 	var (
@@ -703,7 +700,6 @@ func (r apiUpdateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}

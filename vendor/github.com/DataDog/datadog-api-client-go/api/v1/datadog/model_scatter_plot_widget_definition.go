@@ -15,9 +15,11 @@ import (
 // ScatterPlotWidgetDefinition The scatter plot visualization allows you to graph a chosen scope over two different metrics with their respective aggregation.
 type ScatterPlotWidgetDefinition struct {
 	// List of groups used for colors.
-	ColorByGroups *[]string                           `json:"color_by_groups,omitempty"`
-	Requests      ScatterPlotWidgetDefinitionRequests `json:"requests"`
-	Time          *WidgetTime                         `json:"time,omitempty"`
+	ColorByGroups *[]string `json:"color_by_groups,omitempty"`
+	// List of custom links.
+	CustomLinks *[]WidgetCustomLink                 `json:"custom_links,omitempty"`
+	Requests    ScatterPlotWidgetDefinitionRequests `json:"requests"`
+	Time        *WidgetTime                         `json:"time,omitempty"`
 	// Title of your widget.
 	Title      *string          `json:"title,omitempty"`
 	TitleAlign *WidgetTextAlign `json:"title_align,omitempty"`
@@ -79,6 +81,38 @@ func (o *ScatterPlotWidgetDefinition) HasColorByGroups() bool {
 // SetColorByGroups gets a reference to the given []string and assigns it to the ColorByGroups field.
 func (o *ScatterPlotWidgetDefinition) SetColorByGroups(v []string) {
 	o.ColorByGroups = &v
+}
+
+// GetCustomLinks returns the CustomLinks field value if set, zero value otherwise.
+func (o *ScatterPlotWidgetDefinition) GetCustomLinks() []WidgetCustomLink {
+	if o == nil || o.CustomLinks == nil {
+		var ret []WidgetCustomLink
+		return ret
+	}
+	return *o.CustomLinks
+}
+
+// GetCustomLinksOk returns a tuple with the CustomLinks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ScatterPlotWidgetDefinition) GetCustomLinksOk() (*[]WidgetCustomLink, bool) {
+	if o == nil || o.CustomLinks == nil {
+		return nil, false
+	}
+	return o.CustomLinks, true
+}
+
+// HasCustomLinks returns a boolean if a field has been set.
+func (o *ScatterPlotWidgetDefinition) HasCustomLinks() bool {
+	if o != nil && o.CustomLinks != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomLinks gets a reference to the given []WidgetCustomLink and assigns it to the CustomLinks field.
+func (o *ScatterPlotWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
+	o.CustomLinks = &v
 }
 
 // GetRequests returns the Requests field value
@@ -325,6 +359,9 @@ func (o ScatterPlotWidgetDefinition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.ColorByGroups != nil {
 		toSerialize["color_by_groups"] = o.ColorByGroups
+	}
+	if o.CustomLinks != nil {
+		toSerialize["custom_links"] = o.CustomLinks
 	}
 	if true {
 		toSerialize["requests"] = o.Requests

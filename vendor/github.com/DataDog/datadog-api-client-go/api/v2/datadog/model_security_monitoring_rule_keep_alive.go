@@ -26,6 +26,8 @@ const (
 	SECURITYMONITORINGRULEKEEPALIVE_THIRTY_MINUTES  SecurityMonitoringRuleKeepAlive = 1800
 	SECURITYMONITORINGRULEKEEPALIVE_ONE_HOUR        SecurityMonitoringRuleKeepAlive = 3600
 	SECURITYMONITORINGRULEKEEPALIVE_TWO_HOURS       SecurityMonitoringRuleKeepAlive = 7200
+	SECURITYMONITORINGRULEKEEPALIVE_THREE_HOURS     SecurityMonitoringRuleKeepAlive = 10800
+	SECURITYMONITORINGRULEKEEPALIVE_SIX_HOURS       SecurityMonitoringRuleKeepAlive = 21600
 )
 
 func (v *SecurityMonitoringRuleKeepAlive) UnmarshalJSON(src []byte) error {
@@ -35,7 +37,7 @@ func (v *SecurityMonitoringRuleKeepAlive) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SecurityMonitoringRuleKeepAlive(value)
-	for _, existing := range []SecurityMonitoringRuleKeepAlive{0, 60, 300, 600, 900, 1800, 3600, 7200} {
+	for _, existing := range []SecurityMonitoringRuleKeepAlive{0, 60, 300, 600, 900, 1800, 3600, 7200, 10800, 21600} {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil

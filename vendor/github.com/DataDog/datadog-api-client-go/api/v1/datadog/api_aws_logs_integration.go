@@ -56,7 +56,7 @@ func (a *AWSLogsIntegrationApiService) CheckAWSLogsLambdaAsync(ctx _context.Cont
 
 /*
 Execute executes the request
- @return AWSLogsAsyncResponse
+@return AWSLogsAsyncResponse
 */
 func (r apiCheckAWSLogsLambdaAsyncRequest) Execute() (AWSLogsAsyncResponse, *_nethttp.Response, error) {
 	var (
@@ -78,7 +78,6 @@ func (r apiCheckAWSLogsLambdaAsyncRequest) Execute() (AWSLogsAsyncResponse, *_ne
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -224,7 +223,7 @@ func (a *AWSLogsIntegrationApiService) CheckAWSLogsServicesAsync(ctx _context.Co
 
 /*
 Execute executes the request
- @return AWSLogsAsyncResponse
+@return AWSLogsAsyncResponse
 */
 func (r apiCheckAWSLogsServicesAsyncRequest) Execute() (AWSLogsAsyncResponse, *_nethttp.Response, error) {
 	var (
@@ -246,7 +245,6 @@ func (r apiCheckAWSLogsServicesAsyncRequest) Execute() (AWSLogsAsyncResponse, *_
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -383,7 +381,7 @@ func (a *AWSLogsIntegrationApiService) CreateAWSLambdaARN(ctx _context.Context) 
 
 /*
 Execute executes the request
- @return interface{}
+@return interface{}
 */
 func (r apiCreateAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response, error) {
 	var (
@@ -405,7 +403,6 @@ func (r apiCreateAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -542,7 +539,7 @@ func (a *AWSLogsIntegrationApiService) DeleteAWSLambdaARN(ctx _context.Context) 
 
 /*
 Execute executes the request
- @return interface{}
+@return interface{}
 */
 func (r apiDeleteAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response, error) {
 	var (
@@ -564,7 +561,6 @@ func (r apiDeleteAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -701,7 +697,7 @@ func (a *AWSLogsIntegrationApiService) EnableAWSLogServices(ctx _context.Context
 
 /*
 Execute executes the request
- @return interface{}
+@return interface{}
 */
 func (r apiEnableAWSLogServicesRequest) Execute() (interface{}, *_nethttp.Response, error) {
 	var (
@@ -723,7 +719,6 @@ func (r apiEnableAWSLogServicesRequest) Execute() (interface{}, *_nethttp.Respon
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
@@ -854,7 +849,7 @@ func (a *AWSLogsIntegrationApiService) ListAWSLogsIntegrations(ctx _context.Cont
 
 /*
 Execute executes the request
- @return []AWSLogsListResponse
+@return []AWSLogsListResponse
 */
 func (r apiListAWSLogsIntegrationsRequest) Execute() ([]AWSLogsListResponse, *_nethttp.Response, error) {
 	var (
@@ -1001,7 +996,7 @@ func (a *AWSLogsIntegrationApiService) ListAWSLogsServices(ctx _context.Context)
 
 /*
 Execute executes the request
- @return []AWSLogsListServicesResponse
+@return []AWSLogsListServicesResponse
 */
 func (r apiListAWSLogsServicesRequest) Execute() ([]AWSLogsListServicesResponse, *_nethttp.Response, error) {
 	var (
