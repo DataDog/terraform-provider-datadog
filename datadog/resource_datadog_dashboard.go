@@ -3927,6 +3927,7 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 		"slo_id": {
 			Type:     schema.TypeString,
 			Required: true,
+			ForceNew: true,
 		},
 		"show_error_budget": {
 			Type:     schema.TypeBool,
