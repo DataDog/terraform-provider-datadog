@@ -101,6 +101,58 @@ resource "datadog_service_level_objective" "foo" {
 }`, uniq)
 }
 
+func testAccCheckDatadogServiceLevelObjectiveConfigMonitor(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "Name for monitor foo"
+  type = "query alert"
+  message = "some message Notify: @hipchat-channel"
+  query = "avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 3, direction='above', alert_window='last_5m', interval=20, count_default_zero='true') >= 1"
+}
+
+resource "datadog_service_level_objective" "foo" {
+  name = "%s"
+  type = "monitor"
+  description = "some updated description about foo SLO"
+
+  thresholds {
+	timeframe = "7d"
+	target = 99.5
+	warning = 99.8
+  }
+
+  monitor_ids = [
+    datadog_monitor.foo.id
+  ]
+}`, uniq)
+}
+
+func testAccCheckDatadogServiceLevelObjectiveConfigForceRecreate(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "Name for monitor foo"
+  type = "metric alert"
+  message = "some message Notify: @hipchat-channel"
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+}
+
+resource "datadog_service_level_objective" "foo" {
+  name = "%s"
+  type = "monitor"
+  description = "some updated description about foo SLO"
+
+  thresholds {
+	timeframe = "7d"
+	target = 99.5
+	warning = 99.8
+  }
+
+  monitor_ids = [
+    datadog_monitor.foo.id
+  ]
+}`, uniq)
+}
+
 // tests
 
 func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
@@ -226,7 +278,65 @@ func TestAccDatadogServiceLevelObjective_InvalidMonitor(t *testing.T) {
 	})
 }
 
+func TestAccDatadogServiceLevelObjective_NewMonitorForceRecreate(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	sloName := uniqueEntityName(clock, t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogServiceLevelObjectiveConfigMonitor(sloName),
+				Check: func(firstState *terraform.State) error {
+					firstSloId, _ := getSloIdHelper(firstState, accProvider)
+					resource.TestCheckResourceAttr("datadog_service_level_objective.foo", "id", firstSloId)
+					resource.Test(t, resource.TestCase{
+						PreCheck:     func() { testAccPreCheck(t) },
+						Providers:    accProviders,
+						CheckDestroy: testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
+						Steps: []resource.TestStep{
+							{
+								Config: testAccCheckDatadogServiceLevelObjectiveConfigForceRecreate(sloName),
+								Check: func(secondState *terraform.State) error {
+									secondSloId, _ := getSloIdHelper(secondState, accProvider)
+									if secondSloId == firstSloId {
+										return fmt.Errorf("resource id may have change if the resource as been recreated")
+									}
+									return nil
+								},
+							},
+						},
+					})
+					return nil
+				},
+			},
+		},
+	})
+}
+
 // helpers
+
+func getSloIdHelper(s *terraform.State, accProvider *schema.Provider) (string, error) {
+	providerConf := accProvider.Meta().(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+	for _, r := range s.RootModule().Resources {
+		sloResp, _, err := datadogClientV1.ServiceLevelObjectivesApi.GetSLO(authV1, r.Primary.ID).Execute()
+		if err != nil {
+			if strings.Contains(strings.ToLower(err.Error()), "not found") {
+				continue
+			}
+			return "", fmt.Errorf("received an error retrieving service level objective  %s", err)
+		}
+		data := sloResp.GetData()
+		return data.GetId(), err
+	}
+	return "", fmt.Errorf("service level objective not found in current state")
+}
 
 func destroyServiceLevelObjectiveHelper(s *terraform.State, authV1 context.Context, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
