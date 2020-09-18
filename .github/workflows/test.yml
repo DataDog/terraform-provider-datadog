@@ -27,7 +27,6 @@ jobs:
     env:
       GOFLAGS: "-mod=vendor"
     strategy:
-      fail-fast: false
       matrix:
         platform: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}

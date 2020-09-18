@@ -119,9 +119,8 @@ func TestAccDatadogDashboard_NewMonitorForceRecreate(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_service_level_objective.foo", "id", firstSloId)
 					resource.TestCheckResourceAttr("datadog_dashboard.foo", "id", firstDbId)
 					resource.Test(t, resource.TestCase{
-						PreCheck:     func() { testAccPreCheck(t) },
-						Providers:    accProviders,
-						CheckDestroy: checkDashboardDestroy(accProvider),
+						PreCheck:  func() { testAccPreCheck(t) },
+						Providers: accProviders,
 						Steps: []resource.TestStep{
 							{
 								Config: datadogDashboardDepChangedConfig(dbName),
