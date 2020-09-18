@@ -301,13 +301,7 @@ func TestAccDatadogServiceLevelObjective_NewMonitorForceRecreate(t *testing.T) {
 						Steps: []resource.TestStep{
 							{
 								Config: testAccCheckDatadogServiceLevelObjectiveConfigForceRecreate(sloName),
-								Check: func(secondState *terraform.State) error {
-									secondSloId, _ := getSloIdHelper(secondState, accProvider)
-									if secondSloId == firstSloId {
-										return fmt.Errorf("resource id may have change if the resource as been recreated")
-									}
-									return nil
-								},
+								Check:  checkThatSloHasBeenForcedToBeRecreated(accProvider, firstSloId),
 							},
 						},
 					})
@@ -316,6 +310,16 @@ func TestAccDatadogServiceLevelObjective_NewMonitorForceRecreate(t *testing.T) {
 			},
 		},
 	})
+}
+
+func checkThatSloHasBeenForcedToBeRecreated(accProvider *schema.Provider, previousSloId string) func(s *terraform.State) error {
+	return func(s *terraform.State) error {
+		secondSloId, _ := getSloIdHelper(s, accProvider)
+		if secondSloId == previousSloId {
+			return fmt.Errorf("slo id may have change if the resource as been recreated")
+		}
+		return nil
+	}
 }
 
 // helpers
