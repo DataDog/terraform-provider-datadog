@@ -1,4 +1,4 @@
-// For more info about writing custom provider: shttps://www.terraform.io/docs/extend/writing-custom-providers.html
+// For more info about writing custom provider: https://www.terraform.io/docs/extend/writing-custom-providers.html
 
 package datadog
 
