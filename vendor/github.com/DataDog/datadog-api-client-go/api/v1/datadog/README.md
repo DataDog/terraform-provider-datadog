@@ -184,7 +184,7 @@ Class | Method | HTTP request | Description
 *SyntheticsApi* | [**GetBrowserTestResult**](docs/SyntheticsApi.md#getbrowsertestresult) | **Get** /api/v1/synthetics/tests/browser/{public_id}/results/{result_id} | Get a test result (browser)
 *SyntheticsApi* | [**GetTest**](docs/SyntheticsApi.md#gettest) | **Get** /api/v1/synthetics/tests/{public_id} | Get a test configuration (API)
 *SyntheticsApi* | [**ListLocations**](docs/SyntheticsApi.md#listlocations) | **Get** /api/v1/synthetics/locations | Get all locations (public and private)
-*SyntheticsApi* | [**ListTests**](docs/SyntheticsApi.md#listtests) | **Get** /api/v1/synthetics/tests | Get a list of tests
+*SyntheticsApi* | [**ListTests**](docs/SyntheticsApi.md#listtests) | **Get** /api/v1/synthetics/tests | Get the list of all tests
 *SyntheticsApi* | [**TriggerCITests**](docs/SyntheticsApi.md#triggercitests) | **Post** /api/v1/synthetics/tests/trigger/ci | Trigger some Synthetics tests for CI
 *SyntheticsApi* | [**UpdateTest**](docs/SyntheticsApi.md#updatetest) | **Put** /api/v1/synthetics/tests/{public_id} | Edit a test
 *SyntheticsApi* | [**UpdateTestPauseStatus**](docs/SyntheticsApi.md#updatetestpausestatus) | **Put** /api/v1/synthetics/tests/{public_id}/status | Pause or start a test

@@ -14,20 +14,21 @@ import (
 
 // RoleUpdateData Data related to the update of a role.
 type RoleUpdateData struct {
-	Attributes *RoleUpdateAttributes `json:"attributes,omitempty"`
+	Attributes RoleUpdateAttributes `json:"attributes"`
 	// ID of the role.
-	Id   *string    `json:"id,omitempty"`
-	Type *RolesType `json:"type,omitempty"`
+	Id   string    `json:"id"`
+	Type RolesType `json:"type"`
 }
 
 // NewRoleUpdateData instantiates a new RoleUpdateData object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRoleUpdateData() *RoleUpdateData {
+func NewRoleUpdateData(attributes RoleUpdateAttributes, id string, type_ RolesType) *RoleUpdateData {
 	this := RoleUpdateData{}
-	var type_ RolesType = "roles"
-	this.Type = &type_
+	this.Attributes = attributes
+	this.Id = id
+	this.Type = type_
 	return &this
 }
 
@@ -37,115 +38,91 @@ func NewRoleUpdateData() *RoleUpdateData {
 func NewRoleUpdateDataWithDefaults() *RoleUpdateData {
 	this := RoleUpdateData{}
 	var type_ RolesType = "roles"
-	this.Type = &type_
+	this.Type = type_
 	return &this
 }
 
-// GetAttributes returns the Attributes field value if set, zero value otherwise.
+// GetAttributes returns the Attributes field value
 func (o *RoleUpdateData) GetAttributes() RoleUpdateAttributes {
-	if o == nil || o.Attributes == nil {
+	if o == nil {
 		var ret RoleUpdateAttributes
 		return ret
 	}
-	return *o.Attributes
+
+	return o.Attributes
 }
 
-// GetAttributesOk returns a tuple with the Attributes field value if set, nil otherwise
+// GetAttributesOk returns a tuple with the Attributes field value
 // and a boolean to check if the value has been set.
 func (o *RoleUpdateData) GetAttributesOk() (*RoleUpdateAttributes, bool) {
-	if o == nil || o.Attributes == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Attributes, true
+	return &o.Attributes, true
 }
 
-// HasAttributes returns a boolean if a field has been set.
-func (o *RoleUpdateData) HasAttributes() bool {
-	if o != nil && o.Attributes != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetAttributes gets a reference to the given RoleUpdateAttributes and assigns it to the Attributes field.
+// SetAttributes sets field value
 func (o *RoleUpdateData) SetAttributes(v RoleUpdateAttributes) {
-	o.Attributes = &v
+	o.Attributes = v
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *RoleUpdateData) GetId() string {
-	if o == nil || o.Id == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *RoleUpdateData) GetIdOk() (*string, bool) {
-	if o == nil || o.Id == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *RoleUpdateData) HasId() bool {
-	if o != nil && o.Id != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *RoleUpdateData) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value
 func (o *RoleUpdateData) GetType() RolesType {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		var ret RolesType
 		return ret
 	}
-	return *o.Type
+
+	return o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *RoleUpdateData) GetTypeOk() (*RolesType, bool) {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Type, true
+	return &o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *RoleUpdateData) HasType() bool {
-	if o != nil && o.Type != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given RolesType and assigns it to the Type field.
+// SetType sets field value
 func (o *RoleUpdateData) SetType(v RolesType) {
-	o.Type = &v
+	o.Type = v
 }
 
 func (o RoleUpdateData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Attributes != nil {
+	if true {
 		toSerialize["attributes"] = o.Attributes
 	}
-	if o.Id != nil {
+	if true {
 		toSerialize["id"] = o.Id
 	}
-	if o.Type != nil {
+	if true {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)

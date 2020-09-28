@@ -150,6 +150,16 @@ func NewConfiguration() *Configuration {
 			"RemoveRoleFromArchive":           false,
 			"ListSecurityMonitoringSignals":   false,
 			"SearchSecurityMonitoringSignals": false,
+			"CreateService":                   false,
+			"DeleteService":                   false,
+			"GetService":                      false,
+			"GetServices":                     false,
+			"UpdateService":                   false,
+			"CreateTeam":                      false,
+			"DeleteTeam":                      false,
+			"GetTeam":                         false,
+			"GetTeams":                        false,
+			"UpdateTeam":                      false,
 		},
 	}
 	return cfg

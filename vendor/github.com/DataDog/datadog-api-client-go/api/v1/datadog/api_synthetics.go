@@ -1942,17 +1942,11 @@ func (r apiListLocationsRequest) Execute() (SyntheticsLocations, *_nethttp.Respo
 type apiListTestsRequest struct {
 	ctx        _context.Context
 	apiService *SyntheticsApiService
-	checkType  *string
-}
-
-func (r apiListTestsRequest) CheckType(checkType string) apiListTestsRequest {
-	r.checkType = &checkType
-	return r
 }
 
 /*
-ListTests Get a list of tests
-Get the list of all Synthetic tests (can be filtered by type).
+ListTests Get the list of all tests
+Get the list of all Synthetic tests.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiListTestsRequest
 */
@@ -1988,9 +1982,6 @@ func (r apiListTestsRequest) Execute() (SyntheticsListTestsResponse, *_nethttp.R
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
 
-	if r.checkType != nil {
-		localVarQueryParams.Add("check_type", parameterToString(*r.checkType, ""))
-	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 

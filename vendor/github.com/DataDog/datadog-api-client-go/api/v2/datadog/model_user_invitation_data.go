@@ -14,18 +14,18 @@ import (
 
 // UserInvitationData Object to create a user invitation.
 type UserInvitationData struct {
-	Relationships *UserInvitationRelationships `json:"relationships,omitempty"`
-	Type          *UserInvitationsType         `json:"type,omitempty"`
+	Relationships UserInvitationRelationships `json:"relationships"`
+	Type          UserInvitationsType         `json:"type"`
 }
 
 // NewUserInvitationData instantiates a new UserInvitationData object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserInvitationData() *UserInvitationData {
+func NewUserInvitationData(relationships UserInvitationRelationships, type_ UserInvitationsType) *UserInvitationData {
 	this := UserInvitationData{}
-	var type_ UserInvitationsType = "user_invitations"
-	this.Type = &type_
+	this.Relationships = relationships
+	this.Type = type_
 	return &this
 }
 
@@ -35,80 +35,64 @@ func NewUserInvitationData() *UserInvitationData {
 func NewUserInvitationDataWithDefaults() *UserInvitationData {
 	this := UserInvitationData{}
 	var type_ UserInvitationsType = "user_invitations"
-	this.Type = &type_
+	this.Type = type_
 	return &this
 }
 
-// GetRelationships returns the Relationships field value if set, zero value otherwise.
+// GetRelationships returns the Relationships field value
 func (o *UserInvitationData) GetRelationships() UserInvitationRelationships {
-	if o == nil || o.Relationships == nil {
+	if o == nil {
 		var ret UserInvitationRelationships
 		return ret
 	}
-	return *o.Relationships
+
+	return o.Relationships
 }
 
-// GetRelationshipsOk returns a tuple with the Relationships field value if set, nil otherwise
+// GetRelationshipsOk returns a tuple with the Relationships field value
 // and a boolean to check if the value has been set.
 func (o *UserInvitationData) GetRelationshipsOk() (*UserInvitationRelationships, bool) {
-	if o == nil || o.Relationships == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Relationships, true
+	return &o.Relationships, true
 }
 
-// HasRelationships returns a boolean if a field has been set.
-func (o *UserInvitationData) HasRelationships() bool {
-	if o != nil && o.Relationships != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetRelationships gets a reference to the given UserInvitationRelationships and assigns it to the Relationships field.
+// SetRelationships sets field value
 func (o *UserInvitationData) SetRelationships(v UserInvitationRelationships) {
-	o.Relationships = &v
+	o.Relationships = v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value
 func (o *UserInvitationData) GetType() UserInvitationsType {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		var ret UserInvitationsType
 		return ret
 	}
-	return *o.Type
+
+	return o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *UserInvitationData) GetTypeOk() (*UserInvitationsType, bool) {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Type, true
+	return &o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *UserInvitationData) HasType() bool {
-	if o != nil && o.Type != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given UserInvitationsType and assigns it to the Type field.
+// SetType sets field value
 func (o *UserInvitationData) SetType(v UserInvitationsType) {
-	o.Type = &v
+	o.Type = v
 }
 
 func (o UserInvitationData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Relationships != nil {
+	if true {
 		toSerialize["relationships"] = o.Relationships
 	}
-	if o.Type != nil {
+	if true {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)
