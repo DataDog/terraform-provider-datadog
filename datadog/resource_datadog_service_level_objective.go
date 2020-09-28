@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 
@@ -11,11 +12,12 @@ import (
 
 func resourceDatadogServiceLevelObjective() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogServiceLevelObjectiveCreate,
-		Read:   resourceDatadogServiceLevelObjectiveRead,
-		Update: resourceDatadogServiceLevelObjectiveUpdate,
-		Delete: resourceDatadogServiceLevelObjectiveDelete,
-		Exists: resourceDatadogServiceLevelObjectiveExists,
+		Create:        resourceDatadogServiceLevelObjectiveCreate,
+		Read:          resourceDatadogServiceLevelObjectiveRead,
+		Update:        resourceDatadogServiceLevelObjectiveUpdate,
+		Delete:        resourceDatadogServiceLevelObjectiveDelete,
+		Exists:        resourceDatadogServiceLevelObjectiveExists,
+		CustomizeDiff: resourceDatadogServiceLevelObjectiveCustomizeDiff,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogServiceLevelObjectiveImport,
 		},
@@ -129,6 +131,14 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				ConflictsWith: []string{"query"},
 				Elem:          &schema.Schema{Type: schema.TypeString, MinItems: 1},
 			},
+			"validate": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// This is never sent to the backend, so it should never generate a diff
+					return true
+				},
+			},
 		},
 	}
 }
@@ -144,6 +154,35 @@ func ValidateServiceLevelObjectiveTypeString(v interface{}, k string) (ws []stri
 		errors = append(errors, fmt.Errorf("invalid type %s specified for SLO", v.(string)))
 	}
 	return
+}
+
+// Use CustomizeDiff to do monitor validation
+func resourceDatadogServiceLevelObjectiveCustomizeDiff(diff *schema.ResourceDiff, meta interface{}) error {
+	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
+		// Explicitly skip validation
+		log.Printf("[DEBUG] Validate is %v, skipping validation", validate.(bool))
+		return nil
+	}
+
+	if val, ok := diff.GetOk("type"); ok && (val != string(datadogV1.SLOTYPE_MONITOR)) {
+		// If the SLO is not a Monitor type, skip the validation
+		log.Printf("[DEBUG] SLO type is: %v, skipping validation", val)
+		return nil
+	}
+
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+	if attr, ok := diff.GetOk("monitor_ids"); ok {
+		for _, v := range attr.(*schema.Set).List() {
+			// Check that each monitor being added to the SLO exists
+			if _, _, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, int64(v.(int))).Execute(); err != nil {
+				return translateClientError(err, "error finding monitor to add to SLO")
+			}
+		}
+	}
+
+	return nil
 }
 
 func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.ServiceLevelObjective, *datadogV1.ServiceLevelObjectiveRequest) {

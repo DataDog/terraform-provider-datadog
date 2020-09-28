@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -41,6 +42,30 @@ resource "datadog_service_level_objective" "foo" {
   }
 
   tags = ["foo:bar", "baz"]
+}`, uniq)
+}
+
+func testAccCheckDatadogServiceLevelObjectiveInvalidMonitorConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_level_objective" "bar" {
+	name               = "%s"
+	type               = "monitor"
+	description        = "My custom monitor SLO"
+	monitor_ids = [1, 2, 3]
+	validate = true
+	thresholds {
+	timeframe = "7d"
+	target = 99.9
+	warning = 99.99
+	}
+	
+	thresholds {
+	timeframe = "30d"
+	target = 99.9
+	warning = 99.99
+	}
+	
+	tags = ["foo:bar", "baz"]
 }`, uniq)
 }
 
@@ -177,6 +202,25 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "tags.1750285118", "foo:bar"),
 				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogServiceLevelObjective_InvalidMonitor(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	sloName := uniqueEntityName(clock, t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogServiceLevelObjectiveInvalidMonitorConfig(sloName),
+				ExpectError: regexp.MustCompile("error finding monitor to add to SLO"),
 			},
 		},
 	})
