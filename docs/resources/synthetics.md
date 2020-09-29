@@ -107,6 +107,35 @@ resource "datadog_synthetics_test" "test_tcp" {
 }
 ```
 
+## Example Usage (Synthetics DNS test)
+
+Create a new Datadog Synthetics API/DNS test on example.org
+
+```hcl
+resource "datadog_synthetics_test" "test_tcp" {
+  type = "api"
+  subtype = "dns"
+  request = {
+    host = "example.org"
+  }
+  assertion {
+    type = "recordSome"
+    operator = "is"
+    property = "A"
+    target = "0.0.0.0"
+  }
+  locations = [ "aws:eu-central-1" ]
+  options_list {
+    tick_every = 900
+  }
+  name = "An API test on example.org"
+  message = "Notify @pagerduty"
+  tags = ["foo:bar", "foo", "env:test"]
+
+  status = "live"
+}
+```
+
 ## Example Usage (Synthetics Browser test)
 
 Support for Synthetics Browser test steps is limited (see [below](#synthetics-browser-test))
@@ -150,7 +179,7 @@ resource "datadog_synthetics_test" "test_browser" {
 The following arguments are supported:
 
 - `type`: (Required) Synthetics test type (api or browser)
-- `subtype`: (Optional) For type=api, http, ssl or tcp (Default = http)
+- `subtype`: (Optional) For type=api, http, ssl, tcp or dns (Default = http)
 - `name`: (Required) Name of Datadog synthetics test
 - `message`: (Required) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same '@username' notation as events.
 - `tags`: (Required) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI.
@@ -159,7 +188,7 @@ The following arguments are supported:
   - `url`: (Required) Any url
   - `timeout`: (Optional) For type=api, any value between 0 and 60 (Default = 60)
   - `body`: (Optional) Request body
-- `request`: (Required) if type=api and subtype=ssl or subtype=tcp
+- `request`: (Required) if type=api and subtype=ssl or subtype=tcp or subtype=dns
   - `host`: (Required) host name
   - `port`: (Required) port number
   - `timeout`: (Optional) For type=api, any value between 0 and 60 (Default = 60)
