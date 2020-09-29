@@ -53,6 +53,11 @@ The following arguments are supported:
   - `query alert`
   - `composite`
   - `log alert`
+  - `process alert`
+  - `rum alert`
+  - `synthetics alert`
+  - `trace-analytics alert`
+  - `slo alert`
 - `name`: (Required) Name of Datadog monitor
 - `query`: (Required) The monitor query to notify on. Note this is not the same query you see in the UI and
 
