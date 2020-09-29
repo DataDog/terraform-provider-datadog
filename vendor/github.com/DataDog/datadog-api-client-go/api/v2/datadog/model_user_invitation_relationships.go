@@ -14,15 +14,16 @@ import (
 
 // UserInvitationRelationships Relationships data for user invitation.
 type UserInvitationRelationships struct {
-	User *RelationshipToUser `json:"user,omitempty"`
+	User RelationshipToUser `json:"user"`
 }
 
 // NewUserInvitationRelationships instantiates a new UserInvitationRelationships object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserInvitationRelationships() *UserInvitationRelationships {
+func NewUserInvitationRelationships(user RelationshipToUser) *UserInvitationRelationships {
 	this := UserInvitationRelationships{}
+	this.User = user
 	return &this
 }
 
@@ -34,41 +35,33 @@ func NewUserInvitationRelationshipsWithDefaults() *UserInvitationRelationships {
 	return &this
 }
 
-// GetUser returns the User field value if set, zero value otherwise.
+// GetUser returns the User field value
 func (o *UserInvitationRelationships) GetUser() RelationshipToUser {
-	if o == nil || o.User == nil {
+	if o == nil {
 		var ret RelationshipToUser
 		return ret
 	}
-	return *o.User
+
+	return o.User
 }
 
-// GetUserOk returns a tuple with the User field value if set, nil otherwise
+// GetUserOk returns a tuple with the User field value
 // and a boolean to check if the value has been set.
 func (o *UserInvitationRelationships) GetUserOk() (*RelationshipToUser, bool) {
-	if o == nil || o.User == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.User, true
+	return &o.User, true
 }
 
-// HasUser returns a boolean if a field has been set.
-func (o *UserInvitationRelationships) HasUser() bool {
-	if o != nil && o.User != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetUser gets a reference to the given RelationshipToUser and assigns it to the User field.
+// SetUser sets field value
 func (o *UserInvitationRelationships) SetUser(v RelationshipToUser) {
-	o.User = &v
+	o.User = v
 }
 
 func (o UserInvitationRelationships) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.User != nil {
+	if true {
 		toSerialize["user"] = o.User
 	}
 	return json.Marshal(toSerialize)

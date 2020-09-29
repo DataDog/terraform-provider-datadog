@@ -14,19 +14,19 @@ import (
 
 // UserCreateData Object to create a user.
 type UserCreateData struct {
-	Attributes    *UserCreateAttributes `json:"attributes,omitempty"`
-	Relationships *UserRelationships    `json:"relationships,omitempty"`
-	Type          *UsersType            `json:"type,omitempty"`
+	Attributes    UserCreateAttributes `json:"attributes"`
+	Relationships *UserRelationships   `json:"relationships,omitempty"`
+	Type          UsersType            `json:"type"`
 }
 
 // NewUserCreateData instantiates a new UserCreateData object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserCreateData() *UserCreateData {
+func NewUserCreateData(attributes UserCreateAttributes, type_ UsersType) *UserCreateData {
 	this := UserCreateData{}
-	var type_ UsersType = "users"
-	this.Type = &type_
+	this.Attributes = attributes
+	this.Type = type_
 	return &this
 }
 
@@ -36,40 +36,32 @@ func NewUserCreateData() *UserCreateData {
 func NewUserCreateDataWithDefaults() *UserCreateData {
 	this := UserCreateData{}
 	var type_ UsersType = "users"
-	this.Type = &type_
+	this.Type = type_
 	return &this
 }
 
-// GetAttributes returns the Attributes field value if set, zero value otherwise.
+// GetAttributes returns the Attributes field value
 func (o *UserCreateData) GetAttributes() UserCreateAttributes {
-	if o == nil || o.Attributes == nil {
+	if o == nil {
 		var ret UserCreateAttributes
 		return ret
 	}
-	return *o.Attributes
+
+	return o.Attributes
 }
 
-// GetAttributesOk returns a tuple with the Attributes field value if set, nil otherwise
+// GetAttributesOk returns a tuple with the Attributes field value
 // and a boolean to check if the value has been set.
 func (o *UserCreateData) GetAttributesOk() (*UserCreateAttributes, bool) {
-	if o == nil || o.Attributes == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Attributes, true
+	return &o.Attributes, true
 }
 
-// HasAttributes returns a boolean if a field has been set.
-func (o *UserCreateData) HasAttributes() bool {
-	if o != nil && o.Attributes != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetAttributes gets a reference to the given UserCreateAttributes and assigns it to the Attributes field.
+// SetAttributes sets field value
 func (o *UserCreateData) SetAttributes(v UserCreateAttributes) {
-	o.Attributes = &v
+	o.Attributes = v
 }
 
 // GetRelationships returns the Relationships field value if set, zero value otherwise.
@@ -104,47 +96,39 @@ func (o *UserCreateData) SetRelationships(v UserRelationships) {
 	o.Relationships = &v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value
 func (o *UserCreateData) GetType() UsersType {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		var ret UsersType
 		return ret
 	}
-	return *o.Type
+
+	return o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *UserCreateData) GetTypeOk() (*UsersType, bool) {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Type, true
+	return &o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *UserCreateData) HasType() bool {
-	if o != nil && o.Type != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given UsersType and assigns it to the Type field.
+// SetType sets field value
 func (o *UserCreateData) SetType(v UsersType) {
-	o.Type = &v
+	o.Type = v
 }
 
 func (o UserCreateData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Attributes != nil {
+	if true {
 		toSerialize["attributes"] = o.Attributes
 	}
 	if o.Relationships != nil {
 		toSerialize["relationships"] = o.Relationships
 	}
-	if o.Type != nil {
+	if true {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)

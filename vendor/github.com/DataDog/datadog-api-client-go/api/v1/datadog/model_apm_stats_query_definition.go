@@ -12,42 +12,47 @@ import (
 	"encoding/json"
 )
 
-// ApmResourcesQueryDefinition The APM resources (stats) query for Table Widget.
-type ApmResourcesQueryDefinition struct {
+// ApmStatsQueryDefinition The APM stats query for table and distributions widgets.
+type ApmStatsQueryDefinition struct {
 	// Column names used by front end for display.
 	Columns *[]string `json:"columns,omitempty"`
 	// Environment name.
 	Env string `json:"env"`
 	// Operation name associated with service.
 	Name string `json:"name"`
+	// The organization's host group name and value.
+	PrimaryTag string `json:"primary_tag"`
 	// Resource name.
-	Resource *string `json:"resource,omitempty"`
+	Resource *string              `json:"resource,omitempty"`
+	RowType  ApmStatsQueryRowType `json:"row_type"`
 	// Service name.
 	Service string `json:"service"`
 }
 
-// NewApmResourcesQueryDefinition instantiates a new ApmResourcesQueryDefinition object
+// NewApmStatsQueryDefinition instantiates a new ApmStatsQueryDefinition object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewApmResourcesQueryDefinition(env string, name string, service string) *ApmResourcesQueryDefinition {
-	this := ApmResourcesQueryDefinition{}
+func NewApmStatsQueryDefinition(env string, name string, primaryTag string, rowType ApmStatsQueryRowType, service string) *ApmStatsQueryDefinition {
+	this := ApmStatsQueryDefinition{}
 	this.Env = env
 	this.Name = name
+	this.PrimaryTag = primaryTag
+	this.RowType = rowType
 	this.Service = service
 	return &this
 }
 
-// NewApmResourcesQueryDefinitionWithDefaults instantiates a new ApmResourcesQueryDefinition object
+// NewApmStatsQueryDefinitionWithDefaults instantiates a new ApmStatsQueryDefinition object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewApmResourcesQueryDefinitionWithDefaults() *ApmResourcesQueryDefinition {
-	this := ApmResourcesQueryDefinition{}
+func NewApmStatsQueryDefinitionWithDefaults() *ApmStatsQueryDefinition {
+	this := ApmStatsQueryDefinition{}
 	return &this
 }
 
 // GetColumns returns the Columns field value if set, zero value otherwise.
-func (o *ApmResourcesQueryDefinition) GetColumns() []string {
+func (o *ApmStatsQueryDefinition) GetColumns() []string {
 	if o == nil || o.Columns == nil {
 		var ret []string
 		return ret
@@ -57,7 +62,7 @@ func (o *ApmResourcesQueryDefinition) GetColumns() []string {
 
 // GetColumnsOk returns a tuple with the Columns field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ApmResourcesQueryDefinition) GetColumnsOk() (*[]string, bool) {
+func (o *ApmStatsQueryDefinition) GetColumnsOk() (*[]string, bool) {
 	if o == nil || o.Columns == nil {
 		return nil, false
 	}
@@ -65,7 +70,7 @@ func (o *ApmResourcesQueryDefinition) GetColumnsOk() (*[]string, bool) {
 }
 
 // HasColumns returns a boolean if a field has been set.
-func (o *ApmResourcesQueryDefinition) HasColumns() bool {
+func (o *ApmStatsQueryDefinition) HasColumns() bool {
 	if o != nil && o.Columns != nil {
 		return true
 	}
@@ -74,12 +79,12 @@ func (o *ApmResourcesQueryDefinition) HasColumns() bool {
 }
 
 // SetColumns gets a reference to the given []string and assigns it to the Columns field.
-func (o *ApmResourcesQueryDefinition) SetColumns(v []string) {
+func (o *ApmStatsQueryDefinition) SetColumns(v []string) {
 	o.Columns = &v
 }
 
 // GetEnv returns the Env field value
-func (o *ApmResourcesQueryDefinition) GetEnv() string {
+func (o *ApmStatsQueryDefinition) GetEnv() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -90,7 +95,7 @@ func (o *ApmResourcesQueryDefinition) GetEnv() string {
 
 // GetEnvOk returns a tuple with the Env field value
 // and a boolean to check if the value has been set.
-func (o *ApmResourcesQueryDefinition) GetEnvOk() (*string, bool) {
+func (o *ApmStatsQueryDefinition) GetEnvOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -98,12 +103,12 @@ func (o *ApmResourcesQueryDefinition) GetEnvOk() (*string, bool) {
 }
 
 // SetEnv sets field value
-func (o *ApmResourcesQueryDefinition) SetEnv(v string) {
+func (o *ApmStatsQueryDefinition) SetEnv(v string) {
 	o.Env = v
 }
 
 // GetName returns the Name field value
-func (o *ApmResourcesQueryDefinition) GetName() string {
+func (o *ApmStatsQueryDefinition) GetName() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -114,7 +119,7 @@ func (o *ApmResourcesQueryDefinition) GetName() string {
 
 // GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
-func (o *ApmResourcesQueryDefinition) GetNameOk() (*string, bool) {
+func (o *ApmStatsQueryDefinition) GetNameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -122,12 +127,36 @@ func (o *ApmResourcesQueryDefinition) GetNameOk() (*string, bool) {
 }
 
 // SetName sets field value
-func (o *ApmResourcesQueryDefinition) SetName(v string) {
+func (o *ApmStatsQueryDefinition) SetName(v string) {
 	o.Name = v
 }
 
+// GetPrimaryTag returns the PrimaryTag field value
+func (o *ApmStatsQueryDefinition) GetPrimaryTag() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.PrimaryTag
+}
+
+// GetPrimaryTagOk returns a tuple with the PrimaryTag field value
+// and a boolean to check if the value has been set.
+func (o *ApmStatsQueryDefinition) GetPrimaryTagOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.PrimaryTag, true
+}
+
+// SetPrimaryTag sets field value
+func (o *ApmStatsQueryDefinition) SetPrimaryTag(v string) {
+	o.PrimaryTag = v
+}
+
 // GetResource returns the Resource field value if set, zero value otherwise.
-func (o *ApmResourcesQueryDefinition) GetResource() string {
+func (o *ApmStatsQueryDefinition) GetResource() string {
 	if o == nil || o.Resource == nil {
 		var ret string
 		return ret
@@ -137,7 +166,7 @@ func (o *ApmResourcesQueryDefinition) GetResource() string {
 
 // GetResourceOk returns a tuple with the Resource field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ApmResourcesQueryDefinition) GetResourceOk() (*string, bool) {
+func (o *ApmStatsQueryDefinition) GetResourceOk() (*string, bool) {
 	if o == nil || o.Resource == nil {
 		return nil, false
 	}
@@ -145,7 +174,7 @@ func (o *ApmResourcesQueryDefinition) GetResourceOk() (*string, bool) {
 }
 
 // HasResource returns a boolean if a field has been set.
-func (o *ApmResourcesQueryDefinition) HasResource() bool {
+func (o *ApmStatsQueryDefinition) HasResource() bool {
 	if o != nil && o.Resource != nil {
 		return true
 	}
@@ -154,12 +183,36 @@ func (o *ApmResourcesQueryDefinition) HasResource() bool {
 }
 
 // SetResource gets a reference to the given string and assigns it to the Resource field.
-func (o *ApmResourcesQueryDefinition) SetResource(v string) {
+func (o *ApmStatsQueryDefinition) SetResource(v string) {
 	o.Resource = &v
 }
 
+// GetRowType returns the RowType field value
+func (o *ApmStatsQueryDefinition) GetRowType() ApmStatsQueryRowType {
+	if o == nil {
+		var ret ApmStatsQueryRowType
+		return ret
+	}
+
+	return o.RowType
+}
+
+// GetRowTypeOk returns a tuple with the RowType field value
+// and a boolean to check if the value has been set.
+func (o *ApmStatsQueryDefinition) GetRowTypeOk() (*ApmStatsQueryRowType, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.RowType, true
+}
+
+// SetRowType sets field value
+func (o *ApmStatsQueryDefinition) SetRowType(v ApmStatsQueryRowType) {
+	o.RowType = v
+}
+
 // GetService returns the Service field value
-func (o *ApmResourcesQueryDefinition) GetService() string {
+func (o *ApmStatsQueryDefinition) GetService() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -170,7 +223,7 @@ func (o *ApmResourcesQueryDefinition) GetService() string {
 
 // GetServiceOk returns a tuple with the Service field value
 // and a boolean to check if the value has been set.
-func (o *ApmResourcesQueryDefinition) GetServiceOk() (*string, bool) {
+func (o *ApmStatsQueryDefinition) GetServiceOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -178,11 +231,11 @@ func (o *ApmResourcesQueryDefinition) GetServiceOk() (*string, bool) {
 }
 
 // SetService sets field value
-func (o *ApmResourcesQueryDefinition) SetService(v string) {
+func (o *ApmStatsQueryDefinition) SetService(v string) {
 	o.Service = v
 }
 
-func (o ApmResourcesQueryDefinition) MarshalJSON() ([]byte, error) {
+func (o ApmStatsQueryDefinition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Columns != nil {
 		toSerialize["columns"] = o.Columns
@@ -193,8 +246,14 @@ func (o ApmResourcesQueryDefinition) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["name"] = o.Name
 	}
+	if true {
+		toSerialize["primary_tag"] = o.PrimaryTag
+	}
 	if o.Resource != nil {
 		toSerialize["resource"] = o.Resource
+	}
+	if true {
+		toSerialize["row_type"] = o.RowType
 	}
 	if true {
 		toSerialize["service"] = o.Service
@@ -202,38 +261,38 @@ func (o ApmResourcesQueryDefinition) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableApmResourcesQueryDefinition struct {
-	value *ApmResourcesQueryDefinition
+type NullableApmStatsQueryDefinition struct {
+	value *ApmStatsQueryDefinition
 	isSet bool
 }
 
-func (v NullableApmResourcesQueryDefinition) Get() *ApmResourcesQueryDefinition {
+func (v NullableApmStatsQueryDefinition) Get() *ApmStatsQueryDefinition {
 	return v.value
 }
 
-func (v *NullableApmResourcesQueryDefinition) Set(val *ApmResourcesQueryDefinition) {
+func (v *NullableApmStatsQueryDefinition) Set(val *ApmStatsQueryDefinition) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableApmResourcesQueryDefinition) IsSet() bool {
+func (v NullableApmStatsQueryDefinition) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableApmResourcesQueryDefinition) Unset() {
+func (v *NullableApmStatsQueryDefinition) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableApmResourcesQueryDefinition(val *ApmResourcesQueryDefinition) *NullableApmResourcesQueryDefinition {
-	return &NullableApmResourcesQueryDefinition{value: val, isSet: true}
+func NewNullableApmStatsQueryDefinition(val *ApmStatsQueryDefinition) *NullableApmStatsQueryDefinition {
+	return &NullableApmStatsQueryDefinition{value: val, isSet: true}
 }
 
-func (v NullableApmResourcesQueryDefinition) MarshalJSON() ([]byte, error) {
+func (v NullableApmStatsQueryDefinition) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableApmResourcesQueryDefinition) UnmarshalJSON(src []byte) error {
+func (v *NullableApmStatsQueryDefinition) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

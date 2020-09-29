@@ -14,20 +14,21 @@ import (
 
 // UserUpdateData Object to update a user.
 type UserUpdateData struct {
-	Attributes *UserUpdateAttributes `json:"attributes,omitempty"`
+	Attributes UserUpdateAttributes `json:"attributes"`
 	// ID of the user.
-	Id   *string    `json:"id,omitempty"`
-	Type *UsersType `json:"type,omitempty"`
+	Id   string    `json:"id"`
+	Type UsersType `json:"type"`
 }
 
 // NewUserUpdateData instantiates a new UserUpdateData object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserUpdateData() *UserUpdateData {
+func NewUserUpdateData(attributes UserUpdateAttributes, id string, type_ UsersType) *UserUpdateData {
 	this := UserUpdateData{}
-	var type_ UsersType = "users"
-	this.Type = &type_
+	this.Attributes = attributes
+	this.Id = id
+	this.Type = type_
 	return &this
 }
 
@@ -37,115 +38,91 @@ func NewUserUpdateData() *UserUpdateData {
 func NewUserUpdateDataWithDefaults() *UserUpdateData {
 	this := UserUpdateData{}
 	var type_ UsersType = "users"
-	this.Type = &type_
+	this.Type = type_
 	return &this
 }
 
-// GetAttributes returns the Attributes field value if set, zero value otherwise.
+// GetAttributes returns the Attributes field value
 func (o *UserUpdateData) GetAttributes() UserUpdateAttributes {
-	if o == nil || o.Attributes == nil {
+	if o == nil {
 		var ret UserUpdateAttributes
 		return ret
 	}
-	return *o.Attributes
+
+	return o.Attributes
 }
 
-// GetAttributesOk returns a tuple with the Attributes field value if set, nil otherwise
+// GetAttributesOk returns a tuple with the Attributes field value
 // and a boolean to check if the value has been set.
 func (o *UserUpdateData) GetAttributesOk() (*UserUpdateAttributes, bool) {
-	if o == nil || o.Attributes == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Attributes, true
+	return &o.Attributes, true
 }
 
-// HasAttributes returns a boolean if a field has been set.
-func (o *UserUpdateData) HasAttributes() bool {
-	if o != nil && o.Attributes != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetAttributes gets a reference to the given UserUpdateAttributes and assigns it to the Attributes field.
+// SetAttributes sets field value
 func (o *UserUpdateData) SetAttributes(v UserUpdateAttributes) {
-	o.Attributes = &v
+	o.Attributes = v
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *UserUpdateData) GetId() string {
-	if o == nil || o.Id == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *UserUpdateData) GetIdOk() (*string, bool) {
-	if o == nil || o.Id == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *UserUpdateData) HasId() bool {
-	if o != nil && o.Id != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *UserUpdateData) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value
 func (o *UserUpdateData) GetType() UsersType {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		var ret UsersType
 		return ret
 	}
-	return *o.Type
+
+	return o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *UserUpdateData) GetTypeOk() (*UsersType, bool) {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Type, true
+	return &o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *UserUpdateData) HasType() bool {
-	if o != nil && o.Type != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given UsersType and assigns it to the Type field.
+// SetType sets field value
 func (o *UserUpdateData) SetType(v UsersType) {
-	o.Type = &v
+	o.Type = v
 }
 
 func (o UserUpdateData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Attributes != nil {
+	if true {
 		toSerialize["attributes"] = o.Attributes
 	}
-	if o.Id != nil {
+	if true {
 		toSerialize["id"] = o.Id
 	}
-	if o.Type != nil {
+	if true {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)

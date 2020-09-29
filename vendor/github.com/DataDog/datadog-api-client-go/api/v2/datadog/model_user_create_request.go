@@ -14,15 +14,16 @@ import (
 
 // UserCreateRequest Create a user.
 type UserCreateRequest struct {
-	Data *UserCreateData `json:"data,omitempty"`
+	Data UserCreateData `json:"data"`
 }
 
 // NewUserCreateRequest instantiates a new UserCreateRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserCreateRequest() *UserCreateRequest {
+func NewUserCreateRequest(data UserCreateData) *UserCreateRequest {
 	this := UserCreateRequest{}
+	this.Data = data
 	return &this
 }
 
@@ -34,41 +35,33 @@ func NewUserCreateRequestWithDefaults() *UserCreateRequest {
 	return &this
 }
 
-// GetData returns the Data field value if set, zero value otherwise.
+// GetData returns the Data field value
 func (o *UserCreateRequest) GetData() UserCreateData {
-	if o == nil || o.Data == nil {
+	if o == nil {
 		var ret UserCreateData
 		return ret
 	}
-	return *o.Data
+
+	return o.Data
 }
 
-// GetDataOk returns a tuple with the Data field value if set, nil otherwise
+// GetDataOk returns a tuple with the Data field value
 // and a boolean to check if the value has been set.
 func (o *UserCreateRequest) GetDataOk() (*UserCreateData, bool) {
-	if o == nil || o.Data == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Data, true
+	return &o.Data, true
 }
 
-// HasData returns a boolean if a field has been set.
-func (o *UserCreateRequest) HasData() bool {
-	if o != nil && o.Data != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetData gets a reference to the given UserCreateData and assigns it to the Data field.
+// SetData sets field value
 func (o *UserCreateRequest) SetData(v UserCreateData) {
-	o.Data = &v
+	o.Data = v
 }
 
 func (o UserCreateRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Data != nil {
+	if true {
 		toSerialize["data"] = o.Data
 	}
 	return json.Marshal(toSerialize)

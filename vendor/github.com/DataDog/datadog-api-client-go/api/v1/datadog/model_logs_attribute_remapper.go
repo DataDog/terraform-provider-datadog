@@ -28,7 +28,7 @@ type LogsAttributeRemapper struct {
 	Sources []string `json:"sources"`
 	// Final attribute or tag name to remap the sources to.
 	Target string `json:"target"`
-	// Defines if the sources are from log `attribute` or `tag`.
+	// Defines if the final attribute or tag name is from log `attribute` or `tag`.
 	TargetType *string                   `json:"target_type,omitempty"`
 	Type       LogsAttributeRemapperType `json:"type"`
 }

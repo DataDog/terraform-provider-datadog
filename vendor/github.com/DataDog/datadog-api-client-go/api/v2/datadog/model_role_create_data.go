@@ -14,17 +14,18 @@ import (
 
 // RoleCreateData Data related to the creation of a role.
 type RoleCreateData struct {
-	Attributes    *RoleCreateAttributes `json:"attributes,omitempty"`
-	Relationships *RoleRelationships    `json:"relationships,omitempty"`
-	Type          *RolesType            `json:"type,omitempty"`
+	Attributes    RoleCreateAttributes `json:"attributes"`
+	Relationships *RoleRelationships   `json:"relationships,omitempty"`
+	Type          *RolesType           `json:"type,omitempty"`
 }
 
 // NewRoleCreateData instantiates a new RoleCreateData object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRoleCreateData() *RoleCreateData {
+func NewRoleCreateData(attributes RoleCreateAttributes) *RoleCreateData {
 	this := RoleCreateData{}
+	this.Attributes = attributes
 	var type_ RolesType = "roles"
 	this.Type = &type_
 	return &this
@@ -40,36 +41,28 @@ func NewRoleCreateDataWithDefaults() *RoleCreateData {
 	return &this
 }
 
-// GetAttributes returns the Attributes field value if set, zero value otherwise.
+// GetAttributes returns the Attributes field value
 func (o *RoleCreateData) GetAttributes() RoleCreateAttributes {
-	if o == nil || o.Attributes == nil {
+	if o == nil {
 		var ret RoleCreateAttributes
 		return ret
 	}
-	return *o.Attributes
+
+	return o.Attributes
 }
 
-// GetAttributesOk returns a tuple with the Attributes field value if set, nil otherwise
+// GetAttributesOk returns a tuple with the Attributes field value
 // and a boolean to check if the value has been set.
 func (o *RoleCreateData) GetAttributesOk() (*RoleCreateAttributes, bool) {
-	if o == nil || o.Attributes == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Attributes, true
+	return &o.Attributes, true
 }
 
-// HasAttributes returns a boolean if a field has been set.
-func (o *RoleCreateData) HasAttributes() bool {
-	if o != nil && o.Attributes != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetAttributes gets a reference to the given RoleCreateAttributes and assigns it to the Attributes field.
+// SetAttributes sets field value
 func (o *RoleCreateData) SetAttributes(v RoleCreateAttributes) {
-	o.Attributes = &v
+	o.Attributes = v
 }
 
 // GetRelationships returns the Relationships field value if set, zero value otherwise.
@@ -138,7 +131,7 @@ func (o *RoleCreateData) SetType(v RolesType) {
 
 func (o RoleCreateData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Attributes != nil {
+	if true {
 		toSerialize["attributes"] = o.Attributes
 	}
 	if o.Relationships != nil {
