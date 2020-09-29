@@ -5149,7 +5149,7 @@ func buildDatadogApmStatsQuery(terraformQuery map[string]interface{}) *datadogV1
 	if v, ok := terraformQuery["primary_tag"].(string); ok && len(v) != 0 {
 		datadogQuery.SetPrimaryTag(v)
 	}
-	if v, ok := terraformQuery["row_type"].(string); ok && len(v) != 0 {
+	if v, ok := terraformQuery["row_type"].(datadogV1.ApmStatsQueryRowType); ok && len(v) != 0 {
 		datadogQuery.SetRowType(v)
 	}
 	if v, ok := terraformQuery["resource"].(string); ok && len(v) != 0 {
