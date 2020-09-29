@@ -26,7 +26,7 @@ type LogAttributes struct {
 	// Status of the message associated with your log.
 	Status *string `json:"status,omitempty"`
 	// Array of tags associated with your log.
-	Tags *[]interface{} `json:"tags,omitempty"`
+	Tags *[]string `json:"tags,omitempty"`
 	// Timestamp of your log.
 	Timestamp *time.Time `json:"timestamp,omitempty"`
 }
@@ -209,9 +209,9 @@ func (o *LogAttributes) SetStatus(v string) {
 }
 
 // GetTags returns the Tags field value if set, zero value otherwise.
-func (o *LogAttributes) GetTags() []interface{} {
+func (o *LogAttributes) GetTags() []string {
 	if o == nil || o.Tags == nil {
-		var ret []interface{}
+		var ret []string
 		return ret
 	}
 	return *o.Tags
@@ -219,7 +219,7 @@ func (o *LogAttributes) GetTags() []interface{} {
 
 // GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LogAttributes) GetTagsOk() (*[]interface{}, bool) {
+func (o *LogAttributes) GetTagsOk() (*[]string, bool) {
 	if o == nil || o.Tags == nil {
 		return nil, false
 	}
@@ -235,8 +235,8 @@ func (o *LogAttributes) HasTags() bool {
 	return false
 }
 
-// SetTags gets a reference to the given []interface{} and assigns it to the Tags field.
-func (o *LogAttributes) SetTags(v []interface{}) {
+// SetTags gets a reference to the given []string and assigns it to the Tags field.
+func (o *LogAttributes) SetTags(v []string) {
 	o.Tags = &v
 }
 

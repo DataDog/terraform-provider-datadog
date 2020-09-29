@@ -2531,6 +2531,7 @@ type apiGetUsageRumSessionsRequest struct {
 	apiService *UsageMeteringApiService
 	startHr    *time.Time
 	endHr      *time.Time
+	type_      *string
 }
 
 func (r apiGetUsageRumSessionsRequest) StartHr(startHr time.Time) apiGetUsageRumSessionsRequest {
@@ -2539,6 +2540,10 @@ func (r apiGetUsageRumSessionsRequest) StartHr(startHr time.Time) apiGetUsageRum
 }
 func (r apiGetUsageRumSessionsRequest) EndHr(endHr time.Time) apiGetUsageRumSessionsRequest {
 	r.endHr = &endHr
+	return r
+}
+func (r apiGetUsageRumSessionsRequest) Type_(type_ string) apiGetUsageRumSessionsRequest {
+	r.type_ = &type_
 	return r
 }
 
@@ -2586,6 +2591,9 @@ func (r apiGetUsageRumSessionsRequest) Execute() (UsageRumSessionsResponse, *_ne
 	localVarQueryParams.Add("start_hr", parameterToString(*r.startHr, ""))
 	if r.endHr != nil {
 		localVarQueryParams.Add("end_hr", parameterToString(*r.endHr, ""))
+	}
+	if r.type_ != nil {
+		localVarQueryParams.Add("type", parameterToString(*r.type_, ""))
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

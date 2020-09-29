@@ -14,15 +14,16 @@ import (
 
 // RoleUpdateRequest Update a role.
 type RoleUpdateRequest struct {
-	Data *RoleUpdateData `json:"data,omitempty"`
+	Data RoleUpdateData `json:"data"`
 }
 
 // NewRoleUpdateRequest instantiates a new RoleUpdateRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRoleUpdateRequest() *RoleUpdateRequest {
+func NewRoleUpdateRequest(data RoleUpdateData) *RoleUpdateRequest {
 	this := RoleUpdateRequest{}
+	this.Data = data
 	return &this
 }
 
@@ -34,41 +35,33 @@ func NewRoleUpdateRequestWithDefaults() *RoleUpdateRequest {
 	return &this
 }
 
-// GetData returns the Data field value if set, zero value otherwise.
+// GetData returns the Data field value
 func (o *RoleUpdateRequest) GetData() RoleUpdateData {
-	if o == nil || o.Data == nil {
+	if o == nil {
 		var ret RoleUpdateData
 		return ret
 	}
-	return *o.Data
+
+	return o.Data
 }
 
-// GetDataOk returns a tuple with the Data field value if set, nil otherwise
+// GetDataOk returns a tuple with the Data field value
 // and a boolean to check if the value has been set.
 func (o *RoleUpdateRequest) GetDataOk() (*RoleUpdateData, bool) {
-	if o == nil || o.Data == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Data, true
+	return &o.Data, true
 }
 
-// HasData returns a boolean if a field has been set.
-func (o *RoleUpdateRequest) HasData() bool {
-	if o != nil && o.Data != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetData gets a reference to the given RoleUpdateData and assigns it to the Data field.
+// SetData sets field value
 func (o *RoleUpdateRequest) SetData(v RoleUpdateData) {
-	o.Data = &v
+	o.Data = v
 }
 
 func (o RoleUpdateRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Data != nil {
+	if true {
 		toSerialize["data"] = o.Data
 	}
 	return json.Marshal(toSerialize)

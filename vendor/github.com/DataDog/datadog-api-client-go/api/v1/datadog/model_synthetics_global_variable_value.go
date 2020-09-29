@@ -16,7 +16,7 @@ import (
 type SyntheticsGlobalVariableValue struct {
 	// Determines if the variable is secure.
 	Secure *bool `json:"secure,omitempty"`
-	// Value of the global variable.
+	// Value of the global variable. When reading a global variable, the value will not be present if the variable is secure.
 	Value string `json:"value"`
 }
 

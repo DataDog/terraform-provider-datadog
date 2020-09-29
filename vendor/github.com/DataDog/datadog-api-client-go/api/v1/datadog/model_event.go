@@ -14,9 +14,7 @@ import (
 
 // Event Object representing an event.
 type Event struct {
-	// An arbitrary string to use for aggregation. Limited to 100 characters. If you specify a key, all events using that key are grouped together in the Event Stream.
-	AggregationKey *string         `json:"aggregation_key,omitempty"`
-	AlertType      *EventAlertType `json:"alert_type,omitempty"`
+	AlertType *EventAlertType `json:"alert_type,omitempty"`
 	// POSIX timestamp of the event. Must be sent as an integer (i.e. no quotes). Limited to events no older than 7 days.
 	DateHappened *int64 `json:"date_happened,omitempty"`
 	// A device name.
@@ -28,16 +26,14 @@ type Event struct {
 	// Payload of the event.
 	Payload  *string        `json:"payload,omitempty"`
 	Priority *EventPriority `json:"priority,omitempty"`
-	// ID of the parent event. Must be sent as an integer (i.e. no quotes).
-	RelatedEventId *int64 `json:"related_event_id,omitempty"`
 	// The type of event being posted. Option examples include nagios, hudson, jenkins, my_apps, chef, puppet, git, bitbucket, etc. A complete list of source attribute values [available here](https://docs.datadoghq.com/integrations/faq/list-of-api-source-attribute-value).
 	SourceTypeName *string `json:"source_type_name,omitempty"`
 	// A list of tags to apply to the event.
 	Tags *[]string `json:"tags,omitempty"`
 	// The body of the event. Limited to 4000 characters. The text supports markdown. Use `msg_text` with the Datadog Ruby library.
-	Text string `json:"text"`
+	Text *string `json:"text,omitempty"`
 	// The event title. Limited to 100 characters. Use `msg_title` with the Datadog Ruby library.
-	Title string `json:"title"`
+	Title *string `json:"title,omitempty"`
 	// URL of the event.
 	Url *string `json:"url,omitempty"`
 }
@@ -46,10 +42,8 @@ type Event struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewEvent(text string, title string) *Event {
+func NewEvent() *Event {
 	this := Event{}
-	this.Text = text
-	this.Title = title
 	return &this
 }
 
@@ -59,38 +53,6 @@ func NewEvent(text string, title string) *Event {
 func NewEventWithDefaults() *Event {
 	this := Event{}
 	return &this
-}
-
-// GetAggregationKey returns the AggregationKey field value if set, zero value otherwise.
-func (o *Event) GetAggregationKey() string {
-	if o == nil || o.AggregationKey == nil {
-		var ret string
-		return ret
-	}
-	return *o.AggregationKey
-}
-
-// GetAggregationKeyOk returns a tuple with the AggregationKey field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *Event) GetAggregationKeyOk() (*string, bool) {
-	if o == nil || o.AggregationKey == nil {
-		return nil, false
-	}
-	return o.AggregationKey, true
-}
-
-// HasAggregationKey returns a boolean if a field has been set.
-func (o *Event) HasAggregationKey() bool {
-	if o != nil && o.AggregationKey != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetAggregationKey gets a reference to the given string and assigns it to the AggregationKey field.
-func (o *Event) SetAggregationKey(v string) {
-	o.AggregationKey = &v
 }
 
 // GetAlertType returns the AlertType field value if set, zero value otherwise.
@@ -317,38 +279,6 @@ func (o *Event) SetPriority(v EventPriority) {
 	o.Priority = &v
 }
 
-// GetRelatedEventId returns the RelatedEventId field value if set, zero value otherwise.
-func (o *Event) GetRelatedEventId() int64 {
-	if o == nil || o.RelatedEventId == nil {
-		var ret int64
-		return ret
-	}
-	return *o.RelatedEventId
-}
-
-// GetRelatedEventIdOk returns a tuple with the RelatedEventId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *Event) GetRelatedEventIdOk() (*int64, bool) {
-	if o == nil || o.RelatedEventId == nil {
-		return nil, false
-	}
-	return o.RelatedEventId, true
-}
-
-// HasRelatedEventId returns a boolean if a field has been set.
-func (o *Event) HasRelatedEventId() bool {
-	if o != nil && o.RelatedEventId != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetRelatedEventId gets a reference to the given int64 and assigns it to the RelatedEventId field.
-func (o *Event) SetRelatedEventId(v int64) {
-	o.RelatedEventId = &v
-}
-
 // GetSourceTypeName returns the SourceTypeName field value if set, zero value otherwise.
 func (o *Event) GetSourceTypeName() string {
 	if o == nil || o.SourceTypeName == nil {
@@ -413,52 +343,68 @@ func (o *Event) SetTags(v []string) {
 	o.Tags = &v
 }
 
-// GetText returns the Text field value
+// GetText returns the Text field value if set, zero value otherwise.
 func (o *Event) GetText() string {
-	if o == nil {
+	if o == nil || o.Text == nil {
 		var ret string
 		return ret
 	}
-
-	return o.Text
+	return *o.Text
 }
 
-// GetTextOk returns a tuple with the Text field value
+// GetTextOk returns a tuple with the Text field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Event) GetTextOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.Text == nil {
 		return nil, false
 	}
-	return &o.Text, true
+	return o.Text, true
 }
 
-// SetText sets field value
+// HasText returns a boolean if a field has been set.
+func (o *Event) HasText() bool {
+	if o != nil && o.Text != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetText gets a reference to the given string and assigns it to the Text field.
 func (o *Event) SetText(v string) {
-	o.Text = v
+	o.Text = &v
 }
 
-// GetTitle returns the Title field value
+// GetTitle returns the Title field value if set, zero value otherwise.
 func (o *Event) GetTitle() string {
-	if o == nil {
+	if o == nil || o.Title == nil {
 		var ret string
 		return ret
 	}
-
-	return o.Title
+	return *o.Title
 }
 
-// GetTitleOk returns a tuple with the Title field value
+// GetTitleOk returns a tuple with the Title field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Event) GetTitleOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.Title == nil {
 		return nil, false
 	}
-	return &o.Title, true
+	return o.Title, true
 }
 
-// SetTitle sets field value
+// HasTitle returns a boolean if a field has been set.
+func (o *Event) HasTitle() bool {
+	if o != nil && o.Title != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTitle gets a reference to the given string and assigns it to the Title field.
 func (o *Event) SetTitle(v string) {
-	o.Title = v
+	o.Title = &v
 }
 
 // GetUrl returns the Url field value if set, zero value otherwise.
@@ -495,9 +441,6 @@ func (o *Event) SetUrl(v string) {
 
 func (o Event) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.AggregationKey != nil {
-		toSerialize["aggregation_key"] = o.AggregationKey
-	}
 	if o.AlertType != nil {
 		toSerialize["alert_type"] = o.AlertType
 	}
@@ -519,19 +462,16 @@ func (o Event) MarshalJSON() ([]byte, error) {
 	if o.Priority != nil {
 		toSerialize["priority"] = o.Priority
 	}
-	if o.RelatedEventId != nil {
-		toSerialize["related_event_id"] = o.RelatedEventId
-	}
 	if o.SourceTypeName != nil {
 		toSerialize["source_type_name"] = o.SourceTypeName
 	}
 	if o.Tags != nil {
 		toSerialize["tags"] = o.Tags
 	}
-	if true {
+	if o.Text != nil {
 		toSerialize["text"] = o.Text
 	}
-	if true {
+	if o.Title != nil {
 		toSerialize["title"] = o.Title
 	}
 	if o.Url != nil {

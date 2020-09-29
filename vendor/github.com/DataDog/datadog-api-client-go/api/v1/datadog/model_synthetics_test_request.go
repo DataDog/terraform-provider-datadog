@@ -26,7 +26,7 @@ type SyntheticsTestRequest struct {
 	Port *int64 `json:"port,omitempty"`
 	// Query to use for the test.
 	Query *interface{} `json:"query,omitempty"`
-	// Timeout in millisecond for the test.
+	// Timeout in seconds for the test.
 	Timeout *float64 `json:"timeout,omitempty"`
 	// URL to perform the test with.
 	Url *string `json:"url,omitempty"`

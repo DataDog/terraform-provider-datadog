@@ -10,7 +10,7 @@ cloud.google.com/go/internal/optional
 cloud.google.com/go/internal/trace
 cloud.google.com/go/internal/version
 cloud.google.com/go/storage
-# github.com/DataDog/datadog-api-client-go v1.0.0-beta.8
+# github.com/DataDog/datadog-api-client-go v1.0.0-beta.8.0.20200929113502-dbd81243ade1
 github.com/DataDog/datadog-api-client-go
 github.com/DataDog/datadog-api-client-go/api/v1/datadog
 github.com/DataDog/datadog-api-client-go/api/v2/datadog

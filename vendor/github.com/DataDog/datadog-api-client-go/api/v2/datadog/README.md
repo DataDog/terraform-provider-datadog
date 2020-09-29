@@ -107,10 +107,20 @@ Class | Method | HTTP request | Description
 *SecurityMonitoringApi* | [**ListSecurityMonitoringSignals**](docs/SecurityMonitoringApi.md#listsecuritymonitoringsignals) | **Get** /api/v2/security_monitoring/signals | Get a quick list of security signals
 *SecurityMonitoringApi* | [**SearchSecurityMonitoringSignals**](docs/SecurityMonitoringApi.md#searchsecuritymonitoringsignals) | **Post** /api/v2/security_monitoring/signals/search | Get a list of security signals
 *SecurityMonitoringApi* | [**UpdateSecurityMonitoringRule**](docs/SecurityMonitoringApi.md#updatesecuritymonitoringrule) | **Put** /api/v2/security_monitoring/rules/{rule_id} | Update an existing rule
+*ServicesApi* | [**CreateService**](docs/ServicesApi.md#createservice) | **Post** /api/v2/services | Create a new service
+*ServicesApi* | [**DeleteService**](docs/ServicesApi.md#deleteservice) | **Delete** /api/v2/services/{service_id} | Delete an existing service
+*ServicesApi* | [**GetService**](docs/ServicesApi.md#getservice) | **Get** /api/v2/services/{service_id} | Get details of a service
+*ServicesApi* | [**GetServices**](docs/ServicesApi.md#getservices) | **Get** /api/v2/services | Get a list of all services
+*ServicesApi* | [**UpdateService**](docs/ServicesApi.md#updateservice) | **Patch** /api/v2/services/{service_id} | Update an existing service
+*TeamsApi* | [**CreateTeam**](docs/TeamsApi.md#createteam) | **Post** /api/v2/teams | Create a new team
+*TeamsApi* | [**DeleteTeam**](docs/TeamsApi.md#deleteteam) | **Delete** /api/v2/teams/{team_id} | Delete an existing team
+*TeamsApi* | [**GetTeam**](docs/TeamsApi.md#getteam) | **Get** /api/v2/teams/{team_id} | Get details of a team
+*TeamsApi* | [**GetTeams**](docs/TeamsApi.md#getteams) | **Get** /api/v2/teams | Get a list of all teams
+*TeamsApi* | [**UpdateTeam**](docs/TeamsApi.md#updateteam) | **Patch** /api/v2/teams/{team_id} | Update an existing team
 *UsersApi* | [**CreateUser**](docs/UsersApi.md#createuser) | **Post** /api/v2/users | Create a user
 *UsersApi* | [**DisableUser**](docs/UsersApi.md#disableuser) | **Delete** /api/v2/users/{user_id} | Disable a user
 *UsersApi* | [**GetInvitation**](docs/UsersApi.md#getinvitation) | **Get** /api/v2/user_invitations/{user_invitation_uuid} | Get a user invitation
-*UsersApi* | [**GetUser**](docs/UsersApi.md#getuser) | **Get** /api/v2/users/{user_id} | Get a user
+*UsersApi* | [**GetUser**](docs/UsersApi.md#getuser) | **Get** /api/v2/users/{user_id} | Get user details
 *UsersApi* | [**ListUserOrganizations**](docs/UsersApi.md#listuserorganizations) | **Get** /api/v2/users/{user_id}/orgs | Get a user organization
 *UsersApi* | [**ListUserPermissions**](docs/UsersApi.md#listuserpermissions) | **Get** /api/v2/users/{user_id}/permissions | Get a user permissions
 *UsersApi* | [**ListUsers**](docs/UsersApi.md#listusers) | **Get** /api/v2/users | List all users
@@ -249,6 +259,34 @@ Class | Method | HTTP request | Description
  - [SecurityMonitoringSignalsListResponseMeta](docs/SecurityMonitoringSignalsListResponseMeta.md)
  - [SecurityMonitoringSignalsListResponseMetaPage](docs/SecurityMonitoringSignalsListResponseMetaPage.md)
  - [SecurityMonitoringSignalsSort](docs/SecurityMonitoringSignalsSort.md)
+ - [ServiceCreateAttributes](docs/ServiceCreateAttributes.md)
+ - [ServiceCreateData](docs/ServiceCreateData.md)
+ - [ServiceCreateRequest](docs/ServiceCreateRequest.md)
+ - [ServiceIncludedItems](docs/ServiceIncludedItems.md)
+ - [ServiceRelationships](docs/ServiceRelationships.md)
+ - [ServiceResponse](docs/ServiceResponse.md)
+ - [ServiceResponseAttributes](docs/ServiceResponseAttributes.md)
+ - [ServiceResponseData](docs/ServiceResponseData.md)
+ - [ServiceType](docs/ServiceType.md)
+ - [ServiceUpdateAttributes](docs/ServiceUpdateAttributes.md)
+ - [ServiceUpdateData](docs/ServiceUpdateData.md)
+ - [ServiceUpdateRequest](docs/ServiceUpdateRequest.md)
+ - [ServicesResponse](docs/ServicesResponse.md)
+ - [ServicesResponseMeta](docs/ServicesResponseMeta.md)
+ - [ServicesResponseMetaPagination](docs/ServicesResponseMetaPagination.md)
+ - [TeamCreateAttributes](docs/TeamCreateAttributes.md)
+ - [TeamCreateData](docs/TeamCreateData.md)
+ - [TeamCreateRequest](docs/TeamCreateRequest.md)
+ - [TeamIncludedItems](docs/TeamIncludedItems.md)
+ - [TeamRelationships](docs/TeamRelationships.md)
+ - [TeamResponse](docs/TeamResponse.md)
+ - [TeamResponseAttributes](docs/TeamResponseAttributes.md)
+ - [TeamResponseData](docs/TeamResponseData.md)
+ - [TeamType](docs/TeamType.md)
+ - [TeamUpdateAttributes](docs/TeamUpdateAttributes.md)
+ - [TeamUpdateData](docs/TeamUpdateData.md)
+ - [TeamUpdateRequest](docs/TeamUpdateRequest.md)
+ - [TeamsResponse](docs/TeamsResponse.md)
  - [User](docs/User.md)
  - [UserAttributes](docs/UserAttributes.md)
  - [UserCreateAttributes](docs/UserCreateAttributes.md)
