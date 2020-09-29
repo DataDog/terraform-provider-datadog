@@ -3342,12 +3342,12 @@ func buildTerraformQueryTableDefinition(datadogDefinition datadogV1.TableWidgetD
 func getQueryTableRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"process_query":  getProcessQuerySchema(),
-		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"q":               getMetricQuerySchema(),
+		"apm_query":       getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query":       getApmLogNetworkRumSecurityQuerySchema(),
+		"process_query":   getProcessQuerySchema(),
+		"rum_query":       getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query":  getApmLogNetworkRumSecurityQuerySchema(),
 		"apm_stats_query": getApmStatsQuerySchema(),
 		// Settings specific to QueryTable requests
 		"conditional_formats": {
@@ -5096,43 +5096,42 @@ func buildTerraformProcessQuery(datadogQuery datadogV1.ProcessQueryDefinition) m
 // APM Resources Query
 func getApmStatsQuerySchema() *schema.Schema {
 	return &schema.Schema{
-		Type: schema.TypeList,
+		Type:     schema.TypeList,
 		Optional: true,
 		MaxItems: 1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"service": {
-					Type: schema.TypeString,
+					Type:     schema.TypeString,
 					Required: true,
 				},
 				"name": {
-					Type: schema.TypeString,
+					Type:     schema.TypeString,
 					Required: true,
 				},
 				"env": {
-					Type: schema.TypeString,
+					Type:     schema.TypeString,
 					Required: true,
 				},
 				"primary_tag": {
-					Type: schema.TypeString,
+					Type:     schema.TypeString,
 					Required: true,
 				},
 				"row_type": {
-					Type: schema.TypeString,
+					Type:     schema.TypeString,
 					Required: true,
 				},
 				"resource": {
-					Type: schema.TypeString,
+					Type:     schema.TypeString,
 					Optional: true,
 				},
 				"columns": {
-					Type: schema.TypeList,
+					Type:     schema.TypeList,
 					Optional: true,
-					Elem: &schema.Schema{Type: schema.TypeString},
+					Elem:     &schema.Schema{Type: schema.TypeString},
 				},
 			},
 		},
-
 	}
 }
 
