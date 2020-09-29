@@ -3348,6 +3348,7 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 		"process_query":  getProcessQuerySchema(),
 		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"apm_stats_query": getApmStatsQuerySchema(),
 		// Settings specific to QueryTable requests
 		"conditional_formats": {
 			Type:     schema.TypeList,
@@ -3397,6 +3398,9 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
 			securityQuery := v[0].(map[string]interface{})
 			datadogQueryTableRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
+		} else if v, ok := terraformRequest["apm_stats_query"].([]interface{}); ok && len(v) > 0 {
+			apmStatsQuery := v[0].(map[string]interface{})
+			datadogQueryTableRequest.ApmStatsQuery = buildDatadogApmStatsQuery(apmStatsQuery)
 		}
 
 		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
@@ -3440,6 +3444,9 @@ func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.Tab
 		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
 			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetApmStatsQueryOk(); ok {
+			terraformQuery := buildTerraformApmStatsQuery(*v)
+			terraformRequest["apm_stats_query"] = []map[string]interface{}{terraformQuery}
 		}
 
 		if v, ok := datadogRequest.GetConditionalFormatsOk(); ok {
@@ -5081,6 +5088,112 @@ func buildTerraformProcessQuery(datadogQuery datadogV1.ProcessQueryDefinition) m
 	}
 	if v, ok := datadogQuery.GetLimitOk(); ok {
 		terraformQuery["limit"] = v
+	}
+
+	return terraformQuery
+}
+
+// APM Resources Query
+func getApmStatsQuerySchema() *schema.Schema {
+	return &schema.Schema{
+		Type: schema.TypeList,
+		Optional: true,
+		MaxItems: 1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"service": {
+					Type: schema.TypeString,
+					Required: true,
+				},
+				"name": {
+					Type: schema.TypeString,
+					Required: true,
+				},
+				"env": {
+					Type: schema.TypeString,
+					Required: true,
+				},
+				"primary_tag": {
+					Type: schema.TypeString,
+					Required: true,
+				},
+				"row_type": {
+					Type: schema.TypeString,
+					Required: true,
+				},
+				"resource": {
+					Type: schema.TypeString,
+					Optional: true,
+				},
+				"columns": {
+					Type: schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{Type: schema.TypeString},
+				},
+			},
+		},
+
+	}
+}
+
+func buildDatadogApmStatsQuery(terraformQuery map[string]interface{}) *datadogV1.ApmStatsQueryDefinition {
+	datadogQuery := datadogV1.NewApmStatsQueryDefinitionWithDefaults()
+	if v, ok := terraformQuery["service"].(string); ok && len(v) != 0 {
+		datadogQuery.SetService(v)
+	}
+	if v, ok := terraformQuery["name"].(string); ok && len(v) != 0 {
+		datadogQuery.SetName(v)
+	}
+	if v, ok := terraformQuery["env"].(string); ok && len(v) != 0 {
+		datadogQuery.SetEnv(v)
+	}
+	if v, ok := terraformQuery["primary_tag"].(string); ok && len(v) != 0 {
+		datadogQuery.SetPrimaryTag(v)
+	}
+	if v, ok := terraformQuery["row_type"].(string); ok && len(v) != 0 {
+		datadogQuery.SetRowType(v)
+	}
+	if v, ok := terraformQuery["resource"].(string); ok && len(v) != 0 {
+		datadogQuery.SetResource(v)
+	}
+
+	if terraformColumns, ok := terraformQuery["columns"].([]interface{}); ok && len(terraformColumns) > 0 {
+		datadogColumns := make([]string, len(terraformColumns))
+		for i, column := range terraformColumns {
+			datadogColumns[i] = column.(string)
+		}
+		datadogQuery.SetColumns(datadogColumns)
+	}
+
+	return datadogQuery
+}
+
+func buildTerraformApmStatsQuery(datadogQuery datadogV1.ApmStatsQueryDefinition) map[string]interface{} {
+	terraformQuery := map[string]interface{}{}
+	if v, ok := datadogQuery.GetServiceOk(); ok {
+		terraformQuery["service"] = v
+	}
+	if v, ok := datadogQuery.GetNameOk(); ok {
+		terraformQuery["name"] = v
+	}
+	if v, ok := datadogQuery.GetEnvOk(); ok {
+		terraformQuery["env"] = v
+	}
+	if v, ok := datadogQuery.GetPrimaryTagOk(); ok {
+		terraformQuery["primary_tag"] = v
+	}
+	if v, ok := datadogQuery.GetRowTypeOk(); ok {
+		terraformQuery["row_type"] = v
+	}
+	if v, ok := datadogQuery.GetResourceOk(); ok {
+		terraformQuery["resource"] = v
+	}
+	if v, ok := datadogQuery.GetColumnsOk(); ok {
+		terraformColumns := make([]string, len(*v))
+		for i, datadogColumn := range *v {
+			terraformColumns[i] = datadogColumn
+		}
+		terraformQuery["columns"] = terraformColumns
 	}
 
 	return terraformQuery
