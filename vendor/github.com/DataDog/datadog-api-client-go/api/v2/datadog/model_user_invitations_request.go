@@ -15,15 +15,16 @@ import (
 // UserInvitationsRequest Object to invite users to join the organization.
 type UserInvitationsRequest struct {
 	// List of user invitations.
-	Data *[]UserInvitationData `json:"data,omitempty"`
+	Data []UserInvitationData `json:"data"`
 }
 
 // NewUserInvitationsRequest instantiates a new UserInvitationsRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserInvitationsRequest() *UserInvitationsRequest {
+func NewUserInvitationsRequest(data []UserInvitationData) *UserInvitationsRequest {
 	this := UserInvitationsRequest{}
+	this.Data = data
 	return &this
 }
 
@@ -35,41 +36,33 @@ func NewUserInvitationsRequestWithDefaults() *UserInvitationsRequest {
 	return &this
 }
 
-// GetData returns the Data field value if set, zero value otherwise.
+// GetData returns the Data field value
 func (o *UserInvitationsRequest) GetData() []UserInvitationData {
-	if o == nil || o.Data == nil {
+	if o == nil {
 		var ret []UserInvitationData
 		return ret
 	}
-	return *o.Data
+
+	return o.Data
 }
 
-// GetDataOk returns a tuple with the Data field value if set, nil otherwise
+// GetDataOk returns a tuple with the Data field value
 // and a boolean to check if the value has been set.
 func (o *UserInvitationsRequest) GetDataOk() (*[]UserInvitationData, bool) {
-	if o == nil || o.Data == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Data, true
+	return &o.Data, true
 }
 
-// HasData returns a boolean if a field has been set.
-func (o *UserInvitationsRequest) HasData() bool {
-	if o != nil && o.Data != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetData gets a reference to the given []UserInvitationData and assigns it to the Data field.
+// SetData sets field value
 func (o *UserInvitationsRequest) SetData(v []UserInvitationData) {
-	o.Data = &v
+	o.Data = v
 }
 
 func (o UserInvitationsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Data != nil {
+	if true {
 		toSerialize["data"] = o.Data
 	}
 	return json.Marshal(toSerialize)

@@ -53,6 +53,8 @@ type UsageSummaryResponse struct {
 	IngestedEventsBytesAggSum *int64 `json:"ingested_events_bytes_agg_sum,omitempty"`
 	// Shows the the most recent hour in the current month(s) for all organizations for which all usages were calculated.
 	LastUpdated *time.Time `json:"last_updated,omitempty"`
+	// Shows the sum of all mobile RUM Sessions over all hours in the current month(s) for all organizations.
+	MobileRumSessionCountAggSum *int64 `json:"mobile_rum_session_count_agg_sum,omitempty"`
 	// Shows the sum of all Network flows indexed over all hours in the current month(s) for all organizations.
 	NetflowIndexedEventsCountAggSum *int64 `json:"netflow_indexed_events_count_agg_sum,omitempty"`
 	// Shows the 99th percentile of all distinct Networks hosts over all hours in the current month(s) for all organizations.
@@ -61,7 +63,7 @@ type UsageSummaryResponse struct {
 	ProfilingContainerAgentCountAvg *int64 `json:"profiling_container_agent_count_avg,omitempty"`
 	// Shows the 99th percentile of all profiled hosts over all hours in the current month(s) for all organizations.
 	ProfilingHostCountTop99pSum *int64 `json:"profiling_host_count_top99p_sum,omitempty"`
-	// Shows the sum of all RUM Sessions over all hours in the current month(s) for all organizations.
+	// Shows the sum of all browser RUM Sessions over all hours in the current month(s) for all organizations.
 	RumSessionCountAggSum *int64 `json:"rum_session_count_agg_sum,omitempty"`
 	// Shows the first date of usage in the current month(s) for all organizations.
 	StartDate *time.Time `json:"start_date,omitempty"`
@@ -702,6 +704,38 @@ func (o *UsageSummaryResponse) SetLastUpdated(v time.Time) {
 	o.LastUpdated = &v
 }
 
+// GetMobileRumSessionCountAggSum returns the MobileRumSessionCountAggSum field value if set, zero value otherwise.
+func (o *UsageSummaryResponse) GetMobileRumSessionCountAggSum() int64 {
+	if o == nil || o.MobileRumSessionCountAggSum == nil {
+		var ret int64
+		return ret
+	}
+	return *o.MobileRumSessionCountAggSum
+}
+
+// GetMobileRumSessionCountAggSumOk returns a tuple with the MobileRumSessionCountAggSum field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryResponse) GetMobileRumSessionCountAggSumOk() (*int64, bool) {
+	if o == nil || o.MobileRumSessionCountAggSum == nil {
+		return nil, false
+	}
+	return o.MobileRumSessionCountAggSum, true
+}
+
+// HasMobileRumSessionCountAggSum returns a boolean if a field has been set.
+func (o *UsageSummaryResponse) HasMobileRumSessionCountAggSum() bool {
+	if o != nil && o.MobileRumSessionCountAggSum != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMobileRumSessionCountAggSum gets a reference to the given int64 and assigns it to the MobileRumSessionCountAggSum field.
+func (o *UsageSummaryResponse) SetMobileRumSessionCountAggSum(v int64) {
+	o.MobileRumSessionCountAggSum = &v
+}
+
 // GetNetflowIndexedEventsCountAggSum returns the NetflowIndexedEventsCountAggSum field value if set, zero value otherwise.
 func (o *UsageSummaryResponse) GetNetflowIndexedEventsCountAggSum() int64 {
 	if o == nil || o.NetflowIndexedEventsCountAggSum == nil {
@@ -1112,6 +1146,9 @@ func (o UsageSummaryResponse) MarshalJSON() ([]byte, error) {
 	}
 	if o.LastUpdated != nil {
 		toSerialize["last_updated"] = o.LastUpdated
+	}
+	if o.MobileRumSessionCountAggSum != nil {
+		toSerialize["mobile_rum_session_count_agg_sum"] = o.MobileRumSessionCountAggSum
 	}
 	if o.NetflowIndexedEventsCountAggSum != nil {
 		toSerialize["netflow_indexed_events_count_agg_sum"] = o.NetflowIndexedEventsCountAggSum

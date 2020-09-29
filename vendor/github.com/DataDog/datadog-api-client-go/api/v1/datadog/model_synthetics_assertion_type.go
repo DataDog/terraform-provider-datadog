@@ -24,6 +24,8 @@ const (
 	SYNTHETICSASSERTIONTYPE_CERTIFICATE   SyntheticsAssertionType = "certificate"
 	SYNTHETICSASSERTIONTYPE_RESPONSE_TIME SyntheticsAssertionType = "responseTime"
 	SYNTHETICSASSERTIONTYPE_PROPERTY      SyntheticsAssertionType = "property"
+	SYNTHETICSASSERTIONTYPE_RECORD_EVERY  SyntheticsAssertionType = "recordEvery"
+	SYNTHETICSASSERTIONTYPE_RECORD_SOME   SyntheticsAssertionType = "recordSome"
 )
 
 func (v *SyntheticsAssertionType) UnmarshalJSON(src []byte) error {
@@ -33,7 +35,7 @@ func (v *SyntheticsAssertionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsAssertionType(value)
-	for _, existing := range []SyntheticsAssertionType{"body", "header", "statusCode", "certificate", "responseTime", "property"} {
+	for _, existing := range []SyntheticsAssertionType{"body", "header", "statusCode", "certificate", "responseTime", "property", "recordEvery", "recordSome"} {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil

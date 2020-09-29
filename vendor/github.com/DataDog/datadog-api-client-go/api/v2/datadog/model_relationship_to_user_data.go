@@ -14,20 +14,19 @@ import (
 
 // RelationshipToUserData Relationship to user object.
 type RelationshipToUserData struct {
-	// ID of the user.
-	Id *string `json:"id,omitempty"`
-	// Users type.
-	Type *string `json:"type,omitempty"`
+	// A unique identifier that represents the user.
+	Id   string    `json:"id"`
+	Type UsersType `json:"type"`
 }
 
 // NewRelationshipToUserData instantiates a new RelationshipToUserData object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRelationshipToUserData() *RelationshipToUserData {
+func NewRelationshipToUserData(id string, type_ UsersType) *RelationshipToUserData {
 	this := RelationshipToUserData{}
-	var type_ string = "users"
-	this.Type = &type_
+	this.Id = id
+	this.Type = type_
 	return &this
 }
 
@@ -36,81 +35,65 @@ func NewRelationshipToUserData() *RelationshipToUserData {
 // but it doesn't guarantee that properties required by API are set
 func NewRelationshipToUserDataWithDefaults() *RelationshipToUserData {
 	this := RelationshipToUserData{}
-	var type_ string = "users"
-	this.Type = &type_
+	var type_ UsersType = "users"
+	this.Type = type_
 	return &this
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *RelationshipToUserData) GetId() string {
-	if o == nil || o.Id == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *RelationshipToUserData) GetIdOk() (*string, bool) {
-	if o == nil || o.Id == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *RelationshipToUserData) HasId() bool {
-	if o != nil && o.Id != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *RelationshipToUserData) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
-func (o *RelationshipToUserData) GetType() string {
-	if o == nil || o.Type == nil {
-		var ret string
+// GetType returns the Type field value
+func (o *RelationshipToUserData) GetType() UsersType {
+	if o == nil {
+		var ret UsersType
 		return ret
 	}
-	return *o.Type
+
+	return o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *RelationshipToUserData) GetTypeOk() (*string, bool) {
-	if o == nil || o.Type == nil {
+func (o *RelationshipToUserData) GetTypeOk() (*UsersType, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Type, true
+	return &o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *RelationshipToUserData) HasType() bool {
-	if o != nil && o.Type != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *RelationshipToUserData) SetType(v string) {
-	o.Type = &v
+// SetType sets field value
+func (o *RelationshipToUserData) SetType(v UsersType) {
+	o.Type = v
 }
 
 func (o RelationshipToUserData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Id != nil {
+	if true {
 		toSerialize["id"] = o.Id
 	}
-	if o.Type != nil {
+	if true {
 		toSerialize["type"] = o.Type
 	}
 	return json.Marshal(toSerialize)

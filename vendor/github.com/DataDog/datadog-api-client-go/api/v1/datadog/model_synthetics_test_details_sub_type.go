@@ -13,7 +13,7 @@ import (
 	"fmt"
 )
 
-// SyntheticsTestDetailsSubType The sub-type of the Synthetic API test, `http`, `ssl`, or `tcp`.
+// SyntheticsTestDetailsSubType The sub-type of the Synthetic API test, `http`, `ssl`, `tcp` or `dns`.
 type SyntheticsTestDetailsSubType string
 
 // List of SyntheticsTestDetailsSubType
@@ -21,6 +21,7 @@ const (
 	SYNTHETICSTESTDETAILSSUBTYPE_HTTP SyntheticsTestDetailsSubType = "http"
 	SYNTHETICSTESTDETAILSSUBTYPE_SSL  SyntheticsTestDetailsSubType = "ssl"
 	SYNTHETICSTESTDETAILSSUBTYPE_TCP  SyntheticsTestDetailsSubType = "tcp"
+	SYNTHETICSTESTDETAILSSUBTYPE_DNS  SyntheticsTestDetailsSubType = "dns"
 )
 
 func (v *SyntheticsTestDetailsSubType) UnmarshalJSON(src []byte) error {
@@ -30,7 +31,7 @@ func (v *SyntheticsTestDetailsSubType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsTestDetailsSubType(value)
-	for _, existing := range []SyntheticsTestDetailsSubType{"http", "ssl", "tcp"} {
+	for _, existing := range []SyntheticsTestDetailsSubType{"http", "ssl", "tcp", "dns"} {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil

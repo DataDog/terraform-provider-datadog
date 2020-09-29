@@ -49,6 +49,8 @@ type UsageSummaryDate struct {
 	InfraHostTop99p *int64 `json:"infra_host_top99p,omitempty"`
 	// Shows the sum of all log bytes ingested over all hours in the current date for all organizations.
 	IngestedEventsBytesSum *int64 `json:"ingested_events_bytes_sum,omitempty"`
+	// Shows the sum of all mobile RUM Sessions over all hours in the current date for all organizations
+	MobileRumSessionCountSum *int64 `json:"mobile_rum_session_count_sum,omitempty"`
 	// Shows the sum of all Network flows indexed over all hours in the current date for all organizations.
 	NetflowIndexedEventsCountSum *int64 `json:"netflow_indexed_events_count_sum,omitempty"`
 	// Shows the 99th percentile of all distinct Networks hosts over all hours in the current date for all organizations.
@@ -57,7 +59,7 @@ type UsageSummaryDate struct {
 	Orgs *[]UsageSummaryDateOrg `json:"orgs,omitempty"`
 	// Shows the 99th percentile of all profiled hosts over all hours in the current date for all organizations.
 	ProfilingHostTop99p *int64 `json:"profiling_host_top99p,omitempty"`
-	// Shows the sum of all RUM Sessions over all hours in the current date for all organizations
+	// Shows the sum of all browser RUM Sessions over all hours in the current date for all organizations
 	RumSessionCountSum *int64 `json:"rum_session_count_sum,omitempty"`
 	// Shows the sum of all Synthetic browser tests over all hours in the current date for all organizations.
 	SyntheticsBrowserCheckCallsCountSum *int64 `json:"synthetics_browser_check_calls_count_sum,omitempty"`
@@ -630,6 +632,38 @@ func (o *UsageSummaryDate) SetIngestedEventsBytesSum(v int64) {
 	o.IngestedEventsBytesSum = &v
 }
 
+// GetMobileRumSessionCountSum returns the MobileRumSessionCountSum field value if set, zero value otherwise.
+func (o *UsageSummaryDate) GetMobileRumSessionCountSum() int64 {
+	if o == nil || o.MobileRumSessionCountSum == nil {
+		var ret int64
+		return ret
+	}
+	return *o.MobileRumSessionCountSum
+}
+
+// GetMobileRumSessionCountSumOk returns a tuple with the MobileRumSessionCountSum field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDate) GetMobileRumSessionCountSumOk() (*int64, bool) {
+	if o == nil || o.MobileRumSessionCountSum == nil {
+		return nil, false
+	}
+	return o.MobileRumSessionCountSum, true
+}
+
+// HasMobileRumSessionCountSum returns a boolean if a field has been set.
+func (o *UsageSummaryDate) HasMobileRumSessionCountSum() bool {
+	if o != nil && o.MobileRumSessionCountSum != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMobileRumSessionCountSum gets a reference to the given int64 and assigns it to the MobileRumSessionCountSum field.
+func (o *UsageSummaryDate) SetMobileRumSessionCountSum(v int64) {
+	o.MobileRumSessionCountSum = &v
+}
+
 // GetNetflowIndexedEventsCountSum returns the NetflowIndexedEventsCountSum field value if set, zero value otherwise.
 func (o *UsageSummaryDate) GetNetflowIndexedEventsCountSum() int64 {
 	if o == nil || o.NetflowIndexedEventsCountSum == nil {
@@ -970,6 +1004,9 @@ func (o UsageSummaryDate) MarshalJSON() ([]byte, error) {
 	}
 	if o.IngestedEventsBytesSum != nil {
 		toSerialize["ingested_events_bytes_sum"] = o.IngestedEventsBytesSum
+	}
+	if o.MobileRumSessionCountSum != nil {
+		toSerialize["mobile_rum_session_count_sum"] = o.MobileRumSessionCountSum
 	}
 	if o.NetflowIndexedEventsCountSum != nil {
 		toSerialize["netflow_indexed_events_count_sum"] = o.NetflowIndexedEventsCountSum

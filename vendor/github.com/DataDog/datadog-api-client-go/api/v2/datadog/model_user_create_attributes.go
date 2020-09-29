@@ -15,7 +15,7 @@ import (
 // UserCreateAttributes Attributes of the created user.
 type UserCreateAttributes struct {
 	// The email of the user.
-	Email *string `json:"email,omitempty"`
+	Email string `json:"email"`
 	// The name of the user.
 	Name *string `json:"name,omitempty"`
 	// The title of the user.
@@ -26,8 +26,9 @@ type UserCreateAttributes struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserCreateAttributes() *UserCreateAttributes {
+func NewUserCreateAttributes(email string) *UserCreateAttributes {
 	this := UserCreateAttributes{}
+	this.Email = email
 	return &this
 }
 
@@ -39,36 +40,28 @@ func NewUserCreateAttributesWithDefaults() *UserCreateAttributes {
 	return &this
 }
 
-// GetEmail returns the Email field value if set, zero value otherwise.
+// GetEmail returns the Email field value
 func (o *UserCreateAttributes) GetEmail() string {
-	if o == nil || o.Email == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Email
+
+	return o.Email
 }
 
-// GetEmailOk returns a tuple with the Email field value if set, nil otherwise
+// GetEmailOk returns a tuple with the Email field value
 // and a boolean to check if the value has been set.
 func (o *UserCreateAttributes) GetEmailOk() (*string, bool) {
-	if o == nil || o.Email == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Email, true
+	return &o.Email, true
 }
 
-// HasEmail returns a boolean if a field has been set.
-func (o *UserCreateAttributes) HasEmail() bool {
-	if o != nil && o.Email != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetEmail gets a reference to the given string and assigns it to the Email field.
+// SetEmail sets field value
 func (o *UserCreateAttributes) SetEmail(v string) {
-	o.Email = &v
+	o.Email = v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -137,7 +130,7 @@ func (o *UserCreateAttributes) SetTitle(v string) {
 
 func (o UserCreateAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Email != nil {
+	if true {
 		toSerialize["email"] = o.Email
 	}
 	if o.Name != nil {

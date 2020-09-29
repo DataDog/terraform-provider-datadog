@@ -516,8 +516,8 @@ type apiListUsersRequest struct {
 }
 
 /*
-ListUsers Get all users
-Get all users for your organization.
+ListUsers List all users
+List all users for your organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 @return apiListUsersRequest
 */
