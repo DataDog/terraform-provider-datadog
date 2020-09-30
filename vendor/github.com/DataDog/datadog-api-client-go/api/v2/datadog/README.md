@@ -120,7 +120,7 @@ Class | Method | HTTP request | Description
 *UsersApi* | [**CreateUser**](docs/UsersApi.md#createuser) | **Post** /api/v2/users | Create a user
 *UsersApi* | [**DisableUser**](docs/UsersApi.md#disableuser) | **Delete** /api/v2/users/{user_id} | Disable a user
 *UsersApi* | [**GetInvitation**](docs/UsersApi.md#getinvitation) | **Get** /api/v2/user_invitations/{user_invitation_uuid} | Get a user invitation
-*UsersApi* | [**GetUser**](docs/UsersApi.md#getuser) | **Get** /api/v2/users/{user_id} | Get a user
+*UsersApi* | [**GetUser**](docs/UsersApi.md#getuser) | **Get** /api/v2/users/{user_id} | Get user details
 *UsersApi* | [**ListUserOrganizations**](docs/UsersApi.md#listuserorganizations) | **Get** /api/v2/users/{user_id}/orgs | Get a user organization
 *UsersApi* | [**ListUserPermissions**](docs/UsersApi.md#listuserpermissions) | **Get** /api/v2/users/{user_id}/permissions | Get a user permissions
 *UsersApi* | [**ListUsers**](docs/UsersApi.md#listusers) | **Get** /api/v2/users | List all users

@@ -477,7 +477,7 @@ type apiGetUserRequest struct {
 }
 
 /*
-GetUser Get a user
+GetUser Get user details
 Get a user in the organization specified by the user’s `user_id`.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param userId The ID of the user.
