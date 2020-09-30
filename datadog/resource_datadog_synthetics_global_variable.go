@@ -1,8 +1,6 @@
 package datadog
 
 import (
-	"strings"
-
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -63,10 +61,10 @@ func resourceDatadogSyntheticsGlobalVariableRead(d *schema.ResourceData, meta in
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	syntheticsGlobalVariable, _, err := datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, d.Id()).Execute()
+	syntheticsGlobalVariable, httpresp, err := datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, d.Id()).Execute()
 
 	if err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
+		if httpresp != nil && httpresp.StatusCode == 404 {
 			// Delete the resource from the local state since it doesn't exist anymore in the actual state
 			d.SetId("")
 			return nil
