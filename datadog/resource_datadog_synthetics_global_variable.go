@@ -1,8 +1,11 @@
 package datadog
 
 import (
+	"regexp"
+
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 )
 
 func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
@@ -16,16 +19,17 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:         schema.TypeString,
+				Required:     true,
+				ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
 			},
 			"description": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 			"tags": {
 				Type:     schema.TypeList,
-				Required: true,
+				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"value": {
@@ -108,7 +112,10 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 	syntheticsGlobalVariable := datadogV1.NewSyntheticsGlobalVariableWithDefaults()
 
 	syntheticsGlobalVariable.SetName(d.Get("name").(string))
-	syntheticsGlobalVariable.SetDescription(d.Get("description").(string))
+
+	if description, ok := d.GetOk("description"); ok {
+		syntheticsGlobalVariable.SetDescription(description.(string))
+	}
 
 	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
