@@ -15,7 +15,7 @@ import (
 )
 
 var syntheticsTypes = []string{"api", "browser"}
-var syntheticsSubTypes = []string{"http", "ssl", "tcp"}
+var syntheticsSubTypes = []string{"http", "ssl", "tcp", "dns"}
 
 func resourceDatadogSyntheticsTest() *schema.Resource {
 	return &schema.Resource{
