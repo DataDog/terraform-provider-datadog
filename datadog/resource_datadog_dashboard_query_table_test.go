@@ -177,11 +177,11 @@ var datadogDashboardQueryTableAsserts = []string{
 	"layout_type = ordered",
 	"widget.0.query_table_definition.0.title = system.cpu.user, system.load.1",
 	"widget.0.query_table_definition.0.title_align = right",
-	"widget.1.query_table_definition.0.request.0.apm_stats_query.service = service",
-	"widget.1.query_table_definition.0.request.0.apm_stats_query.env = env",
-	"widget.1.query_table_definition.0.request.0.apm_stats_query.primary_tag = tag:*",
-	"widget.1.query_table_definition.0.request.0.apm_stats_query.name = name",
-	"widget.1.query_table_definition.0.request.0.apm_stats_query.row_type = resource",
+	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.service = service",
+	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.env = env",
+	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.primary_tag = tag:*",
+	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.name = name",
+	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.row_type = resource",
 }
 
 func TestAccDatadogDashboardQueryTable(t *testing.T) {
