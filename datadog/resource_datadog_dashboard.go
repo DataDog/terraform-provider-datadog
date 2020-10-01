@@ -5128,22 +5128,22 @@ func getApmStatsQuerySchema() *schema.Schema {
 				"columns": {
 					Type:     schema.TypeList,
 					Optional: true,
-					Elem:     &schema.Resource{
+					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"name": {
-								Type: schema.TypeString,
+								Type:     schema.TypeString,
 								Required: true,
 							},
 							"alias": {
-								Type: schema.TypeString,
+								Type:     schema.TypeString,
 								Optional: true,
 							},
 							"order": {
-								Type: schema.TypeString,
+								Type:     schema.TypeString,
 								Optional: true,
 							},
 							"cell_display_mode": {
-								Type: schema.TypeString,
+								Type:     schema.TypeString,
 								Optional: true,
 							},
 						},
