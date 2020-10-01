@@ -808,6 +808,7 @@ Nested `widget` blocks have the following structure:
       - `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
       - `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
       - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
+      - `apm_stats_query`: (Optional) The APM stats query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_stats_query-blocks).
       - `conditional_formats`: (Optional) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple request blocks are allowed. The structure of this block is described [below](dashboard.html#nested-widget-conditional_formats-blocks).
       - `alias`: (Optional) The alias for the column name. Default is the metric name.
       - `aggregator`: (Optional) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
@@ -969,6 +970,16 @@ Nested `process_query` blocks have the following structure (Visit the [ Graph Pr
 - `search_by`: (Required)
 - `filter_by`: (Required)
 - `limit`: (Required)
+
+### Nested `apm_stats_query` blocks
+
+Nested `apm_stats_query` blocks have the following structure (Visit the [Datadog documentation](https://docs.datadoghq.com/dashboards/querying/#apm-stats-parameters) for more information about these values):
+
+- `env`: (Required)
+- `primary_tag`: (Required)
+- `service`: (Required)
+- `name`: Operation name (Required)
+- `resource`: Resource name (Optional)
 
 ### Nested `widget` `marker` blocks
 
