@@ -1,4 +1,4 @@
-// For more info about writing custom provider: shttps://www.terraform.io/docs/extend/writing-custom-providers.html
+// For more info about writing custom provider: https://www.terraform.io/docs/extend/writing-custom-providers.html
 
 package datadog
 
@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	_nethttp "net/http"
 	"strconv"
-	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -433,11 +433,12 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 
 	var syntheticsTest datadogV1.SyntheticsTestDetails
 	var err error
+	var httpresp *_nethttp.Response
 
 	if d.Get("type") == "browser" {
-		syntheticsTest, _, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id()).Execute()
+		syntheticsTest, httpresp, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id()).Execute()
 	} else {
-		syntheticsTest, _, err = datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id()).Execute()
+		syntheticsTest, httpresp, err = datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id()).Execute()
 
 		// re-fetch test if it was actually a browser but we didn't have the info earlier
 		if syntheticsTest.GetType() == "browser" {
@@ -446,7 +447,7 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 	}
 
 	if err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
+		if httpresp != nil && httpresp.StatusCode == 404 {
 			// Delete the resource from the local state since it doesn't exist anymore in the actual state
 			d.SetId("")
 			return nil
