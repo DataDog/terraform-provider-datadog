@@ -117,6 +117,20 @@ resource "datadog_dashboard" "query_table_dashboard" {
 			}
 		}
 	}
+
+	widget {
+		query_table_definition {
+			request {
+				apm_stats_query {
+					service = "service"
+					env = "env"
+					primary_tag = "tag:*"
+					name = "name"
+					row_type = "resource"
+				}
+			}
+		}
+	}
 }
 `
 
@@ -163,6 +177,11 @@ var datadogDashboardQueryTableAsserts = []string{
 	"layout_type = ordered",
 	"widget.0.query_table_definition.0.title = system.cpu.user, system.load.1",
 	"widget.0.query_table_definition.0.title_align = right",
+	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.service = service",
+	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.env = env",
+	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.primary_tag = tag:*",
+	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.name = name",
+	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.row_type = resource",
 }
 
 func TestAccDatadogDashboardQueryTable(t *testing.T) {
