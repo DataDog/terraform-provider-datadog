@@ -24,35 +24,39 @@ var (
 // DashboardListsApiService DashboardListsApi service
 type DashboardListsApiService service
 
-type apiCreateDashboardListRequest struct {
+type ApiCreateDashboardListRequest struct {
 	ctx        _context.Context
-	apiService *DashboardListsApiService
+	ApiService *DashboardListsApiService
 	body       *DashboardList
 }
 
-func (r apiCreateDashboardListRequest) Body(body DashboardList) apiCreateDashboardListRequest {
+func (r ApiCreateDashboardListRequest) Body(body DashboardList) ApiCreateDashboardListRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiCreateDashboardListRequest) Execute() (DashboardList, *_nethttp.Response, error) {
+	return r.ApiService.CreateDashboardListExecute(r)
+}
+
 /*
-CreateDashboardList Create a dashboard list
-Create an empty dashboard list.
+ * CreateDashboardList Create a dashboard list
+ * Create an empty dashboard list.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCreateDashboardListRequest
-*/
-func (a *DashboardListsApiService) CreateDashboardList(ctx _context.Context) apiCreateDashboardListRequest {
-	return apiCreateDashboardListRequest{
-		apiService: a,
+ * @return ApiCreateDashboardListRequest
+ */
+func (a *DashboardListsApiService) CreateDashboardList(ctx _context.Context) ApiCreateDashboardListRequest {
+	return ApiCreateDashboardListRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return DashboardList
-*/
-func (r apiCreateDashboardListRequest) Execute() (DashboardList, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return DashboardList
+ */
+func (a *DashboardListsApiService) CreateDashboardListExecute(r ApiCreateDashboardListRequest) (DashboardList, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -62,7 +66,7 @@ func (r apiCreateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 		localVarReturnValue  DashboardList
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "DashboardListsApiService.CreateDashboardList")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DashboardListsApiService.CreateDashboardList")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -102,12 +106,12 @@ func (r apiCreateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -116,23 +120,23 @@ func (r apiCreateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -150,7 +154,7 @@ func (r apiCreateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -160,7 +164,7 @@ func (r apiCreateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -170,7 +174,7 @@ func (r apiCreateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -182,32 +186,36 @@ func (r apiCreateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiDeleteDashboardListRequest struct {
+type ApiDeleteDashboardListRequest struct {
 	ctx        _context.Context
-	apiService *DashboardListsApiService
+	ApiService *DashboardListsApiService
 	listId     int64
 }
 
+func (r ApiDeleteDashboardListRequest) Execute() (DashboardListDeleteResponse, *_nethttp.Response, error) {
+	return r.ApiService.DeleteDashboardListExecute(r)
+}
+
 /*
-DeleteDashboardList Delete a dashboard list
-Delete a dashboard list.
+ * DeleteDashboardList Delete a dashboard list
+ * Delete a dashboard list.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param listId ID of the dashboard list to delete.
-@return apiDeleteDashboardListRequest
-*/
-func (a *DashboardListsApiService) DeleteDashboardList(ctx _context.Context, listId int64) apiDeleteDashboardListRequest {
-	return apiDeleteDashboardListRequest{
-		apiService: a,
+ * @return ApiDeleteDashboardListRequest
+ */
+func (a *DashboardListsApiService) DeleteDashboardList(ctx _context.Context, listId int64) ApiDeleteDashboardListRequest {
+	return ApiDeleteDashboardListRequest{
+		ApiService: a,
 		ctx:        ctx,
 		listId:     listId,
 	}
 }
 
 /*
-Execute executes the request
-@return DashboardListDeleteResponse
-*/
-func (r apiDeleteDashboardListRequest) Execute() (DashboardListDeleteResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return DashboardListDeleteResponse
+ */
+func (a *DashboardListsApiService) DeleteDashboardListExecute(r ApiDeleteDashboardListRequest) (DashboardListDeleteResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodDelete
 		localVarPostBody     interface{}
@@ -217,7 +225,7 @@ func (r apiDeleteDashboardListRequest) Execute() (DashboardListDeleteResponse, *
 		localVarReturnValue  DashboardListDeleteResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "DashboardListsApiService.DeleteDashboardList")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DashboardListsApiService.DeleteDashboardList")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -253,12 +261,12 @@ func (r apiDeleteDashboardListRequest) Execute() (DashboardListDeleteResponse, *
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -267,23 +275,23 @@ func (r apiDeleteDashboardListRequest) Execute() (DashboardListDeleteResponse, *
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -301,7 +309,7 @@ func (r apiDeleteDashboardListRequest) Execute() (DashboardListDeleteResponse, *
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -311,7 +319,7 @@ func (r apiDeleteDashboardListRequest) Execute() (DashboardListDeleteResponse, *
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -321,7 +329,7 @@ func (r apiDeleteDashboardListRequest) Execute() (DashboardListDeleteResponse, *
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -333,32 +341,36 @@ func (r apiDeleteDashboardListRequest) Execute() (DashboardListDeleteResponse, *
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiGetDashboardListRequest struct {
+type ApiGetDashboardListRequest struct {
 	ctx        _context.Context
-	apiService *DashboardListsApiService
+	ApiService *DashboardListsApiService
 	listId     int64
 }
 
+func (r ApiGetDashboardListRequest) Execute() (DashboardList, *_nethttp.Response, error) {
+	return r.ApiService.GetDashboardListExecute(r)
+}
+
 /*
-GetDashboardList Get a dashboard list
-Fetch an existing dashboard list's definition.
+ * GetDashboardList Get a dashboard list
+ * Fetch an existing dashboard list's definition.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param listId ID of the dashboard list to fetch.
-@return apiGetDashboardListRequest
-*/
-func (a *DashboardListsApiService) GetDashboardList(ctx _context.Context, listId int64) apiGetDashboardListRequest {
-	return apiGetDashboardListRequest{
-		apiService: a,
+ * @return ApiGetDashboardListRequest
+ */
+func (a *DashboardListsApiService) GetDashboardList(ctx _context.Context, listId int64) ApiGetDashboardListRequest {
+	return ApiGetDashboardListRequest{
+		ApiService: a,
 		ctx:        ctx,
 		listId:     listId,
 	}
 }
 
 /*
-Execute executes the request
-@return DashboardList
-*/
-func (r apiGetDashboardListRequest) Execute() (DashboardList, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return DashboardList
+ */
+func (a *DashboardListsApiService) GetDashboardListExecute(r ApiGetDashboardListRequest) (DashboardList, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -368,7 +380,7 @@ func (r apiGetDashboardListRequest) Execute() (DashboardList, *_nethttp.Response
 		localVarReturnValue  DashboardList
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "DashboardListsApiService.GetDashboardList")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DashboardListsApiService.GetDashboardList")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -404,12 +416,12 @@ func (r apiGetDashboardListRequest) Execute() (DashboardList, *_nethttp.Response
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -418,23 +430,23 @@ func (r apiGetDashboardListRequest) Execute() (DashboardList, *_nethttp.Response
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -452,7 +464,7 @@ func (r apiGetDashboardListRequest) Execute() (DashboardList, *_nethttp.Response
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -462,7 +474,7 @@ func (r apiGetDashboardListRequest) Execute() (DashboardList, *_nethttp.Response
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -472,7 +484,7 @@ func (r apiGetDashboardListRequest) Execute() (DashboardList, *_nethttp.Response
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -484,29 +496,33 @@ func (r apiGetDashboardListRequest) Execute() (DashboardList, *_nethttp.Response
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListDashboardListsRequest struct {
+type ApiListDashboardListsRequest struct {
 	ctx        _context.Context
-	apiService *DashboardListsApiService
+	ApiService *DashboardListsApiService
+}
+
+func (r ApiListDashboardListsRequest) Execute() (DashboardListListResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListDashboardListsExecute(r)
 }
 
 /*
-ListDashboardLists Get all dashboard lists
-Fetch all of your existing dashboard list definitions.
+ * ListDashboardLists Get all dashboard lists
+ * Fetch all of your existing dashboard list definitions.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListDashboardListsRequest
-*/
-func (a *DashboardListsApiService) ListDashboardLists(ctx _context.Context) apiListDashboardListsRequest {
-	return apiListDashboardListsRequest{
-		apiService: a,
+ * @return ApiListDashboardListsRequest
+ */
+func (a *DashboardListsApiService) ListDashboardLists(ctx _context.Context) ApiListDashboardListsRequest {
+	return ApiListDashboardListsRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return DashboardListListResponse
-*/
-func (r apiListDashboardListsRequest) Execute() (DashboardListListResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return DashboardListListResponse
+ */
+func (a *DashboardListsApiService) ListDashboardListsExecute(r ApiListDashboardListsRequest) (DashboardListListResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -516,7 +532,7 @@ func (r apiListDashboardListsRequest) Execute() (DashboardListListResponse, *_ne
 		localVarReturnValue  DashboardListListResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "DashboardListsApiService.ListDashboardLists")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DashboardListsApiService.ListDashboardLists")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -551,12 +567,12 @@ func (r apiListDashboardListsRequest) Execute() (DashboardListListResponse, *_ne
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -565,23 +581,23 @@ func (r apiListDashboardListsRequest) Execute() (DashboardListListResponse, *_ne
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -599,7 +615,7 @@ func (r apiListDashboardListsRequest) Execute() (DashboardListListResponse, *_ne
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -609,7 +625,7 @@ func (r apiListDashboardListsRequest) Execute() (DashboardListListResponse, *_ne
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -621,38 +637,42 @@ func (r apiListDashboardListsRequest) Execute() (DashboardListListResponse, *_ne
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUpdateDashboardListRequest struct {
+type ApiUpdateDashboardListRequest struct {
 	ctx        _context.Context
-	apiService *DashboardListsApiService
+	ApiService *DashboardListsApiService
 	listId     int64
 	body       *DashboardList
 }
 
-func (r apiUpdateDashboardListRequest) Body(body DashboardList) apiUpdateDashboardListRequest {
+func (r ApiUpdateDashboardListRequest) Body(body DashboardList) ApiUpdateDashboardListRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateDashboardListRequest) Execute() (DashboardList, *_nethttp.Response, error) {
+	return r.ApiService.UpdateDashboardListExecute(r)
+}
+
 /*
-UpdateDashboardList Update a dashboard list
-Update the name of a dashboard list.
+ * UpdateDashboardList Update a dashboard list
+ * Update the name of a dashboard list.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param listId ID of the dashboard list to update.
-@return apiUpdateDashboardListRequest
-*/
-func (a *DashboardListsApiService) UpdateDashboardList(ctx _context.Context, listId int64) apiUpdateDashboardListRequest {
-	return apiUpdateDashboardListRequest{
-		apiService: a,
+ * @return ApiUpdateDashboardListRequest
+ */
+func (a *DashboardListsApiService) UpdateDashboardList(ctx _context.Context, listId int64) ApiUpdateDashboardListRequest {
+	return ApiUpdateDashboardListRequest{
+		ApiService: a,
 		ctx:        ctx,
 		listId:     listId,
 	}
 }
 
 /*
-Execute executes the request
-@return DashboardList
-*/
-func (r apiUpdateDashboardListRequest) Execute() (DashboardList, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return DashboardList
+ */
+func (a *DashboardListsApiService) UpdateDashboardListExecute(r ApiUpdateDashboardListRequest) (DashboardList, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -662,7 +682,7 @@ func (r apiUpdateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 		localVarReturnValue  DashboardList
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "DashboardListsApiService.UpdateDashboardList")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DashboardListsApiService.UpdateDashboardList")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -703,12 +723,12 @@ func (r apiUpdateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -717,23 +737,23 @@ func (r apiUpdateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -751,7 +771,7 @@ func (r apiUpdateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -761,7 +781,7 @@ func (r apiUpdateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -771,7 +791,7 @@ func (r apiUpdateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -781,7 +801,7 @@ func (r apiUpdateDashboardListRequest) Execute() (DashboardList, *_nethttp.Respo
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,

@@ -26,37 +26,41 @@ var (
 // LogsArchivesApiService LogsArchivesApi service
 type LogsArchivesApiService service
 
-type apiAddReadRoleToArchiveRequest struct {
+type ApiAddReadRoleToArchiveRequest struct {
 	ctx        _context.Context
-	apiService *LogsArchivesApiService
+	ApiService *LogsArchivesApiService
 	archiveId  string
 	body       *RelationshipToRole
 }
 
-func (r apiAddReadRoleToArchiveRequest) Body(body RelationshipToRole) apiAddReadRoleToArchiveRequest {
+func (r ApiAddReadRoleToArchiveRequest) Body(body RelationshipToRole) ApiAddReadRoleToArchiveRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiAddReadRoleToArchiveRequest) Execute() (*_nethttp.Response, error) {
+	return r.ApiService.AddReadRoleToArchiveExecute(r)
+}
+
 /*
-AddReadRoleToArchive Grant role to an archive
-Adds a read role to an archive. ([Roles API](https://docs.datadoghq.com/api/v2/roles/))
+ * AddReadRoleToArchive Grant role to an archive
+ * Adds a read role to an archive. ([Roles API](https://docs.datadoghq.com/api/v2/roles/))
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param archiveId The ID of the archive.
-@return apiAddReadRoleToArchiveRequest
-*/
-func (a *LogsArchivesApiService) AddReadRoleToArchive(ctx _context.Context, archiveId string) apiAddReadRoleToArchiveRequest {
-	return apiAddReadRoleToArchiveRequest{
-		apiService: a,
+ * @return ApiAddReadRoleToArchiveRequest
+ */
+func (a *LogsArchivesApiService) AddReadRoleToArchive(ctx _context.Context, archiveId string) ApiAddReadRoleToArchiveRequest {
+	return ApiAddReadRoleToArchiveRequest{
+		ApiService: a,
 		ctx:        ctx,
 		archiveId:  archiveId,
 	}
 }
 
 /*
-Execute executes the request
-*/
-func (r apiAddReadRoleToArchiveRequest) Execute() (*_nethttp.Response, error) {
+ * Execute executes the request
+ */
+func (a *LogsArchivesApiService) AddReadRoleToArchiveExecute(r ApiAddReadRoleToArchiveRequest) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -64,14 +68,15 @@ func (r apiAddReadRoleToArchiveRequest) Execute() (*_nethttp.Response, error) {
 		localVarFileName     string
 		localVarFileBytes    []byte
 	)
+
 	operationId := "AddReadRoleToArchive"
-	if r.apiService.client.cfg.IsUnstableOperationEnabled(operationId) {
+	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.AddReadRoleToArchive")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.AddReadRoleToArchive")
 	if err != nil {
 		return nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -109,12 +114,12 @@ func (r apiAddReadRoleToArchiveRequest) Execute() (*_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -123,23 +128,23 @@ func (r apiAddReadRoleToArchiveRequest) Execute() (*_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarHTTPResponse, err
 	}
@@ -157,7 +162,7 @@ func (r apiAddReadRoleToArchiveRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -167,7 +172,7 @@ func (r apiAddReadRoleToArchiveRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -177,7 +182,7 @@ func (r apiAddReadRoleToArchiveRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -190,35 +195,39 @@ func (r apiAddReadRoleToArchiveRequest) Execute() (*_nethttp.Response, error) {
 	return localVarHTTPResponse, nil
 }
 
-type apiCreateLogsArchiveRequest struct {
+type ApiCreateLogsArchiveRequest struct {
 	ctx        _context.Context
-	apiService *LogsArchivesApiService
+	ApiService *LogsArchivesApiService
 	body       *LogsArchiveCreateRequest
 }
 
-func (r apiCreateLogsArchiveRequest) Body(body LogsArchiveCreateRequest) apiCreateLogsArchiveRequest {
+func (r ApiCreateLogsArchiveRequest) Body(body LogsArchiveCreateRequest) ApiCreateLogsArchiveRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiCreateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, error) {
+	return r.ApiService.CreateLogsArchiveExecute(r)
+}
+
 /*
-CreateLogsArchive Create an archive
-Create an archive in your organization.
+ * CreateLogsArchive Create an archive
+ * Create an archive in your organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCreateLogsArchiveRequest
-*/
-func (a *LogsArchivesApiService) CreateLogsArchive(ctx _context.Context) apiCreateLogsArchiveRequest {
-	return apiCreateLogsArchiveRequest{
-		apiService: a,
+ * @return ApiCreateLogsArchiveRequest
+ */
+func (a *LogsArchivesApiService) CreateLogsArchive(ctx _context.Context) ApiCreateLogsArchiveRequest {
+	return ApiCreateLogsArchiveRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return LogsArchive
-*/
-func (r apiCreateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return LogsArchive
+ */
+func (a *LogsArchivesApiService) CreateLogsArchiveExecute(r ApiCreateLogsArchiveRequest) (LogsArchive, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -228,7 +237,7 @@ func (r apiCreateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 		localVarReturnValue  LogsArchive
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.CreateLogsArchive")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.CreateLogsArchive")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -268,12 +277,12 @@ func (r apiCreateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -282,23 +291,23 @@ func (r apiCreateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -316,7 +325,7 @@ func (r apiCreateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -326,7 +335,7 @@ func (r apiCreateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -336,7 +345,7 @@ func (r apiCreateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -348,31 +357,35 @@ func (r apiCreateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiDeleteLogsArchiveRequest struct {
+type ApiDeleteLogsArchiveRequest struct {
 	ctx        _context.Context
-	apiService *LogsArchivesApiService
+	ApiService *LogsArchivesApiService
 	archiveId  string
 }
 
+func (r ApiDeleteLogsArchiveRequest) Execute() (*_nethttp.Response, error) {
+	return r.ApiService.DeleteLogsArchiveExecute(r)
+}
+
 /*
-DeleteLogsArchive Delete an archive
-Delete a given archive from your organization.
+ * DeleteLogsArchive Delete an archive
+ * Delete a given archive from your organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param archiveId The ID of the archive.
-@return apiDeleteLogsArchiveRequest
-*/
-func (a *LogsArchivesApiService) DeleteLogsArchive(ctx _context.Context, archiveId string) apiDeleteLogsArchiveRequest {
-	return apiDeleteLogsArchiveRequest{
-		apiService: a,
+ * @return ApiDeleteLogsArchiveRequest
+ */
+func (a *LogsArchivesApiService) DeleteLogsArchive(ctx _context.Context, archiveId string) ApiDeleteLogsArchiveRequest {
+	return ApiDeleteLogsArchiveRequest{
+		ApiService: a,
 		ctx:        ctx,
 		archiveId:  archiveId,
 	}
 }
 
 /*
-Execute executes the request
-*/
-func (r apiDeleteLogsArchiveRequest) Execute() (*_nethttp.Response, error) {
+ * Execute executes the request
+ */
+func (a *LogsArchivesApiService) DeleteLogsArchiveExecute(r ApiDeleteLogsArchiveRequest) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodDelete
 		localVarPostBody     interface{}
@@ -381,7 +394,7 @@ func (r apiDeleteLogsArchiveRequest) Execute() (*_nethttp.Response, error) {
 		localVarFileBytes    []byte
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.DeleteLogsArchive")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.DeleteLogsArchive")
 	if err != nil {
 		return nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -417,12 +430,12 @@ func (r apiDeleteLogsArchiveRequest) Execute() (*_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -431,23 +444,23 @@ func (r apiDeleteLogsArchiveRequest) Execute() (*_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarHTTPResponse, err
 	}
@@ -465,7 +478,7 @@ func (r apiDeleteLogsArchiveRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -475,7 +488,7 @@ func (r apiDeleteLogsArchiveRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -485,7 +498,7 @@ func (r apiDeleteLogsArchiveRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -498,32 +511,36 @@ func (r apiDeleteLogsArchiveRequest) Execute() (*_nethttp.Response, error) {
 	return localVarHTTPResponse, nil
 }
 
-type apiGetLogsArchiveRequest struct {
+type ApiGetLogsArchiveRequest struct {
 	ctx        _context.Context
-	apiService *LogsArchivesApiService
+	ApiService *LogsArchivesApiService
 	archiveId  string
 }
 
+func (r ApiGetLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, error) {
+	return r.ApiService.GetLogsArchiveExecute(r)
+}
+
 /*
-GetLogsArchive Get an archive
-Get a specific archive from your organization.
+ * GetLogsArchive Get an archive
+ * Get a specific archive from your organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param archiveId The ID of the archive.
-@return apiGetLogsArchiveRequest
-*/
-func (a *LogsArchivesApiService) GetLogsArchive(ctx _context.Context, archiveId string) apiGetLogsArchiveRequest {
-	return apiGetLogsArchiveRequest{
-		apiService: a,
+ * @return ApiGetLogsArchiveRequest
+ */
+func (a *LogsArchivesApiService) GetLogsArchive(ctx _context.Context, archiveId string) ApiGetLogsArchiveRequest {
+	return ApiGetLogsArchiveRequest{
+		ApiService: a,
 		ctx:        ctx,
 		archiveId:  archiveId,
 	}
 }
 
 /*
-Execute executes the request
-@return LogsArchive
-*/
-func (r apiGetLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return LogsArchive
+ */
+func (a *LogsArchivesApiService) GetLogsArchiveExecute(r ApiGetLogsArchiveRequest) (LogsArchive, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -533,7 +550,7 @@ func (r apiGetLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, er
 		localVarReturnValue  LogsArchive
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.GetLogsArchive")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.GetLogsArchive")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -569,12 +586,12 @@ func (r apiGetLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, er
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -583,23 +600,23 @@ func (r apiGetLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, er
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -617,7 +634,7 @@ func (r apiGetLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, er
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -627,7 +644,7 @@ func (r apiGetLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, er
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -637,7 +654,7 @@ func (r apiGetLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, er
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -647,7 +664,7 @@ func (r apiGetLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, er
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -659,32 +676,178 @@ func (r apiGetLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, er
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListArchiveReadRolesRequest struct {
+type ApiGetLogsArchiveOrderRequest struct {
 	ctx        _context.Context
-	apiService *LogsArchivesApiService
-	archiveId  string
+	ApiService *LogsArchivesApiService
+}
+
+func (r ApiGetLogsArchiveOrderRequest) Execute() (LogsArchiveOrder, *_nethttp.Response, error) {
+	return r.ApiService.GetLogsArchiveOrderExecute(r)
 }
 
 /*
-ListArchiveReadRoles List read roles for an archive
-Returns all read roles a given archive is restricted to.
+ * GetLogsArchiveOrder Get archive order
+ * Get the current order of your archives.
+This endpoint takes no JSON arguments.
+ * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @return ApiGetLogsArchiveOrderRequest
+*/
+func (a *LogsArchivesApiService) GetLogsArchiveOrder(ctx _context.Context) ApiGetLogsArchiveOrderRequest {
+	return ApiGetLogsArchiveOrderRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+/*
+ * Execute executes the request
+ * @return LogsArchiveOrder
+ */
+func (a *LogsArchivesApiService) GetLogsArchiveOrderExecute(r ApiGetLogsArchiveOrderRequest) (LogsArchiveOrder, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod   = _nethttp.MethodGet
+		localVarPostBody     interface{}
+		localVarFormFileName string
+		localVarFileName     string
+		localVarFileBytes    []byte
+		localVarReturnValue  LogsArchiveOrder
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.GetLogsArchiveOrder")
+	if err != nil {
+		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/logs/config/archive-order"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+
+	// Set Operation-ID header for telemetry
+	localVarHeaderParams["DD-OPERATION-ID"] = "GetLogsArchiveOrder"
+
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["DD-API-KEY"] = key
+			}
+		}
+	}
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["DD-APPLICATION-KEY"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v APIErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListArchiveReadRolesRequest struct {
+	ctx        _context.Context
+	ApiService *LogsArchivesApiService
+	archiveId  string
+}
+
+func (r ApiListArchiveReadRolesRequest) Execute() (RolesResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListArchiveReadRolesExecute(r)
+}
+
+/*
+ * ListArchiveReadRoles List read roles for an archive
+ * Returns all read roles a given archive is restricted to.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param archiveId The ID of the archive.
-@return apiListArchiveReadRolesRequest
-*/
-func (a *LogsArchivesApiService) ListArchiveReadRoles(ctx _context.Context, archiveId string) apiListArchiveReadRolesRequest {
-	return apiListArchiveReadRolesRequest{
-		apiService: a,
+ * @return ApiListArchiveReadRolesRequest
+ */
+func (a *LogsArchivesApiService) ListArchiveReadRoles(ctx _context.Context, archiveId string) ApiListArchiveReadRolesRequest {
+	return ApiListArchiveReadRolesRequest{
+		ApiService: a,
 		ctx:        ctx,
 		archiveId:  archiveId,
 	}
 }
 
 /*
-Execute executes the request
-@return RolesResponse
-*/
-func (r apiListArchiveReadRolesRequest) Execute() (RolesResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return RolesResponse
+ */
+func (a *LogsArchivesApiService) ListArchiveReadRolesExecute(r ApiListArchiveReadRolesRequest) (RolesResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -693,14 +856,15 @@ func (r apiListArchiveReadRolesRequest) Execute() (RolesResponse, *_nethttp.Resp
 		localVarFileBytes    []byte
 		localVarReturnValue  RolesResponse
 	)
+
 	operationId := "ListArchiveReadRoles"
-	if r.apiService.client.cfg.IsUnstableOperationEnabled(operationId) {
+	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.ListArchiveReadRoles")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.ListArchiveReadRoles")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -736,12 +900,12 @@ func (r apiListArchiveReadRolesRequest) Execute() (RolesResponse, *_nethttp.Resp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -750,23 +914,23 @@ func (r apiListArchiveReadRolesRequest) Execute() (RolesResponse, *_nethttp.Resp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -784,7 +948,7 @@ func (r apiListArchiveReadRolesRequest) Execute() (RolesResponse, *_nethttp.Resp
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -794,7 +958,7 @@ func (r apiListArchiveReadRolesRequest) Execute() (RolesResponse, *_nethttp.Resp
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -804,7 +968,7 @@ func (r apiListArchiveReadRolesRequest) Execute() (RolesResponse, *_nethttp.Resp
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -814,7 +978,7 @@ func (r apiListArchiveReadRolesRequest) Execute() (RolesResponse, *_nethttp.Resp
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -826,29 +990,33 @@ func (r apiListArchiveReadRolesRequest) Execute() (RolesResponse, *_nethttp.Resp
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListLogsArchivesRequest struct {
+type ApiListLogsArchivesRequest struct {
 	ctx        _context.Context
-	apiService *LogsArchivesApiService
+	ApiService *LogsArchivesApiService
+}
+
+func (r ApiListLogsArchivesRequest) Execute() (LogsArchives, *_nethttp.Response, error) {
+	return r.ApiService.ListLogsArchivesExecute(r)
 }
 
 /*
-ListLogsArchives Get all archives
-Get the list of configured logs archives with their definitions.
+ * ListLogsArchives Get all archives
+ * Get the list of configured logs archives with their definitions.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListLogsArchivesRequest
-*/
-func (a *LogsArchivesApiService) ListLogsArchives(ctx _context.Context) apiListLogsArchivesRequest {
-	return apiListLogsArchivesRequest{
-		apiService: a,
+ * @return ApiListLogsArchivesRequest
+ */
+func (a *LogsArchivesApiService) ListLogsArchives(ctx _context.Context) ApiListLogsArchivesRequest {
+	return ApiListLogsArchivesRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return LogsArchives
-*/
-func (r apiListLogsArchivesRequest) Execute() (LogsArchives, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return LogsArchives
+ */
+func (a *LogsArchivesApiService) ListLogsArchivesExecute(r ApiListLogsArchivesRequest) (LogsArchives, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -858,7 +1026,7 @@ func (r apiListLogsArchivesRequest) Execute() (LogsArchives, *_nethttp.Response,
 		localVarReturnValue  LogsArchives
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.ListLogsArchives")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.ListLogsArchives")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -893,12 +1061,12 @@ func (r apiListLogsArchivesRequest) Execute() (LogsArchives, *_nethttp.Response,
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -907,23 +1075,23 @@ func (r apiListLogsArchivesRequest) Execute() (LogsArchives, *_nethttp.Response,
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -941,7 +1109,7 @@ func (r apiListLogsArchivesRequest) Execute() (LogsArchives, *_nethttp.Response,
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -951,7 +1119,7 @@ func (r apiListLogsArchivesRequest) Execute() (LogsArchives, *_nethttp.Response,
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -963,37 +1131,41 @@ func (r apiListLogsArchivesRequest) Execute() (LogsArchives, *_nethttp.Response,
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiRemoveRoleFromArchiveRequest struct {
+type ApiRemoveRoleFromArchiveRequest struct {
 	ctx        _context.Context
-	apiService *LogsArchivesApiService
+	ApiService *LogsArchivesApiService
 	archiveId  string
 	body       *RelationshipToRole
 }
 
-func (r apiRemoveRoleFromArchiveRequest) Body(body RelationshipToRole) apiRemoveRoleFromArchiveRequest {
+func (r ApiRemoveRoleFromArchiveRequest) Body(body RelationshipToRole) ApiRemoveRoleFromArchiveRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiRemoveRoleFromArchiveRequest) Execute() (*_nethttp.Response, error) {
+	return r.ApiService.RemoveRoleFromArchiveExecute(r)
+}
+
 /*
-RemoveRoleFromArchive Revoke role from an archive
-Removes a role from an archive. ([Roles API](https://docs.datadoghq.com/api/v2/roles/))
+ * RemoveRoleFromArchive Revoke role from an archive
+ * Removes a role from an archive. ([Roles API](https://docs.datadoghq.com/api/v2/roles/))
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param archiveId The ID of the archive.
-@return apiRemoveRoleFromArchiveRequest
-*/
-func (a *LogsArchivesApiService) RemoveRoleFromArchive(ctx _context.Context, archiveId string) apiRemoveRoleFromArchiveRequest {
-	return apiRemoveRoleFromArchiveRequest{
-		apiService: a,
+ * @return ApiRemoveRoleFromArchiveRequest
+ */
+func (a *LogsArchivesApiService) RemoveRoleFromArchive(ctx _context.Context, archiveId string) ApiRemoveRoleFromArchiveRequest {
+	return ApiRemoveRoleFromArchiveRequest{
+		ApiService: a,
 		ctx:        ctx,
 		archiveId:  archiveId,
 	}
 }
 
 /*
-Execute executes the request
-*/
-func (r apiRemoveRoleFromArchiveRequest) Execute() (*_nethttp.Response, error) {
+ * Execute executes the request
+ */
+func (a *LogsArchivesApiService) RemoveRoleFromArchiveExecute(r ApiRemoveRoleFromArchiveRequest) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodDelete
 		localVarPostBody     interface{}
@@ -1001,14 +1173,15 @@ func (r apiRemoveRoleFromArchiveRequest) Execute() (*_nethttp.Response, error) {
 		localVarFileName     string
 		localVarFileBytes    []byte
 	)
+
 	operationId := "RemoveRoleFromArchive"
-	if r.apiService.client.cfg.IsUnstableOperationEnabled(operationId) {
+	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.RemoveRoleFromArchive")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.RemoveRoleFromArchive")
 	if err != nil {
 		return nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -1046,12 +1219,12 @@ func (r apiRemoveRoleFromArchiveRequest) Execute() (*_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -1060,23 +1233,23 @@ func (r apiRemoveRoleFromArchiveRequest) Execute() (*_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarHTTPResponse, err
 	}
@@ -1094,7 +1267,7 @@ func (r apiRemoveRoleFromArchiveRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -1104,7 +1277,7 @@ func (r apiRemoveRoleFromArchiveRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -1114,7 +1287,7 @@ func (r apiRemoveRoleFromArchiveRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -1127,41 +1300,45 @@ func (r apiRemoveRoleFromArchiveRequest) Execute() (*_nethttp.Response, error) {
 	return localVarHTTPResponse, nil
 }
 
-type apiUpdateLogsArchiveRequest struct {
+type ApiUpdateLogsArchiveRequest struct {
 	ctx        _context.Context
-	apiService *LogsArchivesApiService
+	ApiService *LogsArchivesApiService
 	archiveId  string
 	body       *LogsArchiveCreateRequest
 }
 
-func (r apiUpdateLogsArchiveRequest) Body(body LogsArchiveCreateRequest) apiUpdateLogsArchiveRequest {
+func (r ApiUpdateLogsArchiveRequest) Body(body LogsArchiveCreateRequest) ApiUpdateLogsArchiveRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, error) {
+	return r.ApiService.UpdateLogsArchiveExecute(r)
+}
+
 /*
-UpdateLogsArchive Update an archive
-Update a given archive configuration.
+ * UpdateLogsArchive Update an archive
+ * Update a given archive configuration.
 
 **Note**: Using this method updates your archive configuration by **replacing**
 your current configuration with the new one sent to your Datadog organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param archiveId The ID of the archive.
-@return apiUpdateLogsArchiveRequest
+ * @return ApiUpdateLogsArchiveRequest
 */
-func (a *LogsArchivesApiService) UpdateLogsArchive(ctx _context.Context, archiveId string) apiUpdateLogsArchiveRequest {
-	return apiUpdateLogsArchiveRequest{
-		apiService: a,
+func (a *LogsArchivesApiService) UpdateLogsArchive(ctx _context.Context, archiveId string) ApiUpdateLogsArchiveRequest {
+	return ApiUpdateLogsArchiveRequest{
+		ApiService: a,
 		ctx:        ctx,
 		archiveId:  archiveId,
 	}
 }
 
 /*
-Execute executes the request
-@return LogsArchive
-*/
-func (r apiUpdateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return LogsArchive
+ */
+func (a *LogsArchivesApiService) UpdateLogsArchiveExecute(r ApiUpdateLogsArchiveRequest) (LogsArchive, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -1171,7 +1348,7 @@ func (r apiUpdateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 		localVarReturnValue  LogsArchive
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.UpdateLogsArchive")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.UpdateLogsArchive")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -1212,12 +1389,12 @@ func (r apiUpdateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -1226,23 +1403,23 @@ func (r apiUpdateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1260,7 +1437,7 @@ func (r apiUpdateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1270,7 +1447,7 @@ func (r apiUpdateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1280,7 +1457,7 @@ func (r apiUpdateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1290,7 +1467,183 @@ func (r apiUpdateLogsArchiveRequest) Execute() (LogsArchive, *_nethttp.Response,
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiUpdateLogsArchiveOrderRequest struct {
+	ctx        _context.Context
+	ApiService *LogsArchivesApiService
+	body       *LogsArchiveOrder
+}
+
+func (r ApiUpdateLogsArchiveOrderRequest) Body(body LogsArchiveOrder) ApiUpdateLogsArchiveOrderRequest {
+	r.body = &body
+	return r
+}
+
+func (r ApiUpdateLogsArchiveOrderRequest) Execute() (LogsArchiveOrder, *_nethttp.Response, error) {
+	return r.ApiService.UpdateLogsArchiveOrderExecute(r)
+}
+
+/*
+ * UpdateLogsArchiveOrder Update archive order
+ * Update the order of your archives. Since logs are processed sequentially, reordering an archive may change
+the structure and content of the data processed by other archives.
+
+**Note**: Using the `PUT` method updates your archive's order by replacing the current order
+with the new one.
+ * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @return ApiUpdateLogsArchiveOrderRequest
+*/
+func (a *LogsArchivesApiService) UpdateLogsArchiveOrder(ctx _context.Context) ApiUpdateLogsArchiveOrderRequest {
+	return ApiUpdateLogsArchiveOrderRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+/*
+ * Execute executes the request
+ * @return LogsArchiveOrder
+ */
+func (a *LogsArchivesApiService) UpdateLogsArchiveOrderExecute(r ApiUpdateLogsArchiveOrderRequest) (LogsArchiveOrder, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod   = _nethttp.MethodPut
+		localVarPostBody     interface{}
+		localVarFormFileName string
+		localVarFileName     string
+		localVarFileBytes    []byte
+		localVarReturnValue  LogsArchiveOrder
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsArchivesApiService.UpdateLogsArchiveOrder")
+	if err != nil {
+		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/logs/config/archive-order"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if r.body == nil {
+		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+
+	// Set Operation-ID header for telemetry
+	localVarHeaderParams["DD-OPERATION-ID"] = "UpdateLogsArchiveOrder"
+
+	// body params
+	localVarPostBody = r.body
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["DD-API-KEY"] = key
+			}
+		}
+	}
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["DD-APPLICATION-KEY"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v APIErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v APIErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 422 {
+			var v APIErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,

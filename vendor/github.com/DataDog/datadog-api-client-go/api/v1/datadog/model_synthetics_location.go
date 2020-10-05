@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsLocation Synthetics location that can be used when creating or editing a test.
+// SyntheticsLocation Synthetic location that can be used when creating or editing a test.
 type SyntheticsLocation struct {
 	// Unique identifier of the location.
 	Id *string `json:"id,omitempty"`

@@ -21,7 +21,9 @@ type TimeseriesWidgetRequest struct {
 	// Used to define expression aliases.
 	Metadata     *[]TimeseriesWidgetRequestMetadata `json:"metadata,omitempty"`
 	NetworkQuery *LogQueryDefinition                `json:"network_query,omitempty"`
-	ProcessQuery *ProcessQueryDefinition            `json:"process_query,omitempty"`
+	// Whether or not to display a second y-axis on the right.
+	OnRightYaxis *bool                   `json:"on_right_yaxis,omitempty"`
+	ProcessQuery *ProcessQueryDefinition `json:"process_query,omitempty"`
 	// Widget query.
 	Q             *string             `json:"q,omitempty"`
 	RumQuery      *LogQueryDefinition `json:"rum_query,omitempty"`
@@ -238,6 +240,38 @@ func (o *TimeseriesWidgetRequest) SetNetworkQuery(v LogQueryDefinition) {
 	o.NetworkQuery = &v
 }
 
+// GetOnRightYaxis returns the OnRightYaxis field value if set, zero value otherwise.
+func (o *TimeseriesWidgetRequest) GetOnRightYaxis() bool {
+	if o == nil || o.OnRightYaxis == nil {
+		var ret bool
+		return ret
+	}
+	return *o.OnRightYaxis
+}
+
+// GetOnRightYaxisOk returns a tuple with the OnRightYaxis field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TimeseriesWidgetRequest) GetOnRightYaxisOk() (*bool, bool) {
+	if o == nil || o.OnRightYaxis == nil {
+		return nil, false
+	}
+	return o.OnRightYaxis, true
+}
+
+// HasOnRightYaxis returns a boolean if a field has been set.
+func (o *TimeseriesWidgetRequest) HasOnRightYaxis() bool {
+	if o != nil && o.OnRightYaxis != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetOnRightYaxis gets a reference to the given bool and assigns it to the OnRightYaxis field.
+func (o *TimeseriesWidgetRequest) SetOnRightYaxis(v bool) {
+	o.OnRightYaxis = &v
+}
+
 // GetProcessQuery returns the ProcessQuery field value if set, zero value otherwise.
 func (o *TimeseriesWidgetRequest) GetProcessQuery() ProcessQueryDefinition {
 	if o == nil || o.ProcessQuery == nil {
@@ -417,6 +451,9 @@ func (o TimeseriesWidgetRequest) MarshalJSON() ([]byte, error) {
 	}
 	if o.NetworkQuery != nil {
 		toSerialize["network_query"] = o.NetworkQuery
+	}
+	if o.OnRightYaxis != nil {
+		toSerialize["on_right_yaxis"] = o.OnRightYaxis
 	}
 	if o.ProcessQuery != nil {
 		toSerialize["process_query"] = o.ProcessQuery

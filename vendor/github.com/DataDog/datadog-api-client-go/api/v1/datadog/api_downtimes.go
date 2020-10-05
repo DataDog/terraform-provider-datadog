@@ -24,31 +24,35 @@ var (
 // DowntimesApiService DowntimesApi service
 type DowntimesApiService service
 
-type apiCancelDowntimeRequest struct {
+type ApiCancelDowntimeRequest struct {
 	ctx        _context.Context
-	apiService *DowntimesApiService
+	ApiService *DowntimesApiService
 	downtimeId int64
 }
 
+func (r ApiCancelDowntimeRequest) Execute() (*_nethttp.Response, error) {
+	return r.ApiService.CancelDowntimeExecute(r)
+}
+
 /*
-CancelDowntime Cancel a downtime
-Cancel a downtime.
+ * CancelDowntime Cancel a downtime
+ * Cancel a downtime.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param downtimeId ID of the downtime to cancel.
-@return apiCancelDowntimeRequest
-*/
-func (a *DowntimesApiService) CancelDowntime(ctx _context.Context, downtimeId int64) apiCancelDowntimeRequest {
-	return apiCancelDowntimeRequest{
-		apiService: a,
+ * @return ApiCancelDowntimeRequest
+ */
+func (a *DowntimesApiService) CancelDowntime(ctx _context.Context, downtimeId int64) ApiCancelDowntimeRequest {
+	return ApiCancelDowntimeRequest{
+		ApiService: a,
 		ctx:        ctx,
 		downtimeId: downtimeId,
 	}
 }
 
 /*
-Execute executes the request
-*/
-func (r apiCancelDowntimeRequest) Execute() (*_nethttp.Response, error) {
+ * Execute executes the request
+ */
+func (a *DowntimesApiService) CancelDowntimeExecute(r ApiCancelDowntimeRequest) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodDelete
 		localVarPostBody     interface{}
@@ -57,7 +61,7 @@ func (r apiCancelDowntimeRequest) Execute() (*_nethttp.Response, error) {
 		localVarFileBytes    []byte
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "DowntimesApiService.CancelDowntime")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DowntimesApiService.CancelDowntime")
 	if err != nil {
 		return nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -93,12 +97,12 @@ func (r apiCancelDowntimeRequest) Execute() (*_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -107,23 +111,23 @@ func (r apiCancelDowntimeRequest) Execute() (*_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarHTTPResponse, err
 	}
@@ -141,7 +145,7 @@ func (r apiCancelDowntimeRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -151,7 +155,7 @@ func (r apiCancelDowntimeRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -164,35 +168,39 @@ func (r apiCancelDowntimeRequest) Execute() (*_nethttp.Response, error) {
 	return localVarHTTPResponse, nil
 }
 
-type apiCancelDowntimesByScopeRequest struct {
+type ApiCancelDowntimesByScopeRequest struct {
 	ctx        _context.Context
-	apiService *DowntimesApiService
+	ApiService *DowntimesApiService
 	body       *CancelDowntimesByScopeRequest
 }
 
-func (r apiCancelDowntimesByScopeRequest) Body(body CancelDowntimesByScopeRequest) apiCancelDowntimesByScopeRequest {
+func (r ApiCancelDowntimesByScopeRequest) Body(body CancelDowntimesByScopeRequest) ApiCancelDowntimesByScopeRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiCancelDowntimesByScopeRequest) Execute() (CanceledDowntimesIds, *_nethttp.Response, error) {
+	return r.ApiService.CancelDowntimesByScopeExecute(r)
+}
+
 /*
-CancelDowntimesByScope Cancel downtimes by scope
-Delete all downtimes that match the scope of `X`.
+ * CancelDowntimesByScope Cancel downtimes by scope
+ * Delete all downtimes that match the scope of `X`.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCancelDowntimesByScopeRequest
-*/
-func (a *DowntimesApiService) CancelDowntimesByScope(ctx _context.Context) apiCancelDowntimesByScopeRequest {
-	return apiCancelDowntimesByScopeRequest{
-		apiService: a,
+ * @return ApiCancelDowntimesByScopeRequest
+ */
+func (a *DowntimesApiService) CancelDowntimesByScope(ctx _context.Context) ApiCancelDowntimesByScopeRequest {
+	return ApiCancelDowntimesByScopeRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return CanceledDowntimesIds
-*/
-func (r apiCancelDowntimesByScopeRequest) Execute() (CanceledDowntimesIds, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return CanceledDowntimesIds
+ */
+func (a *DowntimesApiService) CancelDowntimesByScopeExecute(r ApiCancelDowntimesByScopeRequest) (CanceledDowntimesIds, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -202,7 +210,7 @@ func (r apiCancelDowntimesByScopeRequest) Execute() (CanceledDowntimesIds, *_net
 		localVarReturnValue  CanceledDowntimesIds
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "DowntimesApiService.CancelDowntimesByScope")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DowntimesApiService.CancelDowntimesByScope")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -242,12 +250,12 @@ func (r apiCancelDowntimesByScopeRequest) Execute() (CanceledDowntimesIds, *_net
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -256,23 +264,23 @@ func (r apiCancelDowntimesByScopeRequest) Execute() (CanceledDowntimesIds, *_net
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -290,7 +298,7 @@ func (r apiCancelDowntimesByScopeRequest) Execute() (CanceledDowntimesIds, *_net
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -300,7 +308,7 @@ func (r apiCancelDowntimesByScopeRequest) Execute() (CanceledDowntimesIds, *_net
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -310,7 +318,7 @@ func (r apiCancelDowntimesByScopeRequest) Execute() (CanceledDowntimesIds, *_net
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -320,7 +328,7 @@ func (r apiCancelDowntimesByScopeRequest) Execute() (CanceledDowntimesIds, *_net
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -332,35 +340,39 @@ func (r apiCancelDowntimesByScopeRequest) Execute() (CanceledDowntimesIds, *_net
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiCreateDowntimeRequest struct {
+type ApiCreateDowntimeRequest struct {
 	ctx        _context.Context
-	apiService *DowntimesApiService
+	ApiService *DowntimesApiService
 	body       *Downtime
 }
 
-func (r apiCreateDowntimeRequest) Body(body Downtime) apiCreateDowntimeRequest {
+func (r ApiCreateDowntimeRequest) Body(body Downtime) ApiCreateDowntimeRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiCreateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
+	return r.ApiService.CreateDowntimeExecute(r)
+}
+
 /*
-CreateDowntime Schedule a downtime
-Schedule a downtime.
+ * CreateDowntime Schedule a downtime
+ * Schedule a downtime.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCreateDowntimeRequest
-*/
-func (a *DowntimesApiService) CreateDowntime(ctx _context.Context) apiCreateDowntimeRequest {
-	return apiCreateDowntimeRequest{
-		apiService: a,
+ * @return ApiCreateDowntimeRequest
+ */
+func (a *DowntimesApiService) CreateDowntime(ctx _context.Context) ApiCreateDowntimeRequest {
+	return ApiCreateDowntimeRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return Downtime
-*/
-func (r apiCreateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return Downtime
+ */
+func (a *DowntimesApiService) CreateDowntimeExecute(r ApiCreateDowntimeRequest) (Downtime, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -370,7 +382,7 @@ func (r apiCreateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 		localVarReturnValue  Downtime
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "DowntimesApiService.CreateDowntime")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DowntimesApiService.CreateDowntime")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -410,12 +422,12 @@ func (r apiCreateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -424,23 +436,23 @@ func (r apiCreateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -458,7 +470,7 @@ func (r apiCreateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -468,7 +480,7 @@ func (r apiCreateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -478,7 +490,7 @@ func (r apiCreateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -490,32 +502,36 @@ func (r apiCreateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiGetDowntimeRequest struct {
+type ApiGetDowntimeRequest struct {
 	ctx        _context.Context
-	apiService *DowntimesApiService
+	ApiService *DowntimesApiService
 	downtimeId int64
 }
 
+func (r ApiGetDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
+	return r.ApiService.GetDowntimeExecute(r)
+}
+
 /*
-GetDowntime Get a downtime
-Get downtime detail by `downtime_id`.
+ * GetDowntime Get a downtime
+ * Get downtime detail by `downtime_id`.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param downtimeId ID of the downtime to fetch.
-@return apiGetDowntimeRequest
-*/
-func (a *DowntimesApiService) GetDowntime(ctx _context.Context, downtimeId int64) apiGetDowntimeRequest {
-	return apiGetDowntimeRequest{
-		apiService: a,
+ * @return ApiGetDowntimeRequest
+ */
+func (a *DowntimesApiService) GetDowntime(ctx _context.Context, downtimeId int64) ApiGetDowntimeRequest {
+	return ApiGetDowntimeRequest{
+		ApiService: a,
 		ctx:        ctx,
 		downtimeId: downtimeId,
 	}
 }
 
 /*
-Execute executes the request
-@return Downtime
-*/
-func (r apiGetDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return Downtime
+ */
+func (a *DowntimesApiService) GetDowntimeExecute(r ApiGetDowntimeRequest) (Downtime, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -525,7 +541,7 @@ func (r apiGetDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
 		localVarReturnValue  Downtime
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "DowntimesApiService.GetDowntime")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DowntimesApiService.GetDowntime")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -561,12 +577,12 @@ func (r apiGetDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -575,23 +591,23 @@ func (r apiGetDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -609,7 +625,7 @@ func (r apiGetDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -619,7 +635,7 @@ func (r apiGetDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -629,7 +645,7 @@ func (r apiGetDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -641,35 +657,39 @@ func (r apiGetDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListDowntimesRequest struct {
+type ApiListDowntimesRequest struct {
 	ctx         _context.Context
-	apiService  *DowntimesApiService
+	ApiService  *DowntimesApiService
 	currentOnly *bool
 }
 
-func (r apiListDowntimesRequest) CurrentOnly(currentOnly bool) apiListDowntimesRequest {
+func (r ApiListDowntimesRequest) CurrentOnly(currentOnly bool) ApiListDowntimesRequest {
 	r.currentOnly = &currentOnly
 	return r
 }
 
+func (r ApiListDowntimesRequest) Execute() ([]Downtime, *_nethttp.Response, error) {
+	return r.ApiService.ListDowntimesExecute(r)
+}
+
 /*
-ListDowntimes Get all downtimes
-Get all scheduled downtimes.
+ * ListDowntimes Get all downtimes
+ * Get all scheduled downtimes.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListDowntimesRequest
-*/
-func (a *DowntimesApiService) ListDowntimes(ctx _context.Context) apiListDowntimesRequest {
-	return apiListDowntimesRequest{
-		apiService: a,
+ * @return ApiListDowntimesRequest
+ */
+func (a *DowntimesApiService) ListDowntimes(ctx _context.Context) ApiListDowntimesRequest {
+	return ApiListDowntimesRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return []Downtime
-*/
-func (r apiListDowntimesRequest) Execute() ([]Downtime, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return []Downtime
+ */
+func (a *DowntimesApiService) ListDowntimesExecute(r ApiListDowntimesRequest) ([]Downtime, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -679,7 +699,7 @@ func (r apiListDowntimesRequest) Execute() ([]Downtime, *_nethttp.Response, erro
 		localVarReturnValue  []Downtime
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "DowntimesApiService.ListDowntimes")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DowntimesApiService.ListDowntimes")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -717,12 +737,12 @@ func (r apiListDowntimesRequest) Execute() ([]Downtime, *_nethttp.Response, erro
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -731,23 +751,23 @@ func (r apiListDowntimesRequest) Execute() ([]Downtime, *_nethttp.Response, erro
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -765,7 +785,7 @@ func (r apiListDowntimesRequest) Execute() ([]Downtime, *_nethttp.Response, erro
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -775,7 +795,7 @@ func (r apiListDowntimesRequest) Execute() ([]Downtime, *_nethttp.Response, erro
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -787,38 +807,42 @@ func (r apiListDowntimesRequest) Execute() ([]Downtime, *_nethttp.Response, erro
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUpdateDowntimeRequest struct {
+type ApiUpdateDowntimeRequest struct {
 	ctx        _context.Context
-	apiService *DowntimesApiService
+	ApiService *DowntimesApiService
 	downtimeId int64
 	body       *Downtime
 }
 
-func (r apiUpdateDowntimeRequest) Body(body Downtime) apiUpdateDowntimeRequest {
+func (r ApiUpdateDowntimeRequest) Body(body Downtime) ApiUpdateDowntimeRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
+	return r.ApiService.UpdateDowntimeExecute(r)
+}
+
 /*
-UpdateDowntime Update a downtime
-Update a single downtime by `downtime_id`.
+ * UpdateDowntime Update a downtime
+ * Update a single downtime by `downtime_id`.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param downtimeId ID of the downtime to update.
-@return apiUpdateDowntimeRequest
-*/
-func (a *DowntimesApiService) UpdateDowntime(ctx _context.Context, downtimeId int64) apiUpdateDowntimeRequest {
-	return apiUpdateDowntimeRequest{
-		apiService: a,
+ * @return ApiUpdateDowntimeRequest
+ */
+func (a *DowntimesApiService) UpdateDowntime(ctx _context.Context, downtimeId int64) ApiUpdateDowntimeRequest {
+	return ApiUpdateDowntimeRequest{
+		ApiService: a,
 		ctx:        ctx,
 		downtimeId: downtimeId,
 	}
 }
 
 /*
-Execute executes the request
-@return Downtime
-*/
-func (r apiUpdateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return Downtime
+ */
+func (a *DowntimesApiService) UpdateDowntimeExecute(r ApiUpdateDowntimeRequest) (Downtime, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -828,7 +852,7 @@ func (r apiUpdateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 		localVarReturnValue  Downtime
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "DowntimesApiService.UpdateDowntime")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DowntimesApiService.UpdateDowntime")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -869,12 +893,12 @@ func (r apiUpdateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -883,23 +907,23 @@ func (r apiUpdateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -917,7 +941,7 @@ func (r apiUpdateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -927,7 +951,7 @@ func (r apiUpdateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -937,7 +961,7 @@ func (r apiUpdateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -947,7 +971,7 @@ func (r apiUpdateDowntimeRequest) Execute() (Downtime, *_nethttp.Response, error
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
