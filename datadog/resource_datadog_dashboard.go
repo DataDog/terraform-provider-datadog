@@ -5176,9 +5176,9 @@ func buildDatadogApmStatsQuery(terraformQuery map[string]interface{}) *datadogV1
 	}
 
 	if terraformColumns, ok := terraformQuery["columns"].([]interface{}); ok && len(terraformColumns) > 0 {
-		datadogColumns := make([]map[string]interface{}, len(terraformColumns))
+		datadogColumns := make([]datadogV1.ApmStatsQueryColumnType, len(terraformColumns))
 		for i, column := range terraformColumns {
-			datadogColumns[i] = column.(map[string]interface{})
+			datadogColumns[i] = column.(datadogV1.ApmStatsQueryColumnType)
 		}
 		datadogQuery.SetColumns(datadogColumns)
 	}
