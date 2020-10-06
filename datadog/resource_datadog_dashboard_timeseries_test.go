@@ -334,7 +334,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 						aggregation = "count"
 					}
 				}
-				on_right_yaxis = "true"
+				on_right_yaxis = "false"
 			}
 			request {
 				style {
@@ -581,7 +581,7 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.request.2.apm_query.0.compute.aggregation = cardinality",
 	"widget.0.timeseries_definition.0.request.2.apm_query.0.group_by.0.sort.facet = env",
 	"widget.0.timeseries_definition.0.request.2.apm_query.0.index = trace-search",
-	"widget.0.timeseries_definition.0.request.2.on_right_yaxis = true",
+	"widget.0.timeseries_definition.0.request.2.on_right_yaxis = false",
 	"widget.0.timeseries_definition.0.request.3.log_query.# = 0",
 	"widget.0.timeseries_definition.0.request.3.process_query.0.search_by =",
 	"widget.0.timeseries_definition.0.request.3.style.# = 1",
