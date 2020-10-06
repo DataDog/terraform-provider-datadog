@@ -12,9 +12,11 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsCITestMetadataGit struct for SyntheticsCITestMetadataGit
+// SyntheticsCITestMetadataGit Git information.
 type SyntheticsCITestMetadataGit struct {
-	Branch    *string `json:"branch,omitempty"`
+	// Branch name.
+	Branch *string `json:"branch,omitempty"`
+	// Commit SHA.
 	CommitSha *string `json:"commit_sha,omitempty"`
 }
 

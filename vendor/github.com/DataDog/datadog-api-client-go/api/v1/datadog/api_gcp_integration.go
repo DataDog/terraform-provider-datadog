@@ -23,35 +23,39 @@ var (
 // GCPIntegrationApiService GCPIntegrationApi service
 type GCPIntegrationApiService service
 
-type apiCreateGCPIntegrationRequest struct {
+type ApiCreateGCPIntegrationRequest struct {
 	ctx        _context.Context
-	apiService *GCPIntegrationApiService
+	ApiService *GCPIntegrationApiService
 	body       *GCPAccount
 }
 
-func (r apiCreateGCPIntegrationRequest) Body(body GCPAccount) apiCreateGCPIntegrationRequest {
+func (r ApiCreateGCPIntegrationRequest) Body(body GCPAccount) ApiCreateGCPIntegrationRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiCreateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
+	return r.ApiService.CreateGCPIntegrationExecute(r)
+}
+
 /*
-CreateGCPIntegration Create a GCP integration
-Create a Datadog-GCP integration.
+ * CreateGCPIntegration Create a GCP integration
+ * Create a Datadog-GCP integration.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCreateGCPIntegrationRequest
-*/
-func (a *GCPIntegrationApiService) CreateGCPIntegration(ctx _context.Context) apiCreateGCPIntegrationRequest {
-	return apiCreateGCPIntegrationRequest{
-		apiService: a,
+ * @return ApiCreateGCPIntegrationRequest
+ */
+func (a *GCPIntegrationApiService) CreateGCPIntegration(ctx _context.Context) ApiCreateGCPIntegrationRequest {
+	return ApiCreateGCPIntegrationRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return interface{}
-*/
-func (r apiCreateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return interface{}
+ */
+func (a *GCPIntegrationApiService) CreateGCPIntegrationExecute(r ApiCreateGCPIntegrationRequest) (interface{}, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -61,7 +65,7 @@ func (r apiCreateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 		localVarReturnValue  interface{}
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "GCPIntegrationApiService.CreateGCPIntegration")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GCPIntegrationApiService.CreateGCPIntegration")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -101,12 +105,12 @@ func (r apiCreateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -115,23 +119,23 @@ func (r apiCreateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -149,7 +153,7 @@ func (r apiCreateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -159,7 +163,7 @@ func (r apiCreateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -169,7 +173,7 @@ func (r apiCreateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -181,35 +185,39 @@ func (r apiCreateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiDeleteGCPIntegrationRequest struct {
+type ApiDeleteGCPIntegrationRequest struct {
 	ctx        _context.Context
-	apiService *GCPIntegrationApiService
+	ApiService *GCPIntegrationApiService
 	body       *GCPAccount
 }
 
-func (r apiDeleteGCPIntegrationRequest) Body(body GCPAccount) apiDeleteGCPIntegrationRequest {
+func (r ApiDeleteGCPIntegrationRequest) Body(body GCPAccount) ApiDeleteGCPIntegrationRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiDeleteGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
+	return r.ApiService.DeleteGCPIntegrationExecute(r)
+}
+
 /*
-DeleteGCPIntegration Delete a GCP integration
-Delete a given Datadog-GCP integration.
+ * DeleteGCPIntegration Delete a GCP integration
+ * Delete a given Datadog-GCP integration.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiDeleteGCPIntegrationRequest
-*/
-func (a *GCPIntegrationApiService) DeleteGCPIntegration(ctx _context.Context) apiDeleteGCPIntegrationRequest {
-	return apiDeleteGCPIntegrationRequest{
-		apiService: a,
+ * @return ApiDeleteGCPIntegrationRequest
+ */
+func (a *GCPIntegrationApiService) DeleteGCPIntegration(ctx _context.Context) ApiDeleteGCPIntegrationRequest {
+	return ApiDeleteGCPIntegrationRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return interface{}
-*/
-func (r apiDeleteGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return interface{}
+ */
+func (a *GCPIntegrationApiService) DeleteGCPIntegrationExecute(r ApiDeleteGCPIntegrationRequest) (interface{}, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodDelete
 		localVarPostBody     interface{}
@@ -219,7 +227,7 @@ func (r apiDeleteGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 		localVarReturnValue  interface{}
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "GCPIntegrationApiService.DeleteGCPIntegration")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GCPIntegrationApiService.DeleteGCPIntegration")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -259,12 +267,12 @@ func (r apiDeleteGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -273,23 +281,23 @@ func (r apiDeleteGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -307,7 +315,7 @@ func (r apiDeleteGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -317,7 +325,7 @@ func (r apiDeleteGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -327,7 +335,7 @@ func (r apiDeleteGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -339,29 +347,33 @@ func (r apiDeleteGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListGCPIntegrationRequest struct {
+type ApiListGCPIntegrationRequest struct {
 	ctx        _context.Context
-	apiService *GCPIntegrationApiService
+	ApiService *GCPIntegrationApiService
+}
+
+func (r ApiListGCPIntegrationRequest) Execute() ([]GCPAccount, *_nethttp.Response, error) {
+	return r.ApiService.ListGCPIntegrationExecute(r)
 }
 
 /*
-ListGCPIntegration List all GCP integrations
-List all Datadog-GCP integrations configured in your Datadog account.
+ * ListGCPIntegration List all GCP integrations
+ * List all Datadog-GCP integrations configured in your Datadog account.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListGCPIntegrationRequest
-*/
-func (a *GCPIntegrationApiService) ListGCPIntegration(ctx _context.Context) apiListGCPIntegrationRequest {
-	return apiListGCPIntegrationRequest{
-		apiService: a,
+ * @return ApiListGCPIntegrationRequest
+ */
+func (a *GCPIntegrationApiService) ListGCPIntegration(ctx _context.Context) ApiListGCPIntegrationRequest {
+	return ApiListGCPIntegrationRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return []GCPAccount
-*/
-func (r apiListGCPIntegrationRequest) Execute() ([]GCPAccount, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return []GCPAccount
+ */
+func (a *GCPIntegrationApiService) ListGCPIntegrationExecute(r ApiListGCPIntegrationRequest) ([]GCPAccount, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -371,7 +383,7 @@ func (r apiListGCPIntegrationRequest) Execute() ([]GCPAccount, *_nethttp.Respons
 		localVarReturnValue  []GCPAccount
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "GCPIntegrationApiService.ListGCPIntegration")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GCPIntegrationApiService.ListGCPIntegration")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -406,12 +418,12 @@ func (r apiListGCPIntegrationRequest) Execute() ([]GCPAccount, *_nethttp.Respons
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -420,23 +432,23 @@ func (r apiListGCPIntegrationRequest) Execute() ([]GCPAccount, *_nethttp.Respons
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -454,7 +466,7 @@ func (r apiListGCPIntegrationRequest) Execute() ([]GCPAccount, *_nethttp.Respons
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -464,7 +476,7 @@ func (r apiListGCPIntegrationRequest) Execute() ([]GCPAccount, *_nethttp.Respons
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -474,7 +486,7 @@ func (r apiListGCPIntegrationRequest) Execute() ([]GCPAccount, *_nethttp.Respons
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -486,38 +498,42 @@ func (r apiListGCPIntegrationRequest) Execute() ([]GCPAccount, *_nethttp.Respons
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUpdateGCPIntegrationRequest struct {
+type ApiUpdateGCPIntegrationRequest struct {
 	ctx        _context.Context
-	apiService *GCPIntegrationApiService
+	ApiService *GCPIntegrationApiService
 	body       *GCPAccount
 }
 
-func (r apiUpdateGCPIntegrationRequest) Body(body GCPAccount) apiUpdateGCPIntegrationRequest {
+func (r ApiUpdateGCPIntegrationRequest) Body(body GCPAccount) ApiUpdateGCPIntegrationRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
+	return r.ApiService.UpdateGCPIntegrationExecute(r)
+}
+
 /*
-UpdateGCPIntegration Update a GCP integration
-Update a Datadog-GCP integrations host_filters and/or auto-mute.
+ * UpdateGCPIntegration Update a GCP integration
+ * Update a Datadog-GCP integrations host_filters and/or auto-mute.
 Requires a `project_id` and `client_email`, however these fields cannot be updated.
 If you need to update these fields, delete and use the create (`POST`) endpoint.
 The unspecified fields will keep their original values.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiUpdateGCPIntegrationRequest
+ * @return ApiUpdateGCPIntegrationRequest
 */
-func (a *GCPIntegrationApiService) UpdateGCPIntegration(ctx _context.Context) apiUpdateGCPIntegrationRequest {
-	return apiUpdateGCPIntegrationRequest{
-		apiService: a,
+func (a *GCPIntegrationApiService) UpdateGCPIntegration(ctx _context.Context) ApiUpdateGCPIntegrationRequest {
+	return ApiUpdateGCPIntegrationRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return interface{}
-*/
-func (r apiUpdateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return interface{}
+ */
+func (a *GCPIntegrationApiService) UpdateGCPIntegrationExecute(r ApiUpdateGCPIntegrationRequest) (interface{}, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -527,7 +543,7 @@ func (r apiUpdateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 		localVarReturnValue  interface{}
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "GCPIntegrationApiService.UpdateGCPIntegration")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GCPIntegrationApiService.UpdateGCPIntegration")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -567,12 +583,12 @@ func (r apiUpdateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -581,23 +597,23 @@ func (r apiUpdateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -615,7 +631,7 @@ func (r apiUpdateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -625,7 +641,7 @@ func (r apiUpdateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -635,7 +651,7 @@ func (r apiUpdateGCPIntegrationRequest) Execute() (interface{}, *_nethttp.Respon
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,

@@ -23,20 +23,24 @@ var (
 // AWSLogsIntegrationApiService AWSLogsIntegrationApi service
 type AWSLogsIntegrationApiService service
 
-type apiCheckAWSLogsLambdaAsyncRequest struct {
+type ApiCheckAWSLogsLambdaAsyncRequest struct {
 	ctx        _context.Context
-	apiService *AWSLogsIntegrationApiService
+	ApiService *AWSLogsIntegrationApiService
 	body       *AWSAccountAndLambdaRequest
 }
 
-func (r apiCheckAWSLogsLambdaAsyncRequest) Body(body AWSAccountAndLambdaRequest) apiCheckAWSLogsLambdaAsyncRequest {
+func (r ApiCheckAWSLogsLambdaAsyncRequest) Body(body AWSAccountAndLambdaRequest) ApiCheckAWSLogsLambdaAsyncRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiCheckAWSLogsLambdaAsyncRequest) Execute() (AWSLogsAsyncResponse, *_nethttp.Response, error) {
+	return r.ApiService.CheckAWSLogsLambdaAsyncExecute(r)
+}
+
 /*
-CheckAWSLogsLambdaAsync Check that an AWS Lambda Function exists
-Test if permissions are present to add a log-forwarding triggers for the given services and AWS account. The input
+ * CheckAWSLogsLambdaAsync Check that an AWS Lambda Function exists
+ * Test if permissions are present to add a log-forwarding triggers for the given services and AWS account. The input
 is the same as for Enable an AWS service log collection. Subsequent requests will always repeat the above, so this
 endpoint can be polled intermittently instead of blocking.
 
@@ -45,20 +49,20 @@ endpoint can be polled intermittently instead of blocking.
 - Returns a status of 'checked and ok' if the Lambda exists.
 - Returns a status of 'error' if the Lambda does not exist.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCheckAWSLogsLambdaAsyncRequest
+ * @return ApiCheckAWSLogsLambdaAsyncRequest
 */
-func (a *AWSLogsIntegrationApiService) CheckAWSLogsLambdaAsync(ctx _context.Context) apiCheckAWSLogsLambdaAsyncRequest {
-	return apiCheckAWSLogsLambdaAsyncRequest{
-		apiService: a,
+func (a *AWSLogsIntegrationApiService) CheckAWSLogsLambdaAsync(ctx _context.Context) ApiCheckAWSLogsLambdaAsyncRequest {
+	return ApiCheckAWSLogsLambdaAsyncRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return AWSLogsAsyncResponse
-*/
-func (r apiCheckAWSLogsLambdaAsyncRequest) Execute() (AWSLogsAsyncResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return AWSLogsAsyncResponse
+ */
+func (a *AWSLogsIntegrationApiService) CheckAWSLogsLambdaAsyncExecute(r ApiCheckAWSLogsLambdaAsyncRequest) (AWSLogsAsyncResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -68,7 +72,7 @@ func (r apiCheckAWSLogsLambdaAsyncRequest) Execute() (AWSLogsAsyncResponse, *_ne
 		localVarReturnValue  AWSLogsAsyncResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "AWSLogsIntegrationApiService.CheckAWSLogsLambdaAsync")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AWSLogsIntegrationApiService.CheckAWSLogsLambdaAsync")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -108,12 +112,12 @@ func (r apiCheckAWSLogsLambdaAsyncRequest) Execute() (AWSLogsAsyncResponse, *_ne
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -122,23 +126,23 @@ func (r apiCheckAWSLogsLambdaAsyncRequest) Execute() (AWSLogsAsyncResponse, *_ne
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -156,7 +160,7 @@ func (r apiCheckAWSLogsLambdaAsyncRequest) Execute() (AWSLogsAsyncResponse, *_ne
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -166,7 +170,7 @@ func (r apiCheckAWSLogsLambdaAsyncRequest) Execute() (AWSLogsAsyncResponse, *_ne
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -176,7 +180,7 @@ func (r apiCheckAWSLogsLambdaAsyncRequest) Execute() (AWSLogsAsyncResponse, *_ne
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -188,20 +192,24 @@ func (r apiCheckAWSLogsLambdaAsyncRequest) Execute() (AWSLogsAsyncResponse, *_ne
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiCheckAWSLogsServicesAsyncRequest struct {
+type ApiCheckAWSLogsServicesAsyncRequest struct {
 	ctx        _context.Context
-	apiService *AWSLogsIntegrationApiService
+	ApiService *AWSLogsIntegrationApiService
 	body       *AWSLogsServicesRequest
 }
 
-func (r apiCheckAWSLogsServicesAsyncRequest) Body(body AWSLogsServicesRequest) apiCheckAWSLogsServicesAsyncRequest {
+func (r ApiCheckAWSLogsServicesAsyncRequest) Body(body AWSLogsServicesRequest) ApiCheckAWSLogsServicesAsyncRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiCheckAWSLogsServicesAsyncRequest) Execute() (AWSLogsAsyncResponse, *_nethttp.Response, error) {
+	return r.ApiService.CheckAWSLogsServicesAsyncExecute(r)
+}
+
 /*
-CheckAWSLogsServicesAsync Check permissions for log services
-Test if permissions are present to add log-forwarding triggers for the
+ * CheckAWSLogsServicesAsync Check permissions for log services
+ * Test if permissions are present to add log-forwarding triggers for the
 given services and AWS account. Input is the same as for `EnableAWSLogServices`.
 Done async, so can be repeatedly polled in a non-blocking fashion until
 the async request completes.
@@ -212,20 +220,20 @@ the async request completes.
 - Returns a status of `checked and ok` if the Lambda exists.
 - Returns a status of `error` if the Lambda does not exist.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCheckAWSLogsServicesAsyncRequest
+ * @return ApiCheckAWSLogsServicesAsyncRequest
 */
-func (a *AWSLogsIntegrationApiService) CheckAWSLogsServicesAsync(ctx _context.Context) apiCheckAWSLogsServicesAsyncRequest {
-	return apiCheckAWSLogsServicesAsyncRequest{
-		apiService: a,
+func (a *AWSLogsIntegrationApiService) CheckAWSLogsServicesAsync(ctx _context.Context) ApiCheckAWSLogsServicesAsyncRequest {
+	return ApiCheckAWSLogsServicesAsyncRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return AWSLogsAsyncResponse
-*/
-func (r apiCheckAWSLogsServicesAsyncRequest) Execute() (AWSLogsAsyncResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return AWSLogsAsyncResponse
+ */
+func (a *AWSLogsIntegrationApiService) CheckAWSLogsServicesAsyncExecute(r ApiCheckAWSLogsServicesAsyncRequest) (AWSLogsAsyncResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -235,7 +243,7 @@ func (r apiCheckAWSLogsServicesAsyncRequest) Execute() (AWSLogsAsyncResponse, *_
 		localVarReturnValue  AWSLogsAsyncResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "AWSLogsIntegrationApiService.CheckAWSLogsServicesAsync")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AWSLogsIntegrationApiService.CheckAWSLogsServicesAsync")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -275,12 +283,12 @@ func (r apiCheckAWSLogsServicesAsyncRequest) Execute() (AWSLogsAsyncResponse, *_
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -289,23 +297,23 @@ func (r apiCheckAWSLogsServicesAsyncRequest) Execute() (AWSLogsAsyncResponse, *_
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -323,7 +331,7 @@ func (r apiCheckAWSLogsServicesAsyncRequest) Execute() (AWSLogsAsyncResponse, *_
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -333,7 +341,7 @@ func (r apiCheckAWSLogsServicesAsyncRequest) Execute() (AWSLogsAsyncResponse, *_
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -343,7 +351,7 @@ func (r apiCheckAWSLogsServicesAsyncRequest) Execute() (AWSLogsAsyncResponse, *_
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -355,35 +363,39 @@ func (r apiCheckAWSLogsServicesAsyncRequest) Execute() (AWSLogsAsyncResponse, *_
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiCreateAWSLambdaARNRequest struct {
+type ApiCreateAWSLambdaARNRequest struct {
 	ctx        _context.Context
-	apiService *AWSLogsIntegrationApiService
+	ApiService *AWSLogsIntegrationApiService
 	body       *AWSAccountAndLambdaRequest
 }
 
-func (r apiCreateAWSLambdaARNRequest) Body(body AWSAccountAndLambdaRequest) apiCreateAWSLambdaARNRequest {
+func (r ApiCreateAWSLambdaARNRequest) Body(body AWSAccountAndLambdaRequest) ApiCreateAWSLambdaARNRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiCreateAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response, error) {
+	return r.ApiService.CreateAWSLambdaARNExecute(r)
+}
+
 /*
-CreateAWSLambdaARN Add AWS Log Lambda ARN
-Attach the Lambda ARN of the Lambda created for the Datadog-AWS log collection to your AWS account ID to enable log collection.
+ * CreateAWSLambdaARN Add AWS Log Lambda ARN
+ * Attach the Lambda ARN of the Lambda created for the Datadog-AWS log collection to your AWS account ID to enable log collection.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCreateAWSLambdaARNRequest
-*/
-func (a *AWSLogsIntegrationApiService) CreateAWSLambdaARN(ctx _context.Context) apiCreateAWSLambdaARNRequest {
-	return apiCreateAWSLambdaARNRequest{
-		apiService: a,
+ * @return ApiCreateAWSLambdaARNRequest
+ */
+func (a *AWSLogsIntegrationApiService) CreateAWSLambdaARN(ctx _context.Context) ApiCreateAWSLambdaARNRequest {
+	return ApiCreateAWSLambdaARNRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return interface{}
-*/
-func (r apiCreateAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return interface{}
+ */
+func (a *AWSLogsIntegrationApiService) CreateAWSLambdaARNExecute(r ApiCreateAWSLambdaARNRequest) (interface{}, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -393,7 +405,7 @@ func (r apiCreateAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 		localVarReturnValue  interface{}
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "AWSLogsIntegrationApiService.CreateAWSLambdaARN")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AWSLogsIntegrationApiService.CreateAWSLambdaARN")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -433,12 +445,12 @@ func (r apiCreateAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -447,23 +459,23 @@ func (r apiCreateAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -481,7 +493,7 @@ func (r apiCreateAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -491,7 +503,7 @@ func (r apiCreateAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -501,7 +513,7 @@ func (r apiCreateAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -513,35 +525,39 @@ func (r apiCreateAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiDeleteAWSLambdaARNRequest struct {
+type ApiDeleteAWSLambdaARNRequest struct {
 	ctx        _context.Context
-	apiService *AWSLogsIntegrationApiService
+	ApiService *AWSLogsIntegrationApiService
 	body       *AWSAccountAndLambdaRequest
 }
 
-func (r apiDeleteAWSLambdaARNRequest) Body(body AWSAccountAndLambdaRequest) apiDeleteAWSLambdaARNRequest {
+func (r ApiDeleteAWSLambdaARNRequest) Body(body AWSAccountAndLambdaRequest) ApiDeleteAWSLambdaARNRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiDeleteAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response, error) {
+	return r.ApiService.DeleteAWSLambdaARNExecute(r)
+}
+
 /*
-DeleteAWSLambdaARN Delete an AWS Logs integration
-Delete a Datadog-AWS logs configuration by removing the specific Lambda ARN associated with a given AWS account.
+ * DeleteAWSLambdaARN Delete an AWS Logs integration
+ * Delete a Datadog-AWS logs configuration by removing the specific Lambda ARN associated with a given AWS account.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiDeleteAWSLambdaARNRequest
-*/
-func (a *AWSLogsIntegrationApiService) DeleteAWSLambdaARN(ctx _context.Context) apiDeleteAWSLambdaARNRequest {
-	return apiDeleteAWSLambdaARNRequest{
-		apiService: a,
+ * @return ApiDeleteAWSLambdaARNRequest
+ */
+func (a *AWSLogsIntegrationApiService) DeleteAWSLambdaARN(ctx _context.Context) ApiDeleteAWSLambdaARNRequest {
+	return ApiDeleteAWSLambdaARNRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return interface{}
-*/
-func (r apiDeleteAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return interface{}
+ */
+func (a *AWSLogsIntegrationApiService) DeleteAWSLambdaARNExecute(r ApiDeleteAWSLambdaARNRequest) (interface{}, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodDelete
 		localVarPostBody     interface{}
@@ -551,7 +567,7 @@ func (r apiDeleteAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 		localVarReturnValue  interface{}
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "AWSLogsIntegrationApiService.DeleteAWSLambdaARN")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AWSLogsIntegrationApiService.DeleteAWSLambdaARN")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -591,12 +607,12 @@ func (r apiDeleteAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -605,23 +621,23 @@ func (r apiDeleteAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -639,7 +655,7 @@ func (r apiDeleteAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -649,7 +665,7 @@ func (r apiDeleteAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -659,7 +675,7 @@ func (r apiDeleteAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -671,35 +687,39 @@ func (r apiDeleteAWSLambdaARNRequest) Execute() (interface{}, *_nethttp.Response
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiEnableAWSLogServicesRequest struct {
+type ApiEnableAWSLogServicesRequest struct {
 	ctx        _context.Context
-	apiService *AWSLogsIntegrationApiService
+	ApiService *AWSLogsIntegrationApiService
 	body       *AWSLogsServicesRequest
 }
 
-func (r apiEnableAWSLogServicesRequest) Body(body AWSLogsServicesRequest) apiEnableAWSLogServicesRequest {
+func (r ApiEnableAWSLogServicesRequest) Body(body AWSLogsServicesRequest) ApiEnableAWSLogServicesRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiEnableAWSLogServicesRequest) Execute() (interface{}, *_nethttp.Response, error) {
+	return r.ApiService.EnableAWSLogServicesExecute(r)
+}
+
 /*
-EnableAWSLogServices Enable an AWS Logs integration
-Enable automatic log collection for a list of services. This should be run after running `CreateAWSLambdaARN` to save the configuration.
+ * EnableAWSLogServices Enable an AWS Logs integration
+ * Enable automatic log collection for a list of services. This should be run after running `CreateAWSLambdaARN` to save the configuration.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiEnableAWSLogServicesRequest
-*/
-func (a *AWSLogsIntegrationApiService) EnableAWSLogServices(ctx _context.Context) apiEnableAWSLogServicesRequest {
-	return apiEnableAWSLogServicesRequest{
-		apiService: a,
+ * @return ApiEnableAWSLogServicesRequest
+ */
+func (a *AWSLogsIntegrationApiService) EnableAWSLogServices(ctx _context.Context) ApiEnableAWSLogServicesRequest {
+	return ApiEnableAWSLogServicesRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return interface{}
-*/
-func (r apiEnableAWSLogServicesRequest) Execute() (interface{}, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return interface{}
+ */
+func (a *AWSLogsIntegrationApiService) EnableAWSLogServicesExecute(r ApiEnableAWSLogServicesRequest) (interface{}, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -709,7 +729,7 @@ func (r apiEnableAWSLogServicesRequest) Execute() (interface{}, *_nethttp.Respon
 		localVarReturnValue  interface{}
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "AWSLogsIntegrationApiService.EnableAWSLogServices")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AWSLogsIntegrationApiService.EnableAWSLogServices")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -749,12 +769,12 @@ func (r apiEnableAWSLogServicesRequest) Execute() (interface{}, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -763,23 +783,23 @@ func (r apiEnableAWSLogServicesRequest) Execute() (interface{}, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -797,7 +817,7 @@ func (r apiEnableAWSLogServicesRequest) Execute() (interface{}, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -807,7 +827,7 @@ func (r apiEnableAWSLogServicesRequest) Execute() (interface{}, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -817,7 +837,7 @@ func (r apiEnableAWSLogServicesRequest) Execute() (interface{}, *_nethttp.Respon
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -829,29 +849,33 @@ func (r apiEnableAWSLogServicesRequest) Execute() (interface{}, *_nethttp.Respon
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListAWSLogsIntegrationsRequest struct {
+type ApiListAWSLogsIntegrationsRequest struct {
 	ctx        _context.Context
-	apiService *AWSLogsIntegrationApiService
+	ApiService *AWSLogsIntegrationApiService
+}
+
+func (r ApiListAWSLogsIntegrationsRequest) Execute() ([]AWSLogsListResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListAWSLogsIntegrationsExecute(r)
 }
 
 /*
-ListAWSLogsIntegrations List all AWS Logs integrations
-List all Datadog-AWS Logs integrations configured in your Datadog account.
+ * ListAWSLogsIntegrations List all AWS Logs integrations
+ * List all Datadog-AWS Logs integrations configured in your Datadog account.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListAWSLogsIntegrationsRequest
-*/
-func (a *AWSLogsIntegrationApiService) ListAWSLogsIntegrations(ctx _context.Context) apiListAWSLogsIntegrationsRequest {
-	return apiListAWSLogsIntegrationsRequest{
-		apiService: a,
+ * @return ApiListAWSLogsIntegrationsRequest
+ */
+func (a *AWSLogsIntegrationApiService) ListAWSLogsIntegrations(ctx _context.Context) ApiListAWSLogsIntegrationsRequest {
+	return ApiListAWSLogsIntegrationsRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return []AWSLogsListResponse
-*/
-func (r apiListAWSLogsIntegrationsRequest) Execute() ([]AWSLogsListResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return []AWSLogsListResponse
+ */
+func (a *AWSLogsIntegrationApiService) ListAWSLogsIntegrationsExecute(r ApiListAWSLogsIntegrationsRequest) ([]AWSLogsListResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -861,7 +885,7 @@ func (r apiListAWSLogsIntegrationsRequest) Execute() ([]AWSLogsListResponse, *_n
 		localVarReturnValue  []AWSLogsListResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "AWSLogsIntegrationApiService.ListAWSLogsIntegrations")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AWSLogsIntegrationApiService.ListAWSLogsIntegrations")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -896,12 +920,12 @@ func (r apiListAWSLogsIntegrationsRequest) Execute() ([]AWSLogsListResponse, *_n
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -910,23 +934,23 @@ func (r apiListAWSLogsIntegrationsRequest) Execute() ([]AWSLogsListResponse, *_n
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -944,7 +968,7 @@ func (r apiListAWSLogsIntegrationsRequest) Execute() ([]AWSLogsListResponse, *_n
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -954,7 +978,7 @@ func (r apiListAWSLogsIntegrationsRequest) Execute() ([]AWSLogsListResponse, *_n
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -964,7 +988,7 @@ func (r apiListAWSLogsIntegrationsRequest) Execute() ([]AWSLogsListResponse, *_n
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -976,29 +1000,33 @@ func (r apiListAWSLogsIntegrationsRequest) Execute() ([]AWSLogsListResponse, *_n
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListAWSLogsServicesRequest struct {
+type ApiListAWSLogsServicesRequest struct {
 	ctx        _context.Context
-	apiService *AWSLogsIntegrationApiService
+	ApiService *AWSLogsIntegrationApiService
+}
+
+func (r ApiListAWSLogsServicesRequest) Execute() ([]AWSLogsListServicesResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListAWSLogsServicesExecute(r)
 }
 
 /*
-ListAWSLogsServices Get list of AWS log ready services
-Get the list of current AWS services that Datadog offers automatic log collection. Use returned service IDs with the services parameter for the Enable an AWS service log collection API endpoint.
+ * ListAWSLogsServices Get list of AWS log ready services
+ * Get the list of current AWS services that Datadog offers automatic log collection. Use returned service IDs with the services parameter for the Enable an AWS service log collection API endpoint.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListAWSLogsServicesRequest
-*/
-func (a *AWSLogsIntegrationApiService) ListAWSLogsServices(ctx _context.Context) apiListAWSLogsServicesRequest {
-	return apiListAWSLogsServicesRequest{
-		apiService: a,
+ * @return ApiListAWSLogsServicesRequest
+ */
+func (a *AWSLogsIntegrationApiService) ListAWSLogsServices(ctx _context.Context) ApiListAWSLogsServicesRequest {
+	return ApiListAWSLogsServicesRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return []AWSLogsListServicesResponse
-*/
-func (r apiListAWSLogsServicesRequest) Execute() ([]AWSLogsListServicesResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return []AWSLogsListServicesResponse
+ */
+func (a *AWSLogsIntegrationApiService) ListAWSLogsServicesExecute(r ApiListAWSLogsServicesRequest) ([]AWSLogsListServicesResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -1008,7 +1036,7 @@ func (r apiListAWSLogsServicesRequest) Execute() ([]AWSLogsListServicesResponse,
 		localVarReturnValue  []AWSLogsListServicesResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "AWSLogsIntegrationApiService.ListAWSLogsServices")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AWSLogsIntegrationApiService.ListAWSLogsServices")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -1043,12 +1071,12 @@ func (r apiListAWSLogsServicesRequest) Execute() ([]AWSLogsListServicesResponse,
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -1057,23 +1085,23 @@ func (r apiListAWSLogsServicesRequest) Execute() ([]AWSLogsListServicesResponse,
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1091,7 +1119,7 @@ func (r apiListAWSLogsServicesRequest) Execute() ([]AWSLogsListServicesResponse,
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1101,7 +1129,7 @@ func (r apiListAWSLogsServicesRequest) Execute() ([]AWSLogsListServicesResponse,
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,

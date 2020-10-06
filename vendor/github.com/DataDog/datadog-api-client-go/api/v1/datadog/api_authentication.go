@@ -23,29 +23,33 @@ var (
 // AuthenticationApiService AuthenticationApi service
 type AuthenticationApiService service
 
-type apiValidateRequest struct {
+type ApiValidateRequest struct {
 	ctx        _context.Context
-	apiService *AuthenticationApiService
+	ApiService *AuthenticationApiService
+}
+
+func (r ApiValidateRequest) Execute() (AuthenticationValidationResponse, *_nethttp.Response, error) {
+	return r.ApiService.ValidateExecute(r)
 }
 
 /*
-Validate Validate API key
-Check if the API key (not the APP key) is valid. If invalid, a 403 is returned.
+ * Validate Validate API key
+ * Check if the API key (not the APP key) is valid. If invalid, a 403 is returned.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiValidateRequest
-*/
-func (a *AuthenticationApiService) Validate(ctx _context.Context) apiValidateRequest {
-	return apiValidateRequest{
-		apiService: a,
+ * @return ApiValidateRequest
+ */
+func (a *AuthenticationApiService) Validate(ctx _context.Context) ApiValidateRequest {
+	return ApiValidateRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return AuthenticationValidationResponse
-*/
-func (r apiValidateRequest) Execute() (AuthenticationValidationResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return AuthenticationValidationResponse
+ */
+func (a *AuthenticationApiService) ValidateExecute(r ApiValidateRequest) (AuthenticationValidationResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -55,7 +59,7 @@ func (r apiValidateRequest) Execute() (AuthenticationValidationResponse, *_netht
 		localVarReturnValue  AuthenticationValidationResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "AuthenticationApiService.Validate")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticationApiService.Validate")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -90,23 +94,23 @@ func (r apiValidateRequest) Execute() (AuthenticationValidationResponse, *_netht
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -124,7 +128,7 @@ func (r apiValidateRequest) Execute() (AuthenticationValidationResponse, *_netht
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -134,7 +138,7 @@ func (r apiValidateRequest) Execute() (AuthenticationValidationResponse, *_netht
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,

@@ -23,9 +23,9 @@ var (
 // SnapshotsApiService SnapshotsApi service
 type SnapshotsApiService service
 
-type apiGetGraphSnapshotRequest struct {
+type ApiGetGraphSnapshotRequest struct {
 	ctx         _context.Context
-	apiService  *SnapshotsApiService
+	ApiService  *SnapshotsApiService
 	start       *int64
 	end         *int64
 	metricQuery *string
@@ -34,50 +34,54 @@ type apiGetGraphSnapshotRequest struct {
 	title       *string
 }
 
-func (r apiGetGraphSnapshotRequest) Start(start int64) apiGetGraphSnapshotRequest {
+func (r ApiGetGraphSnapshotRequest) Start(start int64) ApiGetGraphSnapshotRequest {
 	r.start = &start
 	return r
 }
-func (r apiGetGraphSnapshotRequest) End(end int64) apiGetGraphSnapshotRequest {
+func (r ApiGetGraphSnapshotRequest) End(end int64) ApiGetGraphSnapshotRequest {
 	r.end = &end
 	return r
 }
-func (r apiGetGraphSnapshotRequest) MetricQuery(metricQuery string) apiGetGraphSnapshotRequest {
+func (r ApiGetGraphSnapshotRequest) MetricQuery(metricQuery string) ApiGetGraphSnapshotRequest {
 	r.metricQuery = &metricQuery
 	return r
 }
-func (r apiGetGraphSnapshotRequest) EventQuery(eventQuery string) apiGetGraphSnapshotRequest {
+func (r ApiGetGraphSnapshotRequest) EventQuery(eventQuery string) ApiGetGraphSnapshotRequest {
 	r.eventQuery = &eventQuery
 	return r
 }
-func (r apiGetGraphSnapshotRequest) GraphDef(graphDef string) apiGetGraphSnapshotRequest {
+func (r ApiGetGraphSnapshotRequest) GraphDef(graphDef string) ApiGetGraphSnapshotRequest {
 	r.graphDef = &graphDef
 	return r
 }
-func (r apiGetGraphSnapshotRequest) Title(title string) apiGetGraphSnapshotRequest {
+func (r ApiGetGraphSnapshotRequest) Title(title string) ApiGetGraphSnapshotRequest {
 	r.title = &title
 	return r
 }
 
+func (r ApiGetGraphSnapshotRequest) Execute() (GraphSnapshot, *_nethttp.Response, error) {
+	return r.ApiService.GetGraphSnapshotExecute(r)
+}
+
 /*
-GetGraphSnapshot Take graph snapshots
-Take graph snapshots.
+ * GetGraphSnapshot Take graph snapshots
+ * Take graph snapshots.
 **Note**: When a snapshot is created, there is some delay before it is available.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiGetGraphSnapshotRequest
+ * @return ApiGetGraphSnapshotRequest
 */
-func (a *SnapshotsApiService) GetGraphSnapshot(ctx _context.Context) apiGetGraphSnapshotRequest {
-	return apiGetGraphSnapshotRequest{
-		apiService: a,
+func (a *SnapshotsApiService) GetGraphSnapshot(ctx _context.Context) ApiGetGraphSnapshotRequest {
+	return ApiGetGraphSnapshotRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return GraphSnapshot
-*/
-func (r apiGetGraphSnapshotRequest) Execute() (GraphSnapshot, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return GraphSnapshot
+ */
+func (a *SnapshotsApiService) GetGraphSnapshotExecute(r ApiGetGraphSnapshotRequest) (GraphSnapshot, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -87,7 +91,7 @@ func (r apiGetGraphSnapshotRequest) Execute() (GraphSnapshot, *_nethttp.Response
 		localVarReturnValue  GraphSnapshot
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SnapshotsApiService.GetGraphSnapshot")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SnapshotsApiService.GetGraphSnapshot")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -142,12 +146,12 @@ func (r apiGetGraphSnapshotRequest) Execute() (GraphSnapshot, *_nethttp.Response
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -156,23 +160,23 @@ func (r apiGetGraphSnapshotRequest) Execute() (GraphSnapshot, *_nethttp.Response
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -190,7 +194,7 @@ func (r apiGetGraphSnapshotRequest) Execute() (GraphSnapshot, *_nethttp.Response
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -200,7 +204,7 @@ func (r apiGetGraphSnapshotRequest) Execute() (GraphSnapshot, *_nethttp.Response
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -210,7 +214,7 @@ func (r apiGetGraphSnapshotRequest) Execute() (GraphSnapshot, *_nethttp.Response
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,

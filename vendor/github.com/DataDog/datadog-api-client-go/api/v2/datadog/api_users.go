@@ -24,35 +24,39 @@ var (
 // UsersApiService UsersApi service
 type UsersApiService service
 
-type apiCreateUserRequest struct {
+type ApiCreateUserRequest struct {
 	ctx        _context.Context
-	apiService *UsersApiService
+	ApiService *UsersApiService
 	body       *UserCreateRequest
 }
 
-func (r apiCreateUserRequest) Body(body UserCreateRequest) apiCreateUserRequest {
+func (r ApiCreateUserRequest) Body(body UserCreateRequest) ApiCreateUserRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiCreateUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
+	return r.ApiService.CreateUserExecute(r)
+}
+
 /*
-CreateUser Create a user
-Create a user for your organization.
+ * CreateUser Create a user
+ * Create a user for your organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCreateUserRequest
-*/
-func (a *UsersApiService) CreateUser(ctx _context.Context) apiCreateUserRequest {
-	return apiCreateUserRequest{
-		apiService: a,
+ * @return ApiCreateUserRequest
+ */
+func (a *UsersApiService) CreateUser(ctx _context.Context) ApiCreateUserRequest {
+	return ApiCreateUserRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return UserResponse
-*/
-func (r apiCreateUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return UserResponse
+ */
+func (a *UsersApiService) CreateUserExecute(r ApiCreateUserRequest) (UserResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -62,7 +66,7 @@ func (r apiCreateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 		localVarReturnValue  UserResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.CreateUser")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.CreateUser")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -99,12 +103,12 @@ func (r apiCreateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -113,23 +117,23 @@ func (r apiCreateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -147,7 +151,7 @@ func (r apiCreateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -157,7 +161,7 @@ func (r apiCreateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -167,7 +171,7 @@ func (r apiCreateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -179,31 +183,36 @@ func (r apiCreateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiDisableUserRequest struct {
+type ApiDisableUserRequest struct {
 	ctx        _context.Context
-	apiService *UsersApiService
+	ApiService *UsersApiService
 	userId     string
 }
 
+func (r ApiDisableUserRequest) Execute() (*_nethttp.Response, error) {
+	return r.ApiService.DisableUserExecute(r)
+}
+
 /*
-DisableUser Disable a user
-Disable a user. Can only be used with an application key belonging to an administrator user.
+ * DisableUser Disable a user
+ * Disable a user. Can only be used with an application key belonging
+to an administrator user.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param userId The ID of the user.
-@return apiDisableUserRequest
+ * @return ApiDisableUserRequest
 */
-func (a *UsersApiService) DisableUser(ctx _context.Context, userId string) apiDisableUserRequest {
-	return apiDisableUserRequest{
-		apiService: a,
+func (a *UsersApiService) DisableUser(ctx _context.Context, userId string) ApiDisableUserRequest {
+	return ApiDisableUserRequest{
+		ApiService: a,
 		ctx:        ctx,
 		userId:     userId,
 	}
 }
 
 /*
-Execute executes the request
-*/
-func (r apiDisableUserRequest) Execute() (*_nethttp.Response, error) {
+ * Execute executes the request
+ */
+func (a *UsersApiService) DisableUserExecute(r ApiDisableUserRequest) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodDelete
 		localVarPostBody     interface{}
@@ -212,7 +221,7 @@ func (r apiDisableUserRequest) Execute() (*_nethttp.Response, error) {
 		localVarFileBytes    []byte
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.DisableUser")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.DisableUser")
 	if err != nil {
 		return nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -248,12 +257,12 @@ func (r apiDisableUserRequest) Execute() (*_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -262,23 +271,23 @@ func (r apiDisableUserRequest) Execute() (*_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarHTTPResponse, err
 	}
@@ -296,7 +305,7 @@ func (r apiDisableUserRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -306,7 +315,7 @@ func (r apiDisableUserRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -319,32 +328,36 @@ func (r apiDisableUserRequest) Execute() (*_nethttp.Response, error) {
 	return localVarHTTPResponse, nil
 }
 
-type apiGetInvitationRequest struct {
+type ApiGetInvitationRequest struct {
 	ctx                _context.Context
-	apiService         *UsersApiService
+	ApiService         *UsersApiService
 	userInvitationUuid string
 }
 
+func (r ApiGetInvitationRequest) Execute() (UserInvitationResponse, *_nethttp.Response, error) {
+	return r.ApiService.GetInvitationExecute(r)
+}
+
 /*
-GetInvitation Get a user invitation
-Returns a single user invitation by its UUID.
+ * GetInvitation Get a user invitation
+ * Returns a single user invitation by its UUID.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param userInvitationUuid The UUID of the user invitation.
-@return apiGetInvitationRequest
-*/
-func (a *UsersApiService) GetInvitation(ctx _context.Context, userInvitationUuid string) apiGetInvitationRequest {
-	return apiGetInvitationRequest{
-		apiService:         a,
+ * @return ApiGetInvitationRequest
+ */
+func (a *UsersApiService) GetInvitation(ctx _context.Context, userInvitationUuid string) ApiGetInvitationRequest {
+	return ApiGetInvitationRequest{
+		ApiService:         a,
 		ctx:                ctx,
 		userInvitationUuid: userInvitationUuid,
 	}
 }
 
 /*
-Execute executes the request
-@return UserInvitationResponse
-*/
-func (r apiGetInvitationRequest) Execute() (UserInvitationResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return UserInvitationResponse
+ */
+func (a *UsersApiService) GetInvitationExecute(r ApiGetInvitationRequest) (UserInvitationResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -354,7 +367,7 @@ func (r apiGetInvitationRequest) Execute() (UserInvitationResponse, *_nethttp.Re
 		localVarReturnValue  UserInvitationResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.GetInvitation")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.GetInvitation")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -390,12 +403,12 @@ func (r apiGetInvitationRequest) Execute() (UserInvitationResponse, *_nethttp.Re
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -404,23 +417,23 @@ func (r apiGetInvitationRequest) Execute() (UserInvitationResponse, *_nethttp.Re
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -438,7 +451,7 @@ func (r apiGetInvitationRequest) Execute() (UserInvitationResponse, *_nethttp.Re
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -448,7 +461,7 @@ func (r apiGetInvitationRequest) Execute() (UserInvitationResponse, *_nethttp.Re
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -458,7 +471,7 @@ func (r apiGetInvitationRequest) Execute() (UserInvitationResponse, *_nethttp.Re
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -470,32 +483,36 @@ func (r apiGetInvitationRequest) Execute() (UserInvitationResponse, *_nethttp.Re
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiGetUserRequest struct {
+type ApiGetUserRequest struct {
 	ctx        _context.Context
-	apiService *UsersApiService
+	ApiService *UsersApiService
 	userId     string
 }
 
+func (r ApiGetUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
+	return r.ApiService.GetUserExecute(r)
+}
+
 /*
-GetUser Get user details
-Get a user in the organization specified by the user’s `user_id`.
+ * GetUser Get user details
+ * Get a user in the organization specified by the user’s `user_id`.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param userId The ID of the user.
-@return apiGetUserRequest
-*/
-func (a *UsersApiService) GetUser(ctx _context.Context, userId string) apiGetUserRequest {
-	return apiGetUserRequest{
-		apiService: a,
+ * @return ApiGetUserRequest
+ */
+func (a *UsersApiService) GetUser(ctx _context.Context, userId string) ApiGetUserRequest {
+	return ApiGetUserRequest{
+		ApiService: a,
 		ctx:        ctx,
 		userId:     userId,
 	}
 }
 
 /*
-Execute executes the request
-@return UserResponse
-*/
-func (r apiGetUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return UserResponse
+ */
+func (a *UsersApiService) GetUserExecute(r ApiGetUserRequest) (UserResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -505,7 +522,7 @@ func (r apiGetUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
 		localVarReturnValue  UserResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.GetUser")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.GetUser")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -541,12 +558,12 @@ func (r apiGetUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -555,23 +572,23 @@ func (r apiGetUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -589,7 +606,7 @@ func (r apiGetUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -599,7 +616,7 @@ func (r apiGetUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -609,7 +626,7 @@ func (r apiGetUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -621,32 +638,37 @@ func (r apiGetUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListUserOrganizationsRequest struct {
+type ApiListUserOrganizationsRequest struct {
 	ctx        _context.Context
-	apiService *UsersApiService
+	ApiService *UsersApiService
 	userId     string
 }
 
+func (r ApiListUserOrganizationsRequest) Execute() (UserResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListUserOrganizationsExecute(r)
+}
+
 /*
-ListUserOrganizations Get a user organization
-Get a user organization. Returns the user information and all organizations joined by this user.
+ * ListUserOrganizations Get a user organization
+ * Get a user organization. Returns the user information and all organizations
+joined by this user.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param userId The ID of the user.
-@return apiListUserOrganizationsRequest
+ * @return ApiListUserOrganizationsRequest
 */
-func (a *UsersApiService) ListUserOrganizations(ctx _context.Context, userId string) apiListUserOrganizationsRequest {
-	return apiListUserOrganizationsRequest{
-		apiService: a,
+func (a *UsersApiService) ListUserOrganizations(ctx _context.Context, userId string) ApiListUserOrganizationsRequest {
+	return ApiListUserOrganizationsRequest{
+		ApiService: a,
 		ctx:        ctx,
 		userId:     userId,
 	}
 }
 
 /*
-Execute executes the request
-@return UserResponse
-*/
-func (r apiListUserOrganizationsRequest) Execute() (UserResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return UserResponse
+ */
+func (a *UsersApiService) ListUserOrganizationsExecute(r ApiListUserOrganizationsRequest) (UserResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -656,7 +678,7 @@ func (r apiListUserOrganizationsRequest) Execute() (UserResponse, *_nethttp.Resp
 		localVarReturnValue  UserResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.ListUserOrganizations")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.ListUserOrganizations")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -692,12 +714,12 @@ func (r apiListUserOrganizationsRequest) Execute() (UserResponse, *_nethttp.Resp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -706,23 +728,23 @@ func (r apiListUserOrganizationsRequest) Execute() (UserResponse, *_nethttp.Resp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -740,7 +762,7 @@ func (r apiListUserOrganizationsRequest) Execute() (UserResponse, *_nethttp.Resp
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -750,7 +772,7 @@ func (r apiListUserOrganizationsRequest) Execute() (UserResponse, *_nethttp.Resp
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -760,7 +782,7 @@ func (r apiListUserOrganizationsRequest) Execute() (UserResponse, *_nethttp.Resp
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -772,32 +794,37 @@ func (r apiListUserOrganizationsRequest) Execute() (UserResponse, *_nethttp.Resp
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListUserPermissionsRequest struct {
+type ApiListUserPermissionsRequest struct {
 	ctx        _context.Context
-	apiService *UsersApiService
+	ApiService *UsersApiService
 	userId     string
 }
 
+func (r ApiListUserPermissionsRequest) Execute() (PermissionsResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListUserPermissionsExecute(r)
+}
+
 /*
-ListUserPermissions Get a user permissions
-Get a user permission set. Returns a list of the user’s permissions granted by the associated user's roles.
+ * ListUserPermissions Get a user permissions
+ * Get a user permission set. Returns a list of the user’s permissions
+granted by the associated user's roles.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param userId The ID of the user.
-@return apiListUserPermissionsRequest
+ * @return ApiListUserPermissionsRequest
 */
-func (a *UsersApiService) ListUserPermissions(ctx _context.Context, userId string) apiListUserPermissionsRequest {
-	return apiListUserPermissionsRequest{
-		apiService: a,
+func (a *UsersApiService) ListUserPermissions(ctx _context.Context, userId string) ApiListUserPermissionsRequest {
+	return ApiListUserPermissionsRequest{
+		ApiService: a,
 		ctx:        ctx,
 		userId:     userId,
 	}
 }
 
 /*
-Execute executes the request
-@return PermissionsResponse
-*/
-func (r apiListUserPermissionsRequest) Execute() (PermissionsResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return PermissionsResponse
+ */
+func (a *UsersApiService) ListUserPermissionsExecute(r ApiListUserPermissionsRequest) (PermissionsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -807,7 +834,7 @@ func (r apiListUserPermissionsRequest) Execute() (PermissionsResponse, *_nethttp
 		localVarReturnValue  PermissionsResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.ListUserPermissions")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.ListUserPermissions")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -843,12 +870,12 @@ func (r apiListUserPermissionsRequest) Execute() (PermissionsResponse, *_nethttp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -857,23 +884,23 @@ func (r apiListUserPermissionsRequest) Execute() (PermissionsResponse, *_nethttp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -891,7 +918,7 @@ func (r apiListUserPermissionsRequest) Execute() (PermissionsResponse, *_nethttp
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -901,7 +928,7 @@ func (r apiListUserPermissionsRequest) Execute() (PermissionsResponse, *_nethttp
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -911,7 +938,7 @@ func (r apiListUserPermissionsRequest) Execute() (PermissionsResponse, *_nethttp
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -923,9 +950,9 @@ func (r apiListUserPermissionsRequest) Execute() (PermissionsResponse, *_nethttp
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListUsersRequest struct {
+type ApiListUsersRequest struct {
 	ctx          _context.Context
-	apiService   *UsersApiService
+	ApiService   *UsersApiService
 	pageSize     *int64
 	pageNumber   *int64
 	sort         *string
@@ -934,49 +961,54 @@ type apiListUsersRequest struct {
 	filterStatus *string
 }
 
-func (r apiListUsersRequest) PageSize(pageSize int64) apiListUsersRequest {
+func (r ApiListUsersRequest) PageSize(pageSize int64) ApiListUsersRequest {
 	r.pageSize = &pageSize
 	return r
 }
-func (r apiListUsersRequest) PageNumber(pageNumber int64) apiListUsersRequest {
+func (r ApiListUsersRequest) PageNumber(pageNumber int64) ApiListUsersRequest {
 	r.pageNumber = &pageNumber
 	return r
 }
-func (r apiListUsersRequest) Sort(sort string) apiListUsersRequest {
+func (r ApiListUsersRequest) Sort(sort string) ApiListUsersRequest {
 	r.sort = &sort
 	return r
 }
-func (r apiListUsersRequest) SortDir(sortDir QuerySortOrder) apiListUsersRequest {
+func (r ApiListUsersRequest) SortDir(sortDir QuerySortOrder) ApiListUsersRequest {
 	r.sortDir = &sortDir
 	return r
 }
-func (r apiListUsersRequest) Filter(filter string) apiListUsersRequest {
+func (r ApiListUsersRequest) Filter(filter string) ApiListUsersRequest {
 	r.filter = &filter
 	return r
 }
-func (r apiListUsersRequest) FilterStatus(filterStatus string) apiListUsersRequest {
+func (r ApiListUsersRequest) FilterStatus(filterStatus string) ApiListUsersRequest {
 	r.filterStatus = &filterStatus
 	return r
 }
 
+func (r ApiListUsersRequest) Execute() (UsersResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListUsersExecute(r)
+}
+
 /*
-ListUsers List all users
-Get the list of all users in the organization. This list includes all users even if they are disabled or unverified.
+ * ListUsers List all users
+ * Get the list of all users in the organization. This list includes
+all users even if they are deactivated or unverified.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListUsersRequest
+ * @return ApiListUsersRequest
 */
-func (a *UsersApiService) ListUsers(ctx _context.Context) apiListUsersRequest {
-	return apiListUsersRequest{
-		apiService: a,
+func (a *UsersApiService) ListUsers(ctx _context.Context) ApiListUsersRequest {
+	return ApiListUsersRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return UsersResponse
-*/
-func (r apiListUsersRequest) Execute() (UsersResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return UsersResponse
+ */
+func (a *UsersApiService) ListUsersExecute(r ApiListUsersRequest) (UsersResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -986,7 +1018,7 @@ func (r apiListUsersRequest) Execute() (UsersResponse, *_nethttp.Response, error
 		localVarReturnValue  UsersResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.ListUsers")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.ListUsers")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -1039,12 +1071,12 @@ func (r apiListUsersRequest) Execute() (UsersResponse, *_nethttp.Response, error
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -1053,23 +1085,23 @@ func (r apiListUsersRequest) Execute() (UsersResponse, *_nethttp.Response, error
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1087,7 +1119,7 @@ func (r apiListUsersRequest) Execute() (UsersResponse, *_nethttp.Response, error
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1097,7 +1129,7 @@ func (r apiListUsersRequest) Execute() (UsersResponse, *_nethttp.Response, error
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1107,7 +1139,7 @@ func (r apiListUsersRequest) Execute() (UsersResponse, *_nethttp.Response, error
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -1119,35 +1151,39 @@ func (r apiListUsersRequest) Execute() (UsersResponse, *_nethttp.Response, error
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiSendInvitationsRequest struct {
+type ApiSendInvitationsRequest struct {
 	ctx        _context.Context
-	apiService *UsersApiService
+	ApiService *UsersApiService
 	body       *UserInvitationsRequest
 }
 
-func (r apiSendInvitationsRequest) Body(body UserInvitationsRequest) apiSendInvitationsRequest {
+func (r ApiSendInvitationsRequest) Body(body UserInvitationsRequest) ApiSendInvitationsRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiSendInvitationsRequest) Execute() (UserInvitationsResponse, *_nethttp.Response, error) {
+	return r.ApiService.SendInvitationsExecute(r)
+}
+
 /*
-SendInvitations Send invitation emails
-Sends emails to one or more users inviting them to join the organization.
+ * SendInvitations Send invitation emails
+ * Sends emails to one or more users inviting them to join the organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiSendInvitationsRequest
-*/
-func (a *UsersApiService) SendInvitations(ctx _context.Context) apiSendInvitationsRequest {
-	return apiSendInvitationsRequest{
-		apiService: a,
+ * @return ApiSendInvitationsRequest
+ */
+func (a *UsersApiService) SendInvitations(ctx _context.Context) ApiSendInvitationsRequest {
+	return ApiSendInvitationsRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return UserInvitationsResponse
-*/
-func (r apiSendInvitationsRequest) Execute() (UserInvitationsResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return UserInvitationsResponse
+ */
+func (a *UsersApiService) SendInvitationsExecute(r ApiSendInvitationsRequest) (UserInvitationsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -1157,7 +1193,7 @@ func (r apiSendInvitationsRequest) Execute() (UserInvitationsResponse, *_nethttp
 		localVarReturnValue  UserInvitationsResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.SendInvitations")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.SendInvitations")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -1194,12 +1230,12 @@ func (r apiSendInvitationsRequest) Execute() (UserInvitationsResponse, *_nethttp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -1208,23 +1244,23 @@ func (r apiSendInvitationsRequest) Execute() (UserInvitationsResponse, *_nethttp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1242,7 +1278,7 @@ func (r apiSendInvitationsRequest) Execute() (UserInvitationsResponse, *_nethttp
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1252,7 +1288,7 @@ func (r apiSendInvitationsRequest) Execute() (UserInvitationsResponse, *_nethttp
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1262,7 +1298,7 @@ func (r apiSendInvitationsRequest) Execute() (UserInvitationsResponse, *_nethttp
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -1274,38 +1310,43 @@ func (r apiSendInvitationsRequest) Execute() (UserInvitationsResponse, *_nethttp
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUpdateUserRequest struct {
+type ApiUpdateUserRequest struct {
 	ctx        _context.Context
-	apiService *UsersApiService
+	ApiService *UsersApiService
 	userId     string
 	body       *UserUpdateRequest
 }
 
-func (r apiUpdateUserRequest) Body(body UserUpdateRequest) apiUpdateUserRequest {
+func (r ApiUpdateUserRequest) Body(body UserUpdateRequest) ApiUpdateUserRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
+	return r.ApiService.UpdateUserExecute(r)
+}
+
 /*
-UpdateUser Update a user
-Edit a user. Can only be used with an application key belonging to an administrator user.
+ * UpdateUser Update a user
+ * Edit a user. Can only be used with an application key belonging
+to an administrator user.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param userId The ID of the user.
-@return apiUpdateUserRequest
+ * @return ApiUpdateUserRequest
 */
-func (a *UsersApiService) UpdateUser(ctx _context.Context, userId string) apiUpdateUserRequest {
-	return apiUpdateUserRequest{
-		apiService: a,
+func (a *UsersApiService) UpdateUser(ctx _context.Context, userId string) ApiUpdateUserRequest {
+	return ApiUpdateUserRequest{
+		ApiService: a,
 		ctx:        ctx,
 		userId:     userId,
 	}
 }
 
 /*
-Execute executes the request
-@return UserResponse
-*/
-func (r apiUpdateUserRequest) Execute() (UserResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return UserResponse
+ */
+func (a *UsersApiService) UpdateUserExecute(r ApiUpdateUserRequest) (UserResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPatch
 		localVarPostBody     interface{}
@@ -1315,7 +1356,7 @@ func (r apiUpdateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 		localVarReturnValue  UserResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.UpdateUser")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UsersApiService.UpdateUser")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -1353,12 +1394,12 @@ func (r apiUpdateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -1367,23 +1408,23 @@ func (r apiUpdateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1401,7 +1442,7 @@ func (r apiUpdateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1411,7 +1452,7 @@ func (r apiUpdateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1421,7 +1462,7 @@ func (r apiUpdateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1431,7 +1472,7 @@ func (r apiUpdateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 		}
 		if localVarHTTPResponse.StatusCode == 422 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1441,7 +1482,7 @@ func (r apiUpdateUserRequest) Execute() (UserResponse, *_nethttp.Response, error
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
