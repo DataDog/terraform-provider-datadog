@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsTriggerCITestsResponseResults struct for SyntheticsTriggerCITestsResponseResults
+// SyntheticsTriggerCITestsResponseResults Information about a single test run.
 type SyntheticsTriggerCITestsResponseResults struct {
 	Device *SyntheticsDeviceID `json:"device,omitempty"`
 	// The location ID of the test run.

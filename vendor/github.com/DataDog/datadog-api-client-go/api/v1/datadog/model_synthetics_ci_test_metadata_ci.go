@@ -12,9 +12,11 @@ import (
 	"encoding/json"
 )
 
-// SyntheticsCITestMetadataCi struct for SyntheticsCITestMetadataCi
+// SyntheticsCITestMetadataCi Describe CI provider.
 type SyntheticsCITestMetadataCi struct {
+	// Name of the pipeline.
 	Pipeline *string `json:"pipeline,omitempty"`
+	// Name of the CI provider.
 	Provider *string `json:"provider,omitempty"`
 }
 

@@ -142,7 +142,6 @@ func NewConfiguration() *Configuration {
 		},
 		OperationServers: map[string]ServerConfigurations{},
 		unstableOperations: map[string]bool{
-			"AggregateLogs":                   false,
 			"ListLogs":                        false,
 			"ListLogsGet":                     false,
 			"AddReadRoleToArchive":            false,

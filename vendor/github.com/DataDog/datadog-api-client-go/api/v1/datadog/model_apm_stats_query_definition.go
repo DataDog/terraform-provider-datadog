@@ -14,8 +14,8 @@ import (
 
 // ApmStatsQueryDefinition The APM stats query for table and distributions widgets.
 type ApmStatsQueryDefinition struct {
-	// Column names used by front end for display.
-	Columns *[]string `json:"columns,omitempty"`
+	// Column properties used by the front end for display.
+	Columns *[]ApmStatsQueryColumnType `json:"columns,omitempty"`
 	// Environment name.
 	Env string `json:"env"`
 	// Operation name associated with service.
@@ -52,9 +52,9 @@ func NewApmStatsQueryDefinitionWithDefaults() *ApmStatsQueryDefinition {
 }
 
 // GetColumns returns the Columns field value if set, zero value otherwise.
-func (o *ApmStatsQueryDefinition) GetColumns() []string {
+func (o *ApmStatsQueryDefinition) GetColumns() []ApmStatsQueryColumnType {
 	if o == nil || o.Columns == nil {
-		var ret []string
+		var ret []ApmStatsQueryColumnType
 		return ret
 	}
 	return *o.Columns
@@ -62,7 +62,7 @@ func (o *ApmStatsQueryDefinition) GetColumns() []string {
 
 // GetColumnsOk returns a tuple with the Columns field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ApmStatsQueryDefinition) GetColumnsOk() (*[]string, bool) {
+func (o *ApmStatsQueryDefinition) GetColumnsOk() (*[]ApmStatsQueryColumnType, bool) {
 	if o == nil || o.Columns == nil {
 		return nil, false
 	}
@@ -78,8 +78,8 @@ func (o *ApmStatsQueryDefinition) HasColumns() bool {
 	return false
 }
 
-// SetColumns gets a reference to the given []string and assigns it to the Columns field.
-func (o *ApmStatsQueryDefinition) SetColumns(v []string) {
+// SetColumns gets a reference to the given []ApmStatsQueryColumnType and assigns it to the Columns field.
+func (o *ApmStatsQueryDefinition) SetColumns(v []ApmStatsQueryColumnType) {
 	o.Columns = &v
 }
 

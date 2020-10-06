@@ -23,29 +23,33 @@ var (
 // IPRangesApiService IPRangesApi service
 type IPRangesApiService service
 
-type apiGetIPRangesRequest struct {
+type ApiGetIPRangesRequest struct {
 	ctx        _context.Context
-	apiService *IPRangesApiService
+	ApiService *IPRangesApiService
+}
+
+func (r ApiGetIPRangesRequest) Execute() (IPRanges, *_nethttp.Response, error) {
+	return r.ApiService.GetIPRangesExecute(r)
 }
 
 /*
-GetIPRanges List IP Ranges
-Get information about Datadog IP ranges.
+ * GetIPRanges List IP Ranges
+ * Get information about Datadog IP ranges.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiGetIPRangesRequest
-*/
-func (a *IPRangesApiService) GetIPRanges(ctx _context.Context) apiGetIPRangesRequest {
-	return apiGetIPRangesRequest{
-		apiService: a,
+ * @return ApiGetIPRangesRequest
+ */
+func (a *IPRangesApiService) GetIPRanges(ctx _context.Context) ApiGetIPRangesRequest {
+	return ApiGetIPRangesRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return IPRanges
-*/
-func (r apiGetIPRangesRequest) Execute() (IPRanges, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return IPRanges
+ */
+func (a *IPRangesApiService) GetIPRangesExecute(r ApiGetIPRangesRequest) (IPRanges, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -55,7 +59,7 @@ func (r apiGetIPRangesRequest) Execute() (IPRanges, *_nethttp.Response, error) {
 		localVarReturnValue  IPRanges
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "IPRangesApiService.GetIPRanges")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IPRangesApiService.GetIPRanges")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -87,12 +91,12 @@ func (r apiGetIPRangesRequest) Execute() (IPRanges, *_nethttp.Response, error) {
 	// Set Operation-ID header for telemetry
 	localVarHeaderParams["DD-OPERATION-ID"] = "GetIPRanges"
 
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -111,7 +115,7 @@ func (r apiGetIPRangesRequest) Execute() (IPRanges, *_nethttp.Response, error) {
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
