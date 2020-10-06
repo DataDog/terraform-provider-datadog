@@ -3930,6 +3930,14 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 				Schema: getWidgetAxisSchema(),
 			},
 		},
+		"right_yaxis": {
+			Type:     schema.TypeList,
+			MaxItems: 1,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: getWidgetAxisSchema(),
+			},
+		},
 		"title": {
 			Type:     schema.TypeString,
 			Optional: true,
@@ -3974,6 +3982,11 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 		datadogDefinition.Events = buildDatadogWidgetEvents(&v)
 	}
 	if v, ok := terraformDefinition["yaxis"].([]interface{}); ok && len(v) > 0 {
+		if axis, ok := v[0].(map[string]interface{}); ok && len(axis) > 0 {
+			datadogDefinition.Yaxis = buildDatadogWidgetAxis(axis)
+		}
+	}
+	if v, ok := terraformDefinition["right_yaxis"].([]interface{}); ok && len(v) > 0 {
 		if axis, ok := v[0].(map[string]interface{}); ok && len(axis) > 0 {
 			datadogDefinition.Yaxis = buildDatadogWidgetAxis(axis)
 		}
@@ -4088,6 +4101,10 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 			Type:     schema.TypeString,
 			Optional: true,
 		},
+		"on_right_yaxis": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
 	}
 }
 func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadogV1.TimeseriesWidgetRequest {
@@ -4139,6 +4156,9 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 		}
 		if v, ok := terraformRequest["display_type"].(string); ok && len(v) != 0 {
 			datadogTimeseriesRequest.SetDisplayType(datadogV1.WidgetDisplayType(v))
+		}
+		if v, ok := terraformRequest["on_right_yaxis"].(bool); ok {
+			datadogTimeseriesRequest.SetOnRightYaxis(v)
 		}
 		datadogRequests[i] = *datadogTimeseriesRequest
 	}
