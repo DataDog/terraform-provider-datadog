@@ -533,6 +533,7 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.request.0.apm_query.# = 0",
 	"widget.0.timeseries_definition.0.request.0.style.0.palette = dog_classic",
 	"widget.0.timeseries_definition.0.request.0.q = avg:system.cpu.user{env:prod} by {app}",
+	"widget.0.timeseries_definition.0.request.0.on_right_yaxis = true",
 	"widget.0.timeseries_definition.0.request.1.log_query.0.index = *",
 	"widget.0.timeseries_definition.0.request.1.style.# = 1",
 	"widget.0.timeseries_definition.0.request.1.log_query.0.group_by.0.sort.aggregation = count",
