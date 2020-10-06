@@ -26,36 +26,40 @@ var (
 // ServiceLevelObjectivesApiService ServiceLevelObjectivesApi service
 type ServiceLevelObjectivesApiService service
 
-type apiCheckCanDeleteSLORequest struct {
+type ApiCheckCanDeleteSLORequest struct {
 	ctx        _context.Context
-	apiService *ServiceLevelObjectivesApiService
+	ApiService *ServiceLevelObjectivesApiService
 	ids        *string
 }
 
-func (r apiCheckCanDeleteSLORequest) Ids(ids string) apiCheckCanDeleteSLORequest {
+func (r ApiCheckCanDeleteSLORequest) Ids(ids string) ApiCheckCanDeleteSLORequest {
 	r.ids = &ids
 	return r
 }
 
+func (r ApiCheckCanDeleteSLORequest) Execute() (CheckCanDeleteSLOResponse, *_nethttp.Response, error) {
+	return r.ApiService.CheckCanDeleteSLOExecute(r)
+}
+
 /*
-CheckCanDeleteSLO Check if SLOs can be safely deleted
-Check if a SLO can be safely deleted. For example,
+ * CheckCanDeleteSLO Check if SLOs can be safely deleted
+ * Check if a SLO can be safely deleted. For example,
 assure an SLO can be deleted without disrupting a dashboard.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCheckCanDeleteSLORequest
+ * @return ApiCheckCanDeleteSLORequest
 */
-func (a *ServiceLevelObjectivesApiService) CheckCanDeleteSLO(ctx _context.Context) apiCheckCanDeleteSLORequest {
-	return apiCheckCanDeleteSLORequest{
-		apiService: a,
+func (a *ServiceLevelObjectivesApiService) CheckCanDeleteSLO(ctx _context.Context) ApiCheckCanDeleteSLORequest {
+	return ApiCheckCanDeleteSLORequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return CheckCanDeleteSLOResponse
-*/
-func (r apiCheckCanDeleteSLORequest) Execute() (CheckCanDeleteSLOResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return CheckCanDeleteSLOResponse
+ */
+func (a *ServiceLevelObjectivesApiService) CheckCanDeleteSLOExecute(r ApiCheckCanDeleteSLORequest) (CheckCanDeleteSLOResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -65,7 +69,7 @@ func (r apiCheckCanDeleteSLORequest) Execute() (CheckCanDeleteSLOResponse, *_net
 		localVarReturnValue  CheckCanDeleteSLOResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.CheckCanDeleteSLO")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.CheckCanDeleteSLO")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -104,12 +108,12 @@ func (r apiCheckCanDeleteSLORequest) Execute() (CheckCanDeleteSLOResponse, *_net
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -118,23 +122,23 @@ func (r apiCheckCanDeleteSLORequest) Execute() (CheckCanDeleteSLOResponse, *_net
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -152,7 +156,7 @@ func (r apiCheckCanDeleteSLORequest) Execute() (CheckCanDeleteSLOResponse, *_net
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -162,7 +166,7 @@ func (r apiCheckCanDeleteSLORequest) Execute() (CheckCanDeleteSLOResponse, *_net
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -172,7 +176,7 @@ func (r apiCheckCanDeleteSLORequest) Execute() (CheckCanDeleteSLOResponse, *_net
 		}
 		if localVarHTTPResponse.StatusCode == 409 {
 			var v CheckCanDeleteSLOResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -182,7 +186,7 @@ func (r apiCheckCanDeleteSLORequest) Execute() (CheckCanDeleteSLOResponse, *_net
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -194,35 +198,39 @@ func (r apiCheckCanDeleteSLORequest) Execute() (CheckCanDeleteSLOResponse, *_net
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiCreateSLORequest struct {
+type ApiCreateSLORequest struct {
 	ctx        _context.Context
-	apiService *ServiceLevelObjectivesApiService
+	ApiService *ServiceLevelObjectivesApiService
 	body       *ServiceLevelObjectiveRequest
 }
 
-func (r apiCreateSLORequest) Body(body ServiceLevelObjectiveRequest) apiCreateSLORequest {
+func (r ApiCreateSLORequest) Body(body ServiceLevelObjectiveRequest) ApiCreateSLORequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiCreateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, error) {
+	return r.ApiService.CreateSLOExecute(r)
+}
+
 /*
-CreateSLO Create a SLO object
-Create a service level objective object.
+ * CreateSLO Create a SLO object
+ * Create a service level objective object.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCreateSLORequest
-*/
-func (a *ServiceLevelObjectivesApiService) CreateSLO(ctx _context.Context) apiCreateSLORequest {
-	return apiCreateSLORequest{
-		apiService: a,
+ * @return ApiCreateSLORequest
+ */
+func (a *ServiceLevelObjectivesApiService) CreateSLO(ctx _context.Context) ApiCreateSLORequest {
+	return ApiCreateSLORequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return SLOListResponse
-*/
-func (r apiCreateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SLOListResponse
+ */
+func (a *ServiceLevelObjectivesApiService) CreateSLOExecute(r ApiCreateSLORequest) (SLOListResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -232,7 +240,7 @@ func (r apiCreateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 		localVarReturnValue  SLOListResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.CreateSLO")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.CreateSLO")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -272,12 +280,12 @@ func (r apiCreateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -286,23 +294,23 @@ func (r apiCreateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -320,7 +328,7 @@ func (r apiCreateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -330,7 +338,7 @@ func (r apiCreateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -340,7 +348,7 @@ func (r apiCreateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -352,41 +360,45 @@ func (r apiCreateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiDeleteSLORequest struct {
+type ApiDeleteSLORequest struct {
 	ctx        _context.Context
-	apiService *ServiceLevelObjectivesApiService
+	ApiService *ServiceLevelObjectivesApiService
 	sloId      string
 	force      *string
 }
 
-func (r apiDeleteSLORequest) Force(force string) apiDeleteSLORequest {
+func (r ApiDeleteSLORequest) Force(force string) ApiDeleteSLORequest {
 	r.force = &force
 	return r
 }
 
+func (r ApiDeleteSLORequest) Execute() (SLODeleteResponse, *_nethttp.Response, error) {
+	return r.ApiService.DeleteSLOExecute(r)
+}
+
 /*
-DeleteSLO Delete a SLO
-Permanently delete the specified service level objective object.
+ * DeleteSLO Delete a SLO
+ * Permanently delete the specified service level objective object.
 
 If an SLO is used in a dashboard, the `DELETE /v1/slo/` endpoint returns
 a 409 conflict error because the SLO is referenced in a dashboard.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param sloId The ID of the service level objective.
-@return apiDeleteSLORequest
+ * @return ApiDeleteSLORequest
 */
-func (a *ServiceLevelObjectivesApiService) DeleteSLO(ctx _context.Context, sloId string) apiDeleteSLORequest {
-	return apiDeleteSLORequest{
-		apiService: a,
+func (a *ServiceLevelObjectivesApiService) DeleteSLO(ctx _context.Context, sloId string) ApiDeleteSLORequest {
+	return ApiDeleteSLORequest{
+		ApiService: a,
 		ctx:        ctx,
 		sloId:      sloId,
 	}
 }
 
 /*
-Execute executes the request
-@return SLODeleteResponse
-*/
-func (r apiDeleteSLORequest) Execute() (SLODeleteResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SLODeleteResponse
+ */
+func (a *ServiceLevelObjectivesApiService) DeleteSLOExecute(r ApiDeleteSLORequest) (SLODeleteResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodDelete
 		localVarPostBody     interface{}
@@ -396,7 +408,7 @@ func (r apiDeleteSLORequest) Execute() (SLODeleteResponse, *_nethttp.Response, e
 		localVarReturnValue  SLODeleteResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.DeleteSLO")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.DeleteSLO")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -435,12 +447,12 @@ func (r apiDeleteSLORequest) Execute() (SLODeleteResponse, *_nethttp.Response, e
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -449,23 +461,23 @@ func (r apiDeleteSLORequest) Execute() (SLODeleteResponse, *_nethttp.Response, e
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -483,7 +495,7 @@ func (r apiDeleteSLORequest) Execute() (SLODeleteResponse, *_nethttp.Response, e
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -493,7 +505,7 @@ func (r apiDeleteSLORequest) Execute() (SLODeleteResponse, *_nethttp.Response, e
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -503,7 +515,7 @@ func (r apiDeleteSLORequest) Execute() (SLODeleteResponse, *_nethttp.Response, e
 		}
 		if localVarHTTPResponse.StatusCode == 409 {
 			var v SLODeleteResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -513,7 +525,7 @@ func (r apiDeleteSLORequest) Execute() (SLODeleteResponse, *_nethttp.Response, e
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -525,39 +537,43 @@ func (r apiDeleteSLORequest) Execute() (SLODeleteResponse, *_nethttp.Response, e
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiDeleteSLOTimeframeInBulkRequest struct {
+type ApiDeleteSLOTimeframeInBulkRequest struct {
 	ctx        _context.Context
-	apiService *ServiceLevelObjectivesApiService
+	ApiService *ServiceLevelObjectivesApiService
 	body       *map[string][]SLOTimeframe
 }
 
-func (r apiDeleteSLOTimeframeInBulkRequest) Body(body map[string][]SLOTimeframe) apiDeleteSLOTimeframeInBulkRequest {
+func (r ApiDeleteSLOTimeframeInBulkRequest) Body(body map[string][]SLOTimeframe) ApiDeleteSLOTimeframeInBulkRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiDeleteSLOTimeframeInBulkRequest) Execute() (SLOBulkDeleteResponse, *_nethttp.Response, error) {
+	return r.ApiService.DeleteSLOTimeframeInBulkExecute(r)
+}
+
 /*
-DeleteSLOTimeframeInBulk Bulk Delete SLO Timeframes
-Delete (or partially delete) multiple service level objective objects.
+ * DeleteSLOTimeframeInBulk Bulk Delete SLO Timeframes
+ * Delete (or partially delete) multiple service level objective objects.
 
 This endpoint facilitates deletion of one or more thresholds for one or more
 service level objective objects. If all thresholds are deleted, the service level
 objective object is deleted as well.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiDeleteSLOTimeframeInBulkRequest
+ * @return ApiDeleteSLOTimeframeInBulkRequest
 */
-func (a *ServiceLevelObjectivesApiService) DeleteSLOTimeframeInBulk(ctx _context.Context) apiDeleteSLOTimeframeInBulkRequest {
-	return apiDeleteSLOTimeframeInBulkRequest{
-		apiService: a,
+func (a *ServiceLevelObjectivesApiService) DeleteSLOTimeframeInBulk(ctx _context.Context) ApiDeleteSLOTimeframeInBulkRequest {
+	return ApiDeleteSLOTimeframeInBulkRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return SLOBulkDeleteResponse
-*/
-func (r apiDeleteSLOTimeframeInBulkRequest) Execute() (SLOBulkDeleteResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SLOBulkDeleteResponse
+ */
+func (a *ServiceLevelObjectivesApiService) DeleteSLOTimeframeInBulkExecute(r ApiDeleteSLOTimeframeInBulkRequest) (SLOBulkDeleteResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -567,7 +583,7 @@ func (r apiDeleteSLOTimeframeInBulkRequest) Execute() (SLOBulkDeleteResponse, *_
 		localVarReturnValue  SLOBulkDeleteResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.DeleteSLOTimeframeInBulk")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.DeleteSLOTimeframeInBulk")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -607,12 +623,12 @@ func (r apiDeleteSLOTimeframeInBulkRequest) Execute() (SLOBulkDeleteResponse, *_
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -621,23 +637,23 @@ func (r apiDeleteSLOTimeframeInBulkRequest) Execute() (SLOBulkDeleteResponse, *_
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -655,7 +671,7 @@ func (r apiDeleteSLOTimeframeInBulkRequest) Execute() (SLOBulkDeleteResponse, *_
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -665,7 +681,7 @@ func (r apiDeleteSLOTimeframeInBulkRequest) Execute() (SLOBulkDeleteResponse, *_
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -675,7 +691,7 @@ func (r apiDeleteSLOTimeframeInBulkRequest) Execute() (SLOBulkDeleteResponse, *_
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -687,32 +703,36 @@ func (r apiDeleteSLOTimeframeInBulkRequest) Execute() (SLOBulkDeleteResponse, *_
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiGetSLORequest struct {
+type ApiGetSLORequest struct {
 	ctx        _context.Context
-	apiService *ServiceLevelObjectivesApiService
+	ApiService *ServiceLevelObjectivesApiService
 	sloId      string
 }
 
+func (r ApiGetSLORequest) Execute() (SLOResponse, *_nethttp.Response, error) {
+	return r.ApiService.GetSLOExecute(r)
+}
+
 /*
-GetSLO Get a SLO's details
-Get a service level objective object.
+ * GetSLO Get a SLO's details
+ * Get a service level objective object.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param sloId The ID of the service level objective object.
-@return apiGetSLORequest
-*/
-func (a *ServiceLevelObjectivesApiService) GetSLO(ctx _context.Context, sloId string) apiGetSLORequest {
-	return apiGetSLORequest{
-		apiService: a,
+ * @return ApiGetSLORequest
+ */
+func (a *ServiceLevelObjectivesApiService) GetSLO(ctx _context.Context, sloId string) ApiGetSLORequest {
+	return ApiGetSLORequest{
+		ApiService: a,
 		ctx:        ctx,
 		sloId:      sloId,
 	}
 }
 
 /*
-Execute executes the request
-@return SLOResponse
-*/
-func (r apiGetSLORequest) Execute() (SLOResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SLOResponse
+ */
+func (a *ServiceLevelObjectivesApiService) GetSLOExecute(r ApiGetSLORequest) (SLOResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -722,7 +742,7 @@ func (r apiGetSLORequest) Execute() (SLOResponse, *_nethttp.Response, error) {
 		localVarReturnValue  SLOResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.GetSLO")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.GetSLO")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -758,12 +778,12 @@ func (r apiGetSLORequest) Execute() (SLOResponse, *_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -772,23 +792,23 @@ func (r apiGetSLORequest) Execute() (SLOResponse, *_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -806,7 +826,7 @@ func (r apiGetSLORequest) Execute() (SLOResponse, *_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -816,7 +836,7 @@ func (r apiGetSLORequest) Execute() (SLOResponse, *_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -826,7 +846,7 @@ func (r apiGetSLORequest) Execute() (SLOResponse, *_nethttp.Response, error) {
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -838,26 +858,30 @@ func (r apiGetSLORequest) Execute() (SLOResponse, *_nethttp.Response, error) {
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiGetSLOHistoryRequest struct {
+type ApiGetSLOHistoryRequest struct {
 	ctx        _context.Context
-	apiService *ServiceLevelObjectivesApiService
+	ApiService *ServiceLevelObjectivesApiService
 	sloId      string
 	fromTs     *int64
 	toTs       *int64
 }
 
-func (r apiGetSLOHistoryRequest) FromTs(fromTs int64) apiGetSLOHistoryRequest {
+func (r ApiGetSLOHistoryRequest) FromTs(fromTs int64) ApiGetSLOHistoryRequest {
 	r.fromTs = &fromTs
 	return r
 }
-func (r apiGetSLOHistoryRequest) ToTs(toTs int64) apiGetSLOHistoryRequest {
+func (r ApiGetSLOHistoryRequest) ToTs(toTs int64) ApiGetSLOHistoryRequest {
 	r.toTs = &toTs
 	return r
 }
 
+func (r ApiGetSLOHistoryRequest) Execute() (SLOHistoryResponse, *_nethttp.Response, error) {
+	return r.ApiService.GetSLOHistoryExecute(r)
+}
+
 /*
-GetSLOHistory Get an SLO's history
-Get a specific SLO’s history, regardless of its SLO type.
+ * GetSLOHistory Get an SLO's history
+ * Get a specific SLO’s history, regardless of its SLO type.
 
 The detailed history data is structured according to the source data type.
 For example, metric data is included for event SLOs that use
@@ -867,21 +891,21 @@ the metric source, and monitor SLO types include the monitor transition history.
 Examples of both are shown.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param sloId The ID of the service level objective object.
-@return apiGetSLOHistoryRequest
+ * @return ApiGetSLOHistoryRequest
 */
-func (a *ServiceLevelObjectivesApiService) GetSLOHistory(ctx _context.Context, sloId string) apiGetSLOHistoryRequest {
-	return apiGetSLOHistoryRequest{
-		apiService: a,
+func (a *ServiceLevelObjectivesApiService) GetSLOHistory(ctx _context.Context, sloId string) ApiGetSLOHistoryRequest {
+	return ApiGetSLOHistoryRequest{
+		ApiService: a,
 		ctx:        ctx,
 		sloId:      sloId,
 	}
 }
 
 /*
-Execute executes the request
-@return SLOHistoryResponse
-*/
-func (r apiGetSLOHistoryRequest) Execute() (SLOHistoryResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SLOHistoryResponse
+ */
+func (a *ServiceLevelObjectivesApiService) GetSLOHistoryExecute(r ApiGetSLOHistoryRequest) (SLOHistoryResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -890,14 +914,15 @@ func (r apiGetSLOHistoryRequest) Execute() (SLOHistoryResponse, *_nethttp.Respon
 		localVarFileBytes    []byte
 		localVarReturnValue  SLOHistoryResponse
 	)
+
 	operationId := "GetSLOHistory"
-	if r.apiService.client.cfg.IsUnstableOperationEnabled(operationId) {
+	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.GetSLOHistory")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.GetSLOHistory")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -941,12 +966,12 @@ func (r apiGetSLOHistoryRequest) Execute() (SLOHistoryResponse, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -955,23 +980,23 @@ func (r apiGetSLOHistoryRequest) Execute() (SLOHistoryResponse, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -989,7 +1014,7 @@ func (r apiGetSLOHistoryRequest) Execute() (SLOHistoryResponse, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -999,7 +1024,7 @@ func (r apiGetSLOHistoryRequest) Execute() (SLOHistoryResponse, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1009,7 +1034,7 @@ func (r apiGetSLOHistoryRequest) Execute() (SLOHistoryResponse, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1019,7 +1044,7 @@ func (r apiGetSLOHistoryRequest) Execute() (SLOHistoryResponse, *_nethttp.Respon
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -1031,35 +1056,39 @@ func (r apiGetSLOHistoryRequest) Execute() (SLOHistoryResponse, *_nethttp.Respon
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListSLOsRequest struct {
+type ApiListSLOsRequest struct {
 	ctx        _context.Context
-	apiService *ServiceLevelObjectivesApiService
+	ApiService *ServiceLevelObjectivesApiService
 	ids        *string
 }
 
-func (r apiListSLOsRequest) Ids(ids string) apiListSLOsRequest {
+func (r ApiListSLOsRequest) Ids(ids string) ApiListSLOsRequest {
 	r.ids = &ids
 	return r
 }
 
+func (r ApiListSLOsRequest) Execute() (SLOListResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListSLOsExecute(r)
+}
+
 /*
-ListSLOs Search SLOs
-Get multiple service level objective objects by their IDs.
+ * ListSLOs Search SLOs
+ * Get multiple service level objective objects by their IDs.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListSLOsRequest
-*/
-func (a *ServiceLevelObjectivesApiService) ListSLOs(ctx _context.Context) apiListSLOsRequest {
-	return apiListSLOsRequest{
-		apiService: a,
+ * @return ApiListSLOsRequest
+ */
+func (a *ServiceLevelObjectivesApiService) ListSLOs(ctx _context.Context) ApiListSLOsRequest {
+	return ApiListSLOsRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return SLOListResponse
-*/
-func (r apiListSLOsRequest) Execute() (SLOListResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SLOListResponse
+ */
+func (a *ServiceLevelObjectivesApiService) ListSLOsExecute(r ApiListSLOsRequest) (SLOListResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -1069,7 +1098,7 @@ func (r apiListSLOsRequest) Execute() (SLOListResponse, *_nethttp.Response, erro
 		localVarReturnValue  SLOListResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.ListSLOs")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.ListSLOs")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -1108,12 +1137,12 @@ func (r apiListSLOsRequest) Execute() (SLOListResponse, *_nethttp.Response, erro
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -1122,23 +1151,23 @@ func (r apiListSLOsRequest) Execute() (SLOListResponse, *_nethttp.Response, erro
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1156,7 +1185,7 @@ func (r apiListSLOsRequest) Execute() (SLOListResponse, *_nethttp.Response, erro
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1166,7 +1195,7 @@ func (r apiListSLOsRequest) Execute() (SLOListResponse, *_nethttp.Response, erro
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1176,7 +1205,7 @@ func (r apiListSLOsRequest) Execute() (SLOListResponse, *_nethttp.Response, erro
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1186,7 +1215,7 @@ func (r apiListSLOsRequest) Execute() (SLOListResponse, *_nethttp.Response, erro
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -1198,38 +1227,42 @@ func (r apiListSLOsRequest) Execute() (SLOListResponse, *_nethttp.Response, erro
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUpdateSLORequest struct {
+type ApiUpdateSLORequest struct {
 	ctx        _context.Context
-	apiService *ServiceLevelObjectivesApiService
+	ApiService *ServiceLevelObjectivesApiService
 	sloId      string
 	body       *ServiceLevelObjective
 }
 
-func (r apiUpdateSLORequest) Body(body ServiceLevelObjective) apiUpdateSLORequest {
+func (r ApiUpdateSLORequest) Body(body ServiceLevelObjective) ApiUpdateSLORequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, error) {
+	return r.ApiService.UpdateSLOExecute(r)
+}
+
 /*
-UpdateSLO Update a SLO
-Update the specified service level objective object.
+ * UpdateSLO Update a SLO
+ * Update the specified service level objective object.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param sloId The ID of the service level objective object.
-@return apiUpdateSLORequest
-*/
-func (a *ServiceLevelObjectivesApiService) UpdateSLO(ctx _context.Context, sloId string) apiUpdateSLORequest {
-	return apiUpdateSLORequest{
-		apiService: a,
+ * @return ApiUpdateSLORequest
+ */
+func (a *ServiceLevelObjectivesApiService) UpdateSLO(ctx _context.Context, sloId string) ApiUpdateSLORequest {
+	return ApiUpdateSLORequest{
+		ApiService: a,
 		ctx:        ctx,
 		sloId:      sloId,
 	}
 }
 
 /*
-Execute executes the request
-@return SLOListResponse
-*/
-func (r apiUpdateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SLOListResponse
+ */
+func (a *ServiceLevelObjectivesApiService) UpdateSLOExecute(r ApiUpdateSLORequest) (SLOListResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -1239,7 +1272,7 @@ func (r apiUpdateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 		localVarReturnValue  SLOListResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.UpdateSLO")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServiceLevelObjectivesApiService.UpdateSLO")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -1280,12 +1313,12 @@ func (r apiUpdateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -1294,23 +1327,23 @@ func (r apiUpdateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1328,7 +1361,7 @@ func (r apiUpdateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1338,7 +1371,7 @@ func (r apiUpdateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1348,7 +1381,7 @@ func (r apiUpdateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1358,7 +1391,7 @@ func (r apiUpdateSLORequest) Execute() (SLOListResponse, *_nethttp.Response, err
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,

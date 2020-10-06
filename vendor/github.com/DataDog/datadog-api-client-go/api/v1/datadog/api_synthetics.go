@@ -25,35 +25,39 @@ var (
 // SyntheticsApiService SyntheticsApi service
 type SyntheticsApiService service
 
-type apiCreateGlobalVariableRequest struct {
+type ApiCreateGlobalVariableRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
 	body       *SyntheticsGlobalVariable
 }
 
-func (r apiCreateGlobalVariableRequest) Body(body SyntheticsGlobalVariable) apiCreateGlobalVariableRequest {
+func (r ApiCreateGlobalVariableRequest) Body(body SyntheticsGlobalVariable) ApiCreateGlobalVariableRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiCreateGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_nethttp.Response, error) {
+	return r.ApiService.CreateGlobalVariableExecute(r)
+}
+
 /*
-CreateGlobalVariable Create a global variable
-Create a Synthetics global variable.
+ * CreateGlobalVariable Create a global variable
+ * Create a Synthetics global variable.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCreateGlobalVariableRequest
-*/
-func (a *SyntheticsApiService) CreateGlobalVariable(ctx _context.Context) apiCreateGlobalVariableRequest {
-	return apiCreateGlobalVariableRequest{
-		apiService: a,
+ * @return ApiCreateGlobalVariableRequest
+ */
+func (a *SyntheticsApiService) CreateGlobalVariable(ctx _context.Context) ApiCreateGlobalVariableRequest {
+	return ApiCreateGlobalVariableRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return SyntheticsGlobalVariable
-*/
-func (r apiCreateGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SyntheticsGlobalVariable
+ */
+func (a *SyntheticsApiService) CreateGlobalVariableExecute(r ApiCreateGlobalVariableRequest) (SyntheticsGlobalVariable, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -63,7 +67,7 @@ func (r apiCreateGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_n
 		localVarReturnValue  SyntheticsGlobalVariable
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.CreateGlobalVariable")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.CreateGlobalVariable")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -103,12 +107,12 @@ func (r apiCreateGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_n
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -117,23 +121,23 @@ func (r apiCreateGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_n
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -151,7 +155,7 @@ func (r apiCreateGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_n
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -161,7 +165,7 @@ func (r apiCreateGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_n
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -171,7 +175,7 @@ func (r apiCreateGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_n
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -183,35 +187,39 @@ func (r apiCreateGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_n
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiCreateTestRequest struct {
+type ApiCreateTestRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
 	body       *SyntheticsTestDetails
 }
 
-func (r apiCreateTestRequest) Body(body SyntheticsTestDetails) apiCreateTestRequest {
+func (r ApiCreateTestRequest) Body(body SyntheticsTestDetails) ApiCreateTestRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiCreateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response, error) {
+	return r.ApiService.CreateTestExecute(r)
+}
+
 /*
-CreateTest Create a test
-Create a Synthetic test.
+ * CreateTest Create a test
+ * Create a Synthetic test.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCreateTestRequest
-*/
-func (a *SyntheticsApiService) CreateTest(ctx _context.Context) apiCreateTestRequest {
-	return apiCreateTestRequest{
-		apiService: a,
+ * @return ApiCreateTestRequest
+ */
+func (a *SyntheticsApiService) CreateTest(ctx _context.Context) ApiCreateTestRequest {
+	return ApiCreateTestRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return SyntheticsTestDetails
-*/
-func (r apiCreateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SyntheticsTestDetails
+ */
+func (a *SyntheticsApiService) CreateTestExecute(r ApiCreateTestRequest) (SyntheticsTestDetails, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -221,7 +229,7 @@ func (r apiCreateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 		localVarReturnValue  SyntheticsTestDetails
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.CreateTest")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.CreateTest")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -261,12 +269,12 @@ func (r apiCreateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -275,23 +283,23 @@ func (r apiCreateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -309,7 +317,7 @@ func (r apiCreateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -319,7 +327,7 @@ func (r apiCreateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 402 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -329,7 +337,7 @@ func (r apiCreateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -339,7 +347,7 @@ func (r apiCreateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -351,31 +359,35 @@ func (r apiCreateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiDeleteGlobalVariableRequest struct {
+type ApiDeleteGlobalVariableRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
 	variableId string
 }
 
+func (r ApiDeleteGlobalVariableRequest) Execute() (*_nethttp.Response, error) {
+	return r.ApiService.DeleteGlobalVariableExecute(r)
+}
+
 /*
-DeleteGlobalVariable Delete a global variable
-Delete a Synthetics global variable.
+ * DeleteGlobalVariable Delete a global variable
+ * Delete a Synthetics global variable.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param variableId The ID of the global variable.
-@return apiDeleteGlobalVariableRequest
-*/
-func (a *SyntheticsApiService) DeleteGlobalVariable(ctx _context.Context, variableId string) apiDeleteGlobalVariableRequest {
-	return apiDeleteGlobalVariableRequest{
-		apiService: a,
+ * @return ApiDeleteGlobalVariableRequest
+ */
+func (a *SyntheticsApiService) DeleteGlobalVariable(ctx _context.Context, variableId string) ApiDeleteGlobalVariableRequest {
+	return ApiDeleteGlobalVariableRequest{
+		ApiService: a,
 		ctx:        ctx,
 		variableId: variableId,
 	}
 }
 
 /*
-Execute executes the request
-*/
-func (r apiDeleteGlobalVariableRequest) Execute() (*_nethttp.Response, error) {
+ * Execute executes the request
+ */
+func (a *SyntheticsApiService) DeleteGlobalVariableExecute(r ApiDeleteGlobalVariableRequest) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodDelete
 		localVarPostBody     interface{}
@@ -384,7 +396,7 @@ func (r apiDeleteGlobalVariableRequest) Execute() (*_nethttp.Response, error) {
 		localVarFileBytes    []byte
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.DeleteGlobalVariable")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.DeleteGlobalVariable")
 	if err != nil {
 		return nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -420,12 +432,12 @@ func (r apiDeleteGlobalVariableRequest) Execute() (*_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -434,23 +446,23 @@ func (r apiDeleteGlobalVariableRequest) Execute() (*_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarHTTPResponse, err
 	}
@@ -468,7 +480,7 @@ func (r apiDeleteGlobalVariableRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -478,7 +490,7 @@ func (r apiDeleteGlobalVariableRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -488,7 +500,7 @@ func (r apiDeleteGlobalVariableRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -501,35 +513,39 @@ func (r apiDeleteGlobalVariableRequest) Execute() (*_nethttp.Response, error) {
 	return localVarHTTPResponse, nil
 }
 
-type apiDeleteTestsRequest struct {
+type ApiDeleteTestsRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
 	body       *SyntheticsDeleteTestsPayload
 }
 
-func (r apiDeleteTestsRequest) Body(body SyntheticsDeleteTestsPayload) apiDeleteTestsRequest {
+func (r ApiDeleteTestsRequest) Body(body SyntheticsDeleteTestsPayload) ApiDeleteTestsRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiDeleteTestsRequest) Execute() (SyntheticsDeleteTestsResponse, *_nethttp.Response, error) {
+	return r.ApiService.DeleteTestsExecute(r)
+}
+
 /*
-DeleteTests Delete tests
-Delete multiple Synthetic tests by ID.
+ * DeleteTests Delete tests
+ * Delete multiple Synthetic tests by ID.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiDeleteTestsRequest
-*/
-func (a *SyntheticsApiService) DeleteTests(ctx _context.Context) apiDeleteTestsRequest {
-	return apiDeleteTestsRequest{
-		apiService: a,
+ * @return ApiDeleteTestsRequest
+ */
+func (a *SyntheticsApiService) DeleteTests(ctx _context.Context) ApiDeleteTestsRequest {
+	return ApiDeleteTestsRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return SyntheticsDeleteTestsResponse
-*/
-func (r apiDeleteTestsRequest) Execute() (SyntheticsDeleteTestsResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SyntheticsDeleteTestsResponse
+ */
+func (a *SyntheticsApiService) DeleteTestsExecute(r ApiDeleteTestsRequest) (SyntheticsDeleteTestsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -539,7 +555,7 @@ func (r apiDeleteTestsRequest) Execute() (SyntheticsDeleteTestsResponse, *_netht
 		localVarReturnValue  SyntheticsDeleteTestsResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.DeleteTests")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.DeleteTests")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -579,12 +595,12 @@ func (r apiDeleteTestsRequest) Execute() (SyntheticsDeleteTestsResponse, *_netht
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -593,23 +609,23 @@ func (r apiDeleteTestsRequest) Execute() (SyntheticsDeleteTestsResponse, *_netht
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -627,7 +643,7 @@ func (r apiDeleteTestsRequest) Execute() (SyntheticsDeleteTestsResponse, *_netht
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -637,7 +653,7 @@ func (r apiDeleteTestsRequest) Execute() (SyntheticsDeleteTestsResponse, *_netht
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -647,7 +663,7 @@ func (r apiDeleteTestsRequest) Execute() (SyntheticsDeleteTestsResponse, *_netht
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -657,7 +673,7 @@ func (r apiDeleteTestsRequest) Execute() (SyntheticsDeleteTestsResponse, *_netht
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -669,38 +685,42 @@ func (r apiDeleteTestsRequest) Execute() (SyntheticsDeleteTestsResponse, *_netht
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiEditGlobalVariableRequest struct {
+type ApiEditGlobalVariableRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
 	variableId string
 	body       *SyntheticsGlobalVariable
 }
 
-func (r apiEditGlobalVariableRequest) Body(body SyntheticsGlobalVariable) apiEditGlobalVariableRequest {
+func (r ApiEditGlobalVariableRequest) Body(body SyntheticsGlobalVariable) ApiEditGlobalVariableRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiEditGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_nethttp.Response, error) {
+	return r.ApiService.EditGlobalVariableExecute(r)
+}
+
 /*
-EditGlobalVariable Edit a global variable
-Edit a Synthetics global variable.
+ * EditGlobalVariable Edit a global variable
+ * Edit a Synthetics global variable.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param variableId The ID of the global variable.
-@return apiEditGlobalVariableRequest
-*/
-func (a *SyntheticsApiService) EditGlobalVariable(ctx _context.Context, variableId string) apiEditGlobalVariableRequest {
-	return apiEditGlobalVariableRequest{
-		apiService: a,
+ * @return ApiEditGlobalVariableRequest
+ */
+func (a *SyntheticsApiService) EditGlobalVariable(ctx _context.Context, variableId string) ApiEditGlobalVariableRequest {
+	return ApiEditGlobalVariableRequest{
+		ApiService: a,
 		ctx:        ctx,
 		variableId: variableId,
 	}
 }
 
 /*
-Execute executes the request
-@return SyntheticsGlobalVariable
-*/
-func (r apiEditGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SyntheticsGlobalVariable
+ */
+func (a *SyntheticsApiService) EditGlobalVariableExecute(r ApiEditGlobalVariableRequest) (SyntheticsGlobalVariable, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -710,7 +730,7 @@ func (r apiEditGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_net
 		localVarReturnValue  SyntheticsGlobalVariable
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.EditGlobalVariable")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.EditGlobalVariable")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -751,12 +771,12 @@ func (r apiEditGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_net
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -765,23 +785,23 @@ func (r apiEditGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_net
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -799,7 +819,7 @@ func (r apiEditGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_net
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -809,7 +829,7 @@ func (r apiEditGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_net
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -819,7 +839,7 @@ func (r apiEditGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_net
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -831,48 +851,52 @@ func (r apiEditGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_net
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiGetAPITestLatestResultsRequest struct {
+type ApiGetAPITestLatestResultsRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
 	publicId   string
 	fromTs     *int64
 	toTs       *int64
 	probeDc    *[]string
 }
 
-func (r apiGetAPITestLatestResultsRequest) FromTs(fromTs int64) apiGetAPITestLatestResultsRequest {
+func (r ApiGetAPITestLatestResultsRequest) FromTs(fromTs int64) ApiGetAPITestLatestResultsRequest {
 	r.fromTs = &fromTs
 	return r
 }
-func (r apiGetAPITestLatestResultsRequest) ToTs(toTs int64) apiGetAPITestLatestResultsRequest {
+func (r ApiGetAPITestLatestResultsRequest) ToTs(toTs int64) ApiGetAPITestLatestResultsRequest {
 	r.toTs = &toTs
 	return r
 }
-func (r apiGetAPITestLatestResultsRequest) ProbeDc(probeDc []string) apiGetAPITestLatestResultsRequest {
+func (r ApiGetAPITestLatestResultsRequest) ProbeDc(probeDc []string) ApiGetAPITestLatestResultsRequest {
 	r.probeDc = &probeDc
 	return r
 }
 
+func (r ApiGetAPITestLatestResultsRequest) Execute() (SyntheticsGetAPITestLatestResultsResponse, *_nethttp.Response, error) {
+	return r.ApiService.GetAPITestLatestResultsExecute(r)
+}
+
 /*
-GetAPITestLatestResults Get the test's latest results summaries (API)
-Get the last 50 test results summaries for a given Synthetics API test.
+ * GetAPITestLatestResults Get the test's latest results summaries (API)
+ * Get the last 50 test results summaries for a given Synthetics API test.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The public ID of the test for which to search results for.
-@return apiGetAPITestLatestResultsRequest
-*/
-func (a *SyntheticsApiService) GetAPITestLatestResults(ctx _context.Context, publicId string) apiGetAPITestLatestResultsRequest {
-	return apiGetAPITestLatestResultsRequest{
-		apiService: a,
+ * @return ApiGetAPITestLatestResultsRequest
+ */
+func (a *SyntheticsApiService) GetAPITestLatestResults(ctx _context.Context, publicId string) ApiGetAPITestLatestResultsRequest {
+	return ApiGetAPITestLatestResultsRequest{
+		ApiService: a,
 		ctx:        ctx,
 		publicId:   publicId,
 	}
 }
 
 /*
-Execute executes the request
-@return SyntheticsGetAPITestLatestResultsResponse
-*/
-func (r apiGetAPITestLatestResultsRequest) Execute() (SyntheticsGetAPITestLatestResultsResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SyntheticsGetAPITestLatestResultsResponse
+ */
+func (a *SyntheticsApiService) GetAPITestLatestResultsExecute(r ApiGetAPITestLatestResultsRequest) (SyntheticsGetAPITestLatestResultsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -882,7 +906,7 @@ func (r apiGetAPITestLatestResultsRequest) Execute() (SyntheticsGetAPITestLatest
 		localVarReturnValue  SyntheticsGetAPITestLatestResultsResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.GetAPITestLatestResults")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.GetAPITestLatestResults")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -935,12 +959,12 @@ func (r apiGetAPITestLatestResultsRequest) Execute() (SyntheticsGetAPITestLatest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -949,23 +973,23 @@ func (r apiGetAPITestLatestResultsRequest) Execute() (SyntheticsGetAPITestLatest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -983,7 +1007,7 @@ func (r apiGetAPITestLatestResultsRequest) Execute() (SyntheticsGetAPITestLatest
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -993,7 +1017,7 @@ func (r apiGetAPITestLatestResultsRequest) Execute() (SyntheticsGetAPITestLatest
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1003,7 +1027,7 @@ func (r apiGetAPITestLatestResultsRequest) Execute() (SyntheticsGetAPITestLatest
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -1015,24 +1039,28 @@ func (r apiGetAPITestLatestResultsRequest) Execute() (SyntheticsGetAPITestLatest
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiGetAPITestResultRequest struct {
+type ApiGetAPITestResultRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
 	publicId   string
 	resultId   string
 }
 
+func (r ApiGetAPITestResultRequest) Execute() (SyntheticsAPITestResultFull, *_nethttp.Response, error) {
+	return r.ApiService.GetAPITestResultExecute(r)
+}
+
 /*
-GetAPITestResult Get a test result (API)
-Get a specific full result from a given (API) Synthetic test.
+ * GetAPITestResult Get a test result (API)
+ * Get a specific full result from a given (API) Synthetic test.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The public ID of the API test to which the target result belongs.
  * @param resultId The ID of the result to get.
-@return apiGetAPITestResultRequest
-*/
-func (a *SyntheticsApiService) GetAPITestResult(ctx _context.Context, publicId string, resultId string) apiGetAPITestResultRequest {
-	return apiGetAPITestResultRequest{
-		apiService: a,
+ * @return ApiGetAPITestResultRequest
+ */
+func (a *SyntheticsApiService) GetAPITestResult(ctx _context.Context, publicId string, resultId string) ApiGetAPITestResultRequest {
+	return ApiGetAPITestResultRequest{
+		ApiService: a,
 		ctx:        ctx,
 		publicId:   publicId,
 		resultId:   resultId,
@@ -1040,10 +1068,10 @@ func (a *SyntheticsApiService) GetAPITestResult(ctx _context.Context, publicId s
 }
 
 /*
-Execute executes the request
-@return SyntheticsAPITestResultFull
-*/
-func (r apiGetAPITestResultRequest) Execute() (SyntheticsAPITestResultFull, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SyntheticsAPITestResultFull
+ */
+func (a *SyntheticsApiService) GetAPITestResultExecute(r ApiGetAPITestResultRequest) (SyntheticsAPITestResultFull, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -1053,7 +1081,7 @@ func (r apiGetAPITestResultRequest) Execute() (SyntheticsAPITestResultFull, *_ne
 		localVarReturnValue  SyntheticsAPITestResultFull
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.GetAPITestResult")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.GetAPITestResult")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -1090,12 +1118,12 @@ func (r apiGetAPITestResultRequest) Execute() (SyntheticsAPITestResultFull, *_ne
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -1104,23 +1132,23 @@ func (r apiGetAPITestResultRequest) Execute() (SyntheticsAPITestResultFull, *_ne
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1138,7 +1166,7 @@ func (r apiGetAPITestResultRequest) Execute() (SyntheticsAPITestResultFull, *_ne
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1148,7 +1176,7 @@ func (r apiGetAPITestResultRequest) Execute() (SyntheticsAPITestResultFull, *_ne
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1158,7 +1186,7 @@ func (r apiGetAPITestResultRequest) Execute() (SyntheticsAPITestResultFull, *_ne
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -1170,32 +1198,37 @@ func (r apiGetAPITestResultRequest) Execute() (SyntheticsAPITestResultFull, *_ne
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiGetBrowserTestRequest struct {
+type ApiGetBrowserTestRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
 	publicId   string
 }
 
+func (r ApiGetBrowserTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response, error) {
+	return r.ApiService.GetBrowserTestExecute(r)
+}
+
 /*
-GetBrowserTest Get a test configuration (browser)
-Get the detailed configuration (including steps) associated with a Synthetics browser test.
+ * GetBrowserTest Get a test configuration (browser)
+ * Get the detailed configuration (including steps) associated with
+a Synthetic browser test.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The public ID of the test to get details from.
-@return apiGetBrowserTestRequest
+ * @return ApiGetBrowserTestRequest
 */
-func (a *SyntheticsApiService) GetBrowserTest(ctx _context.Context, publicId string) apiGetBrowserTestRequest {
-	return apiGetBrowserTestRequest{
-		apiService: a,
+func (a *SyntheticsApiService) GetBrowserTest(ctx _context.Context, publicId string) ApiGetBrowserTestRequest {
+	return ApiGetBrowserTestRequest{
+		ApiService: a,
 		ctx:        ctx,
 		publicId:   publicId,
 	}
 }
 
 /*
-Execute executes the request
-@return SyntheticsTestDetails
-*/
-func (r apiGetBrowserTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SyntheticsTestDetails
+ */
+func (a *SyntheticsApiService) GetBrowserTestExecute(r ApiGetBrowserTestRequest) (SyntheticsTestDetails, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -1205,7 +1238,7 @@ func (r apiGetBrowserTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Re
 		localVarReturnValue  SyntheticsTestDetails
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.GetBrowserTest")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.GetBrowserTest")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -1241,12 +1274,12 @@ func (r apiGetBrowserTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Re
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -1255,23 +1288,23 @@ func (r apiGetBrowserTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Re
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1289,7 +1322,7 @@ func (r apiGetBrowserTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Re
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1299,7 +1332,7 @@ func (r apiGetBrowserTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Re
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1309,7 +1342,7 @@ func (r apiGetBrowserTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Re
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -1321,48 +1354,52 @@ func (r apiGetBrowserTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Re
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiGetBrowserTestLatestResultsRequest struct {
+type ApiGetBrowserTestLatestResultsRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
 	publicId   string
 	fromTs     *int64
 	toTs       *int64
 	probeDc    *[]string
 }
 
-func (r apiGetBrowserTestLatestResultsRequest) FromTs(fromTs int64) apiGetBrowserTestLatestResultsRequest {
+func (r ApiGetBrowserTestLatestResultsRequest) FromTs(fromTs int64) ApiGetBrowserTestLatestResultsRequest {
 	r.fromTs = &fromTs
 	return r
 }
-func (r apiGetBrowserTestLatestResultsRequest) ToTs(toTs int64) apiGetBrowserTestLatestResultsRequest {
+func (r ApiGetBrowserTestLatestResultsRequest) ToTs(toTs int64) ApiGetBrowserTestLatestResultsRequest {
 	r.toTs = &toTs
 	return r
 }
-func (r apiGetBrowserTestLatestResultsRequest) ProbeDc(probeDc []string) apiGetBrowserTestLatestResultsRequest {
+func (r ApiGetBrowserTestLatestResultsRequest) ProbeDc(probeDc []string) ApiGetBrowserTestLatestResultsRequest {
 	r.probeDc = &probeDc
 	return r
 }
 
+func (r ApiGetBrowserTestLatestResultsRequest) Execute() (SyntheticsGetBrowserTestLatestResultsResponse, *_nethttp.Response, error) {
+	return r.ApiService.GetBrowserTestLatestResultsExecute(r)
+}
+
 /*
-GetBrowserTestLatestResults Get the test's latest results summaries (browser)
-Get the last 50 test results summaries for a given Synthetics Browser test.
+ * GetBrowserTestLatestResults Get the test's latest results summaries (browser)
+ * Get the last 50 test results summaries for a given Synthetics Browser test.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The public ID of the browser test for which to search results for.
-@return apiGetBrowserTestLatestResultsRequest
-*/
-func (a *SyntheticsApiService) GetBrowserTestLatestResults(ctx _context.Context, publicId string) apiGetBrowserTestLatestResultsRequest {
-	return apiGetBrowserTestLatestResultsRequest{
-		apiService: a,
+ * @return ApiGetBrowserTestLatestResultsRequest
+ */
+func (a *SyntheticsApiService) GetBrowserTestLatestResults(ctx _context.Context, publicId string) ApiGetBrowserTestLatestResultsRequest {
+	return ApiGetBrowserTestLatestResultsRequest{
+		ApiService: a,
 		ctx:        ctx,
 		publicId:   publicId,
 	}
 }
 
 /*
-Execute executes the request
-@return SyntheticsGetBrowserTestLatestResultsResponse
-*/
-func (r apiGetBrowserTestLatestResultsRequest) Execute() (SyntheticsGetBrowserTestLatestResultsResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SyntheticsGetBrowserTestLatestResultsResponse
+ */
+func (a *SyntheticsApiService) GetBrowserTestLatestResultsExecute(r ApiGetBrowserTestLatestResultsRequest) (SyntheticsGetBrowserTestLatestResultsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -1372,7 +1409,7 @@ func (r apiGetBrowserTestLatestResultsRequest) Execute() (SyntheticsGetBrowserTe
 		localVarReturnValue  SyntheticsGetBrowserTestLatestResultsResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.GetBrowserTestLatestResults")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.GetBrowserTestLatestResults")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -1425,12 +1462,12 @@ func (r apiGetBrowserTestLatestResultsRequest) Execute() (SyntheticsGetBrowserTe
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -1439,23 +1476,23 @@ func (r apiGetBrowserTestLatestResultsRequest) Execute() (SyntheticsGetBrowserTe
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1473,7 +1510,7 @@ func (r apiGetBrowserTestLatestResultsRequest) Execute() (SyntheticsGetBrowserTe
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1483,7 +1520,7 @@ func (r apiGetBrowserTestLatestResultsRequest) Execute() (SyntheticsGetBrowserTe
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1493,7 +1530,7 @@ func (r apiGetBrowserTestLatestResultsRequest) Execute() (SyntheticsGetBrowserTe
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -1505,24 +1542,28 @@ func (r apiGetBrowserTestLatestResultsRequest) Execute() (SyntheticsGetBrowserTe
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiGetBrowserTestResultRequest struct {
+type ApiGetBrowserTestResultRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
 	publicId   string
 	resultId   string
 }
 
+func (r ApiGetBrowserTestResultRequest) Execute() (SyntheticsBrowserTestResultFull, *_nethttp.Response, error) {
+	return r.ApiService.GetBrowserTestResultExecute(r)
+}
+
 /*
-GetBrowserTestResult Get a test result (browser)
-Get a specific full result from a given (browser) Synthetic test.
+ * GetBrowserTestResult Get a test result (browser)
+ * Get a specific full result from a given (browser) Synthetic test.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The public ID of the browser test to which the target result belongs.
  * @param resultId The ID of the result to get.
-@return apiGetBrowserTestResultRequest
-*/
-func (a *SyntheticsApiService) GetBrowserTestResult(ctx _context.Context, publicId string, resultId string) apiGetBrowserTestResultRequest {
-	return apiGetBrowserTestResultRequest{
-		apiService: a,
+ * @return ApiGetBrowserTestResultRequest
+ */
+func (a *SyntheticsApiService) GetBrowserTestResult(ctx _context.Context, publicId string, resultId string) ApiGetBrowserTestResultRequest {
+	return ApiGetBrowserTestResultRequest{
+		ApiService: a,
 		ctx:        ctx,
 		publicId:   publicId,
 		resultId:   resultId,
@@ -1530,10 +1571,10 @@ func (a *SyntheticsApiService) GetBrowserTestResult(ctx _context.Context, public
 }
 
 /*
-Execute executes the request
-@return SyntheticsBrowserTestResultFull
-*/
-func (r apiGetBrowserTestResultRequest) Execute() (SyntheticsBrowserTestResultFull, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SyntheticsBrowserTestResultFull
+ */
+func (a *SyntheticsApiService) GetBrowserTestResultExecute(r ApiGetBrowserTestResultRequest) (SyntheticsBrowserTestResultFull, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -1543,7 +1584,7 @@ func (r apiGetBrowserTestResultRequest) Execute() (SyntheticsBrowserTestResultFu
 		localVarReturnValue  SyntheticsBrowserTestResultFull
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.GetBrowserTestResult")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.GetBrowserTestResult")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -1580,12 +1621,12 @@ func (r apiGetBrowserTestResultRequest) Execute() (SyntheticsBrowserTestResultFu
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -1594,23 +1635,23 @@ func (r apiGetBrowserTestResultRequest) Execute() (SyntheticsBrowserTestResultFu
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1628,7 +1669,7 @@ func (r apiGetBrowserTestResultRequest) Execute() (SyntheticsBrowserTestResultFu
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1638,7 +1679,7 @@ func (r apiGetBrowserTestResultRequest) Execute() (SyntheticsBrowserTestResultFu
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1648,7 +1689,7 @@ func (r apiGetBrowserTestResultRequest) Execute() (SyntheticsBrowserTestResultFu
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -1660,32 +1701,36 @@ func (r apiGetBrowserTestResultRequest) Execute() (SyntheticsBrowserTestResultFu
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiGetGlobalVariableRequest struct {
+type ApiGetGlobalVariableRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
 	variableId string
 }
 
+func (r ApiGetGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_nethttp.Response, error) {
+	return r.ApiService.GetGlobalVariableExecute(r)
+}
+
 /*
-GetGlobalVariable Get a global variable
-Get the detailed configuration of a global variable.
+ * GetGlobalVariable Get a global variable
+ * Get the detailed configuration of a global variable.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param variableId The ID of the global variable.
-@return apiGetGlobalVariableRequest
-*/
-func (a *SyntheticsApiService) GetGlobalVariable(ctx _context.Context, variableId string) apiGetGlobalVariableRequest {
-	return apiGetGlobalVariableRequest{
-		apiService: a,
+ * @return ApiGetGlobalVariableRequest
+ */
+func (a *SyntheticsApiService) GetGlobalVariable(ctx _context.Context, variableId string) ApiGetGlobalVariableRequest {
+	return ApiGetGlobalVariableRequest{
+		ApiService: a,
 		ctx:        ctx,
 		variableId: variableId,
 	}
 }
 
 /*
-Execute executes the request
-@return SyntheticsGlobalVariable
-*/
-func (r apiGetGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SyntheticsGlobalVariable
+ */
+func (a *SyntheticsApiService) GetGlobalVariableExecute(r ApiGetGlobalVariableRequest) (SyntheticsGlobalVariable, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -1695,7 +1740,7 @@ func (r apiGetGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_neth
 		localVarReturnValue  SyntheticsGlobalVariable
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.GetGlobalVariable")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.GetGlobalVariable")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -1731,12 +1776,12 @@ func (r apiGetGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_neth
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -1745,23 +1790,23 @@ func (r apiGetGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_neth
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1779,7 +1824,7 @@ func (r apiGetGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_neth
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1789,7 +1834,7 @@ func (r apiGetGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_neth
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1799,7 +1844,7 @@ func (r apiGetGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_neth
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -1811,32 +1856,36 @@ func (r apiGetGlobalVariableRequest) Execute() (SyntheticsGlobalVariable, *_neth
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiGetTestRequest struct {
+type ApiGetTestRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
 	publicId   string
 }
 
+func (r ApiGetTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response, error) {
+	return r.ApiService.GetTestExecute(r)
+}
+
 /*
-GetTest Get a test configuration (API)
-Get the detailed configuration associated with a Synthetics test.
+ * GetTest Get a test configuration (API)
+ * Get the detailed configuration associated with a Synthetics test.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The public ID of the test to get details from.
-@return apiGetTestRequest
-*/
-func (a *SyntheticsApiService) GetTest(ctx _context.Context, publicId string) apiGetTestRequest {
-	return apiGetTestRequest{
-		apiService: a,
+ * @return ApiGetTestRequest
+ */
+func (a *SyntheticsApiService) GetTest(ctx _context.Context, publicId string) ApiGetTestRequest {
+	return ApiGetTestRequest{
+		ApiService: a,
 		ctx:        ctx,
 		publicId:   publicId,
 	}
 }
 
 /*
-Execute executes the request
-@return SyntheticsTestDetails
-*/
-func (r apiGetTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SyntheticsTestDetails
+ */
+func (a *SyntheticsApiService) GetTestExecute(r ApiGetTestRequest) (SyntheticsTestDetails, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -1846,7 +1895,7 @@ func (r apiGetTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response,
 		localVarReturnValue  SyntheticsTestDetails
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.GetTest")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.GetTest")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -1882,12 +1931,12 @@ func (r apiGetTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response,
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -1896,23 +1945,23 @@ func (r apiGetTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response,
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1930,7 +1979,7 @@ func (r apiGetTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response,
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1940,7 +1989,7 @@ func (r apiGetTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response,
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1950,7 +1999,7 @@ func (r apiGetTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response,
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -1962,29 +2011,34 @@ func (r apiGetTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response,
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListLocationsRequest struct {
+type ApiListLocationsRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
+}
+
+func (r ApiListLocationsRequest) Execute() (SyntheticsLocations, *_nethttp.Response, error) {
+	return r.ApiService.ListLocationsExecute(r)
 }
 
 /*
-ListLocations Get all locations (public and private)
-Get the list of public and private locations available for Synthetics tests. No arguments required.
+ * ListLocations Get all locations (public and private)
+ * Get the list of public and private locations available for Synthetic
+tests. No arguments required.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListLocationsRequest
+ * @return ApiListLocationsRequest
 */
-func (a *SyntheticsApiService) ListLocations(ctx _context.Context) apiListLocationsRequest {
-	return apiListLocationsRequest{
-		apiService: a,
+func (a *SyntheticsApiService) ListLocations(ctx _context.Context) ApiListLocationsRequest {
+	return ApiListLocationsRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return SyntheticsLocations
-*/
-func (r apiListLocationsRequest) Execute() (SyntheticsLocations, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SyntheticsLocations
+ */
+func (a *SyntheticsApiService) ListLocationsExecute(r ApiListLocationsRequest) (SyntheticsLocations, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -1994,7 +2048,7 @@ func (r apiListLocationsRequest) Execute() (SyntheticsLocations, *_nethttp.Respo
 		localVarReturnValue  SyntheticsLocations
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.ListLocations")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.ListLocations")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -2029,12 +2083,12 @@ func (r apiListLocationsRequest) Execute() (SyntheticsLocations, *_nethttp.Respo
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -2043,23 +2097,23 @@ func (r apiListLocationsRequest) Execute() (SyntheticsLocations, *_nethttp.Respo
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2078,7 +2132,7 @@ func (r apiListLocationsRequest) Execute() (SyntheticsLocations, *_nethttp.Respo
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -2090,29 +2144,33 @@ func (r apiListLocationsRequest) Execute() (SyntheticsLocations, *_nethttp.Respo
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListTestsRequest struct {
+type ApiListTestsRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
+}
+
+func (r ApiListTestsRequest) Execute() (SyntheticsListTestsResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListTestsExecute(r)
 }
 
 /*
-ListTests Get the list of all tests
-Get the list of all Synthetic tests.
+ * ListTests Get the list of all tests
+ * Get the list of all Synthetic tests.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListTestsRequest
-*/
-func (a *SyntheticsApiService) ListTests(ctx _context.Context) apiListTestsRequest {
-	return apiListTestsRequest{
-		apiService: a,
+ * @return ApiListTestsRequest
+ */
+func (a *SyntheticsApiService) ListTests(ctx _context.Context) ApiListTestsRequest {
+	return ApiListTestsRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return SyntheticsListTestsResponse
-*/
-func (r apiListTestsRequest) Execute() (SyntheticsListTestsResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SyntheticsListTestsResponse
+ */
+func (a *SyntheticsApiService) ListTestsExecute(r ApiListTestsRequest) (SyntheticsListTestsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -2122,7 +2180,7 @@ func (r apiListTestsRequest) Execute() (SyntheticsListTestsResponse, *_nethttp.R
 		localVarReturnValue  SyntheticsListTestsResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.ListTests")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.ListTests")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -2157,12 +2215,12 @@ func (r apiListTestsRequest) Execute() (SyntheticsListTestsResponse, *_nethttp.R
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -2171,23 +2229,23 @@ func (r apiListTestsRequest) Execute() (SyntheticsListTestsResponse, *_nethttp.R
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2205,7 +2263,7 @@ func (r apiListTestsRequest) Execute() (SyntheticsListTestsResponse, *_nethttp.R
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -2215,7 +2273,7 @@ func (r apiListTestsRequest) Execute() (SyntheticsListTestsResponse, *_nethttp.R
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -2225,7 +2283,7 @@ func (r apiListTestsRequest) Execute() (SyntheticsListTestsResponse, *_nethttp.R
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -2237,35 +2295,39 @@ func (r apiListTestsRequest) Execute() (SyntheticsListTestsResponse, *_nethttp.R
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiTriggerCITestsRequest struct {
+type ApiTriggerCITestsRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
 	body       *SyntheticsCITestBody
 }
 
-func (r apiTriggerCITestsRequest) Body(body SyntheticsCITestBody) apiTriggerCITestsRequest {
+func (r ApiTriggerCITestsRequest) Body(body SyntheticsCITestBody) ApiTriggerCITestsRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiTriggerCITestsRequest) Execute() (SyntheticsTriggerCITestsResponse, *_nethttp.Response, error) {
+	return r.ApiService.TriggerCITestsExecute(r)
+}
+
 /*
-TriggerCITests Trigger some Synthetics tests for CI
-Trigger a set of Synthetics tests for continuous integration
+ * TriggerCITests Trigger some Synthetics tests for CI
+ * Trigger a set of Synthetics tests for continuous integration
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiTriggerCITestsRequest
-*/
-func (a *SyntheticsApiService) TriggerCITests(ctx _context.Context) apiTriggerCITestsRequest {
-	return apiTriggerCITestsRequest{
-		apiService: a,
+ * @return ApiTriggerCITestsRequest
+ */
+func (a *SyntheticsApiService) TriggerCITests(ctx _context.Context) ApiTriggerCITestsRequest {
+	return ApiTriggerCITestsRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return SyntheticsTriggerCITestsResponse
-*/
-func (r apiTriggerCITestsRequest) Execute() (SyntheticsTriggerCITestsResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SyntheticsTriggerCITestsResponse
+ */
+func (a *SyntheticsApiService) TriggerCITestsExecute(r ApiTriggerCITestsRequest) (SyntheticsTriggerCITestsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -2275,7 +2337,7 @@ func (r apiTriggerCITestsRequest) Execute() (SyntheticsTriggerCITestsResponse, *
 		localVarReturnValue  SyntheticsTriggerCITestsResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.TriggerCITests")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.TriggerCITests")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -2315,12 +2377,12 @@ func (r apiTriggerCITestsRequest) Execute() (SyntheticsTriggerCITestsResponse, *
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -2329,23 +2391,23 @@ func (r apiTriggerCITestsRequest) Execute() (SyntheticsTriggerCITestsResponse, *
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2363,7 +2425,7 @@ func (r apiTriggerCITestsRequest) Execute() (SyntheticsTriggerCITestsResponse, *
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -2373,7 +2435,7 @@ func (r apiTriggerCITestsRequest) Execute() (SyntheticsTriggerCITestsResponse, *
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -2385,38 +2447,42 @@ func (r apiTriggerCITestsRequest) Execute() (SyntheticsTriggerCITestsResponse, *
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUpdateTestRequest struct {
+type ApiUpdateTestRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
 	publicId   string
 	body       *SyntheticsTestDetails
 }
 
-func (r apiUpdateTestRequest) Body(body SyntheticsTestDetails) apiUpdateTestRequest {
+func (r ApiUpdateTestRequest) Body(body SyntheticsTestDetails) ApiUpdateTestRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response, error) {
+	return r.ApiService.UpdateTestExecute(r)
+}
+
 /*
-UpdateTest Edit a test
-Edit the configuration of a Synthetic test.
+ * UpdateTest Edit a test
+ * Edit the configuration of a Synthetic test.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The public ID of the test to get details from.
-@return apiUpdateTestRequest
-*/
-func (a *SyntheticsApiService) UpdateTest(ctx _context.Context, publicId string) apiUpdateTestRequest {
-	return apiUpdateTestRequest{
-		apiService: a,
+ * @return ApiUpdateTestRequest
+ */
+func (a *SyntheticsApiService) UpdateTest(ctx _context.Context, publicId string) ApiUpdateTestRequest {
+	return ApiUpdateTestRequest{
+		ApiService: a,
 		ctx:        ctx,
 		publicId:   publicId,
 	}
 }
 
 /*
-Execute executes the request
-@return SyntheticsTestDetails
-*/
-func (r apiUpdateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return SyntheticsTestDetails
+ */
+func (a *SyntheticsApiService) UpdateTestExecute(r ApiUpdateTestRequest) (SyntheticsTestDetails, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -2426,7 +2492,7 @@ func (r apiUpdateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 		localVarReturnValue  SyntheticsTestDetails
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.UpdateTest")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.UpdateTest")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -2467,12 +2533,12 @@ func (r apiUpdateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -2481,23 +2547,23 @@ func (r apiUpdateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2515,7 +2581,7 @@ func (r apiUpdateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -2525,7 +2591,7 @@ func (r apiUpdateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -2535,7 +2601,7 @@ func (r apiUpdateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -2545,7 +2611,7 @@ func (r apiUpdateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -2557,38 +2623,42 @@ func (r apiUpdateTestRequest) Execute() (SyntheticsTestDetails, *_nethttp.Respon
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUpdateTestPauseStatusRequest struct {
+type ApiUpdateTestPauseStatusRequest struct {
 	ctx        _context.Context
-	apiService *SyntheticsApiService
+	ApiService *SyntheticsApiService
 	publicId   string
 	body       *SyntheticsUpdateTestPauseStatusPayload
 }
 
-func (r apiUpdateTestPauseStatusRequest) Body(body SyntheticsUpdateTestPauseStatusPayload) apiUpdateTestPauseStatusRequest {
+func (r ApiUpdateTestPauseStatusRequest) Body(body SyntheticsUpdateTestPauseStatusPayload) ApiUpdateTestPauseStatusRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateTestPauseStatusRequest) Execute() (bool, *_nethttp.Response, error) {
+	return r.ApiService.UpdateTestPauseStatusExecute(r)
+}
+
 /*
-UpdateTestPauseStatus Pause or start a test
-Pause or start a Synthetics test by changing the status.
+ * UpdateTestPauseStatus Pause or start a test
+ * Pause or start a Synthetics test by changing the status.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The public ID of the Synthetic test to update.
-@return apiUpdateTestPauseStatusRequest
-*/
-func (a *SyntheticsApiService) UpdateTestPauseStatus(ctx _context.Context, publicId string) apiUpdateTestPauseStatusRequest {
-	return apiUpdateTestPauseStatusRequest{
-		apiService: a,
+ * @return ApiUpdateTestPauseStatusRequest
+ */
+func (a *SyntheticsApiService) UpdateTestPauseStatus(ctx _context.Context, publicId string) ApiUpdateTestPauseStatusRequest {
+	return ApiUpdateTestPauseStatusRequest{
+		ApiService: a,
 		ctx:        ctx,
 		publicId:   publicId,
 	}
 }
 
 /*
-Execute executes the request
-@return bool
-*/
-func (r apiUpdateTestPauseStatusRequest) Execute() (bool, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return bool
+ */
+func (a *SyntheticsApiService) UpdateTestPauseStatusExecute(r ApiUpdateTestPauseStatusRequest) (bool, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -2598,7 +2668,7 @@ func (r apiUpdateTestPauseStatusRequest) Execute() (bool, *_nethttp.Response, er
 		localVarReturnValue  bool
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.UpdateTestPauseStatus")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SyntheticsApiService.UpdateTestPauseStatus")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -2639,12 +2709,12 @@ func (r apiUpdateTestPauseStatusRequest) Execute() (bool, *_nethttp.Response, er
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -2653,23 +2723,23 @@ func (r apiUpdateTestPauseStatusRequest) Execute() (bool, *_nethttp.Response, er
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2687,7 +2757,7 @@ func (r apiUpdateTestPauseStatusRequest) Execute() (bool, *_nethttp.Response, er
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -2697,7 +2767,7 @@ func (r apiUpdateTestPauseStatusRequest) Execute() (bool, *_nethttp.Response, er
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -2707,7 +2777,7 @@ func (r apiUpdateTestPauseStatusRequest) Execute() (bool, *_nethttp.Response, er
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -2717,7 +2787,7 @@ func (r apiUpdateTestPauseStatusRequest) Execute() (bool, *_nethttp.Response, er
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,

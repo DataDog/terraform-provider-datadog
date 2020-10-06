@@ -25,20 +25,24 @@ var (
 // OrganizationsApiService OrganizationsApi service
 type OrganizationsApiService service
 
-type apiCreateChildOrgRequest struct {
+type ApiCreateChildOrgRequest struct {
 	ctx        _context.Context
-	apiService *OrganizationsApiService
+	ApiService *OrganizationsApiService
 	body       *OrganizationCreateBody
 }
 
-func (r apiCreateChildOrgRequest) Body(body OrganizationCreateBody) apiCreateChildOrgRequest {
+func (r ApiCreateChildOrgRequest) Body(body OrganizationCreateBody) ApiCreateChildOrgRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiCreateChildOrgRequest) Execute() (OrganizationCreateResponse, *_nethttp.Response, error) {
+	return r.ApiService.CreateChildOrgExecute(r)
+}
+
 /*
-CreateChildOrg Create a child organization
-Create a child organization.
+ * CreateChildOrg Create a child organization
+ * Create a child organization.
 
 This endpoint requires the
 [multi-organization account](https://docs.datadoghq.com/account_management/multi_organization/)
@@ -49,20 +53,20 @@ Once a new child organization is created, you can interact with it
 by using the `org.public_id`, `pi_key.key`, and
 `application_key.hash` provided in the response.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCreateChildOrgRequest
+ * @return ApiCreateChildOrgRequest
 */
-func (a *OrganizationsApiService) CreateChildOrg(ctx _context.Context) apiCreateChildOrgRequest {
-	return apiCreateChildOrgRequest{
-		apiService: a,
+func (a *OrganizationsApiService) CreateChildOrg(ctx _context.Context) ApiCreateChildOrgRequest {
+	return ApiCreateChildOrgRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return OrganizationCreateResponse
-*/
-func (r apiCreateChildOrgRequest) Execute() (OrganizationCreateResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return OrganizationCreateResponse
+ */
+func (a *OrganizationsApiService) CreateChildOrgExecute(r ApiCreateChildOrgRequest) (OrganizationCreateResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -72,7 +76,7 @@ func (r apiCreateChildOrgRequest) Execute() (OrganizationCreateResponse, *_netht
 		localVarReturnValue  OrganizationCreateResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "OrganizationsApiService.CreateChildOrg")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OrganizationsApiService.CreateChildOrg")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -112,12 +116,12 @@ func (r apiCreateChildOrgRequest) Execute() (OrganizationCreateResponse, *_netht
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -126,23 +130,23 @@ func (r apiCreateChildOrgRequest) Execute() (OrganizationCreateResponse, *_netht
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -160,7 +164,7 @@ func (r apiCreateChildOrgRequest) Execute() (OrganizationCreateResponse, *_netht
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -170,7 +174,7 @@ func (r apiCreateChildOrgRequest) Execute() (OrganizationCreateResponse, *_netht
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -180,7 +184,7 @@ func (r apiCreateChildOrgRequest) Execute() (OrganizationCreateResponse, *_netht
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -192,32 +196,36 @@ func (r apiCreateChildOrgRequest) Execute() (OrganizationCreateResponse, *_netht
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiGetOrgRequest struct {
+type ApiGetOrgRequest struct {
 	ctx        _context.Context
-	apiService *OrganizationsApiService
+	ApiService *OrganizationsApiService
 	publicId   string
 }
 
+func (r ApiGetOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response, error) {
+	return r.ApiService.GetOrgExecute(r)
+}
+
 /*
-GetOrg Get organization information
-Get organization information.
+ * GetOrg Get organization information
+ * Get organization information.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The `public_id` of the organization you are operating within.
-@return apiGetOrgRequest
-*/
-func (a *OrganizationsApiService) GetOrg(ctx _context.Context, publicId string) apiGetOrgRequest {
-	return apiGetOrgRequest{
-		apiService: a,
+ * @return ApiGetOrgRequest
+ */
+func (a *OrganizationsApiService) GetOrg(ctx _context.Context, publicId string) ApiGetOrgRequest {
+	return ApiGetOrgRequest{
+		ApiService: a,
 		ctx:        ctx,
 		publicId:   publicId,
 	}
 }
 
 /*
-Execute executes the request
-@return OrganizationResponse
-*/
-func (r apiGetOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return OrganizationResponse
+ */
+func (a *OrganizationsApiService) GetOrgExecute(r ApiGetOrgRequest) (OrganizationResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -227,7 +235,7 @@ func (r apiGetOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response, e
 		localVarReturnValue  OrganizationResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "OrganizationsApiService.GetOrg")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OrganizationsApiService.GetOrg")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -263,12 +271,12 @@ func (r apiGetOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response, e
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -277,23 +285,23 @@ func (r apiGetOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response, e
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -311,7 +319,7 @@ func (r apiGetOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response, e
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -321,7 +329,7 @@ func (r apiGetOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response, e
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -331,7 +339,7 @@ func (r apiGetOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response, e
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -343,29 +351,33 @@ func (r apiGetOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response, e
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListOrgsRequest struct {
+type ApiListOrgsRequest struct {
 	ctx        _context.Context
-	apiService *OrganizationsApiService
+	ApiService *OrganizationsApiService
+}
+
+func (r ApiListOrgsRequest) Execute() (OrganizationListResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListOrgsExecute(r)
 }
 
 /*
-ListOrgs List your managed organizations
-List your managed organizations.
+ * ListOrgs List your managed organizations
+ * List your managed organizations.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListOrgsRequest
-*/
-func (a *OrganizationsApiService) ListOrgs(ctx _context.Context) apiListOrgsRequest {
-	return apiListOrgsRequest{
-		apiService: a,
+ * @return ApiListOrgsRequest
+ */
+func (a *OrganizationsApiService) ListOrgs(ctx _context.Context) ApiListOrgsRequest {
+	return ApiListOrgsRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return OrganizationListResponse
-*/
-func (r apiListOrgsRequest) Execute() (OrganizationListResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return OrganizationListResponse
+ */
+func (a *OrganizationsApiService) ListOrgsExecute(r ApiListOrgsRequest) (OrganizationListResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -375,7 +387,7 @@ func (r apiListOrgsRequest) Execute() (OrganizationListResponse, *_nethttp.Respo
 		localVarReturnValue  OrganizationListResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "OrganizationsApiService.ListOrgs")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OrganizationsApiService.ListOrgs")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -410,12 +422,12 @@ func (r apiListOrgsRequest) Execute() (OrganizationListResponse, *_nethttp.Respo
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -424,23 +436,23 @@ func (r apiListOrgsRequest) Execute() (OrganizationListResponse, *_nethttp.Respo
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -458,7 +470,7 @@ func (r apiListOrgsRequest) Execute() (OrganizationListResponse, *_nethttp.Respo
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -468,7 +480,7 @@ func (r apiListOrgsRequest) Execute() (OrganizationListResponse, *_nethttp.Respo
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -480,38 +492,42 @@ func (r apiListOrgsRequest) Execute() (OrganizationListResponse, *_nethttp.Respo
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUpdateOrgRequest struct {
+type ApiUpdateOrgRequest struct {
 	ctx        _context.Context
-	apiService *OrganizationsApiService
+	ApiService *OrganizationsApiService
 	publicId   string
 	body       *Organization
 }
 
-func (r apiUpdateOrgRequest) Body(body Organization) apiUpdateOrgRequest {
+func (r ApiUpdateOrgRequest) Body(body Organization) ApiUpdateOrgRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response, error) {
+	return r.ApiService.UpdateOrgExecute(r)
+}
+
 /*
-UpdateOrg Update your organization
-Update your organization.
+ * UpdateOrg Update your organization
+ * Update your organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The `public_id` of the organization you are operating within.
-@return apiUpdateOrgRequest
-*/
-func (a *OrganizationsApiService) UpdateOrg(ctx _context.Context, publicId string) apiUpdateOrgRequest {
-	return apiUpdateOrgRequest{
-		apiService: a,
+ * @return ApiUpdateOrgRequest
+ */
+func (a *OrganizationsApiService) UpdateOrg(ctx _context.Context, publicId string) ApiUpdateOrgRequest {
+	return ApiUpdateOrgRequest{
+		ApiService: a,
 		ctx:        ctx,
 		publicId:   publicId,
 	}
 }
 
 /*
-Execute executes the request
-@return OrganizationResponse
-*/
-func (r apiUpdateOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return OrganizationResponse
+ */
+func (a *OrganizationsApiService) UpdateOrgExecute(r ApiUpdateOrgRequest) (OrganizationResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -521,7 +537,7 @@ func (r apiUpdateOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response
 		localVarReturnValue  OrganizationResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "OrganizationsApiService.UpdateOrg")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OrganizationsApiService.UpdateOrg")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -562,12 +578,12 @@ func (r apiUpdateOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -576,23 +592,23 @@ func (r apiUpdateOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -610,7 +626,7 @@ func (r apiUpdateOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -620,7 +636,7 @@ func (r apiUpdateOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -630,7 +646,7 @@ func (r apiUpdateOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -642,21 +658,25 @@ func (r apiUpdateOrgRequest) Execute() (OrganizationResponse, *_nethttp.Response
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUploadIdPForOrgRequest struct {
+type ApiUploadIdPForOrgRequest struct {
 	ctx        _context.Context
-	apiService *OrganizationsApiService
+	ApiService *OrganizationsApiService
 	publicId   string
 	idpFile    **os.File
 }
 
-func (r apiUploadIdPForOrgRequest) IdpFile(idpFile *os.File) apiUploadIdPForOrgRequest {
+func (r ApiUploadIdPForOrgRequest) IdpFile(idpFile *os.File) ApiUploadIdPForOrgRequest {
 	r.idpFile = &idpFile
 	return r
 }
 
+func (r ApiUploadIdPForOrgRequest) Execute() (IdpResponse, *_nethttp.Response, error) {
+	return r.ApiService.UploadIdPForOrgExecute(r)
+}
+
 /*
-UploadIdPForOrg Upload IdP metadata
-There are a couple of options for updating the Identity Provider (IdP)
+ * UploadIdPForOrg Upload IdP metadata
+ * There are a couple of options for updating the Identity Provider (IdP)
 metadata from your SAML IdP.
 
 * **Multipart Form-Data**: Post the IdP metadata file using a form post.
@@ -664,21 +684,21 @@ metadata from your SAML IdP.
 * **XML Body:** Post the IdP metadata file as the body of the request.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param publicId The `public_id` of the organization you are operating with
-@return apiUploadIdPForOrgRequest
+ * @return ApiUploadIdPForOrgRequest
 */
-func (a *OrganizationsApiService) UploadIdPForOrg(ctx _context.Context, publicId string) apiUploadIdPForOrgRequest {
-	return apiUploadIdPForOrgRequest{
-		apiService: a,
+func (a *OrganizationsApiService) UploadIdPForOrg(ctx _context.Context, publicId string) ApiUploadIdPForOrgRequest {
+	return ApiUploadIdPForOrgRequest{
+		ApiService: a,
 		ctx:        ctx,
 		publicId:   publicId,
 	}
 }
 
 /*
-Execute executes the request
-@return IdpResponse
-*/
-func (r apiUploadIdPForOrgRequest) Execute() (IdpResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return IdpResponse
+ */
+func (a *OrganizationsApiService) UploadIdPForOrgExecute(r ApiUploadIdPForOrgRequest) (IdpResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -688,7 +708,7 @@ func (r apiUploadIdPForOrgRequest) Execute() (IdpResponse, *_nethttp.Response, e
 		localVarReturnValue  IdpResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "OrganizationsApiService.UploadIdPForOrg")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "OrganizationsApiService.UploadIdPForOrg")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -735,12 +755,12 @@ func (r apiUploadIdPForOrgRequest) Execute() (IdpResponse, *_nethttp.Response, e
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -749,23 +769,23 @@ func (r apiUploadIdPForOrgRequest) Execute() (IdpResponse, *_nethttp.Response, e
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -783,7 +803,7 @@ func (r apiUploadIdPForOrgRequest) Execute() (IdpResponse, *_nethttp.Response, e
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -793,7 +813,7 @@ func (r apiUploadIdPForOrgRequest) Execute() (IdpResponse, *_nethttp.Response, e
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -803,7 +823,7 @@ func (r apiUploadIdPForOrgRequest) Execute() (IdpResponse, *_nethttp.Response, e
 		}
 		if localVarHTTPResponse.StatusCode == 415 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -813,7 +833,7 @@ func (r apiUploadIdPForOrgRequest) Execute() (IdpResponse, *_nethttp.Response, e
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,

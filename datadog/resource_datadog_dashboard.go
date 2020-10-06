@@ -5128,7 +5128,26 @@ func getApmStatsQuerySchema() *schema.Schema {
 				"columns": {
 					Type:     schema.TypeList,
 					Optional: true,
-					Elem:     &schema.Schema{Type: schema.TypeString},
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"name": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"alias": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"order": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"cell_display_mode": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+						},
+					},
 				},
 			},
 		},
@@ -5157,9 +5176,9 @@ func buildDatadogApmStatsQuery(terraformQuery map[string]interface{}) *datadogV1
 	}
 
 	if terraformColumns, ok := terraformQuery["columns"].([]interface{}); ok && len(terraformColumns) > 0 {
-		datadogColumns := make([]string, len(terraformColumns))
+		datadogColumns := make([]datadogV1.ApmStatsQueryColumnType, len(terraformColumns))
 		for i, column := range terraformColumns {
-			datadogColumns[i] = column.(string)
+			datadogColumns[i] = column.(datadogV1.ApmStatsQueryColumnType)
 		}
 		datadogQuery.SetColumns(datadogColumns)
 	}
@@ -5188,7 +5207,7 @@ func buildTerraformApmStatsQuery(datadogQuery datadogV1.ApmStatsQueryDefinition)
 		terraformQuery["resource"] = v
 	}
 	if v, ok := datadogQuery.GetColumnsOk(); ok {
-		terraformColumns := make([]string, len(*v))
+		terraformColumns := make([]interface{}, len(*v))
 		for i, datadogColumn := range *v {
 			terraformColumns[i] = datadogColumn
 		}

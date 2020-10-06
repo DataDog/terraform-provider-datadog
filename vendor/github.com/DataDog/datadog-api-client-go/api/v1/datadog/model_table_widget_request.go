@@ -19,6 +19,8 @@ type TableWidgetRequest struct {
 	Alias         *string                  `json:"alias,omitempty"`
 	ApmQuery      *LogQueryDefinition      `json:"apm_query,omitempty"`
 	ApmStatsQuery *ApmStatsQueryDefinition `json:"apm_stats_query,omitempty"`
+	// A list of display modes for each table cell.
+	CellDisplayMode *[]TableWidgetCellDisplayMode `json:"cell_display_mode,omitempty"`
 	// List of conditional formats.
 	ConditionalFormats *[]WidgetConditionalFormat `json:"conditional_formats,omitempty"`
 	EventQuery         *EventQueryDefinition      `json:"event_query,omitempty"`
@@ -177,6 +179,38 @@ func (o *TableWidgetRequest) HasApmStatsQuery() bool {
 // SetApmStatsQuery gets a reference to the given ApmStatsQueryDefinition and assigns it to the ApmStatsQuery field.
 func (o *TableWidgetRequest) SetApmStatsQuery(v ApmStatsQueryDefinition) {
 	o.ApmStatsQuery = &v
+}
+
+// GetCellDisplayMode returns the CellDisplayMode field value if set, zero value otherwise.
+func (o *TableWidgetRequest) GetCellDisplayMode() []TableWidgetCellDisplayMode {
+	if o == nil || o.CellDisplayMode == nil {
+		var ret []TableWidgetCellDisplayMode
+		return ret
+	}
+	return *o.CellDisplayMode
+}
+
+// GetCellDisplayModeOk returns a tuple with the CellDisplayMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TableWidgetRequest) GetCellDisplayModeOk() (*[]TableWidgetCellDisplayMode, bool) {
+	if o == nil || o.CellDisplayMode == nil {
+		return nil, false
+	}
+	return o.CellDisplayMode, true
+}
+
+// HasCellDisplayMode returns a boolean if a field has been set.
+func (o *TableWidgetRequest) HasCellDisplayMode() bool {
+	if o != nil && o.CellDisplayMode != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCellDisplayMode gets a reference to the given []TableWidgetCellDisplayMode and assigns it to the CellDisplayMode field.
+func (o *TableWidgetRequest) SetCellDisplayMode(v []TableWidgetCellDisplayMode) {
+	o.CellDisplayMode = &v
 }
 
 // GetConditionalFormats returns the ConditionalFormats field value if set, zero value otherwise.
@@ -512,6 +546,9 @@ func (o TableWidgetRequest) MarshalJSON() ([]byte, error) {
 	}
 	if o.ApmStatsQuery != nil {
 		toSerialize["apm_stats_query"] = o.ApmStatsQuery
+	}
+	if o.CellDisplayMode != nil {
+		toSerialize["cell_display_mode"] = o.CellDisplayMode
 	}
 	if o.ConditionalFormats != nil {
 		toSerialize["conditional_formats"] = o.ConditionalFormats

@@ -26,32 +26,36 @@ var (
 // LogsIndexesApiService LogsIndexesApi service
 type LogsIndexesApiService service
 
-type apiGetLogsIndexRequest struct {
+type ApiGetLogsIndexRequest struct {
 	ctx        _context.Context
-	apiService *LogsIndexesApiService
+	ApiService *LogsIndexesApiService
 	name       string
 }
 
+func (r ApiGetLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, error) {
+	return r.ApiService.GetLogsIndexExecute(r)
+}
+
 /*
-GetLogsIndex Get an index
-Get one log index from your organization. This endpoint takes no JSON arguments.
+ * GetLogsIndex Get an index
+ * Get one log index from your organization. This endpoint takes no JSON arguments.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param name Name of the log index.
-@return apiGetLogsIndexRequest
-*/
-func (a *LogsIndexesApiService) GetLogsIndex(ctx _context.Context, name string) apiGetLogsIndexRequest {
-	return apiGetLogsIndexRequest{
-		apiService: a,
+ * @return ApiGetLogsIndexRequest
+ */
+func (a *LogsIndexesApiService) GetLogsIndex(ctx _context.Context, name string) ApiGetLogsIndexRequest {
+	return ApiGetLogsIndexRequest{
+		ApiService: a,
 		ctx:        ctx,
 		name:       name,
 	}
 }
 
 /*
-Execute executes the request
-@return LogsIndex
-*/
-func (r apiGetLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return LogsIndex
+ */
+func (a *LogsIndexesApiService) GetLogsIndexExecute(r ApiGetLogsIndexRequest) (LogsIndex, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -60,14 +64,15 @@ func (r apiGetLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, error)
 		localVarFileBytes    []byte
 		localVarReturnValue  LogsIndex
 	)
+
 	operationId := "GetLogsIndex"
-	if r.apiService.client.cfg.IsUnstableOperationEnabled(operationId) {
+	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsIndexesApiService.GetLogsIndex")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsIndexesApiService.GetLogsIndex")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -103,12 +108,12 @@ func (r apiGetLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, error)
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -117,23 +122,23 @@ func (r apiGetLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, error)
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -151,7 +156,7 @@ func (r apiGetLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, error)
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -161,7 +166,7 @@ func (r apiGetLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, error)
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v LogsAPIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -171,7 +176,7 @@ func (r apiGetLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, error)
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -183,29 +188,33 @@ func (r apiGetLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, error)
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiGetLogsIndexOrderRequest struct {
+type ApiGetLogsIndexOrderRequest struct {
 	ctx        _context.Context
-	apiService *LogsIndexesApiService
+	ApiService *LogsIndexesApiService
+}
+
+func (r ApiGetLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.Response, error) {
+	return r.ApiService.GetLogsIndexOrderExecute(r)
 }
 
 /*
-GetLogsIndexOrder Get indexes order
-Get the current order of your log indexes. This endpoint takes no JSON arguments.
+ * GetLogsIndexOrder Get indexes order
+ * Get the current order of your log indexes. This endpoint takes no JSON arguments.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiGetLogsIndexOrderRequest
-*/
-func (a *LogsIndexesApiService) GetLogsIndexOrder(ctx _context.Context) apiGetLogsIndexOrderRequest {
-	return apiGetLogsIndexOrderRequest{
-		apiService: a,
+ * @return ApiGetLogsIndexOrderRequest
+ */
+func (a *LogsIndexesApiService) GetLogsIndexOrder(ctx _context.Context) ApiGetLogsIndexOrderRequest {
+	return ApiGetLogsIndexOrderRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return LogsIndexesOrder
-*/
-func (r apiGetLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return LogsIndexesOrder
+ */
+func (a *LogsIndexesApiService) GetLogsIndexOrderExecute(r ApiGetLogsIndexOrderRequest) (LogsIndexesOrder, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -214,14 +223,15 @@ func (r apiGetLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.Resp
 		localVarFileBytes    []byte
 		localVarReturnValue  LogsIndexesOrder
 	)
+
 	operationId := "GetLogsIndexOrder"
-	if r.apiService.client.cfg.IsUnstableOperationEnabled(operationId) {
+	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsIndexesApiService.GetLogsIndexOrder")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsIndexesApiService.GetLogsIndexOrder")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -256,12 +266,12 @@ func (r apiGetLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.Resp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -270,23 +280,23 @@ func (r apiGetLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.Resp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -304,7 +314,7 @@ func (r apiGetLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.Resp
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -314,7 +324,7 @@ func (r apiGetLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.Resp
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -326,30 +336,34 @@ func (r apiGetLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.Resp
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListLogIndexesRequest struct {
+type ApiListLogIndexesRequest struct {
 	ctx        _context.Context
-	apiService *LogsIndexesApiService
+	ApiService *LogsIndexesApiService
+}
+
+func (r ApiListLogIndexesRequest) Execute() (LogsIndexListResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListLogIndexesExecute(r)
 }
 
 /*
-ListLogIndexes Get all indexes
-The Index object describes the configuration of a log index.
+ * ListLogIndexes Get all indexes
+ * The Index object describes the configuration of a log index.
 This endpoint returns an array of the `LogIndex` objects of your organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListLogIndexesRequest
+ * @return ApiListLogIndexesRequest
 */
-func (a *LogsIndexesApiService) ListLogIndexes(ctx _context.Context) apiListLogIndexesRequest {
-	return apiListLogIndexesRequest{
-		apiService: a,
+func (a *LogsIndexesApiService) ListLogIndexes(ctx _context.Context) ApiListLogIndexesRequest {
+	return ApiListLogIndexesRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return LogsIndexListResponse
-*/
-func (r apiListLogIndexesRequest) Execute() (LogsIndexListResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return LogsIndexListResponse
+ */
+func (a *LogsIndexesApiService) ListLogIndexesExecute(r ApiListLogIndexesRequest) (LogsIndexListResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -358,14 +372,15 @@ func (r apiListLogIndexesRequest) Execute() (LogsIndexListResponse, *_nethttp.Re
 		localVarFileBytes    []byte
 		localVarReturnValue  LogsIndexListResponse
 	)
+
 	operationId := "ListLogIndexes"
-	if r.apiService.client.cfg.IsUnstableOperationEnabled(operationId) {
+	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsIndexesApiService.ListLogIndexes")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsIndexesApiService.ListLogIndexes")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -400,12 +415,12 @@ func (r apiListLogIndexesRequest) Execute() (LogsIndexListResponse, *_nethttp.Re
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -414,23 +429,23 @@ func (r apiListLogIndexesRequest) Execute() (LogsIndexListResponse, *_nethttp.Re
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -448,7 +463,7 @@ func (r apiListLogIndexesRequest) Execute() (LogsIndexListResponse, *_nethttp.Re
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -458,7 +473,7 @@ func (r apiListLogIndexesRequest) Execute() (LogsIndexListResponse, *_nethttp.Re
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -470,42 +485,46 @@ func (r apiListLogIndexesRequest) Execute() (LogsIndexListResponse, *_nethttp.Re
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUpdateLogsIndexRequest struct {
+type ApiUpdateLogsIndexRequest struct {
 	ctx        _context.Context
-	apiService *LogsIndexesApiService
+	ApiService *LogsIndexesApiService
 	name       string
 	body       *LogsIndex
 }
 
-func (r apiUpdateLogsIndexRequest) Body(body LogsIndex) apiUpdateLogsIndexRequest {
+func (r ApiUpdateLogsIndexRequest) Body(body LogsIndex) ApiUpdateLogsIndexRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, error) {
+	return r.ApiService.UpdateLogsIndexExecute(r)
+}
+
 /*
-UpdateLogsIndex Update an index
-Update an index as identified by its name.
+ * UpdateLogsIndex Update an index
+ * Update an index as identified by its name.
 Returns the Index object passed in the request body when the request is successful.
 
 Using the `PUT` method updates your index’s configuration by **replacing**
 your current configuration with the new one sent to your Datadog organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param name Name of the log index.
-@return apiUpdateLogsIndexRequest
+ * @return ApiUpdateLogsIndexRequest
 */
-func (a *LogsIndexesApiService) UpdateLogsIndex(ctx _context.Context, name string) apiUpdateLogsIndexRequest {
-	return apiUpdateLogsIndexRequest{
-		apiService: a,
+func (a *LogsIndexesApiService) UpdateLogsIndex(ctx _context.Context, name string) ApiUpdateLogsIndexRequest {
+	return ApiUpdateLogsIndexRequest{
+		ApiService: a,
 		ctx:        ctx,
 		name:       name,
 	}
 }
 
 /*
-Execute executes the request
-@return LogsIndex
-*/
-func (r apiUpdateLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return LogsIndex
+ */
+func (a *LogsIndexesApiService) UpdateLogsIndexExecute(r ApiUpdateLogsIndexRequest) (LogsIndex, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -514,14 +533,15 @@ func (r apiUpdateLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, err
 		localVarFileBytes    []byte
 		localVarReturnValue  LogsIndex
 	)
+
 	operationId := "UpdateLogsIndex"
-	if r.apiService.client.cfg.IsUnstableOperationEnabled(operationId) {
+	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsIndexesApiService.UpdateLogsIndex")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsIndexesApiService.UpdateLogsIndex")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -559,12 +579,12 @@ func (r apiUpdateLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, err
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -573,23 +593,23 @@ func (r apiUpdateLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, err
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -607,7 +627,7 @@ func (r apiUpdateLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, err
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v LogsAPIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -617,7 +637,7 @@ func (r apiUpdateLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, err
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -627,7 +647,7 @@ func (r apiUpdateLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, err
 		}
 		if localVarHTTPResponse.StatusCode == 429 {
 			var v LogsAPIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -637,7 +657,7 @@ func (r apiUpdateLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, err
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -649,36 +669,40 @@ func (r apiUpdateLogsIndexRequest) Execute() (LogsIndex, *_nethttp.Response, err
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUpdateLogsIndexOrderRequest struct {
+type ApiUpdateLogsIndexOrderRequest struct {
 	ctx        _context.Context
-	apiService *LogsIndexesApiService
+	ApiService *LogsIndexesApiService
 	body       *LogsIndexesOrder
 }
 
-func (r apiUpdateLogsIndexOrderRequest) Body(body LogsIndexesOrder) apiUpdateLogsIndexOrderRequest {
+func (r ApiUpdateLogsIndexOrderRequest) Body(body LogsIndexesOrder) ApiUpdateLogsIndexOrderRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.Response, error) {
+	return r.ApiService.UpdateLogsIndexOrderExecute(r)
+}
+
 /*
-UpdateLogsIndexOrder Update indexes order
-This endpoint updates the index order of your organization.
+ * UpdateLogsIndexOrder Update indexes order
+ * This endpoint updates the index order of your organization.
 It returns the index order object passed in the request body when the request is successful.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiUpdateLogsIndexOrderRequest
+ * @return ApiUpdateLogsIndexOrderRequest
 */
-func (a *LogsIndexesApiService) UpdateLogsIndexOrder(ctx _context.Context) apiUpdateLogsIndexOrderRequest {
-	return apiUpdateLogsIndexOrderRequest{
-		apiService: a,
+func (a *LogsIndexesApiService) UpdateLogsIndexOrder(ctx _context.Context) ApiUpdateLogsIndexOrderRequest {
+	return ApiUpdateLogsIndexOrderRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return LogsIndexesOrder
-*/
-func (r apiUpdateLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return LogsIndexesOrder
+ */
+func (a *LogsIndexesApiService) UpdateLogsIndexOrderExecute(r ApiUpdateLogsIndexOrderRequest) (LogsIndexesOrder, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -687,14 +711,15 @@ func (r apiUpdateLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.R
 		localVarFileBytes    []byte
 		localVarReturnValue  LogsIndexesOrder
 	)
+
 	operationId := "UpdateLogsIndexOrder"
-	if r.apiService.client.cfg.IsUnstableOperationEnabled(operationId) {
+	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsIndexesApiService.UpdateLogsIndexOrder")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsIndexesApiService.UpdateLogsIndexOrder")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -731,12 +756,12 @@ func (r apiUpdateLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.R
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -745,23 +770,23 @@ func (r apiUpdateLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.R
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -779,7 +804,7 @@ func (r apiUpdateLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.R
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v LogsAPIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -789,7 +814,7 @@ func (r apiUpdateLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.R
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -799,7 +824,7 @@ func (r apiUpdateLogsIndexOrderRequest) Execute() (LogsIndexesOrder, *_nethttp.R
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,

@@ -24,35 +24,39 @@ var (
 // LogsPipelinesApiService LogsPipelinesApi service
 type LogsPipelinesApiService service
 
-type apiCreateLogsPipelineRequest struct {
+type ApiCreateLogsPipelineRequest struct {
 	ctx        _context.Context
-	apiService *LogsPipelinesApiService
+	ApiService *LogsPipelinesApiService
 	body       *LogsPipeline
 }
 
-func (r apiCreateLogsPipelineRequest) Body(body LogsPipeline) apiCreateLogsPipelineRequest {
+func (r ApiCreateLogsPipelineRequest) Body(body LogsPipeline) ApiCreateLogsPipelineRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiCreateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, error) {
+	return r.ApiService.CreateLogsPipelineExecute(r)
+}
+
 /*
-CreateLogsPipeline Create a pipeline
-Create a pipeline in your organization.
+ * CreateLogsPipeline Create a pipeline
+ * Create a pipeline in your organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCreateLogsPipelineRequest
-*/
-func (a *LogsPipelinesApiService) CreateLogsPipeline(ctx _context.Context) apiCreateLogsPipelineRequest {
-	return apiCreateLogsPipelineRequest{
-		apiService: a,
+ * @return ApiCreateLogsPipelineRequest
+ */
+func (a *LogsPipelinesApiService) CreateLogsPipeline(ctx _context.Context) ApiCreateLogsPipelineRequest {
+	return ApiCreateLogsPipelineRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return LogsPipeline
-*/
-func (r apiCreateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return LogsPipeline
+ */
+func (a *LogsPipelinesApiService) CreateLogsPipelineExecute(r ApiCreateLogsPipelineRequest) (LogsPipeline, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -62,7 +66,7 @@ func (r apiCreateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 		localVarReturnValue  LogsPipeline
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsPipelinesApiService.CreateLogsPipeline")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsPipelinesApiService.CreateLogsPipeline")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -102,12 +106,12 @@ func (r apiCreateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -116,23 +120,23 @@ func (r apiCreateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -150,7 +154,7 @@ func (r apiCreateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v LogsAPIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -160,7 +164,7 @@ func (r apiCreateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -170,7 +174,7 @@ func (r apiCreateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -182,32 +186,36 @@ func (r apiCreateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiDeleteLogsPipelineRequest struct {
+type ApiDeleteLogsPipelineRequest struct {
 	ctx        _context.Context
-	apiService *LogsPipelinesApiService
+	ApiService *LogsPipelinesApiService
 	pipelineId string
 }
 
+func (r ApiDeleteLogsPipelineRequest) Execute() (*_nethttp.Response, error) {
+	return r.ApiService.DeleteLogsPipelineExecute(r)
+}
+
 /*
-DeleteLogsPipeline Delete a pipeline
-Delete a given pipeline from your organization.
+ * DeleteLogsPipeline Delete a pipeline
+ * Delete a given pipeline from your organization.
 This endpoint takes no JSON arguments.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param pipelineId ID of the pipeline to delete.
-@return apiDeleteLogsPipelineRequest
+ * @return ApiDeleteLogsPipelineRequest
 */
-func (a *LogsPipelinesApiService) DeleteLogsPipeline(ctx _context.Context, pipelineId string) apiDeleteLogsPipelineRequest {
-	return apiDeleteLogsPipelineRequest{
-		apiService: a,
+func (a *LogsPipelinesApiService) DeleteLogsPipeline(ctx _context.Context, pipelineId string) ApiDeleteLogsPipelineRequest {
+	return ApiDeleteLogsPipelineRequest{
+		ApiService: a,
 		ctx:        ctx,
 		pipelineId: pipelineId,
 	}
 }
 
 /*
-Execute executes the request
-*/
-func (r apiDeleteLogsPipelineRequest) Execute() (*_nethttp.Response, error) {
+ * Execute executes the request
+ */
+func (a *LogsPipelinesApiService) DeleteLogsPipelineExecute(r ApiDeleteLogsPipelineRequest) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodDelete
 		localVarPostBody     interface{}
@@ -216,7 +224,7 @@ func (r apiDeleteLogsPipelineRequest) Execute() (*_nethttp.Response, error) {
 		localVarFileBytes    []byte
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsPipelinesApiService.DeleteLogsPipeline")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsPipelinesApiService.DeleteLogsPipeline")
 	if err != nil {
 		return nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -252,12 +260,12 @@ func (r apiDeleteLogsPipelineRequest) Execute() (*_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -266,23 +274,23 @@ func (r apiDeleteLogsPipelineRequest) Execute() (*_nethttp.Response, error) {
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarHTTPResponse, err
 	}
@@ -300,7 +308,7 @@ func (r apiDeleteLogsPipelineRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v LogsAPIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -310,7 +318,7 @@ func (r apiDeleteLogsPipelineRequest) Execute() (*_nethttp.Response, error) {
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
@@ -323,33 +331,37 @@ func (r apiDeleteLogsPipelineRequest) Execute() (*_nethttp.Response, error) {
 	return localVarHTTPResponse, nil
 }
 
-type apiGetLogsPipelineRequest struct {
+type ApiGetLogsPipelineRequest struct {
 	ctx        _context.Context
-	apiService *LogsPipelinesApiService
+	ApiService *LogsPipelinesApiService
 	pipelineId string
 }
 
+func (r ApiGetLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, error) {
+	return r.ApiService.GetLogsPipelineExecute(r)
+}
+
 /*
-GetLogsPipeline Get a pipeline
-Get a specific pipeline from your organization.
+ * GetLogsPipeline Get a pipeline
+ * Get a specific pipeline from your organization.
 This endpoint takes no JSON arguments.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param pipelineId ID of the pipeline to get.
-@return apiGetLogsPipelineRequest
+ * @return ApiGetLogsPipelineRequest
 */
-func (a *LogsPipelinesApiService) GetLogsPipeline(ctx _context.Context, pipelineId string) apiGetLogsPipelineRequest {
-	return apiGetLogsPipelineRequest{
-		apiService: a,
+func (a *LogsPipelinesApiService) GetLogsPipeline(ctx _context.Context, pipelineId string) ApiGetLogsPipelineRequest {
+	return ApiGetLogsPipelineRequest{
+		ApiService: a,
 		ctx:        ctx,
 		pipelineId: pipelineId,
 	}
 }
 
 /*
-Execute executes the request
-@return LogsPipeline
-*/
-func (r apiGetLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return LogsPipeline
+ */
+func (a *LogsPipelinesApiService) GetLogsPipelineExecute(r ApiGetLogsPipelineRequest) (LogsPipeline, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -359,7 +371,7 @@ func (r apiGetLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, 
 		localVarReturnValue  LogsPipeline
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsPipelinesApiService.GetLogsPipeline")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsPipelinesApiService.GetLogsPipeline")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -395,12 +407,12 @@ func (r apiGetLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, 
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -409,23 +421,23 @@ func (r apiGetLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, 
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -443,7 +455,7 @@ func (r apiGetLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, 
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v LogsAPIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -453,7 +465,7 @@ func (r apiGetLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, 
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -463,7 +475,7 @@ func (r apiGetLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, 
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -475,30 +487,34 @@ func (r apiGetLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, 
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiGetLogsPipelineOrderRequest struct {
+type ApiGetLogsPipelineOrderRequest struct {
 	ctx        _context.Context
-	apiService *LogsPipelinesApiService
+	ApiService *LogsPipelinesApiService
+}
+
+func (r ApiGetLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_nethttp.Response, error) {
+	return r.ApiService.GetLogsPipelineOrderExecute(r)
 }
 
 /*
-GetLogsPipelineOrder Get pipeline order
-Get the current order of your pipelines.
+ * GetLogsPipelineOrder Get pipeline order
+ * Get the current order of your pipelines.
 This endpoint takes no JSON arguments.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiGetLogsPipelineOrderRequest
+ * @return ApiGetLogsPipelineOrderRequest
 */
-func (a *LogsPipelinesApiService) GetLogsPipelineOrder(ctx _context.Context) apiGetLogsPipelineOrderRequest {
-	return apiGetLogsPipelineOrderRequest{
-		apiService: a,
+func (a *LogsPipelinesApiService) GetLogsPipelineOrder(ctx _context.Context) ApiGetLogsPipelineOrderRequest {
+	return ApiGetLogsPipelineOrderRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return LogsPipelinesOrder
-*/
-func (r apiGetLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return LogsPipelinesOrder
+ */
+func (a *LogsPipelinesApiService) GetLogsPipelineOrderExecute(r ApiGetLogsPipelineOrderRequest) (LogsPipelinesOrder, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -508,7 +524,7 @@ func (r apiGetLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_nethttp
 		localVarReturnValue  LogsPipelinesOrder
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsPipelinesApiService.GetLogsPipelineOrder")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsPipelinesApiService.GetLogsPipelineOrder")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -543,12 +559,12 @@ func (r apiGetLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_nethttp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -557,23 +573,23 @@ func (r apiGetLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_nethttp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -591,7 +607,7 @@ func (r apiGetLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_nethttp
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -601,7 +617,7 @@ func (r apiGetLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_nethttp
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -613,30 +629,34 @@ func (r apiGetLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_nethttp
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListLogsPipelinesRequest struct {
+type ApiListLogsPipelinesRequest struct {
 	ctx        _context.Context
-	apiService *LogsPipelinesApiService
+	ApiService *LogsPipelinesApiService
+}
+
+func (r ApiListLogsPipelinesRequest) Execute() ([]LogsPipeline, *_nethttp.Response, error) {
+	return r.ApiService.ListLogsPipelinesExecute(r)
 }
 
 /*
-ListLogsPipelines Get all pipelines
-Get all pipelines from your organization.
+ * ListLogsPipelines Get all pipelines
+ * Get all pipelines from your organization.
 This endpoint takes no JSON arguments.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListLogsPipelinesRequest
+ * @return ApiListLogsPipelinesRequest
 */
-func (a *LogsPipelinesApiService) ListLogsPipelines(ctx _context.Context) apiListLogsPipelinesRequest {
-	return apiListLogsPipelinesRequest{
-		apiService: a,
+func (a *LogsPipelinesApiService) ListLogsPipelines(ctx _context.Context) ApiListLogsPipelinesRequest {
+	return ApiListLogsPipelinesRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return []LogsPipeline
-*/
-func (r apiListLogsPipelinesRequest) Execute() ([]LogsPipeline, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return []LogsPipeline
+ */
+func (a *LogsPipelinesApiService) ListLogsPipelinesExecute(r ApiListLogsPipelinesRequest) ([]LogsPipeline, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -646,7 +666,7 @@ func (r apiListLogsPipelinesRequest) Execute() ([]LogsPipeline, *_nethttp.Respon
 		localVarReturnValue  []LogsPipeline
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsPipelinesApiService.ListLogsPipelines")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsPipelinesApiService.ListLogsPipelines")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -681,12 +701,12 @@ func (r apiListLogsPipelinesRequest) Execute() ([]LogsPipeline, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -695,23 +715,23 @@ func (r apiListLogsPipelinesRequest) Execute() ([]LogsPipeline, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -729,7 +749,7 @@ func (r apiListLogsPipelinesRequest) Execute() ([]LogsPipeline, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -739,7 +759,7 @@ func (r apiListLogsPipelinesRequest) Execute() ([]LogsPipeline, *_nethttp.Respon
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -751,41 +771,45 @@ func (r apiListLogsPipelinesRequest) Execute() ([]LogsPipeline, *_nethttp.Respon
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUpdateLogsPipelineRequest struct {
+type ApiUpdateLogsPipelineRequest struct {
 	ctx        _context.Context
-	apiService *LogsPipelinesApiService
+	ApiService *LogsPipelinesApiService
 	pipelineId string
 	body       *LogsPipeline
 }
 
-func (r apiUpdateLogsPipelineRequest) Body(body LogsPipeline) apiUpdateLogsPipelineRequest {
+func (r ApiUpdateLogsPipelineRequest) Body(body LogsPipeline) ApiUpdateLogsPipelineRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, error) {
+	return r.ApiService.UpdateLogsPipelineExecute(r)
+}
+
 /*
-UpdateLogsPipeline Update a pipeline
-Update a given pipeline configuration to change it’s processors or their order.
+ * UpdateLogsPipeline Update a pipeline
+ * Update a given pipeline configuration to change it’s processors or their order.
 
 **Note**: Using this method updates your pipeline configuration by **replacing**
 your current configuration with the new one sent to your Datadog organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param pipelineId ID of the pipeline to delete.
-@return apiUpdateLogsPipelineRequest
+ * @return ApiUpdateLogsPipelineRequest
 */
-func (a *LogsPipelinesApiService) UpdateLogsPipeline(ctx _context.Context, pipelineId string) apiUpdateLogsPipelineRequest {
-	return apiUpdateLogsPipelineRequest{
-		apiService: a,
+func (a *LogsPipelinesApiService) UpdateLogsPipeline(ctx _context.Context, pipelineId string) ApiUpdateLogsPipelineRequest {
+	return ApiUpdateLogsPipelineRequest{
+		ApiService: a,
 		ctx:        ctx,
 		pipelineId: pipelineId,
 	}
 }
 
 /*
-Execute executes the request
-@return LogsPipeline
-*/
-func (r apiUpdateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return LogsPipeline
+ */
+func (a *LogsPipelinesApiService) UpdateLogsPipelineExecute(r ApiUpdateLogsPipelineRequest) (LogsPipeline, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -795,7 +819,7 @@ func (r apiUpdateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 		localVarReturnValue  LogsPipeline
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsPipelinesApiService.UpdateLogsPipeline")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsPipelinesApiService.UpdateLogsPipeline")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -836,12 +860,12 @@ func (r apiUpdateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -850,23 +874,23 @@ func (r apiUpdateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -884,7 +908,7 @@ func (r apiUpdateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v LogsAPIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -894,7 +918,7 @@ func (r apiUpdateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -904,7 +928,7 @@ func (r apiUpdateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -916,39 +940,43 @@ func (r apiUpdateLogsPipelineRequest) Execute() (LogsPipeline, *_nethttp.Respons
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUpdateLogsPipelineOrderRequest struct {
+type ApiUpdateLogsPipelineOrderRequest struct {
 	ctx        _context.Context
-	apiService *LogsPipelinesApiService
+	ApiService *LogsPipelinesApiService
 	body       *LogsPipelinesOrder
 }
 
-func (r apiUpdateLogsPipelineOrderRequest) Body(body LogsPipelinesOrder) apiUpdateLogsPipelineOrderRequest {
+func (r ApiUpdateLogsPipelineOrderRequest) Body(body LogsPipelinesOrder) ApiUpdateLogsPipelineOrderRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_nethttp.Response, error) {
+	return r.ApiService.UpdateLogsPipelineOrderExecute(r)
+}
+
 /*
-UpdateLogsPipelineOrder Update pipeline order
-Update the order of your pipelines. Since logs are processed sequentially, reordering a pipeline may change
+ * UpdateLogsPipelineOrder Update pipeline order
+ * Update the order of your pipelines. Since logs are processed sequentially, reordering a pipeline may change
 the structure and content of the data processed by other pipelines and their processors.
 
 **Note**: Using the `PUT` method updates your pipeline order by replacing your current order
 with the new one sent to your Datadog organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiUpdateLogsPipelineOrderRequest
+ * @return ApiUpdateLogsPipelineOrderRequest
 */
-func (a *LogsPipelinesApiService) UpdateLogsPipelineOrder(ctx _context.Context) apiUpdateLogsPipelineOrderRequest {
-	return apiUpdateLogsPipelineOrderRequest{
-		apiService: a,
+func (a *LogsPipelinesApiService) UpdateLogsPipelineOrder(ctx _context.Context) ApiUpdateLogsPipelineOrderRequest {
+	return ApiUpdateLogsPipelineOrderRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return LogsPipelinesOrder
-*/
-func (r apiUpdateLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return LogsPipelinesOrder
+ */
+func (a *LogsPipelinesApiService) UpdateLogsPipelineOrderExecute(r ApiUpdateLogsPipelineOrderRequest) (LogsPipelinesOrder, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -958,7 +986,7 @@ func (r apiUpdateLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_neth
 		localVarReturnValue  LogsPipelinesOrder
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "LogsPipelinesApiService.UpdateLogsPipelineOrder")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LogsPipelinesApiService.UpdateLogsPipelineOrder")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -998,12 +1026,12 @@ func (r apiUpdateLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_neth
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -1012,23 +1040,23 @@ func (r apiUpdateLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_neth
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1046,7 +1074,7 @@ func (r apiUpdateLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_neth
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v LogsAPIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1056,7 +1084,7 @@ func (r apiUpdateLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_neth
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1066,7 +1094,7 @@ func (r apiUpdateLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_neth
 		}
 		if localVarHTTPResponse.StatusCode == 422 {
 			var v LogsAPIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -1076,7 +1104,7 @@ func (r apiUpdateLogsPipelineOrderRequest) Execute() (LogsPipelinesOrder, *_neth
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
