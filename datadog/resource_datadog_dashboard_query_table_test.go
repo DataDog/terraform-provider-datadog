@@ -108,6 +108,7 @@ resource "datadog_dashboard" "query_table_dashboard" {
 				alias = "cpu user"
 				limit = 25
 				order = "desc"
+				cell_display_mode = ["number"]
 			}
 			request {
 				q = "avg:system.load.1{*} by {service, team}"
@@ -118,6 +119,7 @@ resource "datadog_dashboard" "query_table_dashboard" {
 					comparator = ">"
 				}
 				alias = "system load"
+				cell_display_mode = ["number"]
 			}
 			custom_link {
 				link = "https://app.datadoghq.com/dashboard/lists"
@@ -193,6 +195,8 @@ var datadogDashboardQueryTableAsserts = []string{
 	"widget.0.query_table_definition.0.custom_link.# = 1",
 	"widget.0.query_table_definition.0.custom_link.0.label = Test Custom Link label",
 	"widget.0.query_table_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.0.query_table_definition.0.request.0.cell_display_mode.0 = number",
+	"widget.0.query_table_definition.0.request.1.cell_display_mode.0 = number",
 }
 
 func TestAccDatadogDashboardQueryTable(t *testing.T) {
