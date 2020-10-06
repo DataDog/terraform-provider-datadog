@@ -24,32 +24,36 @@ var (
 // MetricsApiService MetricsApi service
 type MetricsApiService service
 
-type apiGetMetricMetadataRequest struct {
+type ApiGetMetricMetadataRequest struct {
 	ctx        _context.Context
-	apiService *MetricsApiService
+	ApiService *MetricsApiService
 	metricName string
 }
 
+func (r ApiGetMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Response, error) {
+	return r.ApiService.GetMetricMetadataExecute(r)
+}
+
 /*
-GetMetricMetadata Get metric metadata
-Get metadata about a specific metric.
+ * GetMetricMetadata Get metric metadata
+ * Get metadata about a specific metric.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param metricName Name of the metric for which to get metadata.
-@return apiGetMetricMetadataRequest
-*/
-func (a *MetricsApiService) GetMetricMetadata(ctx _context.Context, metricName string) apiGetMetricMetadataRequest {
-	return apiGetMetricMetadataRequest{
-		apiService: a,
+ * @return ApiGetMetricMetadataRequest
+ */
+func (a *MetricsApiService) GetMetricMetadata(ctx _context.Context, metricName string) ApiGetMetricMetadataRequest {
+	return ApiGetMetricMetadataRequest{
+		ApiService: a,
 		ctx:        ctx,
 		metricName: metricName,
 	}
 }
 
 /*
-Execute executes the request
-@return MetricMetadata
-*/
-func (r apiGetMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return MetricMetadata
+ */
+func (a *MetricsApiService) GetMetricMetadataExecute(r ApiGetMetricMetadataRequest) (MetricMetadata, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -59,7 +63,7 @@ func (r apiGetMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Respon
 		localVarReturnValue  MetricMetadata
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "MetricsApiService.GetMetricMetadata")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetricsApiService.GetMetricMetadata")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -95,12 +99,12 @@ func (r apiGetMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -109,23 +113,23 @@ func (r apiGetMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -143,7 +147,7 @@ func (r apiGetMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -153,7 +157,7 @@ func (r apiGetMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -163,7 +167,7 @@ func (r apiGetMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Respon
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -175,40 +179,44 @@ func (r apiGetMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Respon
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListActiveMetricsRequest struct {
+type ApiListActiveMetricsRequest struct {
 	ctx        _context.Context
-	apiService *MetricsApiService
+	ApiService *MetricsApiService
 	from       *int64
 	host       *string
 }
 
-func (r apiListActiveMetricsRequest) From(from int64) apiListActiveMetricsRequest {
+func (r ApiListActiveMetricsRequest) From(from int64) ApiListActiveMetricsRequest {
 	r.from = &from
 	return r
 }
-func (r apiListActiveMetricsRequest) Host(host string) apiListActiveMetricsRequest {
+func (r ApiListActiveMetricsRequest) Host(host string) ApiListActiveMetricsRequest {
 	r.host = &host
 	return r
 }
 
+func (r ApiListActiveMetricsRequest) Execute() (MetricsListResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListActiveMetricsExecute(r)
+}
+
 /*
-ListActiveMetrics Get active metrics list
-Get the list of actively reporting metrics from a given time until now.
+ * ListActiveMetrics Get active metrics list
+ * Get the list of actively reporting metrics from a given time until now.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListActiveMetricsRequest
-*/
-func (a *MetricsApiService) ListActiveMetrics(ctx _context.Context) apiListActiveMetricsRequest {
-	return apiListActiveMetricsRequest{
-		apiService: a,
+ * @return ApiListActiveMetricsRequest
+ */
+func (a *MetricsApiService) ListActiveMetrics(ctx _context.Context) ApiListActiveMetricsRequest {
+	return ApiListActiveMetricsRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return MetricsListResponse
-*/
-func (r apiListActiveMetricsRequest) Execute() (MetricsListResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return MetricsListResponse
+ */
+func (a *MetricsApiService) ListActiveMetricsExecute(r ApiListActiveMetricsRequest) (MetricsListResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -218,7 +226,7 @@ func (r apiListActiveMetricsRequest) Execute() (MetricsListResponse, *_nethttp.R
 		localVarReturnValue  MetricsListResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "MetricsApiService.ListActiveMetrics")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetricsApiService.ListActiveMetrics")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -260,12 +268,12 @@ func (r apiListActiveMetricsRequest) Execute() (MetricsListResponse, *_nethttp.R
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -274,23 +282,23 @@ func (r apiListActiveMetricsRequest) Execute() (MetricsListResponse, *_nethttp.R
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -308,7 +316,7 @@ func (r apiListActiveMetricsRequest) Execute() (MetricsListResponse, *_nethttp.R
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -318,7 +326,7 @@ func (r apiListActiveMetricsRequest) Execute() (MetricsListResponse, *_nethttp.R
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -328,7 +336,7 @@ func (r apiListActiveMetricsRequest) Execute() (MetricsListResponse, *_nethttp.R
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -340,35 +348,39 @@ func (r apiListActiveMetricsRequest) Execute() (MetricsListResponse, *_nethttp.R
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListMetricsRequest struct {
+type ApiListMetricsRequest struct {
 	ctx        _context.Context
-	apiService *MetricsApiService
+	ApiService *MetricsApiService
 	q          *string
 }
 
-func (r apiListMetricsRequest) Q(q string) apiListMetricsRequest {
+func (r ApiListMetricsRequest) Q(q string) ApiListMetricsRequest {
 	r.q = &q
 	return r
 }
 
+func (r ApiListMetricsRequest) Execute() (MetricSearchResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListMetricsExecute(r)
+}
+
 /*
-ListMetrics Search metrics
-Search for metrics from the last 24 hours in Datadog.
+ * ListMetrics Search metrics
+ * Search for metrics from the last 24 hours in Datadog.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListMetricsRequest
-*/
-func (a *MetricsApiService) ListMetrics(ctx _context.Context) apiListMetricsRequest {
-	return apiListMetricsRequest{
-		apiService: a,
+ * @return ApiListMetricsRequest
+ */
+func (a *MetricsApiService) ListMetrics(ctx _context.Context) ApiListMetricsRequest {
+	return ApiListMetricsRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return MetricSearchResponse
-*/
-func (r apiListMetricsRequest) Execute() (MetricSearchResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return MetricSearchResponse
+ */
+func (a *MetricsApiService) ListMetricsExecute(r ApiListMetricsRequest) (MetricSearchResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -378,7 +390,7 @@ func (r apiListMetricsRequest) Execute() (MetricSearchResponse, *_nethttp.Respon
 		localVarReturnValue  MetricSearchResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "MetricsApiService.ListMetrics")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetricsApiService.ListMetrics")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -417,12 +429,12 @@ func (r apiListMetricsRequest) Execute() (MetricSearchResponse, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -431,23 +443,23 @@ func (r apiListMetricsRequest) Execute() (MetricSearchResponse, *_nethttp.Respon
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -465,7 +477,7 @@ func (r apiListMetricsRequest) Execute() (MetricSearchResponse, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -475,7 +487,7 @@ func (r apiListMetricsRequest) Execute() (MetricSearchResponse, *_nethttp.Respon
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -485,7 +497,7 @@ func (r apiListMetricsRequest) Execute() (MetricSearchResponse, *_nethttp.Respon
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -497,45 +509,49 @@ func (r apiListMetricsRequest) Execute() (MetricSearchResponse, *_nethttp.Respon
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiQueryMetricsRequest struct {
+type ApiQueryMetricsRequest struct {
 	ctx        _context.Context
-	apiService *MetricsApiService
+	ApiService *MetricsApiService
 	from       *int64
 	to         *int64
 	query      *string
 }
 
-func (r apiQueryMetricsRequest) From(from int64) apiQueryMetricsRequest {
+func (r ApiQueryMetricsRequest) From(from int64) ApiQueryMetricsRequest {
 	r.from = &from
 	return r
 }
-func (r apiQueryMetricsRequest) To(to int64) apiQueryMetricsRequest {
+func (r ApiQueryMetricsRequest) To(to int64) ApiQueryMetricsRequest {
 	r.to = &to
 	return r
 }
-func (r apiQueryMetricsRequest) Query(query string) apiQueryMetricsRequest {
+func (r ApiQueryMetricsRequest) Query(query string) ApiQueryMetricsRequest {
 	r.query = &query
 	return r
 }
 
+func (r ApiQueryMetricsRequest) Execute() (MetricsQueryResponse, *_nethttp.Response, error) {
+	return r.ApiService.QueryMetricsExecute(r)
+}
+
 /*
-QueryMetrics Query timeseries points
-Query timeseries points.
+ * QueryMetrics Query timeseries points
+ * Query timeseries points.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiQueryMetricsRequest
-*/
-func (a *MetricsApiService) QueryMetrics(ctx _context.Context) apiQueryMetricsRequest {
-	return apiQueryMetricsRequest{
-		apiService: a,
+ * @return ApiQueryMetricsRequest
+ */
+func (a *MetricsApiService) QueryMetrics(ctx _context.Context) ApiQueryMetricsRequest {
+	return ApiQueryMetricsRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return MetricsQueryResponse
-*/
-func (r apiQueryMetricsRequest) Execute() (MetricsQueryResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return MetricsQueryResponse
+ */
+func (a *MetricsApiService) QueryMetricsExecute(r ApiQueryMetricsRequest) (MetricsQueryResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -545,7 +561,7 @@ func (r apiQueryMetricsRequest) Execute() (MetricsQueryResponse, *_nethttp.Respo
 		localVarReturnValue  MetricsQueryResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "MetricsApiService.QueryMetrics")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetricsApiService.QueryMetrics")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -592,12 +608,12 @@ func (r apiQueryMetricsRequest) Execute() (MetricsQueryResponse, *_nethttp.Respo
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -606,23 +622,23 @@ func (r apiQueryMetricsRequest) Execute() (MetricsQueryResponse, *_nethttp.Respo
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -640,7 +656,7 @@ func (r apiQueryMetricsRequest) Execute() (MetricsQueryResponse, *_nethttp.Respo
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -650,7 +666,7 @@ func (r apiQueryMetricsRequest) Execute() (MetricsQueryResponse, *_nethttp.Respo
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -660,7 +676,7 @@ func (r apiQueryMetricsRequest) Execute() (MetricsQueryResponse, *_nethttp.Respo
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -672,38 +688,42 @@ func (r apiQueryMetricsRequest) Execute() (MetricsQueryResponse, *_nethttp.Respo
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUpdateMetricMetadataRequest struct {
+type ApiUpdateMetricMetadataRequest struct {
 	ctx        _context.Context
-	apiService *MetricsApiService
+	ApiService *MetricsApiService
 	metricName string
 	body       *MetricMetadata
 }
 
-func (r apiUpdateMetricMetadataRequest) Body(body MetricMetadata) apiUpdateMetricMetadataRequest {
+func (r ApiUpdateMetricMetadataRequest) Body(body MetricMetadata) ApiUpdateMetricMetadataRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Response, error) {
+	return r.ApiService.UpdateMetricMetadataExecute(r)
+}
+
 /*
-UpdateMetricMetadata Edit metric metadata
-Edit metadata of a specific metric. Find out more about [supported types](https://docs.datadoghq.com/developers/metrics).
+ * UpdateMetricMetadata Edit metric metadata
+ * Edit metadata of a specific metric. Find out more about [supported types](https://docs.datadoghq.com/developers/metrics).
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param metricName Name of the metric for which to edit metadata.
-@return apiUpdateMetricMetadataRequest
-*/
-func (a *MetricsApiService) UpdateMetricMetadata(ctx _context.Context, metricName string) apiUpdateMetricMetadataRequest {
-	return apiUpdateMetricMetadataRequest{
-		apiService: a,
+ * @return ApiUpdateMetricMetadataRequest
+ */
+func (a *MetricsApiService) UpdateMetricMetadata(ctx _context.Context, metricName string) ApiUpdateMetricMetadataRequest {
+	return ApiUpdateMetricMetadataRequest{
+		ApiService: a,
 		ctx:        ctx,
 		metricName: metricName,
 	}
 }
 
 /*
-Execute executes the request
-@return MetricMetadata
-*/
-func (r apiUpdateMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return MetricMetadata
+ */
+func (a *MetricsApiService) UpdateMetricMetadataExecute(r ApiUpdateMetricMetadataRequest) (MetricMetadata, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -713,7 +733,7 @@ func (r apiUpdateMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Res
 		localVarReturnValue  MetricMetadata
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "MetricsApiService.UpdateMetricMetadata")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MetricsApiService.UpdateMetricMetadata")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -754,12 +774,12 @@ func (r apiUpdateMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Res
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -768,23 +788,23 @@ func (r apiUpdateMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Res
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -802,7 +822,7 @@ func (r apiUpdateMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Res
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -812,7 +832,7 @@ func (r apiUpdateMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Res
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -822,7 +842,7 @@ func (r apiUpdateMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Res
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -832,7 +852,7 @@ func (r apiUpdateMetricMetadataRequest) Execute() (MetricMetadata, *_nethttp.Res
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,

@@ -24,36 +24,40 @@ var (
 // HostsApiService HostsApi service
 type HostsApiService service
 
-type apiGetHostTotalsRequest struct {
+type ApiGetHostTotalsRequest struct {
 	ctx        _context.Context
-	apiService *HostsApiService
+	ApiService *HostsApiService
 	from       *int64
 }
 
-func (r apiGetHostTotalsRequest) From(from int64) apiGetHostTotalsRequest {
+func (r ApiGetHostTotalsRequest) From(from int64) ApiGetHostTotalsRequest {
 	r.from = &from
 	return r
 }
 
+func (r ApiGetHostTotalsRequest) Execute() (HostTotals, *_nethttp.Response, error) {
+	return r.ApiService.GetHostTotalsExecute(r)
+}
+
 /*
-GetHostTotals Get the total number of active hosts
-This endpoint returns the total number of active and up hosts in your Datadog account.
+ * GetHostTotals Get the total number of active hosts
+ * This endpoint returns the total number of active and up hosts in your Datadog account.
 Active means the host has reported in the past hour, and up means it has reported in the past two hours.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiGetHostTotalsRequest
+ * @return ApiGetHostTotalsRequest
 */
-func (a *HostsApiService) GetHostTotals(ctx _context.Context) apiGetHostTotalsRequest {
-	return apiGetHostTotalsRequest{
-		apiService: a,
+func (a *HostsApiService) GetHostTotals(ctx _context.Context) ApiGetHostTotalsRequest {
+	return ApiGetHostTotalsRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return HostTotals
-*/
-func (r apiGetHostTotalsRequest) Execute() (HostTotals, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return HostTotals
+ */
+func (a *HostsApiService) GetHostTotalsExecute(r ApiGetHostTotalsRequest) (HostTotals, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -63,7 +67,7 @@ func (r apiGetHostTotalsRequest) Execute() (HostTotals, *_nethttp.Response, erro
 		localVarReturnValue  HostTotals
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "HostsApiService.GetHostTotals")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "HostsApiService.GetHostTotals")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -101,12 +105,12 @@ func (r apiGetHostTotalsRequest) Execute() (HostTotals, *_nethttp.Response, erro
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -115,23 +119,23 @@ func (r apiGetHostTotalsRequest) Execute() (HostTotals, *_nethttp.Response, erro
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -149,7 +153,7 @@ func (r apiGetHostTotalsRequest) Execute() (HostTotals, *_nethttp.Response, erro
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -159,7 +163,7 @@ func (r apiGetHostTotalsRequest) Execute() (HostTotals, *_nethttp.Response, erro
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -169,7 +173,7 @@ func (r apiGetHostTotalsRequest) Execute() (HostTotals, *_nethttp.Response, erro
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -181,9 +185,9 @@ func (r apiGetHostTotalsRequest) Execute() (HostTotals, *_nethttp.Response, erro
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListHostsRequest struct {
+type ApiListHostsRequest struct {
 	ctx                   _context.Context
-	apiService            *HostsApiService
+	ApiService            *HostsApiService
 	filter                *string
 	sortField             *string
 	sortDir               *string
@@ -194,60 +198,64 @@ type apiListHostsRequest struct {
 	includeHostsMetadata  *bool
 }
 
-func (r apiListHostsRequest) Filter(filter string) apiListHostsRequest {
+func (r ApiListHostsRequest) Filter(filter string) ApiListHostsRequest {
 	r.filter = &filter
 	return r
 }
-func (r apiListHostsRequest) SortField(sortField string) apiListHostsRequest {
+func (r ApiListHostsRequest) SortField(sortField string) ApiListHostsRequest {
 	r.sortField = &sortField
 	return r
 }
-func (r apiListHostsRequest) SortDir(sortDir string) apiListHostsRequest {
+func (r ApiListHostsRequest) SortDir(sortDir string) ApiListHostsRequest {
 	r.sortDir = &sortDir
 	return r
 }
-func (r apiListHostsRequest) Start(start int64) apiListHostsRequest {
+func (r ApiListHostsRequest) Start(start int64) ApiListHostsRequest {
 	r.start = &start
 	return r
 }
-func (r apiListHostsRequest) Count(count int64) apiListHostsRequest {
+func (r ApiListHostsRequest) Count(count int64) ApiListHostsRequest {
 	r.count = &count
 	return r
 }
-func (r apiListHostsRequest) From(from int64) apiListHostsRequest {
+func (r ApiListHostsRequest) From(from int64) ApiListHostsRequest {
 	r.from = &from
 	return r
 }
-func (r apiListHostsRequest) IncludeMutedHostsData(includeMutedHostsData bool) apiListHostsRequest {
+func (r ApiListHostsRequest) IncludeMutedHostsData(includeMutedHostsData bool) ApiListHostsRequest {
 	r.includeMutedHostsData = &includeMutedHostsData
 	return r
 }
-func (r apiListHostsRequest) IncludeHostsMetadata(includeHostsMetadata bool) apiListHostsRequest {
+func (r ApiListHostsRequest) IncludeHostsMetadata(includeHostsMetadata bool) ApiListHostsRequest {
 	r.includeHostsMetadata = &includeHostsMetadata
 	return r
 }
 
+func (r ApiListHostsRequest) Execute() (HostListResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListHostsExecute(r)
+}
+
 /*
-ListHosts Get all hosts for your organization
-This endpoint allows searching for hosts by name, alias, or tag.
+ * ListHosts Get all hosts for your organization
+ * This endpoint allows searching for hosts by name, alias, or tag.
 Hosts live within the past 3 hours are included by default.
 Retention is 7 days.
 Results are paginated with a max of 1000 results at a time.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListHostsRequest
+ * @return ApiListHostsRequest
 */
-func (a *HostsApiService) ListHosts(ctx _context.Context) apiListHostsRequest {
-	return apiListHostsRequest{
-		apiService: a,
+func (a *HostsApiService) ListHosts(ctx _context.Context) ApiListHostsRequest {
+	return ApiListHostsRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return HostListResponse
-*/
-func (r apiListHostsRequest) Execute() (HostListResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return HostListResponse
+ */
+func (a *HostsApiService) ListHostsExecute(r ApiListHostsRequest) (HostListResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -257,7 +265,7 @@ func (r apiListHostsRequest) Execute() (HostListResponse, *_nethttp.Response, er
 		localVarReturnValue  HostListResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "HostsApiService.ListHosts")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "HostsApiService.ListHosts")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -316,12 +324,12 @@ func (r apiListHostsRequest) Execute() (HostListResponse, *_nethttp.Response, er
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -330,23 +338,23 @@ func (r apiListHostsRequest) Execute() (HostListResponse, *_nethttp.Response, er
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -364,7 +372,7 @@ func (r apiListHostsRequest) Execute() (HostListResponse, *_nethttp.Response, er
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -374,7 +382,7 @@ func (r apiListHostsRequest) Execute() (HostListResponse, *_nethttp.Response, er
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -384,7 +392,7 @@ func (r apiListHostsRequest) Execute() (HostListResponse, *_nethttp.Response, er
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -396,38 +404,42 @@ func (r apiListHostsRequest) Execute() (HostListResponse, *_nethttp.Response, er
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiMuteHostRequest struct {
+type ApiMuteHostRequest struct {
 	ctx        _context.Context
-	apiService *HostsApiService
+	ApiService *HostsApiService
 	hostName   string
 	body       *HostMuteSettings
 }
 
-func (r apiMuteHostRequest) Body(body HostMuteSettings) apiMuteHostRequest {
+func (r ApiMuteHostRequest) Body(body HostMuteSettings) ApiMuteHostRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiMuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, error) {
+	return r.ApiService.MuteHostExecute(r)
+}
+
 /*
-MuteHost Mute a host
-Mute a host.
+ * MuteHost Mute a host
+ * Mute a host.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param hostName Name of the host to mute.
-@return apiMuteHostRequest
-*/
-func (a *HostsApiService) MuteHost(ctx _context.Context, hostName string) apiMuteHostRequest {
-	return apiMuteHostRequest{
-		apiService: a,
+ * @return ApiMuteHostRequest
+ */
+func (a *HostsApiService) MuteHost(ctx _context.Context, hostName string) ApiMuteHostRequest {
+	return ApiMuteHostRequest{
+		ApiService: a,
 		ctx:        ctx,
 		hostName:   hostName,
 	}
 }
 
 /*
-Execute executes the request
-@return HostMuteResponse
-*/
-func (r apiMuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return HostMuteResponse
+ */
+func (a *HostsApiService) MuteHostExecute(r ApiMuteHostRequest) (HostMuteResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -437,7 +449,7 @@ func (r apiMuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, err
 		localVarReturnValue  HostMuteResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "HostsApiService.MuteHost")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "HostsApiService.MuteHost")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -475,12 +487,12 @@ func (r apiMuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, err
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -489,23 +501,23 @@ func (r apiMuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, err
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -523,7 +535,7 @@ func (r apiMuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, err
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -533,7 +545,7 @@ func (r apiMuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, err
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -543,7 +555,7 @@ func (r apiMuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, err
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -555,32 +567,36 @@ func (r apiMuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, err
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUnmuteHostRequest struct {
+type ApiUnmuteHostRequest struct {
 	ctx        _context.Context
-	apiService *HostsApiService
+	ApiService *HostsApiService
 	hostName   string
 }
 
+func (r ApiUnmuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, error) {
+	return r.ApiService.UnmuteHostExecute(r)
+}
+
 /*
-UnmuteHost Unmute a host
-Unmutes a host. This endpoint takes no JSON arguments.
+ * UnmuteHost Unmute a host
+ * Unmutes a host. This endpoint takes no JSON arguments.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param hostName Name of the host to unmute.
-@return apiUnmuteHostRequest
-*/
-func (a *HostsApiService) UnmuteHost(ctx _context.Context, hostName string) apiUnmuteHostRequest {
-	return apiUnmuteHostRequest{
-		apiService: a,
+ * @return ApiUnmuteHostRequest
+ */
+func (a *HostsApiService) UnmuteHost(ctx _context.Context, hostName string) ApiUnmuteHostRequest {
+	return ApiUnmuteHostRequest{
+		ApiService: a,
 		ctx:        ctx,
 		hostName:   hostName,
 	}
 }
 
 /*
-Execute executes the request
-@return HostMuteResponse
-*/
-func (r apiUnmuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return HostMuteResponse
+ */
+func (a *HostsApiService) UnmuteHostExecute(r ApiUnmuteHostRequest) (HostMuteResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -590,7 +606,7 @@ func (r apiUnmuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, e
 		localVarReturnValue  HostMuteResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "HostsApiService.UnmuteHost")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "HostsApiService.UnmuteHost")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -626,12 +642,12 @@ func (r apiUnmuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, e
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -640,23 +656,23 @@ func (r apiUnmuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, e
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -674,7 +690,7 @@ func (r apiUnmuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, e
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -684,7 +700,7 @@ func (r apiUnmuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, e
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -694,7 +710,7 @@ func (r apiUnmuteHostRequest) Execute() (HostMuteResponse, *_nethttp.Response, e
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,

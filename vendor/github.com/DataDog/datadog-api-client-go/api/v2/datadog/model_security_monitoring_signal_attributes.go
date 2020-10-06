@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-// SecurityMonitoringSignalAttributes The JSON object containing all signal attributes and their associated values.
+// SecurityMonitoringSignalAttributes The object containing all signal attributes and their associated values.
 type SecurityMonitoringSignalAttributes struct {
 	// A JSON object of attributes in the security signal.
 	Attributes *map[string]interface{} `json:"attributes,omitempty"`

@@ -24,35 +24,39 @@ var (
 // EventsApiService EventsApi service
 type EventsApiService service
 
-type apiGetEventRequest struct {
+type ApiGetEventRequest struct {
 	ctx        _context.Context
-	apiService *EventsApiService
+	ApiService *EventsApiService
 	eventId    int64
 }
 
+func (r ApiGetEventRequest) Execute() (EventResponse, *_nethttp.Response, error) {
+	return r.ApiService.GetEventExecute(r)
+}
+
 /*
-GetEvent Get an event
-This endpoint allows you to query for event details.
+ * GetEvent Get an event
+ * This endpoint allows you to query for event details.
 
 **Note**: If the event you’re querying contains markdown formatting of any kind,
 you may see characters such as `%`,`\`,`n` in your output.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param eventId The ID of the event.
-@return apiGetEventRequest
+ * @return ApiGetEventRequest
 */
-func (a *EventsApiService) GetEvent(ctx _context.Context, eventId int64) apiGetEventRequest {
-	return apiGetEventRequest{
-		apiService: a,
+func (a *EventsApiService) GetEvent(ctx _context.Context, eventId int64) ApiGetEventRequest {
+	return ApiGetEventRequest{
+		ApiService: a,
 		ctx:        ctx,
 		eventId:    eventId,
 	}
 }
 
 /*
-Execute executes the request
-@return EventResponse
-*/
-func (r apiGetEventRequest) Execute() (EventResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return EventResponse
+ */
+func (a *EventsApiService) GetEventExecute(r ApiGetEventRequest) (EventResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -62,7 +66,7 @@ func (r apiGetEventRequest) Execute() (EventResponse, *_nethttp.Response, error)
 		localVarReturnValue  EventResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "EventsApiService.GetEvent")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsApiService.GetEvent")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -98,12 +102,12 @@ func (r apiGetEventRequest) Execute() (EventResponse, *_nethttp.Response, error)
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -112,23 +116,23 @@ func (r apiGetEventRequest) Execute() (EventResponse, *_nethttp.Response, error)
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -146,7 +150,7 @@ func (r apiGetEventRequest) Execute() (EventResponse, *_nethttp.Response, error)
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -156,7 +160,7 @@ func (r apiGetEventRequest) Execute() (EventResponse, *_nethttp.Response, error)
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -166,7 +170,7 @@ func (r apiGetEventRequest) Execute() (EventResponse, *_nethttp.Response, error)
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -178,9 +182,9 @@ func (r apiGetEventRequest) Execute() (EventResponse, *_nethttp.Response, error)
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListEventsRequest struct {
+type ApiListEventsRequest struct {
 	ctx          _context.Context
-	apiService   *EventsApiService
+	ApiService   *EventsApiService
 	start        *int64
 	end          *int64
 	priority     *EventPriority
@@ -189,51 +193,55 @@ type apiListEventsRequest struct {
 	unaggregated *bool
 }
 
-func (r apiListEventsRequest) Start(start int64) apiListEventsRequest {
+func (r ApiListEventsRequest) Start(start int64) ApiListEventsRequest {
 	r.start = &start
 	return r
 }
-func (r apiListEventsRequest) End(end int64) apiListEventsRequest {
+func (r ApiListEventsRequest) End(end int64) ApiListEventsRequest {
 	r.end = &end
 	return r
 }
-func (r apiListEventsRequest) Priority(priority EventPriority) apiListEventsRequest {
+func (r ApiListEventsRequest) Priority(priority EventPriority) ApiListEventsRequest {
 	r.priority = &priority
 	return r
 }
-func (r apiListEventsRequest) Sources(sources string) apiListEventsRequest {
+func (r ApiListEventsRequest) Sources(sources string) ApiListEventsRequest {
 	r.sources = &sources
 	return r
 }
-func (r apiListEventsRequest) Tags(tags string) apiListEventsRequest {
+func (r ApiListEventsRequest) Tags(tags string) ApiListEventsRequest {
 	r.tags = &tags
 	return r
 }
-func (r apiListEventsRequest) Unaggregated(unaggregated bool) apiListEventsRequest {
+func (r ApiListEventsRequest) Unaggregated(unaggregated bool) ApiListEventsRequest {
 	r.unaggregated = &unaggregated
 	return r
 }
 
+func (r ApiListEventsRequest) Execute() (EventListResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListEventsExecute(r)
+}
+
 /*
-ListEvents Query the event stream
-The event stream can be queried and filtered by time, priority, sources and tags.
+ * ListEvents Query the event stream
+ * The event stream can be queried and filtered by time, priority, sources and tags.
 
 **Note**: If the event you’re querying contains markdown formatting of any kind, you may see characters such as %,\,n in your output.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListEventsRequest
+ * @return ApiListEventsRequest
 */
-func (a *EventsApiService) ListEvents(ctx _context.Context) apiListEventsRequest {
-	return apiListEventsRequest{
-		apiService: a,
+func (a *EventsApiService) ListEvents(ctx _context.Context) ApiListEventsRequest {
+	return ApiListEventsRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return EventListResponse
-*/
-func (r apiListEventsRequest) Execute() (EventListResponse, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return EventListResponse
+ */
+func (a *EventsApiService) ListEventsExecute(r ApiListEventsRequest) (EventListResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -243,7 +251,7 @@ func (r apiListEventsRequest) Execute() (EventListResponse, *_nethttp.Response, 
 		localVarReturnValue  EventListResponse
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "EventsApiService.ListEvents")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsApiService.ListEvents")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -298,12 +306,12 @@ func (r apiListEventsRequest) Execute() (EventListResponse, *_nethttp.Response, 
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -312,23 +320,23 @@ func (r apiListEventsRequest) Execute() (EventListResponse, *_nethttp.Response, 
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -346,7 +354,7 @@ func (r apiListEventsRequest) Execute() (EventListResponse, *_nethttp.Response, 
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -356,7 +364,7 @@ func (r apiListEventsRequest) Execute() (EventListResponse, *_nethttp.Response, 
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -366,7 +374,7 @@ func (r apiListEventsRequest) Execute() (EventListResponse, *_nethttp.Response, 
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,

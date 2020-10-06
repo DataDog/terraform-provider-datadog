@@ -27,7 +27,8 @@ type LogsAttributeRemapper struct {
 	// Array of source attributes.
 	Sources []string `json:"sources"`
 	// Final attribute or tag name to remap the sources to.
-	Target string `json:"target"`
+	Target       string            `json:"target"`
+	TargetFormat *TargetFormatType `json:"target_format,omitempty"`
 	// Defines if the final attribute or tag name is from log `attribute` or `tag`.
 	TargetType *string                   `json:"target_type,omitempty"`
 	Type       LogsAttributeRemapperType `json:"type"`
@@ -283,6 +284,38 @@ func (o *LogsAttributeRemapper) SetTarget(v string) {
 	o.Target = v
 }
 
+// GetTargetFormat returns the TargetFormat field value if set, zero value otherwise.
+func (o *LogsAttributeRemapper) GetTargetFormat() TargetFormatType {
+	if o == nil || o.TargetFormat == nil {
+		var ret TargetFormatType
+		return ret
+	}
+	return *o.TargetFormat
+}
+
+// GetTargetFormatOk returns a tuple with the TargetFormat field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogsAttributeRemapper) GetTargetFormatOk() (*TargetFormatType, bool) {
+	if o == nil || o.TargetFormat == nil {
+		return nil, false
+	}
+	return o.TargetFormat, true
+}
+
+// HasTargetFormat returns a boolean if a field has been set.
+func (o *LogsAttributeRemapper) HasTargetFormat() bool {
+	if o != nil && o.TargetFormat != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTargetFormat gets a reference to the given TargetFormatType and assigns it to the TargetFormat field.
+func (o *LogsAttributeRemapper) SetTargetFormat(v TargetFormatType) {
+	o.TargetFormat = &v
+}
+
 // GetTargetType returns the TargetType field value if set, zero value otherwise.
 func (o *LogsAttributeRemapper) GetTargetType() string {
 	if o == nil || o.TargetType == nil {
@@ -361,6 +394,9 @@ func (o LogsAttributeRemapper) MarshalJSON() ([]byte, error) {
 	}
 	if true {
 		toSerialize["target"] = o.Target
+	}
+	if o.TargetFormat != nil {
+		toSerialize["target_format"] = o.TargetFormat
 	}
 	if o.TargetType != nil {
 		toSerialize["target_type"] = o.TargetType

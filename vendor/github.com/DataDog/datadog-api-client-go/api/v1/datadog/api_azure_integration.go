@@ -23,20 +23,24 @@ var (
 // AzureIntegrationApiService AzureIntegrationApi service
 type AzureIntegrationApiService service
 
-type apiCreateAzureIntegrationRequest struct {
+type ApiCreateAzureIntegrationRequest struct {
 	ctx        _context.Context
-	apiService *AzureIntegrationApiService
+	ApiService *AzureIntegrationApiService
 	body       *AzureAccount
 }
 
-func (r apiCreateAzureIntegrationRequest) Body(body AzureAccount) apiCreateAzureIntegrationRequest {
+func (r ApiCreateAzureIntegrationRequest) Body(body AzureAccount) ApiCreateAzureIntegrationRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiCreateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
+	return r.ApiService.CreateAzureIntegrationExecute(r)
+}
+
 /*
-CreateAzureIntegration Create an Azure integration
-Create a Datadog-Azure integration.
+ * CreateAzureIntegration Create an Azure integration
+ * Create a Datadog-Azure integration.
 
 Using the `POST` method updates your integration configuration by adding your new
 configuration to the existing one in your Datadog organization.
@@ -44,20 +48,20 @@ configuration to the existing one in your Datadog organization.
 Using the `PUT` method updates your integration configuration by replacing your
 current configuration with the new one sent to your Datadog organization.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiCreateAzureIntegrationRequest
+ * @return ApiCreateAzureIntegrationRequest
 */
-func (a *AzureIntegrationApiService) CreateAzureIntegration(ctx _context.Context) apiCreateAzureIntegrationRequest {
-	return apiCreateAzureIntegrationRequest{
-		apiService: a,
+func (a *AzureIntegrationApiService) CreateAzureIntegration(ctx _context.Context) ApiCreateAzureIntegrationRequest {
+	return ApiCreateAzureIntegrationRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return interface{}
-*/
-func (r apiCreateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return interface{}
+ */
+func (a *AzureIntegrationApiService) CreateAzureIntegrationExecute(r ApiCreateAzureIntegrationRequest) (interface{}, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -67,7 +71,7 @@ func (r apiCreateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 		localVarReturnValue  interface{}
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "AzureIntegrationApiService.CreateAzureIntegration")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AzureIntegrationApiService.CreateAzureIntegration")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -107,12 +111,12 @@ func (r apiCreateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -121,23 +125,23 @@ func (r apiCreateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -155,7 +159,7 @@ func (r apiCreateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -165,7 +169,7 @@ func (r apiCreateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -175,7 +179,7 @@ func (r apiCreateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -187,35 +191,39 @@ func (r apiCreateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiDeleteAzureIntegrationRequest struct {
+type ApiDeleteAzureIntegrationRequest struct {
 	ctx        _context.Context
-	apiService *AzureIntegrationApiService
+	ApiService *AzureIntegrationApiService
 	body       *AzureAccount
 }
 
-func (r apiDeleteAzureIntegrationRequest) Body(body AzureAccount) apiDeleteAzureIntegrationRequest {
+func (r ApiDeleteAzureIntegrationRequest) Body(body AzureAccount) ApiDeleteAzureIntegrationRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiDeleteAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
+	return r.ApiService.DeleteAzureIntegrationExecute(r)
+}
+
 /*
-DeleteAzureIntegration Delete an Azure integration
-Delete a given Datadog-Azure integration from your Datadog account.
+ * DeleteAzureIntegration Delete an Azure integration
+ * Delete a given Datadog-Azure integration from your Datadog account.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiDeleteAzureIntegrationRequest
-*/
-func (a *AzureIntegrationApiService) DeleteAzureIntegration(ctx _context.Context) apiDeleteAzureIntegrationRequest {
-	return apiDeleteAzureIntegrationRequest{
-		apiService: a,
+ * @return ApiDeleteAzureIntegrationRequest
+ */
+func (a *AzureIntegrationApiService) DeleteAzureIntegration(ctx _context.Context) ApiDeleteAzureIntegrationRequest {
+	return ApiDeleteAzureIntegrationRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return interface{}
-*/
-func (r apiDeleteAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return interface{}
+ */
+func (a *AzureIntegrationApiService) DeleteAzureIntegrationExecute(r ApiDeleteAzureIntegrationRequest) (interface{}, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodDelete
 		localVarPostBody     interface{}
@@ -225,7 +233,7 @@ func (r apiDeleteAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 		localVarReturnValue  interface{}
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "AzureIntegrationApiService.DeleteAzureIntegration")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AzureIntegrationApiService.DeleteAzureIntegration")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -265,12 +273,12 @@ func (r apiDeleteAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -279,23 +287,23 @@ func (r apiDeleteAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -313,7 +321,7 @@ func (r apiDeleteAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -323,7 +331,7 @@ func (r apiDeleteAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -333,7 +341,7 @@ func (r apiDeleteAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -345,29 +353,33 @@ func (r apiDeleteAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiListAzureIntegrationRequest struct {
+type ApiListAzureIntegrationRequest struct {
 	ctx        _context.Context
-	apiService *AzureIntegrationApiService
+	ApiService *AzureIntegrationApiService
+}
+
+func (r ApiListAzureIntegrationRequest) Execute() ([]AzureAccount, *_nethttp.Response, error) {
+	return r.ApiService.ListAzureIntegrationExecute(r)
 }
 
 /*
-ListAzureIntegration List all Azure integrations
-List all Datadog-Azure integrations configured in your Datadog account.
+ * ListAzureIntegration List all Azure integrations
+ * List all Datadog-Azure integrations configured in your Datadog account.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiListAzureIntegrationRequest
-*/
-func (a *AzureIntegrationApiService) ListAzureIntegration(ctx _context.Context) apiListAzureIntegrationRequest {
-	return apiListAzureIntegrationRequest{
-		apiService: a,
+ * @return ApiListAzureIntegrationRequest
+ */
+func (a *AzureIntegrationApiService) ListAzureIntegration(ctx _context.Context) ApiListAzureIntegrationRequest {
+	return ApiListAzureIntegrationRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return []AzureAccount
-*/
-func (r apiListAzureIntegrationRequest) Execute() ([]AzureAccount, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return []AzureAccount
+ */
+func (a *AzureIntegrationApiService) ListAzureIntegrationExecute(r ApiListAzureIntegrationRequest) ([]AzureAccount, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -377,7 +389,7 @@ func (r apiListAzureIntegrationRequest) Execute() ([]AzureAccount, *_nethttp.Res
 		localVarReturnValue  []AzureAccount
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "AzureIntegrationApiService.ListAzureIntegration")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AzureIntegrationApiService.ListAzureIntegration")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -412,12 +424,12 @@ func (r apiListAzureIntegrationRequest) Execute() ([]AzureAccount, *_nethttp.Res
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -426,23 +438,23 @@ func (r apiListAzureIntegrationRequest) Execute() ([]AzureAccount, *_nethttp.Res
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -460,7 +472,7 @@ func (r apiListAzureIntegrationRequest) Execute() ([]AzureAccount, *_nethttp.Res
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -470,7 +482,7 @@ func (r apiListAzureIntegrationRequest) Execute() ([]AzureAccount, *_nethttp.Res
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -480,7 +492,7 @@ func (r apiListAzureIntegrationRequest) Execute() ([]AzureAccount, *_nethttp.Res
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -492,35 +504,39 @@ func (r apiListAzureIntegrationRequest) Execute() ([]AzureAccount, *_nethttp.Res
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUpdateAzureHostFiltersRequest struct {
+type ApiUpdateAzureHostFiltersRequest struct {
 	ctx        _context.Context
-	apiService *AzureIntegrationApiService
+	ApiService *AzureIntegrationApiService
 	body       *AzureAccount
 }
 
-func (r apiUpdateAzureHostFiltersRequest) Body(body AzureAccount) apiUpdateAzureHostFiltersRequest {
+func (r ApiUpdateAzureHostFiltersRequest) Body(body AzureAccount) ApiUpdateAzureHostFiltersRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateAzureHostFiltersRequest) Execute() (interface{}, *_nethttp.Response, error) {
+	return r.ApiService.UpdateAzureHostFiltersExecute(r)
+}
+
 /*
-UpdateAzureHostFilters Update Azure integration host filters
-Update the defined list of host filters for a given Datadog-Azure integration.
+ * UpdateAzureHostFilters Update Azure integration host filters
+ * Update the defined list of host filters for a given Datadog-Azure integration.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiUpdateAzureHostFiltersRequest
-*/
-func (a *AzureIntegrationApiService) UpdateAzureHostFilters(ctx _context.Context) apiUpdateAzureHostFiltersRequest {
-	return apiUpdateAzureHostFiltersRequest{
-		apiService: a,
+ * @return ApiUpdateAzureHostFiltersRequest
+ */
+func (a *AzureIntegrationApiService) UpdateAzureHostFilters(ctx _context.Context) ApiUpdateAzureHostFiltersRequest {
+	return ApiUpdateAzureHostFiltersRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return interface{}
-*/
-func (r apiUpdateAzureHostFiltersRequest) Execute() (interface{}, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return interface{}
+ */
+func (a *AzureIntegrationApiService) UpdateAzureHostFiltersExecute(r ApiUpdateAzureHostFiltersRequest) (interface{}, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
@@ -530,7 +546,7 @@ func (r apiUpdateAzureHostFiltersRequest) Execute() (interface{}, *_nethttp.Resp
 		localVarReturnValue  interface{}
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "AzureIntegrationApiService.UpdateAzureHostFilters")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AzureIntegrationApiService.UpdateAzureHostFilters")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -570,12 +586,12 @@ func (r apiUpdateAzureHostFiltersRequest) Execute() (interface{}, *_nethttp.Resp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -584,23 +600,23 @@ func (r apiUpdateAzureHostFiltersRequest) Execute() (interface{}, *_nethttp.Resp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -618,7 +634,7 @@ func (r apiUpdateAzureHostFiltersRequest) Execute() (interface{}, *_nethttp.Resp
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -628,7 +644,7 @@ func (r apiUpdateAzureHostFiltersRequest) Execute() (interface{}, *_nethttp.Resp
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -638,7 +654,7 @@ func (r apiUpdateAzureHostFiltersRequest) Execute() (interface{}, *_nethttp.Resp
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
@@ -650,37 +666,41 @@ func (r apiUpdateAzureHostFiltersRequest) Execute() (interface{}, *_nethttp.Resp
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type apiUpdateAzureIntegrationRequest struct {
+type ApiUpdateAzureIntegrationRequest struct {
 	ctx        _context.Context
-	apiService *AzureIntegrationApiService
+	ApiService *AzureIntegrationApiService
 	body       *AzureAccount
 }
 
-func (r apiUpdateAzureIntegrationRequest) Body(body AzureAccount) apiUpdateAzureIntegrationRequest {
+func (r ApiUpdateAzureIntegrationRequest) Body(body AzureAccount) ApiUpdateAzureIntegrationRequest {
 	r.body = &body
 	return r
 }
 
+func (r ApiUpdateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
+	return r.ApiService.UpdateAzureIntegrationExecute(r)
+}
+
 /*
-UpdateAzureIntegration Update an Azure integration
-Update a Datadog-Azure integration. Requires an existing `tenant_name` and `client_id`.
+ * UpdateAzureIntegration Update an Azure integration
+ * Update a Datadog-Azure integration. Requires an existing `tenant_name` and `client_id`.
 Any other fields supplied will overwrite existing values. To overwrite `tenant_name` or `client_id`,
 use `new_tenant_name` and `new_client_id`. To leave a field unchanged, do not supply that field in the payload.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-@return apiUpdateAzureIntegrationRequest
+ * @return ApiUpdateAzureIntegrationRequest
 */
-func (a *AzureIntegrationApiService) UpdateAzureIntegration(ctx _context.Context) apiUpdateAzureIntegrationRequest {
-	return apiUpdateAzureIntegrationRequest{
-		apiService: a,
+func (a *AzureIntegrationApiService) UpdateAzureIntegration(ctx _context.Context) ApiUpdateAzureIntegrationRequest {
+	return ApiUpdateAzureIntegrationRequest{
+		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 /*
-Execute executes the request
-@return interface{}
-*/
-func (r apiUpdateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Response, error) {
+ * Execute executes the request
+ * @return interface{}
+ */
+func (a *AzureIntegrationApiService) UpdateAzureIntegrationExecute(r ApiUpdateAzureIntegrationRequest) (interface{}, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPut
 		localVarPostBody     interface{}
@@ -690,7 +710,7 @@ func (r apiUpdateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 		localVarReturnValue  interface{}
 	)
 
-	localBasePath, err := r.apiService.client.cfg.ServerURLWithContext(r.ctx, "AzureIntegrationApiService.UpdateAzureIntegration")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AzureIntegrationApiService.UpdateAzureIntegration")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -730,12 +750,12 @@ func (r apiUpdateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["apiKeyAuth"]; ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
@@ -744,23 +764,23 @@ func (r apiUpdateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if auth, ok := auth["appKeyAuth"]; ok {
+			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
-				if auth.Prefix != "" {
-					key = auth.Prefix + " " + auth.Key
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
 				} else {
-					key = auth.Key
+					key = apiKey.Key
 				}
 				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
-	req, err := r.apiService.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err
 	}
 
-	localVarHTTPResponse, err := r.apiService.client.callAPI(req)
+	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -778,7 +798,7 @@ func (r apiUpdateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -788,7 +808,7 @@ func (r apiUpdateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
 			var v APIErrorResponse
-			err = r.apiService.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
@@ -798,7 +818,7 @@ func (r apiUpdateAzureIntegrationRequest) Execute() (interface{}, *_nethttp.Resp
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	err = r.apiService.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 	if err != nil {
 		newErr := GenericOpenAPIError{
 			body:  localVarBody,
