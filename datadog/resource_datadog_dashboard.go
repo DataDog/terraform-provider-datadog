@@ -3988,7 +3988,7 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	}
 	if v, ok := terraformDefinition["right_yaxis"].([]interface{}); ok && len(v) > 0 {
 		if axis, ok := v[0].(map[string]interface{}); ok && len(axis) > 0 {
-			datadogDefinition.Yaxis = buildDatadogWidgetAxis(axis)
+			datadogDefinition.RightYaxis = buildDatadogWidgetAxis(axis)
 		}
 	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
