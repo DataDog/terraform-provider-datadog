@@ -275,6 +275,13 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				max = "599999"
 				scale = ""
 			}
+			right_yaxis {
+				label = ""
+				min = "1"
+				include_zero = "false"
+				max = "599998"
+				scale = ""
+			}
 			marker {
 				display_type = "error dashed"
 				value = "y=500000"
@@ -489,6 +496,11 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.yaxis.0.label =",
 	"widget.0.timeseries_definition.0.yaxis.0.include_zero = true",
 	"widget.0.timeseries_definition.0.yaxis.0.scale =",
+	"widget.0.timeseries_definition.0.right_yaxis.0.min = 1",
+	"widget.0.timeseries_definition.0.right_yaxis.0.max = 599998",
+	"widget.0.timeseries_definition.0.right_yaxis.0.label =",
+	"widget.0.timeseries_definition.0.right_yaxis.0.include_zero = false",
+	"widget.0.timeseries_definition.0.right_yaxis.0.scale =",
 	"widget.0.timeseries_definition.0.legend_size = 2",
 	"widget.0.timeseries_definition.0.time.live_span = 5m",
 	"widget.0.timeseries_definition.0.title_align = left",
@@ -639,6 +651,13 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				max = "599999"
 				scale = ""
 			}
+			right_yaxis {
+				label = ""
+				min = "1"
+				include_zero = "false"
+				max = "599998"
+				scale = ""
+			}
 			marker {
 				display_type = "error dashed"
 				value = "y=500000"
@@ -733,6 +752,10 @@ var datadogDashboardTimeseriesMultiComputeAsserts = []string{
 	"widget.0.timeseries_definition.0.yaxis.0.include_zero = true",
 	"widget.0.timeseries_definition.0.yaxis.0.max = 599999",
 	"widget.0.timeseries_definition.0.yaxis.0.min = 0",
+	"widget.0.timeseries_definition.0.right_yaxis.# = 1",
+	"widget.0.timeseries_definition.0.right_yaxis.0.include_zero = false",
+	"widget.0.timeseries_definition.0.right_yaxis.0.max = 599998",
+	"widget.0.timeseries_definition.0.right_yaxis.0.min = 1",
 }
 
 func TestAccDatadogDashboardTimeseriesMultiCompute(t *testing.T) {
