@@ -3500,7 +3500,11 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 			datadogQueryTableRequest.SetOrder(datadogV1.WidgetSort(v))
 		}
 		if v, ok := terraformRequest["cell_display_mode"].([]datadogV1.TableWidgetCellDisplayMode); ok && len(v) != 0 {
-			datadogQueryTableRequest.SetCellDisplayMode(v)
+			datadogCellDisplayMode := make([]datadogV1.TableWidgetCellDisplayMode, len(v))
+			for i, cellDisplayMode := range v {
+				datadogCellDisplayMode[i] = cellDisplayMode
+			}
+			datadogQueryTableRequest.CellDisplayMode = &datadogCellDisplayMode
 		}
 		datadogRequests[i] = *datadogQueryTableRequest
 	}
@@ -3550,7 +3554,11 @@ func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.Tab
 			terraformRequest["order"] = *v
 		}
 		if v, ok := datadogRequest.GetCellDisplayModeOk(); ok {
-			terraformRequest["cell_display_mode"] = *v
+			terraformCellDisplayMode := make([]datadogV1.TableWidgetCellDisplayMode, len(*v))
+			for i, cellDisplayMode := range *v {
+				terraformCellDisplayMode[i] = cellDisplayMode
+			}
+			terraformRequest["cell_display_mode"] = terraformCellDisplayMode
 		}
 		terraformRequests[i] = terraformRequest
 	}
