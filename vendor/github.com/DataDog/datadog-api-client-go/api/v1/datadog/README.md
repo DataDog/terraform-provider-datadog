@@ -246,6 +246,7 @@ Class | Method | HTTP request | Description
  - [ApiKey](docs/ApiKey.md)
  - [ApiKeyListResponse](docs/ApiKeyListResponse.md)
  - [ApiKeyResponse](docs/ApiKeyResponse.md)
+ - [ApmStatsQueryColumnType](docs/ApmStatsQueryColumnType.md)
  - [ApmStatsQueryDefinition](docs/ApmStatsQueryDefinition.md)
  - [ApmStatsQueryRowType](docs/ApmStatsQueryRowType.md)
  - [ApplicationKey](docs/ApplicationKey.md)
