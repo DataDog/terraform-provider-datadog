@@ -3383,8 +3383,8 @@ func buildDatadogQueryTableDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
 	}
-	if v, ok := terraformDefinition["has_search_bar"].(datadogV1.TableWidgetHasSearchBar); ok && len(v) != 0 {
-		datadogDefinition.SetHasSearchBar(v)
+	if v, ok := terraformDefinition["has_search_bar"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetHasSearchBar(datadogV1.TableWidgetHasSearchBar(v))
 	}
 	return datadogDefinition
 }
@@ -3499,10 +3499,10 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 		if v, ok := terraformRequest["order"].(string); ok && len(v) != 0 {
 			datadogQueryTableRequest.SetOrder(datadogV1.WidgetSort(v))
 		}
-		if v, ok := terraformRequest["cell_display_mode"].([]datadogV1.TableWidgetCellDisplayMode); ok && len(v) != 0 {
+		if v, ok := terraformRequest["cell_display_mode"].([]interface{}); ok && len(v) != 0 {
 			datadogCellDisplayMode := make([]datadogV1.TableWidgetCellDisplayMode, len(v))
 			for i, cellDisplayMode := range v {
-				datadogCellDisplayMode[i] = cellDisplayMode
+				datadogCellDisplayMode[i] = datadogV1.TableWidgetCellDisplayMode(cellDisplayMode.(string))
 			}
 			datadogQueryTableRequest.CellDisplayMode = &datadogCellDisplayMode
 		}
