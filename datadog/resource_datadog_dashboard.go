@@ -1311,6 +1311,13 @@ func getChangeDefinitionSchema() map[string]*schema.Schema {
 				Schema: getChangeRequestSchema(),
 			},
 		},
+		"custom_link": {
+			Type:     schema.TypeList,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: getWidgetCustomLinkSchema(),
+			},
+		},
 		"title": {
 			Type:     schema.TypeString,
 			Optional: true,
@@ -1350,6 +1357,9 @@ func buildDatadogChangeDefinition(terraformDefinition map[string]interface{}) *d
 	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetTime(*buildDatadogWidgetTime(v))
 	}
+	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
+		datadogDefinition.CustomLinks = buildDatadogWidgetCustomLinks(&v)
+	}
 	return datadogDefinition
 }
 func buildTerraformChangeDefinition(datadogDefinition datadogV1.ChangeWidgetDefinition) map[string]interface{} {
@@ -1368,6 +1378,9 @@ func buildTerraformChangeDefinition(datadogDefinition datadogV1.ChangeWidgetDefi
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+	}
+	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
+		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
 	}
 	return terraformDefinition
 }
