@@ -416,9 +416,9 @@ resource "datadog_dashboard" "ordered_dashboard" {
 					service = "foo"
 					primary_tag = "datacenter:*"
 					name = "bar"
-					columns = [{
+					columns {
 						name = "Hits"
-					}]
+					}
 				}
 			}
 		}
@@ -863,6 +863,8 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.14.query_table_definition.0.request.0.limit = 10",
 	"widget.14.query_table_definition.0.title = Widget Title",
 	"widget.14.query_table_definition.0.time.live_span = 1h",
+	"widget.15.query_table_definition.0.title = Widget Title",
+	"widget.15.query_table_definition.0.time.live_span = 1h",
 	"widget.15.query_table_definition.0.request.0.apm_stats_query.service = foo",
 	"widget.15.query_table_definition.0.request.0.apm_stats_query.name = bar",
 	"widget.15.query_table_definition.0.request.0.apm_stats_query.env = staging",
