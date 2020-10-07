@@ -4789,6 +4789,39 @@ func buildTerraformWidgetMarkers(datadogWidgetMarkers *[]datadogV1.WidgetMarker)
 	return &terraformWidgetMarkers
 }
 
+// Widget Custom Link helpers
+func getWidgetCustomLinkSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"label": {
+			Type:     schema.TypeString,
+			Required: true,
+		},
+		"link": {
+			Type:     schema.TypeString,
+			Required: true,
+		},
+	}
+}
+func buildDatadogWidgetCustomLinks(terraformWidgetCustomLinks *[]interface{}) *[]datadogV1.WidgetCustomLink {
+	datadogWidgetCustomLinks := make([]datadogV1.WidgetCustomLink, len(*terraformWidgetCustomLinks))
+	for i, customLink := range *terraformWidgetCustomLinks {
+		terraformCustomLink := customLink.(map[string]interface{})
+		datadogCustomLink := datadogV1.NewWidgetCustomLink(terraformCustomLink["label"].(string), terraformCustomLink["link"].(string))
+		datadogWidgetCustomLinks[i] = *datadogCustomLink
+	}
+	return &datadogWidgetCustomLinks
+}
+func buildTerraformWidgetCustomLinks(datadogWidgetCustomLinks *[]datadogV1.WidgetCustomLink) *[]map[string]string {
+	terraformWidgetCustomLinks := make([]map[string]string, len(*datadogWidgetCustomLinks))
+	for i, datadogCustomLink := range *datadogWidgetCustomLinks {
+		terraformCustomLink := map[string]string{}
+		terraformCustomLink["label"] = datadogCustomLink.Label
+		terraformCustomLink["link"] = datadogCustomLink.Link
+		terraformWidgetCustomLinks[i] = terraformCustomLink
+	}
+	return &terraformWidgetCustomLinks
+}
+
 //
 // Widget Query helpers
 //
