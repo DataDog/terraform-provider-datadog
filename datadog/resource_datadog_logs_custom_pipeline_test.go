@@ -143,7 +143,19 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 	}
 	processor {
 		attribute_remapper {
-			name = "Simple attribute remapper"
+			name = "Simple attribute remapper to tag target type"
+			is_enabled = true
+			sources = ["db.instance"]
+			source_type = "tag"
+		  	target = "db"
+			target_type = "tag"
+			preserve_source = true
+			override_on_conflict = false
+		}
+	}
+	processor {
+		attribute_remapper {
+			name = "Simple attribute remapper to attribute target type"
 			is_enabled = true
 			sources = ["db.instance"]
 			source_type = "tag"
