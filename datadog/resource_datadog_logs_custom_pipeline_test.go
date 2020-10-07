@@ -161,7 +161,7 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			source_type = "tag"
 		  	target = "db"
 			target_type = "attribute"
-			target_format= "String"
+			target_format= "string"
 			preserve_source = true
 			override_on_conflict = false
 		}
