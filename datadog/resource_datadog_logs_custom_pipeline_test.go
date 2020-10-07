@@ -274,15 +274,19 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.2.attribute_remapper.0.preserve_source", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.3.grok_parser.0.samples.#", "2"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.3.attribute_remapper.0.target_type", "attribute"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.string_builder_processor.0.template", "%{user.name} is awesome"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.3.attribute_remapper.0.target_format", "string"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.5.geo_ip_parser.0.sources.#", "2"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.grok_parser.0.samples.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.6.lookup_processor.0.lookup_table.#", "2"),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.5.string_builder_processor.0.template", "%{user.name} is awesome"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.6.geo_ip_parser.0.sources.#", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.7.lookup_processor.0.lookup_table.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.8.lookup_processor.0.lookup_table.#", "2"),
 				),
 			},
 		},
