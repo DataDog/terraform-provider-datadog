@@ -6,253 +6,197 @@ import (
 
 // JSON export used as test scenario
 //{
-//    "notify_list": [],
-//    "description": null,
-//    "author_name": "--redacted--",
-//    "id": "--redacted--",
-//    "url": "--redacted--",
-//    "template_variables": [],
-//    "is_read_only": false,
-//    "title": "TF - Timeseries example",
-//    "created_at": "2020-03-12T15:04:00.466540+00:00",
-//    "modified_at": "2020-06-09T10:15:58.451756+00:00",
-//    "author_handle": "--redacted--",
-//    "widgets": [
-//        {
-//            "definition": {
-//                "title_size": "16",
-//                "yaxis": {
-//                    "max": "599999"
-//                },
-//                "title_align": "left",
-//                "markers": [
-//                    {
-//                        "display_type": "error dashed",
-//                        "value": "y = 500000",
-//                        "label": "y = 500000"
-//                    }
-//                ],
-//                "show_legend": true,
-//                "requests": [
-//                    {
-//                        "q": "avg:system.cpu.user{env:prod} by {app}",
-//                        "style": {
-//                            "line_width": "thin",
-//                            "palette": "dog_classic",
-//                            "line_type": "solid"
-//                        },
-//                        "display_type": "line"
-//                    },
-//                    {
-//                        "style": {
-//                            "line_width": "normal",
-//                            "palette": "cool",
-//                            "line_type": "solid"
-//                        },
-//                        "display_type": "line",
-//                        "log_query": {
-//                            "index": "*",
-//                            "search": {
-//                                "query": ""
-//                            },
-//                            "group_by": [
-//                                {
-//                                    "facet": "service",
-//                                    "sort": {
-//                                        "aggregation": "count",
-//                                        "order": "desc"
-//                                    },
-//                                    "limit": 10
-//                                }
-//                            ],
-//                            "compute": {
-//                                "aggregation": "count"
-//                            }
-//                        }
-//                    },
-//                    {
-//                        "style": {
-//                            "line_width": "thick",
-//                            "palette": "warm",
-//                            "line_type": "dashed"
-//                        },
-//                        "apm_query": {
-//                            "index": "trace-search",
-//                            "search": {
-//                                "query": ""
-//                            },
-//                            "group_by": [
-//                                {
-//                                    "facet": "status",
-//                                    "sort": {
-//                                        "facet": "env",
-//                                        "aggregation": "cardinality",
-//                                        "order": "desc"
-//                                    },
-//                                    "limit": 10
-//                                }
-//                            ],
-//                            "compute": {
-//                                "facet": "env",
-//                                "interval": 1000,
-//                                "aggregation": "cardinality"
-//                            }
-//                        },
-//                        "display_type": "line"
-//                    },
-//                    {
-//                        "style": {
-//                            "line_width": "normal",
-//                            "palette": "purple",
-//                            "line_type": "solid"
-//                        },
-//                        "process_query": {
-//                            "search_by": "",
-//                            "metric": "process.stat.cpu.total_pct.norm",
-//                            "limit": 10,
-//                            "filter_by": [
-//                                "account:prod"
-//                            ]
-//                        },
-//                        "display_type": "line"
-//                    },
-//                    {
-//                        "style": {
-//                            "line_width": "normal",
-//                            "palette": "orange",
-//                            "line_type": "solid"
-//                        },
-//                        "display_type": "area",
-//                        "network_query": {
-//                            "index": "netflow-search",
-//                            "search": {
-//                                "query": "network.transport:udp network.destination.ip:\"*\""
-//                            },
-//                            "group_by": [
-//                                {
-//                                    "facet": "source_region"
-//                                },
-//                                {
-//                                    "facet": "dest_environment"
-//                                }
-//                            ],
-//                            "compute": {
-//                                "facet": "network.bytes_read",
-//                                "aggregation": "sum"
-//                            }
-//                        }
-//                    },
-//                    {
-//                        "style": {
-//                            "line_width": "normal",
-//                            "palette": "grey",
-//                            "line_type": "solid"
-//                        },
-//                        "rum_query": {
-//                            "index": "*",
-//                            "search": {
-//                                "query": ""
-//                            },
-//                            "group_by": [
-//                                {
-//                                    "facet": "service",
-//                                    "sort": {
-//                                        "facet": "@duration",
-//                                        "aggregation": "avg",
-//                                        "order": "desc"
-//                                    },
-//                                    "limit": 10
-//                                }
-//                            ],
-//                            "compute": {
-//                                "facet": "@duration",
-//                                "interval": 10,
-//                                "aggregation": "avg"
-//                            }
-//                        },
-//                        "display_type": "area"
-//                    },
-//                    {
-//                        "style": {
-//                            "line_width": "normal",
-//                            "palette": "red",
-//                            "line_type": "solid"
-//                        },
-//                        "display_type": "line",
-//                        "profilemetrics_query": {
-//                            "index": "*",
-//                            "search": {
-//                                "query": ""
-//                            },
-//                            "group_by": [
-//                                {
-//                                    "facet": "language",
-//                                    "sort": {
-//                                        "aggregation": "avg",
-//                                        "order": "desc"
-//                                    },
-//                                    "limit": 10
-//                                }
-//                            ],
-//                            "compute": {
-//                                "interval": 300000,
-//                                "aggregation": "avg"
-//                            }
-//                        }
-//                    },
-//                    {
-//                        "style": {
-//                            "line_width": "thin",
-//                            "palette": "green",
-//                            "line_type": "dotted"
-//                        },
-//                        "security_query": {
-//                            "index": "*",
-//                            "search": {
-//                                "query": ""
-//                            },
-//                            "group_by": [
-//                                {
-//                                    "facet": "service",
-//                                    "sort": {
-//                                        "facet": "status",
-//                                        "aggregation": "cardinality",
-//                                        "order": "desc"
-//                                    },
-//                                    "limit": 10
-//                                }
-//                            ],
-//                            "compute": {
-//                                "facet": "status",
-//                                "aggregation": "cardinality"
-//                            }
-//                        },
-//                        "display_type": "bars"
-//                    }
-//                ],
-//                "time": {
-//                    "live_span": "5m"
-//                },
-//                "title": "system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d...",
-//                "legend_size": "2",
-//                "type": "timeseries",
-//                "events": [
-//                    {
-//                        "q": "sources:test tags:1",
-//                        "tags_execution": "and"
-//                    }
-//                ]
+//   "notify_list":[],
+//   "description":"Created using the Datadog provider in Terraform",
+//   "author_name":"--redacted--",
+//   "template_variables":[],
+//   "is_read_only":true,
+//   "id":"--redacted--",
+//   "title":"{{uniq}}",
+//   "url":"--redacted--",
+//   "created_at":"2020-10-07T21:31:08.633786+00:00",
+//   "modified_at":"2020-10-07T21:31:56.282667+00:00",
+//   "author_handle":"--redacted--",
+//   "widgets":[
+//      {
+//         "definition":{
+//            "custom_links":[
+//               {
+//                  "link":"https://app.datadoghq.com/dashboard/lists",
+//                  "label":"Test Custom Link label"
+//               }
+//            ],
+//            "yaxis":{
+//               "max":"599999",
+//               "include_zero":true,
+//               "min":"0"
 //            },
-//            "layout": {
-//                "y": 2,
-//                "x": 1,
-//                "height": 15,
-//                "width": 47
+//            "title":"system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d...",
+//            "markers":[
+//               {
+//                  "display_type":"error dashed",
+//                  "value":"y=500000",
+//                  "label":"y=500000"
+//               },
+//               {
+//                  "display_type":"warning dashed",
+//                  "value":"y=400000",
+//                  "label":"y=400000"
+//               }
+//            ],
+//            "show_legend":true,
+//            "time":{
+//               "live_span":"5m"
 //            },
-//            "id": 0
-//        }
-//    ],
-//    "layout_type": "free"
+//            "requests":[
+//               {
+//                  "q":"avg:system.cpu.user{env:prod} by {app}",
+//                  "style":{
+//                     "line_width":"thin",
+//                     "palette":"dog_classic",
+//                     "line_type":"solid"
+//                  },
+//                  "display_type":"line"
+//               },
+//               {
+//                  "style":{
+//                     "line_width":"normal",
+//                     "palette":"cool",
+//                     "line_type":"solid"
+//                  },
+//                  "display_type":"line",
+//                  "log_query":{
+//                     "index":"*",
+//                     "search":{
+//                        "query":""
+//                     },
+//                     "group_by":[
+//                        {
+//                           "facet":"service",
+//                           "sort":{
+//                              "aggregation":"count",
+//                              "order":"desc"
+//                           },
+//                           "limit":10
+//                        }
+//                     ],
+//                     "compute":{
+//                        "aggregation":"count"
+//                     }
+//                  }
+//               },
+//               {
+//                  "style":{
+//                     "line_width":"thick",
+//                     "palette":"warm",
+//                     "line_type":"dashed"
+//                  },
+//                  "apm_query":{
+//                     "index":"trace-search",
+//                     "search":{
+//                        "query":""
+//                     },
+//                     "group_by":[
+//                        {
+//                           "facet":"status",
+//                           "sort":{
+//                              "facet":"env",
+//                              "aggregation":"cardinality",
+//                              "order":"desc"
+//                           },
+//                           "limit":10
+//                        }
+//                     ],
+//                     "compute":{
+//                        "facet":"env",
+//                        "interval":1000,
+//                        "aggregation":"cardinality"
+//                     }
+//                  },
+//                  "display_type":"line"
+//               },
+//               {
+//                  "style":{
+//                     "line_width":"normal",
+//                     "palette":"purple",
+//                     "line_type":"solid"
+//                  },
+//                  "process_query":{
+//                     "search_by":"",
+//                     "metric":"process.stat.cpu.total_pct.norm",
+//                     "limit":10,
+//                     "filter_by":[
+//                        "account:prod"
+//                     ]
+//                  },
+//                  "display_type":"line"
+//               },
+//               {
+//                  "on_right_yaxis":false,
+//                  "style":{
+//                     "line_width":"normal",
+//                     "palette":"orange",
+//                     "line_type":"solid"
+//                  },
+//                  "display_type":"area",
+//                  "network_query":{
+//                     "index":"netflow-search",
+//                     "search":{
+//                        "query":"network.transport:udp network.destination.ip:\"*\""
+//                     },
+//                     "group_by":[
+//
+//                     ],
+//                     "compute":{
+//                        "facet":"network.bytes_read",
+//                        "aggregation":"sum"
+//                     }
+//                  }
+//               },
+//               {
+//                  "style":{
+//                     "line_width":"normal",
+//                     "palette":"grey",
+//                     "line_type":"solid"
+//                  },
+//                  "rum_query":{
+//                     "index":"*",
+//                     "search":{
+//                        "query":""
+//                     },
+//                     "group_by":[
+//                        {
+//                           "facet":"service",
+//                           "sort":{
+//                              "facet":"@duration",
+//                              "aggregation":"avg",
+//                              "order":"desc"
+//                           },
+//                           "limit":10
+//                        }
+//                     ],
+//                     "compute":{
+//                        "facet":"@duration",
+//                        "interval":10,
+//                        "aggregation":"avg"
+//                     }
+//                  },
+//                  "display_type":"area"
+//               }
+//            ],
+//            "legend_size":"2",
+//            "type":"timeseries",
+//            "events":[
+//               {
+//                  "q":"sources:test tags:1",
+//                  "tags_execution":"and"
+//               }
+//            ]
+//         },
+//         "id":203606066001657
+//      }
+//   ],
+//   "layout_type":"ordered"
 //}
 
 const datadogDashboardTimeseriesConfig = `
@@ -487,6 +431,10 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 			//	}
 			//	display_type = "bars"
 			//}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				label = "Test Custom Link label"
+			}
 		}
 	}
 }
@@ -634,6 +582,9 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.request.5.rum_query.0.group_by.0.sort.order = desc",
 	"widget.0.timeseries_definition.0.request.5.rum_query.0.search.query =",
 	"widget.0.timeseries_definition.0.request.5.on_right_yaxis = true",
+	"widget.0.timeseries_definition.0.custom_link.# = 1",
+	"widget.0.timeseries_definition.0.custom_link.0.label = Test Custom Link label",
+	"widget.0.timeseries_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
 }
 
 func TestAccDatadogDashboardTimeseries(t *testing.T) {

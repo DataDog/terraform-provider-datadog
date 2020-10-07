@@ -4,40 +4,47 @@ import "testing"
 
 // JSON export used as test scenario
 //{
-//    "notify_list": [],
-//    "description": "",
-//    "author_name": "--redacted--",
-//    "id": "--redacted--",
-//    "url": "--redacted--",
-//    "template_variables": [],
-//    "is_read_only": false,
-//    "title": "TF - Service Map Example",
-//    "created_at": "2020-06-09T13:32:03.535027+00:00",
-//    "modified_at": "2020-06-09T13:32:50.224757+00:00",
-//    "author_handle": "--redacted--",
-//    "widgets": [
-//        {
-//            "definition": {
-//                "title_size": "16",
-//                "service": "master-db",
-//                "title": "env: prod, datacenter:us1.prod.dog, service: master-db",
-//                "title_align": "left",
-//                "filters": [
-//                    "env:prod",
-//                    "datacenter:us1.prod.dog"
-//                ],
-//                "type": "servicemap"
-//            },
-//            "layout": {
-//                "y": 3,
-//                "x": -1,
-//                "height": 15,
-//                "width": 47
-//            },
-//            "id": 0
-//        }
-//    ],
-//    "layout_type": "free"
+//   "notify_list":[],
+//   "description":"Created using the Datadog provider in Terraform",
+//   "author_name":"--redacted--",
+//   "template_variable_presets":[],
+//   "template_variables":[],
+//   "is_read_only":true,
+//   "id":"--redacted--",
+//   "title":"{{uniq}}",
+//   "url":"--redacted--",
+//   "created_at":"2020-10-07T21:43:57.803160+00:00",
+//   "modified_at":"2020-10-07T21:46:43.222901+00:00",
+//   "author_handle":"--redacted--",
+//   "widgets":[
+//      {
+//         "definition":{
+//            "custom_links":[
+//               {
+//                  "link":"https://app.datadoghq.com/dashboard/lists",
+//                  "label":"Test Custom Link label"
+//               }
+//            ],
+//            "title_size":"16",
+//            "service":"master-db",
+//            "title":"env: prod, datacenter:us1.prod.dog, service: master-db",
+//            "title_align":"left",
+//            "filters":[
+//               "env:prod",
+//               "datacenter:us1.prod.dog"
+//            ],
+//            "type":"servicemap"
+//         },
+//         "layout":{
+//            "y":5,
+//            "width":32,
+//            "x":5,
+//            "height":43
+//         },
+//         "id":6727330667767516
+//      }
+//   ],
+//   "layout_type":"free"
 //}
 
 const datadogDashboardServiceMapConfig = `
@@ -54,7 +61,10 @@ resource "datadog_dashboard" "service_map_dashboard" {
 			title = "env: prod, datacenter:us1.prod.dog, service: master-db"
 			title_size = "16"
 			title_align = "left"
-			
+      		custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				label = "Test Custom Link label"
+			}
 		}
 		layout = {
 			height = 43
@@ -81,6 +91,9 @@ var datadogDashboardServiceMapAsserts = []string{
 	"widget.0.servicemap_definition.0.title = env: prod, datacenter:us1.prod.dog, service: master-db",
 	"widget.0.layout.height = 43",
 	"widget.0.servicemap_definition.0.filters.1 = datacenter:us1.prod.dog",
+	"widget.0.servicemap_definition.0.custom_link.# = 1",
+	"widget.0.servicemap_definition.0.custom_link.0.label = Test Custom Link label",
+	"widget.0.servicemap_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
 }
 
 func TestAccDatadogDashboardServiceMap(t *testing.T) {

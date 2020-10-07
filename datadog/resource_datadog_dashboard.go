@@ -4805,10 +4805,8 @@ func buildDatadogWidgetCustomLinks(terraformWidgetCustomLinks *[]interface{}) *[
 			Label: terraformCustomLink["label"].(string),
 			Link:  terraformCustomLink["link"].(string),
 		}
-
 		datadogWidgetCustomLinks[i] = datadogWidgetCustomLink
 	}
-
 	return &datadogWidgetCustomLinks
 }
 func buildTerraformWidgetCustomLinks(datadogWidgetCustomLinks *[]datadogV1.WidgetCustomLink) *[]map[string]string {

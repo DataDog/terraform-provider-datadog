@@ -6,58 +6,59 @@ import (
 
 // JSON export used as test scenario
 //{
-//    "notify_list": [],
-//    "description": "",
-//    "author_name": "--redacted--",
-//    "id": "--redacted--",
-//    "url": "--redacted--",
-//    "template_variables": [],
-//    "is_read_only": false,
-//    "title": "TF - Hostmap Example",
-//    "created_at": "2020-06-09T13:05:44.107887+00:00",
-//    "modified_at": "2020-06-09T13:07:21.567789+00:00",
-//    "author_handle": "--redacted--",
-//    "widgets": [
-//        {
-//            "definition": {
-//                "style": {
-//                    "fill_min": "10",
-//                    "fill_max": "30",
-//                    "palette": "YlOrRd",
-//                    "palette_flip": true
-//                },
-//                "title_size": "16",
-//                "title": "system.cpu.idle, system.cpu.user",
-//                "title_align": "center",
-//                "node_type": "host",
-//                "no_metric_hosts": true,
-//                "group": [
-//                    "region"
-//                ],
-//                "requests": {
-//                    "size": {
-//                        "q": "max:system.cpu.user{env:prod} by {host}"
-//                    },
-//                    "fill": {
-//                        "q": "avg:system.cpu.idle{env:prod} by {host}"
-//                    }
-//                },
-//                "no_group_hosts": true,
-//                "type": "hostmap",
-//                "scope": [
-//                    "env:prod"
-//                ]
+//   "notify_list":[],
+//   "description":"Created using the Datadog provider in Terraform",
+//   "author_name":"--redacted--",
+//   "template_variable_presets":[],
+//   "template_variables":[],
+//   "is_read_only":true,
+//   "id":"--redacted--",
+//   "title":"{{uniq}}",
+//   "url":"--redacted--",
+//   "created_at":"2020-10-07T20:59:53.507865+00:00",
+//   "modified_at":"2020-10-07T21:02:00.601049+00:00",
+//   "author_handle":"--redacted--",
+//   "widgets":[
+//      {
+//         "definition":{
+//            "style":{
+//               "fill_min":"10",
+//               "fill_max":"30",
+//               "palette":"YlOrRd",
+//               "palette_flip":true
 //            },
-//            "layout": {
-//                "y": 2,
-//                "x": 3,
-//                "height": 22,
-//                "width": 47
+//            "custom_links":[
+//               {
+//                  "link":"https://app.datadoghq.com/dashboard/lists",
+//                  "label":"Test Custom Link label"
+//               }
+//            ],
+//            "title_size":"16",
+//            "title":"system.cpu.idle, system.cpu.user",
+//            "title_align":"right",
+//            "node_type":"host",
+//            "no_metric_hosts":true,
+//            "group":[
+//               "region"
+//            ],
+//            "requests":{
+//               "size":{
+//                  "q":"max:system.cpu.user{env:prod} by {host}"
+//               },
+//               "fill":{
+//                  "q":"avg:system.cpu.idle{env:prod} by {host}"
+//               }
 //            },
-//            "id": 0
-//        }
-//    ],
-//    "layout_type": "free"
+//            "no_group_hosts":true,
+//            "type":"hostmap",
+//            "scope":[
+//               "env:prod"
+//            ]
+//         },
+//         "id":2914377808809811
+//      }
+//   ],
+//   "layout_type":"ordered"
 //}
 
 const datadogDashboardHostMapConfig = `
@@ -91,6 +92,10 @@ resource "datadog_dashboard" "hostmap_dashboard" {
 			title = "system.cpu.idle, system.cpu.user"
 			title_align = "right"
 			title_size = "16"
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				label = "Test Custom Link label"
+			}
 		}
 	}
 }
@@ -115,6 +120,9 @@ var datadogDashboardHostMapAsserts = []string{
 	"is_read_only = true",
 	"title = {{uniq}}",
 	"widget.0.hostmap_definition.0.group.0 = region",
+	"widget.0.hostmap_definition.0.custom_link.# = 1",
+	"widget.0.hostmap_definition.0.custom_link.0.label = Test Custom Link label",
+	"widget.0.hostmap_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
 }
 
 func TestAccDatadogDashboardHostMap(t *testing.T) {
