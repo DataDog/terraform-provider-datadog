@@ -80,7 +80,7 @@ resource "datadog_dashboard" "heatmap_dashboard" {
 					palette = "blue"
 				}
 			}
-			
+
 			time = {
 				live_span = "1mo"
 			}
@@ -90,6 +90,10 @@ resource "datadog_dashboard" "heatmap_dashboard" {
 			}
 			show_legend = true
 			legend_size = "2"
+			custom_link {
+				label = "my custom link"
+				link = "https://datadoghq.com/"
+			}
 		}
 	}
 }
@@ -115,6 +119,9 @@ var datadogDashboardHeatMapAsserts = []string{
 	"widget.0.heatmap_definition.0.event.0.tags_execution = and",
 	"widget.0.heatmap_definition.0.show_legend = true",
 	"widget.0.heatmap_definition.0.legend_size = 2",
+	"widget.0.heatmap_definition.0.custom_link.# = 1",
+	"widget.0.heatmap_definition.0.custom_link.0.label = my custom link",
+	"widget.0.heatmap_definition.0.custom_link.0.link = https://datadoghq.com/",
 }
 
 func TestAccDatadogDashboardHeatMap(t *testing.T) {
