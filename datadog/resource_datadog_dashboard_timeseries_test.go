@@ -275,6 +275,13 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				max = "599999"
 				scale = ""
 			}
+			right_yaxis {
+				label = ""
+				min = "1"
+				include_zero = "false"
+				max = "599998"
+				scale = ""
+			}
 			marker {
 				display_type = "error dashed"
 				value = "y=500000"
@@ -300,6 +307,8 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 					line_type = "solid"
 				}
 				display_type = "line"
+				on_right_yaxis = "true"
+
 			}
 			request {
 				style {
@@ -325,6 +334,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 						aggregation = "count"
 					}
 				}
+				on_right_yaxis = "false"
 			}
 			request {
 				style {
@@ -353,6 +363,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 					}
 				}
 				display_type = "line"
+				on_right_yaxis = "true"
 			}
 			request {
 				style {
@@ -367,6 +378,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 					filter_by = ["account:prod"]
 				}
 				display_type = "line"
+				on_right_yaxis = "true"
 			}
 			request {
 				style {
@@ -391,6 +403,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 						aggregation = "sum"
 					}
 				}
+				on_right_yaxis = "true"
 			}
 			request {
 				style {
@@ -419,6 +432,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 					}
 				}
 				display_type = "area"
+				on_right_yaxis = "true"
 			}
 			//request {
 			//	style {
@@ -489,6 +503,11 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.yaxis.0.label =",
 	"widget.0.timeseries_definition.0.yaxis.0.include_zero = true",
 	"widget.0.timeseries_definition.0.yaxis.0.scale =",
+	"widget.0.timeseries_definition.0.right_yaxis.0.min = 1",
+	"widget.0.timeseries_definition.0.right_yaxis.0.max = 599998",
+	"widget.0.timeseries_definition.0.right_yaxis.0.label =",
+	"widget.0.timeseries_definition.0.right_yaxis.0.include_zero = false",
+	"widget.0.timeseries_definition.0.right_yaxis.0.scale =",
 	"widget.0.timeseries_definition.0.legend_size = 2",
 	"widget.0.timeseries_definition.0.time.live_span = 5m",
 	"widget.0.timeseries_definition.0.title_align = left",
@@ -514,6 +533,7 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.request.0.apm_query.# = 0",
 	"widget.0.timeseries_definition.0.request.0.style.0.palette = dog_classic",
 	"widget.0.timeseries_definition.0.request.0.q = avg:system.cpu.user{env:prod} by {app}",
+	"widget.0.timeseries_definition.0.request.0.on_right_yaxis = true",
 	"widget.0.timeseries_definition.0.request.1.log_query.0.index = *",
 	"widget.0.timeseries_definition.0.request.1.style.# = 1",
 	"widget.0.timeseries_definition.0.request.1.log_query.0.group_by.0.sort.aggregation = count",
@@ -535,6 +555,7 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.request.1.process_query.# = 0",
 	"widget.0.timeseries_definition.0.request.1.display_type = line",
 	"widget.0.timeseries_definition.0.request.1.log_query.# = 1",
+	"widget.0.timeseries_definition.0.request.1.on_right_yaxis = false",
 	"widget.0.timeseries_definition.0.request.3.style.0.line_type = solid",
 	"widget.0.timeseries_definition.0.request.3.process_query.0.metric = process.stat.cpu.total_pct.norm",
 	"widget.0.timeseries_definition.0.request.2.style.0.line_type = dashed",
@@ -561,6 +582,7 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.request.2.apm_query.0.compute.aggregation = cardinality",
 	"widget.0.timeseries_definition.0.request.2.apm_query.0.group_by.0.sort.facet = env",
 	"widget.0.timeseries_definition.0.request.2.apm_query.0.index = trace-search",
+	"widget.0.timeseries_definition.0.request.2.on_right_yaxis = true",
 	"widget.0.timeseries_definition.0.request.3.log_query.# = 0",
 	"widget.0.timeseries_definition.0.request.3.process_query.0.search_by =",
 	"widget.0.timeseries_definition.0.request.3.style.# = 1",
@@ -574,6 +596,7 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.request.3.apm_query.# = 0",
 	"widget.0.timeseries_definition.0.request.3.style.0.palette = purple",
 	"widget.0.timeseries_definition.0.request.3.style.0.line_width = normal",
+	"widget.0.timeseries_definition.0.request.3.on_right_yaxis = true",
 	"widget.0.timeseries_definition.0.request.5.rum_query.0.group_by.0.sort.% = 3",
 	"widget.0.timeseries_definition.0.request.4.network_query.0.group_by.0.facet = source_region",
 	"widget.0.timeseries_definition.0.request.4.network_query.0.group_by.1.sort.% = 0",
@@ -605,10 +628,12 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.request.4.network_query.0.group_by.0.sort.% = 0",
 	"widget.0.timeseries_definition.0.request.5.style.0.palette = grey",
 	"widget.0.timeseries_definition.0.request.4.network_query.0.compute.aggregation = sum",
+	"widget.0.timeseries_definition.0.request.4.on_right_yaxis = true",
 	"widget.0.timeseries_definition.0.request.5.q =",
 	"widget.0.timeseries_definition.0.request.5.rum_query.0.index = *",
 	"widget.0.timeseries_definition.0.request.5.rum_query.0.group_by.0.sort.order = desc",
 	"widget.0.timeseries_definition.0.request.5.rum_query.0.search.query =",
+	"widget.0.timeseries_definition.0.request.5.on_right_yaxis = true",
 }
 
 func TestAccDatadogDashboardTimeseries(t *testing.T) {
@@ -637,6 +662,13 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				min = "0"
 				include_zero = "true"
 				max = "599999"
+				scale = ""
+			}
+			right_yaxis {
+				label = ""
+				min = "1"
+				include_zero = "false"
+				max = "599998"
 				scale = ""
 			}
 			marker {
@@ -685,6 +717,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 						aggregation = "cardinality"
 					}
 				}
+				on_right_yaxis = "true"
 			}
 		}
 	}
@@ -724,6 +757,7 @@ var datadogDashboardTimeseriesMultiComputeAsserts = []string{
 	"widget.0.timeseries_definition.0.request.0.style.0.line_type = solid",
 	"widget.0.timeseries_definition.0.request.0.style.0.line_width = normal",
 	"widget.0.timeseries_definition.0.request.0.style.0.palette = cool",
+	"widget.0.timeseries_definition.0.request.0.on_right_yaxis = true",
 	"widget.0.timeseries_definition.0.show_legend = true",
 	"widget.0.timeseries_definition.0.time.live_span = 5m",
 	"widget.0.timeseries_definition.0.title = system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d...",
@@ -733,6 +767,10 @@ var datadogDashboardTimeseriesMultiComputeAsserts = []string{
 	"widget.0.timeseries_definition.0.yaxis.0.include_zero = true",
 	"widget.0.timeseries_definition.0.yaxis.0.max = 599999",
 	"widget.0.timeseries_definition.0.yaxis.0.min = 0",
+	"widget.0.timeseries_definition.0.right_yaxis.# = 1",
+	"widget.0.timeseries_definition.0.right_yaxis.0.include_zero = false",
+	"widget.0.timeseries_definition.0.right_yaxis.0.max = 599998",
+	"widget.0.timeseries_definition.0.right_yaxis.0.min = 1",
 }
 
 func TestAccDatadogDashboardTimeseriesMultiCompute(t *testing.T) {
