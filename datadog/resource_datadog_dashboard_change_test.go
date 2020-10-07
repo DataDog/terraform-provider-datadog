@@ -62,9 +62,13 @@ resource "datadog_dashboard" "change_dashboard" {
 			request {
 				q = "sum:system.cpu.user{*} by {service,account}"
 			}
+			custom_link {
+				label = "my custom link"
+				link = "https://datadoghq.com/"
+			}
 		}
 	}
-	
+
 	widget {
 		change_definition {
 			request {
@@ -81,6 +85,10 @@ resource "datadog_dashboard" "change_dashboard" {
 			title_align = "left"
 			time = {
 				live_span = "1h"
+			}
+			custom_link {
+				label = "my custom link"
+				link = "https://datadoghq.com/"
 			}
 		}
 	}
@@ -113,6 +121,12 @@ var datadogDashboardChangeAsserts = []string{
 	"widget.0.change_definition.0.request.0.order_by =",
 	"widget.1.change_definition.0.time.live_span = 1h",
 	"widget.0.change_definition.0.request.0.compare_to =",
+	"widget.0.change_definition.0.custom_link.# = 1",
+	"widget.0.change_definition.0.custom_link.0.label = my custom link",
+	"widget.0.change_definition.0.custom_link.0.link = https://datadoghq.com/",
+	"widget.1.change_definition.0.custom_link.# = 1",
+	"widget.1.change_definition.0.custom_link.0.label = my custom link",
+	"widget.1.change_definition.0.custom_link.0.link = https://datadoghq.com/",
 }
 
 func TestAccDatadogDashboardChange(t *testing.T) {
