@@ -2110,6 +2110,13 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 				Schema: getWidgetTimeSchema(),
 			},
 		},
+		"custom_link": {
+			Type:     schema.TypeList,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: getWidgetCustomLinkSchema(),
+			},
+		},
 	}
 }
 func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *datadogV1.HeatMapWidgetDefinition {
@@ -2144,6 +2151,9 @@ func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *
 	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
 		datadogDefinition.Time = buildDatadogWidgetTime(v)
 	}
+	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
+		datadogDefinition.CustomLinks = buildDatadogWidgetCustomLinks(&v)
+	}
 	return datadogDefinition
 }
 func buildTerraformHeatmapDefinition(datadogDefinition datadogV1.HeatMapWidgetDefinition) map[string]interface{} {
@@ -2175,6 +2185,9 @@ func buildTerraformHeatmapDefinition(datadogDefinition datadogV1.HeatMapWidgetDe
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+	}
+	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
+		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
 	}
 	return terraformDefinition
 }
