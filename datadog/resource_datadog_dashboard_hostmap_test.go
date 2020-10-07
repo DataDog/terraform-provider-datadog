@@ -91,6 +91,10 @@ resource "datadog_dashboard" "hostmap_dashboard" {
 			title = "system.cpu.idle, system.cpu.user"
 			title_align = "right"
 			title_size = "16"
+			custom_link {
+				label = "my custom link"
+				link = "https://datadoghq.com/"
+			}
 		}
 	}
 }
@@ -115,6 +119,9 @@ var datadogDashboardHostMapAsserts = []string{
 	"is_read_only = true",
 	"title = {{uniq}}",
 	"widget.0.hostmap_definition.0.group.0 = region",
+	"widget.0.hostmap_definition.0.custom_link.# = 1",
+	"widget.0.hostmap_definition.0.custom_link.0.label = my custom link",
+	"widget.0.hostmap_definition.0.custom_link.0.link = https://datadoghq.com/",
 }
 
 func TestAccDatadogDashboardHostMap(t *testing.T) {
