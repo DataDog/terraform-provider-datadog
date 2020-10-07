@@ -31,7 +31,8 @@ resource "datadog_logs_custom_pipeline" "sample_pipeline" {
             sources = ["db.instance"]
             source_type = "tag"
             target = "db"
-            target_type = "tag"
+            target_type = "attribute"
+            target_format = "String"
             preserve_source = true
             override_on_conflict = false
             name = "sample attribute processor"
@@ -185,6 +186,8 @@ The following arguments are supported:
   - `source_type`: (Required) Defines where the sources are from (log `attribute` or `tag`).
   - `target`: (Required) Final `attribute` or `tag` name to remap the sources.
   - `target_type`: (Required) Defines if the target is a log `attribute` or `tag`.
+  - `target_format`: (Optional, default=false)   If the target of the remapper is an attribute, try to cast the value to a new specific type.
+                                                        If the cast is not possible, the original type is kept. `string`, `integer`, or `double` are the possible types.
   - `preserve_source`: (Optional, default = false) Remove or preserve the remapped source element.
   - `override_on_conflict`: (Optional, default = false) Override the target element if already set.
   - `name`: (Optional) Name of the processor

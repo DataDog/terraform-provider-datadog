@@ -101,12 +101,17 @@ var attributeRemapper = &schema.Schema{
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name":                 {Type: schema.TypeString, Optional: true},
-			"is_enabled":           {Type: schema.TypeBool, Optional: true},
-			"sources":              {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
-			"source_type":          {Type: schema.TypeString, Required: true},
-			"target":               {Type: schema.TypeString, Required: true},
-			"target_type":          {Type: schema.TypeString, Required: true},
+			"name":        {Type: schema.TypeString, Optional: true},
+			"is_enabled":  {Type: schema.TypeBool, Optional: true},
+			"sources":     {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
+			"source_type": {Type: schema.TypeString, Required: true},
+			"target":      {Type: schema.TypeString, Required: true},
+			"target_type": {Type: schema.TypeString, Required: true},
+			"target_format": {
+				Type:         schema.TypeString,
+				Optional:     true,
+				Default:      datadogV1.TARGETFORMATTYPE_AUTO,
+				ValidateFunc: validation.StringInSlice([]string{"auto", "string", "integer", "double"}, false)},
 			"preserve_source":      {Type: schema.TypeBool, Optional: true},
 			"override_on_conflict": {Type: schema.TypeBool, Optional: true},
 		},
@@ -331,7 +336,6 @@ func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) e
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
-
 	ddPipeline, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, d.Id()).Execute()
 	if err != nil {
 		return translateClientError(err, "failed to get logs pipeline using Datadog API")
@@ -993,6 +997,9 @@ func buildDatadogAttributeRemapper(tfProcessor map[string]interface{}) *datadogV
 	}
 	if tfTargetType, exists := tfProcessor["target_type"].(string); exists {
 		ddAttribute.SetTargetType(tfTargetType)
+	}
+	if tfTargetFormat, exists := tfProcessor["target_format"].(string); exists {
+		ddAttribute.SetTargetFormat(datadogV1.TargetFormatType(tfTargetFormat))
 	}
 	if tfPreserveSource, exists := tfProcessor["preserve_source"].(bool); exists {
 		ddAttribute.SetPreserveSource(tfPreserveSource)
