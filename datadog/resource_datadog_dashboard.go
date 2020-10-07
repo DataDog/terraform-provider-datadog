@@ -5181,6 +5181,26 @@ func getApmStatsQuerySchema() *schema.Schema {
 	}
 }
 
+func buildDatadogApmStatsQueryColumn(terraformColumn map[string]interface{}) *datadogV1.ApmStatsQueryColumnType {
+
+	datadogColumn := datadogV1.NewApmStatsQueryColumnTypeWithDefaults()
+
+	if value, ok := terraformColumn["name"].(string); ok && len(value) != 0 {
+		datadogColumn.SetName(value)
+	}
+	if value, ok := terraformColumn["alias"].(string); ok && len(value) != 0 {
+		datadogColumn.SetAlias(value)
+	}
+	if value, ok := terraformColumn["cell_display_mode"].(datadogV1.TableWidgetCellDisplayMode); ok && len(value) != 0 {
+		datadogColumn.SetCellDisplayMode(value)
+	}
+	if value, ok := terraformColumn["order"].(datadogV1.WidgetSort); ok && len(value) != 0 {
+		datadogColumn.SetOrder(value)
+	}
+
+	return datadogColumn
+}
+
 func buildDatadogApmStatsQuery(terraformQuery map[string]interface{}) *datadogV1.ApmStatsQueryDefinition {
 	datadogQuery := datadogV1.NewApmStatsQueryDefinitionWithDefaults()
 	if v, ok := terraformQuery["service"].(string); ok && len(v) != 0 {
@@ -5202,10 +5222,10 @@ func buildDatadogApmStatsQuery(terraformQuery map[string]interface{}) *datadogV1
 		datadogQuery.SetResource(v)
 	}
 
-	if terraformColumns, ok := terraformQuery["columns"].([]interface{}); ok && len(terraformColumns) > 0 {
+	if terraformColumns, ok := terraformQuery["columns"].([]map[string]interface{}); ok && len(terraformColumns) > 0 {
 		datadogColumns := make([]datadogV1.ApmStatsQueryColumnType, len(terraformColumns))
 		for i, column := range terraformColumns {
-			datadogColumns[i] = column.(datadogV1.ApmStatsQueryColumnType)
+			datadogColumns[i] = *buildDatadogApmStatsQueryColumn(column)
 		}
 		datadogQuery.SetColumns(datadogColumns)
 	}
@@ -5236,7 +5256,20 @@ func buildTerraformApmStatsQuery(datadogQuery datadogV1.ApmStatsQueryDefinition)
 	if v, ok := datadogQuery.GetColumnsOk(); ok {
 		terraformColumns := make([]interface{}, len(*v))
 		for i, datadogColumn := range *v {
-			terraformColumns[i] = datadogColumn
+			terraformColumn := map[string]interface{}{}
+			if name, nameOk := datadogColumn.GetNameOk(); nameOk {
+				terraformColumn["name"] = name
+			}
+			if alias, aliasOk := datadogColumn.GetAliasOk(); aliasOk {
+				terraformColumn["alias"] = alias
+			}
+			if cellDisplayMode, cellDisplayModeOk := datadogColumn.GetCellDisplayModeOk(); cellDisplayModeOk {
+				terraformColumn["cell_display_mode"] = cellDisplayMode
+			}
+			if order, orderOk := datadogColumn.GetOrderOk(); orderOk {
+				terraformColumn["order"] = order
+			}
+			terraformColumns[i] = terraformColumn
 		}
 		terraformQuery["columns"] = terraformColumns
 	}
