@@ -110,7 +110,6 @@ var attributeRemapper = &schema.Schema{
 			"target_format": {
 				Type:         schema.TypeString,
 				Optional:     true,
-				Default:      datadogV1.TARGETFORMATTYPE_AUTO,
 				ValidateFunc: validation.StringInSlice([]string{"auto", "string", "integer", "double"}, false)},
 			"preserve_source":      {Type: schema.TypeBool, Optional: true},
 			"override_on_conflict": {Type: schema.TypeBool, Optional: true},
