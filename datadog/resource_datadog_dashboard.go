@@ -3930,6 +3930,14 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 				Schema: getWidgetAxisSchema(),
 			},
 		},
+		"right_yaxis": {
+			Type:     schema.TypeList,
+			MaxItems: 1,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: getWidgetAxisSchema(),
+			},
+		},
 		"title": {
 			Type:     schema.TypeString,
 			Optional: true,
@@ -3978,6 +3986,11 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 			datadogDefinition.Yaxis = buildDatadogWidgetAxis(axis)
 		}
 	}
+	if v, ok := terraformDefinition["right_yaxis"].([]interface{}); ok && len(v) > 0 {
+		if axis, ok := v[0].(map[string]interface{}); ok && len(axis) > 0 {
+			datadogDefinition.RightYaxis = buildDatadogWidgetAxis(axis)
+		}
+	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
 	}
@@ -4013,6 +4026,10 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 	if v, ok := datadogDefinition.GetYaxisOk(); ok {
 		axis := buildTerraformWidgetAxis(*v)
 		terraformDefinition["yaxis"] = []map[string]interface{}{axis}
+	}
+	if v, ok := datadogDefinition.GetRightYaxisOk(); ok {
+		axis := buildTerraformWidgetAxis(*v)
+		terraformDefinition["right_yaxis"] = []map[string]interface{}{axis}
 	}
 	if v, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = *v
@@ -4088,6 +4105,10 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 			Type:     schema.TypeString,
 			Optional: true,
 		},
+		"on_right_yaxis": {
+			Type:     schema.TypeBool,
+			Optional: true,
+		},
 	}
 }
 func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadogV1.TimeseriesWidgetRequest {
@@ -4139,6 +4160,9 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 		}
 		if v, ok := terraformRequest["display_type"].(string); ok && len(v) != 0 {
 			datadogTimeseriesRequest.SetDisplayType(datadogV1.WidgetDisplayType(v))
+		}
+		if v, ok := terraformRequest["on_right_yaxis"].(bool); ok {
+			datadogTimeseriesRequest.SetOnRightYaxis(v)
 		}
 		datadogRequests[i] = *datadogTimeseriesRequest
 	}
@@ -4195,6 +4219,9 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 		}
 		if v, ok := datadogRequest.GetDisplayTypeOk(); ok {
 			terraformRequest["display_type"] = v
+		}
+		if v, ok := datadogRequest.GetOnRightYaxisOk(); ok {
+			terraformRequest["on_right_yaxis"] = v
 		}
 		terraformRequests[i] = terraformRequest
 	}

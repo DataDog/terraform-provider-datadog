@@ -50,8 +50,6 @@ func NewLogsAttributeRemapper(sources []string, target string, type_ LogsAttribu
 	this.SourceType = &sourceType
 	this.Sources = sources
 	this.Target = target
-	var targetFormat TargetFormatType = "auto"
-	this.TargetFormat = &targetFormat
 	var targetType string = "attribute"
 	this.TargetType = &targetType
 	this.Type = type_
@@ -71,8 +69,6 @@ func NewLogsAttributeRemapperWithDefaults() *LogsAttributeRemapper {
 	this.PreserveSource = &preserveSource
 	var sourceType string = "attribute"
 	this.SourceType = &sourceType
-	var targetFormat TargetFormatType = "auto"
-	this.TargetFormat = &targetFormat
 	var targetType string = "attribute"
 	this.TargetType = &targetType
 	var type_ LogsAttributeRemapperType = "attribute-remapper"
