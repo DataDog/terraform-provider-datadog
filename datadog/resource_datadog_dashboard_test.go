@@ -403,6 +403,26 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			}
 		}
 	}
+	widget {
+		query_table_definition {
+			title = "Widget Title"
+			time = {
+				live_span = "1h"
+			}
+			request {
+				apm_stats_query {
+					row_type = "resource"
+					env = "staging"
+					service = "foo"
+					primary_tag = "datacenter:*"
+					name = "bar"
+					columns = [{
+						name = "Hits"
+					}]
+				}
+			}
+		}
+	}
 	template_variable {
 		name   = "var_1"
 		prefix = "host"
@@ -843,6 +863,13 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.14.query_table_definition.0.request.0.limit = 10",
 	"widget.14.query_table_definition.0.title = Widget Title",
 	"widget.14.query_table_definition.0.time.live_span = 1h",
+	"widget.15.query_table_definition.0.request.0.apm_stats_query.service = foo",
+	"widget.15.query_table_definition.0.request.0.apm_stats_query.name = bar",
+	"widget.15.query_table_definition.0.request.0.apm_stats_query.env = staging",
+	"widget.15.query_table_definition.0.request.0.apm_stats_query.primary_tag = datacenter:*",
+	"widget.15.query_table_definition.0.request.0.apm_stats_query.row_type = resource",
+	"widget.15.query_table_definition.0.request.0.apm_stats_query.columns.# = 1",
+	"widget.15.query_table_definition.0.request.0.apm_stats_query.columns.0.name = Hits",
 	// Template Variables
 	"template_variable.# = 2",
 	"template_variable.0.name = var_1",
