@@ -3915,6 +3915,13 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 				Schema: getWidgetMarkerSchema(),
 			},
 		},
+		"custom_link": {
+			Type:     schema.TypeList,
+			Optional: true,
+			Elem: &schema.Resource{
+				Schema: getWidgetCustomLinkSchema(),
+			},
+		},
 		"event": {
 			Type:     schema.TypeList,
 			Optional: true,
@@ -3978,6 +3985,9 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["marker"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.Markers = buildDatadogWidgetMarkers(&v)
 	}
+	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
+		datadogDefinition.CustomLinks = buildDatadogWidgetCustomLinks(&v)
+	}
 	if v, ok := terraformDefinition["event"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.Events = buildDatadogWidgetEvents(&v)
 	}
@@ -4019,6 +4029,9 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 	// Optional params
 	if v, ok := datadogDefinition.GetMarkersOk(); ok {
 		terraformDefinition["marker"] = buildTerraformWidgetMarkers(v)
+	}
+	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
+		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
 	}
 	if v, ok := datadogDefinition.GetEventsOk(); ok {
 		terraformDefinition["event"] = buildTerraformWidgetEvents(v)
