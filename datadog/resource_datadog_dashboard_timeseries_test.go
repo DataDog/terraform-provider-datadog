@@ -282,6 +282,10 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				max = "599998"
 				scale = ""
 			}
+			custom_link {
+				label = "my custom link"
+				link = "https://datadoghq.com/"
+			}
 			marker {
 				display_type = "error dashed"
 				value = "y=500000"
@@ -508,6 +512,9 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.right_yaxis.0.label =",
 	"widget.0.timeseries_definition.0.right_yaxis.0.include_zero = false",
 	"widget.0.timeseries_definition.0.right_yaxis.0.scale =",
+	"widget.0.timeseries_definition.0.custom_link.# = 1",
+	"widget.0.timeseries_definition.0.custom_link.0.label = my custom link",
+	"widget.0.timeseries_definition.0.custom_link.0.link = https://datadoghq.com/",
 	"widget.0.timeseries_definition.0.legend_size = 2",
 	"widget.0.timeseries_definition.0.time.live_span = 5m",
 	"widget.0.timeseries_definition.0.title_align = left",
@@ -671,6 +678,10 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				max = "599998"
 				scale = ""
 			}
+			custom_link {
+				label = "my custom link"
+				link = "https://datadoghq.com/"
+			}
 			marker {
 				display_type = "error dashed"
 				value = "y=500000"
@@ -739,6 +750,9 @@ var datadogDashboardTimeseriesMultiComputeAsserts = []string{
 	"widget.0.timeseries_definition.0.marker.1.display_type = warning dashed",
 	"widget.0.timeseries_definition.0.marker.1.label = y=400000",
 	"widget.0.timeseries_definition.0.marker.1.value = y=400000",
+	"widget.0.timeseries_definition.0.custom_link.# = 1",
+	"widget.0.timeseries_definition.0.custom_link.0.label = my custom link",
+	"widget.0.timeseries_definition.0.custom_link.0.link = https://datadoghq.com/",
 	"widget.0.timeseries_definition.0.request.# = 1",
 	"widget.0.timeseries_definition.0.request.0.display_type = line",
 	"widget.0.timeseries_definition.0.request.0.log_query.# = 1",
