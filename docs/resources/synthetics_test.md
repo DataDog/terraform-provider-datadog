@@ -263,7 +263,7 @@ The following arguments are supported:
   - `type`: (Required) Type of browser test variable. Allowed enum values: "element","email","global","text"
   - `name`: (Required) Name of the variable.
   - `example`: (Optional) Example for the variable.
-  - `id`: (Optional) ID for the variable.
+  - `id`: (Optional) ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type "global".
   - `pattern`: (Optional) Pattern of the variable.
 
 ## Attributes Reference
