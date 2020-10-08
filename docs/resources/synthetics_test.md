@@ -171,6 +171,26 @@ resource "datadog_synthetics_test" "test_browser" {
         "value": "datadoghq"
     })
   }
+
+  variables {
+    type    = "text"
+    name    = "MY_PATTERN_VAR"
+    pattern = "{{numeric(3)}}"
+    example = "597"
+  }
+
+  variables {
+    type    = "email"
+    name    = "MY_EMAIL_VAR"
+    pattern = "jd8-afe-ydv.{{ numeric(10) }}@synthetics.dtdg.co"
+    example = "jd8-afe-ydv.4546132139@synthetics.dtdg.co"
+  }
+
+  variables {
+    type = "global"
+    name = "MY_GLOBAL_VAR"
+    id   = "76636cd1-82e2-4aeb-9cfe-51366a8198a2"
+  }
 }
 ```
 
@@ -239,6 +259,12 @@ The following arguments are supported:
   - `params`: (Required) Parameters for the step as JSON string.
   - `allow_failure`: (Optional) Determines if the step should be allowed to fail.
   - `timeout`: (Optional) Used to override the default timeout of a step.
+- `variables`: (Optional) Array of variables used for the test.
+  - `type`: (Required) Type of browser test variable. Allowed enum values: "element","email","global","text"
+  - `name`: (Required) Name of the variable.
+  - `example`: (Optional) Example for the variable.
+  - `id`: (Optional) ID for the variable.
+  - `pattern`: (Optional) Pattern of the variable.
 
 ## Attributes Reference
 
