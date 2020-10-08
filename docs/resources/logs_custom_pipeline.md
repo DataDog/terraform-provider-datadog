@@ -32,7 +32,7 @@ resource "datadog_logs_custom_pipeline" "sample_pipeline" {
             source_type = "tag"
             target = "db"
             target_type = "attribute"
-            target_format = "String"
+            target_format = "string"
             preserve_source = true
             override_on_conflict = false
             name = "sample attribute processor"
