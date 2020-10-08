@@ -34,8 +34,6 @@ type TableWidgetDefinition struct {
 // will change when the set of required properties is changed
 func NewTableWidgetDefinition(requests []TableWidgetRequest, type_ TableWidgetDefinitionType) *TableWidgetDefinition {
 	this := TableWidgetDefinition{}
-	var hasSearchBar TableWidgetHasSearchBar = "auto"
-	this.HasSearchBar = &hasSearchBar
 	this.Requests = requests
 	this.Type = type_
 	return &this
@@ -46,8 +44,6 @@ func NewTableWidgetDefinition(requests []TableWidgetRequest, type_ TableWidgetDe
 // but it doesn't guarantee that properties required by API are set
 func NewTableWidgetDefinitionWithDefaults() *TableWidgetDefinition {
 	this := TableWidgetDefinition{}
-	var hasSearchBar TableWidgetHasSearchBar = "auto"
-	this.HasSearchBar = &hasSearchBar
 	var type_ TableWidgetDefinitionType = "query_table"
 	this.Type = type_
 	return &this
