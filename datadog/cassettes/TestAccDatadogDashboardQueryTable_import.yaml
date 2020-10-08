@@ -4,10 +4,14 @@ interactions:
 - request:
     body: |
 <<<<<<< HEAD
+<<<<<<< HEAD
       {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602246891","widgets":[{"definition":{"requests":[{"aggregator":"max","alias":"cpu user","conditional_formats":[{"comparator":"\u003c","hide_value":false,"palette":"white_on_green","value":90},{"comparator":"\u003e=","hide_value":false,"palette":"white_on_red","value":90}],"limit":25,"order":"desc","q":"avg:system.cpu.user{account:prod} by {service, team}"},{"aggregator":"last","alias":"system load","conditional_formats":[{"comparator":"\u003e","hide_value":false,"palette":"custom_bg","value":50}],"q":"avg:system.load.1{*} by {service, team}"}],"time":{"live_span":"1d"},"title":"system.cpu.user, system.load.1","title_align":"right","title_size":"16","type":"query_table"}},{"definition":{"requests":[{"apm_stats_query":{"env":"env","name":"name","primary_tag":"tag:*","row_type":"resource","service":"service"}}],"type":"query_table"}}]}
 =======
       {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602168511","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":[{"aggregator":"max","alias":"cpu user","conditional_formats":[{"comparator":"\u003c","hide_value":false,"palette":"white_on_green","value":90},{"comparator":"\u003e=","hide_value":false,"palette":"white_on_red","value":90}],"limit":25,"order":"desc","q":"avg:system.cpu.user{account:prod} by {service, team}"},{"aggregator":"last","alias":"system load","conditional_formats":[{"comparator":"\u003e","hide_value":false,"palette":"custom_bg","value":50}],"q":"avg:system.load.1{*} by {service, team}"}],"time":{"live_span":"1d"},"title":"system.cpu.user, system.load.1","title_align":"right","title_size":"16","type":"query_table"}},{"definition":{"requests":[{"apm_stats_query":{"env":"env","name":"name","primary_tag":"tag:*","row_type":"resource","service":"service"}}],"type":"query_table"}}]}
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602169878","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":[{"aggregator":"max","alias":"cpu user","conditional_formats":[{"comparator":"\u003c","hide_value":false,"palette":"white_on_green","value":90},{"comparator":"\u003e=","hide_value":false,"palette":"white_on_red","value":90}],"limit":25,"order":"desc","q":"avg:system.cpu.user{account:prod} by {service, team}"},{"aggregator":"last","alias":"system load","conditional_formats":[{"comparator":"\u003e","hide_value":false,"palette":"custom_bg","value":50}],"q":"avg:system.load.1{*} by {service, team}"}],"time":{"live_span":"1d"},"title":"system.cpu.user, system.load.1","title_align":"right","title_size":"16","type":"query_table"}},{"definition":{"requests":[{"apm_stats_query":{"env":"env","name":"name","primary_tag":"tag:*","row_type":"resource","service":"service"}}],"type":"query_table"}}]}
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     form: {}
     headers:
       Accept:
@@ -29,16 +33,21 @@ interactions:
 =======
         datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "8849155952505719900"
+      - "2681960638599687277"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
+<<<<<<< HEAD
       - "6081974759782026660"
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - "3433480517755931827"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
+<<<<<<< HEAD
 <<<<<<< HEAD
       Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"rsv-vde-7px","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602246891","url":"/dashboard/rsv-vde-7px/tf-testaccdatadogdashboardquerytableimport-local-1602246891","created_at":"2020-10-09T12:39:35.620575+00:00","modified_at":"2020-10-09T12:39:35.620575+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"system.cpu.user,
       system.load.1","title_align":"right","time":{"live_span":"1d"},"requests":[{"aggregator":"max","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":90,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":90,"comparator":">="}],"q":"avg:system.cpu.user{account:prod}
@@ -52,6 +61,13 @@ interactions:
       by {service, team}","aggregator":"last","conditional_formats":[{"palette":"custom_bg","hide_value":false,"value":50,"comparator":">"}],"alias":"system
       load"}],"type":"query_table"},"id":481841679582926},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":2585417788534690}],"layout_type":"ordered"}'
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"p7w-e6n-3n5","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602169878","url":"/dashboard/p7w-e6n-3n5/tf-testaccdatadogdashboardquerytableimport-local-1602169878","created_at":"2020-10-08T15:11:22.082693+00:00","modified_at":"2020-10-08T15:11:22.082693+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Custom Link label"}],"title_size":"16","title":"system.cpu.user, system.load.1","title_align":"right","time":{"live_span":"1d"},"requests":[{"aggregator":"max","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":90,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":90,"comparator":">="}],"q":"avg:system.cpu.user{account:prod}
+      by {service, team}","alias":"cpu user","limit":25,"order":"desc"},{"q":"avg:system.load.1{*}
+      by {service, team}","aggregator":"last","conditional_formats":[{"palette":"custom_bg","hide_value":false,"value":50,"comparator":">"}],"alias":"system
+      load"}],"type":"query_table"},"id":417291118655168},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":1909673238257462}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -63,20 +79,28 @@ interactions:
       - application/json
       Date:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:39:35 GMT
 =======
       - Thu, 08 Oct 2020 14:48:35 GMT
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - Thu, 08 Oct 2020 15:11:22 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:39:35 GMT;
 =======
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 14:48:34 GMT;
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:11:22 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -86,6 +110,7 @@ interactions:
       - nosniff
       X-Dd-Debug:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - 2yLQyeuXdHKf2qhVlcnhVSRUgzA6Krta0LEltrGESIMHoX7HWgb/dSrVA+a76Sm3
       X-Dd-Version:
       - "35.3169891"
@@ -94,6 +119,11 @@ interactions:
       X-Dd-Version:
       - "35.3162947"
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - Et2YiqVRxti9EZo6Gk/yyRrgDmYxZuoE62JE6GLJjDYX0PgDmkmo9d4ASFrtRIDj
+      X-Dd-Version:
+      - "35.3163187"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -129,21 +159,25 @@ interactions:
 =======
         datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3106737776096089251"
+      - "1481492943128418284"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6081974759782026660"
-    url: https://api.datadoghq.com/api/v1/dashboard/f36-2kh-jra
+      - "3433480517755931827"
+    url: https://api.datadoghq.com/api/v1/dashboard/p7w-e6n-3n5
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"f36-2kh-jra","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602168511","url":"/dashboard/f36-2kh-jra/tf-testaccdatadogdashboardquerytableimport-local-1602168511","created_at":"2020-10-08T14:48:34.895909+00:00","modified_at":"2020-10-08T14:48:34.895909+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"p7w-e6n-3n5","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602169878","url":"/dashboard/p7w-e6n-3n5/tf-testaccdatadogdashboardquerytableimport-local-1602169878","created_at":"2020-10-08T15:11:22.082693+00:00","modified_at":"2020-10-08T15:11:22.082693+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
       Custom Link label"}],"title_size":"16","title":"system.cpu.user, system.load.1","title_align":"right","time":{"live_span":"1d"},"requests":[{"aggregator":"max","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":90,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":90,"comparator":">="}],"q":"avg:system.cpu.user{account:prod}
       by {service, team}","alias":"cpu user","limit":25,"order":"desc"},{"q":"avg:system.load.1{*}
       by {service, team}","aggregator":"last","conditional_formats":[{"palette":"custom_bg","hide_value":false,"value":50,"comparator":">"}],"alias":"system
+<<<<<<< HEAD
       load"}],"type":"query_table"},"id":481841679582926},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":2585417788534690}],"layout_type":"ordered"}'
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      load"}],"type":"query_table"},"id":417291118655168},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":1909673238257462}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -155,20 +189,28 @@ interactions:
       - application/json
       Date:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:39:35 GMT
 =======
       - Thu, 08 Oct 2020 14:48:35 GMT
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - Thu, 08 Oct 2020 15:11:22 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:39:35 GMT;
 =======
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 14:48:35 GMT;
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:11:22 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -178,6 +220,7 @@ interactions:
       - nosniff
       X-Dd-Debug:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - JGlWx87vjxzcVRF7plc107v2ByhH6ulQ34FTks4+z+qF42As7SYEoQXA/cO3iKfw
       X-Dd-Version:
       - "35.3169891"
@@ -186,6 +229,11 @@ interactions:
       X-Dd-Version:
       - "35.3162947"
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - E/n/F3cyfMhzzJeB7O6BVmaq6hO3dCQFUY5AzeSSV4syTTIgel8CkF1YlP8TXzmG
+      X-Dd-Version:
+      - "35.3163187"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -221,21 +269,25 @@ interactions:
 =======
         datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3657413526865718829"
+      - "9194232477434723064"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6081974759782026660"
-    url: https://api.datadoghq.com/api/v1/dashboard/f36-2kh-jra
+      - "3433480517755931827"
+    url: https://api.datadoghq.com/api/v1/dashboard/p7w-e6n-3n5
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"f36-2kh-jra","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602168511","url":"/dashboard/f36-2kh-jra/tf-testaccdatadogdashboardquerytableimport-local-1602168511","created_at":"2020-10-08T14:48:34.895909+00:00","modified_at":"2020-10-08T14:48:34.895909+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"p7w-e6n-3n5","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602169878","url":"/dashboard/p7w-e6n-3n5/tf-testaccdatadogdashboardquerytableimport-local-1602169878","created_at":"2020-10-08T15:11:22.082693+00:00","modified_at":"2020-10-08T15:11:22.082693+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
       Custom Link label"}],"title_size":"16","title":"system.cpu.user, system.load.1","title_align":"right","time":{"live_span":"1d"},"requests":[{"aggregator":"max","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":90,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":90,"comparator":">="}],"q":"avg:system.cpu.user{account:prod}
       by {service, team}","alias":"cpu user","limit":25,"order":"desc"},{"q":"avg:system.load.1{*}
       by {service, team}","aggregator":"last","conditional_formats":[{"palette":"custom_bg","hide_value":false,"value":50,"comparator":">"}],"alias":"system
+<<<<<<< HEAD
       load"}],"type":"query_table"},"id":481841679582926},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":2585417788534690}],"layout_type":"ordered"}'
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      load"}],"type":"query_table"},"id":417291118655168},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":1909673238257462}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -247,20 +299,28 @@ interactions:
       - application/json
       Date:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:39:39 GMT
 =======
       - Thu, 08 Oct 2020 14:48:38 GMT
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - Thu, 08 Oct 2020 15:11:25 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:39:38 GMT;
 =======
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 14:48:38 GMT;
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:11:25 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -270,6 +330,7 @@ interactions:
       - nosniff
       X-Dd-Debug:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - motUb+3MrSbL60qP2VQvKfticEMFw/ITb9aZ1t0IvCT8MphWULXKj1d6mnYOkJDn
       X-Dd-Version:
       - "35.3169891"
@@ -278,6 +339,11 @@ interactions:
       X-Dd-Version:
       - "35.3162947"
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - 7ZZAowMV9z1Vr+0y/WbNkvcDUXbHQ7uNKkyZU3E6k00RqTwxh53CgITxXoDQsQqv
+      X-Dd-Version:
+      - "35.3163187"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -313,21 +379,25 @@ interactions:
 =======
         datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "1416704340333075390"
+      - "9075386645733107047"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6081974759782026660"
-    url: https://api.datadoghq.com/api/v1/dashboard/f36-2kh-jra
+      - "3433480517755931827"
+    url: https://api.datadoghq.com/api/v1/dashboard/p7w-e6n-3n5
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"f36-2kh-jra","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602168511","url":"/dashboard/f36-2kh-jra/tf-testaccdatadogdashboardquerytableimport-local-1602168511","created_at":"2020-10-08T14:48:34.895909+00:00","modified_at":"2020-10-08T14:48:34.895909+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"p7w-e6n-3n5","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602169878","url":"/dashboard/p7w-e6n-3n5/tf-testaccdatadogdashboardquerytableimport-local-1602169878","created_at":"2020-10-08T15:11:22.082693+00:00","modified_at":"2020-10-08T15:11:22.082693+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
       Custom Link label"}],"title_size":"16","title":"system.cpu.user, system.load.1","title_align":"right","time":{"live_span":"1d"},"requests":[{"aggregator":"max","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":90,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":90,"comparator":">="}],"q":"avg:system.cpu.user{account:prod}
       by {service, team}","alias":"cpu user","limit":25,"order":"desc"},{"q":"avg:system.load.1{*}
       by {service, team}","aggregator":"last","conditional_formats":[{"palette":"custom_bg","hide_value":false,"value":50,"comparator":">"}],"alias":"system
+<<<<<<< HEAD
       load"}],"type":"query_table"},"id":481841679582926},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":2585417788534690}],"layout_type":"ordered"}'
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      load"}],"type":"query_table"},"id":417291118655168},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":1909673238257462}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -339,20 +409,28 @@ interactions:
       - application/json
       Date:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:39:39 GMT
 =======
       - Thu, 08 Oct 2020 14:48:38 GMT
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - Thu, 08 Oct 2020 15:11:26 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:39:39 GMT;
 =======
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 14:48:38 GMT;
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:11:26 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -362,6 +440,7 @@ interactions:
       - nosniff
       X-Dd-Debug:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - 554jtl/SJjxTmK4ElYRM70FG0Y8nm2ZpMLRYU7gYOwQo5oClqUW2XRpaqEBdUJZQ
       X-Dd-Version:
       - "35.3169891"
@@ -370,6 +449,11 @@ interactions:
       X-Dd-Version:
       - "35.3162947"
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - FELlv8T8VRoaBxHjLbAG9Fvj68G6pP0FZF7JKMI72/5H4OtG/s8AVYiF1c9f4D6g
+      X-Dd-Version:
+      - "35.3163187"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -405,21 +489,25 @@ interactions:
 =======
         datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4723339135000610561"
+      - "3033670798353105207"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6081974759782026660"
-    url: https://api.datadoghq.com/api/v1/dashboard/f36-2kh-jra
+      - "3433480517755931827"
+    url: https://api.datadoghq.com/api/v1/dashboard/p7w-e6n-3n5
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"f36-2kh-jra","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602168511","url":"/dashboard/f36-2kh-jra/tf-testaccdatadogdashboardquerytableimport-local-1602168511","created_at":"2020-10-08T14:48:34.895909+00:00","modified_at":"2020-10-08T14:48:34.895909+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"p7w-e6n-3n5","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602169878","url":"/dashboard/p7w-e6n-3n5/tf-testaccdatadogdashboardquerytableimport-local-1602169878","created_at":"2020-10-08T15:11:22.082693+00:00","modified_at":"2020-10-08T15:11:22.082693+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
       Custom Link label"}],"title_size":"16","title":"system.cpu.user, system.load.1","title_align":"right","time":{"live_span":"1d"},"requests":[{"aggregator":"max","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":90,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":90,"comparator":">="}],"q":"avg:system.cpu.user{account:prod}
       by {service, team}","alias":"cpu user","limit":25,"order":"desc"},{"q":"avg:system.load.1{*}
       by {service, team}","aggregator":"last","conditional_formats":[{"palette":"custom_bg","hide_value":false,"value":50,"comparator":">"}],"alias":"system
+<<<<<<< HEAD
       load"}],"type":"query_table"},"id":481841679582926},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":2585417788534690}],"layout_type":"ordered"}'
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      load"}],"type":"query_table"},"id":417291118655168},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":1909673238257462}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -431,20 +519,28 @@ interactions:
       - application/json
       Date:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:39:41 GMT
 =======
       - Thu, 08 Oct 2020 14:48:40 GMT
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - Thu, 08 Oct 2020 15:11:28 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:39:41 GMT;
 =======
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 14:48:40 GMT;
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:11:28 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -454,6 +550,7 @@ interactions:
       - nosniff
       X-Dd-Debug:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - laGkCMnt9yzADERvt5/nU5tJ2BKmoQx1BUE4x31rlC7mriAyKM9Zk5E+JikpAz3V
       X-Dd-Version:
       - "35.3169891"
@@ -462,6 +559,11 @@ interactions:
       X-Dd-Version:
       - "35.3162947"
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - uJ83xA1OCfjNbetv+4JhF+oFizEHF56t3Lja6jtB8P5etMWBi14GRkWSrGetOvyr
+      X-Dd-Version:
+      - "35.3163187"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -497,21 +599,25 @@ interactions:
 =======
         datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "9206841674141944408"
+      - "2265406684179402038"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6081974759782026660"
-    url: https://api.datadoghq.com/api/v1/dashboard/f36-2kh-jra
+      - "3433480517755931827"
+    url: https://api.datadoghq.com/api/v1/dashboard/p7w-e6n-3n5
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"f36-2kh-jra","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602168511","url":"/dashboard/f36-2kh-jra/tf-testaccdatadogdashboardquerytableimport-local-1602168511","created_at":"2020-10-08T14:48:34.895909+00:00","modified_at":"2020-10-08T14:48:34.895909+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"p7w-e6n-3n5","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602169878","url":"/dashboard/p7w-e6n-3n5/tf-testaccdatadogdashboardquerytableimport-local-1602169878","created_at":"2020-10-08T15:11:22.082693+00:00","modified_at":"2020-10-08T15:11:22.082693+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
       Custom Link label"}],"title_size":"16","title":"system.cpu.user, system.load.1","title_align":"right","time":{"live_span":"1d"},"requests":[{"aggregator":"max","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":90,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":90,"comparator":">="}],"q":"avg:system.cpu.user{account:prod}
       by {service, team}","alias":"cpu user","limit":25,"order":"desc"},{"q":"avg:system.load.1{*}
       by {service, team}","aggregator":"last","conditional_formats":[{"palette":"custom_bg","hide_value":false,"value":50,"comparator":">"}],"alias":"system
+<<<<<<< HEAD
       load"}],"type":"query_table"},"id":481841679582926},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":2585417788534690}],"layout_type":"ordered"}'
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      load"}],"type":"query_table"},"id":417291118655168},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":1909673238257462}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -523,20 +629,28 @@ interactions:
       - application/json
       Date:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:39:41 GMT
 =======
       - Thu, 08 Oct 2020 14:48:40 GMT
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - Thu, 08 Oct 2020 15:11:29 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:39:41 GMT;
 =======
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 14:48:40 GMT;
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:11:29 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -546,6 +660,7 @@ interactions:
       - nosniff
       X-Dd-Debug:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - yoF4117GjRVNjK5D+NnV1a4ZZK03NlG9+xqwkNudRekVNp0HsN72cHzXM+2uFPHI
       X-Dd-Version:
       - "35.3169891"
@@ -554,6 +669,11 @@ interactions:
       X-Dd-Version:
       - "35.3162947"
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - 91aMs4Xd/NaPhGMoIvSvdd0mjw6sy0ZqzVUdTt9hqt35qwhu0snxCQESFXt90Pzi
+      X-Dd-Version:
+      - "35.3163187"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -589,21 +709,25 @@ interactions:
 =======
         datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3854955263029428"
+      - "5860081216895988902"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6081974759782026660"
-    url: https://api.datadoghq.com/api/v1/dashboard/f36-2kh-jra
+      - "3433480517755931827"
+    url: https://api.datadoghq.com/api/v1/dashboard/p7w-e6n-3n5
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"f36-2kh-jra","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602168511","url":"/dashboard/f36-2kh-jra/tf-testaccdatadogdashboardquerytableimport-local-1602168511","created_at":"2020-10-08T14:48:34.895909+00:00","modified_at":"2020-10-08T14:48:34.895909+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"p7w-e6n-3n5","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602169878","url":"/dashboard/p7w-e6n-3n5/tf-testaccdatadogdashboardquerytableimport-local-1602169878","created_at":"2020-10-08T15:11:22.082693+00:00","modified_at":"2020-10-08T15:11:22.082693+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
       Custom Link label"}],"title_size":"16","title":"system.cpu.user, system.load.1","title_align":"right","time":{"live_span":"1d"},"requests":[{"aggregator":"max","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":90,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":90,"comparator":">="}],"q":"avg:system.cpu.user{account:prod}
       by {service, team}","alias":"cpu user","limit":25,"order":"desc"},{"q":"avg:system.load.1{*}
       by {service, team}","aggregator":"last","conditional_formats":[{"palette":"custom_bg","hide_value":false,"value":50,"comparator":">"}],"alias":"system
+<<<<<<< HEAD
       load"}],"type":"query_table"},"id":481841679582926},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":2585417788534690}],"layout_type":"ordered"}'
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      load"}],"type":"query_table"},"id":417291118655168},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":1909673238257462}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -615,20 +739,28 @@ interactions:
       - application/json
       Date:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:39:41 GMT
 =======
       - Thu, 08 Oct 2020 14:48:40 GMT
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - Thu, 08 Oct 2020 15:11:29 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:39:41 GMT;
 =======
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 14:48:40 GMT;
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:11:29 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -638,6 +770,7 @@ interactions:
       - nosniff
       X-Dd-Debug:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - OqKY7agPmI/v3hVHuBa6xblzuasXfwEx0fPUFdqZoAEPJYT3VaeupIdfNnd+cYH0
       X-Dd-Version:
       - "35.3169891"
@@ -646,6 +779,11 @@ interactions:
       X-Dd-Version:
       - "35.3162947"
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - amxMFAqiSVjNyNv9bH0oCnBEjAVk4yOIMrMQTyRWQ0WFa2JUcjQXHejBMO8Fj7RQ
+      X-Dd-Version:
+      - "35.3163187"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -681,21 +819,25 @@ interactions:
 =======
         datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "7966225012530185052"
+      - "4116842242835761065"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6081974759782026660"
-    url: https://api.datadoghq.com/api/v1/dashboard/f36-2kh-jra
+      - "3433480517755931827"
+    url: https://api.datadoghq.com/api/v1/dashboard/p7w-e6n-3n5
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"f36-2kh-jra","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602168511","url":"/dashboard/f36-2kh-jra/tf-testaccdatadogdashboardquerytableimport-local-1602168511","created_at":"2020-10-08T14:48:34.895909+00:00","modified_at":"2020-10-08T14:48:34.895909+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"p7w-e6n-3n5","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602169878","url":"/dashboard/p7w-e6n-3n5/tf-testaccdatadogdashboardquerytableimport-local-1602169878","created_at":"2020-10-08T15:11:22.082693+00:00","modified_at":"2020-10-08T15:11:22.082693+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
       Custom Link label"}],"title_size":"16","title":"system.cpu.user, system.load.1","title_align":"right","time":{"live_span":"1d"},"requests":[{"aggregator":"max","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":90,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":90,"comparator":">="}],"q":"avg:system.cpu.user{account:prod}
       by {service, team}","alias":"cpu user","limit":25,"order":"desc"},{"q":"avg:system.load.1{*}
       by {service, team}","aggregator":"last","conditional_formats":[{"palette":"custom_bg","hide_value":false,"value":50,"comparator":">"}],"alias":"system
+<<<<<<< HEAD
       load"}],"type":"query_table"},"id":481841679582926},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":2585417788534690}],"layout_type":"ordered"}'
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      load"}],"type":"query_table"},"id":417291118655168},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":1909673238257462}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -707,20 +849,28 @@ interactions:
       - application/json
       Date:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:39:43 GMT
 =======
       - Thu, 08 Oct 2020 14:48:41 GMT
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - Thu, 08 Oct 2020 15:11:30 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:39:43 GMT;
 =======
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 14:48:41 GMT;
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:11:30 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -730,6 +880,7 @@ interactions:
       - nosniff
       X-Dd-Debug:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - 5Cj6NNcncFcQ6G9NKti+kar8gWVql7fBvPeJG7XhNnPs269m3W9o1I+JeGPUiuK3
       X-Dd-Version:
       - "35.3169891"
@@ -738,6 +889,11 @@ interactions:
       X-Dd-Version:
       - "35.3162947"
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - sbJ6i3VupQQcT7EDgPAdOxGmcKsvZJqf4l3SlQaWZNaaFfahh7BdNF3x5CttmH4Q
+      X-Dd-Version:
+      - "35.3163187"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -773,21 +929,25 @@ interactions:
 =======
         datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "9047206834321366701"
+      - "4490403728157832455"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6081974759782026660"
-    url: https://api.datadoghq.com/api/v1/dashboard/f36-2kh-jra
+      - "3433480517755931827"
+    url: https://api.datadoghq.com/api/v1/dashboard/p7w-e6n-3n5
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"f36-2kh-jra","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602168511","url":"/dashboard/f36-2kh-jra/tf-testaccdatadogdashboardquerytableimport-local-1602168511","created_at":"2020-10-08T14:48:34.895909+00:00","modified_at":"2020-10-08T14:48:34.895909+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"p7w-e6n-3n5","title":"tf-TestAccDatadogDashboardQueryTable_import-local-1602169878","url":"/dashboard/p7w-e6n-3n5/tf-testaccdatadogdashboardquerytableimport-local-1602169878","created_at":"2020-10-08T15:11:22.082693+00:00","modified_at":"2020-10-08T15:11:22.082693+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
       Custom Link label"}],"title_size":"16","title":"system.cpu.user, system.load.1","title_align":"right","time":{"live_span":"1d"},"requests":[{"aggregator":"max","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":90,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":90,"comparator":">="}],"q":"avg:system.cpu.user{account:prod}
       by {service, team}","alias":"cpu user","limit":25,"order":"desc"},{"q":"avg:system.load.1{*}
       by {service, team}","aggregator":"last","conditional_formats":[{"palette":"custom_bg","hide_value":false,"value":50,"comparator":">"}],"alias":"system
+<<<<<<< HEAD
       load"}],"type":"query_table"},"id":481841679582926},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":2585417788534690}],"layout_type":"ordered"}'
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      load"}],"type":"query_table"},"id":417291118655168},{"definition":{"requests":[{"apm_stats_query":{"primary_tag":"tag:*","row_type":"resource","name":"name","service":"service","env":"env"}}],"type":"query_table"},"id":1909673238257462}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -799,20 +959,28 @@ interactions:
       - application/json
       Date:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:39:43 GMT
 =======
       - Thu, 08 Oct 2020 14:48:41 GMT
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - Thu, 08 Oct 2020 15:11:30 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:39:43 GMT;
 =======
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 14:48:41 GMT;
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:11:30 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -822,6 +990,7 @@ interactions:
       - nosniff
       X-Dd-Debug:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - 0EJutvpOrBJC63ni/O57leUa99Oey4n8MQPI1nQqGf8zcU0cRqWsvs49QUsgOTGg
       X-Dd-Version:
       - "35.3169891"
@@ -830,6 +999,11 @@ interactions:
       X-Dd-Version:
       - "35.3162947"
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - 4/n0qOsNbcCLs0O62LExTPssq0SdRyX2Rk0dgQQIozMoViHF7e4pyB0ZeXOioNEA
+      X-Dd-Version:
+      - "35.3163187"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -860,16 +1034,20 @@ interactions:
 =======
         datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "2118477947760673926"
+      - "7843242971546407877"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6081974759782026660"
-    url: https://api.datadoghq.com/api/v1/dashboard/f36-2kh-jra
+      - "3433480517755931827"
+    url: https://api.datadoghq.com/api/v1/dashboard/p7w-e6n-3n5
     method: DELETE
   response:
+<<<<<<< HEAD
     body: '{"deleted_dashboard_id":"f36-2kh-jra"}'
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+    body: '{"deleted_dashboard_id":"p7w-e6n-3n5"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -881,20 +1059,28 @@ interactions:
       - application/json
       Date:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:40:28 GMT
 =======
       - Thu, 08 Oct 2020 14:49:32 GMT
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - Thu, 08 Oct 2020 15:12:20 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:39:45 GMT;
 =======
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 14:48:43 GMT;
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:11:32 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -904,6 +1090,7 @@ interactions:
       - nosniff
       X-Dd-Debug:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - tiNEXsvR/PrH3MknQHoRY29RAegY48fFaM1JBTKdmLfVGZaOAOJ9J4IqHffvPV7g
       X-Dd-Version:
       - "35.3169891"
@@ -912,6 +1099,11 @@ interactions:
       X-Dd-Version:
       - "35.3162947"
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - laGkCMnt9yzADERvt5/nU5tJ2BKmoQx1BUE4x31rlC7mriAyKM9Zk5E+JikpAz3V
+      X-Dd-Version:
+      - "35.3163187"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -942,16 +1134,20 @@ interactions:
 =======
         datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "2024010091254588396"
+      - "3365653908611359262"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6081974759782026660"
-    url: https://api.datadoghq.com/api/v1/dashboard/f36-2kh-jra
+      - "3433480517755931827"
+    url: https://api.datadoghq.com/api/v1/dashboard/p7w-e6n-3n5
     method: GET
   response:
+<<<<<<< HEAD
     body: '{"errors": ["Dashboard with ID f36-2kh-jra not found"]}'
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+    body: '{"errors": ["Dashboard with ID p7w-e6n-3n5 not found"]}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -963,10 +1159,14 @@ interactions:
       - application/json
       Date:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:40:28 GMT
 =======
       - Thu, 08 Oct 2020 14:49:33 GMT
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - Thu, 08 Oct 2020 15:12:20 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
@@ -979,10 +1179,14 @@ interactions:
       - nosniff
       X-Dd-Version:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - "35.3169891"
 =======
       - "35.3162947"
 >>>>>>> 7424c267... Re-record timeseries and table widget cassettes
+=======
+      - "35.3163187"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found

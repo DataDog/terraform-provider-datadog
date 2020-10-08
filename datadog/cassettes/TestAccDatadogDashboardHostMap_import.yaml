@@ -3,7 +3,11 @@ version: 1
 interactions:
 - request:
     body: |
+<<<<<<< HEAD
       {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardHostMap_import-local-1602246890","widgets":[{"definition":{"group":["region"],"no_group_hosts":true,"no_metric_hosts":true,"node_type":"host","requests":{"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"},"size":{"q":"max:system.cpu.user{env:prod} by {host}"}},"scope":["env:prod"],"style":{"fill_max":"30","fill_min":"10","palette":"YlOrRd","palette_flip":true},"title":"system.cpu.idle, system.cpu.user","title_align":"right","title_size":"16","type":"hostmap"}}]}
+=======
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardHostMap_import-local-1602169523","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"group":["region"],"no_group_hosts":true,"no_metric_hosts":true,"node_type":"host","requests":{"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"},"size":{"q":"max:system.cpu.user{env:prod} by {host}"}},"scope":["env:prod"],"style":{"fill_max":"30","fill_min":"10","palette":"YlOrRd","palette_flip":true},"title":"system.cpu.idle, system.cpu.user","title_align":"right","title_size":"16","type":"hostmap"}}]}
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     form: {}
     headers:
       Accept:
@@ -13,6 +17,7 @@ interactions:
       Dd-Operation-Id:
       - CreateDashboard
       User-Agent:
+<<<<<<< HEAD
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.9+dev
         (go go1.14.2; os darwin; arch amd64)
       X-Datadog-Parent-Id:
@@ -21,13 +26,29 @@ interactions:
       - "1"
       X-Datadog-Trace-Id:
       - "6566758593373723555"
+=======
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "221623331144482270"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "8412943551142812266"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
+<<<<<<< HEAD
       Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"g3n-sxn-urg","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602246890","url":"/dashboard/g3n-sxn-urg/tf-testaccdatadogdashboardhostmapimport-local-1602246890","created_at":"2020-10-09T12:36:03.978727+00:00","modified_at":"2020-10-09T12:36:03.978727+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"group":["region"],"title":"system.cpu.idle,
       system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"title_size":"16","requests":{"size":{"q":"max:system.cpu.user{env:prod}
       by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":1180306640391972}],"layout_type":"ordered"}'
+=======
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"i3i-b7p-r9g","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602169523","url":"/dashboard/i3i-b7p-r9g/tf-testaccdatadogdashboardhostmapimport-local-1602169523","created_at":"2020-10-08T15:05:26.505520+00:00","modified_at":"2020-10-08T15:05:26.505520+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod}
+      by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":7033758699060703}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -38,13 +59,21 @@ interactions:
       Content-Type:
       - application/json
       Date:
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:36:04 GMT
+=======
+      - Thu, 08 Oct 2020 15:05:26 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:36:03 GMT;
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:05:26 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -53,9 +82,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
+<<<<<<< HEAD
       - H6mGk0NVWFFYd9VUP8vVAv2c5S84SY5SnfwDRAyGeGOpnNeKpu2AiMB1a9R6+y9D
       X-Dd-Version:
       - "35.3169891"
+=======
+      - g1JN5WIJ1Um2nWq9AQ7orHFBA37V3eIZYgeyDV/dLV8QtbkkvRVVIW0Fy1xXObzE
+      X-Dd-Version:
+      - "35.3163138"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -70,6 +105,7 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
+<<<<<<< HEAD
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.9+dev
         (go go1.14.2; os darwin; arch amd64)
       X-Datadog-Parent-Id:
@@ -85,6 +121,23 @@ interactions:
       Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"g3n-sxn-urg","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602246890","url":"/dashboard/g3n-sxn-urg/tf-testaccdatadogdashboardhostmapimport-local-1602246890","created_at":"2020-10-09T12:36:03.978727+00:00","modified_at":"2020-10-09T12:36:03.978727+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"group":["region"],"title":"system.cpu.idle,
       system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"title_size":"16","requests":{"size":{"q":"max:system.cpu.user{env:prod}
       by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":1180306640391972}],"layout_type":"ordered"}'
+=======
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "6149255042510745554"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "8412943551142812266"
+    url: https://api.datadoghq.com/api/v1/dashboard/i3i-b7p-r9g
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"i3i-b7p-r9g","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602169523","url":"/dashboard/i3i-b7p-r9g/tf-testaccdatadogdashboardhostmapimport-local-1602169523","created_at":"2020-10-08T15:05:26.505520+00:00","modified_at":"2020-10-08T15:05:26.505520+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod}
+      by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":7033758699060703}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -95,13 +148,21 @@ interactions:
       Content-Type:
       - application/json
       Date:
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:36:04 GMT
+=======
+      - Thu, 08 Oct 2020 15:05:26 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:36:04 GMT;
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:05:26 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -110,9 +171,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
+<<<<<<< HEAD
       - laGkCMnt9yzADERvt5/nU5tJ2BKmoQx1BUE4x31rlC7mriAyKM9Zk5E+JikpAz3V
       X-Dd-Version:
       - "35.3169891"
+=======
+      - uJ83xA1OCfjNbetv+4JhF+oFizEHF56t3Lja6jtB8P5etMWBi14GRkWSrGetOvyr
+      X-Dd-Version:
+      - "35.3163064"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -127,6 +194,7 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
+<<<<<<< HEAD
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.9+dev
         (go go1.14.2; os darwin; arch amd64)
       X-Datadog-Parent-Id:
@@ -142,6 +210,23 @@ interactions:
       Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"g3n-sxn-urg","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602246890","url":"/dashboard/g3n-sxn-urg/tf-testaccdatadogdashboardhostmapimport-local-1602246890","created_at":"2020-10-09T12:36:03.978727+00:00","modified_at":"2020-10-09T12:36:03.978727+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"group":["region"],"title":"system.cpu.idle,
       system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"title_size":"16","requests":{"size":{"q":"max:system.cpu.user{env:prod}
       by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":1180306640391972}],"layout_type":"ordered"}'
+=======
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "1194872589964053954"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "8412943551142812266"
+    url: https://api.datadoghq.com/api/v1/dashboard/i3i-b7p-r9g
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"i3i-b7p-r9g","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602169523","url":"/dashboard/i3i-b7p-r9g/tf-testaccdatadogdashboardhostmapimport-local-1602169523","created_at":"2020-10-08T15:05:26.505520+00:00","modified_at":"2020-10-08T15:05:26.505520+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod}
+      by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":7033758699060703}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -152,13 +237,21 @@ interactions:
       Content-Type:
       - application/json
       Date:
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:36:09 GMT
+=======
+      - Thu, 08 Oct 2020 15:05:29 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:36:09 GMT;
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:05:29 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -167,9 +260,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
+<<<<<<< HEAD
       - cwBlcFIcwDsv4IobSK5BCzc5xYE7Ob8qdF8Udq49IJhq23UAvY7SHKc1FyJJqC66
       X-Dd-Version:
       - "35.3169891"
+=======
+      - 7QEcyEeiQNfV/0gu5JIpTHXljtLMqyFtDSs67sHgArYEiV5BVrC9iQFEWV1cGojK
+      X-Dd-Version:
+      - "35.3163138"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -184,6 +283,7 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
+<<<<<<< HEAD
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.9+dev
         (go go1.14.2; os darwin; arch amd64)
       X-Datadog-Parent-Id:
@@ -199,6 +299,23 @@ interactions:
       Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"g3n-sxn-urg","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602246890","url":"/dashboard/g3n-sxn-urg/tf-testaccdatadogdashboardhostmapimport-local-1602246890","created_at":"2020-10-09T12:36:03.978727+00:00","modified_at":"2020-10-09T12:36:03.978727+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"group":["region"],"title":"system.cpu.idle,
       system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"title_size":"16","requests":{"size":{"q":"max:system.cpu.user{env:prod}
       by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":1180306640391972}],"layout_type":"ordered"}'
+=======
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "3540214578122209349"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "8412943551142812266"
+    url: https://api.datadoghq.com/api/v1/dashboard/i3i-b7p-r9g
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"i3i-b7p-r9g","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602169523","url":"/dashboard/i3i-b7p-r9g/tf-testaccdatadogdashboardhostmapimport-local-1602169523","created_at":"2020-10-08T15:05:26.505520+00:00","modified_at":"2020-10-08T15:05:26.505520+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod}
+      by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":7033758699060703}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -209,13 +326,21 @@ interactions:
       Content-Type:
       - application/json
       Date:
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:36:09 GMT
+=======
+      - Thu, 08 Oct 2020 15:05:29 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:36:09 GMT;
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:05:29 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -224,9 +349,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
+<<<<<<< HEAD
       - pU+5spIfOFTru2RhY1ezKdt9iD04gzaa+zDs5x6Ik5VkXfw5rZx6HoPylEAvTInE
       X-Dd-Version:
       - "35.3169891"
+=======
+      - k/zHOOzqpc4r+ZK5tvPeMjc5yHaZZgqaNAwCywXjTJpLyIGjDeV+DLPBFsNU82W8
+      X-Dd-Version:
+      - "35.3163138"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -241,6 +372,7 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
+<<<<<<< HEAD
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.9+dev
         (go go1.14.2; os darwin; arch amd64)
       X-Datadog-Parent-Id:
@@ -256,6 +388,23 @@ interactions:
       Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"g3n-sxn-urg","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602246890","url":"/dashboard/g3n-sxn-urg/tf-testaccdatadogdashboardhostmapimport-local-1602246890","created_at":"2020-10-09T12:36:03.978727+00:00","modified_at":"2020-10-09T12:36:03.978727+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"group":["region"],"title":"system.cpu.idle,
       system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"title_size":"16","requests":{"size":{"q":"max:system.cpu.user{env:prod}
       by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":1180306640391972}],"layout_type":"ordered"}'
+=======
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "455520142758540000"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "8412943551142812266"
+    url: https://api.datadoghq.com/api/v1/dashboard/i3i-b7p-r9g
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"i3i-b7p-r9g","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602169523","url":"/dashboard/i3i-b7p-r9g/tf-testaccdatadogdashboardhostmapimport-local-1602169523","created_at":"2020-10-08T15:05:26.505520+00:00","modified_at":"2020-10-08T15:05:26.505520+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod}
+      by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":7033758699060703}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -266,13 +415,21 @@ interactions:
       Content-Type:
       - application/json
       Date:
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:36:15 GMT
+=======
+      - Thu, 08 Oct 2020 15:05:31 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:36:15 GMT;
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:05:31 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -281,9 +438,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
+<<<<<<< HEAD
       - WInJ5NoKnWsGfpc5/7O8IFkOGqBCSPXHlW+v7fDYTqv2rGTGsFEBI9cuh2tqdLoD
       X-Dd-Version:
       - "35.3169891"
+=======
+      - fOvn++WNyeGiJqGJ1RGVl2OtzlCSW+9FmhW07NDhLHuS9Ypy2JL89j65gnqIRQTf
+      X-Dd-Version:
+      - "35.3163138"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -298,6 +461,7 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
+<<<<<<< HEAD
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.9+dev
         (go go1.14.2; os darwin; arch amd64)
       X-Datadog-Parent-Id:
@@ -313,6 +477,23 @@ interactions:
       Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"g3n-sxn-urg","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602246890","url":"/dashboard/g3n-sxn-urg/tf-testaccdatadogdashboardhostmapimport-local-1602246890","created_at":"2020-10-09T12:36:03.978727+00:00","modified_at":"2020-10-09T12:36:03.978727+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"group":["region"],"title":"system.cpu.idle,
       system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"title_size":"16","requests":{"size":{"q":"max:system.cpu.user{env:prod}
       by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":1180306640391972}],"layout_type":"ordered"}'
+=======
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "4673145320861259663"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "8412943551142812266"
+    url: https://api.datadoghq.com/api/v1/dashboard/i3i-b7p-r9g
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"i3i-b7p-r9g","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602169523","url":"/dashboard/i3i-b7p-r9g/tf-testaccdatadogdashboardhostmapimport-local-1602169523","created_at":"2020-10-08T15:05:26.505520+00:00","modified_at":"2020-10-08T15:05:26.505520+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod}
+      by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":7033758699060703}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -323,13 +504,21 @@ interactions:
       Content-Type:
       - application/json
       Date:
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:36:16 GMT
+=======
+      - Thu, 08 Oct 2020 15:05:32 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:36:16 GMT;
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:05:32 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -338,9 +527,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
+<<<<<<< HEAD
       - gwxwlHJSLmAXGvHTSu/VslfvUPji2blx0q1wqJSN+1mxCKSPKKSSC5xzBG+/OLHq
       X-Dd-Version:
       - "35.3169891"
+=======
+      - b7N5fdPhYXDjMBDnrRAJWxJNxeU8H5y+B5ea/L1cXAMez449FKZtw3SF5mhatH7J
+      X-Dd-Version:
+      - "35.3163064"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -355,6 +550,7 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
+<<<<<<< HEAD
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.9+dev
         (go go1.14.2; os darwin; arch amd64)
       X-Datadog-Parent-Id:
@@ -370,6 +566,23 @@ interactions:
       Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"g3n-sxn-urg","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602246890","url":"/dashboard/g3n-sxn-urg/tf-testaccdatadogdashboardhostmapimport-local-1602246890","created_at":"2020-10-09T12:36:03.978727+00:00","modified_at":"2020-10-09T12:36:03.978727+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"group":["region"],"title":"system.cpu.idle,
       system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"title_size":"16","requests":{"size":{"q":"max:system.cpu.user{env:prod}
       by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":1180306640391972}],"layout_type":"ordered"}'
+=======
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "2521481989697544341"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "8412943551142812266"
+    url: https://api.datadoghq.com/api/v1/dashboard/i3i-b7p-r9g
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"i3i-b7p-r9g","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602169523","url":"/dashboard/i3i-b7p-r9g/tf-testaccdatadogdashboardhostmapimport-local-1602169523","created_at":"2020-10-08T15:05:26.505520+00:00","modified_at":"2020-10-08T15:05:26.505520+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod}
+      by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":7033758699060703}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -380,13 +593,21 @@ interactions:
       Content-Type:
       - application/json
       Date:
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:36:16 GMT
+=======
+      - Thu, 08 Oct 2020 15:05:32 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:36:16 GMT;
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:05:32 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -395,9 +616,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
+<<<<<<< HEAD
       - 6IhQMEQHjYL1ZYwBd1xPnaqhoM5GIKrVP4vKHrLdyvV0W9ZbpSld8lY0ehD40SZe
       X-Dd-Version:
       - "35.3169891"
+=======
+      - laGkCMnt9yzADERvt5/nU5tJ2BKmoQx1BUE4x31rlC7mriAyKM9Zk5E+JikpAz3V
+      X-Dd-Version:
+      - "35.3163138"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -412,6 +639,7 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
+<<<<<<< HEAD
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.9+dev
         (go go1.14.2; os darwin; arch amd64)
       X-Datadog-Parent-Id:
@@ -427,6 +655,23 @@ interactions:
       Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"g3n-sxn-urg","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602246890","url":"/dashboard/g3n-sxn-urg/tf-testaccdatadogdashboardhostmapimport-local-1602246890","created_at":"2020-10-09T12:36:03.978727+00:00","modified_at":"2020-10-09T12:36:03.978727+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"group":["region"],"title":"system.cpu.idle,
       system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"title_size":"16","requests":{"size":{"q":"max:system.cpu.user{env:prod}
       by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":1180306640391972}],"layout_type":"ordered"}'
+=======
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "1229485954819939098"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "8412943551142812266"
+    url: https://api.datadoghq.com/api/v1/dashboard/i3i-b7p-r9g
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"i3i-b7p-r9g","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602169523","url":"/dashboard/i3i-b7p-r9g/tf-testaccdatadogdashboardhostmapimport-local-1602169523","created_at":"2020-10-08T15:05:26.505520+00:00","modified_at":"2020-10-08T15:05:26.505520+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod}
+      by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":7033758699060703}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -437,13 +682,21 @@ interactions:
       Content-Type:
       - application/json
       Date:
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:36:19 GMT
+=======
+      - Thu, 08 Oct 2020 15:05:33 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:36:19 GMT;
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:05:33 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -452,9 +705,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
+<<<<<<< HEAD
       - x0lXQI7rzyICHjQ6egBdIXvv6oH1uc+zPjPKGBnD3VLYo8imKB14VpRl9Uf7xZN/
       X-Dd-Version:
       - "35.3169891"
+=======
+      - ZTMib3S/rZeXw/RhaeaehRILC7QJAaERfyf3m4/am8FN44e9rxbkPcmk4YzKBISj
+      X-Dd-Version:
+      - "35.3163138"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -469,6 +728,7 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
+<<<<<<< HEAD
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.9+dev
         (go go1.14.2; os darwin; arch amd64)
       X-Datadog-Parent-Id:
@@ -484,6 +744,23 @@ interactions:
       Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"g3n-sxn-urg","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602246890","url":"/dashboard/g3n-sxn-urg/tf-testaccdatadogdashboardhostmapimport-local-1602246890","created_at":"2020-10-09T12:36:03.978727+00:00","modified_at":"2020-10-09T12:36:03.978727+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"group":["region"],"title":"system.cpu.idle,
       system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"title_size":"16","requests":{"size":{"q":"max:system.cpu.user{env:prod}
       by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":1180306640391972}],"layout_type":"ordered"}'
+=======
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "1282435025777088478"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "8412943551142812266"
+    url: https://api.datadoghq.com/api/v1/dashboard/i3i-b7p-r9g
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"i3i-b7p-r9g","title":"tf-TestAccDatadogDashboardHostMap_import-local-1602169523","url":"/dashboard/i3i-b7p-r9g/tf-testaccdatadogdashboardhostmapimport-local-1602169523","created_at":"2020-10-08T15:05:26.505520+00:00","modified_at":"2020-10-08T15:05:26.505520+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test
+      Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod}
+      by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":7033758699060703}],"layout_type":"ordered"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -494,13 +771,21 @@ interactions:
       Content-Type:
       - application/json
       Date:
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:36:19 GMT
+=======
+      - Thu, 08 Oct 2020 15:05:33 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:36:19 GMT;
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:05:33 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -509,9 +794,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
+<<<<<<< HEAD
       - 4800hhM5D8qj6yrPc+dlMvhUa+SbSJAXG/yPCxJaOKK9a5IkPxDsNnyOdNMLl2nJ
       X-Dd-Version:
       - "35.3169891"
+=======
+      - RCObiQ2dtM/JQUOdAbTQmIrpsZR5eT9bZEwE14hAfjq3x8DBTBCy/8ina/nQCRGE
+      X-Dd-Version:
+      - "35.3163064"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -526,6 +817,7 @@ interactions:
       Dd-Operation-Id:
       - DeleteDashboard
       User-Agent:
+<<<<<<< HEAD
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.9+dev
         (go go1.14.2; os darwin; arch amd64)
       X-Datadog-Parent-Id:
@@ -538,6 +830,20 @@ interactions:
     method: DELETE
   response:
     body: '{"deleted_dashboard_id":"g3n-sxn-urg"}'
+=======
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "2289759402741017865"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "8412943551142812266"
+    url: https://api.datadoghq.com/api/v1/dashboard/i3i-b7p-r9g
+    method: DELETE
+  response:
+    body: '{"deleted_dashboard_id":"i3i-b7p-r9g"}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -548,13 +854,21 @@ interactions:
       Content-Type:
       - application/json
       Date:
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:37:15 GMT
+=======
+      - Thu, 08 Oct 2020 15:06:21 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
+<<<<<<< HEAD
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 16-Oct-2020 12:36:23 GMT;
+=======
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 15-Oct-2020 15:05:34 GMT;
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -563,9 +877,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
+<<<<<<< HEAD
       - UiHAIpiIPiMTUiGNeR+rZVnFnmJkUm64kqWBQawJNSrsYAeselUV6xrARY3WHwv4
       X-Dd-Version:
       - "35.3169891"
+=======
+      - RKpd63U5fOB9KQENZW/9vNmGmUgGzAVI24Vei0avdDhXQLPqbS5iSkbtN5YHNt1I
+      X-Dd-Version:
+      - "35.3163138"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -580,6 +900,7 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
+<<<<<<< HEAD
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.9+dev
         (go go1.14.2; os darwin; arch amd64)
       X-Datadog-Parent-Id:
@@ -592,6 +913,20 @@ interactions:
     method: GET
   response:
     body: '{"errors": ["Dashboard with ID g3n-sxn-urg not found"]}'
+=======
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.9+dev (go go1.13.1; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "7804206145324043079"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "8412943551142812266"
+    url: https://api.datadoghq.com/api/v1/dashboard/i3i-b7p-r9g
+    method: GET
+  response:
+    body: '{"errors": ["Dashboard with ID i3i-b7p-r9g not found"]}'
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
     headers:
       Cache-Control:
       - no-cache
@@ -602,7 +937,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
+<<<<<<< HEAD
       - Fri, 09 Oct 2020 12:37:15 GMT
+=======
+      - Thu, 08 Oct 2020 15:06:21 GMT
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       Dd-Pool:
       - dogweb
       Pragma:
@@ -614,7 +953,11 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
+<<<<<<< HEAD
       - "35.3169891"
+=======
+      - "35.3163187"
+>>>>>>> 39d86cfa... Re-record cassettes for other widgets
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found
