@@ -125,6 +125,7 @@ resource "datadog_dashboard" "query_table_dashboard" {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
 			}
+			has_search_bar = "auto"
 		}
 	}
 
@@ -139,6 +140,7 @@ resource "datadog_dashboard" "query_table_dashboard" {
 					row_type = "resource"
 				}
 			}
+			has_search_bar = "never"
 		}
 	}
 }
@@ -197,6 +199,8 @@ var datadogDashboardQueryTableAsserts = []string{
 	"widget.0.query_table_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
 	"widget.0.query_table_definition.0.request.0.cell_display_mode.0 = number",
 	"widget.0.query_table_definition.0.request.1.cell_display_mode.0 = number",
+	"widget.0.query_table_definition.0.has_search_bar = auto",
+	"widget.1.query_table_definition.0.has_search_bar = never",
 }
 
 func TestAccDatadogDashboardQueryTable(t *testing.T) {
