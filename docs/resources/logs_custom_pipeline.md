@@ -31,7 +31,8 @@ resource "datadog_logs_custom_pipeline" "sample_pipeline" {
             sources = ["db.instance"]
             source_type = "tag"
             target = "db"
-            target_type = "tag"
+            target_type = "attribute"
+            target_format = "string"
             preserve_source = true
             override_on_conflict = false
             name = "sample attribute processor"
@@ -185,6 +186,7 @@ The following arguments are supported:
   - `source_type`: (Required) Defines where the sources are from (log `attribute` or `tag`).
   - `target`: (Required) Final `attribute` or `tag` name to remap the sources.
   - `target_type`: (Required) Defines if the target is a log `attribute` or `tag`.
+  - `target_format`: (Optional) If the `target_type` of the remapper is `attribute`, try to cast the value to a new specific type. If the cast is not possible, the original type is kept. `string`, `integer`, or `double` are the possible types. If the `target_type` is `tag`, this parameter may not be specified.
   - `preserve_source`: (Optional, default = false) Remove or preserve the remapped source element.
   - `override_on_conflict`: (Optional, default = false) Override the target element if already set.
   - `name`: (Optional) Name of the processor
@@ -192,7 +194,7 @@ The following arguments are supported:
 - category_processor
   - `target`: (Required) Name of the target attribute whose value is defined by the matching category.
   - `category`: (Required) List of filters to match or exclude a log with their corresponding name to assign a custom value to the log.
-    - `name`: (Required) Name of the cateory.
+    - `name`: (Required) Name of the category.
     - `filter`
       - `query`: (Required) Filter criteria of the category.
   - `name`: (Optional) Name of the processor
