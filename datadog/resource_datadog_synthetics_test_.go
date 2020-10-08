@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	_nethttp "net/http"
+	"regexp"
 	"strconv"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
@@ -141,8 +142,9 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 							Optional: true,
 						},
 						"name": {
-							Type:     schema.TypeString,
-							Required: true,
+							Type:         schema.TypeString,
+							Required:     true,
+							ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
 						},
 						"pattern": {
 							Type:     schema.TypeString,
