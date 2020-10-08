@@ -16,7 +16,7 @@ import (
 
 var syntheticsTypes = []string{"api", "browser"}
 var syntheticsSubTypes = []string{"http", "ssl", "tcp", "dns"}
-var syntheticsVariablesTypes = []string{"element", "email", "global", "text"}
+var syntheticsVariableTypes = []string{"element", "email", "global", "text"}
 
 func resourceDatadogSyntheticsTest() *schema.Resource {
 	return &schema.Resource{
@@ -127,7 +127,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					},
 				},
 			},
-			"variables": {
+			"variable": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
@@ -151,7 +151,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 						"type": {
 							Type:         schema.TypeString,
 							Required:     true,
-							ValidateFunc: validation.StringInSlice(syntheticsVariablesTypes, false),
+							ValidateFunc: validation.StringInSlice(syntheticsVariableTypes, false),
 						},
 					},
 				},
@@ -654,7 +654,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		}
 	}
 
-	if attr, ok := d.GetOk("variables"); ok && attr != nil {
+	if attr, ok := d.GetOk("variable"); ok && attr != nil {
 		for _, variable := range attr.([]interface{}) {
 			variableMap := variable.(map[string]interface{})
 			if v, ok := variableMap["type"]; ok {
@@ -949,7 +949,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		}
 		localVariables[i] = localVariable
 	}
-	if err := d.Set("variables", localVariables); err != nil {
+	if err := d.Set("variable", localVariables); err != nil {
 		return err
 	}
 
@@ -1082,6 +1082,6 @@ func convertToSyntheticsBrowserVariableType(s string) (datadogV1.SyntheticsBrows
 	case "text":
 		return datadogV1.SYNTHETICSBROWSERVARIABLETYPE_TEXT, nil
 	default:
-		return "", fmt.Errorf("variables.type must be one of ['element', 'email', 'global', 'text'], got: %s", s)
+		return "", fmt.Errorf("variable.type must be one of ['element', 'email', 'global', 'text'], got: %s", s)
 	}
 }

@@ -1377,13 +1377,13 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variables.0.type", "text"),
+				"datadog_synthetics_test.bar", "variable.0.type", "text"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variables.0.name", "MY_PATTERN_VAR"),
+				"datadog_synthetics_test.bar", "variable.0.name", "MY_PATTERN_VAR"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variables.0.pattern", "{{numeric(3)}}"),
+				"datadog_synthetics_test.bar", "variable.0.pattern", "{{numeric(3)}}"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variables.0.example", "597"),
+				"datadog_synthetics_test.bar", "variable.0.example", "597"),
 		),
 	}
 }
@@ -1436,7 +1436,7 @@ resource "datadog_synthetics_test" "bar" {
 	    })
 	}
 
-	variables {
+	variable {
 		type = "text"
 		name = "MY_PATTERN_VAR"
 		pattern = "{{numeric(3)}}"
@@ -1518,13 +1518,13 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variables.0.type", "text"),
+				"datadog_synthetics_test.bar", "variable.0.type", "text"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variables.0.name", "MY_PATTERN_VAR"),
+				"datadog_synthetics_test.bar", "variable.0.name", "MY_PATTERN_VAR"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variables.0.pattern", "{{numeric(4)}}"),
+				"datadog_synthetics_test.bar", "variable.0.pattern", "{{numeric(4)}}"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variables.0.example", "5970"),
+				"datadog_synthetics_test.bar", "variable.0.example", "5970"),
 		),
 	}
 }
@@ -1583,7 +1583,7 @@ resource "datadog_synthetics_test" "bar" {
 	    })
 	}
 
-	variables {
+	variable {
 		type = "text"
 		name = "MY_PATTERN_VAR"
 		pattern = "{{numeric(4)}}"
