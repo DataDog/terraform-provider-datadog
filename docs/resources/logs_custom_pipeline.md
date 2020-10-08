@@ -194,7 +194,7 @@ The following arguments are supported:
 - category_processor
   - `target`: (Required) Name of the target attribute whose value is defined by the matching category.
   - `category`: (Required) List of filters to match or exclude a log with their corresponding name to assign a custom value to the log.
-    - `name`: (Required) Name of the cateory.
+    - `name`: (Required) Name of the category.
     - `filter`
       - `query`: (Required) Filter criteria of the category.
   - `name`: (Optional) Name of the processor
