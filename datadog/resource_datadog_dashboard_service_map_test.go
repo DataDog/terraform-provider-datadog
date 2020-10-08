@@ -41,7 +41,7 @@ import "testing"
 //            "x":5,
 //            "height":43
 //         },
-//         "id":6727330667767516
+//         "id": "--redacted--"
 //      }
 //   ],
 //   "layout_type":"free"
