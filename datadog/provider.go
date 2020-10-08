@@ -58,6 +58,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
 			"datadog_integration_pagerduty_service_object": resourceDatadogIntegrationPagerdutySO(),
 			"datadog_logs_archive":                         resourceDatadogLogsArchive(),
+			"datadog_logs_archive_order":                 	resourceDatadogLogsArchiveOrder(),
 			"datadog_logs_custom_pipeline":                 resourceDatadogLogsCustomPipeline(),
 			"datadog_logs_index":                           resourceDatadogLogsIndex(),
 			"datadog_logs_index_order":                     resourceDatadogLogsIndexOrder(),
