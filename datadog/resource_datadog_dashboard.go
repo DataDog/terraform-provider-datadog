@@ -4793,7 +4793,7 @@ func getWidgetCustomLinkSchema() map[string]*schema.Schema {
 		},
 		"link": {
 			Type:     schema.TypeString,
-			Optional: true,
+			Required: true,
 		},
 	}
 }
