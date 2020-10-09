@@ -46,7 +46,7 @@ To compile the provider, run `make build_013`. This will build the provider and 
 $ make build_013
 ```
 
-You also need a $HOME/.terraformrc file that contains:
+You also need a `$HOME/.terraformrc` file that contains:
 
 ```
 provider_installation {
@@ -61,6 +61,7 @@ provider_installation {
 ```
 
 From there, you can run any `terraform init` or plan/apply within an example terraform module directory.
+
 </details>
 
 <details><summary>Terraform <= 0.12.x</summary>
@@ -72,8 +73,8 @@ $ make build
 $ $GOPATH/bin/terraform-provider-datadog
 ...
 ```
-</details>
 
+</details>
 
 In order to test the provider, you can simply run `make test`.
 
