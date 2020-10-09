@@ -5191,11 +5191,13 @@ func buildDatadogApmStatsQueryColumn(terraformColumn map[string]interface{}) *da
 	if value, ok := terraformColumn["alias"].(string); ok && len(value) != 0 {
 		datadogColumn.SetAlias(value)
 	}
-	if value, ok := terraformColumn["cell_display_mode"].(datadogV1.TableWidgetCellDisplayMode); ok && len(value) != 0 {
-		datadogColumn.SetCellDisplayMode(value)
+	// avoid creating unnecessary diff with default value
+	datadogColumn.CellDisplayMode = nil
+	if value, ok := terraformColumn["cell_display_mode"].(string); ok && len(value) != 0 {
+		datadogColumn.SetCellDisplayMode(datadogV1.TableWidgetCellDisplayMode(value))
 	}
-	if value, ok := terraformColumn["order"].(datadogV1.WidgetSort); ok && len(value) != 0 {
-		datadogColumn.SetOrder(value)
+	if value, ok := terraformColumn["order"].(string); ok && len(value) != 0 {
+		datadogColumn.SetOrder(datadogV1.WidgetSort(value))
 	}
 
 	return datadogColumn
