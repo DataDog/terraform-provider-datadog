@@ -672,6 +672,7 @@ Nested `widget` blocks have the following structure:
     - `title_size`: (Optional) The size of the widget's title. Default is 16.
     - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
     - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    - `custom_link`: (Optional) Nested block describing a custom link. The structure of this block is described [below](dashboard.html#nested-widget-custom_link-blocks).
   - `check_status_definition`: The definition for a Check Status widget. Exactly one nested block is allowed with the following structure:
     - `check`: (Optional) The check to use in the widget.
     - `grouping`: (Optional) Either "check" or "cluster", depending on whether the widget should use a single check or a cluster of checks.
@@ -729,6 +730,7 @@ Nested `widget` blocks have the following structure:
     - `title_size`: (Optional) The size of the widget's title. Default is 16.
     - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
     - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    - `custom_link`: (Optional) Nested block describing a custom link. The structure of this block is described [below](dashboard.html#nested-widget-custom_link-blocks).
   - `hostmap_definition`: The definition for a Hostmap widget. Exactly one nested block is allowed with the following structure:
     - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
       - `fill`: (Optional) The query used to fill the map. Exactly one nested block is allowed with the following structure:
@@ -748,6 +750,7 @@ Nested `widget` blocks have the following structure:
     - `title`: (Optional) The title of the widget.
     - `title_size`: (Optional) The size of the widget's title. Default is 16.
     - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    - `custom_link`: (Optional) Nested block describing a custom link. The structure of this block is described [below](dashboard.html#nested-widget-custom_link-blocks).
   - `iframe_definition`: The definition for a Iframe widget. Exactly one nested block is allowed with the following structure:
     - `url`: (Rquired) The URL to use as a data source for the widget.
   - `image_definition`: The definition for a Image widget. Exactly one nested block is allowed with the following structure:
@@ -802,6 +805,7 @@ Nested `widget` blocks have the following structure:
     - `title_size`: (Optional) The size of the widget's title. Default is 16.
     - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
     - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    - `custom_link`: (Optional) Nested block describing a custom link. The structure of this block is described [below](dashboard.html#nested-widget-custom_link-blocks).
   - `query_table_definition`: The definition for a Query Table widget. Exactly one nested block is allowed with the following structure:
     - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
       - `q`: (Optional) The metric query to use in the widget
@@ -818,6 +822,7 @@ Nested `widget` blocks have the following structure:
     - `title_size`: (Optional) The size of the widget's title. Default is 16.
     - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
     - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    - `custom_link`: (Optional) Nested block describing a custom link. The structure of this block is described [below](dashboard.html#nested-widget-custom_link-blocks).
   - `scatterplot_definition`: The definition for a Scatterplot widget. Exactly one nested block is allowed with the following structure:
     - `request`: (Required) Nested block describing the request to use when displaying the widget. Exactly one request block is allowed with the following structure:
       - `x`: (Optional) The query used for the X-Axis. Exactly one nested block is allowed with the following structure: - `q`: (Required) The metric query to use in the widget. - `aggregator`: (Optional) Aggregator used for the request. One of "avg", "min", "max", "sum", "last".
@@ -829,6 +834,7 @@ Nested `widget` blocks have the following structure:
     - `title_size`: (Optional) The size of the widget's title. Default is 16.
     - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
     - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    - `custom_link`: (Optional) Nested block describing a custom link. The structure of this block is described [below](dashboard.html#nested-widget-custom_link-blocks).
   - `servicemap_definition`: The definition for a Service Map widget. Exactly one nested block is allowed with the following structure:
     - `filters`: (Required) Your environment and primary tag (or \* if enabled for your account).
     - `service`: (Required) The ID of the service you want to map.
@@ -844,6 +850,7 @@ Nested `widget` blocks have the following structure:
     - `title`: (Optional) The title of the widget.
     - `title_size`: (Optional) The size of the widget's title. Default is 16.
     - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
+    - `custom_link`: (Optional) Nested block describing a custom link. The structure of this block is described [below](dashboard.html#nested-widget-custom_link-blocks).
   - `timeseries_definition`: The definition for a Timeseries widget. Exactly one nested block is allowed with the following structure:
     - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
       - `q`: (Optional) The metric query to use in the widget.
@@ -871,6 +878,7 @@ Nested `widget` blocks have the following structure:
       - `q`: (Required) The event query to use in the widget.
       - `tags_execution`: (Optional) The execution method for multi-value filters.
     - `yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
+    - `custom_link`: (Optional) Nested block describing a custom link. The structure of this block is described [below](dashboard.html#nested-widget-custom_link-blocks).
   - `toplist_definition`: The definition for a Toplist widget. Exactly one nested block is allowed with the following structure:
     - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
       - `q`: (Optional) The metric query to use in the widget.
@@ -882,6 +890,7 @@ Nested `widget` blocks have the following structure:
     - `title_size`: (Optional) The size of the widget's title. Default is 16.
     - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
     - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
+    - `custom_link`: (Optional) Nested block describing a custom link. The structure of this block is described [below](dashboard.html#nested-widget-custom_link-blocks).
   - `trace_service_definition`: The definition for a Trace Service widget. Exactly one nested block is allowed with the following structure:
     - `env`: (Required) APM environment.
     - `service`: (Required) APM service.
@@ -938,6 +947,13 @@ Nested `conditional_formats` blocks have the following structure:
 Nested `widget` `time` blocks have the following structure:
 
 - `live_span`: (Required) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`.
+
+### Nested `widget` `custom_link` blocks
+
+Nested `widget` `custom_link` blocks have the following structure:
+
+- `label`: (Required) The label for the custom link URL.
+- `link`: (Required) The URL of the custom link.
 
 ### Nested `apm_query`, `log_query`, `network_query` and `rum_query` blocks
 
