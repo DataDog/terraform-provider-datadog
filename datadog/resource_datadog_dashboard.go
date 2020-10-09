@@ -4811,11 +4811,11 @@ func buildDatadogWidgetCustomLinks(terraformWidgetCustomLinks *[]interface{}) *[
 }
 func buildTerraformWidgetCustomLinks(datadogWidgetCustomLinks *[]datadogV1.WidgetCustomLink) *[]map[string]string {
 	terraformWidgetCustomLinks := make([]map[string]string, len(*datadogWidgetCustomLinks))
-	for i, datadogWidget := range *datadogWidgetCustomLinks {
+	for i, customLink := range *datadogWidgetCustomLinks {
 		terraformWidgetCustomLink := map[string]string{}
 		// Required params
-		terraformWidgetCustomLink["label"] = datadogWidget.GetLabel()
-		terraformWidgetCustomLink["link"] = datadogWidget.GetLink()
+		terraformWidgetCustomLink["label"] = customLink.GetLabel()
+		terraformWidgetCustomLink["link"] = customLink.GetLink()
 
 		terraformWidgetCustomLinks[i] = terraformWidgetCustomLink
 	}
