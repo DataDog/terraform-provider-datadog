@@ -11,13 +11,9 @@ Provides a Datadog [Logs Archive API](https://docs.datadoghq.com/api/v2/logs-arc
 ```hcl
 resource "datadog_logs_archive_order" "sample_archive_order" {
     name = "sample_archive_order"
-    depends_on = [
-        "datadog_logs_archive.sample_archive_1",
-        "datadog_logs_archive.sample_archive_2"
-    ]
     archives = [
-        "${datadog_logs_archive.sample_archive_2.id}",
-        "${datadog_logs_archive.sample_archive_1.id}"
+        "${datadog_logs_archive.sample_archive_1.id}",
+        "${datadog_logs_archive.sample_archive_2.id}"
     ]
 }
 ```
