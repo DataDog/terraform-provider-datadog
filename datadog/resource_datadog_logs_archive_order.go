@@ -19,7 +19,7 @@ func resourceDatadogLogsArchiveOrder() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {Type: schema.TypeString, Required: true},
-			"archives": {
+			"archive_ids": {
 				Type:     schema.TypeList,
 				Required: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
@@ -41,7 +41,7 @@ func resourceDatadogLogsArchiveOrderRead(d *schema.ResourceData, meta interface{
 		return translateClientError(err, "error getting logs archive order")
 	}
 
-	if err = d.Set("archives", ddList.Data.Attributes.ArchiveIds); err != nil {
+	if err = d.Set("archive_ids", ddList.Data.Attributes.ArchiveIds); err != nil {
 		return err
 	}
 
@@ -50,7 +50,7 @@ func resourceDatadogLogsArchiveOrderRead(d *schema.ResourceData, meta interface{
 
 func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interface{}) error {
 	var ddArchiveList datadogV2.LogsArchiveOrder
-	tfList := d.Get("archives").([]interface{})
+	tfList := d.Get("archive_ids").([]interface{})
 	ddList := make([]string, len(tfList))
 	for i, id := range tfList {
 		ddList[i] = id.(string)

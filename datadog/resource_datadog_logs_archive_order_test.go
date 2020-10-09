@@ -25,7 +25,7 @@ resource "datadog_logs_archive_order" "archives" {
 		"datadog_logs_archive.archive_2"
 	]
 	name = "%s"
-	archives = [
+	archive_ids = [
 		"${datadog_logs_archive.archive_1.id}",
 		"${datadog_logs_archive.archive_2.id}"
 	]
