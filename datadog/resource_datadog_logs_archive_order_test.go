@@ -10,7 +10,7 @@ resource "datadog_logs_archive" "archive_1" {
 	filter {
 		query = "source:redis"
 	}
-}
+} 
 resource "datadog_logs_archive" "archive_2" {
 	name = "%s-second"
 	is_enabled = true
@@ -20,16 +20,11 @@ resource "datadog_logs_archive" "archive_2" {
 }
 
 resource "datadog_logs_archive_order" "archives" {
-	depends_on = [
-		"datadog_logs_archive.archive_1",
-		"datadog_logs_archive.archive_2"
-	]
-	name = "%s"
 	archive_ids = [
 		"${datadog_logs_archive.archive_1.id}",
 		"${datadog_logs_archive.archive_2.id}"
 	]
-}`, uniq, uniq, uniq)
+}`, uniq, uniq)
 }
 
 func ArchiveOrderUpdateConfig(uniq string) string {
@@ -50,14 +45,9 @@ resource "datadog_logs_archive" "archive_2" {
 }
 
 resource "datadog_logs_archive_order" "archives" {
-	depends_on = [
-		"datadog_logs_archive.archive_1",
-		"datadog_logs_archive.archive_2"
-	]
-	name = "%s"
 	archives = [
 		"${datadog_logs_archive.archive_2.id}",
 		"${datadog_logs_archive.archive_1.id}"
 	]
-}`, uniq, uniq, uniq)
+}`, uniq, uniq)
 }

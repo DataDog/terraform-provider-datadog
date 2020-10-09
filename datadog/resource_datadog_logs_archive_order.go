@@ -18,7 +18,6 @@ func resourceDatadogLogsArchiveOrder() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
-			"name": {Type: schema.TypeString, Required: true},
 			"archive_ids": {
 				Type:     schema.TypeList,
 				Required: true,
@@ -56,10 +55,6 @@ func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interfac
 		ddList[i] = id.(string)
 	}
 	ddArchiveList.Data.Attributes.ArchiveIds = ddList
-	var tfId string
-	if name, exists := d.GetOk("name"); exists {
-		tfId = name.(string)
-	}
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
@@ -76,7 +71,6 @@ func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interfac
 		}
 		return translateClientError(err, "error updating logs archive order")
 	}
-	d.SetId(tfId)
 	return resourceDatadogLogsArchiveOrderRead(d, meta)
 }
 
