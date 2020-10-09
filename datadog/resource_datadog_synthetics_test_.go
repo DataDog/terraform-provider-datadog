@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	_nethttp "net/http"
+	"regexp"
 	"strconv"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
@@ -16,6 +17,7 @@ import (
 
 var syntheticsTypes = []string{"api", "browser"}
 var syntheticsSubTypes = []string{"http", "ssl", "tcp", "dns"}
+var syntheticsVariableTypes = []string{"element", "email", "global", "text"}
 
 func resourceDatadogSyntheticsTest() *schema.Resource {
 	return &schema.Resource{
@@ -122,6 +124,36 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 									},
 								},
 							},
+						},
+					},
+				},
+			},
+			"variable": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"example": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"id": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"name": {
+							Type:         schema.TypeString,
+							Required:     true,
+							ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
+						},
+						"pattern": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"type": {
+							Type:         schema.TypeString,
+							Required:     true,
+							ValidateFunc: validation.StringInSlice(syntheticsVariableTypes, false),
 						},
 					},
 				},
@@ -624,6 +656,30 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		}
 	}
 
+	if attr, ok := d.GetOk("variable"); ok && attr != nil {
+		for _, variable := range attr.([]interface{}) {
+			variableMap := variable.(map[string]interface{})
+			if v, ok := variableMap["type"]; ok {
+				if variableType, err := convertToSyntheticsBrowserVariableType(v.(string)); err == nil {
+					if v, ok := variableMap["name"]; ok {
+						variableName := v.(string)
+						newVariable := datadogV1.NewSyntheticsBrowserVariable(variableName, variableType)
+						if v, ok := variableMap["example"]; ok && v.(string) != "" {
+							newVariable.SetExample(v.(string))
+						}
+						if v, ok := variableMap["id"]; ok && v.(string) != "" {
+							newVariable.SetId(v.(string))
+						}
+						if v, ok := variableMap["pattern"]; ok && v.(string) != "" {
+							newVariable.SetPattern(v.(string))
+						}
+						config.SetVariables(append(config.GetVariables(), *newVariable))
+					}
+				}
+			}
+		}
+	}
+
 	options := datadogV1.NewSyntheticsTestOptions()
 
 	// use new options_list first, then fallback to legacy options
@@ -874,6 +930,31 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		}
 	}
 
+	actualVariables := *syntheticsTest.GetConfig().Variables
+	localVariables := make([]map[string]interface{}, len(actualVariables))
+	for i, variable := range actualVariables {
+		localVariable := make(map[string]interface{})
+		if v, ok := variable.GetTypeOk(); ok {
+			localVariable["type"] = *v
+		}
+		if v, ok := variable.GetNameOk(); ok {
+			localVariable["name"] = *v
+		}
+		if v, ok := variable.GetExampleOk(); ok {
+			localVariable["example"] = *v
+		}
+		if v, ok := variable.GetIdOk(); ok {
+			localVariable["id"] = *v
+		}
+		if v, ok := variable.GetPatternOk(); ok {
+			localVariable["pattern"] = *v
+		}
+		localVariables[i] = localVariable
+	}
+	if err := d.Set("variable", localVariables); err != nil {
+		return err
+	}
+
 	d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds)
 
 	d.Set("locations", syntheticsTest.Locations)
@@ -989,5 +1070,20 @@ func convertToString(i interface{}) string {
 			return string(valStrr)
 		}
 		return ""
+	}
+}
+
+func convertToSyntheticsBrowserVariableType(s string) (datadogV1.SyntheticsBrowserVariableType, error) {
+	switch s {
+	case "element":
+		return datadogV1.SYNTHETICSBROWSERVARIABLETYPE_ELEMENT, nil
+	case "email":
+		return datadogV1.SYNTHETICSBROWSERVARIABLETYPE_EMAIL, nil
+	case "global":
+		return datadogV1.SYNTHETICSBROWSERVARIABLETYPE_GLOBAL, nil
+	case "text":
+		return datadogV1.SYNTHETICSBROWSERVARIABLETYPE_TEXT, nil
+	default:
+		return "", fmt.Errorf("variable.type must be one of ['element', 'email', 'global', 'text'], got: %s", s)
 	}
 }
