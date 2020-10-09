@@ -5,10 +5,24 @@ DIR=~/.terraform.d/plugins
 ZORKIAN_VERSION=master
 API_CLIENT_VERSION=master
 
+# Local variables for installing the plugin to a local
+# plugin mirrior, used for manual build/testing with terraform 0.13
+VERSION=0.0.1
+LOCAL_PROVIDERS="$$HOME/.terraform.d/plugins_local"
+BINARY_PATH="registry.terraform.io/datadog/datadog/${VERSION}/$$(go env GOOS)_$$(go env GOARCH)/terraform-provider-datadog_v${VERSION}"
+
+
 default: build
 
 build: fmtcheck
 	go install
+
+# Builds the provider and adds it to an independently configured filesystem_mirror folder.
+# Taken from - https://github.com/hashicorp/terraform/issues/25906#issuecomment-676495452
+build_013:
+	@echo "Please configure your .terraformrc file to contain a filesystem_mirror block pointed at '${LOCAL_PROVIDERS}' for 'registry.terraform.io/Datadog/datadog'"
+	@echo "You MUST delete existing cached plugins from any .terraform directories in Terraform installations you want to test against so that it will perform a lookup on the local mirror"
+	go build -o "${LOCAL_PROVIDERS}/${BINARY_PATH}"
 
 install: fmtcheck
 	mkdir -vp $(DIR)

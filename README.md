@@ -37,8 +37,33 @@ Further [usage documentation is available on the Terraform website](https://www.
 
 ## Developing the Provider
 
-If you wish to work on the provider, you'll first need [Go](http://www.golang.org) installed on your machine (version 1.11+ is _required_). You'll also need to correctly setup a [GOPATH](http://golang.org/doc/code.html#GOPATH), as well as adding `$GOPATH/bin` to your `$PATH`.
+If you wish to build the provider locally to manually execute terraform examples, you'll first need [Go](http://www.golang.org) installed on your machine (version 1.11+ is _required_). You'll also need to correctly setup a [GOPATH](http://golang.org/doc/code.html#GOPATH), as well as adding `$GOPATH/bin` to your `$PATH`.
 
+<details><summary>Terraform 0.13.x</summary>
+To compile the provider, run `make build_013`. This will build the provider and put the provider binary in a locally mirrored plugin directory.
+
+```sh
+$ make build_013
+```
+
+You also need a $HOME/.terraformrc file that contains:
+
+```
+provider_installation {
+  filesystem_mirror {
+    path    = "$HOME/.terraform.d/plugins_local/"
+    include = ["registry.terraform.io/datadog/datadog"]
+  }
+  direct {
+    exclude = ["registry.terraform.io/datadog/datadog"]
+  }
+}
+```
+
+From there, you can run any `terraform init` or plan/apply within an example terraform module directory.
+</details>
+
+<details><summary>Terraform <= 0.12.x</summary>
 To compile the provider, run `make build`. This will build the provider and put the provider binary in the `$GOPATH/bin` directory.
 
 ```sh
@@ -47,6 +72,8 @@ $ make build
 $ $GOPATH/bin/terraform-provider-datadog
 ...
 ```
+</details>
+
 
 In order to test the provider, you can simply run `make test`.
 
