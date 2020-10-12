@@ -19,6 +19,8 @@ type LogsArchiveCreateRequestAttributes struct {
 	Name string `json:"name"`
 	// The archive query/filter. Logs matching this query are included in the archive.
 	Query string `json:"query"`
+	// An array of tags to add to rehydrated logs from an archive.
+	RehydrationTags *[]string `json:"rehydration_tags,omitempty"`
 }
 
 // NewLogsArchiveCreateRequestAttributes instantiates a new LogsArchiveCreateRequestAttributes object
@@ -113,6 +115,38 @@ func (o *LogsArchiveCreateRequestAttributes) SetQuery(v string) {
 	o.Query = v
 }
 
+// GetRehydrationTags returns the RehydrationTags field value if set, zero value otherwise.
+func (o *LogsArchiveCreateRequestAttributes) GetRehydrationTags() []string {
+	if o == nil || o.RehydrationTags == nil {
+		var ret []string
+		return ret
+	}
+	return *o.RehydrationTags
+}
+
+// GetRehydrationTagsOk returns a tuple with the RehydrationTags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogsArchiveCreateRequestAttributes) GetRehydrationTagsOk() (*[]string, bool) {
+	if o == nil || o.RehydrationTags == nil {
+		return nil, false
+	}
+	return o.RehydrationTags, true
+}
+
+// HasRehydrationTags returns a boolean if a field has been set.
+func (o *LogsArchiveCreateRequestAttributes) HasRehydrationTags() bool {
+	if o != nil && o.RehydrationTags != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRehydrationTags gets a reference to the given []string and assigns it to the RehydrationTags field.
+func (o *LogsArchiveCreateRequestAttributes) SetRehydrationTags(v []string) {
+	o.RehydrationTags = &v
+}
+
 func (o LogsArchiveCreateRequestAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
@@ -123,6 +157,9 @@ func (o LogsArchiveCreateRequestAttributes) MarshalJSON() ([]byte, error) {
 	}
 	if true {
 		toSerialize["query"] = o.Query
+	}
+	if o.RehydrationTags != nil {
+		toSerialize["rehydration_tags"] = o.RehydrationTags
 	}
 	return json.Marshal(toSerialize)
 }
