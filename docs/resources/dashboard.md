@@ -860,6 +860,7 @@ Nested `widget` blocks have the following structure:
       - `rum_query`: (Optional) The rum query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
       - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
       - `display_type`: (Optional) Type of display to use for the request. Available values are: `area`, `bars`, or `line`.
+      - `on_right_axis`: (Optional) Boolean indicating whether the request will use the right or left Y-Axis.
       - `style`: (Optional) Style of the widget graph. One nested block is allowed with the following structure:
         - `palette`: (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
         - `line_type`: (Optional) Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.
@@ -878,6 +879,7 @@ Nested `widget` blocks have the following structure:
       - `q`: (Required) The event query to use in the widget.
       - `tags_execution`: (Optional) The execution method for multi-value filters.
     - `yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
+    - `right_yaxis`: (Optional) Nested block describing the right Y-Axis Controls. See the `on_right_axis` property for which request will use this axis. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
     - `custom_link`: (Optional) Nested block describing a custom link. The structure of this block is described [below](dashboard.html#nested-widget-custom_link-blocks).
   - `toplist_definition`: The definition for a Toplist widget. Exactly one nested block is allowed with the following structure:
     - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
