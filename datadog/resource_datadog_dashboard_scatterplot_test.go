@@ -6,64 +6,65 @@ import (
 
 // JSON export used as test scenario
 //{
-//    "notify_list": [],
-//    "description": "",
-//    "author_name": "--redacted--",
-//    "id": "--redacted--",
-//    "url": "--redacted--",
-//    "template_variables": [],
-//    "is_read_only": false,
-//    "title": "TF - Scatterplot Example",
-//    "created_at": "2020-06-09T13:14:45.961870+00:00",
-//    "modified_at": "2020-06-09T13:20:09.535055+00:00",
-//    "author_handle": "--redacted--",
-//    "widgets": [
-//        {
-//            "definition": {
-//                "title_size": "16",
-//                "yaxis": {
-//                    "scale": "log",
-//                    "include_zero": false,
-//                    "min": "1",
-//                    "label": "mem (Gib)"
-//                },
-//                "title_align": "right",
-//                "color_by_groups": [
-//                    "app"
-//                ],
-//                "xaxis": {
-//                    "scale": "log",
-//                    "max": "100",
-//                    "min": "0",
-//                    "label": "cpu (%)",
-//                    "include_zero": false,
-//                },
-//                "time": {
-//                    "live_span": "15m"
-//                },
-//                "title": "system.mem.used and system.cpu.user by service,team,app colored by app",
-//                "requests": {
-//                    "y": {
-//                        "q": "avg:system.mem.used{env:prod} by {service, team, app}",
-//                        "aggregator": "avg"
-//                    },
-//                    "x": {
-//                        "q": "avg:system.cpu.user{account:prod} by {service, team, app}",
-//                        "aggregator": "avg"
-//                    }
-//                },
-//                "type": "scatterplot"
+//   "notify_list":[],
+//   "description":"Created using the Datadog provider in Terraform",
+//   "author_name":"--redacted--",
+//   "template_variable_presets":[],
+//   "template_variables":[],
+//   "is_read_only":true,
+//   "id":"--redacted--",
+//   "title":"{{uniq}}",
+//   "url":"--redacted--",
+//   "created_at":"2020-10-07T21:18:21.603323+00:00",
+//   "modified_at":"2020-10-07T21:18:21.603323+00:00",
+//   "author_handle":"--redacted--",
+//   "widgets":[
+//      {
+//         "definition":{
+//            "custom_links":[
+//               {
+//                  "link":"https://app.datadoghq.com/dashboard/lists",
+//                  "label":"Test Custom Link label"
+//               }
+//            ],
+//            "title_size":"16",
+//            "yaxis":{
+//               "include_zero":false,
+//               "scale":"log",
+//               "min":"1",
+//               "label":"mem (Gib)"
 //            },
-//            "layout": {
-//                "y": 3,
-//                "x": 13,
-//                "height": 15,
-//                "width": 47
+//            "title_align":"right",
+//            "color_by_groups":[
+//               "app"
+//            ],
+//            "xaxis":{
+//               "include_zero":false,
+//               "max":"100",
+//               "min":"0",
+//               "scale":"log",
+//               "label":"cpu (%)"
 //            },
-//            "id": 0
-//        }
-//    ],
-//    "layout_type": "free"
+//            "time":{
+//               "live_span":"15m"
+//            },
+//            "title":"system.mem.used and system.cpu.user by service,team,app colored by app",
+//            "requests":{
+//               "y":{
+//                  "q":"avg:system.mem.used{env:prod} by {service, team, app}",
+//                  "aggregator":"avg"
+//               },
+//               "x":{
+//                  "q":"avg:system.cpu.user{account:prod} by {service, team, app}",
+//                  "aggregator":"avg"
+//               }
+//            },
+//            "type":"scatterplot"
+//         },
+//         "id": "--redacted--"
+//      }
+//   ],
+//   "layout_type":"ordered"
 //}
 
 const datadogDashboardScatterplotConfig = `
@@ -105,6 +106,10 @@ resource "datadog_dashboard" "scatterplot_dashboard" {
 					aggregator = "avg"
 				}
 			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				label = "Test Custom Link label"
+			}
 		}
 	}
 }
@@ -134,6 +139,9 @@ var datadogDashboardScatterplotAsserts = []string{
 	"widget.0.scatterplot_definition.0.xaxis.0.label = cpu (%)",
 	"widget.0.scatterplot_definition.0.request.0.y.0.aggregator = avg",
 	"widget.0.scatterplot_definition.0.xaxis.0.scale = log",
+	"widget.0.scatterplot_definition.0.custom_link.# = 1",
+	"widget.0.scatterplot_definition.0.custom_link.0.label = Test Custom Link label",
+	"widget.0.scatterplot_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
 }
 
 func TestAccDatadogDashboardScatterplot(t *testing.T) {
