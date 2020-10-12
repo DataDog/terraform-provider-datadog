@@ -27,6 +27,13 @@ func tzData(name string) ([]byte, bool) {
 	return data, ok
 }
 
+// LoadLocation loads timezone data from embedded tzinfo and does not rely on
+// the operating system providing tzdata.
+//
+// Same as time.LoadLocation if name is "" or "UTC", time.UTC is returned, and
+// if name is "Local", time.Local is returned.
+//
+// Returns an error if the name is unknown.
 func LoadLocation(name string) (*time.Location, error) {
 	if name == "" || name == "UTC" || name == "Local" {
 		return time.LoadLocation(name)

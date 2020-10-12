@@ -1,25 +1,16 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
-require (
-	4d63.com/tz v1.1.0
-	github.com/DataDog/datadog-api-client-go v1.0.0-beta.8.0.20201008085516-bfe11bf34747
-	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
-	github.com/dnaeon/go-vcr v1.0.1
-	github.com/fatih/color v1.9.0 // indirect
-	github.com/hashicorp/go-cleanhttp v0.5.1
-	github.com/hashicorp/go-hclog v0.12.0 // indirect
-	github.com/hashicorp/go-uuid v1.0.2 // indirect
-	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/hashicorp/terraform-plugin-sdk v1.15.0
-	github.com/jonboulle/clockwork v0.1.0
-	github.com/kr/pretty v0.2.0
-	github.com/mattn/go-isatty v0.0.12 // indirect
-	github.com/stretchr/objx v0.1.1 // indirect
-	github.com/zorkian/go-datadog-api v2.29.1-0.20201007103024-437d51d487bf+incompatible
-	golang.org/x/crypto v0.0.0-20200204104054-c9f3fb736b72 // indirect
-	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
-	golang.org/x/text v0.3.3 // indirect
-	gopkg.in/DataDog/dd-trace-go.v1 v1.25.0
-)
-
 go 1.13
+
+require (
+	4d63.com/tz v1.2.0
+	github.com/DataDog/datadog-api-client-go v1.0.0-beta.8.0.20201009142733-02b597ba8445
+	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
+	github.com/dnaeon/go-vcr v1.0.1
+	github.com/hashicorp/go-cleanhttp v0.5.1
+	github.com/hashicorp/terraform-plugin-sdk v1.16.0
+	github.com/jonboulle/clockwork v0.1.0
+	github.com/kr/pretty v0.2.1
+	github.com/zorkian/go-datadog-api v2.29.1-0.20201007103024-437d51d487bf+incompatible
+	gopkg.in/DataDog/dd-trace-go.v1 v1.24.1
+)
