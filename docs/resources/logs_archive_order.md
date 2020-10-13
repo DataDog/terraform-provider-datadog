@@ -11,8 +11,8 @@ Provides a Datadog [Logs Archive API](https://docs.datadoghq.com/api/v2/logs-arc
 ```hcl
 resource "datadog_logs_archive_order" "sample_archive_order" {
     archive_ids = [
-        "${datadog_logs_archive.sample_archive_2.id}",
-        "${datadog_logs_archive.sample_archive_1.id}"
+        "${datadog_logs_archive.sample_archive_1.id}",
+        "${datadog_logs_archive.sample_archive_2.id}"
     ]
 }
 ```
@@ -32,5 +32,5 @@ The following arguments are supported:
 There must be at most one `datadog_logs_archive_order` resource. You can import the `datadog_logs_archive_order` or create an archive order.
 
 ```
-terraform import <datadog_logs_archive_order.name> <name>
+terraform import <datadog_logs_archive_order.name> archiveOrderID
 ```
