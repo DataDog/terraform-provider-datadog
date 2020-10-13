@@ -20,7 +20,8 @@ func resourceDatadogLogsArchiveOrder() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"archive_ids": {
 				Type:     schema.TypeList,
-				Required: true,
+				Computed: true,
+				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 		},
