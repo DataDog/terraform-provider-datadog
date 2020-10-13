@@ -28,7 +28,28 @@ func resourceDatadogLogsArchiveOrder() *schema.Resource {
 }
 
 func resourceDatadogLogsArchiveOrderCreate(d *schema.ResourceData, meta interface{}) error {
-	return resourceDatadogLogsArchiveOrderUpdate(d, meta)
+	ddArchiveList, err := buildDatadogArchiveOrderCreateReq(d)
+	if err != nil {
+		return err
+	}
+
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
+
+	if len(ddArchiveList.Data.Attributes.GetArchiveIds()) > 0 {
+		return resourceDatadogLogsArchiveOrderUpdate(d, meta)
+	}
+	_, _, err = datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2).Body(*ddArchiveList).Execute()
+	if err != nil {
+		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
+			fmt.Printf("cannot map archives to existing ones, will try to import it with Id `archiveOrderID`\n")
+		} else {
+			return translateClientError(err, "error creating logs archive order")
+		}
+	}
+	d.SetId("archiveOrderID")
+	return resourceDatadogLogsArchiveOrderRead(d, meta)
 }
 
 func resourceDatadogLogsArchiveOrderRead(d *schema.ResourceData, meta interface{}) error {
@@ -69,6 +90,7 @@ func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interfac
 		}
 		return translateClientError(err, "error updating logs archive order")
 	}
+	d.SetId("archiveOrderID")
 	return resourceDatadogLogsArchiveOrderRead(d, meta)
 }
 
