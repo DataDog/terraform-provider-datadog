@@ -33,7 +33,7 @@ The following arguments are supported:
 
 ### See also
 
-- [Datadog API Reference > Integrations > Azure](https://https://docs.datadoghq.com/integrations/azure/)
+- [Datadog API Reference > Integrations > Azure](https://docs.datadoghq.com/integrations/azure/)
 
 ## Import
 
