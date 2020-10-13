@@ -2,4 +2,12 @@
   rev: 2.1.1
   hooks:
     - id: prettier
+      name: Format all common files
+      language: node
+      language_version: 14.12.0
+      entry: prettier --write --list-different --ignore-unknown
       args: [--prose-wrap=never, --embedded-language-formatting=off]
+      additional_dependencies:
+        # When updating the version of prettier, make sure to check the  pre-commit file
+        # And keep the `entry` here up to date https://github.com/prettier/prettier/blob/master/.pre-commit-hooks.yaml
+        - prettier@2.0.5

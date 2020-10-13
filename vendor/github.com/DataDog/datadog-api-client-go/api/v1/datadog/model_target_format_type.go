@@ -13,7 +13,7 @@ import (
 	"fmt"
 )
 
-// TargetFormatType If the target of the remapper is an attribute, try to cast the value to a new specific type. If the cast is not possible, the original type is kept. `string`, `integer`, or `double` are the possible types.
+// TargetFormatType If the `target_type` of the remapper is `attribute`, try to cast the value to a new specific type. If the cast is not possible, the original type is kept. `string`, `integer`, or `double` are the possible types. If the `target_type` is `tag`, this parameter may not be specified.
 type TargetFormatType string
 
 // List of TargetFormatType

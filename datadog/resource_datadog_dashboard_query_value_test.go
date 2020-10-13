@@ -6,59 +6,62 @@ import (
 
 // JSON export used as test scenario
 //{
-//    "notify_list": [],
-//    "description": null,
-//    "author_name": "--redacted--",
-//    "id": "--redacted--",
-//    "url": "--redacted--",
-//    "template_variables": [],
-//    "is_read_only": false,
-//    "title": "TF - Query Value example",
-//    "created_at": "2020-06-09T11:41:15.788029+00:00",
-//    "modified_at": "2020-06-09T11:44:13.755796+00:00",
-//    "author_handle": "--redacted--",
-//    "widgets": [
-//        {
-//            "definition": {
-//                "title_size": "16",
-//                "title": "Avg of system.mem.free over account:prod",
-//                "title_align": "center",
-//                "custom_unit": "Gib",
-//                "precision": 3,
-//                "time": {
-//                    "live_span": "1h"
-//                },
-//                "autoscale": true,
-//                "requests": [
-//                    {
-//                        "q": "avg:system.mem.free{account:prod}",
-//                        "aggregator": "max",
-//                        "conditional_formats": [
-//                            {
-//                                "palette": "white_on_red",
-//                                "value": 9,
-//                                "comparator": "<"
-//                            },
-//                            {
-//                                "palette": "white_on_green",
-//                                "value": 9,
-//                                "comparator": ">="
-//                            }
-//                        ]
-//                    }
-//                ],
-//                "type": "query_value"
+//   "notify_list":[],
+//   "description":"Created using the Datadog provider in Terraform",
+//   "author_name":"--redacted--",
+//   "template_variable_presets":[],
+//   "template_variables":[],
+//   "is_read_only":true,
+//   "id":"--redacted--",
+//   "title":"{{uniq}}",
+//   "url":"--redacted--",
+//   "created_at":"2020-10-07T21:08:56.788685+00:00",
+//   "modified_at":"2020-10-07T21:08:56.788685+00:00",
+//   "author_handle":"--redacted--",
+//   "widgets":[
+//      {
+//         "definition":{
+//            "custom_links":[
+//               {
+//                  "link":"https://app.datadoghq.com/dashboard/lists",
+//                  "label":"Test Custom Link label"
+//               }
+//            ],
+//            "autoscale":true,
+//            "title":"Avg of system.mem.free over account:prod",
+//            "title_align":"center",
+//            "custom_unit":"Gib",
+//            "precision":3,
+//            "time":{
+//               "live_span":"1h"
 //            },
-//            "layout": {
-//                "y": 2,
-//                "x": 2,
-//                "height": 15,
-//                "width": 47
-//            },
-//            "id": 0
-//        }
-//    ],
-//    "layout_type": "free"
+//            "title_size":"16",
+//            "requests":[
+//               {
+//                  "q":"avg:system.mem.free{account:prod}",
+//                  "aggregator":"max",
+//                  "conditional_formats":[
+//                     {
+//                        "palette":"white_on_red",
+//                        "hide_value":false,
+//                        "value":9,
+//                        "comparator":"<"
+//                     },
+//                     {
+//                        "palette":"white_on_green",
+//                        "hide_value":false,
+//                        "value":9,
+//                        "comparator":">="
+//                     }
+//                  ]
+//               }
+//            ],
+//            "type":"query_value"
+//         },
+//         "id": "--redacted--"
+//      }
+//   ],
+//   "layout_type":"ordered"
 //}
 
 const datadogDashboardQueryValueConfig = `
@@ -92,6 +95,10 @@ resource "datadog_dashboard" "query_value_dashboard" {
 			}
 			time = {
 				live_span = "1h"
+			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				label = "Test Custom Link label"
 			}
 		}
 	}
@@ -130,6 +137,9 @@ var datadogDashboardQueryValueAsserts = []string{
 	"widget.0.query_value_definition.0.request.0.conditional_formats.0.custom_fg_color =",
 	"is_read_only = true",
 	"title = {{uniq}}",
+	"widget.0.query_value_definition.0.custom_link.# = 1",
+	"widget.0.query_value_definition.0.custom_link.0.label = Test Custom Link label",
+	"widget.0.query_value_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
 }
 
 func TestAccDatadogDashboardQueryValue(t *testing.T) {

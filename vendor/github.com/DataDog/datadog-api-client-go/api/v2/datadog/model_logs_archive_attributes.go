@@ -18,8 +18,10 @@ type LogsArchiveAttributes struct {
 	// The archive name.
 	Name string `json:"name"`
 	// The archive query/filter. Logs matching this query are included in the archive.
-	Query string            `json:"query"`
-	State *LogsArchiveState `json:"state,omitempty"`
+	Query string `json:"query"`
+	// An array of tags to add to rehydrated logs from an archive.
+	RehydrationTags *[]string         `json:"rehydration_tags,omitempty"`
+	State           *LogsArchiveState `json:"state,omitempty"`
 }
 
 // NewLogsArchiveAttributes instantiates a new LogsArchiveAttributes object
@@ -116,6 +118,38 @@ func (o *LogsArchiveAttributes) SetQuery(v string) {
 	o.Query = v
 }
 
+// GetRehydrationTags returns the RehydrationTags field value if set, zero value otherwise.
+func (o *LogsArchiveAttributes) GetRehydrationTags() []string {
+	if o == nil || o.RehydrationTags == nil {
+		var ret []string
+		return ret
+	}
+	return *o.RehydrationTags
+}
+
+// GetRehydrationTagsOk returns a tuple with the RehydrationTags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogsArchiveAttributes) GetRehydrationTagsOk() (*[]string, bool) {
+	if o == nil || o.RehydrationTags == nil {
+		return nil, false
+	}
+	return o.RehydrationTags, true
+}
+
+// HasRehydrationTags returns a boolean if a field has been set.
+func (o *LogsArchiveAttributes) HasRehydrationTags() bool {
+	if o != nil && o.RehydrationTags != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRehydrationTags gets a reference to the given []string and assigns it to the RehydrationTags field.
+func (o *LogsArchiveAttributes) SetRehydrationTags(v []string) {
+	o.RehydrationTags = &v
+}
+
 // GetState returns the State field value if set, zero value otherwise.
 func (o *LogsArchiveAttributes) GetState() LogsArchiveState {
 	if o == nil || o.State == nil {
@@ -158,6 +192,9 @@ func (o LogsArchiveAttributes) MarshalJSON() ([]byte, error) {
 	}
 	if true {
 		toSerialize["query"] = o.Query
+	}
+	if o.RehydrationTags != nil {
+		toSerialize["rehydration_tags"] = o.RehydrationTags
 	}
 	if o.State != nil {
 		toSerialize["state"] = o.State
