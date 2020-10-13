@@ -11,8 +11,8 @@ Provides a Datadog [Logs Archive API](https://docs.datadoghq.com/api/v2/logs-arc
 ```hcl
 resource "datadog_logs_archive_order" "sample_archive_order" {
     archive_ids = [
-        "${datadog_logs_archive.sample_archive_1.id}",
-        "${datadog_logs_archive.sample_archive_2.id}"
+        "${datadog_logs_archive.sample_archive_2.id}",
+        "${datadog_logs_archive.sample_archive_1.id}"
     ]
 }
 ```
@@ -21,7 +21,7 @@ resource "datadog_logs_archive_order" "sample_archive_order" {
 
 The following arguments are supported:
 
-- `archive_ids`: (Required) The archive IDs list. The order of archive IDs in this attribute defines the overall archive order for logs.
+- `archive_ids`: (Optional, Computed) The archive IDs list. The order of archive IDs in this attribute defines the overall archive order for logs. If `archive_ids` is empty or not specified, it will import the actual archive order, and create the resource. Otherwise, it will try to update the order.
 
 ## Attributes Reference
 
@@ -29,7 +29,7 @@ The following arguments are supported:
 
 ## Import
 
-There must be at most one `datadog_logs_archive_order` resource. Archive order creation is not supported from logs config API. You can import the `datadog_logs_archive_order` or create an archive order (which is actually doing the update operation).
+There must be at most one `datadog_logs_archive_order` resource. You can import the `datadog_logs_archive_order` or create an archive order.
 
 ```
 terraform import <datadog_logs_archive_order.name> <name>
