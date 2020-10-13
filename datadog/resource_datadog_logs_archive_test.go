@@ -145,6 +145,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
     account_id   = "%s"
     role_name    = "testacc-datadog-integration-role"
   }
+  rehydration_tags = ["team:intake", "team:app"]
 }`, uniq, uniq)
 }
 
@@ -174,6 +175,10 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 						"datadog_logs_archive.my_s3_archive", "s3.role_name", "testacc-datadog-integration-role"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "s3.path", "/path/foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "rehydration_tags.0", "team:intake"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "rehydration_tags.1", "team:app"),
 				),
 			},
 		},
@@ -223,6 +228,8 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "name", "my first s3 archive after update"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "rehydration_tags.#", "0"),
 				),
 			},
 		},
