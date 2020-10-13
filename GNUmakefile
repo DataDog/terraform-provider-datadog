@@ -6,7 +6,7 @@ ZORKIAN_VERSION=master
 API_CLIENT_VERSION=master
 
 # Local variables for installing the plugin to a local
-# plugin mirrior, used for manual build/testing with terraform 0.13
+# plugin mirror, used for manual build/testing with terraform 0.13
 VERSION=0.0.1
 LOCAL_PROVIDERS="$$HOME/.terraform.d/plugins_local"
 BINARY_PATH="registry.terraform.io/datadog/datadog/${VERSION}/$$(go env GOOS)_$$(go env GOARCH)/terraform-provider-datadog_v${VERSION}"
