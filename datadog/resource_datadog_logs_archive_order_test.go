@@ -43,7 +43,6 @@ func TestAccDatadogLogsArchiveOrder_basic(t *testing.T) {
 					resource.TestCheckResourceAttrSet(
 						"datadog_logs_archive_order.archives", "archive_ids.#"),
 					testAccCheckArchiveOrderResourceMatch(accProvider, "datadog_logs_archive_order.archives", "archive_ids.0"),
-					testAccCheckArchiveOrderResourceMatch(accProvider, "datadog_logs_archive_order.archives", "archive_ids.1"),
 				),
 				ExpectNonEmptyPlan: true,
 			},
@@ -69,7 +68,6 @@ func TestAccDatadogLogsArchiveOrder_empty(t *testing.T) {
 					resource.TestCheckResourceAttrSet(
 						"datadog_logs_archive_order.archives", "archive_ids.#"),
 					testAccCheckArchiveOrderResourceMatch(accProvider, "datadog_logs_archive_order.archives", "archive_ids.0"),
-					testAccCheckArchiveOrderResourceMatch(accProvider, "datadog_logs_archive_order.archives", "archive_ids.1"),
 				),
 			},
 		},
