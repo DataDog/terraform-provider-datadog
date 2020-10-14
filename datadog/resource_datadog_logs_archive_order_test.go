@@ -29,7 +29,7 @@ func TestAccDatadogLogsArchiveOrder_basic(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckPipelineDestroy(accProvider),
@@ -53,7 +53,7 @@ func TestAccDatadogLogsArchiveOrder_empty(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckPipelineDestroy(accProvider),
