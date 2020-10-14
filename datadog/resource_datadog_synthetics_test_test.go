@@ -2,9 +2,10 @@ package datadog
 
 import (
 	"fmt"
-	"github.com/jonboulle/clockwork"
 	"strings"
 	"testing"
+
+	"github.com/jonboulle/clockwork"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -1375,6 +1376,14 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 				"datadog_synthetics_test.bar", "step.0.params", "{\"check\":\"contains\",\"value\":\"content\"}"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "variable.0.type", "text"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "variable.0.name", "MY_PATTERN_VAR"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "variable.0.pattern", "{{numeric(3)}}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "variable.0.example", "597"),
 		),
 	}
 }
@@ -1425,6 +1434,13 @@ resource "datadog_synthetics_test" "bar" {
 	        "check": "contains",
 	        "value": "content"
 	    })
+	}
+
+	variable {
+		type = "text"
+		name = "MY_PATTERN_VAR"
+		pattern = "{{numeric(3)}}"
+		example = "597"
 	}
 }`, uniq)
 }
@@ -1501,6 +1517,14 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 				"datadog_synthetics_test.bar", "step.1.params", "{\"value\":\"1\"}"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "variable.0.type", "text"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "variable.0.name", "MY_PATTERN_VAR"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "variable.0.pattern", "{{numeric(4)}}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "variable.0.example", "5970"),
 		),
 	}
 }
@@ -1557,6 +1581,13 @@ resource "datadog_synthetics_test" "bar" {
 	    params = jsonencode({
 	        "value": "1"
 	    })
+	}
+
+	variable {
+		type = "text"
+		name = "MY_PATTERN_VAR"
+		pattern = "{{numeric(4)}}"
+		example = "5970"
 	}
 }`, uniq)
 }

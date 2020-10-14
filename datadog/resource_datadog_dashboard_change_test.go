@@ -6,49 +6,63 @@ import (
 
 // JSON export used as test scenario
 //{
-//    "notify_list": [],
-//    "description": "",
-//    "author_name": "--redacted--",
-//    "id": "--redacted--",
-//    "url": "--redacted--",
-//    "template_variables": [],
-//    "is_read_only": false,
-//    "title": "TF - Change Example",
-//    "created_at": "2020-06-09T13:01:22.235028+00:00",
-//    "modified_at": "2020-06-09T13:03:15.925532+00:00",
-//    "author_handle": "--redacted--",
-//    "widgets": [
-//        {
-//            "definition": {
-//                "title_size": "16",
-//                "title": "Sum of system.cpu.user over * by service,account",
-//                "title_align": "left",
-//                "time": {
-//                    "live_span": "1h"
-//                },
-//                "requests": [
-//                    {
-//                        "change_type": "relative",
-//                        "order_dir": "desc",
-//                        "compare_to": "day_before",
-//                        "q": "sum:system.cpu.user{*} by {service,account}",
-//                        "show_present": true,
-//                        "increase_good": false,
-//                        "order_by": "change"
-//                    }
-//                ],
-//                "type": "change"
+//   "notify_list":[],
+//   "description":"Created using the Datadog provider in Terraform",
+//   "author_name":"--redacted--",
+//   "template_variable_presets":[],
+//   "template_variables":[],
+//   "is_read_only":true,
+//   "id":"--redacted--",
+//   "title":"{{uniq}}",
+//   "url":"--redacted--",
+//   "created_at":"2020-09-29T19:45:05.502444+00:00",
+//   "modified_at":"2020-09-29T19:45:05.502444+00:00",
+//   "author_handle":"--redacted--",
+//   "widgets":[
+//      {
+//         "definition":{
+//            "requests":[
+//               {
+//                  "q":"sum:system.cpu.user{*} by {service,account}",
+//                  "show_present":false,
+//                  "increase_good":false
+//               }
+//            ],
+//            "type":"change"
+//         },
+//         "id": "--redacted--"
+//      },
+//      {
+//         "definition":{
+//            "custom_links":[
+//               {
+//                  "link":"https://app.datadoghq.com/dashboard/lists",
+//                  "label":"Test Custom Link label"
+//               }
+//            ],
+//            "title_size":"16",
+//            "title":"Sum of system.cpu.user over * by service,account",
+//            "title_align":"left",
+//            "time":{
+//               "live_span":"1h"
 //            },
-//            "layout": {
-//                "y": 6,
-//                "x": 9,
-//                "height": 15,
-//                "width": 47
-//            },
-//            "id": 1
-//        }
-//    ],
-//    "layout_type": "free"
+//            "requests":[
+//               {
+//                  "change_type":"absolute",
+//                  "order_dir":"desc",
+//                  "compare_to":"day_before",
+//                  "q":"sum:system.cpu.user{*} by {service,account}",
+//                  "show_present":true,
+//                  "increase_good":false,
+//                  "order_by":"change"
+//               }
+//            ],
+//            "type":"change"
+//         },
+//         "id": "--redacted--"
+//      }
+//   ],
+//   "layout_type":"ordered"
 //}
 
 const datadogDashboardChangeConfig = `
@@ -64,7 +78,7 @@ resource "datadog_dashboard" "change_dashboard" {
 			}
 		}
 	}
-	
+
 	widget {
 		change_definition {
 			request {
@@ -81,6 +95,10 @@ resource "datadog_dashboard" "change_dashboard" {
 			title_align = "left"
 			time = {
 				live_span = "1h"
+			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				label = "Test Custom Link label"
 			}
 		}
 	}
@@ -113,6 +131,9 @@ var datadogDashboardChangeAsserts = []string{
 	"widget.0.change_definition.0.request.0.order_by =",
 	"widget.1.change_definition.0.time.live_span = 1h",
 	"widget.0.change_definition.0.request.0.compare_to =",
+	"widget.1.change_definition.0.custom_link.# = 1",
+	"widget.1.change_definition.0.custom_link.0.label = Test Custom Link label",
+	"widget.1.change_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
 }
 
 func TestAccDatadogDashboardChange(t *testing.T) {

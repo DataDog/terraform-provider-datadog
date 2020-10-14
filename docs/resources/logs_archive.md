@@ -45,6 +45,7 @@ The following arguments are supported:
   - `tenant_id`: (Required) Your tenant id.
   - `client_id`: (Required) Your client id.
   - `storage_account`: (Required) The associated storage account.
+- `rehydration_tags`: (Optional) An array of tags to add to rehydrated logs from an archive.
 
 An archive definition must have one (and only one) of the three possible types defined: s3, gcs, azure.
 

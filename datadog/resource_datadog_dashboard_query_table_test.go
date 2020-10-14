@@ -6,71 +6,75 @@ import (
 
 // JSON export used as test scenario
 //{
-//    "notify_list": [],
-//    "description": "",
-//    "author_name": "--redacted--",
-//    "id": "--redacted--",
-//    "url": "--redacted--",
-//    "template_variables": [],
-//    "is_read_only": false,
-//    "title": "TF - Query Table Example",
-//    "created_at": "2020-06-09T11:53:33.269271+00:00",
-//    "modified_at": "2020-06-09T11:57:11.580865+00:00",
-//    "author_handle": "--redacted--",
-//    "widgets": [
-//        {
-//            "definition": {
-//                "title_size": "16",
-//                "title": "system.cpu.user, system.load.1",
-//                "title_align": "right",
-//                "time": {
-//                    "live_span": "1d"
-//                },
-//                "requests": [
-//                    {
-//                        "aggregator": "max",
-//                        "conditional_formats": [
-//                            {
-//                                "palette": "white_on_green",
-//                                "value": 90,
-//                                "comparator": "<"
-//                            },
-//                            {
-//                                "palette": "white_on_red",
-//                                "value": 90,
-//                                "comparator": ">="
-//                            }
-//                        ],
-//                        "q": "avg:system.cpu.user{account:prod} by {service, team}",
-//                        "alias": "cpu user",
-//                        "limit": 25,
-//                        "order": "desc"
-//                    },
-//                    {
-//                        "q": "avg:system.load.1{*} by {service, team}",
-//                        "aggregator": "last",
-//                        "conditional_formats": [
-//                            {
-//                                "palette": "custom_bg",
-//                                "value": 50,
-//                                "comparator": ">"
-//                            }
-//                        ],
-//                        "alias": "system load"
-//                    }
-//                ],
-//                "type": "query_table"
+//   "notify_list":[],
+//   "description":"Created using the Datadog provider in Terraform",
+//   "author_name":"--redacted--",
+//   "template_variable_presets":[],
+//   "template_variables":[],
+//   "is_read_only":true,
+//   "id":"--redacted--",
+//   "title":"{{uniq}}",
+//   "url":"--redacted--",
+//   "created_at":"2020-10-07T21:25:13.807299+00:00",
+//   "modified_at":"2020-10-07T21:25:13.807299+00:00",
+//   "author_handle":"--redacted--",
+//   "widgets":[
+//      {
+//         "definition":{
+//            "custom_links":[
+//               {
+//                  "link":"https://app.datadoghq.com/dashboard/lists",
+//                  "label":"Test Custom Link label"
+//               }
+//            ],
+//            "title_size":"16",
+//            "title":"system.cpu.user, system.load.1",
+//            "title_align":"right",
+//            "time":{
+//               "live_span":"1d"
 //            },
-//            "layout": {
-//                "y": 1,
-//                "x": 1,
-//                "height": 32,
-//                "width": 54
-//            },
-//            "id": 0
-//        }
-//    ],
-//    "layout_type": "free"
+//            "requests":[
+//               {
+//                  "aggregator":"max",
+//                  "conditional_formats":[
+//                     {
+//                        "palette":"white_on_green",
+//                        "hide_value":false,
+//                        "value":90,
+//                        "comparator":"<"
+//                     },
+//                     {
+//                        "palette":"white_on_red",
+//                        "hide_value":false,
+//                        "value":90,
+//                        "comparator":">="
+//                     }
+//                  ],
+//                  "q":"avg:system.cpu.user{account:prod} by {service, team}",
+//                  "alias":"cpu user",
+//                  "limit":25,
+//                  "order":"desc"
+//               },
+//               {
+//                  "q":"avg:system.load.1{*} by {service, team}",
+//                  "aggregator":"last",
+//                  "conditional_formats":[
+//                     {
+//                        "palette":"custom_bg",
+//                        "hide_value":false,
+//                        "value":50,
+//                        "comparator":">"
+//                     }
+//                  ],
+//                  "alias":"system load"
+//               }
+//            ],
+//            "type":"query_table"
+//         },
+//         "id": "--redacted--"
+//      }
+//   ],
+//   "layout_type":"ordered"
 //}
 
 const datadogDashboardQueryTableConfig = `
@@ -114,6 +118,10 @@ resource "datadog_dashboard" "query_table_dashboard" {
 					comparator = ">"
 				}
 				alias = "system load"
+			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				label = "Test Custom Link label"
 			}
 		}
 	}
@@ -182,6 +190,9 @@ var datadogDashboardQueryTableAsserts = []string{
 	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.primary_tag = tag:*",
 	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.name = name",
 	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.row_type = resource",
+	"widget.0.query_table_definition.0.custom_link.# = 1",
+	"widget.0.query_table_definition.0.custom_link.0.label = Test Custom Link label",
+	"widget.0.query_table_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
 }
 
 func TestAccDatadogDashboardQueryTable(t *testing.T) {
