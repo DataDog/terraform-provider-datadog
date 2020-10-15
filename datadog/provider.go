@@ -75,7 +75,7 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
-			"datadog_dashboard_list":       dataSourceDatadogDashboarList(),
+			"datadog_dashboard_list":       dataSourceDatadogDashboardList(),
 			"datadog_ip_ranges":            dataSourceDatadogIpRanges(),
 			"datadog_monitor":              dataSourceDatadogMonitor(),
 			"datadog_synthetics_locations": dataSourceDatadogSyntheticsLocations(),
