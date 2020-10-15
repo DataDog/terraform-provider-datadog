@@ -28,8 +28,6 @@ type ApmStatsQueryColumnType struct {
 // will change when the set of required properties is changed
 func NewApmStatsQueryColumnType(name string) *ApmStatsQueryColumnType {
 	this := ApmStatsQueryColumnType{}
-	var cellDisplayMode TableWidgetCellDisplayMode = "number"
-	this.CellDisplayMode = &cellDisplayMode
 	this.Name = name
 	return &this
 }
@@ -39,8 +37,6 @@ func NewApmStatsQueryColumnType(name string) *ApmStatsQueryColumnType {
 // but it doesn't guarantee that properties required by API are set
 func NewApmStatsQueryColumnTypeWithDefaults() *ApmStatsQueryColumnType {
 	this := ApmStatsQueryColumnType{}
-	var cellDisplayMode TableWidgetCellDisplayMode = "number"
-	this.CellDisplayMode = &cellDisplayMode
 	return &this
 }
 
