@@ -912,7 +912,6 @@ resource "datadog_synthetics_test" "ssl" {
 
 	name = "%s"
 	message = "Notify @datadog.user"
-	tags = []
 
 	status = "paused"
 }`, uniq)

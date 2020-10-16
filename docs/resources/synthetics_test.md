@@ -202,7 +202,7 @@ The following arguments are supported:
 - `subtype`: (Optional) For type=api, http, ssl, tcp or dns (Default = http)
 - `name`: (Required) Name of Datadog synthetics test
 - `message`: (Required) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same '@username' notation as events.
-- `tags`: (Required) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI.
+- `tags`: (Optional) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI.
 - `request`: (Required) if type=api and subtype=http
   - `method`: (Optional) For type=api and subtype=http, one of DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT
   - `url`: (Required) Any url
