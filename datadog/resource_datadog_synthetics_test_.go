@@ -231,6 +231,10 @@ func syntheticsTestRequest() *schema.Schema {
 					Optional: true,
 					Default:  60,
 				},
+				"dnsServer": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
 			},
 		},
 	}
@@ -551,6 +555,9 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		portInt, _ := strconv.Atoi(attr.(string))
 		request.SetPort(int64(portInt))
 	}
+	if attr, ok := d.GetOk("request.dnsServer"); ok {
+		request.SetDnsServer(attr.(string))
+	}
 	if attr, ok := d.GetOk("request_query"); ok {
 		query := attr.(map[string]interface{})
 		if len(query) > 0 {
@@ -863,6 +870,9 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 	if actualRequest.HasPort() {
 		localRequest["port"] = convertToString(actualRequest.GetPort())
+	}
+	if actualRequest.HasDnsServer() {
+		localRequest["dnsServer"] = convertToString(actualRequest.GetDnsServer())
 	}
 	d.Set("request", localRequest)
 	d.Set("request_headers", actualRequest.Headers)
