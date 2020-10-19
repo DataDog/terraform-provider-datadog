@@ -520,6 +520,8 @@ Class | Method | HTTP request | Description
  - [SyntheticsTestPauseStatus](docs/SyntheticsTestPauseStatus.md)
  - [SyntheticsTestProcessStatus](docs/SyntheticsTestProcessStatus.md)
  - [SyntheticsTestRequest](docs/SyntheticsTestRequest.md)
+ - [SyntheticsTestRequestCertificate](docs/SyntheticsTestRequestCertificate.md)
+ - [SyntheticsTestRequestCertificateItem](docs/SyntheticsTestRequestCertificateItem.md)
  - [SyntheticsTickInterval](docs/SyntheticsTickInterval.md)
  - [SyntheticsTiming](docs/SyntheticsTiming.md)
  - [SyntheticsTriggerCITestsResponse](docs/SyntheticsTriggerCITestsResponse.md)

@@ -15,7 +15,7 @@ import (
 // LogsAggregateSort A sort rule
 type LogsAggregateSort struct {
 	Aggregation *LogsAggregationFunction `json:"aggregation,omitempty"`
-	// The metric to sort by (only used for type=metric)
+	// The metric to sort by (only used for `type=measure`)
 	Metric *string                `json:"metric,omitempty"`
 	Order  *LogsSortOrder         `json:"order,omitempty"`
 	Type   *LogsAggregateSortType `json:"type,omitempty"`
