@@ -818,11 +818,13 @@ Nested `widget` blocks have the following structure:
       - `aggregator`: (Optional) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
       - `limit`: (Required) The number of lines to show in the table.
       - `order`: (Optional) The sort order for the rows. One of `desc` or `asc`.
+      - `cell_display_mode`: (Optional) A list of display modes for each table cell. List items one of "number", "bar".
     - `title`: (Optional) The title of the widget.
     - `title_size`: (Optional) The size of the widget's title. Default is 16.
     - `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
     - `time`: (Optional) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described [below](dashboard.html#nested-widget-time-blocks).
     - `custom_link`: (Optional) Nested block describing a custom link. The structure of this block is described [below](dashboard.html#nested-widget-custom_link-blocks).
+    - `has_search_bar`: (Optional) Controls the display of the search bar. One of "auto", "always", "never".
   - `scatterplot_definition`: The definition for a Scatterplot widget. Exactly one nested block is allowed with the following structure:
     - `request`: (Required) Nested block describing the request to use when displaying the widget. Exactly one request block is allowed with the following structure:
       - `x`: (Optional) The query used for the X-Axis. Exactly one nested block is allowed with the following structure: - `q`: (Required) The metric query to use in the widget. - `aggregator`: (Optional) Aggregator used for the request. One of "avg", "min", "max", "sum", "last".
@@ -860,6 +862,7 @@ Nested `widget` blocks have the following structure:
       - `rum_query`: (Optional) The rum query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
       - `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
       - `display_type`: (Optional) Type of display to use for the request. Available values are: `area`, `bars`, or `line`.
+      - `on_right_yaxis`: (Optional) Boolean indicating whether the request will use the right or left Y-Axis.
       - `style`: (Optional) Style of the widget graph. One nested block is allowed with the following structure:
         - `palette`: (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
         - `line_type`: (Optional) Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.
@@ -878,6 +881,7 @@ Nested `widget` blocks have the following structure:
       - `q`: (Required) The event query to use in the widget.
       - `tags_execution`: (Optional) The execution method for multi-value filters.
     - `yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
+    - `right_yaxis`: (Optional) Nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
     - `custom_link`: (Optional) Nested block describing a custom link. The structure of this block is described [below](dashboard.html#nested-widget-custom_link-blocks).
   - `toplist_definition`: The definition for a Toplist widget. Exactly one nested block is allowed with the following structure:
     - `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
