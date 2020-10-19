@@ -73,6 +73,17 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					},
 				},
 			},
+			"request_client_certificate": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"cert": syntheticsTestRequestClientCertificateItem(),
+						"key":  syntheticsTestRequestClientCertificateItem(),
+					},
+				},
+			},
 			"assertions": {
 				Type:          schema.TypeList,
 				Optional:      true,
@@ -234,6 +245,30 @@ func syntheticsTestRequest() *schema.Schema {
 				"dnsServer": {
 					Type:     schema.TypeString,
 					Optional: true,
+				},
+			},
+		},
+	}
+}
+
+func syntheticsTestRequestClientCertificateItem() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		MaxItems: 1,
+		Required: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"content": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"filename": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"updated_at": {
+					Type:     schema.TypeString,
+					Required: true,
 				},
 			},
 		},
@@ -580,6 +615,38 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		}
 	}
 
+	if _, ok := d.GetOk("request_client_certificate"); ok {
+		cert := datadogV1.SyntheticsTestRequestCertificateItem{}
+		key := datadogV1.SyntheticsTestRequestCertificateItem{}
+
+		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.filename"); ok {
+			cert.SetFilename(attr.(string))
+		}
+		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
+			cert.SetContent(attr.(string))
+		}
+		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.updated_at"); ok {
+			cert.SetUpdatedAt(attr.(string))
+		}
+
+		if attr, ok := d.GetOk("request_client_certificate.0.key.0.filename"); ok {
+			key.SetFilename(attr.(string))
+		}
+		if attr, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
+			key.SetContent(attr.(string))
+		}
+		if attr, ok := d.GetOk("request_client_certificate.0.key.0.updated_at"); ok {
+			key.SetUpdatedAt(attr.(string))
+		}
+
+		clientCertificate := datadogV1.SyntheticsTestRequestCertificate{
+			Cert: &cert,
+			Key:  &key,
+		}
+
+		request.SetCertificate(clientCertificate)
+	}
+
 	config := datadogV1.NewSyntheticsTestConfig([]datadogV1.SyntheticsAssertion{}, *request)
 	config.SetVariables([]datadogV1.SyntheticsBrowserVariable{})
 
@@ -882,6 +949,32 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		localAuth["username"] = basicAuth.Username
 		localAuth["password"] = basicAuth.Password
 		d.Set("request_basicauth", []map[string]string{localAuth})
+	}
+
+	if clientCertificate, ok := actualRequest.GetCertificateOk(); ok {
+		localCertificate := make(map[string]map[string]string)
+		localCertificate["cert"] = make(map[string]string)
+		localCertificate["key"] = make(map[string]string)
+
+		cert := clientCertificate.GetCert()
+		localCertificate["cert"]["filename"] = cert.GetFilename()
+		localCertificate["cert"]["updated_at"] = cert.GetUpdatedAt()
+
+		key := clientCertificate.GetKey()
+		localCertificate["key"]["filename"] = key.GetFilename()
+		localCertificate["key"]["updated_at"] = key.GetUpdatedAt()
+
+		// the content of the certificate and the key are write-only
+		// so we need to get them from the config since they will
+		// not be in the api response
+		if configCertificateContent, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
+			localCertificate["cert"]["content"] = configCertificateContent.(string)
+		}
+		if configKeyContent, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
+			localCertificate["key"]["content"] = configKeyContent.(string)
+		}
+
+		d.Set("request_client_certificate", []map[string]map[string]string{localCertificate})
 	}
 
 	actualAssertions := syntheticsTest.GetConfig().Assertions

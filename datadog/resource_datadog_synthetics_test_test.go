@@ -502,6 +502,18 @@ func createSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_basicauth.0.password", "secret"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.content", "content-certificate"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.filename", "certificate"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.updated_at", "2020-10-16T09:23:24.857Z"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.content", "content-key"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.updated_at", "2020-10-16T09:23:24.857Z"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.#", "3"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.type", "header"),
@@ -583,6 +595,18 @@ resource "datadog_synthetics_test" "bar" {
 	request_headers = {
 		Accept = "application/json"
 		X-Datadog-Trace-ID = "1234566789"
+	}
+	request_client_certificate {
+		cert {
+			content = "content-certificate"
+			filename = "certificate"
+			updated_at = "2020-10-16T09:23:24.857Z"
+		}
+		key {
+			content = "content-key"
+			filename = "key"
+			updated_at = "2020-10-16T09:23:24.857Z"
+		}
 	}
 
 	assertion {
