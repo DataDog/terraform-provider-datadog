@@ -263,23 +263,6 @@ func TestAccDatadogSyntheticsTCPTest_Basic(t *testing.T) {
 	})
 }
 
-func TestAccDatadogSyntheticsTCPLegacyOptionsTest_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
-		Steps: []resource.TestStep{
-			createSyntheticsTCPTestLegacyOptionsStep(accProvider, clock, t),
-			// Use the create config to update with the new options_list
-			createSyntheticsTCPTestStep(accProvider, clock, t),
-		},
-	})
-}
-
 func TestAccDatadogSyntheticsTCPTest_Updated(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
@@ -416,6 +399,8 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 				"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.retry_count", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.#", "0"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -685,6 +670,8 @@ func updateSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 				"datadog_synthetics_test.foo", "options_list.0.retry.0.interval", "500"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.monitor_options.0.renotify_interval", "100"),
+			// Make sure the legacy attribute isn't set anymore
+			resource.TestCheckNoResourceAttr("datadog_synthetics_test.foo", "options.tick_every"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -1086,84 +1073,6 @@ resource "datadog_synthetics_test" "tcp" {
 
 	locations = [ "aws:eu-central-1" ]
 	options_list {
-		tick_every = 60
-	}
-
-	name = "%s"
-	message = "Notify @datadog.user"
-	tags = ["foo:bar", "baz"]
-
-	status = "paused"
-}`, uniq)
-}
-
-func createSyntheticsTCPTestLegacyOptionsStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t)
-	return resource.TestStep{
-		Config: createSyntheticsTCPTestConfigLegacyOptions(testName),
-		Check: resource.ComposeTestCheckFunc(
-			testSyntheticsTestExists(accProvider),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "type", "api"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "subtype", "tcp"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "request.host", "agent-intake.logs.datadoghq.com"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "request.port", "443"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "assertion.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "assertion.0.type", "responseTime"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "assertion.0.operator", "lessThan"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "assertion.0.target", "2000"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "locations.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "locations.0", "aws:eu-central-1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "options.tick_every", "60"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "options_list.#", "0"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "name", testName),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "message", "Notify @datadog.user"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "tags.#", "2"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "tags.0", "foo:bar"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "tags.1", "baz"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "status", "paused"),
-			resource.TestCheckResourceAttrSet(
-				"datadog_synthetics_test.tcp", "monitor_id"),
-		),
-	}
-}
-
-func createSyntheticsTCPTestConfigLegacyOptions(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_synthetics_test" "tcp" {
-	type = "api"
-	subtype = "tcp"
-
-	request = {
-		host = "agent-intake.logs.datadoghq.com"
-		port = 443
-	}
-
-	assertion {
-		type = "responseTime"
-		operator = "lessThan"
-		target = 2000
-	}
-
-	locations = [ "aws:eu-central-1" ]
-	options = {
 		tick_every = 60
 	}
 
