@@ -400,6 +400,8 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.retry_count", "1"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.#", "0"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "message", "Notify @datadog.user"),
@@ -668,6 +670,8 @@ func updateSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 				"datadog_synthetics_test.foo", "options_list.0.retry.0.interval", "500"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.monitor_options.0.renotify_interval", "100"),
+			// Make sure the legacy attribute isn't set anymore
+			resource.TestCheckNoResourceAttr("datadog_synthetics_test.foo", "options.tick_every"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -1029,6 +1033,8 @@ func createSyntheticsTCPTestStep(accProvider *schema.Provider, clock clockwork.F
 				"datadog_synthetics_test.tcp", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "options_list.0.tick_every", "60"),
+			// Make sure the legacy attribute isn't set anymore
+			resource.TestCheckNoResourceAttr("datadog_synthetics_test.tcp", "options.tick_every"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "name", testName),
 			resource.TestCheckResourceAttr(

@@ -242,11 +242,6 @@ func syntheticsTestOptions() *schema.Schema {
 		ConflictsWith: []string{"options_list"},
 		Deprecated:    "This parameter is deprecated, please use `options_list`",
 		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
-			// DiffSuppressFunc is useless if options_list exists
-			if _, isOptionsV2 := d.GetOk("options_list"); isOptionsV2 {
-				return isOptionsV2
-			}
-
 			if key == "options.follow_redirects" || key == "options.accept_self_signed" || key == "options.allow_insecure" {
 				// TF nested schemas is limited to string values only
 				// follow_redirects, accept_self_signed and allow_insecure being booleans in Datadog json api
