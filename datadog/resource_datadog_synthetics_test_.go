@@ -183,7 +183,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			},
 			"tags": {
 				Type:     schema.TypeList,
-				Required: true,
+				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"status": {

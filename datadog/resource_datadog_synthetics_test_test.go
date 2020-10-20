@@ -248,6 +248,21 @@ func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsSSLMissingTagsAttributeTestStep(accProvider, clock, t),
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsTCPTest_Basic(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
@@ -917,6 +932,82 @@ resource "datadog_synthetics_test" "ssl" {
 	name = "%s"
 	message = "Notify @datadog.user"
 	tags = []
+
+	status = "paused"
+}`, uniq)
+}
+
+func createSyntheticsSSLMissingTagsAttributeTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(clock, t)
+	return resource.TestStep{
+		Config: createSyntheticsSSLMissingTagsAttributeTestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "subtype", "ssl"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "request.host", "datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "request.port", "443"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.0.type", "certificate"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.0.operator", "isInMoreThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.0.target", "30"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.accept_self_signed", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "tags.#", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.ssl", "monitor_id"),
+		),
+	}
+}
+
+func createSyntheticsSSLMissingTagsAttributeTestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "ssl" {
+	type = "api"
+	subtype = "ssl"
+
+	request = {
+		host = "datadoghq.com"
+		port = 443
+	}
+
+	assertions = [
+		{
+			type = "certificate"
+			operator = "isInMoreThan"
+			target = 30
+		}
+	]
+
+	locations = [ "aws:eu-central-1" ]
+	options = {
+		tick_every = 60
+		accept_self_signed = true
+	}
+
+	name = "%s"
+	message = "Notify @datadog.user"
 
 	status = "paused"
 }`, uniq)
