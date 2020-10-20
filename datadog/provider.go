@@ -20,7 +20,10 @@ import (
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 )
 
-var datadogProvider *schema.Provider
+var (
+	datadogProvider       *schema.Provider
+	baseIpRangesSubdomain = "ip-ranges"
+)
 
 func Provider() terraform.ResourceProvider {
 	datadogProvider = &schema.Provider{
@@ -177,7 +180,6 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
 		// Configure URL's per operation
 		// IPRangesApiService.GetIPRanges
-		baseIpRangesSubdomain := "ip-ranges"
 		ipRangesDNSNameArr := strings.Split(parsedApiUrl.Hostname(), ".")
 		// Parse out subdomain if it exists
 		if len(ipRangesDNSNameArr) > 2 {
