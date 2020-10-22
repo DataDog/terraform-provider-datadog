@@ -64,6 +64,8 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 						"datadog_logs_archive.my_azure_archive", "azure.storage_account", "storageAccount"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_azure_archive", "azure.path", "/path/blou"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "include_tags", "false"),
 				),
 			},
 		},
@@ -121,6 +123,8 @@ func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 						"datadog_logs_archive.my_gcs_archive", "gcs.project_id", client),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_gcs_archive", "gcs.path", "/path/blah"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "include_tags", "false"),
 				),
 			},
 		},
@@ -146,6 +150,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
     role_name    = "testacc-datadog-integration-role"
   }
   rehydration_tags = ["team:intake", "team:app"]
+  include_tags = true
 }`, uniq, uniq)
 }
 
@@ -179,6 +184,8 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 						"datadog_logs_archive.my_s3_archive", "rehydration_tags.0", "team:intake"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "rehydration_tags.1", "team:app"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "include_tags", "true"),
 				),
 			},
 		},
@@ -203,6 +210,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
 	account_id   = "%s"
 	role_name    = "testacc-datadog-integration-role"
   }
+  include_tags = false
 }`, uniq, uniq)
 }
 
@@ -230,6 +238,8 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 						"datadog_logs_archive.my_s3_archive", "name", "my first s3 archive after update"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "rehydration_tags.#", "0"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "include_tags", "false"),
 				),
 			},
 		},
