@@ -15,6 +15,8 @@ import (
 // LogsArchiveAttributes The attributes associated with the archive.
 type LogsArchiveAttributes struct {
 	Destination NullableLogsArchiveDestination `json:"destination"`
+	// To store the tags in the archive, set the value \"true\". If it is set to \"false\", the tags will be deleted when the logs are sent to the archive.
+	IncludeTags *bool `json:"include_tags,omitempty"`
 	// The archive name.
 	Name string `json:"name"`
 	// The archive query/filter. Logs matching this query are included in the archive.
@@ -31,6 +33,8 @@ type LogsArchiveAttributes struct {
 func NewLogsArchiveAttributes(destination NullableLogsArchiveDestination, name string, query string) *LogsArchiveAttributes {
 	this := LogsArchiveAttributes{}
 	this.Destination = destination
+	var includeTags bool = false
+	this.IncludeTags = &includeTags
 	this.Name = name
 	this.Query = query
 	return &this
@@ -41,6 +45,8 @@ func NewLogsArchiveAttributes(destination NullableLogsArchiveDestination, name s
 // but it doesn't guarantee that properties required by API are set
 func NewLogsArchiveAttributesWithDefaults() *LogsArchiveAttributes {
 	this := LogsArchiveAttributes{}
+	var includeTags bool = false
+	this.IncludeTags = &includeTags
 	return &this
 }
 
@@ -68,6 +74,38 @@ func (o *LogsArchiveAttributes) GetDestinationOk() (*LogsArchiveDestination, boo
 // SetDestination sets field value
 func (o *LogsArchiveAttributes) SetDestination(v LogsArchiveDestination) {
 	o.Destination.Set(&v)
+}
+
+// GetIncludeTags returns the IncludeTags field value if set, zero value otherwise.
+func (o *LogsArchiveAttributes) GetIncludeTags() bool {
+	if o == nil || o.IncludeTags == nil {
+		var ret bool
+		return ret
+	}
+	return *o.IncludeTags
+}
+
+// GetIncludeTagsOk returns a tuple with the IncludeTags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogsArchiveAttributes) GetIncludeTagsOk() (*bool, bool) {
+	if o == nil || o.IncludeTags == nil {
+		return nil, false
+	}
+	return o.IncludeTags, true
+}
+
+// HasIncludeTags returns a boolean if a field has been set.
+func (o *LogsArchiveAttributes) HasIncludeTags() bool {
+	if o != nil && o.IncludeTags != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetIncludeTags gets a reference to the given bool and assigns it to the IncludeTags field.
+func (o *LogsArchiveAttributes) SetIncludeTags(v bool) {
+	o.IncludeTags = &v
 }
 
 // GetName returns the Name field value
@@ -186,6 +224,9 @@ func (o LogsArchiveAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["destination"] = o.Destination.Get()
+	}
+	if o.IncludeTags != nil {
+		toSerialize["include_tags"] = o.IncludeTags
 	}
 	if true {
 		toSerialize["name"] = o.Name
