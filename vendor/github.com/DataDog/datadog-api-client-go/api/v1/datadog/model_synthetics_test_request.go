@@ -16,7 +16,10 @@ import (
 type SyntheticsTestRequest struct {
 	BasicAuth *SyntheticsBasicAuth `json:"basicAuth,omitempty"`
 	// Body to include in the test.
-	Body *string `json:"body,omitempty"`
+	Body        *string                           `json:"body,omitempty"`
+	Certificate *SyntheticsTestRequestCertificate `json:"certificate,omitempty"`
+	// DNS server to use for DNS tests.
+	DnsServer *string `json:"dnsServer,omitempty"`
 	// Headers to include when performing the test.
 	Headers *map[string]string `json:"headers,omitempty"`
 	// Host name to perform the test with.
@@ -111,6 +114,70 @@ func (o *SyntheticsTestRequest) HasBody() bool {
 // SetBody gets a reference to the given string and assigns it to the Body field.
 func (o *SyntheticsTestRequest) SetBody(v string) {
 	o.Body = &v
+}
+
+// GetCertificate returns the Certificate field value if set, zero value otherwise.
+func (o *SyntheticsTestRequest) GetCertificate() SyntheticsTestRequestCertificate {
+	if o == nil || o.Certificate == nil {
+		var ret SyntheticsTestRequestCertificate
+		return ret
+	}
+	return *o.Certificate
+}
+
+// GetCertificateOk returns a tuple with the Certificate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsTestRequest) GetCertificateOk() (*SyntheticsTestRequestCertificate, bool) {
+	if o == nil || o.Certificate == nil {
+		return nil, false
+	}
+	return o.Certificate, true
+}
+
+// HasCertificate returns a boolean if a field has been set.
+func (o *SyntheticsTestRequest) HasCertificate() bool {
+	if o != nil && o.Certificate != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCertificate gets a reference to the given SyntheticsTestRequestCertificate and assigns it to the Certificate field.
+func (o *SyntheticsTestRequest) SetCertificate(v SyntheticsTestRequestCertificate) {
+	o.Certificate = &v
+}
+
+// GetDnsServer returns the DnsServer field value if set, zero value otherwise.
+func (o *SyntheticsTestRequest) GetDnsServer() string {
+	if o == nil || o.DnsServer == nil {
+		var ret string
+		return ret
+	}
+	return *o.DnsServer
+}
+
+// GetDnsServerOk returns a tuple with the DnsServer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsTestRequest) GetDnsServerOk() (*string, bool) {
+	if o == nil || o.DnsServer == nil {
+		return nil, false
+	}
+	return o.DnsServer, true
+}
+
+// HasDnsServer returns a boolean if a field has been set.
+func (o *SyntheticsTestRequest) HasDnsServer() bool {
+	if o != nil && o.DnsServer != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetDnsServer gets a reference to the given string and assigns it to the DnsServer field.
+func (o *SyntheticsTestRequest) SetDnsServer(v string) {
+	o.DnsServer = &v
 }
 
 // GetHeaders returns the Headers field value if set, zero value otherwise.
@@ -344,6 +411,12 @@ func (o SyntheticsTestRequest) MarshalJSON() ([]byte, error) {
 	}
 	if o.Body != nil {
 		toSerialize["body"] = o.Body
+	}
+	if o.Certificate != nil {
+		toSerialize["certificate"] = o.Certificate
+	}
+	if o.DnsServer != nil {
+		toSerialize["dnsServer"] = o.DnsServer
 	}
 	if o.Headers != nil {
 		toSerialize["headers"] = o.Headers

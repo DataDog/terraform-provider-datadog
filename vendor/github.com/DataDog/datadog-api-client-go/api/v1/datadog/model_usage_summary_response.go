@@ -71,7 +71,7 @@ type UsageSummaryResponse struct {
 	SyntheticsBrowserCheckCallsCountAggSum *int64 `json:"synthetics_browser_check_calls_count_agg_sum,omitempty"`
 	// Shows the sum of all Synthetic API tests over all hours in the current month(s) for all organizations.
 	SyntheticsCheckCallsCountAggSum *int64 `json:"synthetics_check_calls_count_agg_sum,omitempty"`
-	// Shows the sum of all analyzed spans indexed over all hours in the current month(s) for all organizations.
+	// Shows the sum of all Indexed Spans indexed over all hours in the current month(s) for all organizations.
 	TraceSearchIndexedEventsCountAggSum *int64 `json:"trace_search_indexed_events_count_agg_sum,omitempty"`
 	// Shows the sum of all tracing without limits bytes ingested over all hours in the current month(s) for all organizations.
 	TwolIngestedEventsBytesAggSum *int64 `json:"twol_ingested_events_bytes_agg_sum,omitempty"`

@@ -14,7 +14,7 @@ import (
 
 // LogsListRequest Object to send with the request to retrieve a list of logs from your Organization.
 type LogsListRequest struct {
-	// For multi-index organizations, the log index in which the request is performed. Default to '*' (all indexes).
+	// The log index on which the request is performed. For multi-index organizations, the default is all live indexes. Historical indexes of rehydrated logs must be specified.
 	Index *string `json:"index,omitempty"`
 	// Number of logs return in the response.
 	Limit *int32 `json:"limit,omitempty"`
