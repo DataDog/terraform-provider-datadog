@@ -104,7 +104,7 @@ resource "datadog_service_level_objective" "foo" {
 func testAccCheckDatadogServiceLevelObjectiveConfigMonitor(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name = "Name for monitor foo"
+  name = "%s"
   type = "query alert"
   message = "some message Notify: @hipchat-channel"
   query = "avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 3, direction='above', alert_window='last_5m', interval=20, count_default_zero='true') >= 1"
@@ -124,13 +124,13 @@ resource "datadog_service_level_objective" "foo" {
   monitor_ids = [
     datadog_monitor.foo.id
   ]
-}`, uniq)
+}`, uniq, uniq)
 }
 
 func testAccCheckDatadogServiceLevelObjectiveConfigForceRecreate(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name = "Name for monitor foo"
+  name = "%s"
   type = "metric alert"
   message = "some message Notify: @hipchat-channel"
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
@@ -150,7 +150,7 @@ resource "datadog_service_level_objective" "foo" {
   monitor_ids = [
     datadog_monitor.foo.id
   ]
-}`, uniq)
+}`, uniq, uniq)
 }
 
 // tests

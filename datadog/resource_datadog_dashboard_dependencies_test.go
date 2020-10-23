@@ -12,14 +12,14 @@ import (
 func datadogDashboardDepConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
-  name = "Name for monitor foo"
+  name = "%s"
   type = "query alert"
   message = "some message Notify: @hipchat-channel"
   query = "avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 3, direction='above', alert_window='last_5m', interval=20, count_default_zero='true') >= 1"
 }
 
 resource "datadog_service_level_objective" "foo" {
-  name = "Name for slo foo"
+  name = "%s"
   type = "monitor"
   description = "some updated description about foo SLO"
 
@@ -52,20 +52,20 @@ resource "datadog_dashboard" "foo" {
 			view_type = "detail"
 		}
 	}
-}`, uniq)
+}`, uniq, uniq, uniq)
 }
 
 func datadogDashboardDepChangedConfig(uniq string) string {
 	return fmt.Sprintf(
 		`resource "datadog_monitor" "foo" {
-  name = "Name for monitor foo"
+  name = "%s"
   type = "metric alert"
   message = "some message Notify: @hipchat-channel"
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
 }
 
 resource "datadog_service_level_objective" "foo" {
-  name = "Name for slo foo"
+  name = "%s"
   type = "monitor"
   description = "some updated description about foo SLO"
 
@@ -98,7 +98,7 @@ resource "datadog_dashboard" "foo" {
 			view_type = "detail"
 		}
 	}
-}`, uniq)
+}`, uniq, uniq, uniq)
 }
 
 func TestAccDatadogDashboard_NewMonitorForceRecreate(t *testing.T) {
