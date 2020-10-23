@@ -64,6 +64,10 @@ func resourceDatadogMonitor() *schema.Resource {
 					return newVal == oldVal
 				},
 			},
+			"priority": {
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
 
 			// Options
 			"thresholds": {
@@ -298,6 +302,7 @@ func buildMonitorStruct(d *schema.ResourceData) (*datadogV1.Monitor, *datadogV1.
 	m.SetQuery(d.Get("query").(string))
 	m.SetName(d.Get("name").(string))
 	m.SetMessage(d.Get("message").(string))
+	m.SetPriority(d.Get("priority").(int))
 	m.SetOptions(o)
 
 	u := datadogV1.NewMonitorUpdateRequest()
@@ -305,6 +310,7 @@ func buildMonitorStruct(d *schema.ResourceData) (*datadogV1.Monitor, *datadogV1.
 	u.SetQuery(d.Get("query").(string))
 	u.SetName(d.Get("name").(string))
 	u.SetMessage(d.Get("message").(string))
+	u.SetPriority(d.Get("priority").(int))
 	u.SetOptions(o)
 
 	tags := make([]string, 0)
@@ -429,6 +435,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("message", m.GetMessage())
 	d.Set("query", m.GetQuery())
 	d.Set("type", m.GetType())
+	d.Set("priority", m.GetPriority())
 
 	d.Set("thresholds", thresholds)
 	d.Set("threshold_windows", thresholdWindows)
