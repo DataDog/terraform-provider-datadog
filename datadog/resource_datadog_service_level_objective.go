@@ -2,12 +2,11 @@ package datadog
 
 import (
 	"fmt"
-	"sort"
 	"strconv"
 	"strings"
 
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/zorkian/go-datadog-api"
 )
 
 func resourceDatadogServiceLevelObjective() *schema.Resource {
@@ -28,11 +27,10 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Required: true,
 			},
 			"description": {
-				Type:     schema.TypeString,
-				Optional: true,
-				StateFunc: func(val interface{}) string {
-					return strings.TrimSpace(val.(string))
-				},
+				Type:             schema.TypeString,
+				Optional:         true,
+				StateFunc:        trimStateValue,
+				DiffSuppressFunc: diffTrimmedValues,
 			},
 			"tags": {
 				// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
@@ -92,18 +90,16 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"numerator": {
-							Type:     schema.TypeString,
-							Required: true,
-							StateFunc: func(val interface{}) string {
-								return strings.TrimSpace(val.(string))
-							},
+							Type:             schema.TypeString,
+							Required:         true,
+							StateFunc:        trimStateValue,
+							DiffSuppressFunc: diffTrimmedValues,
 						},
 						"denominator": {
-							Type:     schema.TypeString,
-							Required: true,
-							StateFunc: func(val interface{}) string {
-								return strings.TrimSpace(val.(string))
-							},
+							Type:             schema.TypeString,
+							Required:         true,
+							StateFunc:        trimStateValue,
+							DiffSuppressFunc: diffTrimmedValues,
 						},
 					},
 				},
@@ -117,6 +113,9 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Description:   "A static set of monitor IDs to use as part of the SLO",
 				Elem:          &schema.Schema{Type: schema.TypeInt, MinItems: 1},
 			},
+			// NOTE: This feature was introduced but it never worked and then it was removed.
+			// We didn't trigger a major release since it never worked. However, this may be introduced later again.
+			// Keeping this here for now and we removed the related code.
 			"monitor_search": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -136,10 +135,10 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 
 // ValidateServiceLevelObjectiveTypeString is a ValidateFunc that ensures the SLO is of one of the supported types
 func ValidateServiceLevelObjectiveTypeString(v interface{}, k string) (ws []string, errors []error) {
-	switch v.(string) {
-	case datadog.ServiceLevelObjectiveTypeMonitor:
+	switch datadogV1.SLOType(v.(string)) {
+	case datadogV1.SLOTYPE_MONITOR:
 		break
-	case datadog.ServiceLevelObjectiveTypeMetric:
+	case datadogV1.SLOTYPE_METRIC:
 		break
 	default:
 		errors = append(errors, fmt.Errorf("invalid type %s specified for SLO", v.(string)))
@@ -147,108 +146,116 @@ func ValidateServiceLevelObjectiveTypeString(v interface{}, k string) (ws []stri
 	return
 }
 
-func buildServiceLevelObjectiveStruct(d *schema.ResourceData) *datadog.ServiceLevelObjective {
+func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.ServiceLevelObjective, *datadogV1.ServiceLevelObjectiveRequest) {
 
-	slo := datadog.ServiceLevelObjective{
-		Type: datadog.String(d.Get("type").(string)),
-		Name: datadog.String(d.Get("name").(string)),
-	}
+	slo := datadogV1.NewServiceLevelObjectiveWithDefaults()
+	slo.SetName(d.Get("name").(string))
+	slo.SetType(datadogV1.SLOType(d.Get("type").(string)))
+	slo.SetId(d.Id())
+
+	slor := datadogV1.NewServiceLevelObjectiveRequestWithDefaults()
+	slor.SetName(d.Get("name").(string))
+	slor.SetType(datadogV1.SLOType(d.Get("type").(string)))
+	slor.SetId(d.Id())
 
 	if attr, ok := d.GetOk("description"); ok {
-		slo.Description = datadog.String(attr.(string))
+		slo.SetDescription(attr.(string))
+		slor.SetDescription(attr.(string))
+	}
+
+	switch slo.GetType() {
+	case datadogV1.SLOTYPE_MONITOR:
+		// monitor type
+		if attr, ok := d.GetOk("monitor_ids"); ok {
+			s := make([]int64, 0)
+			for _, v := range attr.(*schema.Set).List() {
+				s = append(s, int64(v.(int)))
+			}
+			slo.SetMonitorIds(s)
+			slor.SetMonitorIds(s)
+		}
+		if attr, ok := d.GetOk("groups"); ok {
+			s := make([]string, 0)
+			for _, v := range attr.(*schema.Set).List() {
+				s = append(s, v.(string))
+			}
+			slo.SetGroups(s)
+			slor.SetGroups(s)
+		}
+	default:
+		// metric type
+		if attr, ok := d.GetOk("query"); ok {
+			queries := make([]map[string]interface{}, 0)
+			raw := attr.([]interface{})
+			for _, rawQuery := range raw {
+				if query, ok := rawQuery.(map[string]interface{}); ok {
+					queries = append(queries, query)
+				}
+			}
+			if len(queries) >= 1 {
+				// only use the first defined query
+				slo.SetQuery(*datadogV1.NewServiceLevelObjectiveQuery(
+					queries[0]["denominator"].(string),
+					queries[0]["numerator"].(string)))
+				slor.SetQuery(*datadogV1.NewServiceLevelObjectiveQuery(
+					queries[0]["denominator"].(string),
+					queries[0]["numerator"].(string)))
+			}
+		}
 	}
 
 	if attr, ok := d.GetOk("tags"); ok {
-		tags := make([]string, 0)
-		for _, s := range attr.(*schema.Set).List() {
-			tags = append(tags, s.(string))
+		s := make([]string, 0)
+		for _, v := range attr.(*schema.Set).List() {
+			s = append(s, v.(string))
 		}
-		// sort to make them determinate
-		if len(tags) > 0 {
-			sort.Strings(tags)
-			slo.Tags = tags
-		}
+		slo.SetTags(s)
+		slor.SetTags(s)
 	}
 
 	if _, ok := d.GetOk("thresholds"); ok {
 		numThresholds := d.Get("thresholds.#").(int)
-		sloThresholds := make(datadog.ServiceLevelObjectiveThresholds, 0)
+		sloThresholds := make([]datadogV1.SLOThreshold, 0)
 		for i := 0; i < numThresholds; i++ {
 			prefix := fmt.Sprintf("thresholds.%d.", i)
-			t := datadog.ServiceLevelObjectiveThreshold{}
+			t := datadogV1.NewSLOThresholdWithDefaults()
 
 			if tf, ok := d.GetOk(prefix + "timeframe"); ok {
-				t.TimeFrame = datadog.String(tf.(string))
+				t.SetTimeframe(datadogV1.SLOTimeframe(tf.(string)))
 			}
 
 			if targetValue, ok := d.GetOk(prefix + "target"); ok {
 				if f, ok := floatOk(targetValue); ok {
-					t.Target = datadog.Float64(f)
+					t.SetTarget(f)
 				}
 			}
 
 			if warningValue, ok := d.GetOk(prefix + "warning"); ok {
 				if f, ok := floatOk(warningValue); ok {
-					t.Warning = datadog.Float64(f)
+					t.SetWarning(f)
 				}
 			}
 
 			if targetDisplayValue, ok := d.GetOk(prefix + "target_display"); ok {
 				if s, ok := targetDisplayValue.(string); ok && strings.TrimSpace(s) != "" {
-					t.TargetDisplay = datadog.String(strings.TrimSpace(targetDisplayValue.(string)))
+					t.SetTargetDisplay(strings.TrimSpace(targetDisplayValue.(string)))
 				}
 			}
 
 			if warningDisplayValue, ok := d.GetOk(prefix + "warning_display"); ok {
 				if s, ok := warningDisplayValue.(string); ok && strings.TrimSpace(s) != "" {
-					t.WarningDisplay = datadog.String(strings.TrimSpace(warningDisplayValue.(string)))
+					t.SetWarningDisplay(strings.TrimSpace(warningDisplayValue.(string)))
 				}
 			}
-			sloThresholds = append(sloThresholds, &t)
+			sloThresholds = append(sloThresholds, *t)
 		}
-		sort.Sort(sloThresholds)
-		slo.Thresholds = sloThresholds
-	}
-
-	switch d.Get("type").(string) {
-	case datadog.ServiceLevelObjectiveTypeMonitor:
-		// add monitor components
-		if attr, ok := d.GetOk("monitor_ids"); ok {
-			monitorIDs := make([]int, 0)
-			for _, s := range attr.(*schema.Set).List() {
-				monitorIDs = append(monitorIDs, s.(int))
-			}
-			if len(monitorIDs) > 0 {
-				sort.Ints(monitorIDs)
-				slo.MonitorIDs = monitorIDs
-			}
-		}
-		if attr, ok := d.GetOk("monitor_search"); ok {
-			if len(attr.(string)) > 0 {
-				slo.MonitorSearch = datadog.String(attr.(string))
-			}
-		}
-		if attr, ok := d.GetOk("groups"); ok {
-			groups := make([]string, 0)
-			for _, s := range attr.(*schema.Set).List() {
-				groups = append(groups, s.(string))
-			}
-			if len(groups) > 0 {
-				sort.Strings(groups)
-				slo.Groups = groups
-			}
-		}
-	default:
-		// query type
-		if _, ok := d.GetOk("query.0"); ok {
-			slo.Query = &datadog.ServiceLevelObjectiveMetricQuery{
-				Numerator:   datadog.String(d.Get("query.0.numerator").(string)),
-				Denominator: datadog.String(d.Get("query.0.denominator").(string)),
-			}
+		if len(sloThresholds) > 0 {
+			slo.SetThresholds(sloThresholds)
+			slor.SetThresholds(sloThresholds)
 		}
 	}
 
-	return &slo
+	return slo, slor
 }
 
 func floatOk(val interface{}) (float64, bool) {
@@ -274,15 +281,18 @@ func floatOk(val interface{}) (float64, bool) {
 }
 
 func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	slo := buildServiceLevelObjectiveStruct(d)
-	slo, err := client.CreateServiceLevelObjective(slo)
+	_, slor := buildServiceLevelObjectiveStructs(d)
+	sloResp, _, err := datadogClientV1.ServiceLevelObjectivesApi.CreateSLO(authV1).Body(*slor).Execute()
 	if err != nil {
-		return fmt.Errorf("error creating service level objective: %s", err.Error())
+		return translateClientError(err, "error creating service level objective")
 	}
 
-	d.SetId(slo.GetID())
+	slo := &sloResp.GetData()[0]
+	d.SetId(slo.GetId())
 
 	return resourceDatadogServiceLevelObjectiveRead(d, meta)
 }
@@ -290,32 +300,36 @@ func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta int
 func resourceDatadogServiceLevelObjectiveExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	if _, err := client.GetServiceLevelObjective(d.Id()); err != nil {
+	if _, _, err := datadogClientV1.ServiceLevelObjectivesApi.GetSLO(authV1, d.Id()).Execute(); err != nil {
 		errStr := strings.ToLower(err.Error())
 		if strings.Contains(errStr, "not found") || strings.Contains(errStr, "no slo specified") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking service level objective exists")
 	}
 
 	return true, nil
 }
 
 func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	slo, err := client.GetServiceLevelObjective(d.Id())
+	sloResp, _, err := datadogClientV1.ServiceLevelObjectivesApi.GetSLO(authV1, d.Id()).Execute()
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting service level objective")
 	}
+	slo := sloResp.GetData()
 
 	thresholds := make([]map[string]interface{}, 0)
-	sort.Sort(slo.Thresholds)
-	for _, threshold := range slo.Thresholds {
+	for _, threshold := range slo.GetThresholds() {
 		t := map[string]interface{}{
-			"timeframe": threshold.GetTimeFrame(),
+			"timeframe": threshold.GetTimeframe(),
 			"target":    threshold.GetTarget(),
 		}
 		if warning, ok := threshold.GetWarningOk(); ok {
@@ -331,10 +345,9 @@ func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta inter
 	}
 
 	tags := make([]string, 0)
-	for _, s := range slo.Tags {
+	for _, s := range slo.GetTags() {
 		tags = append(tags, s)
 	}
-	sort.Strings(tags)
 
 	d.Set("name", slo.GetName())
 	d.Set("description", slo.GetDescription())
@@ -342,17 +355,12 @@ func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta inter
 	d.Set("tags", tags)
 	d.Set("thresholds", thresholds)
 	switch slo.GetType() {
-	case datadog.ServiceLevelObjectiveTypeMonitor:
+	case datadogV1.SLOTYPE_MONITOR:
 		// monitor type
-		if len(slo.MonitorIDs) > 0 {
-			sort.Ints(slo.MonitorIDs)
-			d.Set("monitor_ids", slo.MonitorIDs)
+		if len(slo.GetMonitorIds()) > 0 {
+			d.Set("monitor_ids", slo.GetMonitorIds())
 		}
-		if ms, ok := slo.GetMonitorSearchOk(); ok {
-			d.Set("monitor_search", ms)
-		}
-		sort.Strings(slo.Groups)
-		d.Set("groups", slo.Groups)
+		d.Set("groups", slo.GetGroups())
 	default:
 		// metric type
 		query := make(map[string]interface{})
@@ -366,127 +374,29 @@ func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta inter
 }
 
 func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
-	slo := &datadog.ServiceLevelObjective{
-		ID: datadog.String(d.Id()),
-	}
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+	slo, _ := buildServiceLevelObjectiveStructs(d)
 
-	if attr, ok := d.GetOk("name"); ok {
-		slo.SetName(attr.(string))
-	}
-
-	if attr, ok := d.GetOk("description"); ok {
-		slo.SetDescription(attr.(string))
-	}
-
-	if attr, ok := d.GetOk("type"); ok {
-		slo.SetType(attr.(string))
-	}
-
-	switch slo.GetType() {
-	case datadog.ServiceLevelObjectiveTypeMonitor:
-		// monitor type
-		if attr, ok := d.GetOk("monitor_ids"); ok {
-			s := make([]int, 0)
-			for _, v := range attr.(*schema.Set).List() {
-				s = append(s, v.(int))
-			}
-			sort.Ints(s)
-			slo.MonitorIDs = s
-		}
-		if attr, ok := d.GetOk("monitor_search"); ok {
-			slo.SetMonitorSearch(attr.(string))
-		}
-		if attr, ok := d.GetOk("groups"); ok {
-			s := make([]string, 0)
-			for _, v := range attr.(*schema.Set).List() {
-				s = append(s, v.(string))
-			}
-			sort.Strings(s)
-			slo.Groups = s
-		}
-	default:
-		// metric type
-		if attr, ok := d.GetOk("query"); ok {
-			queries := make([]map[string]interface{}, 0)
-			raw := attr.([]interface{})
-			for _, rawQuery := range raw {
-				if query, ok := rawQuery.(map[string]interface{}); ok {
-					queries = append(queries, query)
-				}
-			}
-			if len(queries) >= 1 {
-				// only use the first defined query
-				slo.SetQuery(datadog.ServiceLevelObjectiveMetricQuery{
-					Numerator:   datadog.String(queries[0]["numerator"].(string)),
-					Denominator: datadog.String(queries[0]["denominator"].(string)),
-				})
-			}
-		}
-	}
-
-	if attr, ok := d.GetOk("tags"); ok {
-		s := make([]string, 0)
-		for _, v := range attr.(*schema.Set).List() {
-			s = append(s, v.(string))
-		}
-		sort.Strings(s)
-		slo.Tags = s
-	}
-
-	if _, ok := d.GetOk("thresholds"); ok {
-		numThresholds := d.Get("thresholds.#").(int)
-		sloThresholds := make(datadog.ServiceLevelObjectiveThresholds, 0)
-		for i := 0; i < numThresholds; i++ {
-			prefix := fmt.Sprintf("thresholds.%d.", i)
-			t := datadog.ServiceLevelObjectiveThreshold{}
-
-			if tf, ok := d.GetOk(prefix + "timeframe"); ok {
-				t.TimeFrame = datadog.String(tf.(string))
-			}
-
-			if targetValue, ok := d.GetOk(prefix + "target"); ok {
-				if f, ok := floatOk(targetValue); ok {
-					t.Target = datadog.Float64(f)
-				}
-			}
-
-			if warningValue, ok := d.GetOk(prefix + "warning"); ok {
-				if f, ok := floatOk(warningValue); ok {
-					t.Warning = datadog.Float64(f)
-				}
-			}
-
-			if targetDisplayValue, ok := d.GetOk(prefix + "target_display"); ok {
-				if s, ok := targetDisplayValue.(string); ok && strings.TrimSpace(s) != "" {
-					t.TargetDisplay = datadog.String(strings.TrimSpace(targetDisplayValue.(string)))
-				}
-			}
-
-			if warningDisplayValue, ok := d.GetOk(prefix + "warning_display"); ok {
-				if s, ok := warningDisplayValue.(string); ok && strings.TrimSpace(s) != "" {
-					t.WarningDisplay = datadog.String(strings.TrimSpace(warningDisplayValue.(string)))
-				}
-			}
-			sloThresholds = append(sloThresholds, &t)
-		}
-		if len(sloThresholds) > 0 {
-			sort.Sort(sloThresholds)
-			slo.Thresholds = sloThresholds
-		}
-	}
-
-	if _, err := client.UpdateServiceLevelObjective(slo); err != nil {
-		return fmt.Errorf("error updating service level objective: %s", err.Error())
+	if _, _, err := datadogClientV1.ServiceLevelObjectivesApi.UpdateSLO(authV1, d.Id()).Body(*slo).Execute(); err != nil {
+		return translateClientError(err, "error updating service level objective")
 	}
 
 	return resourceDatadogServiceLevelObjectiveRead(d, meta)
 }
 
 func resourceDatadogServiceLevelObjectiveDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*datadog.Client)
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 
-	return client.DeleteServiceLevelObjective(d.Id())
+	_, _, err := datadogClientV1.ServiceLevelObjectivesApi.DeleteSLO(authV1, d.Id()).Execute()
+	if err != nil {
+		return translateClientError(err, "error deleting service level objective")
+	}
+	return nil
+
 }
 
 func resourceDatadogServiceLevelObjectiveImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
@@ -500,7 +410,7 @@ func resourceDatadogServiceLevelObjectiveImport(d *schema.ResourceData, meta int
 // DataDog API.
 func suppressDataDogSLODisplayValueDiff(k, old, new string, d *schema.ResourceData) bool {
 	sloType := d.Get("type")
-	if sloType == datadog.ServiceLevelObjectiveTypeMonitor {
+	if sloType == datadogV1.SLOTYPE_MONITOR {
 		// always suppress monitor type, this is controlled via API.
 		return true
 	}
@@ -512,4 +422,13 @@ func suppressDataDogSLODisplayValueDiff(k, old, new string, d *schema.ResourceDa
 	}
 
 	return suppressDataDogFloatIntDiff(k, old, new, d)
+}
+
+func trimStateValue(val interface{}) string {
+	return strings.TrimSpace(val.(string))
+}
+
+// Ignore any diff for trimmed state values.
+func diffTrimmedValues(k, old, new string, d *schema.ResourceData) bool {
+	return strings.TrimSpace(old) == strings.TrimSpace(new)
 }

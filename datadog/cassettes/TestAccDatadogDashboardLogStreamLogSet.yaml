@@ -1,0 +1,452 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"Acceptance Test Log Stream Widget Dashboard","widgets":[{"definition":{"columns":["core_host","core_service"],"indexes":[],"logset":"19","message_display":"expanded-md","query":"status:error env:prod","show_date_column":true,"show_message_column":true,"sort":{"column":"time","order":"desc"},"time":{"live_span":"1d"},"title":"Log Stream","title_align":"right","title_size":"16","type":"log_stream"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - CreateDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard
+    method: POST
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3nz-jka-g5j","title":"Acceptance
+      Test Log Stream Widget Dashboard","url":"/dashboard/3nz-jka-g5j/acceptance-test-log-stream-widget-dashboard","created_at":"2020-06-23T15:08:20.790109+00:00","modified_at":"2020-06-23T15:08:20.790109+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log
+      Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error
+      env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":6620121414517255}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 15:08:20 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 15:08:20 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - bJj7D3RvHsKo+7eO3lrtPpPG0z8SsAwLw7bNfLb4htD+N9Ub8bD3AFgh45XaVsFM
+      X-Dd-Version:
+      - "35.2655379"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/3nz-jka-g5j
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3nz-jka-g5j","title":"Acceptance
+      Test Log Stream Widget Dashboard","url":"/dashboard/3nz-jka-g5j/acceptance-test-log-stream-widget-dashboard","created_at":"2020-06-23T15:08:20.790109+00:00","modified_at":"2020-06-23T15:08:20.790109+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log
+      Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error
+      env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":6620121414517255}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 15:08:21 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 15:08:21 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 7/pC7B9bYAY6HGz006Bg+ZrYGMZFiH1gxYQ0jMSpdzevd2r/Iy3Bkt2FGvLL5qId
+      X-Dd-Version:
+      - "35.2655379"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/3nz-jka-g5j
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3nz-jka-g5j","title":"Acceptance
+      Test Log Stream Widget Dashboard","url":"/dashboard/3nz-jka-g5j/acceptance-test-log-stream-widget-dashboard","created_at":"2020-06-23T15:08:20.790109+00:00","modified_at":"2020-06-23T15:08:20.790109+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log
+      Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error
+      env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":6620121414517255}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 15:08:21 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 15:08:21 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - AZX6w/8zD+VN3BjlP7mTxsWKLW39bs6QmKw7eyNlBdxzsMsZp5eTFn4umzElZK4n
+      X-Dd-Version:
+      - "35.2655379"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/3nz-jka-g5j
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3nz-jka-g5j","title":"Acceptance
+      Test Log Stream Widget Dashboard","url":"/dashboard/3nz-jka-g5j/acceptance-test-log-stream-widget-dashboard","created_at":"2020-06-23T15:08:20.790109+00:00","modified_at":"2020-06-23T15:08:20.790109+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log
+      Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error
+      env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":6620121414517255}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 15:08:23 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 15:08:23 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - +24qoGfe5Pp4qbS1m8KO9qioq2P4fxuj80XQhtr/9vInDLECmYZT0VSsbqISZgqC
+      X-Dd-Version:
+      - "35.2655379"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/3nz-jka-g5j
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3nz-jka-g5j","title":"Acceptance
+      Test Log Stream Widget Dashboard","url":"/dashboard/3nz-jka-g5j/acceptance-test-log-stream-widget-dashboard","created_at":"2020-06-23T15:08:20.790109+00:00","modified_at":"2020-06-23T15:08:20.790109+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log
+      Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error
+      env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":6620121414517255}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 15:08:23 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 15:08:23 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - Dpx7DG2N4VEOVm8I4W97n4HwOzBXFJSj1QrKca/nHpAZ6o7/LrJ0o2qyQx0XjNXl
+      X-Dd-Version:
+      - "35.2655379"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/3nz-jka-g5j
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3nz-jka-g5j","title":"Acceptance
+      Test Log Stream Widget Dashboard","url":"/dashboard/3nz-jka-g5j/acceptance-test-log-stream-widget-dashboard","created_at":"2020-06-23T15:08:20.790109+00:00","modified_at":"2020-06-23T15:08:20.790109+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log
+      Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error
+      env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":6620121414517255}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 15:08:26 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 15:08:26 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - PKDIrz8Hcluof9oNzY3q1BouPTowe6nlZ4slm6KLsMEc/9DaK1hteKVCh6mza/IQ
+      X-Dd-Version:
+      - "35.2655379"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/3nz-jka-g5j
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3nz-jka-g5j","title":"Acceptance
+      Test Log Stream Widget Dashboard","url":"/dashboard/3nz-jka-g5j/acceptance-test-log-stream-widget-dashboard","created_at":"2020-06-23T15:08:20.790109+00:00","modified_at":"2020-06-23T15:08:20.790109+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log
+      Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error
+      env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":6620121414517255}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 15:08:26 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 15:08:26 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - j9H0Mt41m875GBjR2i9r831ZILGOU6+Jata5+JJkOQgIsO+SrMkmgWN80SCun0Sk
+      X-Dd-Version:
+      - "35.2655379"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - DeleteDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/3nz-jka-g5j
+    method: DELETE
+  response:
+    body: '{"deleted_dashboard_id":"3nz-jka-g5j"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 15:08:40 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 15:08:28 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 8jOW1djIgkdkj4STw+0pQ3G+kGKfu548DWINvnE6phacY0k9vgC3cU1LaI38XIYk
+      X-Dd-Version:
+      - "35.2655379"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/3nz-jka-g5j
+    method: GET
+  response:
+    body: '{"errors": ["Dashboard with ID 3nz-jka-g5j not found"]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 15:08:40 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2655379"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 404 Not Found
+    code: 404
+    duration: ""

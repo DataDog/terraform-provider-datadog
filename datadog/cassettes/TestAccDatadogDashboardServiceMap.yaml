@@ -1,0 +1,445 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"Acceptance Test Service Map Widget Dashboard","widgets":[{"definition":{"filters":["env:prod","datacenter:us1.prod.dog"],"service":"master-db","title":"env: prod, datacenter:us1.prod.dog, service: master-db","title_align":"left","title_size":"16","type":"servicemap"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - CreateDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard
+    method: POST
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"5pg-va5-3ut","title":"Acceptance
+      Test Service Map Widget Dashboard","url":"/dashboard/5pg-va5-3ut/acceptance-test-service-map-widget-dashboard","created_at":"2020-06-23T10:20:14.703983+00:00","modified_at":"2020-06-23T10:20:14.703983+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","service":"master-db","title":"env:
+      prod, datacenter:us1.prod.dog, service: master-db","title_align":"left","filters":["env:prod","datacenter:us1.prod.dog"],"type":"servicemap"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8894546945043122}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 10:20:14 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 10:20:14 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - om1XnEWhly2whLIXwLO+fkzEb2L84pNIroGZK2fiMqRbZbwaEjag1Efr2qx8JGrD
+      X-Dd-Version:
+      - "35.2654243"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5pg-va5-3ut
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"5pg-va5-3ut","title":"Acceptance
+      Test Service Map Widget Dashboard","url":"/dashboard/5pg-va5-3ut/acceptance-test-service-map-widget-dashboard","created_at":"2020-06-23T10:20:14.703983+00:00","modified_at":"2020-06-23T10:20:14.703983+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","service":"master-db","title":"env:
+      prod, datacenter:us1.prod.dog, service: master-db","title_align":"left","filters":["env:prod","datacenter:us1.prod.dog"],"type":"servicemap"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8894546945043122}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 10:20:14 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 10:20:14 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - PcnVfOcEtqolY6fi98GEVSGXOZZkwQSBbl/twLr2TucYRfYyGCLXvKm6pTUNQt1l
+      X-Dd-Version:
+      - "35.2654243"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5pg-va5-3ut
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"5pg-va5-3ut","title":"Acceptance
+      Test Service Map Widget Dashboard","url":"/dashboard/5pg-va5-3ut/acceptance-test-service-map-widget-dashboard","created_at":"2020-06-23T10:20:14.703983+00:00","modified_at":"2020-06-23T10:20:14.703983+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","service":"master-db","title":"env:
+      prod, datacenter:us1.prod.dog, service: master-db","title_align":"left","filters":["env:prod","datacenter:us1.prod.dog"],"type":"servicemap"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8894546945043122}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 10:20:15 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 10:20:15 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - fLh2Ki8TBaqqP7azNnKugW2P+FqYhl36RGg8m8syr+2I6kNse5gXxG00+xylWppT
+      X-Dd-Version:
+      - "35.2654243"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5pg-va5-3ut
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"5pg-va5-3ut","title":"Acceptance
+      Test Service Map Widget Dashboard","url":"/dashboard/5pg-va5-3ut/acceptance-test-service-map-widget-dashboard","created_at":"2020-06-23T10:20:14.703983+00:00","modified_at":"2020-06-23T10:20:14.703983+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","service":"master-db","title":"env:
+      prod, datacenter:us1.prod.dog, service: master-db","title_align":"left","filters":["env:prod","datacenter:us1.prod.dog"],"type":"servicemap"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8894546945043122}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 10:20:17 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 10:20:17 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 3OCRM/4FZbkllI4iloi1acHDABD1SJi2aj2fysEPLLsOVOk5Ki6mi6IOsVG7JIay
+      X-Dd-Version:
+      - "35.2654243"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5pg-va5-3ut
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"5pg-va5-3ut","title":"Acceptance
+      Test Service Map Widget Dashboard","url":"/dashboard/5pg-va5-3ut/acceptance-test-service-map-widget-dashboard","created_at":"2020-06-23T10:20:14.703983+00:00","modified_at":"2020-06-23T10:20:14.703983+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","service":"master-db","title":"env:
+      prod, datacenter:us1.prod.dog, service: master-db","title_align":"left","filters":["env:prod","datacenter:us1.prod.dog"],"type":"servicemap"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8894546945043122}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 10:20:17 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 10:20:17 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - iMTE1BmjsL8tFxXfV1x35HHEpphKhyShj7mGG+gCh4hVOBaK9+R0wmURPHnATwmw
+      X-Dd-Version:
+      - "35.2654243"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5pg-va5-3ut
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"5pg-va5-3ut","title":"Acceptance
+      Test Service Map Widget Dashboard","url":"/dashboard/5pg-va5-3ut/acceptance-test-service-map-widget-dashboard","created_at":"2020-06-23T10:20:14.703983+00:00","modified_at":"2020-06-23T10:20:14.703983+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","service":"master-db","title":"env:
+      prod, datacenter:us1.prod.dog, service: master-db","title_align":"left","filters":["env:prod","datacenter:us1.prod.dog"],"type":"servicemap"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8894546945043122}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 10:20:20 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 10:20:19 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - zDaLXgTwOglSG/+LeCisOhDwAOr7D4UzTY02i97kQg3V5W3f2nMLfChR6yLoaPN1
+      X-Dd-Version:
+      - "35.2654243"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5pg-va5-3ut
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in
+      Terraform","author_name":"Nicholas Muesch","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"5pg-va5-3ut","title":"Acceptance
+      Test Service Map Widget Dashboard","url":"/dashboard/5pg-va5-3ut/acceptance-test-service-map-widget-dashboard","created_at":"2020-06-23T10:20:14.703983+00:00","modified_at":"2020-06-23T10:20:14.703983+00:00","author_handle":"nicholas.muesch@datadoghq.com","widgets":[{"definition":{"title_size":"16","service":"master-db","title":"env:
+      prod, datacenter:us1.prod.dog, service: master-db","title_align":"left","filters":["env:prod","datacenter:us1.prod.dog"],"type":"servicemap"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8894546945043122}],"layout_type":"free"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 10:20:20 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 10:20:20 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - YKF8+1vTI0wiWlB3VWhiMVnZ1RLtV3h2yAW6/TGe9qIMWdYXxsNpy3J4QxfrJoDD
+      X-Dd-Version:
+      - "35.2654243"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - DeleteDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5pg-va5-3ut
+    method: DELETE
+  response:
+    body: '{"deleted_dashboard_id":"5pg-va5-3ut"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 10:20:37 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 30-Jun-2020 10:20:21 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - nfUJgEhoI/RZ8GJVApSQj6s2TfLYXQ1qvePMFw8ZmKB2iBVwiNegJAc5RNY4ZZbI
+      X-Dd-Version:
+      - "35.2654243"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/5pg-va5-3ut
+    method: GET
+  response:
+    body: '{"errors": ["Dashboard with ID 5pg-va5-3ut not found"]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 23 Jun 2020 10:20:38 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2654243"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 404 Not Found
+    code: 404
+    duration: ""

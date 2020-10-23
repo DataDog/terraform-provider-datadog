@@ -1,0 +1,461 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"subdomain":"testdomain","api_token":""}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Datadog/dev/terraform (go1.14.2)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty
+    method: PUT
+  response:
+    body: ""
+    headers:
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - text/plain
+      Date:
+      - Fri, 22 May 2020 20:41:00 GMT
+      Dd-Pool:
+      - dogweb
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Fri, 29-May-2020 20:41:00 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - kg+/Cls6zaJcT2blJLlU62BwgGePGdpqSwWrJ0xEIvzmSMWHXxGNsiyEzBPJ1a96
+      X-Dd-Version:
+      - "35.2535746"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14.2)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty
+    method: GET
+  response:
+    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":[],"subdomain":"testdomain","api_token":"*****"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 22 May 2020 20:41:00 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Fri, 29-May-2020 20:41:00 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - L5yd3v29mZzDtdpTLB/OLdaP/nm856X8oKVK7IsHIbLmKRYkqq5Jv7+SBx/bs1VS
+      X-Dd-Version:
+      - "35.2535746"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14.2)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty
+    method: GET
+  response:
+    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":[],"subdomain":"testdomain","api_token":"*****"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 22 May 2020 20:41:01 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Fri, 29-May-2020 20:41:01 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - ztq+F8HwxRthTKNo0l2MCEDK5uwvgQzF00nWu49lHsBM51hGZBm/pPILDqupy+Xd
+      X-Dd-Version:
+      - "35.2535746"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14.2)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty
+    method: GET
+  response:
+    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":[],"subdomain":"testdomain","api_token":"*****"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 22 May 2020 20:41:01 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Fri, 29-May-2020 20:41:01 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - B/LXPck0nGNX0RSV/Gw7cnZ0oe92FUOfg1ec7WcU0kSvw/UBT+IXTFTD87Snvz2v
+      X-Dd-Version:
+      - "35.2535746"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14.2)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty
+    method: GET
+  response:
+    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":[],"subdomain":"testdomain","api_token":"*****"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 22 May 2020 20:41:01 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Fri, 29-May-2020 20:41:01 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - aJ6GOq3zw1bWl+5n1TKdeAvWSB1g5Zer85qbkQ07UFNZhgfVh/zeqVhNb8FjtbN9
+      X-Dd-Version:
+      - "35.2535746"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14.2)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty
+    method: GET
+  response:
+    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":[],"subdomain":"testdomain","api_token":"*****"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 22 May 2020 20:41:01 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Fri, 29-May-2020 20:41:01 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - ty7T8eIeXOfZhM7KDN5nGo8JS7ZSIWAqBNFeZshTg3LLDJJa7mPU5wqGt0nOPCpy
+      X-Dd-Version:
+      - "35.2535746"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14.2)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty
+    method: GET
+  response:
+    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":[],"subdomain":"testdomain","api_token":"*****"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 22 May 2020 20:41:01 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Fri, 29-May-2020 20:41:01 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 6qTaw+brNWWnKD6ULH8747/TVkPK0wedRsruOmMITJcYBkJ/Eac9bUO9jP1Btfl5
+      X-Dd-Version:
+      - "35.2535746"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14.2)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty
+    method: GET
+  response:
+    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":[],"subdomain":"testdomain","api_token":"*****"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 22 May 2020 20:41:02 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Fri, 29-May-2020 20:41:01 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - Jhz2Lh32XBCZ7PVSj7/lof8hXjgbtiexG4VIRWAEYHPFefqyYpXnVaeT62yBncrB
+      X-Dd-Version:
+      - "35.2535746"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14.2)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty
+    method: GET
+  response:
+    body: '{"services":[{"service_name":"test_service","service_key":"*****"},{"service_name":"test_service_2","service_key":"*****"}],"schedules":[],"subdomain":"testdomain","api_token":"*****"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 22 May 2020 20:41:02 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Fri, 29-May-2020 20:41:02 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - vQYgH+orCqhRbQG/mSd6IeQSqyYBCkFVCv4Bj6PXMALQcvTK5EvxQuH7fIz3d52m
+      X-Dd-Version:
+      - "35.2535746"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14.2)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - text/plain
+      Date:
+      - Fri, 22 May 2020 20:41:02 GMT
+      Dd-Pool:
+      - dogweb
+      Set-Cookie:
+      - DD-PSHARD=141; Max-Age=604800; Path=/; expires=Fri, 29-May-2020 20:41:02 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - pEDVi2191MvoIMwusdL+COAxndBmcRhJtxAtWxDDnECWDI8Z99hIoBZbpR57tJKz
+      X-Dd-Version:
+      - "35.2535746"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Datadog/dev/terraform (go1.14.2)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty
+    method: GET
+  response:
+    body: '{"errors": ["pagerduty not found"]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 22 May 2020 20:41:02 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2535746"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 404 Not Found
+    code: 404
+    duration: ""

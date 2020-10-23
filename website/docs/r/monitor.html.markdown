@@ -50,7 +50,7 @@ resource "datadog_monitor" "foo" {
 
 The following arguments are supported:
 
-* `type` - (Required) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation](https://docs.datadoghq.com/api/?lang=python#create-a-monitor) page. The available options are below. **Note**: The monitor type cannot be changed after a monitor is created.
+* `type` - (Required) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) page. The available options are below. **Note**: The monitor type cannot be changed after a monitor is created.
     * `metric alert`
     * `service check`
     * `event alert`
@@ -59,7 +59,7 @@ The following arguments are supported:
     * `log alert`
 * `name` - (Required) Name of Datadog monitor
 * `query` - (Required) The monitor query to notify on. Note this is not the same query you see in the UI and
-    the syntax is different depending on the monitor `type`, please see the [API Reference](https://docs.datadoghq.com/api/?lang=python#create-a-monitor) for details. **Warning:** `terraform plan` won't perform any validation of the query contents.
+    the syntax is different depending on the monitor `type`, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. **Warning:** `terraform plan` won't perform any validation of the query contents.
 * `message` - (Required) A message to include with notifications for this monitor.
     Email notifications can be sent to specific users by using the same '@username' notation as events.
 * `escalation_message` - (Optional) A message to include with a re-notification. Supports the '@username'
@@ -99,9 +99,8 @@ The following arguments are supported:
     For example, if the value is set to 300 (5min), the timeframe is set to last_5m and the time is 7:00,
     the monitor will evaluate data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled
     metrics to ensure the monitor will always have data during evaluation.
-* `no_data_timeframe` (Optional) The number of minutes before a monitor will notify when data stops reporting. Must be at
-    least 2x the monitor timeframe for metric alerts or 2 minutes for service checks. Default: 2x timeframe for
-    metric alerts, 2 minutes for service checks. Defaults to 10 minutes.
+* `no_data_timeframe` (Optional) The number of minutes before a monitor will notify when data stops reporting. Provider defaults to 10 minutes.
+    We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.
 * `renotify_interval` (Optional) The number of minutes after the last notification before a monitor will re-notify
     on the current status. It will only re-notify if it's not resolved.
 * `notify_audit` (Optional) A boolean indicating whether tagged users will be notified on changes to this monitor.
@@ -116,6 +115,7 @@ The following arguments are supported:
     Default: True for "on average", "at all times" and "in total" aggregation. False otherwise.
 * `locked` (Optional) A boolean indicating whether changes to to this monitor should be restricted to the creator or admins. Defaults to False.
 * `tags` (Optional) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
+* `force_delete` (Optional) A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).
 * `threshold_windows` (Optional) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. Can only be used for, and are required for, anomaly monitors.
   * `recovery_window` describes how long an anomalous metric must be normal before the alert recovers.
   * `trigger_window`  describes how long a metric must be anomalous before an alert triggers.
@@ -155,7 +155,7 @@ Both of these actions add a new value to the `silenced` map. This can be problem
 
 ```
 lifecycle {
-  ignore_changes = ["silenced"]
+  ignore_changes = [silenced]
 }
 ```
 
@@ -189,6 +189,6 @@ resource "datadog_monitor" "bar" {
   type = "composite"
   message = "This is a message"
 
-	query = "${datadog_monitor.foo.id} || ${datadog_synthetics_test.foo.monitor_id}"
+  query = "${datadog_monitor.foo.id} || ${datadog_synthetics_test.foo.monitor_id}"
 }
 ```

@@ -8,11 +8,14 @@ import (
 
 func TestDatadogDowntime_import(t *testing.T) {
 	resourceName := "datadog_downtime.foo"
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogDowntimeDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDowntimeConfigImported,

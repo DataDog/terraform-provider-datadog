@@ -1,0 +1,334 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"foo:bar,buzz:lightyear","tenant_name":"testc44-1234-5678-9101-cc00736ftest"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - CreateAzureIntegration
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/azure
+    method: POST
+  response:
+    body: '{}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "2"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 26 Jun 2020 16:13:25 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=191; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 16:13:24 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - SaHvyR/hQzhMjBxXmmuM76vwlwfocpgL0LhX3u6R0CFONYqUGm7Xe/7/HyTliTFX
+      X-Dd-Version:
+      - "35.2670583"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListAzureIntegration
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/azure
+    method: GET
+  response:
+    body: '[{"tenant_name":"testc44-1234-5678-9101-cc00736ftest","errors":[],"host_filters":"foo:bar,buzz:lightyear","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 26 Jun 2020 16:13:26 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=191; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 16:13:25 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - A5a5htKhTUF1FdBQZRUZl4RVawKwk2RUtaZz3EDBmdXc0X6i0O7TBEBWn4bIBQ01
+      X-Dd-Version:
+      - "35.2670583"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListAzureIntegration
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/azure
+    method: GET
+  response:
+    body: '[{"tenant_name":"testc44-1234-5678-9101-cc00736ftest","errors":[],"host_filters":"foo:bar,buzz:lightyear","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 26 Jun 2020 16:13:26 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=191; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 16:13:26 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - rxkz+JB0yzarEINDeNWQGs9dk7PLNAMnAw2wV8MNkZOhKDtz+JOpGuIyyBUaWwyF
+      X-Dd-Version:
+      - "35.2670583"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListAzureIntegration
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/azure
+    method: GET
+  response:
+    body: '[{"tenant_name":"testc44-1234-5678-9101-cc00736ftest","errors":[],"host_filters":"foo:bar,buzz:lightyear","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 26 Jun 2020 16:13:28 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=191; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 16:13:26 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - SxoanfhUZNcxsD3lnA3j+up2jAgZV05RpnWjR/qtgMkjy5UIlkbs0WqFT6yaBwwR
+      X-Dd-Version:
+      - "35.2670583"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListAzureIntegration
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/azure
+    method: GET
+  response:
+    body: '[{"tenant_name":"testc44-1234-5678-9101-cc00736ftest","errors":[],"host_filters":"foo:bar,buzz:lightyear","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 26 Jun 2020 16:13:29 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=191; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 16:13:28 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - kqXz3OvR7iajEJOdRFWpzJtcDHRumYwGfjdF12Vd65Xt1uV9T6lEO/K0lkxmcRvl
+      X-Dd-Version:
+      - "35.2670583"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"foo:bar,buzz:lightyear","tenant_name":"testc44-1234-5678-9101-cc00736ftest"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - DeleteAzureIntegration
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/azure
+    method: DELETE
+  response:
+    body: '{}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "2"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 26 Jun 2020 16:13:30 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=191; Max-Age=604800; Path=/; expires=Fri, 03-Jul-2020 16:13:29 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - iMTE1BmjsL8tFxXfV1x35HHEpphKhyShj7mGG+gCh4hVOBaK9+R0wmURPHnATwmw
+      X-Dd-Version:
+      - "35.2670583"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListAzureIntegration
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.6 (go go1.13.4; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/azure
+    method: GET
+  response:
+    body: '{"errors": ["Azure Integration not yet installed. Please install before
+      performing this action."]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "98"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 26 Jun 2020 16:13:30 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.2670583"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 400 Bad Request
+    code: 400
+    duration: ""

@@ -2061,7 +2061,7 @@ func (b *BoardLite) SetUrl(v string) {
 }
 
 // GetId returns the Id field if non-nil, zero value otherwise.
-func (b *BoardWidget) GetId() int {
+func (b *BoardWidget) GetId() int64 {
 	if b == nil || b.Id == nil {
 		return 0
 	}
@@ -2070,7 +2070,7 @@ func (b *BoardWidget) GetId() int {
 
 // GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 // and a boolean to check if the value has been set.
-func (b *BoardWidget) GetIdOk() (int, bool) {
+func (b *BoardWidget) GetIdOk() (int64, bool) {
 	if b == nil || b.Id == nil {
 		return 0, false
 	}
@@ -2087,7 +2087,7 @@ func (b *BoardWidget) HasId() bool {
 }
 
 // SetId allocates a new b.Id and returns the pointer to it.
-func (b *BoardWidget) SetId(v int) {
+func (b *BoardWidget) SetId(v int64) {
 	b.Id = &v
 }
 
@@ -2647,6 +2647,68 @@ func (c *ChangeRequest) HasProcessQuery() bool {
 // SetProcessQuery allocates a new c.ProcessQuery and returns the pointer to it.
 func (c *ChangeRequest) SetProcessQuery(v WidgetProcessQuery) {
 	c.ProcessQuery = &v
+}
+
+// GetRumQuery returns the RumQuery field if non-nil, zero value otherwise.
+func (c *ChangeRequest) GetRumQuery() WidgetApmOrLogQuery {
+	if c == nil || c.RumQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *c.RumQuery
+}
+
+// GetRumQueryOk returns a tuple with the RumQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (c *ChangeRequest) GetRumQueryOk() (WidgetApmOrLogQuery, bool) {
+	if c == nil || c.RumQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *c.RumQuery, true
+}
+
+// HasRumQuery returns a boolean if a field has been set.
+func (c *ChangeRequest) HasRumQuery() bool {
+	if c != nil && c.RumQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRumQuery allocates a new c.RumQuery and returns the pointer to it.
+func (c *ChangeRequest) SetRumQuery(v WidgetApmOrLogQuery) {
+	c.RumQuery = &v
+}
+
+// GetSecurityQuery returns the SecurityQuery field if non-nil, zero value otherwise.
+func (c *ChangeRequest) GetSecurityQuery() WidgetApmOrLogQuery {
+	if c == nil || c.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *c.SecurityQuery
+}
+
+// GetSecurityQueryOk returns a tuple with the SecurityQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (c *ChangeRequest) GetSecurityQueryOk() (WidgetApmOrLogQuery, bool) {
+	if c == nil || c.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *c.SecurityQuery, true
+}
+
+// HasSecurityQuery returns a boolean if a field has been set.
+func (c *ChangeRequest) HasSecurityQuery() bool {
+	if c != nil && c.SecurityQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSecurityQuery allocates a new c.SecurityQuery and returns the pointer to it.
+func (c *ChangeRequest) SetSecurityQuery(v WidgetApmOrLogQuery) {
+	c.SecurityQuery = &v
 }
 
 // GetShowPresent returns the ShowPresent field if non-nil, zero value otherwise.
@@ -5098,6 +5160,68 @@ func (d *DistributionRequest) SetProcessQuery(v WidgetProcessQuery) {
 	d.ProcessQuery = &v
 }
 
+// GetRumQuery returns the RumQuery field if non-nil, zero value otherwise.
+func (d *DistributionRequest) GetRumQuery() WidgetApmOrLogQuery {
+	if d == nil || d.RumQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *d.RumQuery
+}
+
+// GetRumQueryOk returns a tuple with the RumQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *DistributionRequest) GetRumQueryOk() (WidgetApmOrLogQuery, bool) {
+	if d == nil || d.RumQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *d.RumQuery, true
+}
+
+// HasRumQuery returns a boolean if a field has been set.
+func (d *DistributionRequest) HasRumQuery() bool {
+	if d != nil && d.RumQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRumQuery allocates a new d.RumQuery and returns the pointer to it.
+func (d *DistributionRequest) SetRumQuery(v WidgetApmOrLogQuery) {
+	d.RumQuery = &v
+}
+
+// GetSecurityQuery returns the SecurityQuery field if non-nil, zero value otherwise.
+func (d *DistributionRequest) GetSecurityQuery() WidgetApmOrLogQuery {
+	if d == nil || d.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *d.SecurityQuery
+}
+
+// GetSecurityQueryOk returns a tuple with the SecurityQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (d *DistributionRequest) GetSecurityQueryOk() (WidgetApmOrLogQuery, bool) {
+	if d == nil || d.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *d.SecurityQuery, true
+}
+
+// HasSecurityQuery returns a boolean if a field has been set.
+func (d *DistributionRequest) HasSecurityQuery() bool {
+	if d != nil && d.SecurityQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSecurityQuery allocates a new d.SecurityQuery and returns the pointer to it.
+func (d *DistributionRequest) SetSecurityQuery(v WidgetApmOrLogQuery) {
+	d.SecurityQuery = &v
+}
+
 // GetStyle returns the Style field if non-nil, zero value otherwise.
 func (d *DistributionRequest) GetStyle() WidgetRequestStyle {
 	if d == nil || d.Style == nil {
@@ -5997,6 +6121,37 @@ func (e *EventStreamDefinition) SetQuery(v string) {
 	e.Query = &v
 }
 
+// GetTagsExecution returns the TagsExecution field if non-nil, zero value otherwise.
+func (e *EventStreamDefinition) GetTagsExecution() string {
+	if e == nil || e.TagsExecution == nil {
+		return ""
+	}
+	return *e.TagsExecution
+}
+
+// GetTagsExecutionOk returns a tuple with the TagsExecution field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (e *EventStreamDefinition) GetTagsExecutionOk() (string, bool) {
+	if e == nil || e.TagsExecution == nil {
+		return "", false
+	}
+	return *e.TagsExecution, true
+}
+
+// HasTagsExecution returns a boolean if a field has been set.
+func (e *EventStreamDefinition) HasTagsExecution() bool {
+	if e != nil && e.TagsExecution != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTagsExecution allocates a new e.TagsExecution and returns the pointer to it.
+func (e *EventStreamDefinition) SetTagsExecution(v string) {
+	e.TagsExecution = &v
+}
+
 // GetTime returns the Time field if non-nil, zero value otherwise.
 func (e *EventStreamDefinition) GetTime() WidgetTime {
 	if e == nil || e.Time == nil {
@@ -6181,6 +6336,37 @@ func (e *EventTimelineDefinition) HasQuery() bool {
 // SetQuery allocates a new e.Query and returns the pointer to it.
 func (e *EventTimelineDefinition) SetQuery(v string) {
 	e.Query = &v
+}
+
+// GetTagsExecution returns the TagsExecution field if non-nil, zero value otherwise.
+func (e *EventTimelineDefinition) GetTagsExecution() string {
+	if e == nil || e.TagsExecution == nil {
+		return ""
+	}
+	return *e.TagsExecution
+}
+
+// GetTagsExecutionOk returns a tuple with the TagsExecution field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (e *EventTimelineDefinition) GetTagsExecutionOk() (string, bool) {
+	if e == nil || e.TagsExecution == nil {
+		return "", false
+	}
+	return *e.TagsExecution, true
+}
+
+// HasTagsExecution returns a boolean if a field has been set.
+func (e *EventTimelineDefinition) HasTagsExecution() bool {
+	if e != nil && e.TagsExecution != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTagsExecution allocates a new e.TagsExecution and returns the pointer to it.
+func (e *EventTimelineDefinition) SetTagsExecution(v string) {
+	e.TagsExecution = &v
 }
 
 // GetTime returns the Time field if non-nil, zero value otherwise.
@@ -7981,6 +8167,68 @@ func (g *GraphDefinitionRequest) SetQuery(v string) {
 	g.Query = &v
 }
 
+// GetRumQuery returns the RumQuery field if non-nil, zero value otherwise.
+func (g *GraphDefinitionRequest) GetRumQuery() GraphApmOrLogQuery {
+	if g == nil || g.RumQuery == nil {
+		return GraphApmOrLogQuery{}
+	}
+	return *g.RumQuery
+}
+
+// GetRumQueryOk returns a tuple with the RumQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (g *GraphDefinitionRequest) GetRumQueryOk() (GraphApmOrLogQuery, bool) {
+	if g == nil || g.RumQuery == nil {
+		return GraphApmOrLogQuery{}, false
+	}
+	return *g.RumQuery, true
+}
+
+// HasRumQuery returns a boolean if a field has been set.
+func (g *GraphDefinitionRequest) HasRumQuery() bool {
+	if g != nil && g.RumQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRumQuery allocates a new g.RumQuery and returns the pointer to it.
+func (g *GraphDefinitionRequest) SetRumQuery(v GraphApmOrLogQuery) {
+	g.RumQuery = &v
+}
+
+// GetSecurityQuery returns the SecurityQuery field if non-nil, zero value otherwise.
+func (g *GraphDefinitionRequest) GetSecurityQuery() GraphApmOrLogQuery {
+	if g == nil || g.SecurityQuery == nil {
+		return GraphApmOrLogQuery{}
+	}
+	return *g.SecurityQuery
+}
+
+// GetSecurityQueryOk returns a tuple with the SecurityQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (g *GraphDefinitionRequest) GetSecurityQueryOk() (GraphApmOrLogQuery, bool) {
+	if g == nil || g.SecurityQuery == nil {
+		return GraphApmOrLogQuery{}, false
+	}
+	return *g.SecurityQuery, true
+}
+
+// HasSecurityQuery returns a boolean if a field has been set.
+func (g *GraphDefinitionRequest) HasSecurityQuery() bool {
+	if g != nil && g.SecurityQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSecurityQuery allocates a new g.SecurityQuery and returns the pointer to it.
+func (g *GraphDefinitionRequest) SetSecurityQuery(v GraphApmOrLogQuery) {
+	g.SecurityQuery = &v
+}
+
 // GetStacked returns the Stacked field if non-nil, zero value otherwise.
 func (g *GraphDefinitionRequest) GetStacked() bool {
 	if g == nil || g.Stacked == nil {
@@ -9035,6 +9283,68 @@ func (h *HeatmapRequest) SetProcessQuery(v WidgetProcessQuery) {
 	h.ProcessQuery = &v
 }
 
+// GetRumQuery returns the RumQuery field if non-nil, zero value otherwise.
+func (h *HeatmapRequest) GetRumQuery() WidgetApmOrLogQuery {
+	if h == nil || h.RumQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *h.RumQuery
+}
+
+// GetRumQueryOk returns a tuple with the RumQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (h *HeatmapRequest) GetRumQueryOk() (WidgetApmOrLogQuery, bool) {
+	if h == nil || h.RumQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *h.RumQuery, true
+}
+
+// HasRumQuery returns a boolean if a field has been set.
+func (h *HeatmapRequest) HasRumQuery() bool {
+	if h != nil && h.RumQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRumQuery allocates a new h.RumQuery and returns the pointer to it.
+func (h *HeatmapRequest) SetRumQuery(v WidgetApmOrLogQuery) {
+	h.RumQuery = &v
+}
+
+// GetSecurityQuery returns the SecurityQuery field if non-nil, zero value otherwise.
+func (h *HeatmapRequest) GetSecurityQuery() WidgetApmOrLogQuery {
+	if h == nil || h.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *h.SecurityQuery
+}
+
+// GetSecurityQueryOk returns a tuple with the SecurityQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (h *HeatmapRequest) GetSecurityQueryOk() (WidgetApmOrLogQuery, bool) {
+	if h == nil || h.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *h.SecurityQuery, true
+}
+
+// HasSecurityQuery returns a boolean if a field has been set.
+func (h *HeatmapRequest) HasSecurityQuery() bool {
+	if h != nil && h.SecurityQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSecurityQuery allocates a new h.SecurityQuery and returns the pointer to it.
+func (h *HeatmapRequest) SetSecurityQuery(v WidgetApmOrLogQuery) {
+	h.SecurityQuery = &v
+}
+
 // GetStyle returns the Style field if non-nil, zero value otherwise.
 func (h *HeatmapRequest) GetStyle() WidgetRequestStyle {
 	if h == nil || h.Style == nil {
@@ -9560,6 +9870,68 @@ func (h *HostmapRequest) HasProcessQuery() bool {
 // SetProcessQuery allocates a new h.ProcessQuery and returns the pointer to it.
 func (h *HostmapRequest) SetProcessQuery(v WidgetProcessQuery) {
 	h.ProcessQuery = &v
+}
+
+// GetRumQuery returns the RumQuery field if non-nil, zero value otherwise.
+func (h *HostmapRequest) GetRumQuery() WidgetApmOrLogQuery {
+	if h == nil || h.RumQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *h.RumQuery
+}
+
+// GetRumQueryOk returns a tuple with the RumQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (h *HostmapRequest) GetRumQueryOk() (WidgetApmOrLogQuery, bool) {
+	if h == nil || h.RumQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *h.RumQuery, true
+}
+
+// HasRumQuery returns a boolean if a field has been set.
+func (h *HostmapRequest) HasRumQuery() bool {
+	if h != nil && h.RumQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRumQuery allocates a new h.RumQuery and returns the pointer to it.
+func (h *HostmapRequest) SetRumQuery(v WidgetApmOrLogQuery) {
+	h.RumQuery = &v
+}
+
+// GetSecurityQuery returns the SecurityQuery field if non-nil, zero value otherwise.
+func (h *HostmapRequest) GetSecurityQuery() WidgetApmOrLogQuery {
+	if h == nil || h.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *h.SecurityQuery
+}
+
+// GetSecurityQueryOk returns a tuple with the SecurityQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (h *HostmapRequest) GetSecurityQueryOk() (WidgetApmOrLogQuery, bool) {
+	if h == nil || h.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *h.SecurityQuery, true
+}
+
+// HasSecurityQuery returns a boolean if a field has been set.
+func (h *HostmapRequest) HasSecurityQuery() bool {
+	if h != nil && h.SecurityQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSecurityQuery allocates a new h.SecurityQuery and returns the pointer to it.
+func (h *HostmapRequest) SetSecurityQuery(v WidgetApmOrLogQuery) {
+	h.SecurityQuery = &v
 }
 
 // GetFill returns the Fill field if non-nil, zero value otherwise.
@@ -12445,6 +12817,37 @@ func (l *LogStreamDefinition) SetLogset(v string) {
 	l.Logset = &v
 }
 
+// GetMessageDisplay returns the MessageDisplay field if non-nil, zero value otherwise.
+func (l *LogStreamDefinition) GetMessageDisplay() string {
+	if l == nil || l.MessageDisplay == nil {
+		return ""
+	}
+	return *l.MessageDisplay
+}
+
+// GetMessageDisplayOk returns a tuple with the MessageDisplay field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (l *LogStreamDefinition) GetMessageDisplayOk() (string, bool) {
+	if l == nil || l.MessageDisplay == nil {
+		return "", false
+	}
+	return *l.MessageDisplay, true
+}
+
+// HasMessageDisplay returns a boolean if a field has been set.
+func (l *LogStreamDefinition) HasMessageDisplay() bool {
+	if l != nil && l.MessageDisplay != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMessageDisplay allocates a new l.MessageDisplay and returns the pointer to it.
+func (l *LogStreamDefinition) SetMessageDisplay(v string) {
+	l.MessageDisplay = &v
+}
+
 // GetQuery returns the Query field if non-nil, zero value otherwise.
 func (l *LogStreamDefinition) GetQuery() string {
 	if l == nil || l.Query == nil {
@@ -12474,6 +12877,99 @@ func (l *LogStreamDefinition) HasQuery() bool {
 // SetQuery allocates a new l.Query and returns the pointer to it.
 func (l *LogStreamDefinition) SetQuery(v string) {
 	l.Query = &v
+}
+
+// GetShowDateColumn returns the ShowDateColumn field if non-nil, zero value otherwise.
+func (l *LogStreamDefinition) GetShowDateColumn() bool {
+	if l == nil || l.ShowDateColumn == nil {
+		return false
+	}
+	return *l.ShowDateColumn
+}
+
+// GetShowDateColumnOk returns a tuple with the ShowDateColumn field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (l *LogStreamDefinition) GetShowDateColumnOk() (bool, bool) {
+	if l == nil || l.ShowDateColumn == nil {
+		return false, false
+	}
+	return *l.ShowDateColumn, true
+}
+
+// HasShowDateColumn returns a boolean if a field has been set.
+func (l *LogStreamDefinition) HasShowDateColumn() bool {
+	if l != nil && l.ShowDateColumn != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetShowDateColumn allocates a new l.ShowDateColumn and returns the pointer to it.
+func (l *LogStreamDefinition) SetShowDateColumn(v bool) {
+	l.ShowDateColumn = &v
+}
+
+// GetShowMessageColumn returns the ShowMessageColumn field if non-nil, zero value otherwise.
+func (l *LogStreamDefinition) GetShowMessageColumn() bool {
+	if l == nil || l.ShowMessageColumn == nil {
+		return false
+	}
+	return *l.ShowMessageColumn
+}
+
+// GetShowMessageColumnOk returns a tuple with the ShowMessageColumn field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (l *LogStreamDefinition) GetShowMessageColumnOk() (bool, bool) {
+	if l == nil || l.ShowMessageColumn == nil {
+		return false, false
+	}
+	return *l.ShowMessageColumn, true
+}
+
+// HasShowMessageColumn returns a boolean if a field has been set.
+func (l *LogStreamDefinition) HasShowMessageColumn() bool {
+	if l != nil && l.ShowMessageColumn != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetShowMessageColumn allocates a new l.ShowMessageColumn and returns the pointer to it.
+func (l *LogStreamDefinition) SetShowMessageColumn(v bool) {
+	l.ShowMessageColumn = &v
+}
+
+// GetSort returns the Sort field if non-nil, zero value otherwise.
+func (l *LogStreamDefinition) GetSort() WidgetFieldSort {
+	if l == nil || l.Sort == nil {
+		return WidgetFieldSort{}
+	}
+	return *l.Sort
+}
+
+// GetSortOk returns a tuple with the Sort field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (l *LogStreamDefinition) GetSortOk() (WidgetFieldSort, bool) {
+	if l == nil || l.Sort == nil {
+		return WidgetFieldSort{}, false
+	}
+	return *l.Sort, true
+}
+
+// HasSort returns a boolean if a field has been set.
+func (l *LogStreamDefinition) HasSort() bool {
+	if l != nil && l.Sort != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSort allocates a new l.Sort and returns the pointer to it.
+func (l *LogStreamDefinition) SetSort(v WidgetFieldSort) {
+	l.Sort = &v
 }
 
 // GetTime returns the Time field if non-nil, zero value otherwise.
@@ -15421,6 +15917,68 @@ func (q *QueryTableRequest) SetProcessQuery(v WidgetProcessQuery) {
 	q.ProcessQuery = &v
 }
 
+// GetRumQuery returns the RumQuery field if non-nil, zero value otherwise.
+func (q *QueryTableRequest) GetRumQuery() WidgetApmOrLogQuery {
+	if q == nil || q.RumQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *q.RumQuery
+}
+
+// GetRumQueryOk returns a tuple with the RumQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryTableRequest) GetRumQueryOk() (WidgetApmOrLogQuery, bool) {
+	if q == nil || q.RumQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *q.RumQuery, true
+}
+
+// HasRumQuery returns a boolean if a field has been set.
+func (q *QueryTableRequest) HasRumQuery() bool {
+	if q != nil && q.RumQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRumQuery allocates a new q.RumQuery and returns the pointer to it.
+func (q *QueryTableRequest) SetRumQuery(v WidgetApmOrLogQuery) {
+	q.RumQuery = &v
+}
+
+// GetSecurityQuery returns the SecurityQuery field if non-nil, zero value otherwise.
+func (q *QueryTableRequest) GetSecurityQuery() WidgetApmOrLogQuery {
+	if q == nil || q.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *q.SecurityQuery
+}
+
+// GetSecurityQueryOk returns a tuple with the SecurityQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryTableRequest) GetSecurityQueryOk() (WidgetApmOrLogQuery, bool) {
+	if q == nil || q.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *q.SecurityQuery, true
+}
+
+// HasSecurityQuery returns a boolean if a field has been set.
+func (q *QueryTableRequest) HasSecurityQuery() bool {
+	if q != nil && q.SecurityQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSecurityQuery allocates a new q.SecurityQuery and returns the pointer to it.
+func (q *QueryTableRequest) SetSecurityQuery(v WidgetApmOrLogQuery) {
+	q.SecurityQuery = &v
+}
+
 // GetAutoscale returns the Autoscale field if non-nil, zero value otherwise.
 func (q *QueryValueDefinition) GetAutoscale() bool {
 	if q == nil || q.Autoscale == nil {
@@ -15853,6 +16411,68 @@ func (q *QueryValueRequest) HasProcessQuery() bool {
 // SetProcessQuery allocates a new q.ProcessQuery and returns the pointer to it.
 func (q *QueryValueRequest) SetProcessQuery(v WidgetProcessQuery) {
 	q.ProcessQuery = &v
+}
+
+// GetRumQuery returns the RumQuery field if non-nil, zero value otherwise.
+func (q *QueryValueRequest) GetRumQuery() WidgetApmOrLogQuery {
+	if q == nil || q.RumQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *q.RumQuery
+}
+
+// GetRumQueryOk returns a tuple with the RumQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryValueRequest) GetRumQueryOk() (WidgetApmOrLogQuery, bool) {
+	if q == nil || q.RumQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *q.RumQuery, true
+}
+
+// HasRumQuery returns a boolean if a field has been set.
+func (q *QueryValueRequest) HasRumQuery() bool {
+	if q != nil && q.RumQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRumQuery allocates a new q.RumQuery and returns the pointer to it.
+func (q *QueryValueRequest) SetRumQuery(v WidgetApmOrLogQuery) {
+	q.RumQuery = &v
+}
+
+// GetSecurityQuery returns the SecurityQuery field if non-nil, zero value otherwise.
+func (q *QueryValueRequest) GetSecurityQuery() WidgetApmOrLogQuery {
+	if q == nil || q.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *q.SecurityQuery
+}
+
+// GetSecurityQueryOk returns a tuple with the SecurityQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (q *QueryValueRequest) GetSecurityQueryOk() (WidgetApmOrLogQuery, bool) {
+	if q == nil || q.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *q.SecurityQuery, true
+}
+
+// HasSecurityQuery returns a boolean if a field has been set.
+func (q *QueryValueRequest) HasSecurityQuery() bool {
+	if q != nil && q.SecurityQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSecurityQuery allocates a new q.SecurityQuery and returns the pointer to it.
+func (q *QueryValueRequest) SetSecurityQuery(v WidgetApmOrLogQuery) {
+	q.SecurityQuery = &v
 }
 
 // GetPeriod returns the Period field if non-nil, zero value otherwise.
@@ -17033,6 +17653,68 @@ func (s *ScatterplotRequest) SetProcessQuery(v WidgetProcessQuery) {
 	s.ProcessQuery = &v
 }
 
+// GetRumQuery returns the RumQuery field if non-nil, zero value otherwise.
+func (s *ScatterplotRequest) GetRumQuery() WidgetApmOrLogQuery {
+	if s == nil || s.RumQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *s.RumQuery
+}
+
+// GetRumQueryOk returns a tuple with the RumQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *ScatterplotRequest) GetRumQueryOk() (WidgetApmOrLogQuery, bool) {
+	if s == nil || s.RumQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *s.RumQuery, true
+}
+
+// HasRumQuery returns a boolean if a field has been set.
+func (s *ScatterplotRequest) HasRumQuery() bool {
+	if s != nil && s.RumQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRumQuery allocates a new s.RumQuery and returns the pointer to it.
+func (s *ScatterplotRequest) SetRumQuery(v WidgetApmOrLogQuery) {
+	s.RumQuery = &v
+}
+
+// GetSecurityQuery returns the SecurityQuery field if non-nil, zero value otherwise.
+func (s *ScatterplotRequest) GetSecurityQuery() WidgetApmOrLogQuery {
+	if s == nil || s.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *s.SecurityQuery
+}
+
+// GetSecurityQueryOk returns a tuple with the SecurityQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *ScatterplotRequest) GetSecurityQueryOk() (WidgetApmOrLogQuery, bool) {
+	if s == nil || s.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *s.SecurityQuery, true
+}
+
+// HasSecurityQuery returns a boolean if a field has been set.
+func (s *ScatterplotRequest) HasSecurityQuery() bool {
+	if s != nil && s.SecurityQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSecurityQuery allocates a new s.SecurityQuery and returns the pointer to it.
+func (s *ScatterplotRequest) SetSecurityQuery(v WidgetApmOrLogQuery) {
+	s.SecurityQuery = &v
+}
+
 // GetX returns the X field if non-nil, zero value otherwise.
 func (s *ScatterplotRequests) GetX() ScatterplotRequest {
 	if s == nil || s.X == nil {
@@ -17651,6 +18333,37 @@ func (s *Series) HasMetric() bool {
 // SetMetric allocates a new s.Metric and returns the pointer to it.
 func (s *Series) SetMetric(v string) {
 	s.Metric = &v
+}
+
+// GetQueryIndex returns the QueryIndex field if non-nil, zero value otherwise.
+func (s *Series) GetQueryIndex() int {
+	if s == nil || s.QueryIndex == nil {
+		return 0
+	}
+	return *s.QueryIndex
+}
+
+// GetQueryIndexOk returns a tuple with the QueryIndex field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *Series) GetQueryIndexOk() (int, bool) {
+	if s == nil || s.QueryIndex == nil {
+		return 0, false
+	}
+	return *s.QueryIndex, true
+}
+
+// HasQueryIndex returns a boolean if a field has been set.
+func (s *Series) HasQueryIndex() bool {
+	if s != nil && s.QueryIndex != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetQueryIndex allocates a new s.QueryIndex and returns the pointer to it.
+func (s *Series) SetQueryIndex(v int) {
+	s.QueryIndex = &v
 }
 
 // GetScope returns the Scope field if non-nil, zero value otherwise.
@@ -19728,6 +20441,37 @@ func (s *SyntheticsOptions) HasAcceptSelfSigned() bool {
 // SetAcceptSelfSigned allocates a new s.AcceptSelfSigned and returns the pointer to it.
 func (s *SyntheticsOptions) SetAcceptSelfSigned(v bool) {
 	s.AcceptSelfSigned = &v
+}
+
+// GetAllowInsecure returns the AllowInsecure field if non-nil, zero value otherwise.
+func (s *SyntheticsOptions) GetAllowInsecure() bool {
+	if s == nil || s.AllowInsecure == nil {
+		return false
+	}
+	return *s.AllowInsecure
+}
+
+// GetAllowInsecureOk returns a tuple with the AllowInsecure field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (s *SyntheticsOptions) GetAllowInsecureOk() (bool, bool) {
+	if s == nil || s.AllowInsecure == nil {
+		return false, false
+	}
+	return *s.AllowInsecure, true
+}
+
+// HasAllowInsecure returns a boolean if a field has been set.
+func (s *SyntheticsOptions) HasAllowInsecure() bool {
+	if s != nil && s.AllowInsecure != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAllowInsecure allocates a new s.AllowInsecure and returns the pointer to it.
+func (s *SyntheticsOptions) SetAllowInsecure(v bool) {
+	s.AllowInsecure = &v
 }
 
 // GetFollowRedirects returns the FollowRedirects field if non-nil, zero value otherwise.
@@ -23419,6 +24163,68 @@ func (t *TimeseriesRequest) SetProcessQuery(v WidgetProcessQuery) {
 	t.ProcessQuery = &v
 }
 
+// GetRumQuery returns the RumQuery field if non-nil, zero value otherwise.
+func (t *TimeseriesRequest) GetRumQuery() WidgetApmOrLogQuery {
+	if t == nil || t.RumQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *t.RumQuery
+}
+
+// GetRumQueryOk returns a tuple with the RumQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (t *TimeseriesRequest) GetRumQueryOk() (WidgetApmOrLogQuery, bool) {
+	if t == nil || t.RumQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *t.RumQuery, true
+}
+
+// HasRumQuery returns a boolean if a field has been set.
+func (t *TimeseriesRequest) HasRumQuery() bool {
+	if t != nil && t.RumQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRumQuery allocates a new t.RumQuery and returns the pointer to it.
+func (t *TimeseriesRequest) SetRumQuery(v WidgetApmOrLogQuery) {
+	t.RumQuery = &v
+}
+
+// GetSecurityQuery returns the SecurityQuery field if non-nil, zero value otherwise.
+func (t *TimeseriesRequest) GetSecurityQuery() WidgetApmOrLogQuery {
+	if t == nil || t.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *t.SecurityQuery
+}
+
+// GetSecurityQueryOk returns a tuple with the SecurityQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (t *TimeseriesRequest) GetSecurityQueryOk() (WidgetApmOrLogQuery, bool) {
+	if t == nil || t.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *t.SecurityQuery, true
+}
+
+// HasSecurityQuery returns a boolean if a field has been set.
+func (t *TimeseriesRequest) HasSecurityQuery() bool {
+	if t != nil && t.SecurityQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSecurityQuery allocates a new t.SecurityQuery and returns the pointer to it.
+func (t *TimeseriesRequest) SetSecurityQuery(v WidgetApmOrLogQuery) {
+	t.SecurityQuery = &v
+}
+
 // GetStyle returns the Style field if non-nil, zero value otherwise.
 func (t *TimeseriesRequest) GetStyle() TimeseriesRequestStyle {
 	if t == nil || t.Style == nil {
@@ -23851,6 +24657,68 @@ func (t *ToplistRequest) HasProcessQuery() bool {
 // SetProcessQuery allocates a new t.ProcessQuery and returns the pointer to it.
 func (t *ToplistRequest) SetProcessQuery(v WidgetProcessQuery) {
 	t.ProcessQuery = &v
+}
+
+// GetRumQuery returns the RumQuery field if non-nil, zero value otherwise.
+func (t *ToplistRequest) GetRumQuery() WidgetApmOrLogQuery {
+	if t == nil || t.RumQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *t.RumQuery
+}
+
+// GetRumQueryOk returns a tuple with the RumQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (t *ToplistRequest) GetRumQueryOk() (WidgetApmOrLogQuery, bool) {
+	if t == nil || t.RumQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *t.RumQuery, true
+}
+
+// HasRumQuery returns a boolean if a field has been set.
+func (t *ToplistRequest) HasRumQuery() bool {
+	if t != nil && t.RumQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRumQuery allocates a new t.RumQuery and returns the pointer to it.
+func (t *ToplistRequest) SetRumQuery(v WidgetApmOrLogQuery) {
+	t.RumQuery = &v
+}
+
+// GetSecurityQuery returns the SecurityQuery field if non-nil, zero value otherwise.
+func (t *ToplistRequest) GetSecurityQuery() WidgetApmOrLogQuery {
+	if t == nil || t.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}
+	}
+	return *t.SecurityQuery
+}
+
+// GetSecurityQueryOk returns a tuple with the SecurityQuery field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (t *ToplistRequest) GetSecurityQueryOk() (WidgetApmOrLogQuery, bool) {
+	if t == nil || t.SecurityQuery == nil {
+		return WidgetApmOrLogQuery{}, false
+	}
+	return *t.SecurityQuery, true
+}
+
+// HasSecurityQuery returns a boolean if a field has been set.
+func (t *ToplistRequest) HasSecurityQuery() bool {
+	if t != nil && t.SecurityQuery != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSecurityQuery allocates a new t.SecurityQuery and returns the pointer to it.
+func (t *ToplistRequest) SetSecurityQuery(v WidgetApmOrLogQuery) {
+	t.SecurityQuery = &v
 }
 
 // GetStyle returns the Style field if non-nil, zero value otherwise.
@@ -25868,6 +26736,37 @@ func (w *Widget) SetMargin(v string) {
 	w.Margin = &v
 }
 
+// GetMessageDisplay returns the MessageDisplay field if non-nil, zero value otherwise.
+func (w *Widget) GetMessageDisplay() string {
+	if w == nil || w.MessageDisplay == nil {
+		return ""
+	}
+	return *w.MessageDisplay
+}
+
+// GetMessageDisplayOk returns a tuple with the MessageDisplay field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *Widget) GetMessageDisplayOk() (string, bool) {
+	if w == nil || w.MessageDisplay == nil {
+		return "", false
+	}
+	return *w.MessageDisplay, true
+}
+
+// HasMessageDisplay returns a boolean if a field has been set.
+func (w *Widget) HasMessageDisplay() bool {
+	if w != nil && w.MessageDisplay != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMessageDisplay allocates a new w.MessageDisplay and returns the pointer to it.
+func (w *Widget) SetMessageDisplay(v string) {
+	w.MessageDisplay = &v
+}
+
 // GetMonitor returns the Monitor field if non-nil, zero value otherwise.
 func (w *Widget) GetMonitor() ScreenboardMonitor {
 	if w == nil || w.Monitor == nil {
@@ -26240,6 +27139,37 @@ func (w *Widget) SetServiceService(v string) {
 	w.ServiceService = &v
 }
 
+// GetShowDateColumn returns the ShowDateColumn field if non-nil, zero value otherwise.
+func (w *Widget) GetShowDateColumn() bool {
+	if w == nil || w.ShowDateColumn == nil {
+		return false
+	}
+	return *w.ShowDateColumn
+}
+
+// GetShowDateColumnOk returns a tuple with the ShowDateColumn field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *Widget) GetShowDateColumnOk() (bool, bool) {
+	if w == nil || w.ShowDateColumn == nil {
+		return false, false
+	}
+	return *w.ShowDateColumn, true
+}
+
+// HasShowDateColumn returns a boolean if a field has been set.
+func (w *Widget) HasShowDateColumn() bool {
+	if w != nil && w.ShowDateColumn != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetShowDateColumn allocates a new w.ShowDateColumn and returns the pointer to it.
+func (w *Widget) SetShowDateColumn(v bool) {
+	w.ShowDateColumn = &v
+}
+
 // GetShowLastTriggered returns the ShowLastTriggered field if non-nil, zero value otherwise.
 func (w *Widget) GetShowLastTriggered() bool {
 	if w == nil || w.ShowLastTriggered == nil {
@@ -26269,6 +27199,37 @@ func (w *Widget) HasShowLastTriggered() bool {
 // SetShowLastTriggered allocates a new w.ShowLastTriggered and returns the pointer to it.
 func (w *Widget) SetShowLastTriggered(v bool) {
 	w.ShowLastTriggered = &v
+}
+
+// GetShowMessageColumn returns the ShowMessageColumn field if non-nil, zero value otherwise.
+func (w *Widget) GetShowMessageColumn() bool {
+	if w == nil || w.ShowMessageColumn == nil {
+		return false
+	}
+	return *w.ShowMessageColumn
+}
+
+// GetShowMessageColumnOk returns a tuple with the ShowMessageColumn field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *Widget) GetShowMessageColumnOk() (bool, bool) {
+	if w == nil || w.ShowMessageColumn == nil {
+		return false, false
+	}
+	return *w.ShowMessageColumn, true
+}
+
+// HasShowMessageColumn returns a boolean if a field has been set.
+func (w *Widget) HasShowMessageColumn() bool {
+	if w != nil && w.ShowMessageColumn != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetShowMessageColumn allocates a new w.ShowMessageColumn and returns the pointer to it.
+func (w *Widget) SetShowMessageColumn(v bool) {
+	w.ShowMessageColumn = &v
 }
 
 // GetSizeVersion returns the SizeVersion field if non-nil, zero value otherwise.
@@ -26333,6 +27294,37 @@ func (w *Widget) SetSizing(v string) {
 	w.Sizing = &v
 }
 
+// GetSort returns the Sort field if non-nil, zero value otherwise.
+func (w *Widget) GetSort() WidgetFieldSort {
+	if w == nil || w.Sort == nil {
+		return WidgetFieldSort{}
+	}
+	return *w.Sort
+}
+
+// GetSortOk returns a tuple with the Sort field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *Widget) GetSortOk() (WidgetFieldSort, bool) {
+	if w == nil || w.Sort == nil {
+		return WidgetFieldSort{}, false
+	}
+	return *w.Sort, true
+}
+
+// HasSort returns a boolean if a field has been set.
+func (w *Widget) HasSort() bool {
+	if w != nil && w.Sort != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSort allocates a new w.Sort and returns the pointer to it.
+func (w *Widget) SetSort(v WidgetFieldSort) {
+	w.Sort = &v
+}
+
 // GetSummaryType returns the SummaryType field if non-nil, zero value otherwise.
 func (w *Widget) GetSummaryType() string {
 	if w == nil || w.SummaryType == nil {
@@ -26362,6 +27354,37 @@ func (w *Widget) HasSummaryType() bool {
 // SetSummaryType allocates a new w.SummaryType and returns the pointer to it.
 func (w *Widget) SetSummaryType(v string) {
 	w.SummaryType = &v
+}
+
+// GetTagsExecution returns the TagsExecution field if non-nil, zero value otherwise.
+func (w *Widget) GetTagsExecution() string {
+	if w == nil || w.TagsExecution == nil {
+		return ""
+	}
+	return *w.TagsExecution
+}
+
+// GetTagsExecutionOk returns a tuple with the TagsExecution field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *Widget) GetTagsExecutionOk() (string, bool) {
+	if w == nil || w.TagsExecution == nil {
+		return "", false
+	}
+	return *w.TagsExecution, true
+}
+
+// HasTagsExecution returns a boolean if a field has been set.
+func (w *Widget) HasTagsExecution() bool {
+	if w != nil && w.TagsExecution != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTagsExecution allocates a new w.TagsExecution and returns the pointer to it.
+func (w *Widget) SetTagsExecution(v string) {
+	w.TagsExecution = &v
 }
 
 // GetText returns the Text field if non-nil, zero value otherwise.
@@ -27509,6 +28532,68 @@ func (w *WidgetEvent) HasQuery() bool {
 // SetQuery allocates a new w.Query and returns the pointer to it.
 func (w *WidgetEvent) SetQuery(v string) {
 	w.Query = &v
+}
+
+// GetColumn returns the Column field if non-nil, zero value otherwise.
+func (w *WidgetFieldSort) GetColumn() string {
+	if w == nil || w.Column == nil {
+		return ""
+	}
+	return *w.Column
+}
+
+// GetColumnOk returns a tuple with the Column field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *WidgetFieldSort) GetColumnOk() (string, bool) {
+	if w == nil || w.Column == nil {
+		return "", false
+	}
+	return *w.Column, true
+}
+
+// HasColumn returns a boolean if a field has been set.
+func (w *WidgetFieldSort) HasColumn() bool {
+	if w != nil && w.Column != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetColumn allocates a new w.Column and returns the pointer to it.
+func (w *WidgetFieldSort) SetColumn(v string) {
+	w.Column = &v
+}
+
+// GetOrder returns the Order field if non-nil, zero value otherwise.
+func (w *WidgetFieldSort) GetOrder() string {
+	if w == nil || w.Order == nil {
+		return ""
+	}
+	return *w.Order
+}
+
+// GetOrderOk returns a tuple with the Order field if it's non-nil, zero value otherwise
+// and a boolean to check if the value has been set.
+func (w *WidgetFieldSort) GetOrderOk() (string, bool) {
+	if w == nil || w.Order == nil {
+		return "", false
+	}
+	return *w.Order, true
+}
+
+// HasOrder returns a boolean if a field has been set.
+func (w *WidgetFieldSort) HasOrder() bool {
+	if w != nil && w.Order != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetOrder allocates a new w.Order and returns the pointer to it.
+func (w *WidgetFieldSort) SetOrder(v string) {
+	w.Order = &v
 }
 
 // GetHeight returns the Height field if non-nil, zero value otherwise.

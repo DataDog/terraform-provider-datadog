@@ -10,15 +10,19 @@ import (
 // We're not testing for schedules because Datadog actively verifies it with Pagerduty
 
 func TestAccDatadogIntegrationPagerdutyServiceObject_Basic(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationPagerdutyServiceObjectConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogIntegrationPagerdutyExists("datadog_integration_pagerduty.foo"),
+					testAccCheckDatadogIntegrationPagerdutyExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "subdomain", "testdomain"),
 					resource.TestCheckResourceAttr(

@@ -8,7 +8,7 @@ description: |-
 
 # datadog_integration_pagerduty
 
-Provides a Datadog - PagerDuty resource. This can be used to create and manage Datadog - PagerDuty integration.
+Provides a Datadog - PagerDuty resource. This can be used to create and manage Datadog - PagerDuty integration. This resource is deprecated and should only be used for legacy purposes.
 
 ## Example Usage
 
@@ -181,4 +181,4 @@ The following arguments are supported:
 
 ### See also
 * [PagerDuty Integration Guide](https://www.pagerduty.com/docs/guides/datadog-integration-guide/)
-* [Datadog API Reference > Integrations > PagerDuty](https://docs.datadoghq.com/api/?lang=bash#pagerduty)
+* [Datadog API Reference > Integrations > PagerDuty](https://docs.datadoghq.com/api/v1/pagerduty-integration/)

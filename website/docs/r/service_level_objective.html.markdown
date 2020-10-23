@@ -73,14 +73,14 @@ resource "datadog_service_level_objective" "bar" {
 
 The following arguments are supported:
 
-* `type` - (Required) The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation](https://docs.datadoghq.com/api/?lang=python#create-a-service-level-objective) page. Available options to choose from are:
+* `type` - (Required) The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object) page. Available options to choose from are:
     * `metric`
     * `monitor`
 * `name` - (Required) Name of Datadog service level objective
 * `description` - (Optional) A description of this service level objective.
 * `tags` (Optional) A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
 * `thresholds` - (Required) - A list of thresholds and targets that define the service level objectives from the provided SLIs.
-    * `timeframe` (Required) - the time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation](https://docs.datadoghq.com/api/?lang=python#create-a-service-level-objective) page. Available options to choose from are:
+    * `timeframe` (Required) - the time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object) page. Available options to choose from are:
         * `7d`
         * `30d`
         * `90d`

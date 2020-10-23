@@ -1,0 +1,38 @@
+version: '3'
+services:
+  test:
+    image: datadog-go-integration-test
+    build:
+      context: .
+      dockerfile: Dockerfile.test.v1
+    depends_on:
+     - datadog
+    networks:
+      - test
+    environment:
+      DD_AGENT_HOST: datadog
+      DD_SERVICE: datadog-api-client-go
+      DD_TEST_CLIENT_API_KEY: ${DD_TEST_CLIENT_API_KEY}
+      DD_TEST_CLIENT_APP_KEY: ${DD_TEST_CLIENT_APP_KEY}
+    labels:
+      com.datadoghq.ad.logs: '[{"source": "docker-compose.yml", "service": "datadog-api-client-go"}]'
+    volumes:
+      - ./:/datadog-api-client-go
+  datadog:
+    image: datadog/agent:latest
+    networks:
+      - test
+    environment:
+      DD_API_KEY: ${DD_TEST_CLIENT_API_KEY}
+      DD_APM_ENABLED: "true"
+      DD_APM_NON_LOCAL_TRAFFIC: "true"
+      DD_LOGS_ENABLED: "true"
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: "true"
+      DD_AC_EXCLUDE: "name:datadog"
+    volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+     - /proc/:/host/proc/:ro
+     - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+
+networks:
+  test:

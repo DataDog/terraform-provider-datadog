@@ -2,9 +2,10 @@ package datadog
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/zorkian/go-datadog-api"
 	"strings"
+
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourceDatadogLogsIntegrationPipeline() *schema.Resource {
@@ -28,9 +29,12 @@ func resourceDatadogLogsIntegrationPipelineCreate(d *schema.ResourceData, meta i
 }
 
 func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta interface{}) error {
-	ddPipeline, err := meta.(*datadog.Client).GetLogsPipeline(d.Id())
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+	ddPipeline, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, d.Id()).Execute()
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting logs integration pipeline")
 	}
 	if err := d.Set("is_enabled", ddPipeline.GetIsEnabled()); err != nil {
 		return err
@@ -39,12 +43,14 @@ func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta int
 }
 
 func resourceDatadogLogsIntegrationPipelineUpdate(d *schema.ResourceData, meta interface{}) error {
-	var ddPipeline datadog.LogsPipeline
+	var ddPipeline datadogV1.LogsPipeline
 	ddPipeline.SetIsEnabled(d.Get("is_enabled").(bool))
-	client := meta.(*datadog.Client)
-	updatedPipeline, err := client.UpdateLogsPipeline(d.Id(), &ddPipeline)
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+	updatedPipeline, _, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipeline(authV1, d.Id()).Body(ddPipeline).Execute()
 	if err != nil {
-		return fmt.Errorf("error updating logs pipeline: (%s)", err.Error())
+		return translateClientError(err, "error updating logs integration pipeline")
 	}
 	d.SetId(*updatedPipeline.Id)
 	return resourceDatadogLogsIntegrationPipelineRead(d, meta)
@@ -55,14 +61,16 @@ func resourceDatadogLogsIntegrationPipelineDelete(d *schema.ResourceData, meta i
 }
 
 func resourceDatadogLogsIntegrationPipelineExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	client := meta.(*datadog.Client)
-	ddPipeline, err := client.GetLogsPipeline(d.Id())
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+	ddPipeline, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, d.Id()).Execute()
 	if err != nil {
 		// API returns 400 when the specific pipeline id doesn't exist through GET request.
 		if strings.Contains(err.Error(), "400 Bad Request") {
 			return false, nil
 		}
-		return false, err
+		return false, translateClientError(err, "error checking logs integration pipeline exists")
 	}
 	return ddPipeline.GetIsReadOnly(), nil
 }

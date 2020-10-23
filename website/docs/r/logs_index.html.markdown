@@ -8,12 +8,12 @@ description: |-
 
 # datadog_logs_index
 
-Provides a Datadog [Logs Index API](https://docs.datadoghq.com/api/?lang=python#logs-indexes) resource. This can be used to create and manage Datadog logs indexes.
+Provides a Datadog [Logs Index API](https://docs.datadoghq.com/api/v1/logs-indexes/) resource. This can be used to create and manage Datadog logs indexes.
 
 ## Example Usage
 
 A sample Datadog logs index resource definition. Note that at this point, it is not possible to create new logs indexes
-through Terraform, so the `name` field must match a name of an already existing index. If you want to keep the current 
+through Terraform, so the `name` field must match a name of an already existing index. If you want to keep the current
 state of the index, we suggest importing it (see below).
 
 ```hcl
@@ -58,10 +58,10 @@ The following arguments are supported:
 ## Import
 
 The current Datadog Terraform provider version does not support the creation and deletion of indexes.
-To manage the existing indexes, do `terraform import <datadog_logs_index.name> <indexName>` to import them to Terraform. 
+To manage the existing indexes, do `terraform import <datadog_logs_index.name> <indexName>` to import them to Terraform.
 If you create a resource which does not match the name of any existing index, `terraform apply` will throw `Not Found` error
-code. 
+code.
 
 ## Important Notes
 
-The order of indexes is maintained in the separated resource [datadog_logs_index_order](logs_index_order.html#datadog_logs_index_order). 
+The order of indexes is maintained in the separated resource [datadog_logs_index_order](logs_index_order.html#datadog_logs_index_order).

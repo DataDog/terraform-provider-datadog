@@ -8,11 +8,14 @@ import (
 
 func TestDatadogMonitor_import(t *testing.T) {
 	resourceName := "datadog_monitor.foo"
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorConfigImported,
@@ -28,11 +31,14 @@ func TestDatadogMonitor_import(t *testing.T) {
 
 func TestDatadogMonitor_import_no_recovery(t *testing.T) {
 	resourceName := "datadog_monitor.foo"
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy,
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMonitorConfigImportedNoRecovery,

@@ -1,9 +1,8 @@
 package datadog
 
 import (
-	"fmt"
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/zorkian/go-datadog-api"
 )
 
 func resourceDatadogLogsIndexOrder() *schema.Resource {
@@ -32,7 +31,7 @@ func resourceDatadogLogsIndexOrderCreate(d *schema.ResourceData, meta interface{
 }
 
 func resourceDatadogLogsIndexOrderUpdate(d *schema.ResourceData, meta interface{}) error {
-	var ddIndexList datadog.LogsIndexList
+	var ddIndexList datadogV1.LogsIndexesOrder
 	tfList := d.Get("indexes").([]interface{})
 	ddList := make([]string, len(tfList))
 	for i, tfName := range tfList {
@@ -43,17 +42,23 @@ func resourceDatadogLogsIndexOrderUpdate(d *schema.ResourceData, meta interface{
 	if name, exists := d.GetOk("name"); exists {
 		tfId = name.(string)
 	}
-	if _, err := meta.(*datadog.Client).UpdateLogsIndexList(&ddIndexList); err != nil {
-		return fmt.Errorf("error updating logs index list: (%s)", err.Error())
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+
+	if _, _, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndexOrder(authV1).Body(ddIndexList).Execute(); err != nil {
+		return translateClientError(err, "error updating logs index list")
 	}
 	d.SetId(tfId)
 	return resourceDatadogLogsIndexOrderRead(d, meta)
 }
 
 func resourceDatadogLogsIndexOrderRead(d *schema.ResourceData, meta interface{}) error {
-	ddIndexList, err := meta.(*datadog.Client).GetLogsIndexList()
+	providerConf := meta.(*ProviderConfiguration)
+	client := providerConf.CommunityClient
+	ddIndexList, err := client.GetLogsIndexList()
 	if err != nil {
-		return err
+		return translateClientError(err, "error getting logs index list")
 	}
 	if err := d.Set("indexes", ddIndexList.IndexNames); err != nil {
 		return err

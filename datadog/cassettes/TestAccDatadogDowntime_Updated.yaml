@@ -1,0 +1,824 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"end":1735765200,"message":"Example Datadog downtime message.","monitor_tags":["app:webserver","service"],"recurrence":{"period":1,"type":"days"},"scope":["*"],"start":1735707600,"timezone":"UTC"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - CreateDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime
+    method: POST
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["app:webserver","service"],"canceled":null,"monitor_id":null,"org_id":426674,"disabled":false,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"Example
+      Datadog downtime message.","downtime_type":0,"id":860628592,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:27 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:27 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - sg8vzlrAXfi82gDuSEBUxkn5dG85uDtr4RhaVLNn521TM8s6JdimiKDHvX2NhFjo
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["app:webserver","service"],"canceled":null,"monitor_id":null,"org_id":426674,"disabled":false,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"Example
+      Datadog downtime message.","downtime_type":0,"id":860628592,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:27 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:27 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 2VXDwI2pcuhRZeQ6xt/fJh1koMYSfGcgQg5wAzgLqeh10Zf5/W946U7T5w6SEIhy
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["app:webserver","service"],"canceled":null,"monitor_id":null,"org_id":426674,"disabled":false,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"Example
+      Datadog downtime message.","downtime_type":0,"id":860628592,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:27 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:27 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - eORbNuNjI+uNwQ5fL4WiSFLQTO+rx/Fd8RRk0TnSyEY4gQIkjrXIuJ1XAoOa+8yj
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["app:webserver","service"],"canceled":null,"monitor_id":null,"org_id":426674,"disabled":false,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"Example
+      Datadog downtime message.","downtime_type":0,"id":860628592,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:27 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:27 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - mGJe6qmS66N9ddKWdHwHEzQK9VHuaMNr7+EsVTKliCkGq+ayJZmadUyCSwID4him
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["app:webserver","service"],"canceled":null,"monitor_id":null,"org_id":426674,"disabled":false,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"Example
+      Datadog downtime message.","downtime_type":0,"id":860628592,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:27 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:27 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - o1rjyOSbDnvYaQgtO33vwWSNsIwHafzLqam2amG/PbTP69SVY965ZpWutdoYJB30
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["app:webserver","service"],"canceled":null,"monitor_id":null,"org_id":426674,"disabled":false,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"Example
+      Datadog downtime message.","downtime_type":0,"id":860628592,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:27 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:27 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - xKFgbVhCHArG4Y0sXMtZ5P8r3tuxi63adTKFxNzM7f4aJAAu82zS1Bp7ak9HjM4Y
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["app:webserver","service"],"canceled":null,"monitor_id":null,"org_id":426674,"disabled":false,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"Example
+      Datadog downtime message.","downtime_type":0,"id":860628592,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:28 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:28 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 8jOW1djIgkdkj4STw+0pQ3G+kGKfu548DWINvnE6phacY0k9vgC3cU1LaI38XIYk
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["app:webserver","service"],"canceled":null,"monitor_id":null,"org_id":426674,"disabled":false,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"Example
+      Datadog downtime message.","downtime_type":0,"id":860628592,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:28 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:28 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - bZxgHnChon9vZm5xdRa4NrQAYSVWc7iQc54D228L4geTT/U2FwMh0nkSo8j+6vpL
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"id":860628592,"message":"Example Datadog downtime message.","monitor_tags":["*"],"recurrence":{"period":3,"type":"days"},"scope":["Updated"],"timezone":"UTC"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - UpdateDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: PUT
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":426674,"disabled":false,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":860628592,"updater_id":1831982}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:28 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:28 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - CFSDBBie5Okt4N1oWVJNTAqpt778eCo7VQZ0NhVFWw8MHYFUwuA7DURhpFRYY+Wy
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":426674,"disabled":false,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":860628592,"updater_id":1831982}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:28 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:28 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - +UwwYRc+A5vkEib2s1YY/+OMx26FxXkDPMnhrpaIz/kTVseyL62lC12FdLJrU3nv
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":426674,"disabled":false,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":860628592,"updater_id":1831982}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:28 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:28 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - pxuY3ZnSwE+rCP/MLubWk3EuAMlxxciIsQ2EBSRxZafCu9H4+UEVULDCm144bb3W
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":426674,"disabled":false,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":860628592,"updater_id":1831982}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:28 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:28 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - AVsav2jjRGvwjNvJeRUS7kJsgTlhh9y9smyL3UJVQTMAUoPyejdL0bVSnanIQLK4
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":426674,"disabled":false,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":860628592,"updater_id":1831982}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:28 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:28 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - Iy6HNgrdx6jplabT1ZfQVzkCrk+jqjHEQw0NvfR/5Sb/NsvSUgBv2AbCahJdaB7p
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":426674,"disabled":false,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":860628592,"updater_id":1831982}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:29 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:29 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - RngFxOd8mVeT14auLfzsH/6kz142QLoKkYXZjfmXpXDkZ/eN6uoCM3cTScXuFEa0
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":null,"monitor_id":null,"org_id":426674,"disabled":false,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":860628592,"updater_id":1831982}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:29 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:29 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - tp1qdVxoUmtlsVp6hgBWraWfL5vEbA116VZkaWKWIZtgPr5Ima8zysCBv+o2WoZ/
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - CancelDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "0"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - text/html; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:29 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:29 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - PmDXJXCpOnq24qtagNCLPTUoILSRgi3DGaXUca70kUEAM8DZBLYkwSVilYSYEHCG
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDowntime
+      User-Agent:
+      - datadog-api-client-go/1.0.0-beta.2 (go go1.14.3; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/860628592
+    method: GET
+  response:
+    body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":3},"end":1735765200,"monitor_tags":["*"],"canceled":1592233589,"monitor_id":null,"org_id":426674,"disabled":true,"start":1735707600,"creator_id":1831982,"parent_id":null,"timezone":"UTC","active":false,"scope":["Updated"],"message":"Example
+      Datadog downtime message.","downtime_type":2,"id":860628592,"updater_id":1831982}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 15 Jun 2020 15:06:29 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=251; Max-Age=604800; Path=/; expires=Mon, 22-Jun-2020 15:06:29 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - B/LXPck0nGNX0RSV/Gw7cnZ0oe92FUOfg1ec7WcU0kSvw/UBT+IXTFTD87Snvz2v
+      X-Dd-Version:
+      - "35.2622342"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""

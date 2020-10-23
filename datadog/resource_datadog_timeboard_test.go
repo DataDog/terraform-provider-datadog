@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"github.com/zorkian/go-datadog-api"
 )
 
 const config1 = `
@@ -217,11 +217,14 @@ resource "datadog_timeboard" "acceptance_test" {
 `
 
 func TestAccDatadogTimeboard_update(t *testing.T) {
+	accProviders, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
 
 	step0 := resource.TestStep{
 		Config: config1,
 		Check: resource.ComposeTestCheckFunc(
-			checkExists,
+			checkExists(accProvider),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "title", "Acceptance Test Timeboard"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "description", "Created using the Datadog provider in Terraform"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "read_only", "true"),
@@ -236,7 +239,7 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 	step1 := resource.TestStep{
 		Config: config2,
 		Check: resource.ComposeTestCheckFunc(
-			checkExists,
+			checkExists(accProvider),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "title", "Acceptance Test Timeboard"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "description", "Created using the Datadog provider in Terraform"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.title", "Redis latency (ms)"),
@@ -262,7 +265,7 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 	step2 := resource.TestStep{
 		Config: config3,
 		Check: resource.ComposeTestCheckFunc(
-			checkExists,
+			checkExists(accProvider),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "title", "Acceptance Test Timeboard"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "description", "Created using the Datadog provider in Terraform"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.title", "Redis latency (ms)"),
@@ -298,7 +301,7 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 	step3 := resource.TestStep{
 		Config: config4,
 		Check: resource.ComposeTestCheckFunc(
-			checkExists,
+			checkExists(accProvider),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "title", "Acceptance Test Timeboard"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "description", "Created using the Datadog provider in Terraform"),
 			resource.TestCheckResourceAttr("datadog_timeboard.acceptance_test", "graph.0.title", "Widget with Multiple Queries"),
@@ -345,36 +348,42 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    testAccProviders,
-		CheckDestroy: checkDestroy,
+		Providers:    accProviders,
+		CheckDestroy: checkDestroy(accProvider),
 		Steps:        []resource.TestStep{step0, step1, step2, step3},
 	})
 }
 
-func checkExists(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
-	for _, r := range s.RootModule().Resources {
-		i, _ := strconv.Atoi(r.Primary.ID)
-		if _, err := client.GetDashboard(i); err != nil {
-			return fmt.Errorf("Received an error retrieving monitor %s", err)
+func checkExists(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+		for _, r := range s.RootModule().Resources {
+			i, _ := strconv.Atoi(r.Primary.ID)
+			if _, err := client.GetDashboard(i); err != nil {
+				return fmt.Errorf("Received an error retrieving monitor %s", err)
+			}
 		}
+		return nil
 	}
-	return nil
 }
 
-func checkDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*datadog.Client)
-	for _, r := range s.RootModule().Resources {
-		i, _ := strconv.Atoi(r.Primary.ID)
-		if _, err := client.GetDashboard(i); err != nil {
-			if strings.Contains(err.Error(), "404 Not Found") {
-				continue
+func checkDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		client := providerConf.CommunityClient
+		for _, r := range s.RootModule().Resources {
+			i, _ := strconv.Atoi(r.Primary.ID)
+			if _, err := client.GetDashboard(i); err != nil {
+				if strings.Contains(err.Error(), "404 Not Found") {
+					continue
+				}
+				return fmt.Errorf("Received an error retrieving timeboard %s", err)
 			}
-			return fmt.Errorf("Received an error retrieving timeboard %s", err)
+			return fmt.Errorf("Timeboard still exists")
 		}
-		return fmt.Errorf("Timeboard still exists")
+		return nil
 	}
-	return nil
 }
 
 func TestValidateAggregatorMethod(t *testing.T) {

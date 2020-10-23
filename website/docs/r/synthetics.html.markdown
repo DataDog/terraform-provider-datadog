@@ -26,13 +26,11 @@ resource "datadog_synthetics_test" "test_api" {
     Content-Type = "application/json"
     Authentication = "Token: 1234566789"
   }
-  assertions = [
-    {
+  assertion {
       type = "statusCode"
       operator = "is"
       target = "200"
-    }
-  ]
+  }
   locations = [ "aws:eu-central-1" ]
   options = {
     tick_every = 900
@@ -57,13 +55,11 @@ resource "datadog_synthetics_test" "test_ssl" {
     host = "example.org"
     port = 443
   }
-  assertions = [
-    {
+  assertion {
       type = "certificate"
       operator = "isInMoreThan"
       target = 30
-    }
-  ]
+  }
   locations = [ "aws:eu-central-1" ]
   options = {
     tick_every = 900
@@ -129,10 +125,18 @@ The following arguments are supported:
   - `method` - (Required) no-op, use GET
   - `url` - (Required) Any url
 - `request_headers` - (Optional) Header name and value map
-- `assertions` - (Required) Array of 1 to 10 items, only some combinations of type/operator are valid (please refer to Datadog documentation)
+- `request_query` - (Optional) Query arguments name and value map
+- `request_basicauth` - (Optional) Array of 1 item containing HTTP basic authentication credentials
+  - `username` - (Required) Username for authentication
+  - `password` - (Required) Password for authentication
+- `assertion` - (Required) Array of 1 to 10 items, only some combinations of type/operator are valid (please refer to Datadog documentation)
   - `type` - (Required) body, header, responseTime, statusCode
   - `operator` - (Required) Please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation) as operator depend on assertion type
-  - `target` - (Required) Expected value, please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation) as target depend on assertion type
+  - `target` - (Optional) Expected value, please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation) as target depend on assertion type
+  - `targetjsonpath` - (Optional) Expected structure if `operator` is `validatesJSONPath`
+    - `operator` - (Required) The specific operator to use on the path
+    - `targetvalue` - (Required) Expected matching value
+    - `jsonpath` - (Required) The JSON path to assert
   - `property` - (Optional) if assertion type is "header", this is a the header name
 - `options` - (Required)
   - `tick_every` - (Required)  How often the test should run (in seconds). Current possible values are 900, 1800, 3600, 21600, 43200, 86400, 604800 plus 60 if type=api or 300 if type=browser
@@ -140,6 +144,7 @@ The following arguments are supported:
   - `min_failure_duration` - (Optional) How long the test should be in failure before alerting (integer, number of seconds, max 7200). Default is 0.
   - `min_location_failed` - (Optional) Threshold below which a synthetics test is allowed to fail before sending notifications
   - `accept_self_signed` - (Optional) For type=ssl, true or false
+  - `allow_insecure` - (Optional) For type=api, true or false. Allow your HTTP test go on with connection even if there is an error when validating the certificate.
 - `locations` - (Required) Please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#request) for available locations (e.g. "aws:eu-central-1")
 - `device_ids` - (Optional) "laptop_large", "tablet" or "mobile_small" (only available if type=browser)
 - `status` - (Required) "live", "paused"
@@ -166,3 +171,41 @@ Support for Synthetics Browser test is limited to creating shallow Synthetics Br
 You cannot create/edit/delete steps or assertions via Terraform unless you use [Datadog WebUI](https://app.datadoghq.com/synthetics/list) in conjunction with Terraform.
 
 We are considering adding support for Synthetics Browser test steps and assertions in the future but can't share any release date on that matter.
+
+## Assertion format
+
+The resource was changed to have assertions be a list of `assertion` blocks instead of single `assertions` array, to support the JSON path operations. We'll remove `assertions` support in the future: to migrate, rename your attribute to `assertion` and turn array elements into independent blocks. For example:
+
+```hcl
+resource "datadog_synthetics_test" "test_api" {
+  assertions = [
+    {
+      type = "statusCode"
+      operator = "is"
+      target = "200"
+    },
+    {
+      type = "responseTime"
+      operator = "lessThan"
+      target = "1000"
+    }
+  ]
+}
+```
+
+turns into:
+
+```hcl
+resource "datadog_synthetics_test" "test_api" {
+  assertion {
+      type = "statusCode"
+      operator = "is"
+      target = "200"
+  }
+  assertion {
+      type = "responsTime"
+      operator = "lessThan"
+      target = "1000"
+  }
+}
+```

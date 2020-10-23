@@ -8,7 +8,7 @@ description: |-
 
 # datadog_logs_custom_pipeline
 
-Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/?lang=python#logs-pipelines) resource, which is used to create and manage Datadog logs custom pipelines.
+Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/) resource, which is used to create and manage Datadog logs custom pipelines.
 
 
 ## Example Usage
@@ -28,7 +28,7 @@ resource "datadog_logs_custom_pipeline" "sample_pipeline" {
             target = "my_arithmetic"
             is_replace_missing = true
             name = "sample arithmetic processor"
-            is_enabled = true            
+            is_enabled = true
         }
     }
     processor {
@@ -86,6 +86,16 @@ resource "datadog_logs_custom_pipeline" "sample_pipeline" {
                 match_rules = "Rule %%{word:my_word2} %%{number:my_float2}"
             }
             name = "sample grok parser"
+            is_enabled = true
+        }
+    }
+    processor {
+        lookup_processor {
+            source = "service_id"
+            target = "service_name"
+            lookup_table = ["1,my service"]
+            default_lookup = "unknown service"
+            name = "sample lookup processor"
             is_enabled = true
         }
     }
@@ -177,13 +187,13 @@ The following arguments are supported:
   * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
 * attribute_remapper
   * `sources` - (Required) List of source attributes or tags.
-  * `source_type` - (Required) Defines where the sources are from (log `attribute` or `tag`). 
+  * `source_type` - (Required) Defines where the sources are from (log `attribute` or `tag`).
   * `target` - (Required) Final `attribute` or `tag` name to remap the sources.
   * `target_type` - (Required) Defines if the target is a log `attribute` or `tag`.
   * `preserve_source` - (Optional, default = false) Remove or preserve the remapped source element.
   * `override_on_conflict` - (Optional, default = false) Override the target element if already set.
   * `name` - (Optional) Name of the processor
-  * `is_enabled` - (Optional, default = false) If the processor is enabled or not.  
+  * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
 * category_processor
   * `target` - (Required) Name of the target attribute whose value is defined by the matching category.
   * `category` - (Required) List of filters to match or exclude a log with their corresponding name to assign a custom value to the log.
@@ -191,7 +201,7 @@ The following arguments are supported:
     * `filter`
       * `query` - (Required) Filter criteria of the category.
   * `name` - (Optional) Name of the processor
-  * `is_enabled` - (Optional, default = false) If the processor is enabled or not.  
+  * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
 * date_remapper
   * `sources` - (Required) List of source attributes.
   * `name` - (Optional) Name of the processor.
@@ -207,6 +217,13 @@ The following arguments are supported:
   * `grok`
     * `support_rules` - (Required) Support rules for your grok parser.
     * `match_rules` - (Required) Match rules for your grok parser.
+  * `name` - (Optional) Name of the processor.
+  * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
+* lookup_processor
+  * `source` - (Required) Name of the source attribute used to do the lookup.
+  * `target` - (Required) Name of the attribute that contains the result of the lookup.
+  * `lookup_table` - (Required) List of entries of the lookup table using `"key,value"` format.
+  * `default_lookup` - (Optional) Default lookup value to use if there is no entry in the lookup table for the value of the source attribute.
   * `name` - (Optional) Name of the processor.
   * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
 * message_remapper
@@ -238,7 +255,7 @@ The following arguments are supported:
   * `name` - (Optional) Name of the processor
   * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
 * url_parser
-  * `sources` - (Required) List of source attributes. 
+  * `sources` - (Required) List of source attributes.
   * `target` - (Required) Name of the parent attribute that contains all the extracted details from the `sources`.
   * `normalize_ending_slashes` - (Optional, default = false) Normalize the ending slashes or not.
   * `name` - (Optional) Name of the processor
@@ -250,19 +267,19 @@ The following arguments are supported:
   * `name` - (Optional) Name of the processor
   * `is_enabled` - (Optional, default = false) If the processor is enabled or not.
 
-Even though some arguments are optional, we still recommend you to state **all** arguments in the resource to avoid 
+Even though some arguments are optional, we still recommend you to state **all** arguments in the resource to avoid
 unnecessary confusion.
 
 ## Import
 
 For the previously created custom pipelines, you can include them in Terraform with the `import` operation.
-Currently, Terraform requires you to explicitly create resources that match the existing pipelines to 
+Currently, Terraform requires you to explicitly create resources that match the existing pipelines to
 import them. Use ```terraform import <resource.name> <pipelineID>``` for each existing pipeline.
 
 ## Important Notes
 
 Each `datadog_logs_custom_pipeline` resource defines a complete pipeline. The order of the pipelines is maintained in
 a different resource [datadog_logs_pipeline_order](logs_pipeline_order.html#datadog_logs_pipeline_order).
-When creating a new pipeline, you need to **explicitly** add this pipeline to the `datadog_logs_pipeline_order` 
-resource to track the pipeline. Similarly, when a pipeline needs to be destroyed, remove its references from the 
+When creating a new pipeline, you need to **explicitly** add this pipeline to the `datadog_logs_pipeline_order`
+resource to track the pipeline. Similarly, when a pipeline needs to be destroyed, remove its references from the
 `datadog_logs_pipeline_order` resource.
