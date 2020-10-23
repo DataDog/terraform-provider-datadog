@@ -242,7 +242,7 @@ func syntheticsTestRequest() *schema.Schema {
 					Optional: true,
 					Default:  60,
 				},
-				"dnsServer": {
+				"dns_server": {
 					Type:     schema.TypeString,
 					Optional: true,
 				},
@@ -264,11 +264,8 @@ func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 				},
 				"filename": {
 					Type:     schema.TypeString,
-					Required: true,
-				},
-				"updated_at": {
-					Type:     schema.TypeString,
-					Required: true,
+					Optional: true,
+					Default:  "Provided in Terraform config",
 				},
 			},
 		},
@@ -590,7 +587,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		portInt, _ := strconv.Atoi(attr.(string))
 		request.SetPort(int64(portInt))
 	}
-	if attr, ok := d.GetOk("request.dnsServer"); ok {
+	if attr, ok := d.GetOk("request.dns_server"); ok {
 		request.SetDnsServer(attr.(string))
 	}
 	if attr, ok := d.GetOk("request_query"); ok {
@@ -625,18 +622,12 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
 			cert.SetContent(attr.(string))
 		}
-		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.updated_at"); ok {
-			cert.SetUpdatedAt(attr.(string))
-		}
 
 		if attr, ok := d.GetOk("request_client_certificate.0.key.0.filename"); ok {
 			key.SetFilename(attr.(string))
 		}
 		if attr, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
 			key.SetContent(attr.(string))
-		}
-		if attr, ok := d.GetOk("request_client_certificate.0.key.0.updated_at"); ok {
-			key.SetUpdatedAt(attr.(string))
 		}
 
 		clientCertificate := datadogV1.SyntheticsTestRequestCertificate{
@@ -939,7 +930,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		localRequest["port"] = convertToString(actualRequest.GetPort())
 	}
 	if actualRequest.HasDnsServer() {
-		localRequest["dnsServer"] = convertToString(actualRequest.GetDnsServer())
+		localRequest["dns_server"] = convertToString(actualRequest.GetDnsServer())
 	}
 	d.Set("request", localRequest)
 	d.Set("request_headers", actualRequest.Headers)
@@ -958,11 +949,9 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 
 		cert := clientCertificate.GetCert()
 		localCertificate["cert"]["filename"] = cert.GetFilename()
-		localCertificate["cert"]["updated_at"] = cert.GetUpdatedAt()
 
 		key := clientCertificate.GetKey()
 		localCertificate["key"]["filename"] = key.GetFilename()
-		localCertificate["key"]["updated_at"] = key.GetUpdatedAt()
 
 		// the content of the certificate and the key are write-only
 		// so we need to get them from the config since they will
