@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/url"
 	"runtime"
+	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -19,7 +20,10 @@ import (
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 )
 
-var datadogProvider *schema.Provider
+var (
+	datadogProvider       *schema.Provider
+	baseIpRangesSubdomain = "ip-ranges"
+)
 
 func Provider() terraform.ResourceProvider {
 	datadogProvider = &schema.Provider{
@@ -172,6 +176,24 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		authV1 = context.WithValue(authV1, datadogV1.ContextServerVariables, map[string]string{
 			"name":     parsedApiUrl.Host,
 			"protocol": parsedApiUrl.Scheme,
+		})
+
+		// Configure URL's per operation
+		// IPRangesApiService.GetIPRanges
+		ipRangesDNSNameArr := strings.Split(parsedApiUrl.Hostname(), ".")
+		// Parse out subdomain if it exists
+		if len(ipRangesDNSNameArr) > 2 {
+			ipRangesDNSNameArr = ipRangesDNSNameArr[1:]
+		}
+		ipRangesDNSNameArr = append([]string{baseIpRangesSubdomain}, ipRangesDNSNameArr...)
+
+		authV1 = context.WithValue(authV1, datadogV1.ContextOperationServerIndices, map[string]int{
+			"IPRangesApiService.GetIPRanges": 1,
+		})
+		authV1 = context.WithValue(authV1, datadogV1.ContextOperationServerVariables, map[string]map[string]string{
+			"IPRangesApiService.GetIPRanges": {
+				"name": strings.Join(ipRangesDNSNameArr, "."),
+			},
 		})
 	}
 

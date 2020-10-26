@@ -46,7 +46,7 @@ type MonitorOptions struct {
 	// Information about the downtime applied to the monitor.
 	Silenced *map[string]int64 `json:"silenced,omitempty"`
 	// ID of the corresponding Synthetic check.
-	SyntheticsCheckId NullableInt64                  `json:"synthetics_check_id,omitempty"`
+	SyntheticsCheckId NullableString                 `json:"synthetics_check_id,omitempty"`
 	ThresholdWindows  *MonitorThresholdWindowOptions `json:"threshold_windows,omitempty"`
 	Thresholds        *MonitorThresholds             `json:"thresholds,omitempty"`
 	// The number of hours of the monitor not reporting data before it automatically resolves from a triggered state.
@@ -681,9 +681,9 @@ func (o *MonitorOptions) SetSilenced(v map[string]int64) {
 }
 
 // GetSyntheticsCheckId returns the SyntheticsCheckId field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *MonitorOptions) GetSyntheticsCheckId() int64 {
+func (o *MonitorOptions) GetSyntheticsCheckId() string {
 	if o == nil || o.SyntheticsCheckId.Get() == nil {
-		var ret int64
+		var ret string
 		return ret
 	}
 	return *o.SyntheticsCheckId.Get()
@@ -692,7 +692,7 @@ func (o *MonitorOptions) GetSyntheticsCheckId() int64 {
 // GetSyntheticsCheckIdOk returns a tuple with the SyntheticsCheckId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *MonitorOptions) GetSyntheticsCheckIdOk() (*int64, bool) {
+func (o *MonitorOptions) GetSyntheticsCheckIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -708,8 +708,8 @@ func (o *MonitorOptions) HasSyntheticsCheckId() bool {
 	return false
 }
 
-// SetSyntheticsCheckId gets a reference to the given NullableInt64 and assigns it to the SyntheticsCheckId field.
-func (o *MonitorOptions) SetSyntheticsCheckId(v int64) {
+// SetSyntheticsCheckId gets a reference to the given NullableString and assigns it to the SyntheticsCheckId field.
+func (o *MonitorOptions) SetSyntheticsCheckId(v string) {
 	o.SyntheticsCheckId.Set(&v)
 }
 

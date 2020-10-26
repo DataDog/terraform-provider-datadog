@@ -250,6 +250,21 @@ func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsSSLMissingTagsAttributeTestStep(accProvider, clock, t),
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsTCPTest_Basic(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
@@ -401,6 +416,8 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 				"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.retry_count", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.#", "0"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -687,6 +704,8 @@ func updateSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 				"datadog_synthetics_test.foo", "options_list.0.retry.0.interval", "500"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.monitor_options.0.renotify_interval", "100"),
+			// Make sure the legacy attribute isn't set anymore
+			resource.TestCheckNoResourceAttr("datadog_synthetics_test.foo", "options.tick_every"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -937,6 +956,82 @@ resource "datadog_synthetics_test" "ssl" {
 }`, uniq)
 }
 
+func createSyntheticsSSLMissingTagsAttributeTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(clock, t)
+	return resource.TestStep{
+		Config: createSyntheticsSSLMissingTagsAttributeTestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "subtype", "ssl"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "request.host", "datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "request.port", "443"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.0.type", "certificate"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.0.operator", "isInMoreThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "assertions.0.target", "30"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options.accept_self_signed", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "tags.#", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.ssl", "monitor_id"),
+		),
+	}
+}
+
+func createSyntheticsSSLMissingTagsAttributeTestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "ssl" {
+	type = "api"
+	subtype = "ssl"
+
+	request = {
+		host = "datadoghq.com"
+		port = 443
+	}
+
+	assertions = [
+		{
+			type = "certificate"
+			operator = "isInMoreThan"
+			target = 30
+		}
+	]
+
+	locations = [ "aws:eu-central-1" ]
+	options = {
+		tick_every = 60
+		accept_self_signed = true
+	}
+
+	name = "%s"
+	message = "Notify @datadog.user"
+
+	status = "paused"
+}`, uniq)
+}
+
 func updateSyntheticsSSLTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(clock, t) + "-updated"
 	return resource.TestStep{
@@ -1049,6 +1144,8 @@ func createSyntheticsTCPTestStep(accProvider *schema.Provider, clock clockwork.F
 				"datadog_synthetics_test.tcp", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "options_list.0.tick_every", "60"),
+			// Make sure the legacy attribute isn't set anymore
+			resource.TestCheckNoResourceAttr("datadog_synthetics_test.tcp", "options.tick_every"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "name", testName),
 			resource.TestCheckResourceAttr(

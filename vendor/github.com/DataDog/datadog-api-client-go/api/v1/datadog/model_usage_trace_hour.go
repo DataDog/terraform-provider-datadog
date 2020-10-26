@@ -17,7 +17,7 @@ import (
 type UsageTraceHour struct {
 	// The hour for the usage.
 	Hour *time.Time `json:"hour,omitempty"`
-	// Contains the number of Analyzed Spans indexed.
+	// Contains the number of Indexed Spans indexed.
 	IndexedEventsCount *int64 `json:"indexed_events_count,omitempty"`
 }
 
