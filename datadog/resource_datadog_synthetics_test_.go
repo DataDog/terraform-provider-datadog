@@ -943,27 +943,29 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 
 	if clientCertificate, ok := actualRequest.GetCertificateOk(); ok {
-		localCertificate := make(map[string]map[string]string)
-		localCertificate["cert"] = make(map[string]string)
-		localCertificate["key"] = make(map[string]string)
+		localCertificate := make(map[string][]map[string]string)
+		localCertificate["cert"] = make([]map[string]string, 1)
+		localCertificate["cert"][0] = make(map[string]string)
+		localCertificate["key"] = make([]map[string]string, 1)
+		localCertificate["key"][0] = make(map[string]string)
 
 		cert := clientCertificate.GetCert()
-		localCertificate["cert"]["filename"] = cert.GetFilename()
+		localCertificate["cert"][0]["filename"] = cert.GetFilename()
 
 		key := clientCertificate.GetKey()
-		localCertificate["key"]["filename"] = key.GetFilename()
+		localCertificate["key"][0]["filename"] = key.GetFilename()
 
 		// the content of the certificate and the key are write-only
 		// so we need to get them from the config since they will
 		// not be in the api response
 		if configCertificateContent, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
-			localCertificate["cert"]["content"] = configCertificateContent.(string)
+			localCertificate["cert"][0]["content"] = configCertificateContent.(string)
 		}
 		if configKeyContent, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
-			localCertificate["key"]["content"] = configKeyContent.(string)
+			localCertificate["key"][0]["content"] = configKeyContent.(string)
 		}
 
-		d.Set("request_client_certificate", []map[string]map[string]string{localCertificate})
+		d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate})
 	}
 
 	actualAssertions := syntheticsTest.GetConfig().Assertions

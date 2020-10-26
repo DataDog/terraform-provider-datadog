@@ -55,6 +55,8 @@ func TestAccDatadogSyntheticsAPITest_importBasicNewAssertionsOptions(t *testing.
 				ResourceName:      "datadog_synthetics_test.bar",
 				ImportState:       true,
 				ImportStateVerify: true,
+				// The request_client_certificate is not fully returned by the API so we can't verify it
+				ImportStateVerifyIgnore: []string{"request_client_certificate"},
 			},
 		},
 	})
