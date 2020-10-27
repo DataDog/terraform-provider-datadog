@@ -46,6 +46,7 @@ The following arguments are supported:
   - `client_id`: (Required) Your client id.
   - `storage_account`: (Required) The associated storage account.
 - `rehydration_tags`: (Optional) An array of tags to add to rehydrated logs from an archive.
+- `include_tags`: (Optional, default=false) To store the tags in the archive, set the value "true". If it is set to "false", the tags will be dropped when the logs are sent to the archive.
 
 An archive definition must have one (and only one) of the three possible types defined: s3, gcs, azure.
 
