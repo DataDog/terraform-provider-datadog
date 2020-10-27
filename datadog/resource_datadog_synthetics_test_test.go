@@ -55,6 +55,8 @@ func TestAccDatadogSyntheticsAPITest_importBasicNewAssertionsOptions(t *testing.
 				ResourceName:      "datadog_synthetics_test.bar",
 				ImportState:       true,
 				ImportStateVerify: true,
+				// The request_client_certificate is not fully returned by the API so we can't verify it
+				ImportStateVerifyIgnore: []string{"request_client_certificate"},
 			},
 		},
 	})
@@ -519,6 +521,14 @@ func createSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_basicauth.0.password", "secret"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.content", "content-certificate"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.filename", "Provided in Terraform config"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.content", "content-key"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.#", "3"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.type", "header"),
@@ -600,6 +610,15 @@ resource "datadog_synthetics_test" "bar" {
 	request_headers = {
 		Accept = "application/json"
 		X-Datadog-Trace-ID = "1234566789"
+	}
+	request_client_certificate {
+		cert {
+			content = "content-certificate"
+		}
+		key {
+			content = "content-key"
+			filename = "key"
+		}
 	}
 
 	assertion {
@@ -1266,6 +1285,8 @@ func createSyntheticsDNSTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "request.host", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.dns", "request.dns_server", "8.8.8.8"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "assertion.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "assertion.0.type", "recordSome"),
@@ -1307,6 +1328,7 @@ resource "datadog_synthetics_test" "dns" {
 
 	request = {
 		host = "https://www.datadoghq.com"
+		dns_server = "8.8.8.8"
 	}
 
 	assertion {
@@ -1341,6 +1363,8 @@ func updateSyntheticsDNSTestStep(accProvider *schema.Provider, clock clockwork.F
 				"datadog_synthetics_test.dns", "subtype", "dns"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "request.host", "https://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.dns", "request.dns_server", "8.8.8.8"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "assertion.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -1385,6 +1409,7 @@ resource "datadog_synthetics_test" "dns" {
 
 	request = {
 		host = "https://www.datadoghq.com"
+		dns_server = "8.8.8.8"
 	}
 
 	assertion {
