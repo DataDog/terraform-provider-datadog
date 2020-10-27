@@ -212,6 +212,7 @@ The following arguments are supported:
   - `host`: (Required) host name
   - `port`: (Required) port number
   - `timeout`: (Optional) For type=api, any value between 0 and 60 (Default = 60)
+  - `dns_server`: (Optional) For subtype=dns, DNS server to use
 - `request`: (Required) if type=browser
   - `method`: (Required) no-op, use GET
   - `url`: (Required) Any url
@@ -220,6 +221,13 @@ The following arguments are supported:
 - `request_basicauth`: (Optional) Array of 1 item containing HTTP basic authentication credentials
   - `username`: (Required) Username for authentication
   - `password`: (Required) Password for authentication
+- `request_client_certificate`: (Optional) Client certificate to use when performing the test request
+  - `cert`
+    - `content`: (Required) Content of the client certificate
+    - `filename`: (Optional) Filename for the certificate
+  - `key`
+    - `content`: (Required) Content of the certificate key
+    - `filename`: (Optional) Filename for the certificate key
 - `assertion`: (Required) Array of 1 to 10 items, only some combinations of type/operator are valid (please refer to Datadog documentation).
   - `type`: (Required) body, header, responseTime, statusCode
   - `operator`: (Required) Please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation) as operator depend on assertion type
