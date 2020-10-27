@@ -10,7 +10,7 @@ cloud.google.com/go/internal/optional
 cloud.google.com/go/internal/trace
 cloud.google.com/go/internal/version
 cloud.google.com/go/storage
-# github.com/DataDog/datadog-api-client-go v1.0.0-beta.8.0.20201023093342-c6c000a7e284
+# github.com/DataDog/datadog-api-client-go v1.0.0-beta.9
 github.com/DataDog/datadog-api-client-go
 github.com/DataDog/datadog-api-client-go/api/v1/datadog
 github.com/DataDog/datadog-api-client-go/api/v2/datadog
@@ -260,7 +260,7 @@ github.com/zclconf/go-cty/cty/msgpack
 github.com/zclconf/go-cty/cty/set
 # github.com/zclconf/go-cty-yaml v1.0.1
 github.com/zclconf/go-cty-yaml
-# github.com/zorkian/go-datadog-api v2.29.1-0.20201007103024-437d51d487bf+incompatible
+# github.com/zorkian/go-datadog-api v2.30.0+incompatible
 github.com/zorkian/go-datadog-api
 # go.opencensus.io v0.22.0
 go.opencensus.io
