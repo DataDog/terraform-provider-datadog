@@ -1,3 +1,30 @@
+## 2.14.0 (October 27, 2020)
+
+FEATURES:
+
+- `datadog_logs_archive_order`: Add a new resource to reorder logs archives ([#694](https://github.com/DataDog/terraform-provider-datadog/pull/694))
+- `datadog_synthetics_global_variable`: Add a new resource to support global variables in synthetics tests ([#675](https://github.com/DataDog/terraform-provider-datadog/pull/675))
+
+IMPROVEMENTS:
+
+- `datadog_dashboard`: Add support for `apm_stats_query` request type in widgets ([#676](https://github.com/DataDog/terraform-provider-datadog/pull/676)).
+- `datadog_dashboard`: Add support for dual y-axis for timeseries widgets ([#685](https://github.com/DataDog/terraform-provider-datadog/pull/685)).
+- `datadog_dashboard`: Add support for `has_search_bar` and `cell_display_mode` properties on widgets ([#686](https://github.com/DataDog/terraform-provider-datadog/pull/686)).
+- `datadog_dashboard`: Add support for `custom_links` property on widgets ([#696](https://github.com/DataDog/terraform-provider-datadog/pull/696)).
+- `datadog_logs_archive`: Add `rehydration_tags` property ([#705](https://github.com/DataDog/terraform-provider-datadog/pull/705)).
+- `datadog_logs_archive`: Add `include_tags` property ([#715](https://github.com/DataDog/terraform-provider-datadog/pull/715)).
+- `datadog_logs_custom_pipeline`: Add `target_format` property to the Logs attribute remapper ([#682](https://github.com/DataDog/terraform-provider-datadog/pull/682)).
+- `datadog_service_level_objective`: Add validate option ([#672](https://github.com/DataDog/terraform-provider-datadog/pull/672))
+- `datadog_synthetics_test`: Add support for DNS tests ([#673](https://github.com/DataDog/terraform-provider-datadog/pull/673)).
+- `datadog_synthetics_test`: Add support for global variables ([#691](https://github.com/DataDog/terraform-provider-datadog/pull/691)).
+- `datadog_synthetics_test`: Add support for `dns_server` and `request_client_certificate` properties ([#711](https://github.com/DataDog/terraform-provider-datadog/pull/711)).
+
+BUGFIXES:
+
+- `datadog_synthetics_test`: Don't ignore options diff ([#707](https://github.com/DataDog/terraform-provider-datadog/pull/707)).
+- `datadog_synthetics_test`: Make `tags` property optional ([#712](https://github.com/DataDog/terraform-provider-datadog/pull/712)).
+- `datadog_ip_ranges`: Support EU site ([#713](https://github.com/DataDog/terraform-provider-datadog/pull/713)).
+
 ## 2.13.0 (September 16, 2020)
 
 FEATURES:
