@@ -22,18 +22,18 @@ resource "datadog_integration_azure" "sandbox" {
 
 The following arguments are supported:
 
-- `tenant_name`: (Required) Your Azure Active Directory ID.
-- `client_id`: (Required) Your Azure web application ID.
-- `client_secret`: (Required for Initial Creation) Your Azure web application secret key.
-- `host_filters`: (Optional) String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure.
+-   `tenant_name`: (Required) Your Azure Active Directory ID.
+-   `client_id`: (Required) Your Azure web application ID.
+-   `client_secret`: (Required for Initial Creation) Your Azure web application secret key.
+-   `host_filters`: (Optional) String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure.
 
-  Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.
+    Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.
 
-  e.x. `env:production,deploymentgroup:red`
+    e.x. `env:production,deploymentgroup:red`
 
 ### See also
 
-- [Datadog API Reference > Integrations > Azure](https://docs.datadoghq.com/integrations/azure/)
+-   [Datadog API Reference > Integrations > Azure](https://docs.datadoghq.com/integrations/azure/)
 
 ## Import
 
