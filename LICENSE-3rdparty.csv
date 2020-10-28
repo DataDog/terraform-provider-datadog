@@ -1,6 +1,4 @@
 Component,Origin,License,Copyright
-go.sum,4d63.com/embedfiles,MIT,2017 Leigh McCulloch
-go.sum,4d63.com/tz,MIT and BSD,2018 Leigh McCulloch; 2009 The Go Authors
 go.sum,cloud.google.com/go,Apache-2.0,2014 Google LLC
 go.sum,cloud.google.com/go/bigquery,Apache-2.0,2014 Google LLC
 go.sum,cloud.google.com/go/datastore,Apache-2.0,2014 Google LLC
