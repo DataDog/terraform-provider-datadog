@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"context"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"github.com/zorkian/go-datadog-api"
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 )
 
 func TestAccDatadogUser_Updated(t *testing.T) {
@@ -20,12 +22,12 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogUserDestroy(accProvider),
+		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogUserConfigRequired(username),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogUserExists(accProvider, "datadog_user.foo"),
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "email", username),
 					resource.TestCheckResourceAttr(
@@ -39,7 +41,7 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogUserConfigUpdated(username),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogUserExists(accProvider, "datadog_user.foo"),
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "disabled", "true"),
 					// NOTE: it's not possible ATM to update email of another user
@@ -79,6 +81,32 @@ func testAccCheckDatadogUserExists(accProvider *schema.Provider, n string) resou
 		client := providerConf.CommunityClient
 
 		if err := datadogUserExistsHelper(s, client); err != nil {
+			return err
+		}
+		return nil
+	}
+}
+
+func testAccCheckDatadogUserV2Destroy(accProvider *schema.Provider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		datadogClientV2 := providerConf.DatadogClientV2
+		authV2 := providerConf.AuthV2
+
+		if err := datadogUserV2DestroyHelper(s, datadogClientV2, authV2); err != nil {
+			return err
+		}
+		return nil
+	}
+}
+
+func testAccCheckDatadogUserV2Exists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		datadogClientV2 := providerConf.DatadogClientV2
+		authV2 := providerConf.AuthV2
+
+		if err := datadogUserV2ExistsHelper(s, datadogClientV2, authV2); err != nil {
 			return err
 		}
 		return nil
@@ -132,6 +160,39 @@ func datadogUserExistsHelper(s *terraform.State, client *datadog.Client) error {
 	for _, r := range s.RootModule().Resources {
 		id := r.Primary.ID
 		if _, err := client.GetUser(id); err != nil {
+			return fmt.Errorf("received an error retrieving user %s", err)
+		}
+	}
+	return nil
+}
+
+func datadogUserV2DestroyHelper(s *terraform.State, client *datadogV2.APIClient, auth context.Context) error {
+	for _, r := range s.RootModule().Resources {
+		id := r.Primary.ID
+		userResponse, httpResponse, err := client.UsersApi.GetUser(auth, id).Execute()
+
+		if err != nil {
+			if httpResponse.StatusCode == 404 {
+				continue
+			}
+			return fmt.Errorf("received an error retrieving user %s", err)
+		}
+
+		userData := userResponse.GetData()
+		userAttributes := userData.GetAttributes()
+		// Datadog only disables user on DELETE
+		if userAttributes.GetDisabled() {
+			continue
+		}
+		return fmt.Errorf("user still exists")
+	}
+	return nil
+}
+
+func datadogUserV2ExistsHelper(s *terraform.State, client *datadogV2.APIClient, auth context.Context) error {
+	for _, r := range s.RootModule().Resources {
+		id := r.Primary.ID
+		if _, _, err := client.UsersApi.GetUser(auth, id).Execute(); err != nil {
 			return fmt.Errorf("received an error retrieving user %s", err)
 		}
 	}
