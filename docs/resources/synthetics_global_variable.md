@@ -25,10 +25,10 @@ Secure global variables are not supported for now.
 
 The following arguments are supported:
 
-- `name`: (Required) Synthetics global variable name
-- `description`: (Optional) Description of the global variable
-- `tags`: (Required) A list of tags to associate with your synthetics global variable.
-- `value`: (Required) The value of the global variable.
+-   `name`: (Required) Synthetics global variable name
+-   `description`: (Optional) Description of the global variable
+-   `tags`: (Required) A list of tags to associate with your synthetics global variable.
+-   `value`: (Required) The value of the global variable.
 
 ## Import
 
