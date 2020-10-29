@@ -12,40 +12,40 @@ import (
 	"encoding/json"
 )
 
-// ServiceUpdateData Service payload for update requests.
-type ServiceUpdateData struct {
-	Attributes *ServiceUpdateAttributes `json:"attributes,omitempty"`
-	// The service's ID.
-	Id            string                `json:"id"`
-	Relationships *ServiceRelationships `json:"relationships,omitempty"`
-	Type          ServiceType           `json:"type"`
+// IncidentServiceUpdateData Incident Service payload for update requests.
+type IncidentServiceUpdateData struct {
+	Attributes *IncidentServiceUpdateAttributes `json:"attributes,omitempty"`
+	// The incident service's ID.
+	Id            string                        `json:"id"`
+	Relationships *IncidentServiceRelationships `json:"relationships,omitempty"`
+	Type          IncidentServiceType           `json:"type"`
 }
 
-// NewServiceUpdateData instantiates a new ServiceUpdateData object
+// NewIncidentServiceUpdateData instantiates a new IncidentServiceUpdateData object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewServiceUpdateData(id string, type_ ServiceType) *ServiceUpdateData {
-	this := ServiceUpdateData{}
+func NewIncidentServiceUpdateData(id string, type_ IncidentServiceType) *IncidentServiceUpdateData {
+	this := IncidentServiceUpdateData{}
 	this.Id = id
 	this.Type = type_
 	return &this
 }
 
-// NewServiceUpdateDataWithDefaults instantiates a new ServiceUpdateData object
+// NewIncidentServiceUpdateDataWithDefaults instantiates a new IncidentServiceUpdateData object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewServiceUpdateDataWithDefaults() *ServiceUpdateData {
-	this := ServiceUpdateData{}
-	var type_ ServiceType = "services"
+func NewIncidentServiceUpdateDataWithDefaults() *IncidentServiceUpdateData {
+	this := IncidentServiceUpdateData{}
+	var type_ IncidentServiceType = "services"
 	this.Type = type_
 	return &this
 }
 
 // GetAttributes returns the Attributes field value if set, zero value otherwise.
-func (o *ServiceUpdateData) GetAttributes() ServiceUpdateAttributes {
+func (o *IncidentServiceUpdateData) GetAttributes() IncidentServiceUpdateAttributes {
 	if o == nil || o.Attributes == nil {
-		var ret ServiceUpdateAttributes
+		var ret IncidentServiceUpdateAttributes
 		return ret
 	}
 	return *o.Attributes
@@ -53,7 +53,7 @@ func (o *ServiceUpdateData) GetAttributes() ServiceUpdateAttributes {
 
 // GetAttributesOk returns a tuple with the Attributes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceUpdateData) GetAttributesOk() (*ServiceUpdateAttributes, bool) {
+func (o *IncidentServiceUpdateData) GetAttributesOk() (*IncidentServiceUpdateAttributes, bool) {
 	if o == nil || o.Attributes == nil {
 		return nil, false
 	}
@@ -61,7 +61,7 @@ func (o *ServiceUpdateData) GetAttributesOk() (*ServiceUpdateAttributes, bool) {
 }
 
 // HasAttributes returns a boolean if a field has been set.
-func (o *ServiceUpdateData) HasAttributes() bool {
+func (o *IncidentServiceUpdateData) HasAttributes() bool {
 	if o != nil && o.Attributes != nil {
 		return true
 	}
@@ -69,13 +69,13 @@ func (o *ServiceUpdateData) HasAttributes() bool {
 	return false
 }
 
-// SetAttributes gets a reference to the given ServiceUpdateAttributes and assigns it to the Attributes field.
-func (o *ServiceUpdateData) SetAttributes(v ServiceUpdateAttributes) {
+// SetAttributes gets a reference to the given IncidentServiceUpdateAttributes and assigns it to the Attributes field.
+func (o *IncidentServiceUpdateData) SetAttributes(v IncidentServiceUpdateAttributes) {
 	o.Attributes = &v
 }
 
 // GetId returns the Id field value
-func (o *ServiceUpdateData) GetId() string {
+func (o *IncidentServiceUpdateData) GetId() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -86,7 +86,7 @@ func (o *ServiceUpdateData) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *ServiceUpdateData) GetIdOk() (*string, bool) {
+func (o *IncidentServiceUpdateData) GetIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -94,14 +94,14 @@ func (o *ServiceUpdateData) GetIdOk() (*string, bool) {
 }
 
 // SetId sets field value
-func (o *ServiceUpdateData) SetId(v string) {
+func (o *IncidentServiceUpdateData) SetId(v string) {
 	o.Id = v
 }
 
 // GetRelationships returns the Relationships field value if set, zero value otherwise.
-func (o *ServiceUpdateData) GetRelationships() ServiceRelationships {
+func (o *IncidentServiceUpdateData) GetRelationships() IncidentServiceRelationships {
 	if o == nil || o.Relationships == nil {
-		var ret ServiceRelationships
+		var ret IncidentServiceRelationships
 		return ret
 	}
 	return *o.Relationships
@@ -109,7 +109,7 @@ func (o *ServiceUpdateData) GetRelationships() ServiceRelationships {
 
 // GetRelationshipsOk returns a tuple with the Relationships field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceUpdateData) GetRelationshipsOk() (*ServiceRelationships, bool) {
+func (o *IncidentServiceUpdateData) GetRelationshipsOk() (*IncidentServiceRelationships, bool) {
 	if o == nil || o.Relationships == nil {
 		return nil, false
 	}
@@ -117,7 +117,7 @@ func (o *ServiceUpdateData) GetRelationshipsOk() (*ServiceRelationships, bool) {
 }
 
 // HasRelationships returns a boolean if a field has been set.
-func (o *ServiceUpdateData) HasRelationships() bool {
+func (o *IncidentServiceUpdateData) HasRelationships() bool {
 	if o != nil && o.Relationships != nil {
 		return true
 	}
@@ -125,15 +125,15 @@ func (o *ServiceUpdateData) HasRelationships() bool {
 	return false
 }
 
-// SetRelationships gets a reference to the given ServiceRelationships and assigns it to the Relationships field.
-func (o *ServiceUpdateData) SetRelationships(v ServiceRelationships) {
+// SetRelationships gets a reference to the given IncidentServiceRelationships and assigns it to the Relationships field.
+func (o *IncidentServiceUpdateData) SetRelationships(v IncidentServiceRelationships) {
 	o.Relationships = &v
 }
 
 // GetType returns the Type field value
-func (o *ServiceUpdateData) GetType() ServiceType {
+func (o *IncidentServiceUpdateData) GetType() IncidentServiceType {
 	if o == nil {
-		var ret ServiceType
+		var ret IncidentServiceType
 		return ret
 	}
 
@@ -142,7 +142,7 @@ func (o *ServiceUpdateData) GetType() ServiceType {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *ServiceUpdateData) GetTypeOk() (*ServiceType, bool) {
+func (o *IncidentServiceUpdateData) GetTypeOk() (*IncidentServiceType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -150,11 +150,11 @@ func (o *ServiceUpdateData) GetTypeOk() (*ServiceType, bool) {
 }
 
 // SetType sets field value
-func (o *ServiceUpdateData) SetType(v ServiceType) {
+func (o *IncidentServiceUpdateData) SetType(v IncidentServiceType) {
 	o.Type = v
 }
 
-func (o ServiceUpdateData) MarshalJSON() ([]byte, error) {
+func (o IncidentServiceUpdateData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Attributes != nil {
 		toSerialize["attributes"] = o.Attributes
@@ -171,38 +171,38 @@ func (o ServiceUpdateData) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableServiceUpdateData struct {
-	value *ServiceUpdateData
+type NullableIncidentServiceUpdateData struct {
+	value *IncidentServiceUpdateData
 	isSet bool
 }
 
-func (v NullableServiceUpdateData) Get() *ServiceUpdateData {
+func (v NullableIncidentServiceUpdateData) Get() *IncidentServiceUpdateData {
 	return v.value
 }
 
-func (v *NullableServiceUpdateData) Set(val *ServiceUpdateData) {
+func (v *NullableIncidentServiceUpdateData) Set(val *IncidentServiceUpdateData) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableServiceUpdateData) IsSet() bool {
+func (v NullableIncidentServiceUpdateData) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableServiceUpdateData) Unset() {
+func (v *NullableIncidentServiceUpdateData) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableServiceUpdateData(val *ServiceUpdateData) *NullableServiceUpdateData {
-	return &NullableServiceUpdateData{value: val, isSet: true}
+func NewNullableIncidentServiceUpdateData(val *IncidentServiceUpdateData) *NullableIncidentServiceUpdateData {
+	return &NullableIncidentServiceUpdateData{value: val, isSet: true}
 }
 
-func (v NullableServiceUpdateData) MarshalJSON() ([]byte, error) {
+func (v NullableIncidentServiceUpdateData) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableServiceUpdateData) UnmarshalJSON(src []byte) error {
+func (v *NullableIncidentServiceUpdateData) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

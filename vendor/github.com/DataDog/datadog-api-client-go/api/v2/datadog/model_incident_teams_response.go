@@ -12,37 +12,37 @@ import (
 	"encoding/json"
 )
 
-// TeamsResponse Response with a list of team payloads.
-type TeamsResponse struct {
-	// An array of teams.
-	Data []TeamResponseData `json:"data"`
+// IncidentTeamsResponse Response with a list of incident team payloads.
+type IncidentTeamsResponse struct {
+	// An array of incident teams.
+	Data []IncidentTeamResponseData `json:"data"`
 	// Included related resources which the user requested.
-	Included *[]TeamIncludedItems  `json:"included,omitempty"`
-	Meta     *ServicesResponseMeta `json:"meta,omitempty"`
+	Included *[]IncidentTeamIncludedItems  `json:"included,omitempty"`
+	Meta     *IncidentServicesResponseMeta `json:"meta,omitempty"`
 }
 
-// NewTeamsResponse instantiates a new TeamsResponse object
+// NewIncidentTeamsResponse instantiates a new IncidentTeamsResponse object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewTeamsResponse(data []TeamResponseData) *TeamsResponse {
-	this := TeamsResponse{}
+func NewIncidentTeamsResponse(data []IncidentTeamResponseData) *IncidentTeamsResponse {
+	this := IncidentTeamsResponse{}
 	this.Data = data
 	return &this
 }
 
-// NewTeamsResponseWithDefaults instantiates a new TeamsResponse object
+// NewIncidentTeamsResponseWithDefaults instantiates a new IncidentTeamsResponse object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewTeamsResponseWithDefaults() *TeamsResponse {
-	this := TeamsResponse{}
+func NewIncidentTeamsResponseWithDefaults() *IncidentTeamsResponse {
+	this := IncidentTeamsResponse{}
 	return &this
 }
 
 // GetData returns the Data field value
-func (o *TeamsResponse) GetData() []TeamResponseData {
+func (o *IncidentTeamsResponse) GetData() []IncidentTeamResponseData {
 	if o == nil {
-		var ret []TeamResponseData
+		var ret []IncidentTeamResponseData
 		return ret
 	}
 
@@ -51,7 +51,7 @@ func (o *TeamsResponse) GetData() []TeamResponseData {
 
 // GetDataOk returns a tuple with the Data field value
 // and a boolean to check if the value has been set.
-func (o *TeamsResponse) GetDataOk() (*[]TeamResponseData, bool) {
+func (o *IncidentTeamsResponse) GetDataOk() (*[]IncidentTeamResponseData, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -59,14 +59,14 @@ func (o *TeamsResponse) GetDataOk() (*[]TeamResponseData, bool) {
 }
 
 // SetData sets field value
-func (o *TeamsResponse) SetData(v []TeamResponseData) {
+func (o *IncidentTeamsResponse) SetData(v []IncidentTeamResponseData) {
 	o.Data = v
 }
 
 // GetIncluded returns the Included field value if set, zero value otherwise.
-func (o *TeamsResponse) GetIncluded() []TeamIncludedItems {
+func (o *IncidentTeamsResponse) GetIncluded() []IncidentTeamIncludedItems {
 	if o == nil || o.Included == nil {
-		var ret []TeamIncludedItems
+		var ret []IncidentTeamIncludedItems
 		return ret
 	}
 	return *o.Included
@@ -74,7 +74,7 @@ func (o *TeamsResponse) GetIncluded() []TeamIncludedItems {
 
 // GetIncludedOk returns a tuple with the Included field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TeamsResponse) GetIncludedOk() (*[]TeamIncludedItems, bool) {
+func (o *IncidentTeamsResponse) GetIncludedOk() (*[]IncidentTeamIncludedItems, bool) {
 	if o == nil || o.Included == nil {
 		return nil, false
 	}
@@ -82,7 +82,7 @@ func (o *TeamsResponse) GetIncludedOk() (*[]TeamIncludedItems, bool) {
 }
 
 // HasIncluded returns a boolean if a field has been set.
-func (o *TeamsResponse) HasIncluded() bool {
+func (o *IncidentTeamsResponse) HasIncluded() bool {
 	if o != nil && o.Included != nil {
 		return true
 	}
@@ -90,15 +90,15 @@ func (o *TeamsResponse) HasIncluded() bool {
 	return false
 }
 
-// SetIncluded gets a reference to the given []TeamIncludedItems and assigns it to the Included field.
-func (o *TeamsResponse) SetIncluded(v []TeamIncludedItems) {
+// SetIncluded gets a reference to the given []IncidentTeamIncludedItems and assigns it to the Included field.
+func (o *IncidentTeamsResponse) SetIncluded(v []IncidentTeamIncludedItems) {
 	o.Included = &v
 }
 
 // GetMeta returns the Meta field value if set, zero value otherwise.
-func (o *TeamsResponse) GetMeta() ServicesResponseMeta {
+func (o *IncidentTeamsResponse) GetMeta() IncidentServicesResponseMeta {
 	if o == nil || o.Meta == nil {
-		var ret ServicesResponseMeta
+		var ret IncidentServicesResponseMeta
 		return ret
 	}
 	return *o.Meta
@@ -106,7 +106,7 @@ func (o *TeamsResponse) GetMeta() ServicesResponseMeta {
 
 // GetMetaOk returns a tuple with the Meta field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TeamsResponse) GetMetaOk() (*ServicesResponseMeta, bool) {
+func (o *IncidentTeamsResponse) GetMetaOk() (*IncidentServicesResponseMeta, bool) {
 	if o == nil || o.Meta == nil {
 		return nil, false
 	}
@@ -114,7 +114,7 @@ func (o *TeamsResponse) GetMetaOk() (*ServicesResponseMeta, bool) {
 }
 
 // HasMeta returns a boolean if a field has been set.
-func (o *TeamsResponse) HasMeta() bool {
+func (o *IncidentTeamsResponse) HasMeta() bool {
 	if o != nil && o.Meta != nil {
 		return true
 	}
@@ -122,12 +122,12 @@ func (o *TeamsResponse) HasMeta() bool {
 	return false
 }
 
-// SetMeta gets a reference to the given ServicesResponseMeta and assigns it to the Meta field.
-func (o *TeamsResponse) SetMeta(v ServicesResponseMeta) {
+// SetMeta gets a reference to the given IncidentServicesResponseMeta and assigns it to the Meta field.
+func (o *IncidentTeamsResponse) SetMeta(v IncidentServicesResponseMeta) {
 	o.Meta = &v
 }
 
-func (o TeamsResponse) MarshalJSON() ([]byte, error) {
+func (o IncidentTeamsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["data"] = o.Data
@@ -141,38 +141,38 @@ func (o TeamsResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableTeamsResponse struct {
-	value *TeamsResponse
+type NullableIncidentTeamsResponse struct {
+	value *IncidentTeamsResponse
 	isSet bool
 }
 
-func (v NullableTeamsResponse) Get() *TeamsResponse {
+func (v NullableIncidentTeamsResponse) Get() *IncidentTeamsResponse {
 	return v.value
 }
 
-func (v *NullableTeamsResponse) Set(val *TeamsResponse) {
+func (v *NullableIncidentTeamsResponse) Set(val *IncidentTeamsResponse) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableTeamsResponse) IsSet() bool {
+func (v NullableIncidentTeamsResponse) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableTeamsResponse) Unset() {
+func (v *NullableIncidentTeamsResponse) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableTeamsResponse(val *TeamsResponse) *NullableTeamsResponse {
-	return &NullableTeamsResponse{value: val, isSet: true}
+func NewNullableIncidentTeamsResponse(val *IncidentTeamsResponse) *NullableIncidentTeamsResponse {
+	return &NullableIncidentTeamsResponse{value: val, isSet: true}
 }
 
-func (v NullableTeamsResponse) MarshalJSON() ([]byte, error) {
+func (v NullableIncidentTeamsResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableTeamsResponse) UnmarshalJSON(src []byte) error {
+func (v *NullableIncidentTeamsResponse) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

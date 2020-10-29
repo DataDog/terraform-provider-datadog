@@ -23,32 +23,32 @@ var (
 	_ _context.Context
 )
 
-// ServicesApiService ServicesApi service
-type ServicesApiService service
+// IncidentServicesApiService IncidentServicesApi service
+type IncidentServicesApiService service
 
-type ApiCreateServiceRequest struct {
+type ApiCreateIncidentServiceRequest struct {
 	ctx        _context.Context
-	ApiService *ServicesApiService
-	body       *ServiceCreateRequest
+	ApiService *IncidentServicesApiService
+	body       *IncidentServiceCreateRequest
 }
 
-func (r ApiCreateServiceRequest) Body(body ServiceCreateRequest) ApiCreateServiceRequest {
+func (r ApiCreateIncidentServiceRequest) Body(body IncidentServiceCreateRequest) ApiCreateIncidentServiceRequest {
 	r.body = &body
 	return r
 }
 
-func (r ApiCreateServiceRequest) Execute() (ServiceResponse, *_nethttp.Response, error) {
-	return r.ApiService.CreateServiceExecute(r)
+func (r ApiCreateIncidentServiceRequest) Execute() (IncidentServiceResponse, *_nethttp.Response, error) {
+	return r.ApiService.CreateIncidentServiceExecute(r)
 }
 
 /*
- * CreateService Create a new service
- * Creates a new service.
+ * CreateIncidentService Create a new incident service
+ * Creates a new incident service.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @return ApiCreateServiceRequest
+ * @return ApiCreateIncidentServiceRequest
  */
-func (a *ServicesApiService) CreateService(ctx _context.Context) ApiCreateServiceRequest {
-	return ApiCreateServiceRequest{
+func (a *IncidentServicesApiService) CreateIncidentService(ctx _context.Context) ApiCreateIncidentServiceRequest {
+	return ApiCreateIncidentServiceRequest{
 		ApiService: a,
 		ctx:        ctx,
 	}
@@ -56,26 +56,26 @@ func (a *ServicesApiService) CreateService(ctx _context.Context) ApiCreateServic
 
 /*
  * Execute executes the request
- * @return ServiceResponse
+ * @return IncidentServiceResponse
  */
-func (a *ServicesApiService) CreateServiceExecute(r ApiCreateServiceRequest) (ServiceResponse, *_nethttp.Response, error) {
+func (a *IncidentServicesApiService) CreateIncidentServiceExecute(r ApiCreateIncidentServiceRequest) (IncidentServiceResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  ServiceResponse
+		localVarReturnValue  IncidentServiceResponse
 	)
 
-	operationId := "CreateService"
+	operationId := "CreateIncidentService"
 	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServicesApiService.CreateService")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IncidentServicesApiService.CreateIncidentService")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -108,7 +108,7 @@ func (a *ServicesApiService) CreateServiceExecute(r ApiCreateServiceRequest) (Se
 	}
 
 	// Set Operation-ID header for telemetry
-	localVarHeaderParams["DD-OPERATION-ID"] = "CreateService"
+	localVarHeaderParams["DD-OPERATION-ID"] = "CreateIncidentService"
 
 	// body params
 	localVarPostBody = r.body
@@ -215,25 +215,25 @@ func (a *ServicesApiService) CreateServiceExecute(r ApiCreateServiceRequest) (Se
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiDeleteServiceRequest struct {
+type ApiDeleteIncidentServiceRequest struct {
 	ctx        _context.Context
-	ApiService *ServicesApiService
+	ApiService *IncidentServicesApiService
 	serviceId  string
 }
 
-func (r ApiDeleteServiceRequest) Execute() (*_nethttp.Response, error) {
-	return r.ApiService.DeleteServiceExecute(r)
+func (r ApiDeleteIncidentServiceRequest) Execute() (*_nethttp.Response, error) {
+	return r.ApiService.DeleteIncidentServiceExecute(r)
 }
 
 /*
- * DeleteService Delete an existing service
- * Deletes an existing service.
+ * DeleteIncidentService Delete an existing incident service
+ * Deletes an existing incident service.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param serviceId The ID of the service.
- * @return ApiDeleteServiceRequest
+ * @param serviceId The ID of the incident service.
+ * @return ApiDeleteIncidentServiceRequest
  */
-func (a *ServicesApiService) DeleteService(ctx _context.Context, serviceId string) ApiDeleteServiceRequest {
-	return ApiDeleteServiceRequest{
+func (a *IncidentServicesApiService) DeleteIncidentService(ctx _context.Context, serviceId string) ApiDeleteIncidentServiceRequest {
+	return ApiDeleteIncidentServiceRequest{
 		ApiService: a,
 		ctx:        ctx,
 		serviceId:  serviceId,
@@ -243,7 +243,7 @@ func (a *ServicesApiService) DeleteService(ctx _context.Context, serviceId strin
 /*
  * Execute executes the request
  */
-func (a *ServicesApiService) DeleteServiceExecute(r ApiDeleteServiceRequest) (*_nethttp.Response, error) {
+func (a *IncidentServicesApiService) DeleteIncidentServiceExecute(r ApiDeleteIncidentServiceRequest) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodDelete
 		localVarPostBody     interface{}
@@ -252,14 +252,14 @@ func (a *ServicesApiService) DeleteServiceExecute(r ApiDeleteServiceRequest) (*_
 		localVarFileBytes    []byte
 	)
 
-	operationId := "DeleteService"
+	operationId := "DeleteIncidentService"
 	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServicesApiService.DeleteService")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IncidentServicesApiService.DeleteIncidentService")
 	if err != nil {
 		return nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -290,7 +290,7 @@ func (a *ServicesApiService) DeleteServiceExecute(r ApiDeleteServiceRequest) (*_
 	}
 
 	// Set Operation-ID header for telemetry
-	localVarHeaderParams["DD-OPERATION-ID"] = "DeleteService"
+	localVarHeaderParams["DD-OPERATION-ID"] = "DeleteIncidentService"
 
 	if r.ctx != nil {
 		// API Key Authentication
@@ -386,31 +386,31 @@ func (a *ServicesApiService) DeleteServiceExecute(r ApiDeleteServiceRequest) (*_
 	return localVarHTTPResponse, nil
 }
 
-type ApiGetServiceRequest struct {
+type ApiGetIncidentServiceRequest struct {
 	ctx        _context.Context
-	ApiService *ServicesApiService
+	ApiService *IncidentServicesApiService
 	serviceId  string
 	include    *string
 }
 
-func (r ApiGetServiceRequest) Include(include string) ApiGetServiceRequest {
+func (r ApiGetIncidentServiceRequest) Include(include string) ApiGetIncidentServiceRequest {
 	r.include = &include
 	return r
 }
 
-func (r ApiGetServiceRequest) Execute() (ServiceResponse, *_nethttp.Response, error) {
-	return r.ApiService.GetServiceExecute(r)
+func (r ApiGetIncidentServiceRequest) Execute() (IncidentServiceResponse, *_nethttp.Response, error) {
+	return r.ApiService.GetIncidentServiceExecute(r)
 }
 
 /*
- * GetService Get details of a service
- * Get details of a service. If the `include[users]` query parameter is provided, the included attribute will contain the users related to these services
+ * GetIncidentService Get details of an incident service
+ * Get details of an incident service. If the `include[users]` query parameter is provided, the included attribute will contain the users related to these incident services.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param serviceId The ID of the service.
- * @return ApiGetServiceRequest
+ * @param serviceId The ID of the incident service.
+ * @return ApiGetIncidentServiceRequest
  */
-func (a *ServicesApiService) GetService(ctx _context.Context, serviceId string) ApiGetServiceRequest {
-	return ApiGetServiceRequest{
+func (a *IncidentServicesApiService) GetIncidentService(ctx _context.Context, serviceId string) ApiGetIncidentServiceRequest {
+	return ApiGetIncidentServiceRequest{
 		ApiService: a,
 		ctx:        ctx,
 		serviceId:  serviceId,
@@ -419,26 +419,26 @@ func (a *ServicesApiService) GetService(ctx _context.Context, serviceId string) 
 
 /*
  * Execute executes the request
- * @return ServiceResponse
+ * @return IncidentServiceResponse
  */
-func (a *ServicesApiService) GetServiceExecute(r ApiGetServiceRequest) (ServiceResponse, *_nethttp.Response, error) {
+func (a *IncidentServicesApiService) GetIncidentServiceExecute(r ApiGetIncidentServiceRequest) (IncidentServiceResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  ServiceResponse
+		localVarReturnValue  IncidentServiceResponse
 	)
 
-	operationId := "GetService"
+	operationId := "GetIncidentService"
 	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServicesApiService.GetService")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IncidentServicesApiService.GetIncidentService")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -472,7 +472,7 @@ func (a *ServicesApiService) GetServiceExecute(r ApiGetServiceRequest) (ServiceR
 	}
 
 	// Set Operation-ID header for telemetry
-	localVarHeaderParams["DD-OPERATION-ID"] = "GetService"
+	localVarHeaderParams["DD-OPERATION-ID"] = "GetIncidentService"
 
 	if r.ctx != nil {
 		// API Key Authentication
@@ -577,39 +577,39 @@ func (a *ServicesApiService) GetServiceExecute(r ApiGetServiceRequest) (ServiceR
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiGetServicesRequest struct {
+type ApiGetIncidentServicesRequest struct {
 	ctx        _context.Context
-	ApiService *ServicesApiService
+	ApiService *IncidentServicesApiService
 	include    *string
 	pageSize   *int64
 	pageOffset *int64
 }
 
-func (r ApiGetServicesRequest) Include(include string) ApiGetServicesRequest {
+func (r ApiGetIncidentServicesRequest) Include(include string) ApiGetIncidentServicesRequest {
 	r.include = &include
 	return r
 }
-func (r ApiGetServicesRequest) PageSize(pageSize int64) ApiGetServicesRequest {
+func (r ApiGetIncidentServicesRequest) PageSize(pageSize int64) ApiGetIncidentServicesRequest {
 	r.pageSize = &pageSize
 	return r
 }
-func (r ApiGetServicesRequest) PageOffset(pageOffset int64) ApiGetServicesRequest {
+func (r ApiGetIncidentServicesRequest) PageOffset(pageOffset int64) ApiGetIncidentServicesRequest {
 	r.pageOffset = &pageOffset
 	return r
 }
 
-func (r ApiGetServicesRequest) Execute() (ServicesResponse, *_nethttp.Response, error) {
-	return r.ApiService.GetServicesExecute(r)
+func (r ApiGetIncidentServicesRequest) Execute() (IncidentServicesResponse, *_nethttp.Response, error) {
+	return r.ApiService.GetIncidentServicesExecute(r)
 }
 
 /*
- * GetServices Get a list of all services
- * Get all services for the requesting user's organization. If the `include[users]` query parameter is provided, the included attribute will contain the users related to these services.
+ * GetIncidentServices Get a list of all incident services
+ * Get all incident services uploaded for the requesting user's organization. If the `include[users]` query parameter is provided, the included attribute will contain the users related to these incident services.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @return ApiGetServicesRequest
+ * @return ApiGetIncidentServicesRequest
  */
-func (a *ServicesApiService) GetServices(ctx _context.Context) ApiGetServicesRequest {
-	return ApiGetServicesRequest{
+func (a *IncidentServicesApiService) GetIncidentServices(ctx _context.Context) ApiGetIncidentServicesRequest {
+	return ApiGetIncidentServicesRequest{
 		ApiService: a,
 		ctx:        ctx,
 	}
@@ -617,26 +617,26 @@ func (a *ServicesApiService) GetServices(ctx _context.Context) ApiGetServicesReq
 
 /*
  * Execute executes the request
- * @return ServicesResponse
+ * @return IncidentServicesResponse
  */
-func (a *ServicesApiService) GetServicesExecute(r ApiGetServicesRequest) (ServicesResponse, *_nethttp.Response, error) {
+func (a *IncidentServicesApiService) GetIncidentServicesExecute(r ApiGetIncidentServicesRequest) (IncidentServicesResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  ServicesResponse
+		localVarReturnValue  IncidentServicesResponse
 	)
 
-	operationId := "GetServices"
+	operationId := "GetIncidentServices"
 	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServicesApiService.GetServices")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IncidentServicesApiService.GetIncidentServices")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -675,7 +675,7 @@ func (a *ServicesApiService) GetServicesExecute(r ApiGetServicesRequest) (Servic
 	}
 
 	// Set Operation-ID header for telemetry
-	localVarHeaderParams["DD-OPERATION-ID"] = "GetServices"
+	localVarHeaderParams["DD-OPERATION-ID"] = "GetIncidentServices"
 
 	if r.ctx != nil {
 		// API Key Authentication
@@ -780,31 +780,31 @@ func (a *ServicesApiService) GetServicesExecute(r ApiGetServicesRequest) (Servic
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiUpdateServiceRequest struct {
+type ApiUpdateIncidentServiceRequest struct {
 	ctx        _context.Context
-	ApiService *ServicesApiService
+	ApiService *IncidentServicesApiService
 	serviceId  string
-	body       *ServiceUpdateRequest
+	body       *IncidentServiceUpdateRequest
 }
 
-func (r ApiUpdateServiceRequest) Body(body ServiceUpdateRequest) ApiUpdateServiceRequest {
+func (r ApiUpdateIncidentServiceRequest) Body(body IncidentServiceUpdateRequest) ApiUpdateIncidentServiceRequest {
 	r.body = &body
 	return r
 }
 
-func (r ApiUpdateServiceRequest) Execute() (ServiceResponse, *_nethttp.Response, error) {
-	return r.ApiService.UpdateServiceExecute(r)
+func (r ApiUpdateIncidentServiceRequest) Execute() (IncidentServiceResponse, *_nethttp.Response, error) {
+	return r.ApiService.UpdateIncidentServiceExecute(r)
 }
 
 /*
- * UpdateService Update an existing service
- * Updates an existing service. Only provide the attributes which should be updated as this request is a partial update.
+ * UpdateIncidentService Update an existing incident service
+ * Updates an existing incident service. Only provide the attributes which should be updated as this request is a partial update.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param serviceId The ID of the service.
- * @return ApiUpdateServiceRequest
+ * @param serviceId The ID of the incident service.
+ * @return ApiUpdateIncidentServiceRequest
  */
-func (a *ServicesApiService) UpdateService(ctx _context.Context, serviceId string) ApiUpdateServiceRequest {
-	return ApiUpdateServiceRequest{
+func (a *IncidentServicesApiService) UpdateIncidentService(ctx _context.Context, serviceId string) ApiUpdateIncidentServiceRequest {
+	return ApiUpdateIncidentServiceRequest{
 		ApiService: a,
 		ctx:        ctx,
 		serviceId:  serviceId,
@@ -813,26 +813,26 @@ func (a *ServicesApiService) UpdateService(ctx _context.Context, serviceId strin
 
 /*
  * Execute executes the request
- * @return ServiceResponse
+ * @return IncidentServiceResponse
  */
-func (a *ServicesApiService) UpdateServiceExecute(r ApiUpdateServiceRequest) (ServiceResponse, *_nethttp.Response, error) {
+func (a *IncidentServicesApiService) UpdateIncidentServiceExecute(r ApiUpdateIncidentServiceRequest) (IncidentServiceResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPatch
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  ServiceResponse
+		localVarReturnValue  IncidentServiceResponse
 	)
 
-	operationId := "UpdateService"
+	operationId := "UpdateIncidentService"
 	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServicesApiService.UpdateService")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IncidentServicesApiService.UpdateIncidentService")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -866,7 +866,7 @@ func (a *ServicesApiService) UpdateServiceExecute(r ApiUpdateServiceRequest) (Se
 	}
 
 	// Set Operation-ID header for telemetry
-	localVarHeaderParams["DD-OPERATION-ID"] = "UpdateService"
+	localVarHeaderParams["DD-OPERATION-ID"] = "UpdateIncidentService"
 
 	// body params
 	localVarPostBody = r.body

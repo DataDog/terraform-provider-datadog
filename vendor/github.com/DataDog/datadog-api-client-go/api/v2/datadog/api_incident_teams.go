@@ -23,32 +23,32 @@ var (
 	_ _context.Context
 )
 
-// TeamsApiService TeamsApi service
-type TeamsApiService service
+// IncidentTeamsApiService IncidentTeamsApi service
+type IncidentTeamsApiService service
 
-type ApiCreateTeamRequest struct {
+type ApiCreateIncidentTeamRequest struct {
 	ctx        _context.Context
-	ApiService *TeamsApiService
-	body       *TeamCreateRequest
+	ApiService *IncidentTeamsApiService
+	body       *IncidentTeamCreateRequest
 }
 
-func (r ApiCreateTeamRequest) Body(body TeamCreateRequest) ApiCreateTeamRequest {
+func (r ApiCreateIncidentTeamRequest) Body(body IncidentTeamCreateRequest) ApiCreateIncidentTeamRequest {
 	r.body = &body
 	return r
 }
 
-func (r ApiCreateTeamRequest) Execute() (TeamResponse, *_nethttp.Response, error) {
-	return r.ApiService.CreateTeamExecute(r)
+func (r ApiCreateIncidentTeamRequest) Execute() (IncidentTeamResponse, *_nethttp.Response, error) {
+	return r.ApiService.CreateIncidentTeamExecute(r)
 }
 
 /*
- * CreateTeam Create a new team
- * Creates a new team.
+ * CreateIncidentTeam Create a new incident team
+ * Creates a new incident team.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @return ApiCreateTeamRequest
+ * @return ApiCreateIncidentTeamRequest
  */
-func (a *TeamsApiService) CreateTeam(ctx _context.Context) ApiCreateTeamRequest {
-	return ApiCreateTeamRequest{
+func (a *IncidentTeamsApiService) CreateIncidentTeam(ctx _context.Context) ApiCreateIncidentTeamRequest {
+	return ApiCreateIncidentTeamRequest{
 		ApiService: a,
 		ctx:        ctx,
 	}
@@ -56,26 +56,26 @@ func (a *TeamsApiService) CreateTeam(ctx _context.Context) ApiCreateTeamRequest 
 
 /*
  * Execute executes the request
- * @return TeamResponse
+ * @return IncidentTeamResponse
  */
-func (a *TeamsApiService) CreateTeamExecute(r ApiCreateTeamRequest) (TeamResponse, *_nethttp.Response, error) {
+func (a *IncidentTeamsApiService) CreateIncidentTeamExecute(r ApiCreateIncidentTeamRequest) (IncidentTeamResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  TeamResponse
+		localVarReturnValue  IncidentTeamResponse
 	)
 
-	operationId := "CreateTeam"
+	operationId := "CreateIncidentTeam"
 	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TeamsApiService.CreateTeam")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IncidentTeamsApiService.CreateIncidentTeam")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -108,7 +108,7 @@ func (a *TeamsApiService) CreateTeamExecute(r ApiCreateTeamRequest) (TeamRespons
 	}
 
 	// Set Operation-ID header for telemetry
-	localVarHeaderParams["DD-OPERATION-ID"] = "CreateTeam"
+	localVarHeaderParams["DD-OPERATION-ID"] = "CreateIncidentTeam"
 
 	// body params
 	localVarPostBody = r.body
@@ -215,25 +215,25 @@ func (a *TeamsApiService) CreateTeamExecute(r ApiCreateTeamRequest) (TeamRespons
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiDeleteTeamRequest struct {
+type ApiDeleteIncidentTeamRequest struct {
 	ctx        _context.Context
-	ApiService *TeamsApiService
+	ApiService *IncidentTeamsApiService
 	teamId     string
 }
 
-func (r ApiDeleteTeamRequest) Execute() (*_nethttp.Response, error) {
-	return r.ApiService.DeleteTeamExecute(r)
+func (r ApiDeleteIncidentTeamRequest) Execute() (*_nethttp.Response, error) {
+	return r.ApiService.DeleteIncidentTeamExecute(r)
 }
 
 /*
- * DeleteTeam Delete an existing team
- * Deletes an existing team.
+ * DeleteIncidentTeam Delete an existing incident team
+ * Deletes an existing incident team.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param teamId The ID of the team.
- * @return ApiDeleteTeamRequest
+ * @param teamId The ID of the incident team.
+ * @return ApiDeleteIncidentTeamRequest
  */
-func (a *TeamsApiService) DeleteTeam(ctx _context.Context, teamId string) ApiDeleteTeamRequest {
-	return ApiDeleteTeamRequest{
+func (a *IncidentTeamsApiService) DeleteIncidentTeam(ctx _context.Context, teamId string) ApiDeleteIncidentTeamRequest {
+	return ApiDeleteIncidentTeamRequest{
 		ApiService: a,
 		ctx:        ctx,
 		teamId:     teamId,
@@ -243,7 +243,7 @@ func (a *TeamsApiService) DeleteTeam(ctx _context.Context, teamId string) ApiDel
 /*
  * Execute executes the request
  */
-func (a *TeamsApiService) DeleteTeamExecute(r ApiDeleteTeamRequest) (*_nethttp.Response, error) {
+func (a *IncidentTeamsApiService) DeleteIncidentTeamExecute(r ApiDeleteIncidentTeamRequest) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodDelete
 		localVarPostBody     interface{}
@@ -252,14 +252,14 @@ func (a *TeamsApiService) DeleteTeamExecute(r ApiDeleteTeamRequest) (*_nethttp.R
 		localVarFileBytes    []byte
 	)
 
-	operationId := "DeleteTeam"
+	operationId := "DeleteIncidentTeam"
 	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TeamsApiService.DeleteTeam")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IncidentTeamsApiService.DeleteIncidentTeam")
 	if err != nil {
 		return nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -290,7 +290,7 @@ func (a *TeamsApiService) DeleteTeamExecute(r ApiDeleteTeamRequest) (*_nethttp.R
 	}
 
 	// Set Operation-ID header for telemetry
-	localVarHeaderParams["DD-OPERATION-ID"] = "DeleteTeam"
+	localVarHeaderParams["DD-OPERATION-ID"] = "DeleteIncidentTeam"
 
 	if r.ctx != nil {
 		// API Key Authentication
@@ -386,31 +386,31 @@ func (a *TeamsApiService) DeleteTeamExecute(r ApiDeleteTeamRequest) (*_nethttp.R
 	return localVarHTTPResponse, nil
 }
 
-type ApiGetTeamRequest struct {
+type ApiGetIncidentTeamRequest struct {
 	ctx        _context.Context
-	ApiService *TeamsApiService
+	ApiService *IncidentTeamsApiService
 	teamId     string
 	include    *string
 }
 
-func (r ApiGetTeamRequest) Include(include string) ApiGetTeamRequest {
+func (r ApiGetIncidentTeamRequest) Include(include string) ApiGetIncidentTeamRequest {
 	r.include = &include
 	return r
 }
 
-func (r ApiGetTeamRequest) Execute() (TeamResponse, *_nethttp.Response, error) {
-	return r.ApiService.GetTeamExecute(r)
+func (r ApiGetIncidentTeamRequest) Execute() (IncidentTeamResponse, *_nethttp.Response, error) {
+	return r.ApiService.GetIncidentTeamExecute(r)
 }
 
 /*
- * GetTeam Get details of a team
- * Get details of a team. If the `include[users]` query parameter is provided, the included attribute will contain the users related to these teams.
+ * GetIncidentTeam Get details of an incident team
+ * Get details of an incident team. If the `include[users]` query parameter is provided, the included attribute will contain the users related to these incident teams.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param teamId The ID of the team.
- * @return ApiGetTeamRequest
+ * @param teamId The ID of the incident team.
+ * @return ApiGetIncidentTeamRequest
  */
-func (a *TeamsApiService) GetTeam(ctx _context.Context, teamId string) ApiGetTeamRequest {
-	return ApiGetTeamRequest{
+func (a *IncidentTeamsApiService) GetIncidentTeam(ctx _context.Context, teamId string) ApiGetIncidentTeamRequest {
+	return ApiGetIncidentTeamRequest{
 		ApiService: a,
 		ctx:        ctx,
 		teamId:     teamId,
@@ -419,26 +419,26 @@ func (a *TeamsApiService) GetTeam(ctx _context.Context, teamId string) ApiGetTea
 
 /*
  * Execute executes the request
- * @return TeamResponse
+ * @return IncidentTeamResponse
  */
-func (a *TeamsApiService) GetTeamExecute(r ApiGetTeamRequest) (TeamResponse, *_nethttp.Response, error) {
+func (a *IncidentTeamsApiService) GetIncidentTeamExecute(r ApiGetIncidentTeamRequest) (IncidentTeamResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  TeamResponse
+		localVarReturnValue  IncidentTeamResponse
 	)
 
-	operationId := "GetTeam"
+	operationId := "GetIncidentTeam"
 	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TeamsApiService.GetTeam")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IncidentTeamsApiService.GetIncidentTeam")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -472,7 +472,7 @@ func (a *TeamsApiService) GetTeamExecute(r ApiGetTeamRequest) (TeamResponse, *_n
 	}
 
 	// Set Operation-ID header for telemetry
-	localVarHeaderParams["DD-OPERATION-ID"] = "GetTeam"
+	localVarHeaderParams["DD-OPERATION-ID"] = "GetIncidentTeam"
 
 	if r.ctx != nil {
 		// API Key Authentication
@@ -577,39 +577,39 @@ func (a *TeamsApiService) GetTeamExecute(r ApiGetTeamRequest) (TeamResponse, *_n
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiGetTeamsRequest struct {
+type ApiGetIncidentTeamsRequest struct {
 	ctx        _context.Context
-	ApiService *TeamsApiService
+	ApiService *IncidentTeamsApiService
 	include    *string
 	pageSize   *int64
 	pageOffset *int64
 }
 
-func (r ApiGetTeamsRequest) Include(include string) ApiGetTeamsRequest {
+func (r ApiGetIncidentTeamsRequest) Include(include string) ApiGetIncidentTeamsRequest {
 	r.include = &include
 	return r
 }
-func (r ApiGetTeamsRequest) PageSize(pageSize int64) ApiGetTeamsRequest {
+func (r ApiGetIncidentTeamsRequest) PageSize(pageSize int64) ApiGetIncidentTeamsRequest {
 	r.pageSize = &pageSize
 	return r
 }
-func (r ApiGetTeamsRequest) PageOffset(pageOffset int64) ApiGetTeamsRequest {
+func (r ApiGetIncidentTeamsRequest) PageOffset(pageOffset int64) ApiGetIncidentTeamsRequest {
 	r.pageOffset = &pageOffset
 	return r
 }
 
-func (r ApiGetTeamsRequest) Execute() (TeamsResponse, *_nethttp.Response, error) {
-	return r.ApiService.GetTeamsExecute(r)
+func (r ApiGetIncidentTeamsRequest) Execute() (IncidentTeamsResponse, *_nethttp.Response, error) {
+	return r.ApiService.GetIncidentTeamsExecute(r)
 }
 
 /*
- * GetTeams Get a list of all teams
- * Get all teams for the requesting user's organization. If the `include[users]` query parameter is provided, the included attribute will contain the users related to these teams.
+ * GetIncidentTeams Get a list of all incident teams
+ * Get all incident teams for the requesting user's organization. If the `include[users]` query parameter is provided, the included attribute will contain the users related to these incident teams.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @return ApiGetTeamsRequest
+ * @return ApiGetIncidentTeamsRequest
  */
-func (a *TeamsApiService) GetTeams(ctx _context.Context) ApiGetTeamsRequest {
-	return ApiGetTeamsRequest{
+func (a *IncidentTeamsApiService) GetIncidentTeams(ctx _context.Context) ApiGetIncidentTeamsRequest {
+	return ApiGetIncidentTeamsRequest{
 		ApiService: a,
 		ctx:        ctx,
 	}
@@ -617,26 +617,26 @@ func (a *TeamsApiService) GetTeams(ctx _context.Context) ApiGetTeamsRequest {
 
 /*
  * Execute executes the request
- * @return TeamsResponse
+ * @return IncidentTeamsResponse
  */
-func (a *TeamsApiService) GetTeamsExecute(r ApiGetTeamsRequest) (TeamsResponse, *_nethttp.Response, error) {
+func (a *IncidentTeamsApiService) GetIncidentTeamsExecute(r ApiGetIncidentTeamsRequest) (IncidentTeamsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  TeamsResponse
+		localVarReturnValue  IncidentTeamsResponse
 	)
 
-	operationId := "GetTeams"
+	operationId := "GetIncidentTeams"
 	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TeamsApiService.GetTeams")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IncidentTeamsApiService.GetIncidentTeams")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -675,7 +675,7 @@ func (a *TeamsApiService) GetTeamsExecute(r ApiGetTeamsRequest) (TeamsResponse, 
 	}
 
 	// Set Operation-ID header for telemetry
-	localVarHeaderParams["DD-OPERATION-ID"] = "GetTeams"
+	localVarHeaderParams["DD-OPERATION-ID"] = "GetIncidentTeams"
 
 	if r.ctx != nil {
 		// API Key Authentication
@@ -780,31 +780,31 @@ func (a *TeamsApiService) GetTeamsExecute(r ApiGetTeamsRequest) (TeamsResponse, 
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiUpdateTeamRequest struct {
+type ApiUpdateIncidentTeamRequest struct {
 	ctx        _context.Context
-	ApiService *TeamsApiService
+	ApiService *IncidentTeamsApiService
 	teamId     string
-	body       *TeamUpdateRequest
+	body       *IncidentTeamUpdateRequest
 }
 
-func (r ApiUpdateTeamRequest) Body(body TeamUpdateRequest) ApiUpdateTeamRequest {
+func (r ApiUpdateIncidentTeamRequest) Body(body IncidentTeamUpdateRequest) ApiUpdateIncidentTeamRequest {
 	r.body = &body
 	return r
 }
 
-func (r ApiUpdateTeamRequest) Execute() (TeamResponse, *_nethttp.Response, error) {
-	return r.ApiService.UpdateTeamExecute(r)
+func (r ApiUpdateIncidentTeamRequest) Execute() (IncidentTeamResponse, *_nethttp.Response, error) {
+	return r.ApiService.UpdateIncidentTeamExecute(r)
 }
 
 /*
- * UpdateTeam Update an existing team
- * Updates an existing team. Only provide the attributes which should be updated as this request is a partial update.
+ * UpdateIncidentTeam Update an existing incident team
+ * Updates an existing incident team. Only provide the attributes which should be updated as this request is a partial update.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param teamId The ID of the team.
- * @return ApiUpdateTeamRequest
+ * @param teamId The ID of the incident team.
+ * @return ApiUpdateIncidentTeamRequest
  */
-func (a *TeamsApiService) UpdateTeam(ctx _context.Context, teamId string) ApiUpdateTeamRequest {
-	return ApiUpdateTeamRequest{
+func (a *IncidentTeamsApiService) UpdateIncidentTeam(ctx _context.Context, teamId string) ApiUpdateIncidentTeamRequest {
+	return ApiUpdateIncidentTeamRequest{
 		ApiService: a,
 		ctx:        ctx,
 		teamId:     teamId,
@@ -813,26 +813,26 @@ func (a *TeamsApiService) UpdateTeam(ctx _context.Context, teamId string) ApiUpd
 
 /*
  * Execute executes the request
- * @return TeamResponse
+ * @return IncidentTeamResponse
  */
-func (a *TeamsApiService) UpdateTeamExecute(r ApiUpdateTeamRequest) (TeamResponse, *_nethttp.Response, error) {
+func (a *IncidentTeamsApiService) UpdateIncidentTeamExecute(r ApiUpdateIncidentTeamRequest) (IncidentTeamResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPatch
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  TeamResponse
+		localVarReturnValue  IncidentTeamResponse
 	)
 
-	operationId := "UpdateTeam"
+	operationId := "UpdateIncidentTeam"
 	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TeamsApiService.UpdateTeam")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IncidentTeamsApiService.UpdateIncidentTeam")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -866,7 +866,7 @@ func (a *TeamsApiService) UpdateTeamExecute(r ApiUpdateTeamRequest) (TeamRespons
 	}
 
 	// Set Operation-ID header for telemetry
-	localVarHeaderParams["DD-OPERATION-ID"] = "UpdateTeam"
+	localVarHeaderParams["DD-OPERATION-ID"] = "UpdateIncidentTeam"
 
 	// body params
 	localVarPostBody = r.body

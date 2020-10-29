@@ -13,35 +13,35 @@ import (
 	"time"
 )
 
-// TeamResponseAttributes The team's attributes from a response.
-type TeamResponseAttributes struct {
-	// Timestamp of when the team was created.
+// IncidentServiceResponseAttributes The incident service's attributes from a response.
+type IncidentServiceResponseAttributes struct {
+	// Timestamp of when the incident service was created.
 	Created *time.Time `json:"created,omitempty"`
-	// Timestamp of when the team was modified.
+	// Timestamp of when the incident service was modified.
 	Modified *time.Time `json:"modified,omitempty"`
-	// Name of the team.
+	// Name of the incident service.
 	Name *string `json:"name,omitempty"`
 }
 
-// NewTeamResponseAttributes instantiates a new TeamResponseAttributes object
+// NewIncidentServiceResponseAttributes instantiates a new IncidentServiceResponseAttributes object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewTeamResponseAttributes() *TeamResponseAttributes {
-	this := TeamResponseAttributes{}
+func NewIncidentServiceResponseAttributes() *IncidentServiceResponseAttributes {
+	this := IncidentServiceResponseAttributes{}
 	return &this
 }
 
-// NewTeamResponseAttributesWithDefaults instantiates a new TeamResponseAttributes object
+// NewIncidentServiceResponseAttributesWithDefaults instantiates a new IncidentServiceResponseAttributes object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewTeamResponseAttributesWithDefaults() *TeamResponseAttributes {
-	this := TeamResponseAttributes{}
+func NewIncidentServiceResponseAttributesWithDefaults() *IncidentServiceResponseAttributes {
+	this := IncidentServiceResponseAttributes{}
 	return &this
 }
 
 // GetCreated returns the Created field value if set, zero value otherwise.
-func (o *TeamResponseAttributes) GetCreated() time.Time {
+func (o *IncidentServiceResponseAttributes) GetCreated() time.Time {
 	if o == nil || o.Created == nil {
 		var ret time.Time
 		return ret
@@ -51,7 +51,7 @@ func (o *TeamResponseAttributes) GetCreated() time.Time {
 
 // GetCreatedOk returns a tuple with the Created field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TeamResponseAttributes) GetCreatedOk() (*time.Time, bool) {
+func (o *IncidentServiceResponseAttributes) GetCreatedOk() (*time.Time, bool) {
 	if o == nil || o.Created == nil {
 		return nil, false
 	}
@@ -59,7 +59,7 @@ func (o *TeamResponseAttributes) GetCreatedOk() (*time.Time, bool) {
 }
 
 // HasCreated returns a boolean if a field has been set.
-func (o *TeamResponseAttributes) HasCreated() bool {
+func (o *IncidentServiceResponseAttributes) HasCreated() bool {
 	if o != nil && o.Created != nil {
 		return true
 	}
@@ -68,12 +68,12 @@ func (o *TeamResponseAttributes) HasCreated() bool {
 }
 
 // SetCreated gets a reference to the given time.Time and assigns it to the Created field.
-func (o *TeamResponseAttributes) SetCreated(v time.Time) {
+func (o *IncidentServiceResponseAttributes) SetCreated(v time.Time) {
 	o.Created = &v
 }
 
 // GetModified returns the Modified field value if set, zero value otherwise.
-func (o *TeamResponseAttributes) GetModified() time.Time {
+func (o *IncidentServiceResponseAttributes) GetModified() time.Time {
 	if o == nil || o.Modified == nil {
 		var ret time.Time
 		return ret
@@ -83,7 +83,7 @@ func (o *TeamResponseAttributes) GetModified() time.Time {
 
 // GetModifiedOk returns a tuple with the Modified field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TeamResponseAttributes) GetModifiedOk() (*time.Time, bool) {
+func (o *IncidentServiceResponseAttributes) GetModifiedOk() (*time.Time, bool) {
 	if o == nil || o.Modified == nil {
 		return nil, false
 	}
@@ -91,7 +91,7 @@ func (o *TeamResponseAttributes) GetModifiedOk() (*time.Time, bool) {
 }
 
 // HasModified returns a boolean if a field has been set.
-func (o *TeamResponseAttributes) HasModified() bool {
+func (o *IncidentServiceResponseAttributes) HasModified() bool {
 	if o != nil && o.Modified != nil {
 		return true
 	}
@@ -100,12 +100,12 @@ func (o *TeamResponseAttributes) HasModified() bool {
 }
 
 // SetModified gets a reference to the given time.Time and assigns it to the Modified field.
-func (o *TeamResponseAttributes) SetModified(v time.Time) {
+func (o *IncidentServiceResponseAttributes) SetModified(v time.Time) {
 	o.Modified = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
-func (o *TeamResponseAttributes) GetName() string {
+func (o *IncidentServiceResponseAttributes) GetName() string {
 	if o == nil || o.Name == nil {
 		var ret string
 		return ret
@@ -115,7 +115,7 @@ func (o *TeamResponseAttributes) GetName() string {
 
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TeamResponseAttributes) GetNameOk() (*string, bool) {
+func (o *IncidentServiceResponseAttributes) GetNameOk() (*string, bool) {
 	if o == nil || o.Name == nil {
 		return nil, false
 	}
@@ -123,7 +123,7 @@ func (o *TeamResponseAttributes) GetNameOk() (*string, bool) {
 }
 
 // HasName returns a boolean if a field has been set.
-func (o *TeamResponseAttributes) HasName() bool {
+func (o *IncidentServiceResponseAttributes) HasName() bool {
 	if o != nil && o.Name != nil {
 		return true
 	}
@@ -132,11 +132,11 @@ func (o *TeamResponseAttributes) HasName() bool {
 }
 
 // SetName gets a reference to the given string and assigns it to the Name field.
-func (o *TeamResponseAttributes) SetName(v string) {
+func (o *IncidentServiceResponseAttributes) SetName(v string) {
 	o.Name = &v
 }
 
-func (o TeamResponseAttributes) MarshalJSON() ([]byte, error) {
+func (o IncidentServiceResponseAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Created != nil {
 		toSerialize["created"] = o.Created
@@ -150,38 +150,38 @@ func (o TeamResponseAttributes) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableTeamResponseAttributes struct {
-	value *TeamResponseAttributes
+type NullableIncidentServiceResponseAttributes struct {
+	value *IncidentServiceResponseAttributes
 	isSet bool
 }
 
-func (v NullableTeamResponseAttributes) Get() *TeamResponseAttributes {
+func (v NullableIncidentServiceResponseAttributes) Get() *IncidentServiceResponseAttributes {
 	return v.value
 }
 
-func (v *NullableTeamResponseAttributes) Set(val *TeamResponseAttributes) {
+func (v *NullableIncidentServiceResponseAttributes) Set(val *IncidentServiceResponseAttributes) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableTeamResponseAttributes) IsSet() bool {
+func (v NullableIncidentServiceResponseAttributes) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableTeamResponseAttributes) Unset() {
+func (v *NullableIncidentServiceResponseAttributes) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableTeamResponseAttributes(val *TeamResponseAttributes) *NullableTeamResponseAttributes {
-	return &NullableTeamResponseAttributes{value: val, isSet: true}
+func NewNullableIncidentServiceResponseAttributes(val *IncidentServiceResponseAttributes) *NullableIncidentServiceResponseAttributes {
+	return &NullableIncidentServiceResponseAttributes{value: val, isSet: true}
 }
 
-func (v NullableTeamResponseAttributes) MarshalJSON() ([]byte, error) {
+func (v NullableIncidentServiceResponseAttributes) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableTeamResponseAttributes) UnmarshalJSON(src []byte) error {
+func (v *NullableIncidentServiceResponseAttributes) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

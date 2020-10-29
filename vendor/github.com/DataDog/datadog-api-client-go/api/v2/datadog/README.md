@@ -77,6 +77,16 @@ Class | Method | HTTP request | Description
 *DashboardListsApi* | [**DeleteDashboardListItems**](docs/DashboardListsApi.md#deletedashboardlistitems) | **Delete** /api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards | Delete items from a dashboard list
 *DashboardListsApi* | [**GetDashboardListItems**](docs/DashboardListsApi.md#getdashboardlistitems) | **Get** /api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards | Get a Dashboard List
 *DashboardListsApi* | [**UpdateDashboardListItems**](docs/DashboardListsApi.md#updatedashboardlistitems) | **Put** /api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards | Update items of a dashboard list
+*IncidentServicesApi* | [**CreateIncidentService**](docs/IncidentServicesApi.md#createincidentservice) | **Post** /api/v2/services | Create a new incident service
+*IncidentServicesApi* | [**DeleteIncidentService**](docs/IncidentServicesApi.md#deleteincidentservice) | **Delete** /api/v2/services/{service_id} | Delete an existing incident service
+*IncidentServicesApi* | [**GetIncidentService**](docs/IncidentServicesApi.md#getincidentservice) | **Get** /api/v2/services/{service_id} | Get details of an incident service
+*IncidentServicesApi* | [**GetIncidentServices**](docs/IncidentServicesApi.md#getincidentservices) | **Get** /api/v2/services | Get a list of all incident services
+*IncidentServicesApi* | [**UpdateIncidentService**](docs/IncidentServicesApi.md#updateincidentservice) | **Patch** /api/v2/services/{service_id} | Update an existing incident service
+*IncidentTeamsApi* | [**CreateIncidentTeam**](docs/IncidentTeamsApi.md#createincidentteam) | **Post** /api/v2/teams | Create a new incident team
+*IncidentTeamsApi* | [**DeleteIncidentTeam**](docs/IncidentTeamsApi.md#deleteincidentteam) | **Delete** /api/v2/teams/{team_id} | Delete an existing incident team
+*IncidentTeamsApi* | [**GetIncidentTeam**](docs/IncidentTeamsApi.md#getincidentteam) | **Get** /api/v2/teams/{team_id} | Get details of an incident team
+*IncidentTeamsApi* | [**GetIncidentTeams**](docs/IncidentTeamsApi.md#getincidentteams) | **Get** /api/v2/teams | Get a list of all incident teams
+*IncidentTeamsApi* | [**UpdateIncidentTeam**](docs/IncidentTeamsApi.md#updateincidentteam) | **Patch** /api/v2/teams/{team_id} | Update an existing incident team
 *LogsApi* | [**AggregateLogs**](docs/LogsApi.md#aggregatelogs) | **Post** /api/v2/logs/analytics/aggregate | Aggregate events
 *LogsApi* | [**ListLogs**](docs/LogsApi.md#listlogs) | **Post** /api/v2/logs/events/search | Get a list of logs
 *LogsApi* | [**ListLogsGet**](docs/LogsApi.md#listlogsget) | **Get** /api/v2/logs/events | Get a quick list of logs
@@ -109,16 +119,6 @@ Class | Method | HTTP request | Description
 *SecurityMonitoringApi* | [**ListSecurityMonitoringSignals**](docs/SecurityMonitoringApi.md#listsecuritymonitoringsignals) | **Get** /api/v2/security_monitoring/signals | Get a quick list of security signals
 *SecurityMonitoringApi* | [**SearchSecurityMonitoringSignals**](docs/SecurityMonitoringApi.md#searchsecuritymonitoringsignals) | **Post** /api/v2/security_monitoring/signals/search | Get a list of security signals
 *SecurityMonitoringApi* | [**UpdateSecurityMonitoringRule**](docs/SecurityMonitoringApi.md#updatesecuritymonitoringrule) | **Put** /api/v2/security_monitoring/rules/{rule_id} | Update an existing rule
-*ServicesApi* | [**CreateService**](docs/ServicesApi.md#createservice) | **Post** /api/v2/services | Create a new service
-*ServicesApi* | [**DeleteService**](docs/ServicesApi.md#deleteservice) | **Delete** /api/v2/services/{service_id} | Delete an existing service
-*ServicesApi* | [**GetService**](docs/ServicesApi.md#getservice) | **Get** /api/v2/services/{service_id} | Get details of a service
-*ServicesApi* | [**GetServices**](docs/ServicesApi.md#getservices) | **Get** /api/v2/services | Get a list of all services
-*ServicesApi* | [**UpdateService**](docs/ServicesApi.md#updateservice) | **Patch** /api/v2/services/{service_id} | Update an existing service
-*TeamsApi* | [**CreateTeam**](docs/TeamsApi.md#createteam) | **Post** /api/v2/teams | Create a new team
-*TeamsApi* | [**DeleteTeam**](docs/TeamsApi.md#deleteteam) | **Delete** /api/v2/teams/{team_id} | Delete an existing team
-*TeamsApi* | [**GetTeam**](docs/TeamsApi.md#getteam) | **Get** /api/v2/teams/{team_id} | Get details of a team
-*TeamsApi* | [**GetTeams**](docs/TeamsApi.md#getteams) | **Get** /api/v2/teams | Get a list of all teams
-*TeamsApi* | [**UpdateTeam**](docs/TeamsApi.md#updateteam) | **Patch** /api/v2/teams/{team_id} | Update an existing team
 *UsersApi* | [**CreateUser**](docs/UsersApi.md#createuser) | **Post** /api/v2/users | Create a user
 *UsersApi* | [**DisableUser**](docs/UsersApi.md#disableuser) | **Delete** /api/v2/users/{user_id} | Disable a user
 *UsersApi* | [**GetInvitation**](docs/UsersApi.md#getinvitation) | **Get** /api/v2/user_invitations/{user_invitation_uuid} | Get a user invitation
@@ -145,6 +145,34 @@ Class | Method | HTTP request | Description
  - [DashboardListUpdateItemsRequest](docs/DashboardListUpdateItemsRequest.md)
  - [DashboardListUpdateItemsResponse](docs/DashboardListUpdateItemsResponse.md)
  - [DashboardType](docs/DashboardType.md)
+ - [IncidentServiceCreateAttributes](docs/IncidentServiceCreateAttributes.md)
+ - [IncidentServiceCreateData](docs/IncidentServiceCreateData.md)
+ - [IncidentServiceCreateRequest](docs/IncidentServiceCreateRequest.md)
+ - [IncidentServiceIncludedItems](docs/IncidentServiceIncludedItems.md)
+ - [IncidentServiceRelationships](docs/IncidentServiceRelationships.md)
+ - [IncidentServiceResponse](docs/IncidentServiceResponse.md)
+ - [IncidentServiceResponseAttributes](docs/IncidentServiceResponseAttributes.md)
+ - [IncidentServiceResponseData](docs/IncidentServiceResponseData.md)
+ - [IncidentServiceType](docs/IncidentServiceType.md)
+ - [IncidentServiceUpdateAttributes](docs/IncidentServiceUpdateAttributes.md)
+ - [IncidentServiceUpdateData](docs/IncidentServiceUpdateData.md)
+ - [IncidentServiceUpdateRequest](docs/IncidentServiceUpdateRequest.md)
+ - [IncidentServicesResponse](docs/IncidentServicesResponse.md)
+ - [IncidentServicesResponseMeta](docs/IncidentServicesResponseMeta.md)
+ - [IncidentServicesResponseMetaPagination](docs/IncidentServicesResponseMetaPagination.md)
+ - [IncidentTeamCreateAttributes](docs/IncidentTeamCreateAttributes.md)
+ - [IncidentTeamCreateData](docs/IncidentTeamCreateData.md)
+ - [IncidentTeamCreateRequest](docs/IncidentTeamCreateRequest.md)
+ - [IncidentTeamIncludedItems](docs/IncidentTeamIncludedItems.md)
+ - [IncidentTeamRelationships](docs/IncidentTeamRelationships.md)
+ - [IncidentTeamResponse](docs/IncidentTeamResponse.md)
+ - [IncidentTeamResponseAttributes](docs/IncidentTeamResponseAttributes.md)
+ - [IncidentTeamResponseData](docs/IncidentTeamResponseData.md)
+ - [IncidentTeamType](docs/IncidentTeamType.md)
+ - [IncidentTeamUpdateAttributes](docs/IncidentTeamUpdateAttributes.md)
+ - [IncidentTeamUpdateData](docs/IncidentTeamUpdateData.md)
+ - [IncidentTeamUpdateRequest](docs/IncidentTeamUpdateRequest.md)
+ - [IncidentTeamsResponse](docs/IncidentTeamsResponse.md)
  - [Log](docs/Log.md)
  - [LogAttributes](docs/LogAttributes.md)
  - [LogType](docs/LogType.md)
@@ -265,34 +293,6 @@ Class | Method | HTTP request | Description
  - [SecurityMonitoringSignalsListResponseMeta](docs/SecurityMonitoringSignalsListResponseMeta.md)
  - [SecurityMonitoringSignalsListResponseMetaPage](docs/SecurityMonitoringSignalsListResponseMetaPage.md)
  - [SecurityMonitoringSignalsSort](docs/SecurityMonitoringSignalsSort.md)
- - [ServiceCreateAttributes](docs/ServiceCreateAttributes.md)
- - [ServiceCreateData](docs/ServiceCreateData.md)
- - [ServiceCreateRequest](docs/ServiceCreateRequest.md)
- - [ServiceIncludedItems](docs/ServiceIncludedItems.md)
- - [ServiceRelationships](docs/ServiceRelationships.md)
- - [ServiceResponse](docs/ServiceResponse.md)
- - [ServiceResponseAttributes](docs/ServiceResponseAttributes.md)
- - [ServiceResponseData](docs/ServiceResponseData.md)
- - [ServiceType](docs/ServiceType.md)
- - [ServiceUpdateAttributes](docs/ServiceUpdateAttributes.md)
- - [ServiceUpdateData](docs/ServiceUpdateData.md)
- - [ServiceUpdateRequest](docs/ServiceUpdateRequest.md)
- - [ServicesResponse](docs/ServicesResponse.md)
- - [ServicesResponseMeta](docs/ServicesResponseMeta.md)
- - [ServicesResponseMetaPagination](docs/ServicesResponseMetaPagination.md)
- - [TeamCreateAttributes](docs/TeamCreateAttributes.md)
- - [TeamCreateData](docs/TeamCreateData.md)
- - [TeamCreateRequest](docs/TeamCreateRequest.md)
- - [TeamIncludedItems](docs/TeamIncludedItems.md)
- - [TeamRelationships](docs/TeamRelationships.md)
- - [TeamResponse](docs/TeamResponse.md)
- - [TeamResponseAttributes](docs/TeamResponseAttributes.md)
- - [TeamResponseData](docs/TeamResponseData.md)
- - [TeamType](docs/TeamType.md)
- - [TeamUpdateAttributes](docs/TeamUpdateAttributes.md)
- - [TeamUpdateData](docs/TeamUpdateData.md)
- - [TeamUpdateRequest](docs/TeamUpdateRequest.md)
- - [TeamsResponse](docs/TeamsResponse.md)
  - [User](docs/User.md)
  - [UserAttributes](docs/UserAttributes.md)
  - [UserCreateAttributes](docs/UserCreateAttributes.md)

@@ -12,8 +12,8 @@ import (
 	"encoding/json"
 )
 
-// ServicesResponseMetaPagination Pagination properties.
-type ServicesResponseMetaPagination struct {
+// IncidentServicesResponseMetaPagination Pagination properties.
+type IncidentServicesResponseMetaPagination struct {
 	// The index of the first element in the next page of results. Equal to page size added to the current offset.
 	NextOffset *int64 `json:"next_offset,omitempty"`
 	// The index of the first element in the results.
@@ -22,25 +22,25 @@ type ServicesResponseMetaPagination struct {
 	Size *int64 `json:"size,omitempty"`
 }
 
-// NewServicesResponseMetaPagination instantiates a new ServicesResponseMetaPagination object
+// NewIncidentServicesResponseMetaPagination instantiates a new IncidentServicesResponseMetaPagination object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewServicesResponseMetaPagination() *ServicesResponseMetaPagination {
-	this := ServicesResponseMetaPagination{}
+func NewIncidentServicesResponseMetaPagination() *IncidentServicesResponseMetaPagination {
+	this := IncidentServicesResponseMetaPagination{}
 	return &this
 }
 
-// NewServicesResponseMetaPaginationWithDefaults instantiates a new ServicesResponseMetaPagination object
+// NewIncidentServicesResponseMetaPaginationWithDefaults instantiates a new IncidentServicesResponseMetaPagination object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewServicesResponseMetaPaginationWithDefaults() *ServicesResponseMetaPagination {
-	this := ServicesResponseMetaPagination{}
+func NewIncidentServicesResponseMetaPaginationWithDefaults() *IncidentServicesResponseMetaPagination {
+	this := IncidentServicesResponseMetaPagination{}
 	return &this
 }
 
 // GetNextOffset returns the NextOffset field value if set, zero value otherwise.
-func (o *ServicesResponseMetaPagination) GetNextOffset() int64 {
+func (o *IncidentServicesResponseMetaPagination) GetNextOffset() int64 {
 	if o == nil || o.NextOffset == nil {
 		var ret int64
 		return ret
@@ -50,7 +50,7 @@ func (o *ServicesResponseMetaPagination) GetNextOffset() int64 {
 
 // GetNextOffsetOk returns a tuple with the NextOffset field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServicesResponseMetaPagination) GetNextOffsetOk() (*int64, bool) {
+func (o *IncidentServicesResponseMetaPagination) GetNextOffsetOk() (*int64, bool) {
 	if o == nil || o.NextOffset == nil {
 		return nil, false
 	}
@@ -58,7 +58,7 @@ func (o *ServicesResponseMetaPagination) GetNextOffsetOk() (*int64, bool) {
 }
 
 // HasNextOffset returns a boolean if a field has been set.
-func (o *ServicesResponseMetaPagination) HasNextOffset() bool {
+func (o *IncidentServicesResponseMetaPagination) HasNextOffset() bool {
 	if o != nil && o.NextOffset != nil {
 		return true
 	}
@@ -67,12 +67,12 @@ func (o *ServicesResponseMetaPagination) HasNextOffset() bool {
 }
 
 // SetNextOffset gets a reference to the given int64 and assigns it to the NextOffset field.
-func (o *ServicesResponseMetaPagination) SetNextOffset(v int64) {
+func (o *IncidentServicesResponseMetaPagination) SetNextOffset(v int64) {
 	o.NextOffset = &v
 }
 
 // GetOffset returns the Offset field value if set, zero value otherwise.
-func (o *ServicesResponseMetaPagination) GetOffset() int64 {
+func (o *IncidentServicesResponseMetaPagination) GetOffset() int64 {
 	if o == nil || o.Offset == nil {
 		var ret int64
 		return ret
@@ -82,7 +82,7 @@ func (o *ServicesResponseMetaPagination) GetOffset() int64 {
 
 // GetOffsetOk returns a tuple with the Offset field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServicesResponseMetaPagination) GetOffsetOk() (*int64, bool) {
+func (o *IncidentServicesResponseMetaPagination) GetOffsetOk() (*int64, bool) {
 	if o == nil || o.Offset == nil {
 		return nil, false
 	}
@@ -90,7 +90,7 @@ func (o *ServicesResponseMetaPagination) GetOffsetOk() (*int64, bool) {
 }
 
 // HasOffset returns a boolean if a field has been set.
-func (o *ServicesResponseMetaPagination) HasOffset() bool {
+func (o *IncidentServicesResponseMetaPagination) HasOffset() bool {
 	if o != nil && o.Offset != nil {
 		return true
 	}
@@ -99,12 +99,12 @@ func (o *ServicesResponseMetaPagination) HasOffset() bool {
 }
 
 // SetOffset gets a reference to the given int64 and assigns it to the Offset field.
-func (o *ServicesResponseMetaPagination) SetOffset(v int64) {
+func (o *IncidentServicesResponseMetaPagination) SetOffset(v int64) {
 	o.Offset = &v
 }
 
 // GetSize returns the Size field value if set, zero value otherwise.
-func (o *ServicesResponseMetaPagination) GetSize() int64 {
+func (o *IncidentServicesResponseMetaPagination) GetSize() int64 {
 	if o == nil || o.Size == nil {
 		var ret int64
 		return ret
@@ -114,7 +114,7 @@ func (o *ServicesResponseMetaPagination) GetSize() int64 {
 
 // GetSizeOk returns a tuple with the Size field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServicesResponseMetaPagination) GetSizeOk() (*int64, bool) {
+func (o *IncidentServicesResponseMetaPagination) GetSizeOk() (*int64, bool) {
 	if o == nil || o.Size == nil {
 		return nil, false
 	}
@@ -122,7 +122,7 @@ func (o *ServicesResponseMetaPagination) GetSizeOk() (*int64, bool) {
 }
 
 // HasSize returns a boolean if a field has been set.
-func (o *ServicesResponseMetaPagination) HasSize() bool {
+func (o *IncidentServicesResponseMetaPagination) HasSize() bool {
 	if o != nil && o.Size != nil {
 		return true
 	}
@@ -131,11 +131,11 @@ func (o *ServicesResponseMetaPagination) HasSize() bool {
 }
 
 // SetSize gets a reference to the given int64 and assigns it to the Size field.
-func (o *ServicesResponseMetaPagination) SetSize(v int64) {
+func (o *IncidentServicesResponseMetaPagination) SetSize(v int64) {
 	o.Size = &v
 }
 
-func (o ServicesResponseMetaPagination) MarshalJSON() ([]byte, error) {
+func (o IncidentServicesResponseMetaPagination) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.NextOffset != nil {
 		toSerialize["next_offset"] = o.NextOffset
@@ -149,38 +149,38 @@ func (o ServicesResponseMetaPagination) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableServicesResponseMetaPagination struct {
-	value *ServicesResponseMetaPagination
+type NullableIncidentServicesResponseMetaPagination struct {
+	value *IncidentServicesResponseMetaPagination
 	isSet bool
 }
 
-func (v NullableServicesResponseMetaPagination) Get() *ServicesResponseMetaPagination {
+func (v NullableIncidentServicesResponseMetaPagination) Get() *IncidentServicesResponseMetaPagination {
 	return v.value
 }
 
-func (v *NullableServicesResponseMetaPagination) Set(val *ServicesResponseMetaPagination) {
+func (v *NullableIncidentServicesResponseMetaPagination) Set(val *IncidentServicesResponseMetaPagination) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableServicesResponseMetaPagination) IsSet() bool {
+func (v NullableIncidentServicesResponseMetaPagination) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableServicesResponseMetaPagination) Unset() {
+func (v *NullableIncidentServicesResponseMetaPagination) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableServicesResponseMetaPagination(val *ServicesResponseMetaPagination) *NullableServicesResponseMetaPagination {
-	return &NullableServicesResponseMetaPagination{value: val, isSet: true}
+func NewNullableIncidentServicesResponseMetaPagination(val *IncidentServicesResponseMetaPagination) *NullableIncidentServicesResponseMetaPagination {
+	return &NullableIncidentServicesResponseMetaPagination{value: val, isSet: true}
 }
 
-func (v NullableServicesResponseMetaPagination) MarshalJSON() ([]byte, error) {
+func (v NullableIncidentServicesResponseMetaPagination) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableServicesResponseMetaPagination) UnmarshalJSON(src []byte) error {
+func (v *NullableIncidentServicesResponseMetaPagination) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
