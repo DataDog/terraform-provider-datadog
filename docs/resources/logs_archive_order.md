@@ -21,11 +21,11 @@ resource "datadog_logs_archive_order" "sample_archive_order" {
 
 The following arguments are supported:
 
-- `archive_ids`: (Optional, Computed) The archive IDs list. The order of archive IDs in this attribute defines the overall archive order for logs. If `archive_ids` is empty or not specified, it will import the actual archive order, and create the resource. Otherwise, it will try to update the order.
+-   `archive_ids`: (Optional, Computed) The archive IDs list. The order of archive IDs in this attribute defines the overall archive order for logs. If `archive_ids` is empty or not specified, it will import the actual archive order, and create the resource. Otherwise, it will try to update the order.
 
 ## Attributes Reference
 
-- `archive_ids`: The `archive_ids` list contains the IDs of resources created and imported by the [datadog_logs_archive](logs_archive.html#datadog_logs_archive). Updating the order of archives in this list reflects the application order of the archives. You cannot delete or create archive by deleting or adding IDs to this list.
+-   `archive_ids`: The `archive_ids` list contains the IDs of resources created and imported by the [datadog_logs_archive](logs_archive.html#datadog_logs_archive). Updating the order of archives in this list reflects the application order of the archives. You cannot delete or create archive by deleting or adding IDs to this list.
 
 ## Import
 

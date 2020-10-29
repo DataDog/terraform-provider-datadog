@@ -1,8 +1,7 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
-	4d63.com/tz v1.1.0
-	github.com/DataDog/datadog-api-client-go v1.0.0-beta.8.0.20201023093342-c6c000a7e284
+	github.com/DataDog/datadog-api-client-go v1.0.0-beta.9
 	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
 	github.com/dnaeon/go-vcr v1.0.1
 	github.com/fatih/color v1.9.0 // indirect
@@ -15,7 +14,7 @@ require (
 	github.com/kr/pretty v0.2.0
 	github.com/mattn/go-isatty v0.0.12 // indirect
 	github.com/stretchr/objx v0.1.1 // indirect
-	github.com/zorkian/go-datadog-api v2.29.1-0.20201007103024-437d51d487bf+incompatible
+	github.com/zorkian/go-datadog-api v2.30.0+incompatible
 	golang.org/x/crypto v0.0.0-20200204104054-c9f3fb736b72 // indirect
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
 	golang.org/x/text v0.3.3 // indirect

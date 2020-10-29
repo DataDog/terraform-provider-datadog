@@ -847,6 +847,37 @@ func TestAccDatadogMonitor_SilencedUpdatePastTimestamp(t *testing.T) {
 	})
 }
 
+func TestAccDatadogMonitor_ZeroDelay(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorConfigZeroDelay(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "query alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "new_host_delay", "0"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogMonitorSilenceZero(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
@@ -921,6 +952,7 @@ resource "datadog_monitor" "foo" {
   tags = ["foo:bar", "baz"]
 }`, uniq)
 }
+
 func testAccCheckDatadogMonitorConfigNoThresholds(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
@@ -1324,6 +1356,26 @@ resource "datadog_monitor" "bar" {
   	message = "test"
 	query = "${datadog_monitor.foo.id} || ${datadog_synthetics_test.foo.monitor_id}"
 }`, uniq, uniq, uniq)
+}
+
+func testAccCheckDatadogMonitorConfigZeroDelay(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "query alert"
+  message = "some message Notify: @hipchat-channel"
+
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+  thresholds = {
+	warning = "1.0"
+	critical = "2.0"
+	warning_recovery = "0.5"
+	critical_recovery = "1.5"
+  }
+
+  new_host_delay = 0
+}`, uniq)
 }
 
 func destroyHelper(s *terraform.State, client *datadog.Client) error {

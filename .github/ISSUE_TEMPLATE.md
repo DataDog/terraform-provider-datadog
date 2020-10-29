@@ -10,8 +10,8 @@ Run `terraform -v` to show the version. If you are not running the latest versio
 
 Please list the resources as a list, for example:
 
-- opc_instance
-- opc_storage_volume
+-   opc_instance
+-   opc_storage_volume
 
 If this issue appears to affect multiple resources, it may be an issue with Terraform's core, so please mention this.
 
@@ -53,4 +53,4 @@ Are there anything atypical about your accounts that we should know? For example
 
 Are there any other GitHub issues (open or closed) or Pull Requests that should be linked here? For example:
 
-- GH-1234
+-   GH-1234

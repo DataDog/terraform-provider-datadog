@@ -24,8 +24,8 @@ resource "datadog_logs_index_order" "sample_index_order" {
 
 The following arguments are supported:
 
-- `name`: (Required) The unique name of the index order resource.
-- `indexes`: (Required) The index resource list. Logs are tested against the query filter of each index one by one following the order of the list.
+-   `name`: (Required) The unique name of the index order resource.
+-   `indexes`: (Required) The index resource list. Logs are tested against the query filter of each index one by one following the order of the list.
 
 ## Import
 

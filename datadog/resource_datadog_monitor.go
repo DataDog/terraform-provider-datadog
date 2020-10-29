@@ -278,9 +278,8 @@ func buildMonitorStruct(d BuiltResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	if attr, ok := d.GetOk("notify_no_data"); ok {
 		o.SetNotifyNoData(attr.(bool))
 	}
-	if attr, ok := d.GetOk("new_host_delay"); ok {
-		o.SetNewHostDelay(int64(attr.(int)))
-	}
+	// Don't check with GetOk, doesn't work with 0
+	o.SetNewHostDelay(int64(d.Get("new_host_delay").(int)))
 	if attr, ok := d.GetOk("evaluation_delay"); ok {
 		o.SetEvaluationDelay(int64(attr.(int)))
 	}

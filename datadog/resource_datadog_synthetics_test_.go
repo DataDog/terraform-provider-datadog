@@ -73,6 +73,17 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					},
 				},
 			},
+			"request_client_certificate": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"cert": syntheticsTestRequestClientCertificateItem(),
+						"key":  syntheticsTestRequestClientCertificateItem(),
+					},
+				},
+			},
 			"assertions": {
 				Type:          schema.TypeList,
 				Optional:      true,
@@ -230,6 +241,31 @@ func syntheticsTestRequest() *schema.Schema {
 					Type:     schema.TypeInt,
 					Optional: true,
 					Default:  60,
+				},
+				"dns_server": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+			},
+		},
+	}
+}
+
+func syntheticsTestRequestClientCertificateItem() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		MaxItems: 1,
+		Required: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"content": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"filename": {
+					Type:     schema.TypeString,
+					Optional: true,
+					Default:  "Provided in Terraform config",
 				},
 			},
 		},
@@ -546,6 +582,9 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		portInt, _ := strconv.Atoi(attr.(string))
 		request.SetPort(int64(portInt))
 	}
+	if attr, ok := d.GetOk("request.dns_server"); ok {
+		request.SetDnsServer(attr.(string))
+	}
 	if attr, ok := d.GetOk("request_query"); ok {
 		query := attr.(map[string]interface{})
 		if len(query) > 0 {
@@ -566,6 +605,32 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		for k, v := range headers {
 			request.GetHeaders()[k] = v.(string)
 		}
+	}
+
+	if _, ok := d.GetOk("request_client_certificate"); ok {
+		cert := datadogV1.SyntheticsTestRequestCertificateItem{}
+		key := datadogV1.SyntheticsTestRequestCertificateItem{}
+
+		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.filename"); ok {
+			cert.SetFilename(attr.(string))
+		}
+		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
+			cert.SetContent(attr.(string))
+		}
+
+		if attr, ok := d.GetOk("request_client_certificate.0.key.0.filename"); ok {
+			key.SetFilename(attr.(string))
+		}
+		if attr, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
+			key.SetContent(attr.(string))
+		}
+
+		clientCertificate := datadogV1.SyntheticsTestRequestCertificate{
+			Cert: &cert,
+			Key:  &key,
+		}
+
+		request.SetCertificate(clientCertificate)
 	}
 
 	config := datadogV1.NewSyntheticsTestConfig([]datadogV1.SyntheticsAssertion{}, *request)
@@ -859,6 +924,9 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	if actualRequest.HasPort() {
 		localRequest["port"] = convertToString(actualRequest.GetPort())
 	}
+	if actualRequest.HasDnsServer() {
+		localRequest["dns_server"] = convertToString(actualRequest.GetDnsServer())
+	}
 	d.Set("request", localRequest)
 	d.Set("request_headers", actualRequest.Headers)
 	d.Set("request_query", actualRequest.GetQuery())
@@ -867,6 +935,32 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		localAuth["username"] = basicAuth.Username
 		localAuth["password"] = basicAuth.Password
 		d.Set("request_basicauth", []map[string]string{localAuth})
+	}
+
+	if clientCertificate, ok := actualRequest.GetCertificateOk(); ok {
+		localCertificate := make(map[string][]map[string]string)
+		localCertificate["cert"] = make([]map[string]string, 1)
+		localCertificate["cert"][0] = make(map[string]string)
+		localCertificate["key"] = make([]map[string]string, 1)
+		localCertificate["key"][0] = make(map[string]string)
+
+		cert := clientCertificate.GetCert()
+		localCertificate["cert"][0]["filename"] = cert.GetFilename()
+
+		key := clientCertificate.GetKey()
+		localCertificate["key"][0]["filename"] = key.GetFilename()
+
+		// the content of the certificate and the key are write-only
+		// so we need to get them from the config since they will
+		// not be in the api response
+		if configCertificateContent, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
+			localCertificate["cert"][0]["content"] = configCertificateContent.(string)
+		}
+		if configKeyContent, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
+			localCertificate["key"][0]["content"] = configKeyContent.(string)
+		}
+
+		d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate})
 	}
 
 	actualAssertions := syntheticsTest.GetConfig().Assertions

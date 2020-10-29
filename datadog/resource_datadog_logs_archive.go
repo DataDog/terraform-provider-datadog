@@ -65,6 +65,11 @@ func resourceDatadogLogsArchive() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"include_tags": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 		},
 	}
 }
@@ -110,6 +115,9 @@ func resourceDatadogLogsArchiveRead(d *schema.ResourceData, meta interface{}) er
 	}
 
 	if err = d.Set("rehydration_tags", ddArchive.Data.Attributes.RehydrationTags); err != nil {
+		return err
+	}
+	if err = d.Set("include_tags", ddArchive.Data.Attributes.IncludeTags); err != nil {
 		return err
 	}
 	return nil
@@ -221,6 +229,7 @@ func buildDatadogArchiveCreateReq(d *schema.ResourceData) (*datadogV2.LogsArchiv
 		d.Get("query").(string),
 	)
 	attributes.SetRehydrationTags(getRehydrationTags(d))
+	attributes.SetIncludeTags(d.Get("include_tags").(bool))
 	definition := datadogV2.NewLogsArchiveCreateRequestDefinitionWithDefaults()
 	definition.SetAttributes(*attributes)
 	archive.SetData(*definition)
