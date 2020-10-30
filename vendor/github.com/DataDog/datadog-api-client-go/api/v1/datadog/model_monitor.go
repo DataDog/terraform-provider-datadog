@@ -32,6 +32,8 @@ type Monitor struct {
 	Name         *string               `json:"name,omitempty"`
 	Options      *MonitorOptions       `json:"options,omitempty"`
 	OverallState *MonitorOverallStates `json:"overall_state,omitempty"`
+	// Integer from 1 (high) to 5 (low) indicating alert severity.
+	Priority *int64 `json:"priority,omitempty"`
 	// The monitor query.
 	Query *string       `json:"query,omitempty"`
 	State *MonitorState `json:"state,omitempty"`
@@ -388,6 +390,38 @@ func (o *Monitor) SetOverallState(v MonitorOverallStates) {
 	o.OverallState = &v
 }
 
+// GetPriority returns the Priority field value if set, zero value otherwise.
+func (o *Monitor) GetPriority() int64 {
+	if o == nil || o.Priority == nil {
+		var ret int64
+		return ret
+	}
+	return *o.Priority
+}
+
+// GetPriorityOk returns a tuple with the Priority field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Monitor) GetPriorityOk() (*int64, bool) {
+	if o == nil || o.Priority == nil {
+		return nil, false
+	}
+	return o.Priority, true
+}
+
+// HasPriority returns a boolean if a field has been set.
+func (o *Monitor) HasPriority() bool {
+	if o != nil && o.Priority != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetPriority gets a reference to the given int64 and assigns it to the Priority field.
+func (o *Monitor) SetPriority(v int64) {
+	o.Priority = &v
+}
+
 // GetQuery returns the Query field value if set, zero value otherwise.
 func (o *Monitor) GetQuery() string {
 	if o == nil || o.Query == nil {
@@ -547,6 +581,9 @@ func (o Monitor) MarshalJSON() ([]byte, error) {
 	}
 	if o.OverallState != nil {
 		toSerialize["overall_state"] = o.OverallState
+	}
+	if o.Priority != nil {
+		toSerialize["priority"] = o.Priority
 	}
 	if o.Query != nil {
 		toSerialize["query"] = o.Query
