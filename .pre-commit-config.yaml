@@ -15,4 +15,4 @@
         additional_dependencies:
             # When updating the version of prettier, make sure to check the  pre-commit file
             # And keep the `entry` here up to date https://github.com/prettier/prettier/blob/master/.pre-commit-hooks.yaml
-            - prettier@2.0.5
+            - prettier@2.1.1
