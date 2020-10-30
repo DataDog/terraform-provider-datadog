@@ -12,31 +12,31 @@ import (
 	"encoding/json"
 )
 
-// ServiceRelationships The service's relationships.
-type ServiceRelationships struct {
+// IncidentTeamRelationships The incident team's relationships.
+type IncidentTeamRelationships struct {
 	CreatedBy      *RelationshipToUser `json:"created_by,omitempty"`
 	LastModifiedBy *RelationshipToUser `json:"last_modified_by,omitempty"`
 }
 
-// NewServiceRelationships instantiates a new ServiceRelationships object
+// NewIncidentTeamRelationships instantiates a new IncidentTeamRelationships object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewServiceRelationships() *ServiceRelationships {
-	this := ServiceRelationships{}
+func NewIncidentTeamRelationships() *IncidentTeamRelationships {
+	this := IncidentTeamRelationships{}
 	return &this
 }
 
-// NewServiceRelationshipsWithDefaults instantiates a new ServiceRelationships object
+// NewIncidentTeamRelationshipsWithDefaults instantiates a new IncidentTeamRelationships object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewServiceRelationshipsWithDefaults() *ServiceRelationships {
-	this := ServiceRelationships{}
+func NewIncidentTeamRelationshipsWithDefaults() *IncidentTeamRelationships {
+	this := IncidentTeamRelationships{}
 	return &this
 }
 
 // GetCreatedBy returns the CreatedBy field value if set, zero value otherwise.
-func (o *ServiceRelationships) GetCreatedBy() RelationshipToUser {
+func (o *IncidentTeamRelationships) GetCreatedBy() RelationshipToUser {
 	if o == nil || o.CreatedBy == nil {
 		var ret RelationshipToUser
 		return ret
@@ -46,7 +46,7 @@ func (o *ServiceRelationships) GetCreatedBy() RelationshipToUser {
 
 // GetCreatedByOk returns a tuple with the CreatedBy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceRelationships) GetCreatedByOk() (*RelationshipToUser, bool) {
+func (o *IncidentTeamRelationships) GetCreatedByOk() (*RelationshipToUser, bool) {
 	if o == nil || o.CreatedBy == nil {
 		return nil, false
 	}
@@ -54,7 +54,7 @@ func (o *ServiceRelationships) GetCreatedByOk() (*RelationshipToUser, bool) {
 }
 
 // HasCreatedBy returns a boolean if a field has been set.
-func (o *ServiceRelationships) HasCreatedBy() bool {
+func (o *IncidentTeamRelationships) HasCreatedBy() bool {
 	if o != nil && o.CreatedBy != nil {
 		return true
 	}
@@ -63,12 +63,12 @@ func (o *ServiceRelationships) HasCreatedBy() bool {
 }
 
 // SetCreatedBy gets a reference to the given RelationshipToUser and assigns it to the CreatedBy field.
-func (o *ServiceRelationships) SetCreatedBy(v RelationshipToUser) {
+func (o *IncidentTeamRelationships) SetCreatedBy(v RelationshipToUser) {
 	o.CreatedBy = &v
 }
 
 // GetLastModifiedBy returns the LastModifiedBy field value if set, zero value otherwise.
-func (o *ServiceRelationships) GetLastModifiedBy() RelationshipToUser {
+func (o *IncidentTeamRelationships) GetLastModifiedBy() RelationshipToUser {
 	if o == nil || o.LastModifiedBy == nil {
 		var ret RelationshipToUser
 		return ret
@@ -78,7 +78,7 @@ func (o *ServiceRelationships) GetLastModifiedBy() RelationshipToUser {
 
 // GetLastModifiedByOk returns a tuple with the LastModifiedBy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceRelationships) GetLastModifiedByOk() (*RelationshipToUser, bool) {
+func (o *IncidentTeamRelationships) GetLastModifiedByOk() (*RelationshipToUser, bool) {
 	if o == nil || o.LastModifiedBy == nil {
 		return nil, false
 	}
@@ -86,7 +86,7 @@ func (o *ServiceRelationships) GetLastModifiedByOk() (*RelationshipToUser, bool)
 }
 
 // HasLastModifiedBy returns a boolean if a field has been set.
-func (o *ServiceRelationships) HasLastModifiedBy() bool {
+func (o *IncidentTeamRelationships) HasLastModifiedBy() bool {
 	if o != nil && o.LastModifiedBy != nil {
 		return true
 	}
@@ -95,11 +95,11 @@ func (o *ServiceRelationships) HasLastModifiedBy() bool {
 }
 
 // SetLastModifiedBy gets a reference to the given RelationshipToUser and assigns it to the LastModifiedBy field.
-func (o *ServiceRelationships) SetLastModifiedBy(v RelationshipToUser) {
+func (o *IncidentTeamRelationships) SetLastModifiedBy(v RelationshipToUser) {
 	o.LastModifiedBy = &v
 }
 
-func (o ServiceRelationships) MarshalJSON() ([]byte, error) {
+func (o IncidentTeamRelationships) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.CreatedBy != nil {
 		toSerialize["created_by"] = o.CreatedBy
@@ -110,38 +110,38 @@ func (o ServiceRelationships) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableServiceRelationships struct {
-	value *ServiceRelationships
+type NullableIncidentTeamRelationships struct {
+	value *IncidentTeamRelationships
 	isSet bool
 }
 
-func (v NullableServiceRelationships) Get() *ServiceRelationships {
+func (v NullableIncidentTeamRelationships) Get() *IncidentTeamRelationships {
 	return v.value
 }
 
-func (v *NullableServiceRelationships) Set(val *ServiceRelationships) {
+func (v *NullableIncidentTeamRelationships) Set(val *IncidentTeamRelationships) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableServiceRelationships) IsSet() bool {
+func (v NullableIncidentTeamRelationships) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableServiceRelationships) Unset() {
+func (v *NullableIncidentTeamRelationships) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableServiceRelationships(val *ServiceRelationships) *NullableServiceRelationships {
-	return &NullableServiceRelationships{value: val, isSet: true}
+func NewNullableIncidentTeamRelationships(val *IncidentTeamRelationships) *NullableIncidentTeamRelationships {
+	return &NullableIncidentTeamRelationships{value: val, isSet: true}
 }
 
-func (v NullableServiceRelationships) MarshalJSON() ([]byte, error) {
+func (v NullableIncidentTeamRelationships) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableServiceRelationships) UnmarshalJSON(src []byte) error {
+func (v *NullableIncidentTeamRelationships) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

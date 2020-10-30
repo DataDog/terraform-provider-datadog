@@ -12,40 +12,40 @@ import (
 	"encoding/json"
 )
 
-// TeamResponseData Team data from a response.
-type TeamResponseData struct {
-	Attributes *TeamResponseAttributes `json:"attributes,omitempty"`
-	// The team's ID.
-	Id            *string            `json:"id,omitempty"`
-	Relationships *TeamRelationships `json:"relationships,omitempty"`
-	Type          *TeamType          `json:"type,omitempty"`
+// IncidentTeamResponseData Incident Team data from a response.
+type IncidentTeamResponseData struct {
+	Attributes *IncidentTeamResponseAttributes `json:"attributes,omitempty"`
+	// The incident team's ID.
+	Id            *string                    `json:"id,omitempty"`
+	Relationships *IncidentTeamRelationships `json:"relationships,omitempty"`
+	Type          *IncidentTeamType          `json:"type,omitempty"`
 }
 
-// NewTeamResponseData instantiates a new TeamResponseData object
+// NewIncidentTeamResponseData instantiates a new IncidentTeamResponseData object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewTeamResponseData() *TeamResponseData {
-	this := TeamResponseData{}
-	var type_ TeamType = "teams"
+func NewIncidentTeamResponseData() *IncidentTeamResponseData {
+	this := IncidentTeamResponseData{}
+	var type_ IncidentTeamType = "teams"
 	this.Type = &type_
 	return &this
 }
 
-// NewTeamResponseDataWithDefaults instantiates a new TeamResponseData object
+// NewIncidentTeamResponseDataWithDefaults instantiates a new IncidentTeamResponseData object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewTeamResponseDataWithDefaults() *TeamResponseData {
-	this := TeamResponseData{}
-	var type_ TeamType = "teams"
+func NewIncidentTeamResponseDataWithDefaults() *IncidentTeamResponseData {
+	this := IncidentTeamResponseData{}
+	var type_ IncidentTeamType = "teams"
 	this.Type = &type_
 	return &this
 }
 
 // GetAttributes returns the Attributes field value if set, zero value otherwise.
-func (o *TeamResponseData) GetAttributes() TeamResponseAttributes {
+func (o *IncidentTeamResponseData) GetAttributes() IncidentTeamResponseAttributes {
 	if o == nil || o.Attributes == nil {
-		var ret TeamResponseAttributes
+		var ret IncidentTeamResponseAttributes
 		return ret
 	}
 	return *o.Attributes
@@ -53,7 +53,7 @@ func (o *TeamResponseData) GetAttributes() TeamResponseAttributes {
 
 // GetAttributesOk returns a tuple with the Attributes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TeamResponseData) GetAttributesOk() (*TeamResponseAttributes, bool) {
+func (o *IncidentTeamResponseData) GetAttributesOk() (*IncidentTeamResponseAttributes, bool) {
 	if o == nil || o.Attributes == nil {
 		return nil, false
 	}
@@ -61,7 +61,7 @@ func (o *TeamResponseData) GetAttributesOk() (*TeamResponseAttributes, bool) {
 }
 
 // HasAttributes returns a boolean if a field has been set.
-func (o *TeamResponseData) HasAttributes() bool {
+func (o *IncidentTeamResponseData) HasAttributes() bool {
 	if o != nil && o.Attributes != nil {
 		return true
 	}
@@ -69,13 +69,13 @@ func (o *TeamResponseData) HasAttributes() bool {
 	return false
 }
 
-// SetAttributes gets a reference to the given TeamResponseAttributes and assigns it to the Attributes field.
-func (o *TeamResponseData) SetAttributes(v TeamResponseAttributes) {
+// SetAttributes gets a reference to the given IncidentTeamResponseAttributes and assigns it to the Attributes field.
+func (o *IncidentTeamResponseData) SetAttributes(v IncidentTeamResponseAttributes) {
 	o.Attributes = &v
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
-func (o *TeamResponseData) GetId() string {
+func (o *IncidentTeamResponseData) GetId() string {
 	if o == nil || o.Id == nil {
 		var ret string
 		return ret
@@ -85,7 +85,7 @@ func (o *TeamResponseData) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TeamResponseData) GetIdOk() (*string, bool) {
+func (o *IncidentTeamResponseData) GetIdOk() (*string, bool) {
 	if o == nil || o.Id == nil {
 		return nil, false
 	}
@@ -93,7 +93,7 @@ func (o *TeamResponseData) GetIdOk() (*string, bool) {
 }
 
 // HasId returns a boolean if a field has been set.
-func (o *TeamResponseData) HasId() bool {
+func (o *IncidentTeamResponseData) HasId() bool {
 	if o != nil && o.Id != nil {
 		return true
 	}
@@ -102,14 +102,14 @@ func (o *TeamResponseData) HasId() bool {
 }
 
 // SetId gets a reference to the given string and assigns it to the Id field.
-func (o *TeamResponseData) SetId(v string) {
+func (o *IncidentTeamResponseData) SetId(v string) {
 	o.Id = &v
 }
 
 // GetRelationships returns the Relationships field value if set, zero value otherwise.
-func (o *TeamResponseData) GetRelationships() TeamRelationships {
+func (o *IncidentTeamResponseData) GetRelationships() IncidentTeamRelationships {
 	if o == nil || o.Relationships == nil {
-		var ret TeamRelationships
+		var ret IncidentTeamRelationships
 		return ret
 	}
 	return *o.Relationships
@@ -117,7 +117,7 @@ func (o *TeamResponseData) GetRelationships() TeamRelationships {
 
 // GetRelationshipsOk returns a tuple with the Relationships field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TeamResponseData) GetRelationshipsOk() (*TeamRelationships, bool) {
+func (o *IncidentTeamResponseData) GetRelationshipsOk() (*IncidentTeamRelationships, bool) {
 	if o == nil || o.Relationships == nil {
 		return nil, false
 	}
@@ -125,7 +125,7 @@ func (o *TeamResponseData) GetRelationshipsOk() (*TeamRelationships, bool) {
 }
 
 // HasRelationships returns a boolean if a field has been set.
-func (o *TeamResponseData) HasRelationships() bool {
+func (o *IncidentTeamResponseData) HasRelationships() bool {
 	if o != nil && o.Relationships != nil {
 		return true
 	}
@@ -133,15 +133,15 @@ func (o *TeamResponseData) HasRelationships() bool {
 	return false
 }
 
-// SetRelationships gets a reference to the given TeamRelationships and assigns it to the Relationships field.
-func (o *TeamResponseData) SetRelationships(v TeamRelationships) {
+// SetRelationships gets a reference to the given IncidentTeamRelationships and assigns it to the Relationships field.
+func (o *IncidentTeamResponseData) SetRelationships(v IncidentTeamRelationships) {
 	o.Relationships = &v
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *TeamResponseData) GetType() TeamType {
+func (o *IncidentTeamResponseData) GetType() IncidentTeamType {
 	if o == nil || o.Type == nil {
-		var ret TeamType
+		var ret IncidentTeamType
 		return ret
 	}
 	return *o.Type
@@ -149,7 +149,7 @@ func (o *TeamResponseData) GetType() TeamType {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TeamResponseData) GetTypeOk() (*TeamType, bool) {
+func (o *IncidentTeamResponseData) GetTypeOk() (*IncidentTeamType, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -157,7 +157,7 @@ func (o *TeamResponseData) GetTypeOk() (*TeamType, bool) {
 }
 
 // HasType returns a boolean if a field has been set.
-func (o *TeamResponseData) HasType() bool {
+func (o *IncidentTeamResponseData) HasType() bool {
 	if o != nil && o.Type != nil {
 		return true
 	}
@@ -165,12 +165,12 @@ func (o *TeamResponseData) HasType() bool {
 	return false
 }
 
-// SetType gets a reference to the given TeamType and assigns it to the Type field.
-func (o *TeamResponseData) SetType(v TeamType) {
+// SetType gets a reference to the given IncidentTeamType and assigns it to the Type field.
+func (o *IncidentTeamResponseData) SetType(v IncidentTeamType) {
 	o.Type = &v
 }
 
-func (o TeamResponseData) MarshalJSON() ([]byte, error) {
+func (o IncidentTeamResponseData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Attributes != nil {
 		toSerialize["attributes"] = o.Attributes
@@ -187,38 +187,38 @@ func (o TeamResponseData) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-type NullableTeamResponseData struct {
-	value *TeamResponseData
+type NullableIncidentTeamResponseData struct {
+	value *IncidentTeamResponseData
 	isSet bool
 }
 
-func (v NullableTeamResponseData) Get() *TeamResponseData {
+func (v NullableIncidentTeamResponseData) Get() *IncidentTeamResponseData {
 	return v.value
 }
 
-func (v *NullableTeamResponseData) Set(val *TeamResponseData) {
+func (v *NullableIncidentTeamResponseData) Set(val *IncidentTeamResponseData) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableTeamResponseData) IsSet() bool {
+func (v NullableIncidentTeamResponseData) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableTeamResponseData) Unset() {
+func (v *NullableIncidentTeamResponseData) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableTeamResponseData(val *TeamResponseData) *NullableTeamResponseData {
-	return &NullableTeamResponseData{value: val, isSet: true}
+func NewNullableIncidentTeamResponseData(val *IncidentTeamResponseData) *NullableIncidentTeamResponseData {
+	return &NullableIncidentTeamResponseData{value: val, isSet: true}
 }
 
-func (v NullableTeamResponseData) MarshalJSON() ([]byte, error) {
+func (v NullableIncidentTeamResponseData) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableTeamResponseData) UnmarshalJSON(src []byte) error {
+func (v *NullableIncidentTeamResponseData) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

@@ -41,7 +41,7 @@ type MonitorOptions struct {
 	NotifyNoData *bool `json:"notify_no_data,omitempty"`
 	// The number of minutes after the last notification before a monitor re-notifies on the current status. It only re-notifies if it’s not resolved.
 	RenotifyInterval NullableInt64 `json:"renotify_interval,omitempty"`
-	// A Boolean indicating whether this monitor needs a full window of data before it’s evaluated. We highly recommend you set this to `false` for sparse metrics, otherwise some evaluations are skipped. For “on average” “at all times” and “in total” aggregation, default is true. `False` otherwise.
+	// A Boolean indicating whether this monitor needs a full window of data before it’s evaluated. We highly recommend you set this to `false` for sparse metrics, otherwise some evaluations are skipped. Default is false.
 	RequireFullWindow *bool `json:"require_full_window,omitempty"`
 	// Information about the downtime applied to the monitor.
 	Silenced *map[string]int64 `json:"silenced,omitempty"`
@@ -73,8 +73,6 @@ func NewMonitorOptions() *MonitorOptions {
 	this.NotifyAudit = &notifyAudit
 	var notifyNoData bool = false
 	this.NotifyNoData = &notifyNoData
-	var requireFullWindow bool = true
-	this.RequireFullWindow = &requireFullWindow
 	return &this
 }
 
@@ -97,8 +95,6 @@ func NewMonitorOptionsWithDefaults() *MonitorOptions {
 	this.NotifyAudit = &notifyAudit
 	var notifyNoData bool = false
 	this.NotifyNoData = &notifyNoData
-	var requireFullWindow bool = true
-	this.RequireFullWindow = &requireFullWindow
 	return &this
 }
 
