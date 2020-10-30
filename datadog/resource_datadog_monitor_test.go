@@ -65,6 +65,8 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 						"datadog_monitor.foo", "tags.2644851163", "baz"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.1750285118", "foo:bar"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "priority", "3"),
 				),
 			},
 		},
@@ -121,6 +123,8 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 						"datadog_monitor.foo", "tags.2644851163", "baz"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.1750285118", "foo:bar"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "priority", "3"),
 				),
 			},
 		},
@@ -230,6 +234,8 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "tags.2644851163", "baz"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.1750285118", "foo:bar"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "priority", "3"),
 				),
 			},
 			{
@@ -285,6 +291,8 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "tags.1280427750", "baz:qux"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.1520885421", "quux"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "priority", "3"),
 				),
 			},
 			{
@@ -930,6 +938,7 @@ resource "datadog_monitor" "foo" {
   type = "query alert"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
+  priority = 3
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
 
@@ -982,6 +991,7 @@ resource "datadog_monitor" "foo" {
   type = "service check"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
+  priority = 3
 
   query = "\"custom.check\".over(\"environment:foo\").last(2).count_by_status()"
 
@@ -1072,6 +1082,7 @@ resource "datadog_monitor" "foo" {
   type = "query alert"
   message = "a different message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated! @pagerduty"
+  priority = 3
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} > 3"
 
@@ -1107,6 +1118,7 @@ resource "datadog_monitor" "foo" {
   type = "query alert"
   message = "a different message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated! @pagerduty"
+  priority = 3
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} > 3"
 
