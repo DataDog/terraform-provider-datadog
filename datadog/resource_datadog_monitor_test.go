@@ -1152,6 +1152,7 @@ resource "datadog_monitor" "complex_metric_alert_example_monitor" {
   name = "%s"
   type = "metric alert"
   message = "a message"
+  priority = 3
 
   query = "change(min(last_1m),last_5m):sum:org.eclipse.jetty.servlet.ServletContextHandler.5xx_responses{example,framework:chronos} + sum:org.eclipse.jetty.servlet.ServletContextHandler.4xx_responses{example,framework:chronos} + sum:org.eclipse.jetty.servlet.ServletContextHandler.3xx_responses{example,framework:chronos} > 5"
 }`, uniq)
@@ -1163,6 +1164,7 @@ resource "datadog_monitor" "complex_query_alert_example_monitor" {
   name = "%s"
   type = "query alert"
   message = "a message"
+  priority = 3
 
   query = "change(min(last_1m),last_5m):sum:org.eclipse.jetty.servlet.ServletContextHandler.5xx_responses{example,framework:chronos} + sum:org.eclipse.jetty.servlet.ServletContextHandler.4xx_responses{example,framework:chronos} + sum:org.eclipse.jetty.servlet.ServletContextHandler.3xx_responses{example,framework:chronos} > 5"
 }`, uniq)
