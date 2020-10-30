@@ -904,7 +904,8 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		d.Set("subtype", syntheticsTest.GetSubtype())
 	}
 
-	actualRequest := syntheticsTest.GetConfig().Request
+	config := syntheticsTest.GetConfig()
+	actualRequest := config.GetRequest()
 	localRequest := make(map[string]string)
 	if actualRequest.HasBody() {
 		localRequest["body"] = actualRequest.GetBody()
@@ -963,7 +964,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate})
 	}
 
-	actualAssertions := syntheticsTest.GetConfig().Assertions
+	actualAssertions := config.GetAssertions()
 	localAssertions := make([]map[string]interface{}, len(actualAssertions))
 	for i, assertion := range actualAssertions {
 		localAssertion := make(map[string]interface{})
@@ -1019,7 +1020,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		}
 	}
 
-	actualVariables := *syntheticsTest.GetConfig().Variables
+	actualVariables := config.GetVariables()
 	localVariables := make([]map[string]interface{}, len(actualVariables))
 	for i, variable := range actualVariables {
 		localVariable := make(map[string]interface{})
