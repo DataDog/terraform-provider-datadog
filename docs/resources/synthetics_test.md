@@ -36,7 +36,7 @@ resource "datadog_synthetics_test" "test_api" {
       interval = 300
     }
 
-    monitor_options = {
+    monitor_options {
       renotify_interval = 100
     }
   }
