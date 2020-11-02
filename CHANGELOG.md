@@ -1,3 +1,18 @@
+## 2.15.0 (November 2, 2020)
+
+IMPROVEMENTS:
+
+-   `datadog_monitor`: Add `priority`field ([#729](https://github.com/DataDog/terraform-provider-datadog/pull/729)).
+
+BUGFIXES:
+
+-   `datadog_synthetics_test`: Handle missing variables field from API response ([#733](https://github.com/DataDog/terraform-provider-datadog/pull/733)).
+-   `datadog_monitor`: Handle `0` in `new_host_delay` ([#726](https://github.com/DataDog/terraform-provider-datadog/pull/726)).
+
+NOTES:
+
+-   `provider`: Replace 4d63.com/tz with time/tzdata. It means go 1.15 is required now to build the provider ([#728](https://github.com/DataDog/terraform-provider-datadog/pull/728)
+
 ## 2.14.0 (October 27, 2020)
 
 FEATURES:
