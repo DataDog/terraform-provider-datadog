@@ -141,7 +141,6 @@ The following arguments are supported:
     -   `recovery_window` describes how long an anomalous metric must be normal before the alert recovers.
     -   `trigger_window` describes how long a metric must be anomalous before an alert triggers.
 *   `validate` (Optional) If set to false, skip the validation call done during `plan` .
-*   `priority` (Optional) Integer from 1 (high) to 5 (low) indicating alert severity.
 *   `silenced` (Optional) Each scope will be muted until the given POSIX timestamp or forever if the value is 0. Use `-1` if you want to unmute the scope. **Deprecated** The `silenced` parameter is being deprecated in favor of the downtime resource. This will be removed in the next major version of the Terraform Provider.
 
     To mute the alert completely:
