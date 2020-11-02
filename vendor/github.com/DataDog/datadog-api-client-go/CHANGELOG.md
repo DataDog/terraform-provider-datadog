@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v1.0.0-beta.10 / 2020-11-02
+
+* [Changed] Change teams and services objects names to be incident specific. See [#538](https://github.com/DataDog/datadog-api-client-go/pull/538).
+* [Removed] Remove `require_full_window` client default value for monitors. See [#540](https://github.com/DataDog/datadog-api-client-go/pull/540).
+
 ## 1.0.0-beta.9 / 2020-10-27
 
 * [Added] Add missing synthetics step types. See [#534](https://github.com/DataDog/datadog-api-client-go/pull/534).
