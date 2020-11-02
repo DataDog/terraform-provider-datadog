@@ -11,7 +11,7 @@ BUGFIXES:
 
 NOTES:
 
--   `provider`: Replace 4d63.com/tz with time/tzdata. It means go 1.15 is required now ([#728](https://github.com/DataDog/terraform-provider-datadog/pull/728)
+-   `provider`: Replace 4d63.com/tz with time/tzdata. It means go 1.15 is required now to build the provider ([#728](https://github.com/DataDog/terraform-provider-datadog/pull/728)
 
 ## 2.14.0 (October 27, 2020)
 
