@@ -33,6 +33,7 @@ import (
 )
 
 var testFiles2EndpointTags = map[string]string{
+	"data_source_datadog_dashboard_test":                         "dashboard",
 	"data_source_datadog_dashboard_list_test":                    "dashboard-lists",
 	"data_source_datadog_ip_ranges_test":                         "ip-ranges",
 	"data_source_datadog_monitor_test":                           "monitors",
