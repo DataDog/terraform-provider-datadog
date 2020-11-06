@@ -6,7 +6,7 @@ page_title: " datadog_dashboard"
 
 Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.
 
-~> **Note:** This resource uses the new [Dashboard API](https://docs.datadoghq.com/api/v1/dashboards/) which adds new features like better validation and support for the [Group widget](https://docs.datadoghq.com/graphing/widgets/group/). Additionally, this resource unifies [`datadog_timeboard`](timeboard.html) and [`datadog_screenboard`](screenboard.html) resources to allow you to manage all of your dashboards using a single format.
+~> **Note:** This resource uses the new [Dashboard API](https://docs.datadoghq.com/api/v1/dashboards/) which adds new features like better validation and support for the [Group widget](https://docs.datadoghq.com/dashboards/widgets/group/). Additionally, this resource unifies [`datadog_timeboard`](timeboard.html) and [`datadog_screenboard`](screenboard.html) resources to allow you to manage all of your dashboards using a single format.
 
 ## Example Usage: Create a new Datadog dashboard - Ordered layout
 
@@ -688,7 +688,7 @@ Nested `widget` blocks have the following structure:
         -   `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
             -   `q`: (Required) The metric query to use in the widget.
             -   `style`: (Optional) Style of the widget graph. One nested block is allowed with the following structure:
-                -   `palette`: (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
+                -   `palette`: (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
         -   `title`: (Optional) The title of the widget.
         -   `title_size`: (Optional) The size of the widget's title. Default is 16.
         -   `title_align`: (Optional) The alignment of the widget's title. One of "left", "center", or "right".
@@ -719,7 +719,7 @@ Nested `widget` blocks have the following structure:
         -   `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
             -   `q`: (Required) The metric query to use in the widget.
             -   `style`: (Optional) Style of the widget graph. One nested block is allowed with the following structure:
-                -   `palette`: (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
+                -   `palette`: (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
         -   `yaxis`: (Optional) Nested block describing the Y-Axis Controls. The structure of this block is described [below](dashboard.html#nested-widget-axis-blocks)
         -   `show_legend`: (Optional) Whether or not to show the legend on this widget.
         -   `legend_size`: (Optional) The size of the legend displayed in the widget.
@@ -743,7 +743,7 @@ Nested `widget` blocks have the following structure:
         -   `group`: (Optional) The list of tags to group nodes by.
         -   `scope`: (Optional) The list of tags to filter nodes by.
         -   `style`: (Optional) Style of the widget graph. One nested block is allowed with the following structure:
-            -   `palette`: (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
+            -   `palette`: (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
             -   `palette_flip`: (Optional) Boolean indicating whether to flip the palette tones.
             -   `fill_min`: (Optional) Min value to use to color the map.
             -   `fill_max`: (Optional) Max value to use to color the map.
@@ -864,7 +864,7 @@ Nested `widget` blocks have the following structure:
             -   `display_type`: (Optional) Type of display to use for the request. Available values are: `area`, `bars`, or `line`.
             -   `on_right_yaxis`: (Optional) Boolean indicating whether the request will use the right or left Y-Axis.
             -   `style`: (Optional) Style of the widget graph. One nested block is allowed with the following structure:
-                -   `palette`: (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/graphing/widgets/timeseries/#appearance.
+                -   `palette`: (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
                 -   `line_type`: (Optional) Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.
                 -   `line_width`: (Optional) Width of line displayed. Available values are: `normal`, `thick`, or `thin`.
             -   `metadata`: (Optional). Used to define expression aliases. Multiple nested blocks are allowed with the following structure:
@@ -938,7 +938,7 @@ Nested `conditional_formats` blocks have the following structure:
 
 -   `comparator`: (Required) Comparator to apply from: One of `>`, `>=`, `<`, or `<=`.
 -   `value`: (Required) Value for the comparator.
--   `palette`: (Required) Color palette to apply; One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `green`, `green_on_white`, `grey`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `white_on_red`, `white_on_yellow`, or `yellow_on_white`.
+-   `palette`: (Required) Color palette to apply; One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.
 -   `custom_bg_color`: (Optional) Color palette to apply to the background, same values available as palette.
 -   `custom_fg_color`: (Optional) Color palette to apply to the foreground, same values available as palette.
 -   `image_url`: (Optional) Displays an image as the background.
@@ -961,7 +961,7 @@ Nested `widget` `custom_link` blocks have the following structure:
 
 ### Nested `apm_query`, `log_query`, `network_query` and `rum_query` blocks
 
-Nested `apm_query`, `log_query`, `network_query` and `rum_query` blocks have the following structure (Visit the [ Graph Primer](https://docs.datadoghq.com/graphing/) for more information about these values):
+Nested `apm_query`, `log_query`, `network_query` and `rum_query` blocks have the following structure (Visit the [ Graph Primer](https://docs.datadoghq.com/dashboards/) for more information about these values):
 
 -   `index`: (Required)
 -   `compute`: (Optional). One of `compute` and `multi_compute` is required. The map has the following keys:
@@ -984,7 +984,7 @@ Nested `apm_query`, `log_query`, `network_query` and `rum_query` blocks have the
 
 ### Nested `process_query` blocks
 
-Nested `process_query` blocks have the following structure (Visit the [ Graph Primer](https://docs.datadoghq.com/graphing/) for more information about these values):
+Nested `process_query` blocks have the following structure (Visit the [ Graph Primer](https://docs.datadoghq.com/dashboards/) for more information about these values):
 
 -   `metric`: (Required)
 -   `search_by`: (Required)
