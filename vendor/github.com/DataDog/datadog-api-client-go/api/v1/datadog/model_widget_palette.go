@@ -18,22 +18,25 @@ type WidgetPalette string
 
 // List of WidgetPalette
 const (
-	WIDGETPALETTE_BLUE              WidgetPalette = "blue"
-	WIDGETPALETTE_CUSTOM_BACKGROUND WidgetPalette = "custom_bg"
-	WIDGETPALETTE_CUSTOM_IMAGE      WidgetPalette = "custom_image"
-	WIDGETPALETTE_CUSTOM_TEXT       WidgetPalette = "custom_text"
-	WIDGETPALETTE_GRAY_ON_WHITE     WidgetPalette = "gray_on_white"
-	WIDGETPALETTE_GREY              WidgetPalette = "grey"
-	WIDGETPALETTE_GREEN             WidgetPalette = "green"
-	WIDGETPALETTE_ORANGE            WidgetPalette = "orange"
-	WIDGETPALETTE_RED               WidgetPalette = "red"
-	WIDGETPALETTE_RED_ON_WHITE      WidgetPalette = "red_on_white"
-	WIDGETPALETTE_WHITE_ON_GRAY     WidgetPalette = "white_on_gray"
-	WIDGETPALETTE_WHITE_ON_GREEN    WidgetPalette = "white_on_green"
-	WIDGETPALETTE_GREEN_ON_WHITE    WidgetPalette = "green_on_white"
-	WIDGETPALETTE_WHITE_ON_RED      WidgetPalette = "white_on_red"
-	WIDGETPALETTE_WHITE_ON_YELLOW   WidgetPalette = "white_on_yellow"
-	WIDGETPALETTE_YELLOW_ON_WHITE   WidgetPalette = "yellow_on_white"
+	WIDGETPALETTE_BLUE                  WidgetPalette = "blue"
+	WIDGETPALETTE_CUSTOM_BACKGROUND     WidgetPalette = "custom_bg"
+	WIDGETPALETTE_CUSTOM_IMAGE          WidgetPalette = "custom_image"
+	WIDGETPALETTE_CUSTOM_TEXT           WidgetPalette = "custom_text"
+	WIDGETPALETTE_GRAY_ON_WHITE         WidgetPalette = "gray_on_white"
+	WIDGETPALETTE_GREY                  WidgetPalette = "grey"
+	WIDGETPALETTE_GREEN                 WidgetPalette = "green"
+	WIDGETPALETTE_ORANGE                WidgetPalette = "orange"
+	WIDGETPALETTE_RED                   WidgetPalette = "red"
+	WIDGETPALETTE_RED_ON_WHITE          WidgetPalette = "red_on_white"
+	WIDGETPALETTE_WHITE_ON_GRAY         WidgetPalette = "white_on_gray"
+	WIDGETPALETTE_WHITE_ON_GREEN        WidgetPalette = "white_on_green"
+	WIDGETPALETTE_GREEN_ON_WHITE        WidgetPalette = "green_on_white"
+	WIDGETPALETTE_WHITE_ON_RED          WidgetPalette = "white_on_red"
+	WIDGETPALETTE_WHITE_ON_YELLOW       WidgetPalette = "white_on_yellow"
+	WIDGETPALETTE_YELLOW_ON_WHITE       WidgetPalette = "yellow_on_white"
+	WIDGETPALETTE_BLACK_ON_LIGHT_YELLOW WidgetPalette = "black_on_light_yellow"
+	WIDGETPALETTE_BLACK_ON_LIGHT_GREEN  WidgetPalette = "black_on_light_green"
+	WIDGETPALETTE_BLACK_ON_LIGHT_RED    WidgetPalette = "black_on_light_red"
 )
 
 func (v *WidgetPalette) UnmarshalJSON(src []byte) error {
@@ -43,7 +46,7 @@ func (v *WidgetPalette) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetPalette(value)
-	for _, existing := range []WidgetPalette{"blue", "custom_bg", "custom_image", "custom_text", "gray_on_white", "grey", "green", "orange", "red", "red_on_white", "white_on_gray", "white_on_green", "green_on_white", "white_on_red", "white_on_yellow", "yellow_on_white"} {
+	for _, existing := range []WidgetPalette{"blue", "custom_bg", "custom_image", "custom_text", "gray_on_white", "grey", "green", "orange", "red", "red_on_white", "white_on_gray", "white_on_green", "green_on_white", "white_on_red", "white_on_yellow", "yellow_on_white", "black_on_light_yellow", "black_on_light_green", "black_on_light_red"} {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil

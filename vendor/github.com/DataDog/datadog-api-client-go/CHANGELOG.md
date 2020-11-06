@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.0.0-beta.11 / 2020-11-06
+
+* [Added] Add 3 new palettes to the conditional formatting options. See [#554](https://github.com/DataDog/datadog-api-client-go/pull/554).
+
 ## v1.0.0-beta.10 / 2020-11-02
 
 * [Changed] Change teams and services objects names to be incident specific. See [#538](https://github.com/DataDog/datadog-api-client-go/pull/538).
