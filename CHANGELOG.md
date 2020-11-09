@@ -1,3 +1,13 @@
+## 2.16.0 (November 9, 2020)
+
+IMPROVEMENTS:
+
+-   `datadog_dashboard`: Add new data source ([#734](https://github.com/DataDog/terraform-provider-datadog/pull/734)).
+
+BUGFIXES:
+
+-   `datadog_dashboard`: Update go client to get new palette values ([#743](https://github.com/DataDog/terraform-provider-datadog/pull/743)).
+
 ## 2.15.0 (November 2, 2020)
 
 IMPROVEMENTS:
