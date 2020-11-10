@@ -63,6 +63,49 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 	})
 }
 
+func TestAccDatadogUser_Existing(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	username := strings.ToLower(uniqueEntityName(clock, t)) + "@example.com"
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogUserConfigRequired(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "handle", username),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "name", "Test User"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "verified", "false"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogUserConfigOtherUser(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.bar"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.bar", "email", username),
+					resource.TestCheckResourceAttr(
+						"datadog_user.bar", "handle", username),
+					resource.TestCheckResourceAttr(
+						"datadog_user.bar", "name", "Other User"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.bar", "verified", "false"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogUserDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
@@ -132,6 +175,15 @@ resource "datadog_user" "foo" {
   is_admin    = true
   access_role = "adm"
   name        = "Updated User"
+}`, uniq, uniq)
+}
+
+func testAccCheckDatadogUserConfigOtherUser(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_user" "bar" {
+  email     = "%s"
+  handle    = "%s"
+  name      = "Other User"
 }`, uniq, uniq)
 }
 
