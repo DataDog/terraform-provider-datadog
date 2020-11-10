@@ -56,12 +56,13 @@ func resourceDatadogUser() *schema.Resource {
 				Type:       schema.TypeBool,
 				Computed:   true,
 				Optional:   true,
-				Deprecated: "This parameter will be replaced by `access_role` and will be removed from the next Major version",
+				Deprecated: "This parameter is replaced by `roles` and will be removed from the next Major version",
 			},
 			"access_role": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "st",
+				Type:       schema.TypeString,
+				Optional:   true,
+				Default:    "st",
+				Deprecated: "This parameter is replaced by `roles` and will be removed from the next Major version",
 			},
 			"name": {
 				Type:     schema.TypeString,
@@ -141,27 +142,6 @@ func buildDatadogUserV2Struct(d *schema.ResourceData, providerConf *ProviderConf
 		roleData := datadogV2.NewRelationshipToRoleData()
 		roleData.SetId(role.(string))
 		rolesData[i] = *roleData
-	}
-
-	accessRole := d.Get("access_role").(string)
-	if accessRole != "" {
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
-
-		mappedRole := rolesMapping[accessRole]
-		listResponse, _, err := datadogClientV2.RolesApi.ListRoles(authV2).Filter(mappedRole).Execute()
-		if err != nil {
-			return nil, translateClientError(err, "error searching role")
-		}
-		responseData := listResponse.GetData()
-		if len(responseData) != 1 {
-			return nil, fmt.Errorf("could not find single role with name %s", mappedRole)
-		}
-
-		roleData := datadogV2.NewRelationshipToRoleData()
-		roleData.SetId(responseData[0].GetId())
-
-		rolesData = append(rolesData, *roleData)
 	}
 
 	toRoles := datadogV2.NewRelationshipToRoles()

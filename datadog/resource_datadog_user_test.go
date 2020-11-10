@@ -50,13 +50,9 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "handle", username),
 					resource.TestCheckResourceAttr(
-						"datadog_user.foo", "is_admin", "true"),
-					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "name", "Updated User"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "verified", "false"),
-					resource.TestCheckResourceAttr(
-						"datadog_user.foo", "access_role", "adm"),
 				),
 			},
 		},
@@ -172,8 +168,6 @@ resource "datadog_user" "foo" {
   // NOTE: it's not possible ATM to update email of another user
   email       = "%s"
   handle      = "%s"
-  is_admin    = true
-  access_role = "adm"
   name        = "Updated User"
 }`, uniq, uniq)
 }
