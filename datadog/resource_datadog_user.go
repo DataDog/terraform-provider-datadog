@@ -117,22 +117,35 @@ func buildDatadogUserStruct(d *schema.ResourceData) *datadog.User {
 	return &u
 }
 
-func buildDatadogUserV2Struct(d *schema.ResourceData) *datadogV2.UserCreateAttributes {
-	user := datadogV2.NewUserCreateAttributesWithDefaults()
-	user.SetEmail(d.Get("email").(string))
-	user.SetName(d.Get("name").(string))
-	user.SetTitle(d.Get("title").(string))
+func buildDatadogUserV2Struct(d *schema.ResourceData) *datadogV2.UserCreateRequest {
+	userAttributes := datadogV2.NewUserCreateAttributesWithDefaults()
+	userAttributes.SetEmail(d.Get("email").(string))
+	userAttributes.SetName(d.Get("name").(string))
+	userAttributes.SetTitle(d.Get("title").(string))
 
-	return user
+	userCreate := datadogV2.NewUserCreateDataWithDefaults()
+	userCreate.SetAttributes(*userAttributes)
+	userRequest := datadogV2.NewUserCreateRequestWithDefaults()
+
+	userRequest.SetData(*userCreate)
+
+	return userRequest
 }
 
-func buildDatadogUserV2UpdateStruct(d *schema.ResourceData) *datadogV2.UserUpdateAttributes {
-	user := datadogV2.NewUserUpdateAttributesWithDefaults()
-	user.SetEmail(d.Get("email").(string))
-	user.SetName(d.Get("name").(string))
-	user.SetDisabled(d.Get("disabled").(bool))
+func buildDatadogUserV2UpdateStruct(d *schema.ResourceData, userId string) *datadogV2.UserUpdateRequest {
+	userAttributes := datadogV2.NewUserUpdateAttributesWithDefaults()
+	userAttributes.SetEmail(d.Get("email").(string))
+	userAttributes.SetName(d.Get("name").(string))
+	userAttributes.SetDisabled(d.Get("disabled").(bool))
 
-	return user
+	userUpdate := datadogV2.NewUserUpdateDataWithDefaults()
+	userUpdate.SetAttributes(*userAttributes)
+	userUpdate.SetId(userId)
+
+	userRequest := datadogV2.NewUserUpdateRequestWithDefaults()
+	userRequest.SetData(*userUpdate)
+
+	return userRequest
 }
 
 func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
@@ -140,45 +153,37 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
-	uca := buildDatadogUserV2Struct(d)
-	ucd := datadogV2.NewUserCreateDataWithDefaults()
-	ucd.SetAttributes(*uca)
-	ucr := datadogV2.NewUserCreateRequestWithDefaults()
-	ucr.SetData(*ucd)
+	userRequest := buildDatadogUserV2Struct(d)
 
 	// Datadog does not actually delete users, so CreateUser might return a 409.
 	// We ignore that case and proceed, likely re-enabling the user.
-	ur, httpresp, err := datadogClientV2.UsersApi.CreateUser(authV2).Body(*ucr).Execute()
+	createResponse, httpresp, err := datadogClientV2.UsersApi.CreateUser(authV2).Body(*userRequest).Execute()
 	if err != nil {
 		if httpresp == nil || httpresp.StatusCode != 409 {
 			return translateClientError(err, "error creating user")
 		}
-		log.Printf("[INFO] Updating existing Datadog user %s", uca.Email)
+		email := d.Get("email").(string)
+		log.Printf("[INFO] Updating existing Datadog user %s", email)
 		// Find user ID by listing user and filtering by email
-		ulr, _, err := datadogClientV2.UsersApi.ListUsers(authV2).Filter(uca.Email).Execute()
+		ulr, _, err := datadogClientV2.UsersApi.ListUsers(authV2).Filter(email).Execute()
 		if err != nil {
 			return translateClientError(err, "error searching user")
 		}
 		if len(ulr.GetData()) != 1 {
-			return fmt.Errorf("could not find single user with email %s", uca.Email)
+			return fmt.Errorf("could not find single user with email %s", email)
 		}
-		userID := ulr.GetData()[0].GetId()
-		uua := buildDatadogUserV2UpdateStruct(d)
-		uud := datadogV2.NewUserUpdateDataWithDefaults()
-		uud.SetAttributes(*uua)
-		uud.SetId(userID)
-		uur := datadogV2.NewUserUpdateRequestWithDefaults()
-		uur.SetData(*uud)
+		userId := ulr.GetData()[0].GetId()
+		userRequest := buildDatadogUserV2UpdateStruct(d, userId)
 
-		res, _, err := datadogClientV2.UsersApi.UpdateUser(authV2, userID).Body(*uur).Execute()
+		res, _, err := datadogClientV2.UsersApi.UpdateUser(authV2, userId).Body(*userRequest).Execute()
 		if err != nil {
 			return translateClientError(err, "error updating user")
 		}
-		urData := res.GetData()
-		d.SetId(urData.GetId())
+		userData := res.GetData()
+		d.SetId(userData.GetId())
 	} else {
-		urData := ur.GetData()
-		d.SetId(urData.GetId())
+		userData := createResponse.GetData()
+		d.SetId(userData.GetId())
 	}
 
 	return resourceDatadogUserRead(d, meta)
@@ -227,14 +232,9 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
 
-		uca := buildDatadogUserV2UpdateStruct(d)
-		ucd := datadogV2.NewUserUpdateDataWithDefaults()
-		ucd.SetAttributes(*uca)
-		ucd.SetId(d.Id())
-		ucr := datadogV2.NewUserUpdateRequestWithDefaults()
-		ucr.SetData(*ucd)
+		userRequest := buildDatadogUserV2UpdateStruct(d, d.Id())
 
-		_, _, err := datadogClientV2.UsersApi.UpdateUser(authV2, d.Id()).Body(*ucr).Execute()
+		_, _, err := datadogClientV2.UsersApi.UpdateUser(authV2, d.Id()).Body(*userRequest).Execute()
 		if err != nil {
 			return translateClientError(err, "error updating user")
 		}
@@ -259,8 +259,7 @@ func resourceDatadogUserDelete(d *schema.ResourceData, meta interface{}) error {
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
 
-		httpResponse, err := datadogClientV2.UsersApi.DisableUser(authV2, d.Id()).Execute()
-		if err != nil {
+		if httpResponse, err := datadogClientV2.UsersApi.DisableUser(authV2, d.Id()).Execute(); err != nil {
 			if httpResponse != nil && httpResponse.StatusCode == 404 {
 				return nil
 			}

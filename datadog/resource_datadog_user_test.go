@@ -1,16 +1,16 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testing"
-	"context"
 
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"github.com/zorkian/go-datadog-api"
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 )
 
 func TestAccDatadogUser_Updated(t *testing.T) {
