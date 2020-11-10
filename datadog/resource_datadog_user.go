@@ -13,6 +13,12 @@ import (
 
 var uuidRegex = regexp.MustCompile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
 
+var rolesMapping = map[string]string{
+	"st":  "Datadog Standard Role",
+	"ro":  "Datadog Read Only Role",
+	"adm": "Datadog Admin Role",
+}
+
 func isV2User(id string) bool {
 	return uuidRegex.MatchString(id)
 }
@@ -45,7 +51,6 @@ func resourceDatadogUser() *schema.Resource {
 			"title": {
 				Type:     schema.TypeString,
 				Optional: true,
-				ForceNew: true,
 			},
 			"is_admin": {
 				Type:       schema.TypeBool,
@@ -56,7 +61,6 @@ func resourceDatadogUser() *schema.Resource {
 			"access_role": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Required: false,
 				Default:  "st",
 			},
 			"name": {
@@ -67,6 +71,11 @@ func resourceDatadogUser() *schema.Resource {
 				Type:       schema.TypeString,
 				Optional:   true,
 				Deprecated: "This parameter was removed from the API and has no effect",
+			},
+			"roles": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"verified": {
 				Type:     schema.TypeBool,
@@ -117,7 +126,7 @@ func buildDatadogUserStruct(d *schema.ResourceData) *datadog.User {
 	return &u
 }
 
-func buildDatadogUserV2Struct(d *schema.ResourceData) *datadogV2.UserCreateRequest {
+func buildDatadogUserV2Struct(d *schema.ResourceData, providerConf *ProviderConfiguration) (*datadogV2.UserCreateRequest, error) {
 	userAttributes := datadogV2.NewUserCreateAttributesWithDefaults()
 	userAttributes.SetEmail(d.Get("email").(string))
 	userAttributes.SetName(d.Get("name").(string))
@@ -125,11 +134,47 @@ func buildDatadogUserV2Struct(d *schema.ResourceData) *datadogV2.UserCreateReque
 
 	userCreate := datadogV2.NewUserCreateDataWithDefaults()
 	userCreate.SetAttributes(*userAttributes)
-	userRequest := datadogV2.NewUserCreateRequestWithDefaults()
 
+	roles := d.Get("roles").([]interface{})
+	rolesData := make([]datadogV2.RelationshipToRoleData, len(roles))
+	for i, role := range roles {
+		roleData := datadogV2.NewRelationshipToRoleData()
+		roleData.SetId(role.(string))
+		rolesData[i] = *roleData
+	}
+
+	accessRole := d.Get("access_role").(string)
+	if accessRole != "" {
+		datadogClientV2 := providerConf.DatadogClientV2
+		authV2 := providerConf.AuthV2
+
+		mappedRole := rolesMapping[accessRole]
+		listResponse, _, err := datadogClientV2.RolesApi.ListRoles(authV2).Filter(mappedRole).Execute()
+		if err != nil {
+			return nil, translateClientError(err, "error searching role")
+		}
+		responseData := listResponse.GetData()
+		if len(responseData) != 1 {
+			return nil, fmt.Errorf("could not find single role with name %s", mappedRole)
+		}
+
+		roleData := datadogV2.NewRelationshipToRoleData()
+		roleData.SetId(responseData[0].GetId())
+
+		rolesData = append(rolesData, *roleData)
+	}
+
+	toRoles := datadogV2.NewRelationshipToRoles()
+	toRoles.SetData(rolesData)
+
+	userRelationships := datadogV2.NewUserRelationships()
+	userRelationships.SetRoles(*toRoles)
+	userCreate.SetRelationships(*userRelationships)
+
+	userRequest := datadogV2.NewUserCreateRequestWithDefaults()
 	userRequest.SetData(*userCreate)
 
-	return userRequest
+	return userRequest, nil
 }
 
 func buildDatadogUserV2UpdateStruct(d *schema.ResourceData, userId string) *datadogV2.UserUpdateRequest {
@@ -153,7 +198,10 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
-	userRequest := buildDatadogUserV2Struct(d)
+	userRequest, err := buildDatadogUserV2Struct(d, providerConf)
+	if err != nil {
+		return err
+	}
 
 	// Datadog does not actually delete users, so CreateUser might return a 409.
 	// We ignore that case and proceed, likely re-enabling the user.
@@ -165,14 +213,15 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 		email := d.Get("email").(string)
 		log.Printf("[INFO] Updating existing Datadog user %s", email)
 		// Find user ID by listing user and filtering by email
-		ulr, _, err := datadogClientV2.UsersApi.ListUsers(authV2).Filter(email).Execute()
+		listResponse, _, err := datadogClientV2.UsersApi.ListUsers(authV2).Filter(email).Execute()
 		if err != nil {
 			return translateClientError(err, "error searching user")
 		}
-		if len(ulr.GetData()) != 1 {
+		responseData := listResponse.GetData()
+		if len(responseData) != 1 {
 			return fmt.Errorf("could not find single user with email %s", email)
 		}
-		userId := ulr.GetData()[0].GetId()
+		userId := responseData[0].GetId()
 		userRequest := buildDatadogUserV2UpdateStruct(d, userId)
 
 		res, _, err := datadogClientV2.UsersApi.UpdateUser(authV2, userId).Body(*userRequest).Execute()
