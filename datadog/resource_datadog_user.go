@@ -2,12 +2,19 @@ package datadog
 
 import (
 	"log"
-	//"strings"
+	"regexp"
+	"strings"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/zorkian/go-datadog-api"
 )
+
+var uuidRegex = regexp.MustCompile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+
+func isV2User(id string) bool {
+	return uuidRegex.MatchString(id)
+}
 
 func resourceDatadogUser() *schema.Resource {
 	return &schema.Resource{
@@ -72,17 +79,18 @@ func resourceDatadogUserExists(d *schema.ResourceData, meta interface{}) (b bool
 	// Exists - This is called to verify a resource still exists. It is called prior to Read,
 	// and lowers the burden of Read to be able to assume the resource exists.
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
 
-	if _, httpResponse, err := datadogClientV2.UsersApi.GetUser(authV2, d.Id()).Execute(); err != nil {
-		if httpResponse != nil && httpResponse.StatusCode == 404 {
-			return false, nil
+	if isV2User(d.Id()) {
+		datadogClientV2 := providerConf.DatadogClientV2
+		authV2 := providerConf.AuthV2
+
+		if _, httpResponse, err := datadogClientV2.UsersApi.GetUser(authV2, d.Id()).Execute(); err != nil {
+			if httpResponse != nil && httpResponse.StatusCode == 404 {
+				return false, nil
+			}
+			return false, translateClientError(err, "error checking user exists")
 		}
-		return false, translateClientError(err, "error getting user")
-	}
-
-	/*
+	} else {
 		client := providerConf.CommunityClient
 
 		if _, err := client.GetUser(d.Id()); err != nil {
@@ -91,7 +99,7 @@ func resourceDatadogUserExists(d *schema.ResourceData, meta interface{}) (b bool
 			}
 			return false, translateClientError(err, "error checking user exists")
 		}
-	*/
+	}
 
 	return true, nil
 }
@@ -121,7 +129,6 @@ func buildDatadogUserV2UpdateStruct(d *schema.ResourceData) *datadogV2.UserUpdat
 	user := datadogV2.NewUserUpdateAttributesWithDefaults()
 	user.SetEmail(d.Get("email").(string))
 	user.SetName(d.Get("name").(string))
-	//user.SetTitle(d.Get("title").(string))
 
 	return user
 }
