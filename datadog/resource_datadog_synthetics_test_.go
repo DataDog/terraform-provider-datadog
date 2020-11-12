@@ -259,8 +259,9 @@ func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"content": {
-					Type:     schema.TypeString,
-					Required: true,
+					Type:      schema.TypeString,
+					Required:  true,
+					Sensitive: true,
 				},
 				"filename": {
 					Type:     schema.TypeString,
