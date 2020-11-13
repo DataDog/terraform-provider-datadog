@@ -14,7 +14,7 @@ func dataSourceDatadogRole() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"filter": {
 				Type:     schema.TypeString,
-				Optional: false,
+				Required: true,
 			},
 
 			// Computed values
@@ -51,7 +51,7 @@ func dataSourceDatadogRoleRead(d *schema.ResourceData, meta interface{}) error {
 			if role.Attributes.GetName() == filter {
 				exactMatchFound = true
 				roleIndex = i
-				log.Printf("[INFO] Got multiple matches for role %s, picking the one with this exact name", filter)
+				log.Printf("[INFO] Got multiple matches for role '%s', picking the one with this exact name", filter)
 				break
 			}
 		}
