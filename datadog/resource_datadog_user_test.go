@@ -102,6 +102,38 @@ func TestAccDatadogUser_Existing(t *testing.T) {
 	})
 }
 
+func TestAccDatadogUser_RoleDatasource(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	username := strings.ToLower(uniqueEntityName(clock, t)) + "@example.com"
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogUserDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogUserConfigReadOnlyRole(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr("datadog_user.foo", "handle", username),
+					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "1"),
+					resource.TestCheckResourceAttrPair(
+						"data.datadog_role.ro_role",
+						"id",
+						"datadog_user.foo",
+						"roles.0",
+					),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogUserDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
@@ -145,7 +177,7 @@ func testAccCheckDatadogUserV2Exists(accProvider *schema.Provider, n string) res
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
 
-		if err := datadogUserV2ExistsHelper(s, datadogClientV2, authV2); err != nil {
+		if err := datadogUserV2ExistsHelper(s, datadogClientV2, authV2, n); err != nil {
 			return err
 		}
 		return nil
@@ -158,6 +190,20 @@ resource "datadog_user" "foo" {
   email     = "%s"
   handle    = "%s"
   name      = "Test User"
+}`, uniq, uniq)
+}
+
+func testAccCheckDatadogUserConfigReadOnlyRole(uniq string) string {
+	return fmt.Sprintf(`
+data "datadog_role" "ro_role" {
+  filter = "Datadog Read Only Role"
+}
+
+resource "datadog_user" "foo" {
+  email     = "%s"
+  handle    = "%s"
+  name      = "Test User"
+  roles     = [data.datadog_role.ro_role.id]
 }`, uniq, uniq)
 }
 
@@ -235,12 +281,10 @@ func datadogUserV2DestroyHelper(s *terraform.State, client *datadogV2.APIClient,
 	return nil
 }
 
-func datadogUserV2ExistsHelper(s *terraform.State, client *datadogV2.APIClient, auth context.Context) error {
-	for _, r := range s.RootModule().Resources {
-		id := r.Primary.ID
-		if _, _, err := client.UsersApi.GetUser(auth, id).Execute(); err != nil {
-			return fmt.Errorf("received an error retrieving user %s", err)
-		}
+func datadogUserV2ExistsHelper(s *terraform.State, client *datadogV2.APIClient, auth context.Context, name string) error {
+	id := s.RootModule().Resources[name].Primary.ID
+	if _, _, err := client.UsersApi.GetUser(auth, id).Execute(); err != nil {
+		return fmt.Errorf("received an error retrieving user %s", err)
 	}
 	return nil
 }
