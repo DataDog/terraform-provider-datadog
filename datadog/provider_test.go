@@ -37,6 +37,7 @@ var testFiles2EndpointTags = map[string]string{
 	"data_source_datadog_dashboard_list_test":                    "dashboard-lists",
 	"data_source_datadog_ip_ranges_test":                         "ip-ranges",
 	"data_source_datadog_monitor_test":                           "monitors",
+	"data_source_datadog_role_test":                              "roles",
 	"data_source_datadog_synthetics_locations_test":              "synthetics",
 	"import_datadog_downtime_test":                               "downtimes",
 	"import_datadog_integration_pagerduty_test":                  "integration-pagerduty",
