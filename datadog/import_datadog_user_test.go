@@ -24,9 +24,9 @@ func TestDatadogUser_import(t *testing.T) {
 				Config: testAccCheckDatadogUserConfigImported(username),
 			},
 			{
-				ResourceName:      resourceName,
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:            resourceName,
+				ImportState:             true,
+				ImportStateVerify:       true,
 				ImportStateVerifyIgnore: []string{"access_role"},
 			},
 		},
