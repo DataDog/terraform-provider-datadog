@@ -121,7 +121,7 @@ func buildDatadogUserStruct(d *schema.ResourceData) *datadog.User {
 	return &u
 }
 
-func buildDatadogUserV2Struct(d *schema.ResourceData, providerConf *ProviderConfiguration) (*datadogV2.UserCreateRequest, error) {
+func buildDatadogUserV2Struct(d *schema.ResourceData, providerConf *ProviderConfiguration) *datadogV2.UserCreateRequest {
 	userAttributes := datadogV2.NewUserCreateAttributesWithDefaults()
 	userAttributes.SetEmail(d.Get("email").(string))
 	userAttributes.SetName(d.Get("name").(string))
@@ -148,7 +148,7 @@ func buildDatadogUserV2Struct(d *schema.ResourceData, providerConf *ProviderConf
 	userRequest := datadogV2.NewUserCreateRequestWithDefaults()
 	userRequest.SetData(*userCreate)
 
-	return userRequest, nil
+	return userRequest
 }
 
 func buildDatadogUserV2UpdateStruct(d *schema.ResourceData, userId string) *datadogV2.UserUpdateRequest {
@@ -172,10 +172,7 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
-	userRequest, err := buildDatadogUserV2Struct(d, providerConf)
-	if err != nil {
-		return err
-	}
+	userRequest := buildDatadogUserV2Struct(d, providerConf)
 
 	// Datadog does not actually delete users, so CreateUser might return a 409.
 	// We ignore that case and proceed, likely re-enabling the user.
