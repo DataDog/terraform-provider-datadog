@@ -239,6 +239,7 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 			return err
 		}
 
+		d.Set("disabled", u.GetDisabled())
 		d.Set("email", u.GetEmail())
 		d.Set("handle", u.GetHandle())
 		d.Set("name", u.GetName())
