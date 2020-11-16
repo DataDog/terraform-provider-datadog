@@ -13,12 +13,6 @@ import (
 
 var uuidRegex = regexp.MustCompile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
 
-var rolesMapping = map[string]string{
-	"st":  "Datadog Standard Role",
-	"ro":  "Datadog Read Only Role",
-	"adm": "Datadog Admin Role",
-}
-
 func isV2User(id string) bool {
 	return uuidRegex.MatchString(id)
 }
