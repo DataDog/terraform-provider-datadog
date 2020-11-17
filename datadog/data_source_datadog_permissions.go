@@ -28,13 +28,15 @@ func dataSourceDatadogPermissionsRead(d *schema.ResourceData, meta interface{}) 
 
 	res, _, err := datadogClientV2.RolesApi.ListPermissions(authV2).Execute()
 	if err != nil {
-		return translateClientError(err, "error querying roles")
+		return translateClientError(err, "error listing permissions")
 	}
 	perms := res.GetData()
 	permsNameToID := make(map[string]string, len(perms))
 	for _, perm := range perms {
 		permsNameToID[perm.Attributes.GetName()] = perm.GetId()
 	}
+	d.SetId("datadog-permissions")
 	d.Set("permissions", permsNameToID)
+
 	return nil
 }
