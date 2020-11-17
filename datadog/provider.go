@@ -84,6 +84,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_dashboard_list":       dataSourceDatadogDashboardList(),
 			"datadog_ip_ranges":            dataSourceDatadogIpRanges(),
 			"datadog_monitor":              dataSourceDatadogMonitor(),
+			"datadog_permissions":          dataSourceDatadogPermissions(),
 			"datadog_role":                 dataSourceDatadogRole(),
 			"datadog_synthetics_locations": dataSourceDatadogSyntheticsLocations(),
 		},
