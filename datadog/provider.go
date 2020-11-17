@@ -70,6 +70,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_logs_pipeline_order":                  resourceDatadogLogsPipelineOrder(),
 			"datadog_metric_metadata":                      resourceDatadogMetricMetadata(),
 			"datadog_monitor":                              resourceDatadogMonitor(),
+			"datadog_role":                                 resourceDatadogRole(),
 			"datadog_screenboard":                          resourceDatadogScreenboard(),
 			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
 			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
