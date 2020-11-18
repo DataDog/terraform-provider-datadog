@@ -73,6 +73,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_monitor":                              resourceDatadogMonitor(),
 			"datadog_role":                                 resourceDatadogRole(),
 			"datadog_screenboard":                          resourceDatadogScreenboard(),
+			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
 			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
 			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
 			"datadog_synthetics_global_variable":           resourceDatadogSyntheticsGlobalVariable(),
