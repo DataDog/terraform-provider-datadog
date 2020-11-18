@@ -33,7 +33,10 @@ func dataSourceDatadogPermissionsRead(d *schema.ResourceData, meta interface{}) 
 	perms := res.GetData()
 	permsNameToID := make(map[string]string, len(perms))
 	for _, perm := range perms {
-		permsNameToID[perm.Attributes.GetName()] = perm.GetId()
+		// Don't list restricted permissions, as they cannot be granted/revoked to/from a role
+		if !perm.Attributes.GetRestricted() {
+			permsNameToID[perm.Attributes.GetName()] = perm.GetId()
+		}
 	}
 	d.SetId("datadog-permissions")
 	d.Set("permissions", permsNameToID)

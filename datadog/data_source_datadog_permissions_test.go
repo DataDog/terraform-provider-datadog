@@ -20,6 +20,7 @@ func TestAccDatadogPermissionsDatasource(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.datadog_permissions.foo", "id", "datadog-permissions"),
 					resource.TestCheckResourceAttrSet("data.datadog_permissions.foo", "permissions.admin"),
+					resource.TestCheckNoResourceAttr("data.datadog_permissions.foo", "permissions.dashboards_read"),
 				),
 			},
 		},
