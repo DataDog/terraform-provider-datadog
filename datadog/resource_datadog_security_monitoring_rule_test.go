@@ -33,6 +33,53 @@ func TestAccDatadogSecurityMonitoringRule_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ruleName := uniqueEntityName(clock, t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
+			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfig(ruleName),
+				Check: testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider, ruleName),
+			},
+		},
+	})
+}
+
+func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ruleName := uniqueEntityName(clock, t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(ruleName),
+			},
+			{
+				ResourceName: tfSecurityRuleName,
+				ImportState: true,
+				ImportStateVerify: true,
+				Check:  testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogSecurityMonitoringCreatedConfig(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_security_monitoring_rule" "acceptance_test" {
@@ -222,29 +269,6 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider *schema.Provid
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "tags.1", "i:tomato"),
 	)
-}
-
-func TestAccDatadogSecurityMonitoringRule_BasicWithoutRequired(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	ruleName := uniqueEntityName(clock, t)
-	defer cleanup(t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(ruleName),
-				Check:  testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
-			},
-			{
-				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfig(ruleName),
-				Check: testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider, ruleName),
-			},
-		},
-	})
 }
 
 func testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(name string) string {

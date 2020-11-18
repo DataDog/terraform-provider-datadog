@@ -13,10 +13,9 @@ func resourceDatadogSecurityMonitoringRule() *schema.Resource {
 		Read:   resourceDatadogSecurityMonitoringRuleRead,
 		Update: resourceDatadogSecurityMonitoringRuleUpdate,
 		Delete: resourceDatadogSecurityMonitoringRuleDelete,
-		//CustomizeDiff: resourceDatadogSecurityMonitoringCustomizeDiff,
-		//Importer: &schema.ResourceImporter{
-		//	State: resourceDatadogSecurityMonitoringImport,
-		//},
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"case": {
@@ -149,10 +148,6 @@ func resourceDatadogSecurityMonitoringRule() *schema.Resource {
 	}
 }
 
-//func resourceDatadogSecurityMonitoringImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-//	return nil, nil
-//}
-
 func resourceDatadogSecurityMonitoringRuleExists(d *schema.ResourceData, meta interface{}) (bool, error) {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
@@ -258,6 +253,15 @@ func buildCreatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 			payloadQuery.Aggregation = &aggregation
 		}
 
+		if v, ok := query["group_by_fields"]; ok {
+			tfGroupByFields := v.([]interface{})
+			groupByFields := make([]string, len(tfGroupByFields))
+			for i, value := range tfGroupByFields {
+				groupByFields[i] = value.(string)
+			}
+			payloadQuery.GroupByFields = &groupByFields
+		}
+
 		if v, ok := query["distinct_fields"]; ok {
 			tfDistinctFields := v.([]interface{})
 			distinctFields := make([]string, len(tfDistinctFields))
@@ -346,7 +350,7 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 	if maxSignalDuration, ok := getOptions.GetMaxSignalDurationOk(); ok {
 		options["max_signal_duration"] = *maxSignalDuration
 	}
-	d.Set("options", options)
+	d.Set("options", []map[string]interface{}{options})
 
 	ruleQueries := make([]map[string]interface{}, len(ruleResponse.GetQueries()))
 	for idx := range ruleResponse.GetQueries() {
@@ -367,12 +371,13 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 		if name, ok := responseRuleQuery.GetNameOk(); ok {
 			ruleQuery["name"] = *name
 		}
-		if query, ok := responseRuleQuery.GetNameOk(); ok {
+		if query, ok := responseRuleQuery.GetQueryOk(); ok {
 			ruleQuery["query"] = *query
 		}
 
 		ruleQueries[idx] = ruleQuery
 	}
+	d.Set("query", ruleQueries)
 }
 
 func resourceDatadogSecurityMonitoringRuleUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -468,6 +473,15 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 				payloadQuery.Aggregation = &aggregation
 			}
 
+			if v, ok := query["group_by_fields"]; ok {
+				tfGroupByFields := v.([]interface{})
+				groupByFields := make([]string, len(tfGroupByFields))
+				for i, value := range tfGroupByFields {
+					groupByFields[i] = value.(string)
+				}
+				payloadQuery.GroupByFields = &groupByFields
+			}
+
 			if v, ok := query["distinct_fields"]; ok {
 				tfDistinctFields := v.([]interface{})
 				distinctFields := make([]string, len(tfDistinctFields))
@@ -520,8 +534,3 @@ func resourceDatadogSecurityMonitoringRuleDelete(d *schema.ResourceData, meta in
 
 	return nil
 }
-
-//func resourceDatadogSecurityMonitoringCustomizeDiff(d *schema.ResourceDiff, meta interface{}) error {
-//	return nil
-//}
-
