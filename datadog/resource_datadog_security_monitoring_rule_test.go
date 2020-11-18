@@ -224,6 +224,97 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider *schema.Provid
 	)
 }
 
+func TestAccDatadogSecurityMonitoringRule_BasicWithoutRequired(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ruleName := uniqueEntityName(clock, t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
+			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfig(ruleName),
+				Check: testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider, ruleName),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "acceptance rule triggered"
+
+    query { 
+        query = "does not really match much"
+        aggregation = "count"
+        group_by_fields = ["host"]
+    }
+
+	case {
+        status = "high"
+		condition = "a > 0"
+    }
+
+    options {
+        evaluation_window = 300
+        keep_alive = 600
+        max_signal_duration = 900
+    }
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider *schema.Provider, ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "message", "acceptance rule triggered"),
+		//resource.TestCheckResourceAttr(
+		//	tfSecurityRuleName, "enabled", "false"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.query", "does not really match much"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.aggregation", "count"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.group_by_fields.0", "host"),
+		//resource.TestCheckResourceAttr(
+		//	tfSecurityRuleName, "case.0.name", "high case"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.status", "high"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.condition", "a > 0"),
+		//resource.TestCheckResourceAttr(
+		//	tfSecurityRuleName, "case.0.notifications.0", "@user"),
+		//resource.TestCheckResourceAttr(
+		//	tfSecurityRuleName, "case.1.name", "warning case"),
+		//resource.TestCheckResourceAttr(
+		//	tfSecurityRuleName, "case.1.status", "medium"),
+		//resource.TestCheckResourceAttr(
+		//	tfSecurityRuleName, "case.1.condition", "first > 0 || second > 0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.evaluation_window", "300"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.keep_alive", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
+		//resource.TestCheckResourceAttr(
+		//	tfSecurityRuleName, "tags.0", "i:tomato"),
+		//resource.TestCheckResourceAttr(
+		//	tfSecurityRuleName, "tags.1", "u:tomato"),
+	)
+}
+
 func testAccCheckDatadogSecurityMonitoringRuleExists(provider *schema.Provider, rule string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := provider.Meta().(*ProviderConfiguration)

@@ -78,19 +78,19 @@ func resourceDatadogSecurityMonitoringRule() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 						"evaluation_window": {
 							Type:        schema.TypeInt,
-							Optional:    true,
+							Required:    true,
 							Description: "A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time.",
 						},
 
 						"keep_alive": {
 							Type:        schema.TypeInt,
-							Optional:    true,
+							Required:    true,
 							Description: "Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window.",
 						},
 
 						"max_signal_duration": {
 							Type:        schema.TypeInt,
-							Optional:    true,
+							Required:    true,
 							Description: "A signal will “close” regardless of the query being matched once the time exceeds the maximum duration. This time is calculated from the first seen timestamp.",
 						},
 					},
@@ -225,7 +225,13 @@ func buildCreatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 
 	if v, ok := d.GetOk("options"); ok {
 		payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
-		tfOptions := (v.([]interface{})[0]).(map[string]interface{})
+		tfOptionsList := v.([]interface{})
+		var tfOptions map[string]interface{}
+		if tfOptionsList[0] == nil {
+			tfOptions = make(map[string]interface{})
+		} else {
+			tfOptions = tfOptionsList[0].(map[string]interface{})
+		}
 		if v, ok := tfOptions["evaluation_window"]; ok {
 			evaluationWindow := datadogV2.SecurityMonitoringRuleEvaluationWindow(v.(int))
 			payloadOptions.EvaluationWindow = &evaluationWindow
