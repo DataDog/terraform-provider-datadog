@@ -13,11 +13,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4887902224311711715"
+      - "4776416262837454408"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "7096655240178824081"
+      - "8052966640934693994"
     url: https://api.datadoghq.com/api/v2/permissions
     method: GET
   response:
@@ -90,13 +90,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 18 Nov 2020 15:48:55 GMT
+      - Thu, 19 Nov 2020 09:30:32 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 25-Nov-2020 15:48:55 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 26-Nov-2020 09:30:32 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -105,9 +105,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - o+DMvNLOJQfXAHeLjo7w9XOcTGCirWOThygGIHqmoMaQl6AzYuGlAbNkOlAzbCRq
+      - R1+MRQNzRD0HfjBgLVIjclr4gto/LBUvaJZAn2oF8rsW7iHushLxjdvt+30jZQLP
       X-Dd-Version:
-      - "35.3390647"
+      - "35.3396572"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -125,11 +125,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4260757465286416785"
+      - "8192579837165334527"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "7096655240178824081"
+      - "8052966640934693994"
     url: https://api.datadoghq.com/api/v2/permissions
     method: GET
   response:
@@ -202,13 +202,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 18 Nov 2020 15:48:55 GMT
+      - Thu, 19 Nov 2020 09:30:32 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 25-Nov-2020 15:48:55 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 26-Nov-2020 09:30:32 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -217,9 +217,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - uhKf3DOQ/asSODSNh+771Jj2mAFRCrXnSErQegeSH33qVMu18OG0v+JTvu/HjcV7
+      - Eb2J7DZKGMCxUULFPVCE5N014uh3tvnvHgnaA7NVroaoqvWd6z7v+RZklq5100Rp
       X-Dd-Version:
-      - "35.3390647"
+      - "35.3396572"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -237,11 +237,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "8800207854684079726"
+      - "9104662185889084902"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "7096655240178824081"
+      - "8052966640934693994"
     url: https://api.datadoghq.com/api/v2/permissions
     method: GET
   response:
@@ -314,13 +314,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 18 Nov 2020 15:48:55 GMT
+      - Thu, 19 Nov 2020 09:30:32 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 25-Nov-2020 15:48:55 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 26-Nov-2020 09:30:32 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -329,9 +329,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - /JpmMVMj888oDBhNstrXwRRTcjtQP5tKL1A6NwxlJyR/zX9A94/1rKY8MfQgr5Ro
+      - H6YNJZe2hxg7AD4MytxnK6WTGV3v238t6qy6wX4rqFlv+Cb0Gp+GU8J41gMZvmVb
       X-Dd-Version:
-      - "35.3390647"
+      - "35.3396572"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -349,11 +349,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "7811291730684233858"
+      - "3116721045257256292"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "7096655240178824081"
+      - "8052966640934693994"
     url: https://api.datadoghq.com/api/v2/permissions
     method: GET
   response:
@@ -426,13 +426,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 18 Nov 2020 15:48:55 GMT
+      - Thu, 19 Nov 2020 09:30:32 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 25-Nov-2020 15:48:55 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 26-Nov-2020 09:30:32 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -441,9 +441,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - dkPC7h1IhtieQ7hDwGKZ3LdM53Z2+XQ6pWT/sK6/v5L2qKrddV2g+eVtGbkN4F8/
+      - yh6YON+7jbeDMg7CO+AYyoesqWeq0Iw5xzcOjFKKupoYHnh4eyLWds2GSgfB/+lP
       X-Dd-Version:
-      - "35.3390647"
+      - "35.3396572"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

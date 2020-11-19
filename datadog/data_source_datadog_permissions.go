@@ -39,7 +39,9 @@ func dataSourceDatadogPermissionsRead(d *schema.ResourceData, meta interface{}) 
 		}
 	}
 	d.SetId("datadog-permissions")
-	d.Set("permissions", permsNameToID)
+	if err := d.Set("permissions", permsNameToID); err != nil {
+		return err
+	}
 
 	return nil
 }

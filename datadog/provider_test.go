@@ -84,6 +84,7 @@ var testFiles2EndpointTags = map[string]string{
 	"resource_datadog_logs_custom_pipeline_test":                 "logs-pipelines",
 	"resource_datadog_metric_metadata_test":                      "metrics",
 	"resource_datadog_monitor_test":                              "monitors",
+	"resource_datadog_role_test":                                 "roles",
 	"resource_datadog_screenboard_test":                          "dashboards",
 	"resource_datadog_service_level_objective_test":              "service-level-objectives",
 	"resource_datadog_synthetics_test_test":                      "synthetics",
