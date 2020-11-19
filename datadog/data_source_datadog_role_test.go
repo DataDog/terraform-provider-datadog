@@ -29,10 +29,39 @@ func TestAccDatadogRoleDatasourceExactMatch(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	rolename := strings.ToLower(uniqueEntityName(clock, t))
 	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: accProviders,
+		PreCheck:     func() { testAccPreCheck(t) },
+		CheckDestroy: testAccCheckDatadogRoleDestroy(accProvider),
+		Providers:    accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDatasourceRoleCreateConfig(rolename),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("datadog_role.main", "name", rolename+" main"),
+					resource.TestCheckResourceAttr("datadog_role.cloned", "name", rolename+" main cloned"),
+				),
+			},
+			{
+				Config:             testAccDatasourceRoleExactMatchConfig(rolename),
+				Check:              resource.TestCheckResourceAttr("data.datadog_role.exact_match", "name", rolename+" main"),
+				ExpectNonEmptyPlan: true,
+			},
+		},
+	})
+}
+
+func TestAccDatadogRoleDatasourceError(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	rolename := strings.ToLower(uniqueEntityName(clock, t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		CheckDestroy: testAccCheckDatadogRoleDestroy(accProvider),
+		Providers:    accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceRoleCreateConfig(rolename),
@@ -44,10 +73,6 @@ func TestAccDatadogRoleDatasourceExactMatch(t *testing.T) {
 			{
 				Config:      testAccDatasourceRoleErrorConfig(rolename),
 				ExpectError: regexp.MustCompile("no exact match for name .* were found"),
-			},
-			{
-				Config: testAccDatasourceRoleExactMatchConfig(rolename),
-				Check:  resource.TestCheckResourceAttr("data.datadog_role.exact_match", "name", rolename+" main"),
 			},
 		},
 	})
@@ -74,14 +99,19 @@ resource "datadog_role" "cloned" {
 
 func testAccDatasourceRoleErrorConfig(uniq string) string {
 	return fmt.Sprintf(`
+%s
 data "datadog_role" "error" {
   filter = "%s"
-}`, uniq)
+  depends_on = ["datadog_role.main", "datadog_role.cloned"]
+}`, testAccDatasourceRoleCreateConfig(uniq), uniq)
 }
 
 func testAccDatasourceRoleExactMatchConfig(uniq string) string {
 	return fmt.Sprintf(`
+%s
+
 data "datadog_role" "exact_match" {
   filter = "%s main"
-}`, uniq)
+  depends_on = ["datadog_role.main", "datadog_role.cloned"]
+}`, testAccDatasourceRoleCreateConfig(uniq), uniq)
 }
