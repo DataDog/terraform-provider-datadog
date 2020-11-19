@@ -112,7 +112,7 @@ resource "datadog_synthetics_test" "test_tcp" {
 Create a new Datadog Synthetics API/DNS test on example.org
 
 ```hcl
-resource "datadog_synthetics_test" "test_tcp" {
+resource "datadog_synthetics_test" "test_dns" {
   type = "api"
   subtype = "dns"
   request = {
