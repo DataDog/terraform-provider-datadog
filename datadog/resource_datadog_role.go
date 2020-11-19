@@ -32,7 +32,7 @@ func resourceDatadogRole() *schema.Resource {
 			"permission": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "List of permission IDs to give to this role.",
+				Description: "Set of objects containing the permission ID and the name of the permissions granted to this role.",
 				Elem:        getRolePermissionSchema(),
 			},
 			"user_count": {

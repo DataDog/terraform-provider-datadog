@@ -12,10 +12,12 @@ Provides a Datadog role resource. This can be used to create and manage Datadog 
 # Create a new Datadog role
 resource "datadog_role" "foo" {
   name  = "foo"
-  permissions = [
-    "${data.datadog_permissions.example_permission_1.id}",
-    "${data.datadog_permissions.example_permission_2.id}"
-]
+  permission {
+    id = "${data.datadog_permissions.example_permission_1.id}"
+ }
+  permission {
+    id = "${data.datadog_permissions.example_permission_2.id}"
+ }
 }
 ```
 
@@ -24,7 +26,7 @@ resource "datadog_role" "foo" {
 The following arguments are supported:
 
 -   `name`: (Required) The name of the role to create.
--   `permissions`: (Optional) A list of permission IDs to grant to the role.
+-   `permission`: (Optional) Blocks containing permission ID to grant to the role.
 
 ## Attributes Reference
 
