@@ -250,6 +250,8 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		DatadogClientV2: datadogClientV2,
 		AuthV1:          authV1,
 		AuthV2:          authV2,
+
+		now: time.Now,
 	}, nil
 }
 
