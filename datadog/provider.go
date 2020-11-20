@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"runtime"
 	"strings"
+	"time"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -102,6 +103,12 @@ type ProviderConfiguration struct {
 	DatadogClientV2 *datadogV2.APIClient
 	AuthV1          context.Context
 	AuthV2          context.Context
+
+	now func() time.Time
+}
+
+func (p *ProviderConfiguration) Now() time.Time {
+	return p.now()
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {

@@ -358,7 +358,7 @@ func initAccProvider(ctx context.Context, t *testing.T, httpClient *http.Client)
 	defer finish()
 
 	p := Provider().(*schema.Provider)
-	p.ConfigureFunc = testProviderConfigure(ctx, httpClient)
+	p.ConfigureFunc = testProviderConfigure(ctx, httpClient, testClock(t))
 
 	return p
 }
@@ -429,7 +429,7 @@ func buildDatadogClientV2(httpClient *http.Client) *datadogV2.APIClient {
 	return datadogV2.NewAPIClient(configV2)
 }
 
-func testProviderConfigure(ctx context.Context, httpClient *http.Client) schema.ConfigureFunc {
+func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock clockwork.FakeClock) schema.ConfigureFunc {
 	return func(d *schema.ResourceData) (interface{}, error) {
 		communityClient := datadogCommunity.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
 		if apiURL := d.Get("api_url").(string); apiURL != "" {
@@ -458,6 +458,8 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client) schema.
 			DatadogClientV2: buildDatadogClientV2(c),
 			AuthV1:          ctx,
 			AuthV2:          ctx,
+
+			now: clock.Now,
 		}, nil
 	}
 }
