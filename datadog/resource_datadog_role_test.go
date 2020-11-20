@@ -107,7 +107,7 @@ func testAccCheckDatadogRoleDestroy(accProvider *schema.Provider) func(*terrafor
 			if r.Type == "datadog_role" {
 				_, httpresp, err := client.RolesApi.GetRole(auth, r.Primary.ID).Execute()
 				if err != nil {
-					if httpresp.StatusCode != 404 {
+					if !(httpresp != nil && httpresp.StatusCode == 404) {
 						return translateClientError(err, "error getting role")
 					}
 					return nil
