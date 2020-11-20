@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"fmt"
@@ -271,9 +272,7 @@ func initRecorder(t *testing.T) *recorder.Recorder {
 		log.Fatal(err)
 	}
 
-	rec.SetMatcher(func(r *http.Request, i cassette.Request) bool {
-		return r.Method == i.Method && removeURLSecrets(r.URL).String() == i.URL
-	})
+	rec.SetMatcher(matchInteraction)
 
 	rec.AddFilter(func(i *cassette.Interaction) error {
 		u, err := url.Parse(i.URL)
@@ -286,6 +285,51 @@ func initRecorder(t *testing.T) *recorder.Recorder {
 		return nil
 	})
 	return rec
+}
+
+// matchInteraction checks if the request matches a store request in the given cassette.
+func matchInteraction(r *http.Request, i cassette.Request) bool {
+	// Default matching on method and URL without secrets
+	if !(r.Method == i.Method && removeURLSecrets(r.URL).String() == i.URL) {
+		log.Printf("HTTP method: %s != %s; URL: %s != %s", r.Method, i.Method, removeURLSecrets(r.URL), i.URL)
+		return false
+	}
+
+	// Request does not contain body (e.g. `GET`)
+	if r.Body == nil {
+		log.Printf("request body is empty and cassette body is: %s", i.Body)
+		return i.Body == ""
+	}
+
+	// Load request body
+	var b bytes.Buffer
+	if _, err := b.ReadFrom(r.Body); err != nil {
+		log.Printf("could not read request body: %v\n", err)
+		return false
+	}
+	r.Body = ioutil.NopCloser(&b)
+
+	matched := b.String() == "" || b.String() == i.Body
+
+	// Ignore boundary differences for multipart/form-data content
+	if !matched && strings.HasPrefix(r.Header["Content-Type"][0], "multipart/form-data") {
+		rl := strings.Split(strings.TrimSpace(b.String()), "\n")
+		cl := strings.Split(strings.TrimSpace(i.Body), "\n")
+		if len(rl) > 1 && len(cl) > 1 {
+			rs := strings.Join(rl[1:len(rl)-1], "\n")
+			cs := strings.Join(cl[1:len(cl)-1], "\n")
+			if rs == cs {
+				matched = true
+			}
+		}
+	}
+
+	if !matched {
+		log.Printf("%s != %s", b.String(), i.Body)
+		log.Printf("full cassette info: %v", i)
+		log.Printf("full request info: %v", *r)
+	}
+	return matched
 }
 
 func testSpan(ctx context.Context, t *testing.T) (context.Context, func()) {

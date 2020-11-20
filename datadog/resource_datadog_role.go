@@ -52,12 +52,13 @@ func getValidPermissions(client *datadog.APIClient, auth context.Context) (map[s
 			return nil, translateClientError(err, "error listing permissions")
 		}
 		permsList := res.GetData()
-		validPermissions = make(map[string]string, len(permsList))
+		permsNameToId := make(map[string]string, len(permsList))
 		for _, perm := range permsList {
 			if !perm.Attributes.GetRestricted() {
-				validPermissions[perm.GetId()] = perm.Attributes.GetName()
+				permsNameToId[perm.GetId()] = perm.Attributes.GetName()
 			}
 		}
+		validPermissions = permsNameToId
 	}
 	return validPermissions, nil
 }

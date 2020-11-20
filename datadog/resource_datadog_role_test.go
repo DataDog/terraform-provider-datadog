@@ -104,16 +104,19 @@ func testAccCheckDatadogRoleDestroy(accProvider *schema.Provider) func(*terrafor
 		auth := providerConf.AuthV2
 
 		for _, r := range s.RootModule().Resources {
-			if r.Type == "datadog_role" {
-				_, httpresp, err := client.RolesApi.GetRole(auth, r.Primary.ID).Execute()
-				if err != nil {
-					if !(httpresp != nil && httpresp.StatusCode == 404) {
-						return translateClientError(err, "error getting role")
-					}
-					return nil
-				}
-				return fmt.Errorf("role %s still exists", r.Primary.ID)
+			if r.Type != "datadog_role" {
+				// Only care about roles
+				continue
 			}
+			_, httpresp, err := client.RolesApi.GetRole(auth, r.Primary.ID).Execute()
+			if err != nil {
+				if !(httpresp != nil && httpresp.StatusCode == 404) {
+					return translateClientError(err, "error getting role")
+				}
+				// Role was successfully deleted
+				continue
+			}
+			return fmt.Errorf("role %s still exists", r.Primary.ID)
 		}
 		return nil
 	}
