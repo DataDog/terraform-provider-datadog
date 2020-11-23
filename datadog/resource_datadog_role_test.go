@@ -44,6 +44,7 @@ func TestAccDatadogRole_CreateUpdate(t *testing.T) {
 				Config: testAccCheckDatadogRoleConfigUpdated(rolename + "updated"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRoleExists(accProvider, "datadog_role.foo"),
+					resource.TestCheckResourceAttr("datadog_role.foo", "name", rolename+"updated"),
 					resource.TestCheckResourceAttr("datadog_role.foo", "permission.#", "2"),
 					testCheckRolePermission(
 						"datadog_role.foo",
@@ -67,7 +68,7 @@ func TestAccDatadogRole_CreateUpdate(t *testing.T) {
 		},
 	})
 }
-func TestAccDatadogRole_RestrictedPerm(t *testing.T) {
+func TestAccDatadogRole_InvalidPerm(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	rolename := strings.ToLower(uniqueEntityName(clock, t))
 	defer cleanup(t)

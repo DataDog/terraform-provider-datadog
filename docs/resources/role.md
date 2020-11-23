@@ -9,14 +9,17 @@ Provides a Datadog role resource. This can be used to create and manage Datadog 
 ## Example Usage
 
 ```hcl
+# Source the permissions
+data "datadog_permissions" "bar" {}
+
 # Create a new Datadog role
 resource "datadog_role" "foo" {
   name  = "foo"
   permission {
-    id = "${data.datadog_permissions.example_permission_1.id}"
+    id = "${data.datadog_permissions.bar.permissions.<name_of_permission_1>.id}"
  }
   permission {
-    id = "${data.datadog_permissions.example_permission_2.id}"
+    id = "${data.datadog_permissions.bar.permissions.<name_of_permission_2>.id}"
  }
 }
 ```
