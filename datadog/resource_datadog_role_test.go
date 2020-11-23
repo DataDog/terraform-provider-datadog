@@ -41,7 +41,7 @@ func TestAccDatadogRole_CreateUpdate(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogRoleConfigUpdated(rolename + "updated"),
+				Config: testAccCheckDatadogRoleConfigUpdated(rolename),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRoleExists(accProvider, "datadog_role.foo"),
 					resource.TestCheckResourceAttr("datadog_role.foo", "name", rolename+"updated"),
@@ -59,7 +59,7 @@ func TestAccDatadogRole_CreateUpdate(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogRoleConfigNoPerm(rolename + "noperm"),
+				Config: testAccCheckDatadogRoleConfigNoPerm(rolename),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRoleExists(accProvider, "datadog_role.foo"),
 					resource.TestCheckResourceAttr("datadog_role.foo", "permission.#", "0"),
