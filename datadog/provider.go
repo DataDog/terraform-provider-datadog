@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"runtime"
 	"strings"
+	"time"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -70,6 +71,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_logs_pipeline_order":                  resourceDatadogLogsPipelineOrder(),
 			"datadog_metric_metadata":                      resourceDatadogMetricMetadata(),
 			"datadog_monitor":                              resourceDatadogMonitor(),
+			"datadog_role":                                 resourceDatadogRole(),
 			"datadog_screenboard":                          resourceDatadogScreenboard(),
 			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
 			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
@@ -83,6 +85,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_dashboard_list":       dataSourceDatadogDashboardList(),
 			"datadog_ip_ranges":            dataSourceDatadogIpRanges(),
 			"datadog_monitor":              dataSourceDatadogMonitor(),
+			"datadog_permissions":          dataSourceDatadogPermissions(),
 			"datadog_role":                 dataSourceDatadogRole(),
 			"datadog_synthetics_locations": dataSourceDatadogSyntheticsLocations(),
 		},
@@ -100,6 +103,12 @@ type ProviderConfiguration struct {
 	DatadogClientV2 *datadogV2.APIClient
 	AuthV1          context.Context
 	AuthV2          context.Context
+
+	now func() time.Time
+}
+
+func (p *ProviderConfiguration) Now() time.Time {
+	return p.now()
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
@@ -241,6 +250,8 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		DatadogClientV2: datadogClientV2,
 		AuthV1:          authV1,
 		AuthV2:          authV2,
+
+		now: time.Now,
 	}, nil
 }
 
