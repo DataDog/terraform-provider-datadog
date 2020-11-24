@@ -31,20 +31,20 @@ func TestAccDatadogDashboardDatasource(t *testing.T) {
 func checkDatasourceDashboardAttrs(accProvider *schema.Provider, uniq string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		resource.TestCheckResourceAttr(
-			"data.datadog_dashboard.my_dash", "name", uniq),
+			"data.datadog_dashboard.dash_one", "name", uniq+" one"),
 		resource.TestCheckResourceAttrSet(
-			"data.datadog_dashboard.my_dash", "id"),
+			"data.datadog_dashboard.dash_one", "id"),
 		resource.TestCheckResourceAttrSet(
-			"data.datadog_dashboard.my_dash", "url"),
-		resource.TestCheckResourceAttrSet(
-			"data.datadog_dashboard.my_dash", "title"),
+			"data.datadog_dashboard.dash_one", "url"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_dashboard.dash_one", "title", uniq+" one"),
 	)
 }
 
 func testAccDashboardConfig(uniq string) string {
 	return fmt.Sprintf(`
-resource "datadog_dashboard" "foo" {
-  title = "%s"
+resource "datadog_dashboard" "dash_one" {
+  title = "%s one"
   layout_type = "ordered"
   widget {
 	alert_graph_definition {
@@ -56,16 +56,31 @@ resource "datadog_dashboard" "foo" {
 		}
 	}
   }
-}`, uniq)
+}
+  resource "datadog_dashboard" "dash_two" {
+	title = "%s two"
+	layout_type = "ordered"
+	widget {
+	  alert_graph_definition {
+		  alert_id = "895605"
+		  viz_type = "timeseries"
+		  title = "Widget Title"
+		  time = {
+			  live_span = "1h"
+		  }
+	  }
+	}
+}`, uniq, uniq)
 }
 
 func testAccDatasourceDashboardNameFilterConfig(uniq string) string {
 	return fmt.Sprintf(`
 %s
-data "datadog_dashboard" "my_dash" {
+data "datadog_dashboard" "dash_one" {
   depends_on = [
-    datadog_dashboard.foo,
+    datadog_dashboard.dash_one,
+    datadog_dashboard.dash_two,
   ]
-  name = "%s"
+  name = "%s one"
 }`, testAccDashboardConfig(uniq), uniq)
 }

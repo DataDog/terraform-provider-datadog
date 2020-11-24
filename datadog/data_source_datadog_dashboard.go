@@ -44,11 +44,11 @@ func dataSourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) er
 	}
 
 	searchedName := d.Get("name")
-	var foundDashes []*datadogV1.DashboardSummaryDashboards
+	var foundDashes []datadogV1.DashboardSummaryDashboards
 
 	for _, dash := range dashResponse.GetDashboards() {
 		if dash.GetTitle() == searchedName {
-			foundDashes = append(foundDashes, &dash)
+			foundDashes = append(foundDashes, dash)
 		}
 	}
 
