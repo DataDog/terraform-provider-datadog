@@ -1,3 +1,16 @@
+## 2.17.0 (November 24, 2020)
+
+FEATURES:
+
+-   `datadog_role`: Add role datasource ([#751](https://github.com/DataDog/terraform-provider-datadog/pull/751))
+-   `datadog_role`: Add roles resource and permissions datasource ([#753](https://github.com/DataDog/terraform-provider-datadog/pull/753))
+
+BUGFIXES:
+
+-   `datadog_dashboard`: Handle multiple dashboards correctly in the datasource ([#759](https://github.com/DataDog/terraform-provider-datadog/pull/759))
+-   `datadog_synthetics_test`: Set client certificate content as sensitive ([#750](https://github.com/DataDog/terraform-provider-datadog/pull/750))
+-   `datadog_monitor`: Fix monitor `no_data_timeframe` import ([#748](https://github.com/DataDog/terraform-provider-datadog/pull/748))
+
 ## 2.16.0 (November 9, 2020)
 
 IMPROVEMENTS:
