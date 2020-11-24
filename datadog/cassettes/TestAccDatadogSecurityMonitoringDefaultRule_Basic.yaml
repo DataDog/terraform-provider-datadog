@@ -1,0 +1,341 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"}],"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622","options":{"evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"first","query":"does not really match much"},{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["host"],"metric":"@network.bytes_read","name":"second","query":"does not really match much either"}],"tags":["i:tomato","u:tomato"]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - CreateSecurityMonitoringRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "4939535167108543114"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "7811586435638335287"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules
+    method: POST
+  response:
+    body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233623345,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
+      not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
+      case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datad0g.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Tue, 24 Nov 2020 16:00:23 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 16:00:23 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.3425795"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListSecurityMonitoringRules
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "5584086371275257832"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "7811586435638335287"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules
+    method: GET
+  response:
+    body: '{"meta":{"page":{"total_filtered_count":10,"total_count":95}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      Goal\nDetect when an attacker is trying to evade defenses by disabling or modifying
+      CloudTrail.\n\n### Strategy\nThis rule lets you monitor these CloudTrail API
+      calls to detect if an attacker is modifying or disabling CloudTrail:\n\n* [DeleteTrail][1]\n*
+      [UpdateTrail][2]\n* [StopLogging][3]\n\n### Triage & Response\n1. Determine
+      which user in your organization owns the API key that made this API call.\n2.
+      Contact the user to see if they intended to make this API call.\n3. If the user
+      did not make the API call:\n * Rotate the credentials.\n * Investigate if the
+      same credentials made other unauthorized API calls.\n\n[1]: https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_DeleteTrail.html\n[2]:
+      https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_UpdateTrail.html\n[3]:
+      https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_StopLogging.html","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058906229,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@userIdentity.arn"],"query":"source:cloudtrail
+      @evt.name:(DeleteTrail OR UpdateTrail OR StopLogging OR CreateTrail OR StartLogging)","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a
+      > 0"}],"type":"threshold","id":"xiu-vic-6zm","isDefault":true,"name":"AWS CloudTrail
+      configuration modified"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0007-discovery","technique:T1069-permission-groups-discovery","source:guardduty","scope:iam"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      Goal\nDetect when an attacker is enumerating IAM principals.\n\n### Strategy\nThis
+      rule lets you leverage GuardDuty to detect when an attacker is enumerating IAM
+      principals. The GuardDuty Findings which trigger this signal:\n\n* [Recon:IAMUser/NetworkPermissions][1]\n*
+      [Recon:IAMUser/ResourcePermissions][2]\n* [Recon:IAMUser/UserPermissions][3]
+      \n\n\n### Triage & Response\n1. Determine which user in your organization owns
+      the API key that made this API call.\n2. Contact the user to see if they intended
+      to make this API call.\n3. If the user did not make the API call:\n * Rotate
+      the credentials.\n * Investigate if the same credentials made other unauthorized
+      API calls.\n\n[1]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_recon.html#recon7\n[2]:
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_recon.html#recon8\n[3]:
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_recon.html#recon9","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1584994647235,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@detail.resource.accessKeyDetails.userName"],"query":"source:guardduty
+      @evt.name:(Recon\\:IAMUser\\/NetworkPermissions OR Recon\\:IAMUser\\/ResourcePermissions
+      OR Recon\\:IAMUser\\/UserPermissions)","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"medium","notifications":[],"name":"","condition":"a
+      > 0"}],"type":"threshold","id":"b1b-0ia-wgt","isDefault":true,"name":"AWS IAM
+      principal enumeration"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0040-impact","technique:T1496-resource-hijacking","source:guardduty","scope:ec2"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      Goal\nDetect when an EC2 instance is communicating with a cryptocurrency server\n\n###
+      Strategy\nThis rule lets you leverage GuardDuty to detect when an EC2 instance
+      has made a DNS request or is communicating with an IP that is associated with
+      cryptocurrency operations. The following GuardDuty Findings trigger this signal:\n\n*
+      [CryptoCurrency:EC2/BitcoinTool.B!DNS][1]\n* [CryptoCurrency:EC2/BitcoinTool.B][2]\n\n\n###
+      Triage & Response\n1. Determine which domain name or IP address triggered the
+      signal. This can be found in the samples. \n2. If the domain or IP address should
+      not have been requested, open a security investigation, and determine which
+      process requested the domain name or IP address.\n\n[1]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_crypto.html#crypto3\n[2]:
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_crypto.html#crypto4","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1584994648047,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      @evt.name:(CryptoCurrency\\:EC2\\/BitcoinTool.B\\!DNS OR CryptoCurrency\\:EC2\\/BitcoinTool.B)","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a
+      > 0"}],"type":"threshold","id":"pgg-axc-j1o","isDefault":true,"name":"AWS EC2
+      instance communicating with a cryptocurrency server"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","scope:template"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      Goal\nDetect Account Take Over (ATO) through brute force attempts\n\n### Strategy\nTo
+      determine a successful attempt: Detect a high amount of failed logins and at
+      least one successful login for a given user. This will generate a `HIGH` severity
+      signal.\nTo determine an attempt: Detect a high amount of failed logins. This
+      will generate an `INFO` severity signal.\n\n### Triage & Response\n1. Inspect
+      the logs to see if this was a valid login attempt.\n2. See if 2FA was authenticated.\n3.
+      If the user was compromised, rotate user credentials.","options":{"evaluationWindow":300,"maxSignalDuration":7200,"keepAlive":3600},"version":3,"createdAt":1585058893314,"filters":[],"queries":[{"distinctFields":[],"name":"failed_login","aggregation":"count","groupByFields":["@usr.name"],"query":"@evt.name:authentication
+      @evt.outcome:failure @usr.name:*","trackType":"logs"},{"distinctFields":[],"name":"successful_login","aggregation":"count","groupByFields":["@usr.name"],"query":"@evt.name:authentication
+      @evt.outcome:success @usr.name:*","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@slack-secops"],"name":"Successful","condition":"failed_login
+      > 50 && successful_login > 0"},{"status":"info","notifications":["@slack-secops"],"name":"Attempt","condition":"failed_login
+      > 5"}],"type":"threshold","id":"wwr-wvh-thk","isDefault":true,"name":"TEMPLATE
+      - Brute Force Attack Grouped By User"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0005-defense-evasion","technique:T1089-disabling-security-tools","source:cloudtrail","scope:eventbridge"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      Goal\nDetect when an attacker is trying to evade defenses by deleting or disabling
+      EventBridge rules.\n\n### Strategy\nThis rule lets you monitor these CloudTrail
+      API calls to detect if an attacker is modifying or disabling EventBridge rules:\n\n*
+      [DeleteRule][1]\n* [DisableRule][2]\n\n### Triage & Response\n1. Determine which
+      user in your organization owns the API key that made this API call.\n2. Contact
+      the user to see if they intended to make this API call.\n3. If the user did
+      not make the API call:\n * Rotate the credentials.\n * Investigate if the same
+      credentials made other unauthorized API calls.\n\n[1]: https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_DeleteRule.html\n[2]:
+      https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_DisableRule.html","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058894158,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@userIdentity.arn"],"query":"source:cloudtrail
+      @evt.name:(DeleteRule OR DisableRule)","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a
+      > 0"}],"type":"threshold","id":"y1o-jar-ggn","isDefault":true,"name":"AWS EventBridge
+      rule disabled or deleted"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0005-defense-evasion","technique:T1066-indicator-removal-from-tools","source:cloudtrail","scope:ec2"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      Goal\nDetect when an attacker is removing FlowLogs to cover their tracks.\n\n###
+      Strategy\nThis rule lets you monitor this CloudTrail API call to detect if an
+      attacker is deleting FlowLogs:\n\n* [DeleteFlowLogs][1]\n\n### Triage & Response\n1.
+      Determine which user in your organization owns the API key that made this API
+      call.\n2. Contact the user to see if they intended to make this API call.\n3.
+      If the user did not make the API call:\n * Rotate the credentials.\n * Investigate
+      if the same credentials made other unauthorized API calls.\n\n[1]: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DeleteFlowLogs.html","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058896109,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@userIdentity.arn"],"query":"source:cloudtrail
+      @evt.name:DeleteFlowLogs","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a
+      > 0"}],"type":"threshold","id":"hvo-2q8-ph8","isDefault":true,"name":"AWS FlowLogs
+      removed"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0040-impact","technique:T1485-data-destruction","source:cloudtrail","scope:ecs"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      Goal\nDetect when an attacker is destroying an ECS Cluster\n\n### Strategy\nThis
+      rule lets you monitor this CloudTrail API call to detect if an ECS cluster is
+      deleted:\n\n* [DeleteCluster][1]\n\n### Triage & Response\n1. Determine which
+      user in your organization owns the API key that made this API call.\n2. Contact
+      the user to see if they intended to make this API call.\n3. If the user did
+      not make the API call:\n * Rotate the credentials.\n * Investigate if the same
+      credentials made other unauthorized API calls.\n\n[1]: https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeleteCluster.html","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058898709,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@userIdentity.arn"],"query":"source:cloudtrail
+      @evt.name:DeleteCluster","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a
+      > 0"}],"type":"threshold","id":"gum-7e6-atn","isDefault":true,"name":"AWS ECS
+      cluster deleted"},{"creationAuthorId":0,"tags":["security:compliance","source:cloudtrail","scope:s3"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      Goal\nDetect when the S3 Public Access Block configuration has been removed
+      \n\n### Strategy\nThis rule lets you monitor this CloudTrail API call to detect
+      if an attacker is deleting the S3 Public Access Block configuration:\n\n* [DeleteAccountPublicAccessBlock][1]\n\n###
+      Triage & Response\n1. Determine who the user was who made this API call.\n2.
+      Contact the user and inform them of best practices of enabling Public Access
+      Block on S3 buckets.\n3. Re-enable Public Access Block on the S3 bucket.\n\nMore
+      details on S3 Public Block Public Access can be found [here][2].\n\n[1]: https://docs.aws.amazon.com/cli/latest/reference/s3api/delete-public-access-block.html\n[2]:
+      https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058899365,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@userIdentity.arn"],"query":"source:cloudtrail
+      @evt.name:DeleteAccountPublicAccessBlock","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a
+      > 0"}],"type":"threshold","id":"xf9-dqq-un5","isDefault":true,"name":"AWS S3
+      Public Access Block removed"},{"creationAuthorId":0,"tags":["security:threat-intel","source:gsuite","scope:gsuite"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      Goal\nDetect when a user attempts to log in with a password which is known to
+      be compromised.\n\n### Strategy\nThis rule allows you to monitor this Google
+      Activity API call to detect if an attacker is trying to login with a leaked
+      password: \n\n* [Leaked password][1]\n\n### Triage & Response\n1. Determine
+      which user in your organization owns the compromised password.\n2. Contact the
+      user and ensure they rotate the password on Google and any other accounts where
+      they may have reused this password. Ensure the user is aware of strong password
+      guidelines.\n\n[1]: https://developers.google.com/admin-sdk/reports/v1/appendix/activity/login#account_disabled_password_leak","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058900004,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@actor.email"],"query":"source:gsuite
+      @event.type:account_warning @event.name:account_disabled_password_leak","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"info","notifications":[],"name":"","condition":"a
+      > 0"}],"type":"threshold","id":"tyw-prf-p87","isDefault":true,"name":"User attempted
+      login with leaked password"},{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.14","source:cloudtrail","scope:ec2"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      Goal\nDetect when an attacker is destroying a VPC.\n\n### Strategy\nThis rule
+      lets you monitor this CloudTrail API call to detect if an attacker is deleting
+      a VPC:\n\n* [DeleteVpc][1]\n\n### Triage & Response\n1. Determine which user
+      in your organization owns the API key that made this API call.\n2. Contact the
+      user to see if they intended to make this API call.\n3. If the user did not
+      make the API call:\n * Rotate the credentials.\n * Investigate if the same credentials
+      made other unauthorized API calls.\n\n[1]: https://docs.aws.amazon.com/cli/latest/reference/ec2/delete-vpc.html","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058900634,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@userIdentity.arn"],"query":"source:cloudtrail
+      @evt.name:(DeleteVpc OR CreateVpc OR ModifyVpcAttribute OR AcceptVpcPeeringConnection
+      OR CreateVpcPeeringConnection OR DeleteVpcPeeringConnection OR RejectVpcPeeringConnection
+      OR  AttachClassicLinkVpc OR  DetachClassicLinkVpc OR DisableVpcClassicLink OR
+      EnableVpcClassicLink)","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a
+      > 0"}],"type":"threshold","id":"plc-vtt-tgx","isDefault":true,"name":"AWS VPC
+      created or modified"}]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datad0g.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Tue, 24 Nov 2020 16:00:23 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 16:00:23 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.3425795"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetSecurityMonitoringRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "7772230250909612010"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "7811586435638335287"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/ern-ufg-zfk
+    method: GET
+  response:
+    body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233623345,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
+      not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
+      case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datad0g.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Tue, 24 Nov 2020 16:00:23 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 16:00:23 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.3425795"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetSecurityMonitoringRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "3538098970744705921"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "7811586435638335287"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/ern-ufg-zfk
+    method: GET
+  response:
+    body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233623345,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
+      not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
+      case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datad0g.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Tue, 24 Nov 2020 16:00:23 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 16:00:23 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.3425795"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""

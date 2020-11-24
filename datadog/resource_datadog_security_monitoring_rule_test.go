@@ -27,7 +27,7 @@ func TestAccDatadogSecurityMonitoringRule_Basic(t *testing.T) {
 			},
 			{
 				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfig(ruleName),
-				Check: testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider, ruleName),
+				Check:  testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider, ruleName),
 			},
 		},
 	})
@@ -50,7 +50,7 @@ func TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields(t *testing.T) {
 			},
 			{
 				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfig(ruleName),
-				Check: testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider, ruleName),
+				Check:  testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider, ruleName),
 			},
 		},
 	})
@@ -71,10 +71,10 @@ func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
 				Config: testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(ruleName),
 			},
 			{
-				ResourceName: tfSecurityRuleName,
-				ImportState: true,
+				ResourceName:      tfSecurityRuleName,
+				ImportState:       true,
 				ImportStateVerify: true,
-				Check:  testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
+				Check:             testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
 			},
 		},
 	})

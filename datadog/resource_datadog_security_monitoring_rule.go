@@ -17,133 +17,137 @@ func resourceDatadogSecurityMonitoringRule() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"case": {
-				Type:        schema.TypeList,
-				Required:    true,
-				Description: "Cases for generating signals.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"name": {
-							Type:        schema.TypeString,
-							Optional:    true,
-							Description: "Name of the case.",
-						},
-						"condition": {
-							Type:        schema.TypeString,
-							Optional:    true,
-							Description: "A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries.",
-						},
-						"notifications": {
-							Type:        schema.TypeList,
-							Optional:    true,
-							Description: "Notification targets for each rule case.",
-							Elem:        &schema.Schema{Type: schema.TypeString},
-						},
-						"status": {
-							Type:        schema.TypeString,
-							Required:    true,
-							Description: "Severity of the Security Signal.",
-						},
+		Schema: datadogSecurityMonitoringRuleSchema(),
+	}
+}
+
+func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"case": {
+			Type:        schema.TypeList,
+			Required:    true,
+			Description: "Cases for generating signals.",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"name": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "Name of the case.",
+					},
+					"condition": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries.",
+					},
+					"notifications": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						Description: "Notification targets for each rule case.",
+						Elem:        &schema.Schema{Type: schema.TypeString},
+					},
+					"status": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "Severity of the Security Signal.",
 					},
 				},
 			},
+		},
 
-			"enabled": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Description: "Whether the rule is enabled.",
-			},
+		"enabled": {
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Description: "Whether the rule is enabled.",
+		},
 
-			"message": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Message for generated signals.",
-			},
+		"message": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "Message for generated signals.",
+		},
 
-			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The name of the rule.",
-			},
+		"name": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "The name of the rule.",
+		},
 
-			"options": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				MaxItems: 	 1,
-				Description: "Options on rules.",
+		"options": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "Options on rules.",
 
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"evaluation_window": {
-							Type:        schema.TypeInt,
-							Required:    true,
-							Description: "A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time.",
-						},
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"evaluation_window": {
+						Type:        schema.TypeInt,
+						Required:    true,
+						Description: "A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time.",
+					},
 
-						"keep_alive": {
-							Type:        schema.TypeInt,
-							Required:    true,
-							Description: "Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window.",
-						},
+					"keep_alive": {
+						Type:        schema.TypeInt,
+						Required:    true,
+						Description: "Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window.",
+					},
 
-						"max_signal_duration": {
-							Type:        schema.TypeInt,
-							Required:    true,
-							Description: "A signal will “close” regardless of the query being matched once the time exceeds the maximum duration. This time is calculated from the first seen timestamp.",
-						},
+					"max_signal_duration": {
+						Type:        schema.TypeInt,
+						Required:    true,
+						Description: "A signal will “close” regardless of the query being matched once the time exceeds the maximum duration. This time is calculated from the first seen timestamp.",
 					},
 				},
 			},
+		},
 
-			"query": {
-				Type:        schema.TypeList,
-				Required:    true,
-				Description: "Queries for selecting logs which are part of the rule.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"aggregation": {
-							Type:        schema.TypeString,
-							Optional:    true,
-							Description: "The aggregation type.",
-						},
-						"distinct_fields": {
-							Type:        schema.TypeList,
-							Optional:    true,
-							Description: "Field for which the cardinality is measured. Sent as an array.",
-							Elem:        &schema.Schema{Type: schema.TypeString},
-						},
-						"group_by_fields": {
-							Type:        schema.TypeList,
-							Optional:    true,
-							Description: "Fields to group by.",
-							Elem:        &schema.Schema{Type: schema.TypeString},
-						},
-						"metric": {
-							Type:        schema.TypeString,
-							Optional:    true,
-							Description: "The target field to aggregate over when using the sum or max aggregations.",
-						},
-						"name": {
-							Type:        schema.TypeString,
-							Optional:    true,
-							Description: "Name of the query.",
-						},
-						"query": {
-							Type:        schema.TypeString,
-							Required:    true,
-							Description: "Query to run on logs.",
-						},
+		"query": {
+			Type:        schema.TypeList,
+			Required:    true,
+			Description: "Queries for selecting logs which are part of the rule.",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"aggregation": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "The aggregation type.",
+					},
+					"distinct_fields": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						Description: "Field for which the cardinality is measured. Sent as an array.",
+						Elem:        &schema.Schema{Type: schema.TypeString},
+					},
+					"group_by_fields": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						Description: "Fields to group by.",
+						Elem:        &schema.Schema{Type: schema.TypeString},
+					},
+					"metric": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "The target field to aggregate over when using the sum or max aggregations.",
+					},
+					"name": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "Name of the query.",
+					},
+					"query": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "Query to run on logs.",
 					},
 				},
 			},
+		},
 
-			"tags": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				Description: "Tags for generated signals.",
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
+		"tags": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Tags for generated signals.",
+			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 	}
 }
