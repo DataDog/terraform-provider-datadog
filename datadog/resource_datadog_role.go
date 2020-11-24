@@ -7,6 +7,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 )
 
 // validPermissions is a map of all unrestricted permission IDs to their name
@@ -92,9 +93,10 @@ func getRolePermissionSchema() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"id": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "ID of the permission to assign.",
+				Type:         schema.TypeString,
+				Required:     true,
+				Description:  "ID of the permission to assign.",
+				ValidateFunc: validation.StringIsNotEmpty,
 			},
 			"name": {
 				Type:        schema.TypeString,

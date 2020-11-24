@@ -16,10 +16,10 @@ data "datadog_permissions" "bar" {}
 resource "datadog_role" "foo" {
   name  = "foo"
   permission {
-    id = "${data.datadog_permissions.bar.permissions.<name_of_permission_1>.id}"
+    id = data.datadog_permissions.bar.permissions.monitors_downtime
  }
   permission {
-    id = "${data.datadog_permissions.bar.permissions.<name_of_permission_2>.id}"
+    id = data.datadog_permissions.bar.permissions.monitors_write
  }
 }
 ```
