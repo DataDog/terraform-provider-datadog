@@ -16,7 +16,7 @@ import (
 type ScatterPlotRequest struct {
 	Aggregator   *WidgetAggregator       `json:"aggregator,omitempty"`
 	ApmQuery     *LogQueryDefinition     `json:"apm_query,omitempty"`
-	EventQuery   *EventQueryDefinition   `json:"event_query,omitempty"`
+	EventQuery   *LogQueryDefinition     `json:"event_query,omitempty"`
 	LogQuery     *LogQueryDefinition     `json:"log_query,omitempty"`
 	NetworkQuery *LogQueryDefinition     `json:"network_query,omitempty"`
 	ProcessQuery *ProcessQueryDefinition `json:"process_query,omitempty"`
@@ -108,9 +108,9 @@ func (o *ScatterPlotRequest) SetApmQuery(v LogQueryDefinition) {
 }
 
 // GetEventQuery returns the EventQuery field value if set, zero value otherwise.
-func (o *ScatterPlotRequest) GetEventQuery() EventQueryDefinition {
+func (o *ScatterPlotRequest) GetEventQuery() LogQueryDefinition {
 	if o == nil || o.EventQuery == nil {
-		var ret EventQueryDefinition
+		var ret LogQueryDefinition
 		return ret
 	}
 	return *o.EventQuery
@@ -118,7 +118,7 @@ func (o *ScatterPlotRequest) GetEventQuery() EventQueryDefinition {
 
 // GetEventQueryOk returns a tuple with the EventQuery field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ScatterPlotRequest) GetEventQueryOk() (*EventQueryDefinition, bool) {
+func (o *ScatterPlotRequest) GetEventQueryOk() (*LogQueryDefinition, bool) {
 	if o == nil || o.EventQuery == nil {
 		return nil, false
 	}
@@ -134,8 +134,8 @@ func (o *ScatterPlotRequest) HasEventQuery() bool {
 	return false
 }
 
-// SetEventQuery gets a reference to the given EventQueryDefinition and assigns it to the EventQuery field.
-func (o *ScatterPlotRequest) SetEventQuery(v EventQueryDefinition) {
+// SetEventQuery gets a reference to the given LogQueryDefinition and assigns it to the EventQuery field.
+func (o *ScatterPlotRequest) SetEventQuery(v LogQueryDefinition) {
 	o.EventQuery = &v
 }
 

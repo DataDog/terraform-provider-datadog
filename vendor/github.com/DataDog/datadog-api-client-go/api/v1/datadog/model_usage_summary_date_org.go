@@ -28,18 +28,20 @@ type UsageSummaryDateOrg struct {
 	BillableIngestedBytesSum *int64 `json:"billable_ingested_bytes_sum,omitempty"`
 	// Shows the average of all distinct containers over all hours in the current date for the given org.
 	ContainerAvg *int64 `json:"container_avg,omitempty"`
-	// Shows the high watermark of all distinct containers over all hours in the current date for the given org.
+	// Shows the high-water mark of all distinct containers over all hours in the current date for the given org.
 	ContainerHwm *int64 `json:"container_hwm,omitempty"`
 	// Shows the average number of distinct custom metrics over all hours in the current date for the given org.
 	CustomTsAvg *int64 `json:"custom_ts_avg,omitempty"`
 	// The average task count for Fargate.
 	FargateTasksCountAvg *int64 `json:"fargate_tasks_count_avg,omitempty"`
-	// Shows the high watermark of all Fargate tasks over all hours in the current date for the given org.
+	// Shows the high-water mark of all Fargate tasks over all hours in the current date for the given org.
 	FargateTasksCountHwm *int64 `json:"fargate_tasks_count_hwm,omitempty"`
 	// Shows the 99th percentile of all GCP hosts over all hours in the current date for the given org.
 	GcpHostTop99p *int64 `json:"gcp_host_top99p,omitempty"`
 	// The organization id.
 	Id *string `json:"id,omitempty"`
+	// Shows the high-water mark of incident management monthly active users over all hours in the current date for the given org.
+	IncidentManagementMonthlyActiveUsersHwm *int64 `json:"incident_management_monthly_active_users_hwm,omitempty"`
 	// Shows the sum of all log events indexed over all hours in the current date for the given org.
 	IndexedEventsCountSum *int64 `json:"indexed_events_count_sum,omitempty"`
 	// Shows the 99th percentile of all distinct infrastructure hosts over all hours in the current date for the given org.
@@ -501,6 +503,38 @@ func (o *UsageSummaryDateOrg) HasId() bool {
 // SetId gets a reference to the given string and assigns it to the Id field.
 func (o *UsageSummaryDateOrg) SetId(v string) {
 	o.Id = &v
+}
+
+// GetIncidentManagementMonthlyActiveUsersHwm returns the IncidentManagementMonthlyActiveUsersHwm field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetIncidentManagementMonthlyActiveUsersHwm() int64 {
+	if o == nil || o.IncidentManagementMonthlyActiveUsersHwm == nil {
+		var ret int64
+		return ret
+	}
+	return *o.IncidentManagementMonthlyActiveUsersHwm
+}
+
+// GetIncidentManagementMonthlyActiveUsersHwmOk returns a tuple with the IncidentManagementMonthlyActiveUsersHwm field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetIncidentManagementMonthlyActiveUsersHwmOk() (*int64, bool) {
+	if o == nil || o.IncidentManagementMonthlyActiveUsersHwm == nil {
+		return nil, false
+	}
+	return o.IncidentManagementMonthlyActiveUsersHwm, true
+}
+
+// HasIncidentManagementMonthlyActiveUsersHwm returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasIncidentManagementMonthlyActiveUsersHwm() bool {
+	if o != nil && o.IncidentManagementMonthlyActiveUsersHwm != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetIncidentManagementMonthlyActiveUsersHwm gets a reference to the given int64 and assigns it to the IncidentManagementMonthlyActiveUsersHwm field.
+func (o *UsageSummaryDateOrg) SetIncidentManagementMonthlyActiveUsersHwm(v int64) {
+	o.IncidentManagementMonthlyActiveUsersHwm = &v
 }
 
 // GetIndexedEventsCountSum returns the IndexedEventsCountSum field value if set, zero value otherwise.
@@ -991,6 +1025,9 @@ func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 	}
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
+	}
+	if o.IncidentManagementMonthlyActiveUsersHwm != nil {
+		toSerialize["incident_management_monthly_active_users_hwm"] = o.IncidentManagementMonthlyActiveUsersHwm
 	}
 	if o.IndexedEventsCountSum != nil {
 		toSerialize["indexed_events_count_sum"] = o.IndexedEventsCountSum

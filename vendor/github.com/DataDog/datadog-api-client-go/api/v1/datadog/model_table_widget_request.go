@@ -23,7 +23,7 @@ type TableWidgetRequest struct {
 	CellDisplayMode *[]TableWidgetCellDisplayMode `json:"cell_display_mode,omitempty"`
 	// List of conditional formats.
 	ConditionalFormats *[]WidgetConditionalFormat `json:"conditional_formats,omitempty"`
-	EventQuery         *EventQueryDefinition      `json:"event_query,omitempty"`
+	EventQuery         *LogQueryDefinition        `json:"event_query,omitempty"`
 	// For metric queries, the number of lines to show in the table. Only one request should have this property.
 	Limit        *int64                  `json:"limit,omitempty"`
 	LogQuery     *LogQueryDefinition     `json:"log_query,omitempty"`
@@ -246,9 +246,9 @@ func (o *TableWidgetRequest) SetConditionalFormats(v []WidgetConditionalFormat) 
 }
 
 // GetEventQuery returns the EventQuery field value if set, zero value otherwise.
-func (o *TableWidgetRequest) GetEventQuery() EventQueryDefinition {
+func (o *TableWidgetRequest) GetEventQuery() LogQueryDefinition {
 	if o == nil || o.EventQuery == nil {
-		var ret EventQueryDefinition
+		var ret LogQueryDefinition
 		return ret
 	}
 	return *o.EventQuery
@@ -256,7 +256,7 @@ func (o *TableWidgetRequest) GetEventQuery() EventQueryDefinition {
 
 // GetEventQueryOk returns a tuple with the EventQuery field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TableWidgetRequest) GetEventQueryOk() (*EventQueryDefinition, bool) {
+func (o *TableWidgetRequest) GetEventQueryOk() (*LogQueryDefinition, bool) {
 	if o == nil || o.EventQuery == nil {
 		return nil, false
 	}
@@ -272,8 +272,8 @@ func (o *TableWidgetRequest) HasEventQuery() bool {
 	return false
 }
 
-// SetEventQuery gets a reference to the given EventQueryDefinition and assigns it to the EventQuery field.
-func (o *TableWidgetRequest) SetEventQuery(v EventQueryDefinition) {
+// SetEventQuery gets a reference to the given LogQueryDefinition and assigns it to the EventQuery field.
+func (o *TableWidgetRequest) SetEventQuery(v LogQueryDefinition) {
 	o.EventQuery = &v
 }
 

@@ -2,6 +2,7 @@
 git_push.sh
 gotestsum.json
 coverage.txt
+examples
 .env*
 
 # Created by https://www.gitignore.io/api/go,vim,linux,macos,windows,visualstudiocode

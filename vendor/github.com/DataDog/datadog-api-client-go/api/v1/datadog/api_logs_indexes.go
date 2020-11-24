@@ -489,10 +489,10 @@ type ApiUpdateLogsIndexRequest struct {
 	ctx        _context.Context
 	ApiService *LogsIndexesApiService
 	name       string
-	body       *LogsIndex
+	body       *LogsIndexUpdateRequest
 }
 
-func (r ApiUpdateLogsIndexRequest) Body(body LogsIndex) ApiUpdateLogsIndexRequest {
+func (r ApiUpdateLogsIndexRequest) Body(body LogsIndexUpdateRequest) ApiUpdateLogsIndexRequest {
 	r.body = &body
 	return r
 }

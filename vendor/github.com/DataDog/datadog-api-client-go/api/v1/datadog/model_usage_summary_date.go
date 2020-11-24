@@ -31,18 +31,20 @@ type UsageSummaryDate struct {
 	BillableIngestedBytesSum *int64 `json:"billable_ingested_bytes_sum,omitempty"`
 	// Shows the average of all distinct containers over all hours in the current date for all organizations.
 	ContainerAvg *int64 `json:"container_avg,omitempty"`
-	// Shows the high watermark of all distinct containers over all hours in the current date for all organizations.
+	// Shows the high-water mark of all distinct containers over all hours in the current date for all organizations.
 	ContainerHwm *int64 `json:"container_hwm,omitempty"`
 	// Shows the average number of distinct custom metrics over all hours in the current date for all organizations.
 	CustomTsAvg *int64 `json:"custom_ts_avg,omitempty"`
 	// The date for the usage.
 	Date *time.Time `json:"date,omitempty"`
-	// Shows the high watermark of all Fargate tasks over all hours in the current date for all organizations.
+	// Shows the high-watermark of all Fargate tasks over all hours in the current date for all organizations.
 	FargateTasksCountAvg *int64 `json:"fargate_tasks_count_avg,omitempty"`
 	// Shows the average of all Fargate tasks over all hours in the current date for all organizations.
 	FargateTasksCountHwm *int64 `json:"fargate_tasks_count_hwm,omitempty"`
 	// Shows the 99th percentile of all GCP hosts over all hours in the current date for all organizations.
 	GcpHostTop99p *int64 `json:"gcp_host_top99p,omitempty"`
+	// Shows the high-water mark of incident management monthly active users over all hours in the current date for all organizations.
+	IncidentManagementMonthlyActiveUsersHwm *int64 `json:"incident_management_monthly_active_users_hwm,omitempty"`
 	// Shows the sum of all log events indexed over all hours in the current date for all organizations.
 	IndexedEventsCountSum *int64 `json:"indexed_events_count_sum,omitempty"`
 	// Shows the 99th percentile of all distinct infrastructure hosts over all hours in the current date for all organizations.
@@ -536,6 +538,38 @@ func (o *UsageSummaryDate) SetGcpHostTop99p(v int64) {
 	o.GcpHostTop99p = &v
 }
 
+// GetIncidentManagementMonthlyActiveUsersHwm returns the IncidentManagementMonthlyActiveUsersHwm field value if set, zero value otherwise.
+func (o *UsageSummaryDate) GetIncidentManagementMonthlyActiveUsersHwm() int64 {
+	if o == nil || o.IncidentManagementMonthlyActiveUsersHwm == nil {
+		var ret int64
+		return ret
+	}
+	return *o.IncidentManagementMonthlyActiveUsersHwm
+}
+
+// GetIncidentManagementMonthlyActiveUsersHwmOk returns a tuple with the IncidentManagementMonthlyActiveUsersHwm field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDate) GetIncidentManagementMonthlyActiveUsersHwmOk() (*int64, bool) {
+	if o == nil || o.IncidentManagementMonthlyActiveUsersHwm == nil {
+		return nil, false
+	}
+	return o.IncidentManagementMonthlyActiveUsersHwm, true
+}
+
+// HasIncidentManagementMonthlyActiveUsersHwm returns a boolean if a field has been set.
+func (o *UsageSummaryDate) HasIncidentManagementMonthlyActiveUsersHwm() bool {
+	if o != nil && o.IncidentManagementMonthlyActiveUsersHwm != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetIncidentManagementMonthlyActiveUsersHwm gets a reference to the given int64 and assigns it to the IncidentManagementMonthlyActiveUsersHwm field.
+func (o *UsageSummaryDate) SetIncidentManagementMonthlyActiveUsersHwm(v int64) {
+	o.IncidentManagementMonthlyActiveUsersHwm = &v
+}
+
 // GetIndexedEventsCountSum returns the IndexedEventsCountSum field value if set, zero value otherwise.
 func (o *UsageSummaryDate) GetIndexedEventsCountSum() int64 {
 	if o == nil || o.IndexedEventsCountSum == nil {
@@ -995,6 +1029,9 @@ func (o UsageSummaryDate) MarshalJSON() ([]byte, error) {
 	}
 	if o.GcpHostTop99p != nil {
 		toSerialize["gcp_host_top99p"] = o.GcpHostTop99p
+	}
+	if o.IncidentManagementMonthlyActiveUsersHwm != nil {
+		toSerialize["incident_management_monthly_active_users_hwm"] = o.IncidentManagementMonthlyActiveUsersHwm
 	}
 	if o.IndexedEventsCountSum != nil {
 		toSerialize["indexed_events_count_sum"] = o.IndexedEventsCountSum

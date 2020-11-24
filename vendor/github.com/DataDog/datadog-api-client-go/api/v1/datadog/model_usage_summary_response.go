@@ -15,65 +15,67 @@ import (
 
 // UsageSummaryResponse Response with hourly report of all data billed by Datadog all organizations.
 type UsageSummaryResponse struct {
-	// Shows the 99th percentile of all agent hosts over all hours in the current month(s) for all organizations.
+	// Shows the 99th percentile of all agent hosts over all hours in the current months for all organizations.
 	AgentHostTop99pSum *int64 `json:"agent_host_top99p_sum,omitempty"`
-	// Shows the 99th percentile of all distinct APM hosts over all hours in the current month(s) for all organizations.
+	// Shows the 99th percentile of all distinct APM hosts over all hours in the current months for all organizations.
 	ApmHostTop99pSum *int64 `json:"apm_host_top99p_sum,omitempty"`
-	// Shows the 99th percentile of all AWS hosts over all hours in the current month(s) for all organizations.
+	// Shows the 99th percentile of all AWS hosts over all hours in the current months for all organizations.
 	AwsHostTop99pSum *int64 `json:"aws_host_top99p_sum,omitempty"`
-	// Shows the average of the number of functions that executed 1 or more times each hour in the current month(s) for all organizations.
+	// Shows the average of the number of functions that executed 1 or more times each hour in the current months for all organizations.
 	AwsLambdaFuncCount *int64 `json:"aws_lambda_func_count,omitempty"`
-	// Shows the sum of all AWS Lambda invocations over all hours in the current month(s) for all organizations.
+	// Shows the sum of all AWS Lambda invocations over all hours in the current months for all organizations.
 	AwsLambdaInvocationsSum *int64 `json:"aws_lambda_invocations_sum,omitempty"`
-	// Shows the 99th percentile of all Azure app services over all hours in the current month(s) for all organizations.
+	// Shows the 99th percentile of all Azure app services over all hours in the current months for all organizations.
 	AzureAppServiceTop99pSum *int64 `json:"azure_app_service_top99p_sum,omitempty"`
-	// Shows the 99th percentile of all Azure hosts over all hours in the current month(s) for all organizations.
+	// Shows the 99th percentile of all Azure hosts over all hours in the current months for all organizations.
 	AzureHostTop99pSum *int64 `json:"azure_host_top99p_sum,omitempty"`
-	// Shows the sum of all log bytes ingested over all hours in the current month(s) for all organizations.
+	// Shows the sum of all log bytes ingested over all hours in the current months for all organizations.
 	BillableIngestedBytesAggSum *int64 `json:"billable_ingested_bytes_agg_sum,omitempty"`
-	// Shows the average of all distinct containers over all hours in the current month(s) for all organizations.
+	// Shows the average of all distinct containers over all hours in the current months for all organizations.
 	ContainerAvgSum *int64 `json:"container_avg_sum,omitempty"`
-	// Shows the high watermark of all distinct containers over all hours in the current month(s) for all organizations.
+	// Shows the sum of the high-water marks of all distinct containers over all hours in the current months for all organizations.
 	ContainerHwmSum *int64 `json:"container_hwm_sum,omitempty"`
-	// Shows the average number of distinct custom metrics over all hours in the current month(s) for all organizations.
+	// Shows the average number of distinct custom metrics over all hours in the current months for all organizations.
 	CustomTsSum *int64 `json:"custom_ts_sum,omitempty"`
-	// Shows the last date of usage in the current month(s) for all organizations.
+	// Shows the last date of usage in the current months for all organizations.
 	EndDate *time.Time `json:"end_date,omitempty"`
-	// Shows the average of all Fargate tasks over all hours in the current month(s) for all organizations.
+	// Shows the average of all Fargate tasks over all hours in the current months for all organizations.
 	FargateTasksCountAvgSum *int64 `json:"fargate_tasks_count_avg_sum,omitempty"`
-	// Shows the high watermark of all Fargate tasks over all hours in the current month(s) for all organizations.
+	// Shows the sum of the high-water marks of all Fargate tasks over all hours in the current months for all organizations.
 	FargateTasksCountHwmSum *int64 `json:"fargate_tasks_count_hwm_sum,omitempty"`
-	// Shows the 99th percentile of all GCP hosts over all hours in the current month(s) for all organizations.
+	// Shows the 99th percentile of all GCP hosts over all hours in the current months for all organizations.
 	GcpHostTop99pSum *int64 `json:"gcp_host_top99p_sum,omitempty"`
-	// Shows the sum of all log events indexed over all hours in the current month(s) for all organizations.
+	// Shows sum of the the high-water marks of incident management monthly active users in the current months for all organizations.
+	IncidentManagementMonthlyActiveUsersHwmSum *int64 `json:"incident_management_monthly_active_users_hwm_sum,omitempty"`
+	// Shows the sum of all log events indexed over all hours in the current months for all organizations.
 	IndexedEventsCountAggSum *int64 `json:"indexed_events_count_agg_sum,omitempty"`
-	// Shows the 99th percentile of all distinct infrastructure hosts over all hours in the current month(s) for all organizations.
+	// Shows the 99th percentile of all distinct infrastructure hosts over all hours in the current months for all organizations.
 	InfraHostTop99pSum *int64 `json:"infra_host_top99p_sum,omitempty"`
-	// Shows the sum of all log bytes ingested over all hours in the current month(s) for all organizations.
+	// Shows the sum of all log bytes ingested over all hours in the current months for all organizations.
 	IngestedEventsBytesAggSum *int64 `json:"ingested_events_bytes_agg_sum,omitempty"`
-	// Shows the the most recent hour in the current month(s) for all organizations for which all usages were calculated.
+	// Shows the the most recent hour in the current months for all organizations for which all usages were calculated.
 	LastUpdated *time.Time `json:"last_updated,omitempty"`
-	// Shows the sum of all mobile RUM Sessions over all hours in the current month(s) for all organizations.
+	// Shows the sum of all mobile RUM Sessions over all hours in the current months for all organizations.
 	MobileRumSessionCountAggSum *int64 `json:"mobile_rum_session_count_agg_sum,omitempty"`
-	// Shows the sum of all Network flows indexed over all hours in the current month(s) for all organizations.
+	// Shows the sum of all Network flows indexed over all hours in the current months for all organizations.
 	NetflowIndexedEventsCountAggSum *int64 `json:"netflow_indexed_events_count_agg_sum,omitempty"`
-	// Shows the 99th percentile of all distinct Networks hosts over all hours in the current month(s) for all organizations.
+	// Shows the 99th percentile of all distinct Networks hosts over all hours in the current months for all organizations.
 	NpmHostTop99pSum *int64 `json:"npm_host_top99p_sum,omitempty"`
-	// Shows the average number of profiled containers over all hours in the current month(s) for all organizations.
+	// Shows the average number of profiled containers over all hours in the current months for all organizations.
 	ProfilingContainerAgentCountAvg *int64 `json:"profiling_container_agent_count_avg,omitempty"`
-	// Shows the 99th percentile of all profiled hosts over all hours in the current month(s) for all organizations.
+	// Shows the 99th percentile of all profiled hosts over all hours in the current months for all organizations.
 	ProfilingHostCountTop99pSum *int64 `json:"profiling_host_count_top99p_sum,omitempty"`
-	// Shows the sum of all browser RUM Sessions over all hours in the current month(s) for all organizations.
+	// Shows the sum of all browser RUM Sessions over all hours in the current months for all organizations.
 	RumSessionCountAggSum *int64 `json:"rum_session_count_agg_sum,omitempty"`
-	// Shows the first date of usage in the current month(s) for all organizations.
+	// Shows the first date of usage in the current months for all organizations.
 	StartDate *time.Time `json:"start_date,omitempty"`
-	// Shows the sum of all Synthetic browser tests over all hours in the current month(s) for all organizations.
+	// Shows the sum of all Synthetic browser tests over all hours in the current months for all organizations.
 	SyntheticsBrowserCheckCallsCountAggSum *int64 `json:"synthetics_browser_check_calls_count_agg_sum,omitempty"`
-	// Shows the sum of all Synthetic API tests over all hours in the current month(s) for all organizations.
+	// Shows the sum of all Synthetic API tests over all hours in the current months for all organizations.
 	SyntheticsCheckCallsCountAggSum *int64 `json:"synthetics_check_calls_count_agg_sum,omitempty"`
-	// Shows the sum of all Indexed Spans indexed over all hours in the current month(s) for all organizations.
+	// Shows the sum of all Indexed Spans indexed over all hours in the current months for all organizations.
 	TraceSearchIndexedEventsCountAggSum *int64 `json:"trace_search_indexed_events_count_agg_sum,omitempty"`
-	// Shows the sum of all tracing without limits bytes ingested over all hours in the current month(s) for all organizations.
+	// Shows the sum of all tracing without limits bytes ingested over all hours in the current months for all organizations.
 	TwolIngestedEventsBytesAggSum *int64 `json:"twol_ingested_events_bytes_agg_sum,omitempty"`
 	// An array of objects regarding hourly usage.
 	Usage *[]UsageSummaryDate `json:"usage,omitempty"`
@@ -574,6 +576,38 @@ func (o *UsageSummaryResponse) HasGcpHostTop99pSum() bool {
 // SetGcpHostTop99pSum gets a reference to the given int64 and assigns it to the GcpHostTop99pSum field.
 func (o *UsageSummaryResponse) SetGcpHostTop99pSum(v int64) {
 	o.GcpHostTop99pSum = &v
+}
+
+// GetIncidentManagementMonthlyActiveUsersHwmSum returns the IncidentManagementMonthlyActiveUsersHwmSum field value if set, zero value otherwise.
+func (o *UsageSummaryResponse) GetIncidentManagementMonthlyActiveUsersHwmSum() int64 {
+	if o == nil || o.IncidentManagementMonthlyActiveUsersHwmSum == nil {
+		var ret int64
+		return ret
+	}
+	return *o.IncidentManagementMonthlyActiveUsersHwmSum
+}
+
+// GetIncidentManagementMonthlyActiveUsersHwmSumOk returns a tuple with the IncidentManagementMonthlyActiveUsersHwmSum field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryResponse) GetIncidentManagementMonthlyActiveUsersHwmSumOk() (*int64, bool) {
+	if o == nil || o.IncidentManagementMonthlyActiveUsersHwmSum == nil {
+		return nil, false
+	}
+	return o.IncidentManagementMonthlyActiveUsersHwmSum, true
+}
+
+// HasIncidentManagementMonthlyActiveUsersHwmSum returns a boolean if a field has been set.
+func (o *UsageSummaryResponse) HasIncidentManagementMonthlyActiveUsersHwmSum() bool {
+	if o != nil && o.IncidentManagementMonthlyActiveUsersHwmSum != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetIncidentManagementMonthlyActiveUsersHwmSum gets a reference to the given int64 and assigns it to the IncidentManagementMonthlyActiveUsersHwmSum field.
+func (o *UsageSummaryResponse) SetIncidentManagementMonthlyActiveUsersHwmSum(v int64) {
+	o.IncidentManagementMonthlyActiveUsersHwmSum = &v
 }
 
 // GetIndexedEventsCountAggSum returns the IndexedEventsCountAggSum field value if set, zero value otherwise.
@@ -1134,6 +1168,9 @@ func (o UsageSummaryResponse) MarshalJSON() ([]byte, error) {
 	}
 	if o.GcpHostTop99pSum != nil {
 		toSerialize["gcp_host_top99p_sum"] = o.GcpHostTop99pSum
+	}
+	if o.IncidentManagementMonthlyActiveUsersHwmSum != nil {
+		toSerialize["incident_management_monthly_active_users_hwm_sum"] = o.IncidentManagementMonthlyActiveUsersHwmSum
 	}
 	if o.IndexedEventsCountAggSum != nil {
 		toSerialize["indexed_events_count_agg_sum"] = o.IndexedEventsCountAggSum

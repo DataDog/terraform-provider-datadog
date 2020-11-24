@@ -43,6 +43,8 @@ type MonitorOptions struct {
 	RenotifyInterval NullableInt64 `json:"renotify_interval,omitempty"`
 	// A Boolean indicating whether this monitor needs a full window of data before it’s evaluated. We highly recommend you set this to `false` for sparse metrics, otherwise some evaluations are skipped. Default is false.
 	RequireFullWindow *bool `json:"require_full_window,omitempty"`
+	// A list of role identifiers that can be pulled from the Roles API. Cannot be used with `locked`.
+	RestrictedRoles *[]string `json:"restricted_roles,omitempty"`
 	// Information about the downtime applied to the monitor.
 	Silenced *map[string]int64 `json:"silenced,omitempty"`
 	// ID of the corresponding Synthetic check.
@@ -644,6 +646,38 @@ func (o *MonitorOptions) SetRequireFullWindow(v bool) {
 	o.RequireFullWindow = &v
 }
 
+// GetRestrictedRoles returns the RestrictedRoles field value if set, zero value otherwise.
+func (o *MonitorOptions) GetRestrictedRoles() []string {
+	if o == nil || o.RestrictedRoles == nil {
+		var ret []string
+		return ret
+	}
+	return *o.RestrictedRoles
+}
+
+// GetRestrictedRolesOk returns a tuple with the RestrictedRoles field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonitorOptions) GetRestrictedRolesOk() (*[]string, bool) {
+	if o == nil || o.RestrictedRoles == nil {
+		return nil, false
+	}
+	return o.RestrictedRoles, true
+}
+
+// HasRestrictedRoles returns a boolean if a field has been set.
+func (o *MonitorOptions) HasRestrictedRoles() bool {
+	if o != nil && o.RestrictedRoles != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRestrictedRoles gets a reference to the given []string and assigns it to the RestrictedRoles field.
+func (o *MonitorOptions) SetRestrictedRoles(v []string) {
+	o.RestrictedRoles = &v
+}
+
 // GetSilenced returns the Silenced field value if set, zero value otherwise.
 func (o *MonitorOptions) GetSilenced() map[string]int64 {
 	if o == nil || o.Silenced == nil {
@@ -872,6 +906,9 @@ func (o MonitorOptions) MarshalJSON() ([]byte, error) {
 	}
 	if o.RequireFullWindow != nil {
 		toSerialize["require_full_window"] = o.RequireFullWindow
+	}
+	if o.RestrictedRoles != nil {
+		toSerialize["restricted_roles"] = o.RestrictedRoles
 	}
 	if o.Silenced != nil {
 		toSerialize["silenced"] = o.Silenced
