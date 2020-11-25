@@ -9,7 +9,7 @@ Provides a Datadog synthetics global variable resource. This can be used to crea
 ## Example Usage
 
 ```hcl
-resource "datadog_synthetics_global_variable" "test_api" {
+resource "datadog_synthetics_global_variable" "test_variable" {
     name = "EXAMPLE_VARIABLE"
     description = "Description of the variable"
     tags = ["foo:bar", "env:test"]
@@ -17,18 +17,15 @@ resource "datadog_synthetics_global_variable" "test_api" {
 }
 ```
 
-## Secure global variables
-
-Secure global variables are not supported for now.
-
 ## Argument Reference
 
 The following arguments are supported:
 
--   `name`: (Required) Synthetics global variable name
--   `description`: (Optional) Description of the global variable
+-   `name`: (Required) Synthetics global variable name.
+-   `description`: (Optional) Description of the global variable.
 -   `tags`: (Required) A list of tags to associate with your synthetics global variable.
 -   `value`: (Required) The value of the global variable.
+-   `secure`: (Optional) Sets the variable as secure, true or false.
 
 ## Import
 
