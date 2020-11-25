@@ -122,16 +122,62 @@ func TestAccDatadogUser_RoleDatasource(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "1"),
-					resource.TestCheckResourceAttrPair(
-						"data.datadog_role.ro_role",
-						"id",
-						"datadog_user.foo",
-						"roles.0",
-					),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.ro_role"),
 				),
 			},
 		},
 	})
+}
+
+func TestAccDatadogUser_UpdateRole(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	username := strings.ToLower(uniqueEntityName(clock, t)) + "@example.com"
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogUserDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogUserConfigRoleUpdate1(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr("datadog_user.foo", "handle", username),
+					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "2"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.ro_role"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.st_role"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogUserConfigRoleUpdate2(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr("datadog_user.foo", "handle", username),
+					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "2"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.adm_role"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.st_role"),
+				),
+			},
+		},
+	})
+}
+
+func testCheckUserHasRole(username string, roleSource string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rootModule := s.RootModule()
+		roleID := rootModule.Resources[roleSource].Primary.Attributes["id"]
+		roleIDHash := schema.HashSchema(&schema.Schema{Type: schema.TypeString})(roleID)
+
+		return resource.TestCheckResourceAttr(username, fmt.Sprintf("roles.%d", roleIDHash), roleID)(s)
+	}
 }
 
 func testAccCheckDatadogUserDestroy(accProvider *schema.Provider) func(*terraform.State) error {
@@ -205,6 +251,39 @@ resource "datadog_user" "foo" {
   name      = "Test User"
   roles     = [data.datadog_role.ro_role.id]
 }`, uniq, uniq)
+}
+
+var roleDatasources = `
+data "datadog_role" "ro_role" {
+  filter = "Datadog Read Only Role"
+}
+data "datadog_role" "st_role" {
+  filter = "Datadog Standard Role"
+}
+data "datadog_role" "adm_role" {
+  filter = "Datadog Admin Role"
+}`
+
+func testAccCheckDatadogUserConfigRoleUpdate1(uniq string) string {
+	return fmt.Sprintf(`%s
+
+resource "datadog_user" "foo" {
+  email     = "%s"
+  handle    = "%s"
+  name      = "Test User"
+  roles     = [data.datadog_role.ro_role.id, data.datadog_role.st_role.id]
+}`, roleDatasources, uniq, uniq)
+}
+
+func testAccCheckDatadogUserConfigRoleUpdate2(uniq string) string {
+	return fmt.Sprintf(`%s
+
+resource "datadog_user" "foo" {
+  email     = "%s"
+  handle    = "%s"
+  name      = "Test User"
+  roles     = [data.datadog_role.st_role.id, data.datadog_role.adm_role.id]
+}`, roleDatasources, uniq, uniq)
 }
 
 func testAccCheckDatadogUserConfigUpdated(uniq string) string {

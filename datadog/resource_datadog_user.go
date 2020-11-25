@@ -68,7 +68,7 @@ func resourceDatadogUser() *schema.Resource {
 				Deprecated: "This parameter was removed from the API and has no effect",
 			},
 			"roles": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
@@ -130,7 +130,7 @@ func buildDatadogUserV2Struct(d *schema.ResourceData, providerConf *ProviderConf
 	userCreate := datadogV2.NewUserCreateDataWithDefaults()
 	userCreate.SetAttributes(*userAttributes)
 
-	roles := d.Get("roles").([]interface{})
+	roles := d.Get("roles").(*schema.Set).List()
 	rolesData := make([]datadogV2.RelationshipToRoleData, len(roles))
 	for i, role := range roles {
 		roleData := datadogV2.NewRelationshipToRoleData()
@@ -259,6 +259,35 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 		_, _, err := datadogClientV2.UsersApi.UpdateUser(authV2, d.Id()).Body(*userRequest).Execute()
 		if err != nil {
 			return translateClientError(err, "error updating user")
+		}
+		if d.HasChange("roles") {
+			oldRolesI, newRolesI := d.GetChange("roles")
+			oldRoles := oldRolesI.(*schema.Set)
+			newRoles := newRolesI.(*schema.Set)
+			rolesToRemove := oldRoles.Difference(newRoles)
+			rolesToAdd := newRoles.Difference(oldRoles)
+			for _, roleI := range rolesToRemove.List() {
+				role := roleI.(string)
+				userRelation := datadogV2.NewRelationshipToUserWithDefaults()
+				userRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
+				userRelationData.SetId(d.Id())
+				userRelation.SetData(*userRelationData)
+				_, _, err := datadogClientV2.RolesApi.RemoveUserFromRole(authV2, role).Body(*userRelation).Execute()
+				if err != nil {
+					return translateClientError(err, "error removing user from role")
+				}
+			}
+			for _, roleI := range rolesToAdd.List() {
+				role := roleI.(string)
+				roleRelation := datadogV2.NewRelationshipToUserWithDefaults()
+				roleRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
+				roleRelationData.SetId(d.Id())
+				roleRelation.SetData(*roleRelationData)
+				_, _, err := datadogClientV2.RolesApi.AddUserToRole(authV2, role).Body(*roleRelation).Execute()
+				if err != nil {
+					return translateClientError(err, "error adding user to role")
+				}
+			}
 		}
 	} else {
 		client := providerConf.CommunityClient
