@@ -23,7 +23,7 @@ func dataSourceDatadogRole() *schema.Resource {
 				Computed: true,
 			},
 			"user_count": {
-				Type:     schema.TypeString,
+				Type:     schema.TypeInt,
 				Computed: true,
 			},
 		},
@@ -68,8 +68,12 @@ func dataSourceDatadogRoleRead(d *schema.ResourceData, meta interface{}) error {
 
 	r := roles[roleIndex]
 	d.SetId(r.GetId())
-	d.Set("name", r.Attributes.GetName())
-	d.Set("user_count", r.Attributes.GetUserCount())
+	if err := d.Set("name", r.Attributes.GetName()); err != nil {
+		return err
+	}
+	if err := d.Set("user_count", r.Attributes.GetUserCount()); err != nil {
+		return err
+	}
 
 	return nil
 }
