@@ -53,7 +53,8 @@ resource "datadog_security_monitoring_rule" "myrule" {
 The following arguments are supported:
 - `message`: (Required) Message for generated signals.
 - `name`: (Required) The name of the rule.
-- `enabled`: (Optional) Whether the rule is enabled.
+- `enabled`: (Optional, default = True) Whether the rule is enabled.
+- `disabled`: (Optional, default = False) Whether the rule is disabled.
 - `query`: (Required) Queries for selecting logs which are part of the rule.
     - `name`: (Optional) Name of the query.
     - `query`: (Required) Query to run on logs.

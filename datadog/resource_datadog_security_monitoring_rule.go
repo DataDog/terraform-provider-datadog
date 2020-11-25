@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"errors"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -58,6 +59,12 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			Type:        schema.TypeBool,
 			Optional:    true,
 			Description: "Whether the rule is enabled.",
+		},
+
+		"disabled": {
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Description: "Whether the rule is disabled.",
 		},
 
 		"message": {
@@ -173,7 +180,10 @@ func resourceDatadogSecurityMonitoringRuleCreate(d *schema.ResourceData, meta in
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
-	ruleCreate := buildCreatePayload(d)
+	ruleCreate, err := buildCreatePayload(d)
+	if err != nil {
+		return err
+	}
 	response, _, err := datadogClientV2.SecurityMonitoringApi.CreateSecurityMonitoringRule(authV2).Body(ruleCreate).Execute()
 	if err != nil {
 		return translateClientError(err, "error creating security monitoring rule")
@@ -184,7 +194,7 @@ func resourceDatadogSecurityMonitoringRuleCreate(d *schema.ResourceData, meta in
 	return nil
 }
 
-func buildCreatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRuleCreatePayload {
+func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRuleCreatePayload, error) {
 	payload := datadogV2.SecurityMonitoringRuleCreatePayload{}
 	cases := d.Get("case").([]interface{})
 	payloadCases := make([]datadogV2.SecurityMonitoringRuleCaseCreate, len(cases))
@@ -213,10 +223,18 @@ func buildCreatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 	}
 	payload.Cases = payloadCases
 
-	if v, ok := d.GetOk("is_enabled"); ok {
-		payload.IsEnabled = v.(bool)
-	} else {
+	_, enabled := d.GetOk("enabled")
+	_, disabled := d.GetOk("disabled")
+
+	if enabled && disabled {
+		return payload, errors.New("rule can not be both enabled and disabled")
+	}
+
+	// Default to enabled
+	if enabled || !disabled {
 		payload.IsEnabled = true
+	} else {
+		payload.IsEnabled = false
 	}
 
 	payload.Message = d.Get("message").(string)
@@ -300,7 +318,7 @@ func buildCreatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 		payload.Tags = &tags
 	}
 
-	return payload
+	return payload, nil
 }
 
 func resourceDatadogSecurityMonitoringRuleRead(d *schema.ResourceData, meta interface{}) error {
