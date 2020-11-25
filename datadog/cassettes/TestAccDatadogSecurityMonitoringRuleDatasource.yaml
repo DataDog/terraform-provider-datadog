@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"}],"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606233045","options":{"evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"first","query":"does not really match much"},{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["host"],"metric":"@network.bytes_read","name":"second","query":"does not really match much either"}],"tags":["i:tomato","u:tomato"]}
+      {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"}],"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606311592","options":{"evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"first","query":"does not really match much"},{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["host"],"metric":"@network.bytes_read","name":"second","query":"does not really match much either"}],"tags":["i:tomato","u:tomato"]}
     form: {}
     headers:
       Accept:
@@ -16,20 +16,20 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "5711588703020060253"
+      - "3612985877905928795"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
+      - "2277756250056737664"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules
     method: POST
   response:
     body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233045652,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606311593456,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"xqh-ajz-v7o","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606233045"}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"uo7-i2v-clt","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606311592"}'
     headers:
       Cache-Control:
       - no-cache
@@ -40,11 +40,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:45 GMT
+      - Wed, 25 Nov 2020 13:39:53 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:45 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:53 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -53,7 +53,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425795"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -71,20 +71,20 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "8347750705961072996"
+      - "2857519292928224395"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
-    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/xqh-ajz-v7o
+      - "2277756250056737664"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/uo7-i2v-clt
     method: GET
   response:
     body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233045652,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606311593456,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"xqh-ajz-v7o","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606233045"}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"uo7-i2v-clt","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606311592"}'
     headers:
       Cache-Control:
       - no-cache
@@ -95,11 +95,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:45 GMT
+      - Wed, 25 Nov 2020 13:39:53 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:45 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:53 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -108,7 +108,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425726"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -126,20 +126,20 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "2117667958775940146"
+      - "3155829250450644504"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
-    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/xqh-ajz-v7o
+      - "2277756250056737664"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/uo7-i2v-clt
     method: GET
   response:
     body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233045652,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606311593456,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"xqh-ajz-v7o","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606233045"}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"uo7-i2v-clt","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606311592"}'
     headers:
       Cache-Control:
       - no-cache
@@ -150,11 +150,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:46 GMT
+      - Wed, 25 Nov 2020 13:39:53 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:45 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:53 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -163,7 +163,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425795"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -181,20 +181,20 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3480688241636647000"
+      - "4280026430675108593"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
-    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/xqh-ajz-v7o
+      - "2277756250056737664"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/uo7-i2v-clt
     method: GET
   response:
     body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233045652,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606311593456,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"xqh-ajz-v7o","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606233045"}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"uo7-i2v-clt","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606311592"}'
     headers:
       Cache-Control:
       - no-cache
@@ -205,11 +205,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:46 GMT
+      - Wed, 25 Nov 2020 13:39:54 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:46 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:53 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -218,7 +218,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425726"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -236,15 +236,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3029595005564675090"
+      - "8875443444233581392"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
+      - "2277756250056737664"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":95,"total_count":95}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+    body: '{"meta":{"page":{"total_filtered_count":96,"total_count":96}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
       Goal\nDetect when an attacker is trying to evade defenses by disabling or modifying
       CloudTrail.\n\n### Strategy\nThis rule lets you monitor these CloudTrail API
       calls to detect if an attacker is modifying or disabling CloudTrail:\n\n* [DeleteTrail][1]\n*
@@ -435,7 +435,7 @@ interactions:
       @evt.outcome:failure","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@usr.name"],"query":"@evt.name:authentication
       @evt.outcome:success","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@slack-secops"],"name":"Successful","condition":"a>5
       && b>0"},{"status":"info","notifications":[],"name":"Attempted","condition":"a>5"}],"type":"threshold","id":"deq-dom-scp","isDefault":true,"name":"TEMPLATE
-      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":true,"hasExtendedTitle":true,"message":"###
       Goal\nDetect Brute Force Attacks\n\n### Strategy\nLeverage GuardDuty and detect
       when an attacker is performing a brute force attack. The following are GuardDuty
       findings trigger this signal:\n\n* [UnauthorizedAccess:EC2/SSHBruteForce][1]\n*
@@ -448,7 +448,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -1358,11 +1358,16 @@ interactions:
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
       case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"},{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233045652,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233623345,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"xqh-ajz-v7o","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606233045"}]}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"},{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606311593456,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
+      not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
+      case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"uo7-i2v-clt","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606311592"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -1373,11 +1378,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:46 GMT
+      - Wed, 25 Nov 2020 13:39:54 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:46 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:53 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1386,7 +1391,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425726"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1404,20 +1409,20 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "2131961590110498133"
+      - "1686321142068410710"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
-    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/xqh-ajz-v7o
+      - "2277756250056737664"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/uo7-i2v-clt
     method: GET
   response:
     body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233045652,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606311593456,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"xqh-ajz-v7o","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606233045"}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"uo7-i2v-clt","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606311592"}'
     headers:
       Cache-Control:
       - no-cache
@@ -1428,11 +1433,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:46 GMT
+      - Wed, 25 Nov 2020 13:39:54 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:46 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:54 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1441,7 +1446,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425726"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1459,12 +1464,12 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3683765053169293446"
+      - "8508505030679311086"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
-    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/xqh-ajz-v7o
+      - "2277756250056737664"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/uo7-i2v-clt
     method: DELETE
   response:
     body: ""
@@ -1476,18 +1481,18 @@ interactions:
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datad0g.com/csp-report
       Date:
-      - Tue, 24 Nov 2020 15:50:46 GMT
+      - Wed, 25 Nov 2020 13:39:54 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:46 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:54 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425726"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -1505,15 +1510,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "755068866392346409"
+      - "3095566982717375331"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
+      - "2277756250056737664"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":94,"total_count":94}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+    body: '{"meta":{"page":{"total_filtered_count":95,"total_count":95}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
       Goal\nDetect when an attacker is trying to evade defenses by disabling or modifying
       CloudTrail.\n\n### Strategy\nThis rule lets you monitor these CloudTrail API
       calls to detect if an attacker is modifying or disabling CloudTrail:\n\n* [DeleteTrail][1]\n*
@@ -1704,7 +1709,7 @@ interactions:
       @evt.outcome:failure","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@usr.name"],"query":"@evt.name:authentication
       @evt.outcome:success","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@slack-secops"],"name":"Successful","condition":"a>5
       && b>0"},{"status":"info","notifications":[],"name":"Attempted","condition":"a>5"}],"type":"threshold","id":"deq-dom-scp","isDefault":true,"name":"TEMPLATE
-      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":true,"hasExtendedTitle":true,"message":"###
       Goal\nDetect Brute Force Attacks\n\n### Strategy\nLeverage GuardDuty and detect
       when an attacker is performing a brute force attack. The following are GuardDuty
       findings trigger this signal:\n\n* [UnauthorizedAccess:EC2/SSHBruteForce][1]\n*
@@ -1717,7 +1722,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -2626,7 +2631,12 @@ interactions:
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"}]}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"},{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233623345,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
+      not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
+      case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -2637,11 +2647,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:47 GMT
+      - Wed, 25 Nov 2020 13:39:54 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:46 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:54 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -2650,7 +2660,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425726"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -2668,15 +2678,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "7582250371849446401"
+      - "4082512355127934512"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
+      - "2277756250056737664"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":94,"total_count":94}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+    body: '{"meta":{"page":{"total_filtered_count":95,"total_count":95}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
       Goal\nDetect when an attacker is trying to evade defenses by disabling or modifying
       CloudTrail.\n\n### Strategy\nThis rule lets you monitor these CloudTrail API
       calls to detect if an attacker is modifying or disabling CloudTrail:\n\n* [DeleteTrail][1]\n*
@@ -2867,7 +2877,7 @@ interactions:
       @evt.outcome:failure","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@usr.name"],"query":"@evt.name:authentication
       @evt.outcome:success","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@slack-secops"],"name":"Successful","condition":"a>5
       && b>0"},{"status":"info","notifications":[],"name":"Attempted","condition":"a>5"}],"type":"threshold","id":"deq-dom-scp","isDefault":true,"name":"TEMPLATE
-      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":true,"hasExtendedTitle":true,"message":"###
       Goal\nDetect Brute Force Attacks\n\n### Strategy\nLeverage GuardDuty and detect
       when an attacker is performing a brute force attack. The following are GuardDuty
       findings trigger this signal:\n\n* [UnauthorizedAccess:EC2/SSHBruteForce][1]\n*
@@ -2880,7 +2890,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -3789,7 +3799,12 @@ interactions:
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"}]}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"},{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233623345,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
+      not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
+      case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -3800,11 +3815,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:47 GMT
+      - Wed, 25 Nov 2020 13:39:55 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:47 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:55 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -3813,7 +3828,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425726"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -3831,15 +3846,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6926693621030209105"
+      - "8024473118378994763"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
+      - "2277756250056737664"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":94,"total_count":94}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+    body: '{"meta":{"page":{"total_filtered_count":95,"total_count":95}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
       Goal\nDetect when an attacker is trying to evade defenses by disabling or modifying
       CloudTrail.\n\n### Strategy\nThis rule lets you monitor these CloudTrail API
       calls to detect if an attacker is modifying or disabling CloudTrail:\n\n* [DeleteTrail][1]\n*
@@ -4030,7 +4045,7 @@ interactions:
       @evt.outcome:failure","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@usr.name"],"query":"@evt.name:authentication
       @evt.outcome:success","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@slack-secops"],"name":"Successful","condition":"a>5
       && b>0"},{"status":"info","notifications":[],"name":"Attempted","condition":"a>5"}],"type":"threshold","id":"deq-dom-scp","isDefault":true,"name":"TEMPLATE
-      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":true,"hasExtendedTitle":true,"message":"###
       Goal\nDetect Brute Force Attacks\n\n### Strategy\nLeverage GuardDuty and detect
       when an attacker is performing a brute force attack. The following are GuardDuty
       findings trigger this signal:\n\n* [UnauthorizedAccess:EC2/SSHBruteForce][1]\n*
@@ -4043,7 +4058,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -4952,7 +4967,12 @@ interactions:
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"}]}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"},{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233623345,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
+      not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
+      case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -4963,11 +4983,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:48 GMT
+      - Wed, 25 Nov 2020 13:39:55 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:47 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:55 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -4976,7 +4996,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425795"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -4994,15 +5014,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "8833104902587616372"
+      - "5923135713268660027"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
+      - "2277756250056737664"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":94,"total_count":94}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+    body: '{"meta":{"page":{"total_filtered_count":95,"total_count":95}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
       Goal\nDetect when an attacker is trying to evade defenses by disabling or modifying
       CloudTrail.\n\n### Strategy\nThis rule lets you monitor these CloudTrail API
       calls to detect if an attacker is modifying or disabling CloudTrail:\n\n* [DeleteTrail][1]\n*
@@ -5193,7 +5213,7 @@ interactions:
       @evt.outcome:failure","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@usr.name"],"query":"@evt.name:authentication
       @evt.outcome:success","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@slack-secops"],"name":"Successful","condition":"a>5
       && b>0"},{"status":"info","notifications":[],"name":"Attempted","condition":"a>5"}],"type":"threshold","id":"deq-dom-scp","isDefault":true,"name":"TEMPLATE
-      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":true,"hasExtendedTitle":true,"message":"###
       Goal\nDetect Brute Force Attacks\n\n### Strategy\nLeverage GuardDuty and detect
       when an attacker is performing a brute force attack. The following are GuardDuty
       findings trigger this signal:\n\n* [UnauthorizedAccess:EC2/SSHBruteForce][1]\n*
@@ -5206,7 +5226,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -6115,7 +6135,12 @@ interactions:
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"}]}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"},{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233623345,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
+      not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
+      case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -6126,11 +6151,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:48 GMT
+      - Wed, 25 Nov 2020 13:39:55 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:48 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:55 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -6139,7 +6164,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425795"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -6157,15 +6182,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "1993517764146105460"
+      - "1729248428473322589"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
+      - "2277756250056737664"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":94,"total_count":94}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+    body: '{"meta":{"page":{"total_filtered_count":95,"total_count":95}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
       Goal\nDetect when an attacker is trying to evade defenses by disabling or modifying
       CloudTrail.\n\n### Strategy\nThis rule lets you monitor these CloudTrail API
       calls to detect if an attacker is modifying or disabling CloudTrail:\n\n* [DeleteTrail][1]\n*
@@ -6356,7 +6381,7 @@ interactions:
       @evt.outcome:failure","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@usr.name"],"query":"@evt.name:authentication
       @evt.outcome:success","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@slack-secops"],"name":"Successful","condition":"a>5
       && b>0"},{"status":"info","notifications":[],"name":"Attempted","condition":"a>5"}],"type":"threshold","id":"deq-dom-scp","isDefault":true,"name":"TEMPLATE
-      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":true,"hasExtendedTitle":true,"message":"###
       Goal\nDetect Brute Force Attacks\n\n### Strategy\nLeverage GuardDuty and detect
       when an attacker is performing a brute force attack. The following are GuardDuty
       findings trigger this signal:\n\n* [UnauthorizedAccess:EC2/SSHBruteForce][1]\n*
@@ -6369,7 +6394,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -7278,7 +7303,12 @@ interactions:
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"}]}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"},{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233623345,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
+      not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
+      case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -7289,11 +7319,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:48 GMT
+      - Wed, 25 Nov 2020 13:39:56 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:48 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:55 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -7302,7 +7332,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425795"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -7320,15 +7350,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6688189628482408515"
+      - "6843684042654553423"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
+      - "2277756250056737664"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":94,"total_count":94}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+    body: '{"meta":{"page":{"total_filtered_count":95,"total_count":95}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
       Goal\nDetect when an attacker is trying to evade defenses by disabling or modifying
       CloudTrail.\n\n### Strategy\nThis rule lets you monitor these CloudTrail API
       calls to detect if an attacker is modifying or disabling CloudTrail:\n\n* [DeleteTrail][1]\n*
@@ -7519,7 +7549,7 @@ interactions:
       @evt.outcome:failure","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@usr.name"],"query":"@evt.name:authentication
       @evt.outcome:success","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@slack-secops"],"name":"Successful","condition":"a>5
       && b>0"},{"status":"info","notifications":[],"name":"Attempted","condition":"a>5"}],"type":"threshold","id":"deq-dom-scp","isDefault":true,"name":"TEMPLATE
-      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":true,"hasExtendedTitle":true,"message":"###
       Goal\nDetect Brute Force Attacks\n\n### Strategy\nLeverage GuardDuty and detect
       when an attacker is performing a brute force attack. The following are GuardDuty
       findings trigger this signal:\n\n* [UnauthorizedAccess:EC2/SSHBruteForce][1]\n*
@@ -7532,7 +7562,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -8441,7 +8471,12 @@ interactions:
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"}]}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"},{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233623345,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
+      not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
+      case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -8452,11 +8487,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:48 GMT
+      - Wed, 25 Nov 2020 13:39:56 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:48 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:56 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -8465,7 +8500,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425726"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -8483,15 +8518,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "2863303442533429337"
+      - "827658985240167529"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
+      - "2277756250056737664"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":94,"total_count":94}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+    body: '{"meta":{"page":{"total_filtered_count":95,"total_count":95}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
       Goal\nDetect when an attacker is trying to evade defenses by disabling or modifying
       CloudTrail.\n\n### Strategy\nThis rule lets you monitor these CloudTrail API
       calls to detect if an attacker is modifying or disabling CloudTrail:\n\n* [DeleteTrail][1]\n*
@@ -8682,7 +8717,7 @@ interactions:
       @evt.outcome:failure","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@usr.name"],"query":"@evt.name:authentication
       @evt.outcome:success","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@slack-secops"],"name":"Successful","condition":"a>5
       && b>0"},{"status":"info","notifications":[],"name":"Attempted","condition":"a>5"}],"type":"threshold","id":"deq-dom-scp","isDefault":true,"name":"TEMPLATE
-      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":true,"hasExtendedTitle":true,"message":"###
       Goal\nDetect Brute Force Attacks\n\n### Strategy\nLeverage GuardDuty and detect
       when an attacker is performing a brute force attack. The following are GuardDuty
       findings trigger this signal:\n\n* [UnauthorizedAccess:EC2/SSHBruteForce][1]\n*
@@ -8695,7 +8730,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -9604,7 +9639,12 @@ interactions:
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"}]}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"},{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233623345,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
+      not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
+      case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -9615,11 +9655,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:49 GMT
+      - Wed, 25 Nov 2020 13:39:56 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:49 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:56 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -9628,7 +9668,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425795"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -9646,15 +9686,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "7534516835861063069"
+      - "1594705770392639359"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
+      - "2277756250056737664"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":94,"total_count":94}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+    body: '{"meta":{"page":{"total_filtered_count":95,"total_count":95}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
       Goal\nDetect when an attacker is trying to evade defenses by disabling or modifying
       CloudTrail.\n\n### Strategy\nThis rule lets you monitor these CloudTrail API
       calls to detect if an attacker is modifying or disabling CloudTrail:\n\n* [DeleteTrail][1]\n*
@@ -9845,7 +9885,7 @@ interactions:
       @evt.outcome:failure","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@usr.name"],"query":"@evt.name:authentication
       @evt.outcome:success","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@slack-secops"],"name":"Successful","condition":"a>5
       && b>0"},{"status":"info","notifications":[],"name":"Attempted","condition":"a>5"}],"type":"threshold","id":"deq-dom-scp","isDefault":true,"name":"TEMPLATE
-      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":true,"hasExtendedTitle":true,"message":"###
       Goal\nDetect Brute Force Attacks\n\n### Strategy\nLeverage GuardDuty and detect
       when an attacker is performing a brute force attack. The following are GuardDuty
       findings trigger this signal:\n\n* [UnauthorizedAccess:EC2/SSHBruteForce][1]\n*
@@ -9858,7 +9898,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -10767,7 +10807,12 @@ interactions:
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"}]}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"},{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233623345,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
+      not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
+      case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -10778,11 +10823,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:49 GMT
+      - Wed, 25 Nov 2020 13:39:57 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:49 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:57 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -10791,7 +10836,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425726"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -10809,15 +10854,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3044643620107530729"
+      - "7821771131487949522"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
+      - "2277756250056737664"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":94,"total_count":94}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+    body: '{"meta":{"page":{"total_filtered_count":95,"total_count":95}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
       Goal\nDetect when an attacker is trying to evade defenses by disabling or modifying
       CloudTrail.\n\n### Strategy\nThis rule lets you monitor these CloudTrail API
       calls to detect if an attacker is modifying or disabling CloudTrail:\n\n* [DeleteTrail][1]\n*
@@ -11008,7 +11053,7 @@ interactions:
       @evt.outcome:failure","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@usr.name"],"query":"@evt.name:authentication
       @evt.outcome:success","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@slack-secops"],"name":"Successful","condition":"a>5
       && b>0"},{"status":"info","notifications":[],"name":"Attempted","condition":"a>5"}],"type":"threshold","id":"deq-dom-scp","isDefault":true,"name":"TEMPLATE
-      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":true,"hasExtendedTitle":true,"message":"###
       Goal\nDetect Brute Force Attacks\n\n### Strategy\nLeverage GuardDuty and detect
       when an attacker is performing a brute force attack. The following are GuardDuty
       findings trigger this signal:\n\n* [UnauthorizedAccess:EC2/SSHBruteForce][1]\n*
@@ -11021,7 +11066,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -11930,7 +11975,12 @@ interactions:
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"}]}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"},{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233623345,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
+      not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
+      case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -11941,11 +11991,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:49 GMT
+      - Wed, 25 Nov 2020 13:39:57 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:49 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:57 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -11954,7 +12004,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425726"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -11972,15 +12022,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "799482473888740262"
+      - "4855404875157971684"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
+      - "2277756250056737664"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":94,"total_count":94}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+    body: '{"meta":{"page":{"total_filtered_count":95,"total_count":95}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
       Goal\nDetect when an attacker is trying to evade defenses by disabling or modifying
       CloudTrail.\n\n### Strategy\nThis rule lets you monitor these CloudTrail API
       calls to detect if an attacker is modifying or disabling CloudTrail:\n\n* [DeleteTrail][1]\n*
@@ -12171,7 +12221,7 @@ interactions:
       @evt.outcome:failure","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@usr.name"],"query":"@evt.name:authentication
       @evt.outcome:success","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@slack-secops"],"name":"Successful","condition":"a>5
       && b>0"},{"status":"info","notifications":[],"name":"Attempted","condition":"a>5"}],"type":"threshold","id":"deq-dom-scp","isDefault":true,"name":"TEMPLATE
-      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":true,"hasExtendedTitle":true,"message":"###
       Goal\nDetect Brute Force Attacks\n\n### Strategy\nLeverage GuardDuty and detect
       when an attacker is performing a brute force attack. The following are GuardDuty
       findings trigger this signal:\n\n* [UnauthorizedAccess:EC2/SSHBruteForce][1]\n*
@@ -12184,7 +12234,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -13093,7 +13143,12 @@ interactions:
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"}]}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"},{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233623345,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
+      not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
+      case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -13104,11 +13159,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:50 GMT
+      - Wed, 25 Nov 2020 13:39:57 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:50 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:57 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -13117,7 +13172,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425795"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -13135,12 +13190,12 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "8900688448461159157"
+      - "4831379640811588344"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
-    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/1b8d1fa28f145da35d4964de90e1b78317f806a27dee5f2b8eea3d160e984c55
+      - "2277756250056737664"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/c86bc3e099237a5f8d09b38a02bb154024dc495dcd9026527473af046f3c0ca0
     method: GET
   response:
     body: '{"message": "The resource could not be found.<br /><br />\n\n\n", "code":
@@ -13153,7 +13208,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 24 Nov 2020 15:50:50 GMT
+      - Wed, 25 Nov 2020 13:39:57 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -13163,7 +13218,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425795"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found
@@ -13181,15 +13236,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6097774566028794615"
+      - "7160578775439088210"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6706927721692723962"
+      - "2277756250056737664"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":94,"total_count":94}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+    body: '{"meta":{"page":{"total_filtered_count":95,"total_count":95}},"data":[{"creationAuthorId":0,"tags":["security:compliance","framework:cis-aws","control:cis-3.5","source:cloudtrail","scope:cloudtrail"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
       Goal\nDetect when an attacker is trying to evade defenses by disabling or modifying
       CloudTrail.\n\n### Strategy\nThis rule lets you monitor these CloudTrail API
       calls to detect if an attacker is modifying or disabling CloudTrail:\n\n* [DeleteTrail][1]\n*
@@ -13380,7 +13435,7 @@ interactions:
       @evt.outcome:failure","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["@usr.name"],"query":"@evt.name:authentication
       @evt.outcome:success","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@slack-secops"],"name":"Successful","condition":"a>5
       && b>0"},{"status":"info","notifications":[],"name":"Attempted","condition":"a>5"}],"type":"threshold","id":"deq-dom-scp","isDefault":true,"name":"TEMPLATE
-      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":false,"hasExtendedTitle":true,"message":"###
+      - Brute Force Attack Grouped By IP"},{"creationAuthorId":0,"tags":["security:attack","tactic:TA0006-credential-access","technique:T1110-brute-force","source:guardduty","scope:ec2"],"isEnabled":true,"hasExtendedTitle":true,"message":"###
       Goal\nDetect Brute Force Attacks\n\n### Strategy\nLeverage GuardDuty and detect
       when an attacker is performing a brute force attack. The following are GuardDuty
       findings trigger this signal:\n\n* [UnauthorizedAccess:EC2/SSHBruteForce][1]\n*
@@ -13393,7 +13448,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":4,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -14302,7 +14357,12 @@ interactions:
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"}]}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"25j-s8v-x2t","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606230156"},{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606233623345,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
+      not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
+      case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -14313,11 +14373,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 24 Nov 2020 15:50:50 GMT
+      - Wed, 25 Nov 2020 13:39:57 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Tue, 01-Dec-2020 15:50:50 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 13:39:57 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -14326,7 +14386,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3425726"
+      - "35.3431093"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
