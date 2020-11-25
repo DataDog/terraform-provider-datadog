@@ -33,10 +33,9 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"status": {
-							Type:        schema.TypeList,
+							Type:        schema.TypeString,
 							Required:    true,
 							Description: "Status of the rule case to match.",
-							Elem:        &schema.Schema{Type: schema.TypeString},
 						},
 						"notifications": {
 							Type:        schema.TypeList,
