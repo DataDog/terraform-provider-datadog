@@ -25,9 +25,10 @@ func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
 				Config: createSyntheticsPrivateLocationConfig(privateLocationName),
 			},
 			{
-				ResourceName:      "datadog_synthetics_private_location.foo",
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:            "datadog_synthetics_private_location.foo",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"config"},
 			},
 		},
 	})
@@ -80,6 +81,10 @@ func createSyntheticsPrivateLocationStep(accProvider *schema.Provider, clock clo
 				"datadog_synthetics_private_location.foo", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_private_location.foo", "tags.1", "baz"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_private_location.foo", "config"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_private_location.foo", "id"),
 		),
 	}
 }
@@ -111,6 +116,10 @@ func updateSyntheticsPrivateLocationStep(accProvider *schema.Provider, clock clo
 				"datadog_synthetics_private_location.foo", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_private_location.foo", "tags.2", "env:test"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_private_location.foo", "config"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_private_location.foo", "id"),
 		),
 	}
 }

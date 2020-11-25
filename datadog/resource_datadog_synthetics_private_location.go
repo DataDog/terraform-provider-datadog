@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"encoding/json"
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -28,6 +29,11 @@ func resourceDatadogSyntheticsPrivateLocation() *schema.Resource {
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
+			"config": {
+				Type:      schema.TypeString,
+				Computed:  true,
+				Sensitive: true,
+			},
 		},
 	}
 }
@@ -50,7 +56,8 @@ func resourceDatadogSyntheticsPrivateLocationCreate(d *schema.ResourceData, meta
 	d.SetId(createdSyntheticsPrivateLocation.GetId())
 
 	// set the config that is only returned when creating the private location
-	d.Set("config", createdSyntheticsPrivateLocationResponse.GetConfig())
+	conf, _ := json.Marshal(createdSyntheticsPrivateLocationResponse.GetConfig())
+	d.Set("config", string(conf))
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
 	return resourceDatadogSyntheticsPrivateLocationRead(d, meta)
