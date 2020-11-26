@@ -108,7 +108,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         metric = "@network.bytes_read"
     }
 
-	case {
+    case {
         name = "high case"
         status = "high"
         condition = "first > 3 || second > 10"
@@ -116,7 +116,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     }
 
     case {
-		name = "warning case"
+        name = "warning case"
         status = "medium"
         condition = "first > 0 || second > 0"
     }
@@ -204,7 +204,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         metric = "@network.bytes_read"
     }
 
-	case {
+    case {
         name = "high case (updated)"
         status = "medium"
         condition = "first_updated > 3"
@@ -212,7 +212,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     }
 
     case {
-		name = "warning case (updated)"
+        name = "warning case (updated)"
         status = "high"
         condition = "first_updated > 0"
     }
@@ -291,7 +291,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         metric = "@network.bytes_read"
     }
 
-	case {
+    case {
         name = "high case (updated)"
         status = "medium"
         condition = "first_updated > 3"
@@ -299,7 +299,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     }
 
     case {
-		name = "warning case (updated)"
+        name = "warning case (updated)"
         status = "high"
         condition = "first_updated > 0"
     }
@@ -375,9 +375,9 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         group_by_fields = ["host"]
     }
 
-	case {
+    case {
         status = "high"
-		condition = "a > 0"
+        condition = "a > 0"
     }
 
     options {

@@ -27,6 +27,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			Type:        schema.TypeList,
 			Required:    true,
 			Description: "Cases for generating signals.",
+			MaxItems:    5,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"name": {
@@ -190,10 +191,37 @@ func resourceDatadogSecurityMonitoringRuleCreate(d *schema.ResourceData, meta in
 
 func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRuleCreatePayload, error) {
 	payload := datadogV2.SecurityMonitoringRuleCreatePayload{}
-	cases := d.Get("case").([]interface{})
-	payloadCases := make([]datadogV2.SecurityMonitoringRuleCaseCreate, len(cases))
+	payload.Cases = buildCreatePayloadCases(d)
 
-	for idx, ruleCaseIf := range cases {
+	payload.IsEnabled = d.Get("enabled").(bool)
+	payload.Message = d.Get("message").(string)
+	payload.Name = d.Get("name").(string)
+
+	if v, ok := d.GetOk("options"); ok {
+		tfOptionsList := v.([]interface{})
+		payloadOptions := buildCreatePayloadOptions(tfOptionsList)
+		payload.Options = *payloadOptions
+	}
+
+	payload.Queries = buildCreatePayloadQueries(d)
+
+	if v, ok := d.GetOk("tags"); ok {
+		tfTags := v.([]interface{})
+		tags := make([]string, len(tfTags))
+		for i, value := range tfTags {
+			tags[i] = value.(string)
+		}
+		payload.Tags = &tags
+	}
+
+	return payload, nil
+}
+
+func buildCreatePayloadCases(d *schema.ResourceData) []datadogV2.SecurityMonitoringRuleCaseCreate {
+	tfCases := d.Get("case").([]interface{})
+	payloadCases := make([]datadogV2.SecurityMonitoringRuleCaseCreate, len(tfCases))
+
+	for idx, ruleCaseIf := range tfCases {
 		ruleCase := ruleCaseIf.(map[string]interface{})
 		status := datadogV2.SecurityMonitoringRuleSeverity(ruleCase["status"].(string))
 		structRuleCase := datadogV2.NewSecurityMonitoringRuleCaseCreate(status)
@@ -215,36 +243,33 @@ func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 		}
 		payloadCases[idx] = *structRuleCase
 	}
-	payload.Cases = payloadCases
+	return payloadCases
+}
 
-	payload.IsEnabled = d.Get("enabled").(bool)
-	payload.Message = d.Get("message").(string)
-	payload.Name = d.Get("name").(string)
-
-	if v, ok := d.GetOk("options"); ok {
-		payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
-		tfOptionsList := v.([]interface{})
-		var tfOptions map[string]interface{}
-		if tfOptionsList[0] == nil {
-			tfOptions = make(map[string]interface{})
-		} else {
-			tfOptions = tfOptionsList[0].(map[string]interface{})
-		}
-		if v, ok := tfOptions["evaluation_window"]; ok {
-			evaluationWindow := datadogV2.SecurityMonitoringRuleEvaluationWindow(v.(int))
-			payloadOptions.EvaluationWindow = &evaluationWindow
-		}
-		if v, ok := tfOptions["keep_alive"]; ok {
-			keepAlive := datadogV2.SecurityMonitoringRuleKeepAlive(v.(int))
-			payloadOptions.KeepAlive = &keepAlive
-		}
-		if v, ok := tfOptions["max_signal_duration"]; ok {
-			maxSignalDuration := datadogV2.SecurityMonitoringRuleMaxSignalDuration(v.(int))
-			payloadOptions.MaxSignalDuration = &maxSignalDuration
-		}
-		payload.Options = *payloadOptions
+func buildCreatePayloadOptions(tfOptionsList []interface{}) *datadogV2.SecurityMonitoringRuleOptions {
+	payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
+	var tfOptions map[string]interface{}
+	if tfOptionsList[0] == nil {
+		tfOptions = make(map[string]interface{})
+	} else {
+		tfOptions = tfOptionsList[0].(map[string]interface{})
 	}
+	if v, ok := tfOptions["evaluation_window"]; ok {
+		evaluationWindow := datadogV2.SecurityMonitoringRuleEvaluationWindow(v.(int))
+		payloadOptions.EvaluationWindow = &evaluationWindow
+	}
+	if v, ok := tfOptions["keep_alive"]; ok {
+		keepAlive := datadogV2.SecurityMonitoringRuleKeepAlive(v.(int))
+		payloadOptions.KeepAlive = &keepAlive
+	}
+	if v, ok := tfOptions["max_signal_duration"]; ok {
+		maxSignalDuration := datadogV2.SecurityMonitoringRuleMaxSignalDuration(v.(int))
+		payloadOptions.MaxSignalDuration = &maxSignalDuration
+	}
+	return payloadOptions
+}
 
+func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonitoringRuleQueryCreate {
 	tfQueries := d.Get("query").([]interface{})
 	payloadQueries := make([]datadogV2.SecurityMonitoringRuleQueryCreate, len(tfQueries))
 	for idx, tfQuery := range tfQueries {
@@ -288,18 +313,7 @@ func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 
 		payloadQueries[idx] = payloadQuery
 	}
-	payload.Queries = payloadQueries
-
-	if v, ok := d.GetOk("tags"); ok {
-		tfTags := v.([]interface{})
-		tags := make([]string, len(tfTags))
-		for i, value := range tfTags {
-			tags[i] = value.(string)
-		}
-		payload.Tags = &tags
-	}
-
-	return payload, nil
+	return payloadQueries
 }
 
 func resourceDatadogSecurityMonitoringRuleRead(d *schema.ResourceData, meta interface{}) error {
