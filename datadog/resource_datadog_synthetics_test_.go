@@ -687,12 +687,10 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 								subTarget.SetOperator(operator.(string))
 							}
 							if v, ok := targetMap["targetvalue"]; ok {
-								switch operator.(string) {
+								switch datadogV1.SyntheticsAssertionOperator(operator.(string)) {
 								case
-									"lessThan",
-									"lessThanOrEqual",
-									"moreThan",
-									"moreThanOrEqual":
+									datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
+									datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN:
 									setFloatTargetValue(subTarget, v.(string))
 								default:
 									subTarget.SetTargetValue(v)
