@@ -8,7 +8,7 @@ Provides a Datadog - PagerDuty resource. This can be used to create and manage D
 
 ## Example Usage
 
-_Note:_ Until terraform-provider-datadog version 2.1.0, service objects under the `services` key were specified inside the `datadog_integration_pagerduty` resource. This was incompatible with multi-configuration-file setups, where users wanted to have individual service objects controlled from different Terraform configuration files. The recommended approach now is specifying service objects as individual resources using [datadog_integration_pagerduty_service_object](/docs/providers/datadog/r/integration_pagerduty_service_object.html) and adding `individual_services = true` to the `datadog_integration_pagerduty` object.
+_Note:_ Until terraform-provider-datadog version 2.1.0, service objects under the `services` key were specified inside the `datadog_integration_pagerduty` resource. This was incompatible with multi-configuration-file setups, where users wanted to have individual service objects controlled from different Terraform configuration files. The recommended approach now is specifying service objects as individual resources using [datadog_integration_pagerduty_service_object](integration_pagerduty_service_object) and adding `individual_services = true` to the `datadog_integration_pagerduty` object.
 
 ### Services as Individual Resources
 
@@ -167,8 +167,8 @@ resource "datadog_integration_pagerduty_service_object" "testing_bar" {
 
 The following arguments are supported:
 
--   `individual_services`: (Optional) Boolean to specify whether or not individual service objects specified by [datadog_integration_pagerduty_service_object](/docs/providers/datadog/r/integration_pagerduty_service_object.html) resource are to be used. Mutually exclusive with `services` key.
--   `services`: (Optional) Array of PagerDuty service objects. **Deprecated** The `services` list is now deprecated in favour of [datadog_integration_pagerduty_service_object](/docs/providers/datadog/r/integration_pagerduty_service_object.html) resource. Note that `individual_services` must be set to `true` to ignore the `service` attribute and use individual services properly.
+-   `individual_services`: (Optional) Boolean to specify whether or not individual service objects specified by [datadog_integration_pagerduty_service_object](integration_pagerduty_service_object) resource are to be used. Mutually exclusive with `services` key.
+-   `services`: (Optional) Array of PagerDuty service objects. **Deprecated** The `services` list is now deprecated in favour of [datadog_integration_pagerduty_service_object](integration_pagerduty_service_object) resource. Note that `individual_services` must be set to `true` to ignore the `service` attribute and use individual services properly.
     -   `service_name`: (Required) Your Service name in PagerDuty.
     -   `service_key`: (Required) Your Service name associated service key in Pagerduty.
 -   `schedules`: (Optional) Array of your schedule URLs.
