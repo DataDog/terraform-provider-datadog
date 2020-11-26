@@ -529,7 +529,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.#", "3"),
+				"datadog_synthetics_test.bar", "assertion.#", "4"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.type", "header"),
 			resource.TestCheckResourceAttr(
@@ -556,6 +556,18 @@ func createSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 				"datadog_synthetics_test.bar", "assertion.2.targetjsonpath.0.operator", "isNot"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.2.targetjsonpath.0.targetvalue", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.jsonpath", "something"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.operator", "moreThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.targetvalue", "5"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -639,6 +651,15 @@ resource "datadog_synthetics_test" "bar" {
 			operator = "isNot"
 			targetvalue = "0"
 			jsonpath = "topKey"
+		}
+	}
+	assertion {
+		type = "body"
+		operator = "validatesJSONPath"
+		targetjsonpath {
+			operator = "moreThan"
+			targetvalue = "5"
+			jsonpath = "something"
 		}
 	}
 
