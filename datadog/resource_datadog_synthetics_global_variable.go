@@ -33,8 +33,14 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"value": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:      schema.TypeString,
+				Required:  true,
+				Sensitive: true,
+			},
+			"secure": {
+				Default:  false,
+				Type:     schema.TypeBool,
+				Optional: true,
 			},
 		},
 	}
@@ -128,7 +134,7 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 	syntheticsGlobalVariableValue := datadogV1.SyntheticsGlobalVariableValue{}
 
 	syntheticsGlobalVariableValue.SetValue(d.Get("value").(string))
-	syntheticsGlobalVariableValue.SetSecure(false)
+	syntheticsGlobalVariableValue.SetSecure(d.Get("secure").(bool))
 
 	syntheticsGlobalVariable.SetValue(syntheticsGlobalVariableValue)
 
@@ -140,7 +146,16 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 	d.Set("description", syntheticsGlobalVariable.GetDescription())
 
 	syntheticsGlobalVariableValue := syntheticsGlobalVariable.GetValue()
-	d.Set("value", syntheticsGlobalVariableValue.GetValue())
+
+	if syntheticsGlobalVariableValue.GetSecure() {
+		// if the global variable is secure we need to get the value
+		// from the config since it will not be returned by the api
+		d.Set("value", d.Get("value").(string))
+	} else {
+		d.Set("value", syntheticsGlobalVariableValue.GetValue())
+	}
+
+	d.Set("secure", syntheticsGlobalVariableValue.GetSecure())
 
 	d.Set("tags", syntheticsGlobalVariable.Tags)
 

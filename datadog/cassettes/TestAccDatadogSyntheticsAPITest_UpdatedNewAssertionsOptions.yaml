@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"config":{"assertions":[{"operator":"contains","property":"content-type","target":"application/json","type":"header"},{"operator":"is","target":200,"type":"statusCode"},{"operator":"validatesJSONPath","target":{"jsonPath":"topKey","operator":"isNot","targetValue":"0"},"type":"body"}],"request":{"basicAuth":{"password":"secret","username":"admin"},"body":"this is a body","certificate":{"cert":{"content":"content-certificate","filename":"Provided in Terraform config"},"key":{"content":"content-key","filename":"key"}},"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"1234566789"},"method":"GET","query":{"foo":"bar"},"timeout":30,"url":"https://www.datadoghq.com"},"variables":[]},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1603707818","options":{"follow_redirects":true,"min_location_failed":1,"monitor_options":{"renotify_interval":100},"tick_every":60},"status":"paused","subtype":"http","tags":["foo:bar","baz"],"type":"api"}
+      {"config":{"assertions":[{"operator":"contains","property":"content-type","target":"application/json","type":"header"},{"operator":"is","target":200,"type":"statusCode"},{"operator":"validatesJSONPath","target":{"jsonPath":"topKey","operator":"isNot","targetValue":"0"},"type":"body"},{"operator":"validatesJSONPath","target":{"jsonPath":"something","operator":"moreThan","targetValue":5},"type":"body"}],"request":{"basicAuth":{"password":"secret","username":"admin"},"body":"this is a body","certificate":{"cert":{"content":"content-certificate","filename":"Provided in Terraform config"},"key":{"content":"content-key","filename":"key"}},"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"1234566789"},"method":"GET","query":{"foo":"bar"},"timeout":30,"url":"https://www.datadoghq.com"},"variables":[]},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1606397510","options":{"follow_redirects":true,"min_location_failed":1,"monitor_options":{"renotify_interval":100},"tick_every":60},"status":"paused","subtype":"http","tags":["foo:bar","baz"],"type":"api"}
     form: {}
     headers:
       Accept:
@@ -14,19 +14,19 @@ interactions:
       - CreateTest
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.9+dev (go go1.14.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3210180729230295610"
+      - "1631289673994242607"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "2857984100653286682"
+      - "5482769774332893370"
     url: https://api.datadoghq.com/api/v1/synthetics/tests
     method: POST
   response:
-    body: '{"status":"paused","public_id":"rwp-e6p-5mk","tags":["foo:bar","baz"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify
-      @datadog.user","deleted_at":null,"name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1603707818","monitor_id":24760654,"type":"api","created_at":"2020-10-26T10:23:38.811190+00:00","modified_at":"2020-10-26T10:23:38.811190+00:00","subtype":"http","config":{"variables":[],"request":{"body":"this
-      is a body","certificate":{"cert":{"filename":"Provided in Terraform config","updatedAt":"2020-10-26T10:23:38.711891+00:00"},"key":{"filename":"key","updatedAt":"2020-10-26T10:23:38.711863+00:00"}},"url":"https://www.datadoghq.com","basicAuth":{"username":"admin","password":"secret"},"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"1234566789"},"timeout":30,"query":{"foo":"bar"},"method":"GET"},"assertions":[{"operator":"contains","property":"content-type","type":"header","target":"application/json"},{"operator":"is","type":"statusCode","target":200},{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}}]},"options":{"follow_redirects":true,"monitor_options":{"notify_audit":false,"locked":false,"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":100},"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"7c2-kqb-zgm","tags":["foo:bar","baz"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify
+      @datadog.user","deleted_at":null,"name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1606397510","monitor_id":26290623,"type":"api","created_at":"2020-11-26T13:31:51.611207+00:00","modified_at":"2020-11-26T13:31:51.611207+00:00","subtype":"http","config":{"variables":[],"request":{"body":"this
+      is a body","certificate":{"cert":{"filename":"Provided in Terraform config","updatedAt":"2020-11-26T13:31:51.522869+00:00"},"key":{"filename":"key","updatedAt":"2020-11-26T13:31:51.522847+00:00"}},"url":"https://www.datadoghq.com","basicAuth":{"username":"admin","password":"secret"},"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"1234566789"},"timeout":30,"query":{"foo":"bar"},"method":"GET"},"assertions":[{"operator":"contains","property":"content-type","type":"header","target":"application/json"},{"operator":"is","type":"statusCode","target":200},{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}},{"operator":"validatesJSONPath","type":"body","target":{"operator":"moreThan","targetValue":5,"jsonPath":"something"}}]},"options":{"follow_redirects":true,"monitor_options":{"notify_audit":false,"locked":false,"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":100},"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -37,13 +37,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Oct 2020 10:23:38 GMT
+      - Thu, 26 Nov 2020 13:31:52 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 02-Nov-2020 10:23:38 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 13:31:51 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -52,9 +52,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - LkSOFVoHBcsyBoPbYbYfcEWZoNcVif5SL5dX3LvvR/J4mRuKXGmrGqdm859yDQ2v
+      - DRZWTHDeKolQqk6GEAFoSVDF1cV93C/z8xwO7umb9e0luQPYr8BUl8IXxXdpfaM5
       X-Dd-Version:
-      - "35.3254906"
+      - "35.3435414"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -62,9 +62,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "119"
+      - "117"
       X-Ratelimit-Reset:
-      - "22"
+      - "9"
     status: 200 OK
     code: 200
     duration: ""
@@ -78,19 +78,19 @@ interactions:
       - GetTest
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.9+dev (go go1.14.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "5262599123166503840"
+      - "2587938176684108337"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "2857984100653286682"
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/rwp-e6p-5mk
+      - "5482769774332893370"
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/7c2-kqb-zgm
     method: GET
   response:
-    body: '{"status":"paused","public_id":"rwp-e6p-5mk","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
-      @datadog.user","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1603707818","monitor_id":24760654,"type":"api","subtype":"http","config":{"variables":[],"request":{"body":"this
-      is a body","certificate":{"cert":{"filename":"Provided in Terraform config","updatedAt":"2020-10-26T10:23:38.711891+00:00"},"key":{"filename":"key","updatedAt":"2020-10-26T10:23:38.711863+00:00"}},"url":"https://www.datadoghq.com","basicAuth":{"username":"admin","password":"secret"},"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"1234566789"},"timeout":30,"query":{"foo":"bar"},"method":"GET"},"assertions":[{"operator":"contains","property":"content-type","type":"header","target":"application/json"},{"operator":"is","type":"statusCode","target":200},{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}}]},"options":{"follow_redirects":true,"monitor_options":{"notify_audit":false,"locked":false,"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":100},"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"7c2-kqb-zgm","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
+      @datadog.user","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1606397510","monitor_id":26290623,"type":"api","subtype":"http","config":{"variables":[],"request":{"body":"this
+      is a body","certificate":{"cert":{"filename":"Provided in Terraform config","updatedAt":"2020-11-26T13:31:51.522869+00:00"},"key":{"filename":"key","updatedAt":"2020-11-26T13:31:51.522847+00:00"}},"url":"https://www.datadoghq.com","basicAuth":{"username":"admin","password":"secret"},"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"1234566789"},"timeout":30,"query":{"foo":"bar"},"method":"GET"},"assertions":[{"operator":"contains","property":"content-type","type":"header","target":"application/json"},{"operator":"is","type":"statusCode","target":200},{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}},{"operator":"validatesJSONPath","type":"body","target":{"operator":"moreThan","targetValue":5,"jsonPath":"something"}}]},"options":{"follow_redirects":true,"monitor_options":{"notify_audit":false,"locked":false,"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":100},"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -101,13 +101,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Oct 2020 10:23:39 GMT
+      - Thu, 26 Nov 2020 13:31:52 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 02-Nov-2020 10:23:38 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 13:31:52 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -116,9 +116,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - ryWac5atannkG8lrx1lVdTCp/YbvV8d5D9l2yYN66uYKOXDWvTqUNtTDDukaHECY
+      - 8uM7lo6fgdRC0R8G89u29ss3GmR5rKsxJfYvyjSE9oa+oPL40dVup+1mn/0Ku0bY
       X-Dd-Version:
-      - "35.3254906"
+      - "35.3435414"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -126,9 +126,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "999"
+      - "989"
       X-Ratelimit-Reset:
-      - "21"
+      - "8"
     status: 200 OK
     code: 200
     duration: ""
@@ -142,19 +142,19 @@ interactions:
       - GetTest
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.9+dev (go go1.14.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "1863000804450002784"
+      - "7815661354739793312"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "2857984100653286682"
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/rwp-e6p-5mk
+      - "5482769774332893370"
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/7c2-kqb-zgm
     method: GET
   response:
-    body: '{"status":"paused","public_id":"rwp-e6p-5mk","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
-      @datadog.user","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1603707818","monitor_id":24760654,"type":"api","subtype":"http","config":{"variables":[],"request":{"body":"this
-      is a body","certificate":{"cert":{"filename":"Provided in Terraform config","updatedAt":"2020-10-26T10:23:38.711891+00:00"},"key":{"filename":"key","updatedAt":"2020-10-26T10:23:38.711863+00:00"}},"url":"https://www.datadoghq.com","basicAuth":{"username":"admin","password":"secret"},"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"1234566789"},"timeout":30,"query":{"foo":"bar"},"method":"GET"},"assertions":[{"operator":"contains","property":"content-type","type":"header","target":"application/json"},{"operator":"is","type":"statusCode","target":200},{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}}]},"options":{"follow_redirects":true,"monitor_options":{"notify_audit":false,"locked":false,"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":100},"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"7c2-kqb-zgm","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
+      @datadog.user","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1606397510","monitor_id":26290623,"type":"api","subtype":"http","config":{"variables":[],"request":{"body":"this
+      is a body","certificate":{"cert":{"filename":"Provided in Terraform config","updatedAt":"2020-11-26T13:31:51.522869+00:00"},"key":{"filename":"key","updatedAt":"2020-11-26T13:31:51.522847+00:00"}},"url":"https://www.datadoghq.com","basicAuth":{"username":"admin","password":"secret"},"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"1234566789"},"timeout":30,"query":{"foo":"bar"},"method":"GET"},"assertions":[{"operator":"contains","property":"content-type","type":"header","target":"application/json"},{"operator":"is","type":"statusCode","target":200},{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}},{"operator":"validatesJSONPath","type":"body","target":{"operator":"moreThan","targetValue":5,"jsonPath":"something"}}]},"options":{"follow_redirects":true,"monitor_options":{"notify_audit":false,"locked":false,"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":100},"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -165,13 +165,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Oct 2020 10:23:39 GMT
+      - Thu, 26 Nov 2020 13:31:53 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 02-Nov-2020 10:23:39 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 13:31:52 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -180,9 +180,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - flm57y1PQqDCGTMvz2Hc0LeaE4WpeyLyl0nK7TyUHhnh1/aAaCfINCnK5EAgp4id
+      - EQzhJSeNziVWIN4Gtgvm49DBQgA/xSWPBZSORg2i40a13gmPz8gOAFcYwqtQKjIG
       X-Dd-Version:
-      - "35.3254906"
+      - "35.3435414"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -190,9 +190,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "998"
+      - "988"
       X-Ratelimit-Reset:
-      - "21"
+      - "8"
     status: 200 OK
     code: 200
     duration: ""
@@ -206,19 +206,19 @@ interactions:
       - GetTest
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.9+dev (go go1.14.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "1846800776234738543"
+      - "6254293370779825029"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "2857984100653286682"
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/rwp-e6p-5mk
+      - "5482769774332893370"
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/7c2-kqb-zgm
     method: GET
   response:
-    body: '{"status":"paused","public_id":"rwp-e6p-5mk","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
-      @datadog.user","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1603707818","monitor_id":24760654,"type":"api","subtype":"http","config":{"variables":[],"request":{"body":"this
-      is a body","certificate":{"cert":{"filename":"Provided in Terraform config","updatedAt":"2020-10-26T10:23:38.711891+00:00"},"key":{"filename":"key","updatedAt":"2020-10-26T10:23:38.711863+00:00"}},"url":"https://www.datadoghq.com","basicAuth":{"username":"admin","password":"secret"},"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"1234566789"},"timeout":30,"query":{"foo":"bar"},"method":"GET"},"assertions":[{"operator":"contains","property":"content-type","type":"header","target":"application/json"},{"operator":"is","type":"statusCode","target":200},{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}}]},"options":{"follow_redirects":true,"monitor_options":{"notify_audit":false,"locked":false,"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":100},"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"7c2-kqb-zgm","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
+      @datadog.user","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1606397510","monitor_id":26290623,"type":"api","subtype":"http","config":{"variables":[],"request":{"body":"this
+      is a body","certificate":{"cert":{"filename":"Provided in Terraform config","updatedAt":"2020-11-26T13:31:51.522869+00:00"},"key":{"filename":"key","updatedAt":"2020-11-26T13:31:51.522847+00:00"}},"url":"https://www.datadoghq.com","basicAuth":{"username":"admin","password":"secret"},"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"1234566789"},"timeout":30,"query":{"foo":"bar"},"method":"GET"},"assertions":[{"operator":"contains","property":"content-type","type":"header","target":"application/json"},{"operator":"is","type":"statusCode","target":200},{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}},{"operator":"validatesJSONPath","type":"body","target":{"operator":"moreThan","targetValue":5,"jsonPath":"something"}}]},"options":{"follow_redirects":true,"monitor_options":{"notify_audit":false,"locked":false,"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":100},"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -229,13 +229,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Oct 2020 10:23:39 GMT
+      - Thu, 26 Nov 2020 13:31:53 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 02-Nov-2020 10:23:39 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 13:31:53 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -244,9 +244,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - yoF4117GjRVNjK5D+NnV1a4ZZK03NlG9+xqwkNudRekVNp0HsN72cHzXM+2uFPHI
+      - ERAR+wIpkUrPjdmF8Izu2K5/ZMTkW0RxdMJp2EI5/HgIxQDnb5krpGDLSDYaD2KU
       X-Dd-Version:
-      - "35.3254906"
+      - "35.3435414"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -254,9 +254,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "997"
+      - "987"
       X-Ratelimit-Reset:
-      - "21"
+      - "7"
     status: 200 OK
     code: 200
     duration: ""
@@ -270,19 +270,19 @@ interactions:
       - GetTest
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.9+dev (go go1.14.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6177141045931741897"
+      - "2670511751451407086"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "2857984100653286682"
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/rwp-e6p-5mk
+      - "5482769774332893370"
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/7c2-kqb-zgm
     method: GET
   response:
-    body: '{"status":"paused","public_id":"rwp-e6p-5mk","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
-      @datadog.user","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1603707818","monitor_id":24760654,"type":"api","subtype":"http","config":{"variables":[],"request":{"body":"this
-      is a body","certificate":{"cert":{"filename":"Provided in Terraform config","updatedAt":"2020-10-26T10:23:38.711891+00:00"},"key":{"filename":"key","updatedAt":"2020-10-26T10:23:38.711863+00:00"}},"url":"https://www.datadoghq.com","basicAuth":{"username":"admin","password":"secret"},"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"1234566789"},"timeout":30,"query":{"foo":"bar"},"method":"GET"},"assertions":[{"operator":"contains","property":"content-type","type":"header","target":"application/json"},{"operator":"is","type":"statusCode","target":200},{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}}]},"options":{"follow_redirects":true,"monitor_options":{"notify_audit":false,"locked":false,"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":100},"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"7c2-kqb-zgm","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify
+      @datadog.user","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1606397510","monitor_id":26290623,"type":"api","subtype":"http","config":{"variables":[],"request":{"body":"this
+      is a body","certificate":{"cert":{"filename":"Provided in Terraform config","updatedAt":"2020-11-26T13:31:51.522869+00:00"},"key":{"filename":"key","updatedAt":"2020-11-26T13:31:51.522847+00:00"}},"url":"https://www.datadoghq.com","basicAuth":{"username":"admin","password":"secret"},"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"1234566789"},"timeout":30,"query":{"foo":"bar"},"method":"GET"},"assertions":[{"operator":"contains","property":"content-type","type":"header","target":"application/json"},{"operator":"is","type":"statusCode","target":200},{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}},{"operator":"validatesJSONPath","type":"body","target":{"operator":"moreThan","targetValue":5,"jsonPath":"something"}}]},"options":{"follow_redirects":true,"monitor_options":{"notify_audit":false,"locked":false,"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":100},"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -293,13 +293,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Oct 2020 10:23:39 GMT
+      - Thu, 26 Nov 2020 13:31:53 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 02-Nov-2020 10:23:39 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 13:31:53 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -308,9 +308,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - LuHK+OcIuxuCTL7xVM4sMdR/Gv1H1hu+bgYJvWIAWOVtmiGVhdUVKBuef1C5aMk6
+      - 5Cj6NNcncFcQ6G9NKti+kar8gWVql7fBvPeJG7XhNnPs269m3W9o1I+JeGPUiuK3
       X-Dd-Version:
-      - "35.3254906"
+      - "35.3435414"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -318,15 +318,15 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "996"
+      - "986"
       X-Ratelimit-Reset:
-      - "21"
+      - "7"
     status: 200 OK
     code: 200
     duration: ""
 - request:
     body: |
-      {"config":{"assertions":[{"operator":"validatesJSONPath","target":{"jsonPath":"topKey","operator":"isNot","targetValue":"0"},"type":"body"}],"request":{"method":"GET","timeout":60,"url":"https://docs.datadoghq.com"},"variables":[]},"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1603707818updated","options":{"min_failure_duration":10,"min_location_failed":1,"monitor_options":{"renotify_interval":120},"tick_every":900},"status":"live","subtype":"http","tags":["foo:bar","foo","env:test"],"type":"api"}
+      {"config":{"assertions":[{"operator":"validatesJSONPath","target":{"jsonPath":"topKey","operator":"isNot","targetValue":"0"},"type":"body"}],"request":{"method":"GET","timeout":60,"url":"https://docs.datadoghq.com"},"variables":[]},"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1606397510updated","options":{"min_failure_duration":10,"min_location_failed":1,"monitor_options":{"renotify_interval":120},"tick_every":900},"status":"live","subtype":"http","tags":["foo:bar","foo","env:test"],"type":"api"}
     form: {}
     headers:
       Accept:
@@ -337,18 +337,18 @@ interactions:
       - UpdateTest
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.9+dev (go go1.14.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "7331040139350592664"
+      - "3146594782138374255"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "2857984100653286682"
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/rwp-e6p-5mk
+      - "5482769774332893370"
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/7c2-kqb-zgm
     method: PUT
   response:
-    body: '{"status":"live","public_id":"rwp-e6p-5mk","tags":["foo:bar","foo","env:test"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify
-      @pagerduty","deleted_at":null,"name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1603707818updated","monitor_id":24760654,"type":"api","created_at":"2020-10-26T10:23:38.811190+00:00","modified_at":"2020-10-26T10:23:39.870623+00:00","subtype":"http","config":{"variables":[],"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}}]},"options":{"monitor_options":{"notify_audit":false,"locked":false,"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":120},"tick_every":900,"min_failure_duration":10,"min_location_failed":1}}'
+    body: '{"status":"live","public_id":"7c2-kqb-zgm","tags":["foo:bar","foo","env:test"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify
+      @pagerduty","deleted_at":null,"name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1606397510updated","monitor_id":26290623,"type":"api","created_at":"2020-11-26T13:31:51.611207+00:00","modified_at":"2020-11-26T13:31:53.655641+00:00","subtype":"http","config":{"variables":[],"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}}]},"options":{"monitor_options":{"notify_audit":false,"locked":false,"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":120},"tick_every":900,"min_failure_duration":10,"min_location_failed":1}}'
     headers:
       Cache-Control:
       - no-cache
@@ -359,13 +359,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Oct 2020 10:23:39 GMT
+      - Thu, 26 Nov 2020 13:31:53 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 02-Nov-2020 10:23:39 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 13:31:53 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -374,9 +374,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - n9uz1T+WujhmfsGndIdy1tCYb5bh9AzSyYOT5TTjJX23RGEavHxGqcz400IC+bY1
+      - YNPvfo/A+kRa92W7PZNTiFcSJq6YGkB9TIlX47+pHHndNDZ3ZySmub3fInFxn6Db
       X-Dd-Version:
-      - "35.3254906"
+      - "35.3435414"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -386,7 +386,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "499"
       X-Ratelimit-Reset:
-      - "21"
+      - "7"
     status: 200 OK
     code: 200
     duration: ""
@@ -400,18 +400,18 @@ interactions:
       - GetTest
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.9+dev (go go1.14.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3924915975117466786"
+      - "3688026842816105594"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "2857984100653286682"
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/rwp-e6p-5mk
+      - "5482769774332893370"
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/7c2-kqb-zgm
     method: GET
   response:
-    body: '{"status":"live","public_id":"rwp-e6p-5mk","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify
-      @pagerduty","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1603707818updated","monitor_id":24760654,"type":"api","subtype":"http","config":{"variables":[],"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}}]},"options":{"monitor_options":{"renotify_interval":120},"tick_every":900,"min_failure_duration":10,"min_location_failed":1}}'
+    body: '{"status":"live","public_id":"7c2-kqb-zgm","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify
+      @pagerduty","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1606397510updated","monitor_id":26290623,"type":"api","subtype":"http","config":{"variables":[],"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}}]},"options":{"monitor_options":{"renotify_interval":120},"tick_every":900,"min_failure_duration":10,"min_location_failed":1}}'
     headers:
       Cache-Control:
       - no-cache
@@ -422,13 +422,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Oct 2020 10:23:40 GMT
+      - Thu, 26 Nov 2020 13:31:54 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 02-Nov-2020 10:23:40 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 13:31:53 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -437,9 +437,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - oqlClNgBffXSYxjxM4MXW8YBCUkTvkeEyGekJFD2ia4zlDKNcD3ROot7wMYW8Xj+
+      - lgQawiZEOFHj/SKplEcqOwzaMI6OQtdSQ9dotiTxYUar2ksXhijPkw9yrBoSKHNa
       X-Dd-Version:
-      - "35.3254906"
+      - "35.3435414"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -447,9 +447,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "995"
+      - "985"
       X-Ratelimit-Reset:
-      - "20"
+      - "7"
     status: 200 OK
     code: 200
     duration: ""
@@ -463,18 +463,18 @@ interactions:
       - GetTest
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.9+dev (go go1.14.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6113842650223160750"
+      - "4602159906521506948"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "2857984100653286682"
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/rwp-e6p-5mk
+      - "5482769774332893370"
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/7c2-kqb-zgm
     method: GET
   response:
-    body: '{"status":"live","public_id":"rwp-e6p-5mk","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify
-      @pagerduty","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1603707818updated","monitor_id":24760654,"type":"api","subtype":"http","config":{"variables":[],"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}}]},"options":{"monitor_options":{"renotify_interval":120},"tick_every":900,"min_failure_duration":10,"min_location_failed":1}}'
+    body: '{"status":"live","public_id":"7c2-kqb-zgm","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify
+      @pagerduty","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1606397510updated","monitor_id":26290623,"type":"api","subtype":"http","config":{"variables":[],"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}}]},"options":{"monitor_options":{"renotify_interval":120},"tick_every":900,"min_failure_duration":10,"min_location_failed":1}}'
     headers:
       Cache-Control:
       - no-cache
@@ -485,13 +485,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Oct 2020 10:23:40 GMT
+      - Thu, 26 Nov 2020 13:31:54 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 02-Nov-2020 10:23:40 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 13:31:54 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -500,9 +500,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - yh6YON+7jbeDMg7CO+AYyoesqWeq0Iw5xzcOjFKKupoYHnh4eyLWds2GSgfB/+lP
+      - /JpmMVMj888oDBhNstrXwRRTcjtQP5tKL1A6NwxlJyR/zX9A94/1rKY8MfQgr5Ro
       X-Dd-Version:
-      - "35.3254906"
+      - "35.3435414"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -510,9 +510,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "994"
+      - "984"
       X-Ratelimit-Reset:
-      - "20"
+      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -526,18 +526,18 @@ interactions:
       - GetTest
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.9+dev (go go1.14.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3065941476489850739"
+      - "2048454542435545874"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "2857984100653286682"
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/rwp-e6p-5mk
+      - "5482769774332893370"
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/7c2-kqb-zgm
     method: GET
   response:
-    body: '{"status":"live","public_id":"rwp-e6p-5mk","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify
-      @pagerduty","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1603707818updated","monitor_id":24760654,"type":"api","subtype":"http","config":{"variables":[],"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}}]},"options":{"monitor_options":{"renotify_interval":120},"tick_every":900,"min_failure_duration":10,"min_location_failed":1}}'
+    body: '{"status":"live","public_id":"7c2-kqb-zgm","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify
+      @pagerduty","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1606397510updated","monitor_id":26290623,"type":"api","subtype":"http","config":{"variables":[],"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}}]},"options":{"monitor_options":{"renotify_interval":120},"tick_every":900,"min_failure_duration":10,"min_location_failed":1}}'
     headers:
       Cache-Control:
       - no-cache
@@ -548,13 +548,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Oct 2020 10:23:40 GMT
+      - Thu, 26 Nov 2020 13:31:54 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 02-Nov-2020 10:23:40 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 13:31:54 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -563,9 +563,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - LkSOFVoHBcsyBoPbYbYfcEWZoNcVif5SL5dX3LvvR/J4mRuKXGmrGqdm859yDQ2v
+      - ZG2d6PTZdN5GjOj1q5TL+mECh5HT9EM/Aj77tmQRsy/bdfhBJv7oKLtfntznaoTC
       X-Dd-Version:
-      - "35.3254906"
+      - "35.3435414"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -573,9 +573,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "993"
+      - "983"
       X-Ratelimit-Reset:
-      - "20"
+      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -589,18 +589,18 @@ interactions:
       - GetTest
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.9+dev (go go1.14.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6934183624276182225"
+      - "7014513880471681982"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "2857984100653286682"
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/rwp-e6p-5mk
+      - "5482769774332893370"
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/7c2-kqb-zgm
     method: GET
   response:
-    body: '{"status":"live","public_id":"rwp-e6p-5mk","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify
-      @pagerduty","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1603707818updated","monitor_id":24760654,"type":"api","subtype":"http","config":{"variables":[],"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}}]},"options":{"monitor_options":{"renotify_interval":120},"tick_every":900,"min_failure_duration":10,"min_location_failed":1}}'
+    body: '{"status":"live","public_id":"7c2-kqb-zgm","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify
+      @pagerduty","name":"tf-TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions-local-1606397510updated","monitor_id":26290623,"type":"api","subtype":"http","config":{"variables":[],"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"validatesJSONPath","type":"body","target":{"operator":"isNot","targetValue":"0","jsonPath":"topKey"}}]},"options":{"monitor_options":{"renotify_interval":120},"tick_every":900,"min_failure_duration":10,"min_location_failed":1}}'
     headers:
       Cache-Control:
       - no-cache
@@ -611,13 +611,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Oct 2020 10:23:40 GMT
+      - Thu, 26 Nov 2020 13:31:55 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 02-Nov-2020 10:23:40 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 13:31:55 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -626,9 +626,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - ZTMib3S/rZeXw/RhaeaehRILC7QJAaERfyf3m4/am8FN44e9rxbkPcmk4YzKBISj
+      - NVdxML/FOEgLJzsz37XLTVVLcoGTHoJzcuGu2ZwX+JAXQfJkO87pOpfJK6E0a8TN
       X-Dd-Version:
-      - "35.3254906"
+      - "35.3435414"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -636,15 +636,15 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "992"
+      - "982"
       X-Ratelimit-Reset:
-      - "20"
+      - "5"
     status: 200 OK
     code: 200
     duration: ""
 - request:
     body: |
-      {"public_ids":["rwp-e6p-5mk"]}
+      {"public_ids":["7c2-kqb-zgm"]}
     form: {}
     headers:
       Accept:
@@ -655,17 +655,17 @@ interactions:
       - DeleteTests
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.9+dev (go go1.14.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4291941513011688335"
+      - "7635493588814378874"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "2857984100653286682"
+      - "5482769774332893370"
     url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
     method: POST
   response:
-    body: '{"deleted_tests":[{"deleted_at":"2020-10-26T10:23:40.944256+00:00","public_id":"rwp-e6p-5mk"}]}'
+    body: '{"deleted_tests":[{"deleted_at":"2020-11-26T13:31:55.233344+00:00","public_id":"7c2-kqb-zgm"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -676,13 +676,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Oct 2020 10:23:41 GMT
+      - Thu, 26 Nov 2020 13:31:55 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 02-Nov-2020 10:23:40 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 13:31:55 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -691,9 +691,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - IEUzjgpnyUrp74lH2dqPweGXNQU7es3CY44HHPIdy7aSNeimMebMvcKCoCgyWWVx
+      - GzqFsJiHmsMG2ZkgPZxP4KU7BbP1543ieTDBlTOcSv7mMVZ5sYoywme9ykeCrzfU
       X-Dd-Version:
-      - "35.3254906"
+      - "35.3435414"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -701,9 +701,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "119"
+      - "117"
       X-Ratelimit-Reset:
-      - "20"
+      - "5"
     status: 200 OK
     code: 200
     duration: ""
@@ -717,14 +717,14 @@ interactions:
       - GetTest
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.9+dev (go go1.14.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "9136373332311845748"
+      - "7413098616263319999"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "2857984100653286682"
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/rwp-e6p-5mk
+      - "5482769774332893370"
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/7c2-kqb-zgm
     method: GET
   response:
     body: '{"errors": ["Synthetics test not found"]}'
@@ -738,7 +738,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Oct 2020 10:23:41 GMT
+      - Thu, 26 Nov 2020 13:31:55 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -750,7 +750,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3254906"
+      - "35.3435414"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -758,9 +758,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "991"
+      - "981"
       X-Ratelimit-Reset:
-      - "19"
+      - "5"
     status: 404 Not Found
     code: 404
     duration: ""
