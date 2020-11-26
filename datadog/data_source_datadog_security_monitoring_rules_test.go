@@ -3,7 +3,10 @@ package datadog
 import (
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"regexp"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -15,7 +18,6 @@ func TestAccDatadogSecurityMonitoringRuleDatasource(t *testing.T) {
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	matchAny := regexp.MustCompile(".*")
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
@@ -26,79 +28,162 @@ func TestAccDatadogSecurityMonitoringRuleDatasource(t *testing.T) {
 				Config: testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName),
 			},
 			{
-				// Ideally we would like to check the size and content of the lists, but the terraform
-				// testing framework makes this more difficult so for now we only test that we have at least
-				// one element
-				Config: testAccDataSourceSecurityMonitoringRuleNoFilter(),
+				Config: testAccDataSourceSecurityMonitoringRuleNoFilter(ruleName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestMatchResourceAttr(tfSecurityRulesSource, "rule_ids.0", matchAny),
-					resource.TestMatchResourceAttr(tfSecurityRulesSource, "rules.0", matchAny),
+					securityMonitoringCheckRuleCountNoFilter(accProvider),
 				),
 			},
 			{
 				Config: testAccDataSourceSecurityMonitoringRuleNameFilter(ruleName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestMatchResourceAttr(tfSecurityRulesSource, "rule_ids.0", matchAny),
-					resource.TestMatchResourceAttr(tfSecurityRulesSource, "rules.0", matchAny),
+					securityMonitoringCheckRuleCountNameFilter(accProvider, ruleName),
 				),
 			},
 			{
-				Config: testAccDataSourceSecurityMonitoringRuleTagsFilter(),
+				Config: testAccDataSourceSecurityMonitoringRuleTagsFilter(ruleName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestMatchResourceAttr(tfSecurityRulesSource, "rule_ids.0", matchAny),
-					resource.TestMatchResourceAttr(tfSecurityRulesSource, "rules.0", matchAny),
+					securityMonitoringCheckRuleCountTagsFilter(accProvider, "i:tomato"),
 				),
 			},
 			{
-				Config: testAccDataSourceSecurityMonitoringRuleDefaultFilter(),
+				Config: testAccDataSourceSecurityMonitoringRuleDefaultFilter(ruleName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestMatchResourceAttr(tfSecurityRulesSource, "rule_ids.0", matchAny),
-					resource.TestMatchResourceAttr(tfSecurityRulesSource, "rules.0", matchAny),
+					securityMonitoringCheckRuleCountDefaultFilter(accProvider, true),
 				),
 			},
 			{
-				Config: testAccDataSourceSecurityMonitoringRuleUserFilter(),
+				Config: testAccDataSourceSecurityMonitoringRuleUserFilter(ruleName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestMatchResourceAttr(tfSecurityRulesSource, "rule_ids.0", matchAny),
-					resource.TestMatchResourceAttr(tfSecurityRulesSource, "rules.0", matchAny),
+					securityMonitoringCheckRuleCountDefaultFilter(accProvider, false),
 				),
 			},
 		},
 	})
 }
 
-func testAccDataSourceSecurityMonitoringRuleNoFilter() string {
-	return `
+func securityMonitoringCheckRuleCountNoFilter(accProvider *schema.Provider) func(state *terraform.State) error {
+	return func(state *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		authV2 := providerConf.AuthV2
+		client := providerConf.DatadogClientV2
+
+		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2).PageNumber(0).PageSize(1000).Execute()
+		if err != nil {
+			return err
+		}
+		return securityMonitoringCheckRuleCount(state, len(*rulesResponse.Data))
+	}
+}
+
+func securityMonitoringCheckRuleCountNameFilter(accProvider *schema.Provider, name string) resource.TestCheckFunc {
+	return func(state *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		authV2 := providerConf.AuthV2
+		client := providerConf.DatadogClientV2
+
+		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2).PageSize(1000).Execute()
+		if err != nil {
+			return err
+		}
+
+		ruleCount := 0
+		for _, rule := range *rulesResponse.Data {
+			if strings.Contains(rule.GetName(), name) {
+				ruleCount += 1
+			}
+		}
+
+		return securityMonitoringCheckRuleCount(state, ruleCount)
+	}
+}
+
+func securityMonitoringCheckRuleCountTagsFilter(accProvider *schema.Provider, filterTag string) resource.TestCheckFunc {
+	return func(state *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		authV2 := providerConf.AuthV2
+		client := providerConf.DatadogClientV2
+		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2).PageSize(1000).Execute()
+		if err != nil {
+			return err
+		}
+
+		ruleCount := 0
+		for _, rule := range *rulesResponse.Data {
+			for _, tag := range rule.GetTags() {
+				if strings.Contains(tag, filterTag) {
+					ruleCount += 1
+				}
+			}
+		}
+		return securityMonitoringCheckRuleCount(state, ruleCount)
+	}
+}
+
+func securityMonitoringCheckRuleCountDefaultFilter(accProvider *schema.Provider, isDefault bool) resource.TestCheckFunc {
+	return func(state *terraform.State) error {
+		providerConf := accProvider.Meta().(*ProviderConfiguration)
+		authV2 := providerConf.AuthV2
+		client := providerConf.DatadogClientV2
+		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2).PageSize(1000).Execute()
+		if err != nil {
+			return err
+		}
+
+		ruleCount := 0
+		for _, rule := range *rulesResponse.Data {
+			if rule.GetIsDefault() == isDefault {
+				ruleCount += 1
+			}
+		}
+		return securityMonitoringCheckRuleCount(state, ruleCount)
+	}
+
+}
+
+func securityMonitoringCheckRuleCount(state *terraform.State, responseRuleCount int) error {
+	resourceAttributes := state.RootModule().Resources[tfSecurityRulesSource].Primary.Attributes
+	ruleIdCount, _ := strconv.Atoi(resourceAttributes["rule_ids.#"])
+	rulesCount, _ := strconv.Atoi(resourceAttributes["rules.#"])
+
+	if rulesCount != responseRuleCount || ruleIdCount != responseRuleCount {
+		return fmt.Errorf("expected %d rules got %d rules and %d rule ids",
+			responseRuleCount, rulesCount, ruleIdCount)
+	}
+	return nil
+}
+
+func testAccDataSourceSecurityMonitoringRuleNoFilter(ruleName string) string {
+	return testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName) + `
 data "datadog_security_monitoring_rules" "acceptance_test" {
 }
 `
 }
 
-func testAccDataSourceSecurityMonitoringRuleNameFilter(name string) string {
-	return fmt.Sprintf(`
+func testAccDataSourceSecurityMonitoringRuleNameFilter(ruleName string) string {
+	return testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName) + fmt.Sprintf(`
 data "datadog_security_monitoring_rules" "acceptance_test" {
     name_filter = "%s"
 }
-`, name)
+`, ruleName)
 }
 
-func testAccDataSourceSecurityMonitoringRuleTagsFilter() string {
-	return `
+func testAccDataSourceSecurityMonitoringRuleTagsFilter(ruleName string) string {
+	return testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName) + `
 data "datadog_security_monitoring_rules" "acceptance_test" {
     tags_filter = ["i:tomato"]
 }
 `
 }
-func testAccDataSourceSecurityMonitoringRuleDefaultFilter() string {
-	return `
+func testAccDataSourceSecurityMonitoringRuleDefaultFilter(ruleName string) string {
+	return testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName) + `
 data "datadog_security_monitoring_rules" "acceptance_test" {
 	default_only_filter = true
 }
 `
 }
 
-func testAccDataSourceSecurityMonitoringRuleUserFilter() string {
-	return `
+func testAccDataSourceSecurityMonitoringRuleUserFilter(ruleName string) string {
+	return testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName) + `
 data "datadog_security_monitoring_rules" "acceptance_test" {
 	user_only_filter = true
 }

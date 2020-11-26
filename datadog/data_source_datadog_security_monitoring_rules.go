@@ -115,6 +115,7 @@ func dataSourceDatadogSecurityMonitoringRulesRead(d *schema.ResourceData, meta i
 			ruleIds = append(ruleIds, rule.GetId())
 			rules = append(rules, buildSecurityMonitoringTfRule(rule))
 		}
+		println(len(response.GetData()))
 
 		totalCount := *response.Meta.GetPage().TotalCount
 		if totalCount-1 >= page {
