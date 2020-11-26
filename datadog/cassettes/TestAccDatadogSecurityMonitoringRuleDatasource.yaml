@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"}],"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606326924","options":{"evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"first","query":"does not really match much"},{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["host"],"metric":"@network.bytes_read","name":"second","query":"does not really match much either"}],"tags":["i:tomato","u:tomato"]}
+      {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"}],"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606384259","options":{"evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"first","query":"does not really match much"},{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["host"],"metric":"@network.bytes_read","name":"second","query":"does not really match much either"}],"tags":["i:tomato","u:tomato"]}
     form: {}
     headers:
       Accept:
@@ -16,20 +16,20 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4811384066630876662"
+      - "3709755554855171682"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
+      - "7053671844833861908"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules
     method: POST
   response:
-    body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606326925718,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+    body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606384259585,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"wlc-gqp-pu7","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606326924"}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"fwi-5hv-ggm","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606384259"}'
     headers:
       Cache-Control:
       - no-cache
@@ -40,11 +40,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:25 GMT
+      - Thu, 26 Nov 2020 09:50:59 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:25 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:50:59 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -53,7 +53,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -71,20 +71,20 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3960731898664064342"
+      - "8553653898119630295"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
-    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/wlc-gqp-pu7
+      - "7053671844833861908"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/fwi-5hv-ggm
     method: GET
   response:
-    body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606326925718,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+    body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606384259585,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"wlc-gqp-pu7","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606326924"}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"fwi-5hv-ggm","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606384259"}'
     headers:
       Cache-Control:
       - no-cache
@@ -95,11 +95,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:25 GMT
+      - Thu, 26 Nov 2020 09:50:59 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:25 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:50:59 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -108,7 +108,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -126,20 +126,20 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "819050101868732428"
+      - "8191267280912508495"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
-    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/wlc-gqp-pu7
+      - "7053671844833861908"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/fwi-5hv-ggm
     method: GET
   response:
-    body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606326925718,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+    body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606384259585,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"wlc-gqp-pu7","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606326924"}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"fwi-5hv-ggm","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606384259"}'
     headers:
       Cache-Control:
       - no-cache
@@ -150,11 +150,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:26 GMT
+      - Thu, 26 Nov 2020 09:50:59 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:26 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:50:59 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -163,7 +163,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -181,20 +181,20 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4044051038374441351"
+      - "7764036370528875520"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
-    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/wlc-gqp-pu7
+      - "7053671844833861908"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/fwi-5hv-ggm
     method: GET
   response:
-    body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606326925718,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+    body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606384259585,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"wlc-gqp-pu7","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606326924"}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"fwi-5hv-ggm","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606384259"}'
     headers:
       Cache-Control:
       - no-cache
@@ -205,11 +205,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:26 GMT
+      - Thu, 26 Nov 2020 09:51:00 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:26 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:51:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -218,7 +218,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -236,11 +236,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4218125361782424181"
+      - "6632870069288074049"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
+      - "7053671844833861908"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
@@ -448,7 +448,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":17,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -1362,12 +1362,12 @@ interactions:
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"},{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606326925718,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"ern-ufg-zfk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringDefaultRule_Basic-local-1606233622"},{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606384259585,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"wlc-gqp-pu7","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606326924"}]}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"fwi-5hv-ggm","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606384259"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -1378,11 +1378,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:26 GMT
+      - Thu, 26 Nov 2020 09:51:00 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:26 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:51:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1391,7 +1391,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1409,20 +1409,20 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3195211609990515854"
+      - "1322421822352108445"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
-    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/wlc-gqp-pu7
+      - "7053671844833861908"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/fwi-5hv-ggm
     method: GET
   response:
-    body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606326925718,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+    body: '{"creationAuthorId":42577,"tags":["i:tomato","u:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance
+      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1606384259585,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does
       not really match much either","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high
       case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning
-      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"wlc-gqp-pu7","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606326924"}'
+      case","condition":"first > 0 || second > 0"}],"type":"threshold","id":"fwi-5hv-ggm","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRuleDatasource-local-1606384259"}'
     headers:
       Cache-Control:
       - no-cache
@@ -1433,11 +1433,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:26 GMT
+      - Thu, 26 Nov 2020 09:51:00 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:26 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:51:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -1446,7 +1446,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1464,12 +1464,12 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "1700706839771904759"
+      - "1091346262843892739"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
-    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/wlc-gqp-pu7
+      - "7053671844833861908"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/fwi-5hv-ggm
     method: DELETE
   response:
     body: ""
@@ -1481,18 +1481,18 @@ interactions:
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datad0g.com/csp-report
       Date:
-      - Wed, 25 Nov 2020 17:55:26 GMT
+      - Thu, 26 Nov 2020 09:51:00 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:26 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:51:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -1510,11 +1510,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6289869875321919374"
+      - "6897228150263921102"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
+      - "7053671844833861908"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
@@ -1722,7 +1722,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":17,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -2647,11 +2647,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:27 GMT
+      - Thu, 26 Nov 2020 09:51:00 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:26 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:51:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -2660,7 +2660,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -2678,11 +2678,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "727432566244443441"
+      - "2119954708888382361"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
+      - "7053671844833861908"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
@@ -2890,7 +2890,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":17,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -3815,11 +3815,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:27 GMT
+      - Thu, 26 Nov 2020 09:51:01 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:27 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:51:01 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -3828,7 +3828,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -3846,11 +3846,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "8893681274688643506"
+      - "3655514554213806607"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
+      - "7053671844833861908"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
@@ -4058,7 +4058,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":17,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -4983,11 +4983,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:27 GMT
+      - Thu, 26 Nov 2020 09:51:01 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:27 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:51:01 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -4996,7 +4996,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -5014,11 +5014,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3980538183328900447"
+      - "1629731263241335189"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
+      - "7053671844833861908"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
@@ -5226,7 +5226,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":17,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -6151,11 +6151,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:28 GMT
+      - Thu, 26 Nov 2020 09:51:01 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:27 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:51:01 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -6164,7 +6164,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -6182,11 +6182,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "8302626765287193735"
+      - "2473241818866488044"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
+      - "7053671844833861908"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
@@ -6394,7 +6394,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":17,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -7319,11 +7319,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:28 GMT
+      - Thu, 26 Nov 2020 09:51:02 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:28 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:51:01 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -7332,7 +7332,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -7350,11 +7350,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "233536426474449647"
+      - "7194281220059910631"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
+      - "7053671844833861908"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
@@ -7562,7 +7562,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":17,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -8487,11 +8487,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:28 GMT
+      - Thu, 26 Nov 2020 09:51:02 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:28 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:51:02 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -8500,7 +8500,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -8518,11 +8518,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "8142158004629127436"
+      - "5059676750897690412"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
+      - "7053671844833861908"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
@@ -8730,7 +8730,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":17,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -9655,11 +9655,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:29 GMT
+      - Thu, 26 Nov 2020 09:51:02 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:28 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:51:02 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -9668,7 +9668,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -9686,11 +9686,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "5847673787007844936"
+      - "7636339330399180480"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
+      - "7053671844833861908"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
@@ -9898,7 +9898,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":17,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -10823,11 +10823,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:29 GMT
+      - Thu, 26 Nov 2020 09:51:03 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:29 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:51:02 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -10836,7 +10836,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -10854,11 +10854,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "8027503521493275161"
+      - "4600634819029680218"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
+      - "7053671844833861908"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
@@ -11066,7 +11066,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":17,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -11991,11 +11991,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:29 GMT
+      - Thu, 26 Nov 2020 09:51:03 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:29 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:51:03 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -12004,7 +12004,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -12022,11 +12022,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3603578695041885706"
+      - "6583768731089662447"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
+      - "7053671844833861908"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
@@ -12234,7 +12234,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":17,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -13159,11 +13159,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:30 GMT
+      - Thu, 26 Nov 2020 09:51:03 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:29 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:51:03 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -13172,7 +13172,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -13190,12 +13190,12 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "1205484188988218246"
+      - "7350233159271479696"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
-    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/486f344fc0383953269e91c3adbdf2524a49d977fdfdeddc9a3d001cd38006c9
+      - "7053671844833861908"
+    url: https://dd.datad0g.com/api/v2/security_monitoring/rules/3149e98ae856a790c091bc8787dc92640f97c86a06b9a2f0a687b3966372e258
     method: GET
   response:
     body: '{"message": "The resource could not be found.<br /><br />\n\n\n", "code":
@@ -13208,7 +13208,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 25 Nov 2020 17:55:30 GMT
+      - Thu, 26 Nov 2020 09:51:03 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -13218,7 +13218,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found
@@ -13236,11 +13236,11 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "2206286636262719388"
+      - "5678002524103029091"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6134919387171745248"
+      - "7053671844833861908"
     url: https://dd.datad0g.com/api/v2/security_monitoring/rules?page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
@@ -13448,7 +13448,7 @@ interactions:
       an investigation.\n   * If you are the `ACTOR`, this means that your instance
       is performing brute force attacks on other systems. Open an investigation.\n\n[1]:
       https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized9\n[2]:
-      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":13,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
+      https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_unauthorized.html#unauthorized10","options":{"evaluationWindow":300,"maxSignalDuration":3600,"keepAlive":3600},"version":17,"createdAt":1585058906864,"filters":[],"queries":[{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
       @detail.service.resourceRole:ACTOR","trackType":"logs"},{"distinctFields":[],"name":"","aggregation":"count","groupByFields":["instance-id"],"query":"source:guardduty
       @evt.name:(UnauthorizedAccess\\:EC2\\/SSHBruteForce OR UnauthorizedAccess\\:EC2\\/RDPBruteForce)
@@ -14373,11 +14373,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 25 Nov 2020 17:55:30 GMT
+      - Thu, 26 Nov 2020 09:51:03 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Wed, 02-Dec-2020 17:55:30 GMT;
+      - DD-PSHARD=1; Max-Age=604800; Path=/; expires=Thu, 03-Dec-2020 09:51:03 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -14386,7 +14386,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3432639"
+      - "35.3435668"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

@@ -1,7 +1,6 @@
 package datadog
 
 import (
-	"errors"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -58,13 +57,8 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 		"enabled": {
 			Type:        schema.TypeBool,
 			Optional:    true,
+			Default:     true,
 			Description: "Whether the rule is enabled.",
-		},
-
-		"disabled": {
-			Type:        schema.TypeBool,
-			Optional:    true,
-			Description: "Whether the rule is disabled.",
 		},
 
 		"message": {
@@ -223,20 +217,7 @@ func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 	}
 	payload.Cases = payloadCases
 
-	_, enabled := d.GetOk("enabled")
-	_, disabled := d.GetOk("disabled")
-
-	if enabled && disabled {
-		return payload, errors.New("rule can not be both enabled and disabled")
-	}
-
-	// Default to enabled
-	if enabled || !disabled {
-		payload.IsEnabled = true
-	} else {
-		payload.IsEnabled = false
-	}
-
+	payload.IsEnabled = d.Get("enabled").(bool)
 	payload.Message = d.Get("message").(string)
 	payload.Name = d.Get("name").(string)
 

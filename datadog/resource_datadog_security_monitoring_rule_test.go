@@ -30,8 +30,8 @@ func TestAccDatadogSecurityMonitoringRule_Basic(t *testing.T) {
 				Check:  testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider, ruleName),
 			},
 			{
-				Config: testAccCheckDatadogSecurityMonitoringDisabledConfig(ruleName),
-				Check:  testAccCheckDatadogSecurityMonitoringDisabledCheck(accProvider, ruleName),
+				Config: testAccCheckDatadogSecurityMonitoringEnabledDefaultConfig(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitoringEnabledDefaultCheck(accProvider, ruleName),
 			},
 		},
 	})
@@ -75,10 +75,11 @@ func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
 				Config: testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(ruleName),
 			},
 			{
-				ResourceName:      tfSecurityRuleName,
-				ImportState:       true,
-				ImportStateVerify: true,
-				Check:             testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
+				ResourceName:            tfSecurityRuleName,
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"enabled"},
+				Check:                   testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
 			},
 		},
 	})
@@ -275,12 +276,11 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider *schema.Provid
 	)
 }
 
-func testAccCheckDatadogSecurityMonitoringDisabledConfig(name string) string {
+func testAccCheckDatadogSecurityMonitoringEnabledDefaultConfig(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s - updated"
     message = "acceptance rule triggered (updated)"
-    disabled = true
 
     query { 
         name = "first_updated"
@@ -315,7 +315,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitoringDisabledCheck(accProvider *schema.Provider, ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringEnabledDefaultCheck(accProvider *schema.Provider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -323,7 +323,7 @@ func testAccCheckDatadogSecurityMonitoringDisabledCheck(accProvider *schema.Prov
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "message", "acceptance rule triggered (updated)"),
 		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "disabled", "true"),
+			tfSecurityRuleName, "enabled", "true"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.name", "first_updated"),
 		resource.TestCheckResourceAttr(
