@@ -1,5 +1,4 @@
-page_title: "datadog_security_monitoring_default_rule"
----
+## page_title: "datadog_security_monitoring_default_rule"
 
 # datadog_security_monitoring_default_rule Resource
 
@@ -8,6 +7,7 @@ Provides a Datadog [Security Monitoring Rule API](https://docs.datadoghq.com/api
 ## Example Usage
 
 Enable a default rule and configure it's notifications.
+
 ```hcl
 resource "datadog_security_monitoring_default_rule" "adefaultrule" {
     rule_id = "ojo-qef-3g3"
@@ -24,12 +24,13 @@ resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 ## Argument Reference
 
 The following arguments are supported:
-- `rule_id`: (Required) The id of a default rule.
-- `enabled`: (Optional) Enable the default rule.
-- `disabled`: (Optional) Disable the default rule.
-- `case`: (Optional) Change the notifications of a case.
-    - `status`: Severity of the case.
-    - `notifications`: Notification targets for the case.
+
+-   `rule_id`: (Required) The id of a default rule.
+-   `enabled`: (Optional) Enable the default rule.
+-   `disabled`: (Optional) Disable the default rule.
+-   `case`: (Optional) Change the notifications of a case.
+    -   `status`: Severity of the case.
+    -   `notifications`: Notification targets for the case.
 
 ## Configuring many rules
 
