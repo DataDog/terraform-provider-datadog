@@ -30,7 +30,7 @@ func dataSourceDatadogSecurityMonitoringRules() *schema.Resource {
 				Description: "A list of tags to limit the search",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			"default_only_filter": {
+			"is_default_filter": {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Description: "Limit the search to default rules",
@@ -115,7 +115,6 @@ func dataSourceDatadogSecurityMonitoringRulesRead(d *schema.ResourceData, meta i
 			ruleIds = append(ruleIds, rule.GetId())
 			rules = append(rules, buildSecurityMonitoringTfRule(rule))
 		}
-		println(len(response.GetData()))
 
 		totalCount := *response.Meta.GetPage().TotalCount
 		if totalCount-1 >= page {

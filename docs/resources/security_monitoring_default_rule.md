@@ -26,8 +26,7 @@ resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 The following arguments are supported:
 
 -   `rule_id`: (Required) The id of a default rule.
--   `enabled`: (Optional) Enable the default rule.
--   `disabled`: (Optional) Disable the default rule.
+-   `enabled`: (Optional, default = True) Whether the default rule is enabled.
 -   `case`: (Optional) Change the notifications of a case.
     -   `status`: Severity of the case.
     -   `notifications`: Notification targets for the case.

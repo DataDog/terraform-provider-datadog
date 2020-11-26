@@ -50,13 +50,8 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 			"enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
+				Default:     true,
 				Description: "Enable the rule.",
-			},
-
-			"disabled": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Description: "Disable the rule.",
 			},
 		},
 	}
@@ -85,15 +80,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(d *schema.ResourceData, me
 		return err
 	}
 
-	_, isEnabled := d.GetOk("enabled")
-	_, isDisabled := d.GetOk("disabled")
-	if isEnabled && isDisabled {
-		return errors.New("can not set a rule to both enabled and disabled")
-	}
-	if isEnabled || isDisabled {
-		d.Set("enabled", *ruleResponse.IsEnabled)
-		d.Set("disabled", !*ruleResponse.IsEnabled)
-	}
+	d.Set("enabled", *ruleResponse.IsEnabled)
 
 	if v, ok := d.GetOk("case"); ok {
 		tfCasesRaw := v.([]interface{})
@@ -160,26 +147,10 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(d *schema.ResourceData, 
 }
 
 func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitoringRuleResponse, d *schema.ResourceData) (*datadogV2.SecurityMonitoringRuleUpdatePayload, bool, error) {
-	modified := false
 	payload := datadogV2.SecurityMonitoringRuleUpdatePayload{}
 
-	_, isEnabled := d.GetOk("enabled")
-	_, isDisabled := d.GetOk("disabled")
-
-	if isEnabled && isDisabled {
-		return nil, false, errors.New("can not set a rule to both enabled and disabled")
-	}
-
-	if isEnabled && !currentState.GetIsEnabled() {
-		modified = true
-		enabled := true
-		payload.IsEnabled = &enabled
-	}
-	if isDisabled && currentState.GetIsEnabled() {
-		modified = true
-		disabled := false
-		payload.IsEnabled = &disabled
-	}
+	isEnabled := d.Get("enabled").(bool)
+	payload.IsEnabled = &isEnabled
 
 	if v, ok := d.GetOk("cases"); ok {
 		matchedCases := 0
@@ -199,7 +170,6 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 				}
 
 				if !stringSliceEquals(tfNotifications, ruleCase.GetNotifications()) {
-					modified = true
 					modifiedCases += 1
 					updatedNotifications = tfNotifications
 				}
@@ -225,12 +195,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 		}
 	}
 
-	if modified {
-		return &payload, true, nil
-	} else {
-
-		return nil, false, nil
-	}
+	return &payload, true, nil
 }
 
 func stringSliceEquals(left []string, right []string) bool {

@@ -33,7 +33,7 @@ func TestAccDatadogSecurityMonitoringDefaultRule_Basic(t *testing.T) {
 				Config: testAccCheckDatadogSecurityMonitoringDefaultDisable(),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestMatchResourceAttr(tfSecurityDefaultRuleName, "rule_id", matchAny),
-					resource.TestCheckResourceAttr(tfSecurityDefaultRuleName, "disabled", "true"),
+					resource.TestCheckResourceAttr(tfSecurityDefaultRuleName, "enabled", "false"),
 				),
 			},
 			{
@@ -82,7 +82,7 @@ data "datadog_security_monitoring_rules" "bruteforce" {
 
 resource "datadog_security_monitoring_default_rule" "acceptance_test" {
     rule_id = "${data.datadog_security_monitoring_rules.bruteforce.rule_ids.0}"
-	disabled = true
+	enabled = false
 }
 `)
 }
