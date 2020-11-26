@@ -9,7 +9,6 @@ import (
 
 func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 	return &schema.Resource{
-		Exists: resourceDatadogSecurityMonitoringDefaultRuleExists,
 		Create: resourceDatadogSecurityMonitoringDefaultRuleCreate,
 		Read:   resourceDatadogSecurityMonitoringDefaultRuleRead,
 		Update: resourceDatadogSecurityMonitoringDefaultRuleUpdate,
@@ -60,22 +59,6 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 			},
 		},
 	}
-}
-
-func resourceDatadogSecurityMonitoringDefaultRuleExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
-
-	id := d.Id()
-	_, httpResponse, err := datadogClientV2.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, id).Execute()
-	if err != nil {
-		if httpResponse != nil && httpResponse.StatusCode == 404 {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking security monitoring rule exists")
-	}
-	return true, nil
 }
 
 func resourceDatadogSecurityMonitoringDefaultRuleCreate(d *schema.ResourceData, meta interface{}) error {

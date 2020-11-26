@@ -32,7 +32,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
         group_by_fields = ["host"]
     }
 
- 	case {
+    case {
         status = "high"
         condition = "errors > 3 && warnings > 10"
         notifications = ["@user"]
