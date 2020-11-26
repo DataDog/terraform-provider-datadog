@@ -530,7 +530,7 @@ func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{
 	syntheticsTest := buildSyntheticsTestStruct(d)
 	if _, _, err := datadogClientV1.SyntheticsApi.UpdateTest(authV1, d.Id()).Body(*syntheticsTest).Execute(); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
-		translateClientError(err, "error updating synthetics test")
+		return translateClientError(err, "error updating synthetics test")
 	}
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
@@ -682,11 +682,21 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 							if v, ok := targetMap["jsonpath"]; ok {
 								subTarget.SetJsonPath(v.(string))
 							}
-							if v, ok := targetMap["operator"]; ok {
-								subTarget.SetOperator(v.(string))
+							operator, ok := targetMap["operator"]
+							if ok {
+								subTarget.SetOperator(operator.(string))
 							}
 							if v, ok := targetMap["targetvalue"]; ok {
-								subTarget.SetTargetValue(v)
+								switch operator.(string) {
+								case
+									"lessThan",
+									"lessThanOrEqual",
+									"moreThan",
+									"moreThanOrEqual":
+									setFloatTargetValue(subTarget, v.(string))
+								default:
+									subTarget.SetTargetValue(v)
+								}
 							}
 							assertionJSONPathTarget.SetTarget(*subTarget)
 						}
@@ -1000,7 +1010,13 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 					localTarget["operator"] = string(*v)
 				}
 				if v, ok := target.GetTargetValueOk(); ok {
-					localTarget["targetvalue"] = (*v).(string)
+					if vAsString, ok := (*v).(string); ok {
+						localTarget["targetvalue"] = vAsString
+					} else if vAsFloat, ok := (*v).(float64); ok {
+						localTarget["targetvalue"] = strconv.FormatFloat(vAsFloat, 'f', -1, 64)
+					} else {
+						return fmt.Errorf("Unrecognized targetvalue type %v", v)
+					}
 				}
 				localAssertion["targetjsonpath"] = []map[string]string{localTarget}
 			}
@@ -1176,5 +1192,11 @@ func convertToSyntheticsBrowserVariableType(s string) (datadogV1.SyntheticsBrows
 		return datadogV1.SYNTHETICSBROWSERVARIABLETYPE_TEXT, nil
 	default:
 		return "", fmt.Errorf("variable.type must be one of ['element', 'email', 'global', 'text'], got: %s", s)
+	}
+}
+
+func setFloatTargetValue(subTarget *datadogV1.SyntheticsAssertionJSONPathTargetTarget, value string) {
+	if floatValue, err := strconv.ParseFloat(value, 64); err == nil {
+		subTarget.SetTargetValue(floatValue)
 	}
 }
