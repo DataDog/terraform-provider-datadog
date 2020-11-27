@@ -437,15 +437,17 @@ func testAccCheckDatadogSecurityMonitoringRuleDestroy(provider *schema.Provider)
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
 
-		for _, rule := range s.RootModule().Resources {
-			_, httpResponse, err := client.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, rule.Primary.ID).Execute()
-			if err != nil {
-				if httpResponse != nil && httpResponse.StatusCode == 404 {
-					continue
+		for _, resource := range s.RootModule().Resources {
+			if resource.Type == "datadog_security_monitoring_rule" {
+				_, httpResponse, err := client.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, resource.Primary.ID).Execute()
+				if err != nil {
+					if httpResponse != nil && httpResponse.StatusCode == 404 {
+						continue
+					}
+					return fmt.Errorf("received an error deleting security monitoring rule: %s", err)
 				}
-				return fmt.Errorf("received an error deleting security monitoring rule: %s", err)
+				return fmt.Errorf("monitor still exists")
 			}
-			return fmt.Errorf("monitor still exists")
 		}
 		return nil
 	}

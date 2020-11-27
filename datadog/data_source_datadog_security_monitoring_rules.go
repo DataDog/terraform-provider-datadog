@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"log"
 	"sort"
 	"strings"
 
@@ -141,17 +142,28 @@ func computeSecMonDataSourceRulesId(nameFilter *string, defaultFilter *bool, tag
 	sort.Strings(tags)
 
 	// Key for hashing
-	key := struct {
-		Name    *string
-		Default *bool
-		Tags    []string
-	}{
-		nameFilter,
-		defaultFilter,
-		tags,
+	var b strings.Builder
+	if nameFilter != nil {
+		b.WriteString(*nameFilter)
 	}
+	b.WriteRune('|')
+	if defaultFilter != nil {
+		if *defaultFilter {
+			b.WriteRune('1')
+		} else {
+			b.WriteRune('0')
+		}
+	}
+	b.WriteRune('|')
+	for _, tag := range tags {
+		b.WriteString(tag)
+		b.WriteRune(',')
+	}
+	keyStr := b.String()
+
 	h := sha256.New()
-	h.Write([]byte(fmt.Sprintf("%v", key)))
+	log.Println("HASHKEY", keyStr)
+	h.Write([]byte(keyStr))
 
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
