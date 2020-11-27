@@ -39,8 +39,9 @@ func resourceDatadogUser() *schema.Resource {
 				Required: true,
 			},
 			"handle": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:       schema.TypeString,
+				Optional:   true,
+				Deprecated: "This parameter is deprecated and will be removed from the next Major version",
 			},
 			"title": {
 				Type:     schema.TypeString,
@@ -60,7 +61,7 @@ func resourceDatadogUser() *schema.Resource {
 			},
 			"name": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 			"role": {
 				Type:       schema.TypeString,
@@ -241,9 +242,6 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 			return err
 		}
 		if err := d.Set("disabled", userAttributes.GetDisabled()); err != nil {
-			return err
-		}
-		if err := d.Set("handle", userAttributes.GetHandle()); err != nil {
 			return err
 		}
 		roles := make([]string, len(userRoles))

@@ -38,8 +38,7 @@ func testAccCheckDatadogUserConfigImported(uniq string) string {
 
 resource "datadog_user" "foo" {
   email  = "%s"
-  handle = "%s"
   name   = "Test User"
   roles  = [data.datadog_role.st_role.id, data.datadog_role.adm_role.id]
-}`, roleDatasources, uniq, uniq)
+}`, roleDatasources, uniq)
 }

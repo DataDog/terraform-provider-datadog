@@ -31,8 +31,6 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "email", username),
 					resource.TestCheckResourceAttr(
-						"datadog_user.foo", "handle", username),
-					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "verified", "false"),
@@ -47,8 +45,6 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 					// NOTE: it's not possible ATM to update email of another user
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "email", username),
-					resource.TestCheckResourceAttr(
-						"datadog_user.foo", "handle", username),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "name", "Updated User"),
 					resource.TestCheckResourceAttr(
@@ -77,8 +73,6 @@ func TestAccDatadogUser_Existing(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "email", username),
 					resource.TestCheckResourceAttr(
-						"datadog_user.foo", "handle", username),
-					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "verified", "false"),
@@ -90,8 +84,6 @@ func TestAccDatadogUser_Existing(t *testing.T) {
 					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.bar"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.bar", "email", username),
-					resource.TestCheckResourceAttr(
-						"datadog_user.bar", "handle", username),
 					resource.TestCheckResourceAttr(
 						"datadog_user.bar", "name", "Other User"),
 					resource.TestCheckResourceAttr(
@@ -118,7 +110,6 @@ func TestAccDatadogUser_RoleDatasource(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "email", username),
-					resource.TestCheckResourceAttr("datadog_user.foo", "handle", username),
 					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "1"),
@@ -145,7 +136,6 @@ func TestAccDatadogUser_UpdateRole(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "email", username),
-					resource.TestCheckResourceAttr("datadog_user.foo", "handle", username),
 					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "2"),
@@ -158,7 +148,6 @@ func TestAccDatadogUser_UpdateRole(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "email", username),
-					resource.TestCheckResourceAttr("datadog_user.foo", "handle", username),
 					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "2"),
@@ -234,9 +223,8 @@ func testAccCheckDatadogUserConfigRequired(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_user" "foo" {
   email     = "%s"
-  handle    = "%s"
   name      = "Test User"
-}`, uniq, uniq)
+}`, uniq)
 }
 
 func testAccCheckDatadogUserConfigReadOnlyRole(uniq string) string {
@@ -247,10 +235,9 @@ data "datadog_role" "ro_role" {
 
 resource "datadog_user" "foo" {
   email     = "%s"
-  handle    = "%s"
   name      = "Test User"
   roles     = [data.datadog_role.ro_role.id]
-}`, uniq, uniq)
+}`, uniq)
 }
 
 var roleDatasources = `
@@ -269,10 +256,9 @@ func testAccCheckDatadogUserConfigRoleUpdate1(uniq string) string {
 
 resource "datadog_user" "foo" {
   email     = "%s"
-  handle    = "%s"
   name      = "Test User"
   roles     = [data.datadog_role.ro_role.id, data.datadog_role.st_role.id]
-}`, roleDatasources, uniq, uniq)
+}`, roleDatasources, uniq)
 }
 
 func testAccCheckDatadogUserConfigRoleUpdate2(uniq string) string {
@@ -280,10 +266,9 @@ func testAccCheckDatadogUserConfigRoleUpdate2(uniq string) string {
 
 resource "datadog_user" "foo" {
   email     = "%s"
-  handle    = "%s"
   name      = "Test User"
   roles     = [data.datadog_role.st_role.id, data.datadog_role.adm_role.id]
-}`, roleDatasources, uniq, uniq)
+}`, roleDatasources, uniq)
 }
 
 func testAccCheckDatadogUserConfigUpdated(uniq string) string {
@@ -292,18 +277,16 @@ resource "datadog_user" "foo" {
   disabled    = true
   // NOTE: it's not possible ATM to update email of another user
   email       = "%s"
-  handle      = "%s"
   name        = "Updated User"
-}`, uniq, uniq)
+}`, uniq)
 }
 
 func testAccCheckDatadogUserConfigOtherUser(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_user" "bar" {
   email     = "%s"
-  handle    = "%s"
   name      = "Other User"
-}`, uniq, uniq)
+}`, uniq)
 }
 
 func datadogUserDestroyHelper(s *terraform.State, client *datadog.Client) error {
