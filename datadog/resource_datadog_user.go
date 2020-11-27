@@ -223,12 +223,36 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 
 		userData := userResponse.GetData()
 		userAttributes := userData.GetAttributes()
-		d.Set("email", userAttributes.GetEmail())
-		d.Set("name", userAttributes.GetName())
-		d.Set("title", userAttributes.GetTitle())
-		d.Set("verified", userAttributes.GetVerified())
-		d.Set("disabled", userAttributes.GetDisabled())
-		d.Set("handle", userAttributes.GetHandle())
+
+		userRelations := userData.GetRelationships()
+		userRolesRelations := userRelations.GetRoles()
+		userRoles := userRolesRelations.GetData()
+
+		if err := d.Set("email", userAttributes.GetEmail()); err != nil {
+			return err
+		}
+		if err := d.Set("name", userAttributes.GetName()); err != nil {
+			return err
+		}
+		if err := d.Set("title", userAttributes.GetTitle()); err != nil {
+			return err
+		}
+		if err := d.Set("verified", userAttributes.GetVerified()); err != nil {
+			return err
+		}
+		if err := d.Set("disabled", userAttributes.GetDisabled()); err != nil {
+			return err
+		}
+		if err := d.Set("handle", userAttributes.GetHandle()); err != nil {
+			return err
+		}
+		roles := make([]string, len(userRoles))
+		for i, userRole := range userRoles {
+			roles[i] = userRole.GetId()
+		}
+		if err := d.Set("roles", roles); err != nil {
+			return err
+		}
 	} else {
 		client := providerConf.CommunityClient
 		u, err := client.GetUser(d.Id())
@@ -236,13 +260,27 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 			return err
 		}
 
-		d.Set("disabled", u.GetDisabled())
-		d.Set("email", u.GetEmail())
-		d.Set("handle", u.GetHandle())
-		d.Set("name", u.GetName())
-		d.Set("verified", u.GetVerified())
-		d.Set("access_role", u.GetAccessRole())
-		d.Set("is_admin", u.GetIsAdmin())
+		if err := d.Set("disabled", u.GetDisabled()); err != nil {
+			return err
+		}
+		if err := d.Set("email", u.GetEmail()); err != nil {
+			return err
+		}
+		if err := d.Set("handle", u.GetHandle()); err != nil {
+			return err
+		}
+		if err := d.Set("name", u.GetName()); err != nil {
+			return err
+		}
+		if err := d.Set("verified", u.GetVerified()); err != nil {
+			return err
+		}
+		if err := d.Set("access_role", u.GetAccessRole()); err != nil {
+			return err
+		}
+		if err := d.Set("is_admin", u.GetIsAdmin()); err != nil {
+			return err
+		}
 	}
 	return nil
 }
