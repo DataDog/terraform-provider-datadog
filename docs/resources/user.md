@@ -28,7 +28,6 @@ The following arguments are supported:
 
 -   `email`: (Required) Email address for user
 -   `name`: (Optional) Name for user
--   `title`: (Optional) Title for user
 -   `roles`: (Optional) A list a role IDs to assign to the user.
 -   `disabled`: (Optional) Whether the user is disabled
 -   `handle`: (Deprecated) The user handle, must be a valid email.

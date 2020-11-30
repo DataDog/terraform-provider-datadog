@@ -43,10 +43,6 @@ func resourceDatadogUser() *schema.Resource {
 				Optional:   true,
 				Deprecated: "This parameter is deprecated and will be removed from the next Major version",
 			},
-			"title": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
 			"is_admin": {
 				Type:       schema.TypeBool,
 				Computed:   true,
@@ -126,7 +122,6 @@ func buildDatadogUserV2Struct(d *schema.ResourceData, providerConf *ProviderConf
 	userAttributes := datadogV2.NewUserCreateAttributesWithDefaults()
 	userAttributes.SetEmail(d.Get("email").(string))
 	userAttributes.SetName(d.Get("name").(string))
-	userAttributes.SetTitle(d.Get("title").(string))
 
 	userCreate := datadogV2.NewUserCreateDataWithDefaults()
 	userCreate.SetAttributes(*userAttributes)
@@ -233,9 +228,6 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 			return err
 		}
 		if err := d.Set("name", userAttributes.GetName()); err != nil {
-			return err
-		}
-		if err := d.Set("title", userAttributes.GetTitle()); err != nil {
 			return err
 		}
 		if err := d.Set("verified", userAttributes.GetVerified()); err != nil {
