@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"data":{"attributes":{"email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","name":"Test User","title":""},"relationships":{"roles":{"data":[]}},"type":"users"}}
+      {"data":{"attributes":{"email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","name":"Test User"},"relationships":{"roles":{"data":[]}},"type":"users"}}
     form: {}
     headers:
       Accept:
@@ -16,42 +16,42 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6671086189660850565"
+      - "2580486021112615405"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "5570139152134983827"
+      - "6355980493378199323"
     url: https://api.datadoghq.com/api/v2/users
     method: POST
   response:
-    body: '{"data":{"type":"users","id":"319f917c-30bd-11eb-86bd-0b8f2b094477","attributes":{"name":"Test
-      User","handle":"tf-testaccdatadoguser_updated-local-1606487469@example.com","created_at":"2020-11-27T14:31:10.440973+00:00","email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","icon":"https://secure.gravatar.com/avatar/821b8f2216a3d4d242c9214e2e65a658?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"6a10a3d4-331f-11eb-86f9-937d974a8649","attributes":{"name":"Test
+      User","handle":"tf-testaccdatadoguser_updated-local-1606749557@example.com","created_at":"2020-11-30T15:19:18.139549+00:00","email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","icon":"https://secure.gravatar.com/avatar/d02fe488804080342c52b3f52d744c86?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
       Connection:
       - keep-alive
       Content-Length:
-      - "608"
+      - "610"
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
       Date:
-      - Fri, 27 Nov 2020 14:31:10 GMT
+      - Mon, 30 Nov 2020 15:19:18 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 04-Dec-2020 14:31:10 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 07-Dec-2020 15:19:17 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - bCBSaf0t3cWhIJuGOGz9PtbBY7MrMPu1HpZVAposegdxNlFMe/qHi/UbtNAIVmzS
+      - 2yLQyeuXdHKf2qhVlcnhVSRUgzA6Krta0LEltrGESIMHoX7HWgb/dSrVA+a76Sm3
       X-Dd-Version:
       - "35.3435414"
       X-Frame-Options:
@@ -71,16 +71,16 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "2363483311087459357"
+      - "488467822479263394"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "5570139152134983827"
-    url: https://api.datadoghq.com/api/v2/users/319f917c-30bd-11eb-86bd-0b8f2b094477
+      - "6355980493378199323"
+    url: https://api.datadoghq.com/api/v2/users/6a10a3d4-331f-11eb-86f9-937d974a8649
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"319f917c-30bd-11eb-86bd-0b8f2b094477","attributes":{"name":"Test
-      User","handle":"tf-testaccdatadoguser_updated-local-1606487469@example.com","created_at":"2020-11-27T14:31:10.440973+00:00","email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","icon":"https://secure.gravatar.com/avatar/821b8f2216a3d4d242c9214e2e65a658?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"6a10a3d4-331f-11eb-86f9-937d974a8649","attributes":{"name":"Test
+      User","handle":"tf-testaccdatadoguser_updated-local-1606749557@example.com","created_at":"2020-11-30T15:19:18.139549+00:00","email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","icon":"https://secure.gravatar.com/avatar/d02fe488804080342c52b3f52d744c86?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -91,13 +91,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 27 Nov 2020 14:31:10 GMT
+      - Mon, 30 Nov 2020 15:19:18 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 04-Dec-2020 14:31:10 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 07-Dec-2020 15:19:18 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -106,7 +106,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - fbpub1YRPbOoyJvhJBk1iFu2e+h0/QC0EzprMcQ+j5QBEVxUjSwBwj1+J3+NnpX8
+      - Dx/lglfFHSSR55lZZXPJOntjJp7qb35tIKm/SqO1nkg0n+U6yMAlHYP22LPWSHfP
       X-Dd-Version:
       - "35.3435414"
       X-Frame-Options:
@@ -126,16 +126,16 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "7498945466885345900"
+      - "926849208996017795"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "5570139152134983827"
-    url: https://api.datadoghq.com/api/v2/users/319f917c-30bd-11eb-86bd-0b8f2b094477
+      - "6355980493378199323"
+    url: https://api.datadoghq.com/api/v2/users/6a10a3d4-331f-11eb-86f9-937d974a8649
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"319f917c-30bd-11eb-86bd-0b8f2b094477","attributes":{"name":"Test
-      User","handle":"tf-testaccdatadoguser_updated-local-1606487469@example.com","created_at":"2020-11-27T14:31:10.440973+00:00","email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","icon":"https://secure.gravatar.com/avatar/821b8f2216a3d4d242c9214e2e65a658?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"6a10a3d4-331f-11eb-86f9-937d974a8649","attributes":{"name":"Test
+      User","handle":"tf-testaccdatadoguser_updated-local-1606749557@example.com","created_at":"2020-11-30T15:19:18.139549+00:00","email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","icon":"https://secure.gravatar.com/avatar/d02fe488804080342c52b3f52d744c86?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -146,13 +146,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 27 Nov 2020 14:31:10 GMT
+      - Mon, 30 Nov 2020 15:19:18 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 04-Dec-2020 14:31:10 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 07-Dec-2020 15:19:18 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -161,7 +161,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - RKpd63U5fOB9KQENZW/9vNmGmUgGzAVI24Vei0avdDhXQLPqbS5iSkbtN5YHNt1I
+      - D6xOASGs+SeSoSr1onTNqEyFDtjQwnjR937DW7eQT5G8CxiOSfzMZ/Hv6SqRh+8b
       X-Dd-Version:
       - "35.3435414"
       X-Frame-Options:
@@ -181,16 +181,16 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "126424845737620242"
+      - "4240798519696776869"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "5570139152134983827"
-    url: https://api.datadoghq.com/api/v2/users/319f917c-30bd-11eb-86bd-0b8f2b094477
+      - "6355980493378199323"
+    url: https://api.datadoghq.com/api/v2/users/6a10a3d4-331f-11eb-86f9-937d974a8649
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"319f917c-30bd-11eb-86bd-0b8f2b094477","attributes":{"name":"Test
-      User","handle":"tf-testaccdatadoguser_updated-local-1606487469@example.com","created_at":"2020-11-27T14:31:10.440973+00:00","email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","icon":"https://secure.gravatar.com/avatar/821b8f2216a3d4d242c9214e2e65a658?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"6a10a3d4-331f-11eb-86f9-937d974a8649","attributes":{"name":"Test
+      User","handle":"tf-testaccdatadoguser_updated-local-1606749557@example.com","created_at":"2020-11-30T15:19:18.139549+00:00","email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","icon":"https://secure.gravatar.com/avatar/d02fe488804080342c52b3f52d744c86?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -201,13 +201,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 27 Nov 2020 14:31:10 GMT
+      - Mon, 30 Nov 2020 15:19:18 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 04-Dec-2020 14:31:10 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 07-Dec-2020 15:19:18 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -216,7 +216,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - SQ42qDtuEKFP2sgVjIqNlDpiYOKALQoZIabV6hSyHOa0/LSJKKwpuBBfI7vLZopD
+      - IEUzjgpnyUrp74lH2dqPweGXNQU7es3CY44HHPIdy7aSNeimMebMvcKCoCgyWWVx
       X-Dd-Version:
       - "35.3435414"
       X-Frame-Options:
@@ -236,16 +236,16 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "7131265924574104223"
+      - "8241978113616304290"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "5570139152134983827"
-    url: https://api.datadoghq.com/api/v2/users/319f917c-30bd-11eb-86bd-0b8f2b094477
+      - "6355980493378199323"
+    url: https://api.datadoghq.com/api/v2/users/6a10a3d4-331f-11eb-86f9-937d974a8649
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"319f917c-30bd-11eb-86bd-0b8f2b094477","attributes":{"name":"Test
-      User","handle":"tf-testaccdatadoguser_updated-local-1606487469@example.com","created_at":"2020-11-27T14:31:10.440973+00:00","email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","icon":"https://secure.gravatar.com/avatar/821b8f2216a3d4d242c9214e2e65a658?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"6a10a3d4-331f-11eb-86f9-937d974a8649","attributes":{"name":"Test
+      User","handle":"tf-testaccdatadoguser_updated-local-1606749557@example.com","created_at":"2020-11-30T15:19:18.139549+00:00","email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","icon":"https://secure.gravatar.com/avatar/d02fe488804080342c52b3f52d744c86?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -256,13 +256,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 27 Nov 2020 14:31:11 GMT
+      - Mon, 30 Nov 2020 15:19:18 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 04-Dec-2020 14:31:11 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 07-Dec-2020 15:19:18 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -271,7 +271,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 4/n0qOsNbcCLs0O62LExTPssq0SdRyX2Rk0dgQQIozMoViHF7e4pyB0ZeXOioNEA
+      - cLmbdqkoXAogp+jvJYjDem2Ccuhd9u5QaFds8gBIEk61c952eYE473HKvGYqQTh2
       X-Dd-Version:
       - "35.3435414"
       X-Frame-Options:
@@ -291,16 +291,16 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3889334249661852011"
+      - "6881694925234879005"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "5570139152134983827"
-    url: https://api.datadoghq.com/api/v2/users/319f917c-30bd-11eb-86bd-0b8f2b094477
+      - "6355980493378199323"
+    url: https://api.datadoghq.com/api/v2/users/6a10a3d4-331f-11eb-86f9-937d974a8649
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"319f917c-30bd-11eb-86bd-0b8f2b094477","attributes":{"name":"Test
-      User","handle":"tf-testaccdatadoguser_updated-local-1606487469@example.com","created_at":"2020-11-27T14:31:10.440973+00:00","email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","icon":"https://secure.gravatar.com/avatar/821b8f2216a3d4d242c9214e2e65a658?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"6a10a3d4-331f-11eb-86f9-937d974a8649","attributes":{"name":"Test
+      User","handle":"tf-testaccdatadoguser_updated-local-1606749557@example.com","created_at":"2020-11-30T15:19:18.139549+00:00","email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","icon":"https://secure.gravatar.com/avatar/d02fe488804080342c52b3f52d744c86?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -311,13 +311,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 27 Nov 2020 14:31:11 GMT
+      - Mon, 30 Nov 2020 15:19:18 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 04-Dec-2020 14:31:11 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 07-Dec-2020 15:19:18 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -326,7 +326,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - LuHK+OcIuxuCTL7xVM4sMdR/Gv1H1hu+bgYJvWIAWOVtmiGVhdUVKBuef1C5aMk6
+      - V26KHlc/RfdWahgILvghYzp00rgLN6YCNAgg+V0KrlqUWK5TouaimNqGpGYzd/eX
       X-Dd-Version:
       - "35.3435414"
       X-Frame-Options:
@@ -346,16 +346,16 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3003384761827641832"
+      - "5812735193849439009"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "5570139152134983827"
-    url: https://api.datadoghq.com/api/v2/users/319f917c-30bd-11eb-86bd-0b8f2b094477
+      - "6355980493378199323"
+    url: https://api.datadoghq.com/api/v2/users/6a10a3d4-331f-11eb-86f9-937d974a8649
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"319f917c-30bd-11eb-86bd-0b8f2b094477","attributes":{"name":"Test
-      User","handle":"tf-testaccdatadoguser_updated-local-1606487469@example.com","created_at":"2020-11-27T14:31:10.440973+00:00","email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","icon":"https://secure.gravatar.com/avatar/821b8f2216a3d4d242c9214e2e65a658?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"6a10a3d4-331f-11eb-86f9-937d974a8649","attributes":{"name":"Test
+      User","handle":"tf-testaccdatadoguser_updated-local-1606749557@example.com","created_at":"2020-11-30T15:19:18.139549+00:00","email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","icon":"https://secure.gravatar.com/avatar/d02fe488804080342c52b3f52d744c86?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -366,13 +366,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 27 Nov 2020 14:31:11 GMT
+      - Mon, 30 Nov 2020 15:19:19 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 04-Dec-2020 14:31:11 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 07-Dec-2020 15:19:19 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -381,7 +381,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - WmMtMFngDL31sZYuYCiUaMFRtAs90zyIJHnMIoB4iHZztA/Ona9SnOav516bWmh7
+      - XhN3sROXhRtxvw2F+uRtJTWMwUQRYhDKBCNr1DfCqtzQgh490ZXtNSOhIx1TzG8K
       X-Dd-Version:
       - "35.3435414"
       X-Frame-Options:
@@ -391,7 +391,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"disabled":true,"email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","name":"Updated User"},"id":"319f917c-30bd-11eb-86bd-0b8f2b094477","type":"users"}}
+      {"data":{"attributes":{"disabled":true,"email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","name":"Updated User"},"id":"6a10a3d4-331f-11eb-86f9-937d974a8649","type":"users"}}
     form: {}
     headers:
       Accept:
@@ -404,16 +404,16 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "8763881530950029753"
+      - "143724090518875675"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "5570139152134983827"
-    url: https://api.datadoghq.com/api/v2/users/319f917c-30bd-11eb-86bd-0b8f2b094477
+      - "6355980493378199323"
+    url: https://api.datadoghq.com/api/v2/users/6a10a3d4-331f-11eb-86f9-937d974a8649
     method: PATCH
   response:
-    body: '{"data":{"type":"users","id":"319f917c-30bd-11eb-86bd-0b8f2b094477","attributes":{"name":"Updated
-      User","handle":"tf-testaccdatadoguser_updated-local-1606487469@example.com","created_at":"2020-11-27T14:31:10.440973+00:00","email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","icon":"https://secure.gravatar.com/avatar/821b8f2216a3d4d242c9214e2e65a658?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"6a10a3d4-331f-11eb-86f9-937d974a8649","attributes":{"name":"Updated
+      User","handle":"tf-testaccdatadoguser_updated-local-1606749557@example.com","created_at":"2020-11-30T15:19:18.139549+00:00","email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","icon":"https://secure.gravatar.com/avatar/d02fe488804080342c52b3f52d744c86?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -424,13 +424,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 27 Nov 2020 14:31:11 GMT
+      - Mon, 30 Nov 2020 15:19:19 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 04-Dec-2020 14:31:11 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 07-Dec-2020 15:19:19 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -439,7 +439,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - ApDR7dmCPzU09s5sGJ6tunvBxSFKQfwajJriSdeRXXH0ohfkw5+3MDbyzkcCLNJJ
+      - iYSQoeIUH6tZkV8oNBADyUh0i8imvOo9jWWOUgywP9QJ7opgBoT0cWGeCUTl7m+0
       X-Dd-Version:
       - "35.3435414"
       X-Frame-Options:
@@ -459,16 +459,16 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4818247845602906949"
+      - "5034703978278196529"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "5570139152134983827"
-    url: https://api.datadoghq.com/api/v2/users/319f917c-30bd-11eb-86bd-0b8f2b094477
+      - "6355980493378199323"
+    url: https://api.datadoghq.com/api/v2/users/6a10a3d4-331f-11eb-86f9-937d974a8649
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"319f917c-30bd-11eb-86bd-0b8f2b094477","attributes":{"name":"Updated
-      User","handle":"tf-testaccdatadoguser_updated-local-1606487469@example.com","created_at":"2020-11-27T14:31:10.440973+00:00","email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","icon":"https://secure.gravatar.com/avatar/821b8f2216a3d4d242c9214e2e65a658?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"6a10a3d4-331f-11eb-86f9-937d974a8649","attributes":{"name":"Updated
+      User","handle":"tf-testaccdatadoguser_updated-local-1606749557@example.com","created_at":"2020-11-30T15:19:18.139549+00:00","email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","icon":"https://secure.gravatar.com/avatar/d02fe488804080342c52b3f52d744c86?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -479,13 +479,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 27 Nov 2020 14:31:11 GMT
+      - Mon, 30 Nov 2020 15:19:19 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 04-Dec-2020 14:31:11 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 07-Dec-2020 15:19:19 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -494,7 +494,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - fbpub1YRPbOoyJvhJBk1iFu2e+h0/QC0EzprMcQ+j5QBEVxUjSwBwj1+J3+NnpX8
+      - Myj8sd1pziB4C84B4b1rasxwLMPNwfWkbCDNeub0Oa5WtqdY+QrYDSF2rhC1Qab8
       X-Dd-Version:
       - "35.3435414"
       X-Frame-Options:
@@ -514,16 +514,16 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "221762525550840505"
+      - "6665313095855924983"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "5570139152134983827"
-    url: https://api.datadoghq.com/api/v2/users/319f917c-30bd-11eb-86bd-0b8f2b094477
+      - "6355980493378199323"
+    url: https://api.datadoghq.com/api/v2/users/6a10a3d4-331f-11eb-86f9-937d974a8649
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"319f917c-30bd-11eb-86bd-0b8f2b094477","attributes":{"name":"Updated
-      User","handle":"tf-testaccdatadoguser_updated-local-1606487469@example.com","created_at":"2020-11-27T14:31:10.440973+00:00","email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","icon":"https://secure.gravatar.com/avatar/821b8f2216a3d4d242c9214e2e65a658?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"6a10a3d4-331f-11eb-86f9-937d974a8649","attributes":{"name":"Updated
+      User","handle":"tf-testaccdatadoguser_updated-local-1606749557@example.com","created_at":"2020-11-30T15:19:18.139549+00:00","email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","icon":"https://secure.gravatar.com/avatar/d02fe488804080342c52b3f52d744c86?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -534,13 +534,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 27 Nov 2020 14:31:11 GMT
+      - Mon, 30 Nov 2020 15:19:19 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 04-Dec-2020 14:31:11 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 07-Dec-2020 15:19:19 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -549,7 +549,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - saoIV/FA/z8H0gcXHP3CQ32hxYowRdGCvx+QRO7UdacLP4hVHOLNCuxXnf6LPRGD
+      - Kk/IK0yKFQFO85P6+hozZV6nj4lzf3jJe8dZhRkIu12QKZF7MHi2yPiBbpLyX6Ve
       X-Dd-Version:
       - "35.3435414"
       X-Frame-Options:
@@ -569,16 +569,16 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "7873825211149077955"
+      - "707060877338860317"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "5570139152134983827"
-    url: https://api.datadoghq.com/api/v2/users/319f917c-30bd-11eb-86bd-0b8f2b094477
+      - "6355980493378199323"
+    url: https://api.datadoghq.com/api/v2/users/6a10a3d4-331f-11eb-86f9-937d974a8649
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"319f917c-30bd-11eb-86bd-0b8f2b094477","attributes":{"name":"Updated
-      User","handle":"tf-testaccdatadoguser_updated-local-1606487469@example.com","created_at":"2020-11-27T14:31:10.440973+00:00","email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","icon":"https://secure.gravatar.com/avatar/821b8f2216a3d4d242c9214e2e65a658?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"6a10a3d4-331f-11eb-86f9-937d974a8649","attributes":{"name":"Updated
+      User","handle":"tf-testaccdatadoguser_updated-local-1606749557@example.com","created_at":"2020-11-30T15:19:18.139549+00:00","email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","icon":"https://secure.gravatar.com/avatar/d02fe488804080342c52b3f52d744c86?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -589,13 +589,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 27 Nov 2020 14:31:12 GMT
+      - Mon, 30 Nov 2020 15:19:19 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 04-Dec-2020 14:31:12 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 07-Dec-2020 15:19:19 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -604,7 +604,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - k/zHOOzqpc4r+ZK5tvPeMjc5yHaZZgqaNAwCywXjTJpLyIGjDeV+DLPBFsNU82W8
+      - mpg/BCzsUMOxVwcAuQg/6c40bDAb3ejXVT4tkiODN0ExybQ/Ia68faurJX6CivjX
       X-Dd-Version:
       - "35.3435414"
       X-Frame-Options:
@@ -624,16 +624,16 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6756291778455333479"
+      - "7776466904861657094"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "5570139152134983827"
-    url: https://api.datadoghq.com/api/v2/users/319f917c-30bd-11eb-86bd-0b8f2b094477
+      - "6355980493378199323"
+    url: https://api.datadoghq.com/api/v2/users/6a10a3d4-331f-11eb-86f9-937d974a8649
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"319f917c-30bd-11eb-86bd-0b8f2b094477","attributes":{"name":"Updated
-      User","handle":"tf-testaccdatadoguser_updated-local-1606487469@example.com","created_at":"2020-11-27T14:31:10.440973+00:00","email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","icon":"https://secure.gravatar.com/avatar/821b8f2216a3d4d242c9214e2e65a658?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"6a10a3d4-331f-11eb-86f9-937d974a8649","attributes":{"name":"Updated
+      User","handle":"tf-testaccdatadoguser_updated-local-1606749557@example.com","created_at":"2020-11-30T15:19:18.139549+00:00","email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","icon":"https://secure.gravatar.com/avatar/d02fe488804080342c52b3f52d744c86?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -644,13 +644,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 27 Nov 2020 14:31:12 GMT
+      - Mon, 30 Nov 2020 15:19:20 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 04-Dec-2020 14:31:12 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 07-Dec-2020 15:19:20 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -659,7 +659,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - NVdxML/FOEgLJzsz37XLTVVLcoGTHoJzcuGu2ZwX+JAXQfJkO87pOpfJK6E0a8TN
+      - M5AkO8bVyO5yuX6OQA9nCjANXZokYPd2NqFZwMNyvfQQbQnBskFTa6rdUllh6BsX
       X-Dd-Version:
       - "35.3435414"
       X-Frame-Options:
@@ -679,16 +679,16 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "643932654328583692"
+      - "4446106364027983030"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "5570139152134983827"
-    url: https://api.datadoghq.com/api/v2/users/319f917c-30bd-11eb-86bd-0b8f2b094477
+      - "6355980493378199323"
+    url: https://api.datadoghq.com/api/v2/users/6a10a3d4-331f-11eb-86f9-937d974a8649
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"319f917c-30bd-11eb-86bd-0b8f2b094477","attributes":{"name":"Updated
-      User","handle":"tf-testaccdatadoguser_updated-local-1606487469@example.com","created_at":"2020-11-27T14:31:10.440973+00:00","email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","icon":"https://secure.gravatar.com/avatar/821b8f2216a3d4d242c9214e2e65a658?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"6a10a3d4-331f-11eb-86f9-937d974a8649","attributes":{"name":"Updated
+      User","handle":"tf-testaccdatadoguser_updated-local-1606749557@example.com","created_at":"2020-11-30T15:19:18.139549+00:00","email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","icon":"https://secure.gravatar.com/avatar/d02fe488804080342c52b3f52d744c86?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -699,68 +699,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 27 Nov 2020 14:31:12 GMT
+      - Mon, 30 Nov 2020 15:19:20 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 04-Dec-2020 14:31:12 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - mkUBxR9AT7fES9d8jomGHhjQo+QS6q6R/gxmujd5IzTAGUw8Yw9FrdECMNXXfuHz
-      X-Dd-Version:
-      - "35.3435414"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetUser
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "5163721971968662948"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "5570139152134983827"
-    url: https://api.datadoghq.com/api/v2/users/319f917c-30bd-11eb-86bd-0b8f2b094477
-    method: GET
-  response:
-    body: '{"data":{"type":"users","id":"319f917c-30bd-11eb-86bd-0b8f2b094477","attributes":{"name":"Updated
-      User","handle":"tf-testaccdatadoguser_updated-local-1606487469@example.com","created_at":"2020-11-27T14:31:10.440973+00:00","email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","icon":"https://secure.gravatar.com/avatar/821b8f2216a3d4d242c9214e2e65a658?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Fri, 27 Nov 2020 14:31:12 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 04-Dec-2020 14:31:12 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 07-Dec-2020 15:19:20 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -770,6 +715,61 @@ interactions:
       - nosniff
       X-Dd-Debug:
       - SQ42qDtuEKFP2sgVjIqNlDpiYOKALQoZIabV6hSyHOa0/LSJKKwpuBBfI7vLZopD
+      X-Dd-Version:
+      - "35.3435414"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetUser
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "4701264344412119840"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "6355980493378199323"
+    url: https://api.datadoghq.com/api/v2/users/6a10a3d4-331f-11eb-86f9-937d974a8649
+    method: GET
+  response:
+    body: '{"data":{"type":"users","id":"6a10a3d4-331f-11eb-86f9-937d974a8649","attributes":{"name":"Updated
+      User","handle":"tf-testaccdatadoguser_updated-local-1606749557@example.com","created_at":"2020-11-30T15:19:18.139549+00:00","email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","icon":"https://secure.gravatar.com/avatar/d02fe488804080342c52b3f52d744c86?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 30 Nov 2020 15:19:20 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 07-Dec-2020 15:19:20 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - gxfSlUtZJz4/cDPBxW1+YhseAnu5514ckuMWbI3rl8N4exeAZPF+KTE0BQhrBgSI
       X-Dd-Version:
       - "35.3435414"
       X-Frame-Options:
@@ -789,15 +789,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "1137434845332533124"
+      - "4445612441952603894"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "5570139152134983827"
-    url: https://api.datadoghq.com/api/v2/users/319f917c-30bd-11eb-86bd-0b8f2b094477
+      - "6355980493378199323"
+    url: https://api.datadoghq.com/api/v2/users/6a10a3d4-331f-11eb-86f9-937d974a8649
     method: DELETE
   response:
-    body: '{"errors": ["319f917c-30bd-11eb-86bd-0b8f2b094477 not found"]}'
+    body: '{"errors": ["6a10a3d4-331f-11eb-86f9-937d974a8649 not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -808,7 +808,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 27 Nov 2020 14:31:12 GMT
+      - Mon, 30 Nov 2020 15:19:20 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -838,16 +838,16 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "1728296751611245888"
+      - "5083852299625366661"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "5570139152134983827"
-    url: https://api.datadoghq.com/api/v2/users/319f917c-30bd-11eb-86bd-0b8f2b094477
+      - "6355980493378199323"
+    url: https://api.datadoghq.com/api/v2/users/6a10a3d4-331f-11eb-86f9-937d974a8649
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"319f917c-30bd-11eb-86bd-0b8f2b094477","attributes":{"name":"Updated
-      User","handle":"tf-testaccdatadoguser_updated-local-1606487469@example.com","created_at":"2020-11-27T14:31:10.440973+00:00","email":"tf-testaccdatadoguser_updated-local-1606487469@example.com","icon":"https://secure.gravatar.com/avatar/821b8f2216a3d4d242c9214e2e65a658?s=48&d=retro","title":"","verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"6a10a3d4-331f-11eb-86f9-937d974a8649","attributes":{"name":"Updated
+      User","handle":"tf-testaccdatadoguser_updated-local-1606749557@example.com","created_at":"2020-11-30T15:19:18.139549+00:00","email":"tf-testaccdatadoguser_updated-local-1606749557@example.com","icon":"https://secure.gravatar.com/avatar/d02fe488804080342c52b3f52d744c86?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -858,13 +858,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 27 Nov 2020 14:31:12 GMT
+      - Mon, 30 Nov 2020 15:19:20 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Fri, 04-Dec-2020 14:31:12 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 07-Dec-2020 15:19:20 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -873,7 +873,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - iYSQoeIUH6tZkV8oNBADyUh0i8imvOo9jWWOUgywP9QJ7opgBoT0cWGeCUTl7m+0
+      - kVIyULqFJCTq7UhIHgqWvXavJTAli9sBlPotrAu3H7ZFGiPbwUZRL8l0MLdeDTt4
       X-Dd-Version:
       - "35.3435414"
       X-Frame-Options:
