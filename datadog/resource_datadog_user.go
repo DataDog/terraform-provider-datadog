@@ -23,7 +23,6 @@ func resourceDatadogUser() *schema.Resource {
 		Read:   resourceDatadogUserRead,
 		Update: resourceDatadogUserUpdate,
 		Delete: resourceDatadogUserDelete,
-		Exists: resourceDatadogUserExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogUserImport,
 		},
@@ -75,35 +74,6 @@ func resourceDatadogUser() *schema.Resource {
 			},
 		},
 	}
-}
-
-func resourceDatadogUserExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	// Exists - This is called to verify a resource still exists. It is called prior to Read,
-	// and lowers the burden of Read to be able to assume the resource exists.
-	providerConf := meta.(*ProviderConfiguration)
-
-	if isV2User(d.Id()) {
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
-
-		if _, httpResponse, err := datadogClientV2.UsersApi.GetUser(authV2, d.Id()).Execute(); err != nil {
-			if httpResponse != nil && httpResponse.StatusCode == 404 {
-				return false, nil
-			}
-			return false, translateClientError(err, "error checking user exists")
-		}
-	} else {
-		client := providerConf.CommunityClient
-
-		if _, err := client.GetUser(d.Id()); err != nil {
-			if strings.Contains(err.Error(), "404 Not Found") {
-				return false, nil
-			}
-			return false, translateClientError(err, "error checking user exists")
-		}
-	}
-
-	return true, nil
 }
 
 func buildDatadogUserStruct(d *schema.ResourceData) *datadog.User {
@@ -216,8 +186,12 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
 
-		userResponse, _, err := datadogClientV2.UsersApi.GetUser(authV2, d.Id()).Execute()
+		userResponse, httpResponse, err := datadogClientV2.UsersApi.GetUser(authV2, d.Id()).Execute()
 		if err != nil {
+			if httpResponse != nil && httpResponse.StatusCode == 404 {
+				d.SetId("")
+				return nil
+			}
 			return translateClientError(err, "error getting user")
 		}
 
@@ -251,6 +225,10 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 		client := providerConf.CommunityClient
 		u, err := client.GetUser(d.Id())
 		if err != nil {
+			if strings.Contains(err.Error(), "404 Not Found") {
+				d.SetId("")
+				return nil
+			}
 			return err
 		}
 
