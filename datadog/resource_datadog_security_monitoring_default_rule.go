@@ -18,13 +18,6 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			"rule_id": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The name of the rule.",
-				ForceNew:    true,
-			},
-
 			"case": {
 				Type:        schema.TypeList,
 				Optional:    true,
@@ -58,15 +51,7 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 }
 
 func resourceDatadogSecurityMonitoringDefaultRuleCreate(d *schema.ResourceData, meta interface{}) error {
-	// create only updates an existing rule
-	err := resourceDatadogSecurityMonitoringDefaultRuleUpdate(d, meta)
-	if err != nil {
-		return err
-	}
-
-	d.SetId(d.Get("rule_id").(string))
-
-	return nil
+	return errors.New("cannot create a default rule, please import it first before making changes")
 }
 
 func resourceDatadogSecurityMonitoringDefaultRuleRead(d *schema.ResourceData, meta interface{}) error {
@@ -114,7 +99,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(d *schema.ResourceData, 
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
-	ruleId := d.Get("rule_id").(string)
+	ruleId := d.Id()
 
 	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, ruleId).Execute()
 

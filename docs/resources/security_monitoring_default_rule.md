@@ -25,27 +25,20 @@ resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 
 The following arguments are supported:
 
--   `rule_id`: (Required) The id of a default rule.
 -   `enabled`: (Optional, default = True) Whether the default rule is enabled.
 -   `case`: (Optional) Change the notifications of a case.
     -   `status`: Severity of the case.
     -   `notifications`: Notification targets for the case.
 
-## Configuring many rules
+## Importing
 
-It is possible to configure many default rules using the `datadog_security_monitoring_rules` datasource.
+Default rules need to be imported before applying.
 
 ```hcl
-# List all default rules with tag "security:attack"
-datasource "datadog_security_rules" "attack_default_rules" {
-    default_only_filter = true
-    tags_filter = ["security:attack"]
+resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 }
+```
 
-# Create a resource for each default rule id and enable the rule
-resource "datadog_security_monitoring_default_rule" "attack_rule" {
-    for_each = toset(data.datadog_security_monitoring_rules.rules.rule_ids)
-    rule_id = each.key
-    enabled = true
-}
+```
+terraform import datadog_security_monitoring_default_rule.adefaultrule
 ```
