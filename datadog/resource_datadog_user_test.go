@@ -305,7 +305,7 @@ func datadogUserDestroyHelper(s *terraform.State, client *datadog.Client) error 
 		if u.GetDisabled() {
 			continue
 		}
-		return fmt.Errorf("user still exists")
+		return fmt.Errorf("user still enabled")
 	}
 	return nil
 }

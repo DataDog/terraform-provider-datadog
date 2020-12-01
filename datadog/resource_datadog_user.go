@@ -121,7 +121,9 @@ func buildDatadogUserStruct(d *schema.ResourceData) *datadog.User {
 func buildDatadogUserV2Struct(d *schema.ResourceData, providerConf *ProviderConfiguration) *datadogV2.UserCreateRequest {
 	userAttributes := datadogV2.NewUserCreateAttributesWithDefaults()
 	userAttributes.SetEmail(d.Get("email").(string))
-	userAttributes.SetName(d.Get("name").(string))
+	if v, ok := d.GetOk("name"); ok {
+		userAttributes.SetName(v.(string))
+	}
 
 	userCreate := datadogV2.NewUserCreateDataWithDefaults()
 	userCreate.SetAttributes(*userAttributes)
@@ -150,7 +152,9 @@ func buildDatadogUserV2Struct(d *schema.ResourceData, providerConf *ProviderConf
 func buildDatadogUserV2UpdateStruct(d *schema.ResourceData, userId string) *datadogV2.UserUpdateRequest {
 	userAttributes := datadogV2.NewUserUpdateAttributesWithDefaults()
 	userAttributes.SetEmail(d.Get("email").(string))
-	userAttributes.SetName(d.Get("name").(string))
+	if v, ok := d.GetOk("name"); ok {
+		userAttributes.SetName(v.(string))
+	}
 	userAttributes.SetDisabled(d.Get("disabled").(bool))
 
 	userUpdate := datadogV2.NewUserUpdateDataWithDefaults()
