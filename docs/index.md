@@ -6,6 +6,8 @@ page_title: "Provider: Datadog"
 
 The [Datadog](https://www.datadoghq.com) provider is used to interact with the resources supported by Datadog. The provider needs to be configured with the proper credentials before it can be used.
 
+Try the [hands-on tutorial](https://learn.hashicorp.com/tutorials/terraform/datadog-provider?in=terraform/use-case?utm_source=WEBSITE&utm_medium=WEB_IO&utm_offer=ARTICLE_PAGE&utm_content=DOCS) on the Datadog provider on the HashiCorp Learn site.
+
 Use the navigation to the left to read about the available resources.
 
 ## Example Usage
