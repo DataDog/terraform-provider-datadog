@@ -32,7 +32,7 @@ The following arguments are supported:
 
 ## Importing
 
-Default rules need to be imported before applying.
+Default rules need to be imported using their ID before applying.
 
 ```hcl
 resource "datadog_security_monitoring_default_rule" "adefaultrule" {

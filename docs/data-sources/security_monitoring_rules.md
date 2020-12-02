@@ -12,7 +12,7 @@ Use this data source to retrieve information about existing security monitoring 
 data "datadog_security_monitoring_rules" "test" {
   name_filter = "attack"
   tags_filter = ["foo:bar"]
-  default_rules_filter = true
+  default_only_filter = true
 }
 ```
 

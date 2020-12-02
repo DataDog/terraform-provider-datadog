@@ -14,7 +14,7 @@ Create a simple security monitoring rule.
 resource "datadog_security_monitoring_rule" "myrule" {
     name = "My rule"
 
-    message = "Somebody set up us the bomb."
+    message = "The rule has triggered."
     enabled = true
 
     query {
@@ -74,7 +74,7 @@ The following arguments are supported:
 
 ## Import
 
-Security monitoring rules can be imported using their numeric ID, e.g.
+Security monitoring rules can be imported using ID, e.g.
 
 ```console
 $ terraform import datadog_security_monitoring_rule.my_monitor m0o-hto-lkb
