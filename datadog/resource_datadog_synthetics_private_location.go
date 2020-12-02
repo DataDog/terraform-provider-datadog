@@ -90,7 +90,7 @@ func resourceDatadogSyntheticsPrivateLocationUpdate(d *schema.ResourceData, meta
 	syntheticsPrivateLocation := buildSyntheticsPrivateLocationStruct(d)
 	if _, _, err := datadogClientV1.SyntheticsApi.UpdatePrivateLocation(authV1, d.Id()).Body(*syntheticsPrivateLocation).Execute(); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
-		translateClientError(err, "error updating synthetics private location")
+		return translateClientError(err, "error updating synthetics private location")
 	}
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
