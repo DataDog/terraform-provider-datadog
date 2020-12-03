@@ -13,6 +13,7 @@ Use the navigation to the left to read about the available resources.
 ## Example Usage
 
 Terraform 0.13+ uses the Terraform Registry:
+
 ```hcl
 terraform {
   required_providers {
