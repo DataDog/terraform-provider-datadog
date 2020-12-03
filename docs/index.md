@@ -18,15 +18,15 @@ terraform {
   required_providers {
     datadog = {
       source  = "DataDog/datadog"
-      # version = "~> 1.0"
     }
   }
 }
 
+
 # Configure the Datadog provider
 provider "datadog" {
-  api_key = "${var.datadog_api_key}"
-  app_key = "${var.datadog_app_key}"
+  api_key = var.datadog_api_key
+  app_key = var.datadog_app_key
 }
 
 # Create a new monitor
@@ -34,8 +34,8 @@ resource "datadog_monitor" "default" {
   # ...
 }
 
-# Create a new timeboard
-resource "datadog_timeboard" "default" {
+# Create a new dashboard
+resource "datadog_dashboard" "default" {
   # ...
 }
 
@@ -55,8 +55,8 @@ resource "datadog_monitor" "default" {
   # ...
 }
 
-# Create a new timeboard
-resource "datadog_timeboard" "default" {
+# Create a new dashboard
+resource "datadog_dashboard" "default" {
   # ...
 }
 ```
