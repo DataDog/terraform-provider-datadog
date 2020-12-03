@@ -1,7 +1,6 @@
 package datadog
 
 import (
-	"errors"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -310,7 +309,7 @@ func resourceDatadogSecurityMonitoringRuleRead(d *schema.ResourceData, meta inte
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId("")
-			return errors.New("security monitoring rule does not exist")
+			return nil
 		}
 		return err
 	}
