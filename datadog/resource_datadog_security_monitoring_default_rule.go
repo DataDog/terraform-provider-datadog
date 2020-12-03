@@ -122,8 +122,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(d *schema.ResourceData, 
 	}
 
 	if shouldUpdate {
-		_, _, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, ruleId).Body(*ruleUpdate).Execute()
-		if err != nil {
+		if _, _, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, ruleId).Body(*ruleUpdate).Execute(); err != nil {
 			return translateClientError(err, "error updating security monitoring rule on resource creation")
 		}
 	}

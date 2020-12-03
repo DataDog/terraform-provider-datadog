@@ -40,5 +40,5 @@ resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 ```
 
 ```
-terraform import datadog_security_monitoring_default_rule.adefaultrule
+terraform import datadog_security_monitoring_default_rule.adefaultrule m0o-hto-lkb
 ```

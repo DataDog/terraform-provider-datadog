@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"errors"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -8,7 +9,6 @@ import (
 
 func resourceDatadogSecurityMonitoringRule() *schema.Resource {
 	return &schema.Resource{
-		Exists: resourceDatadogSecurityMonitoringRuleExists,
 		Create: resourceDatadogSecurityMonitoringRuleCreate,
 		Read:   resourceDatadogSecurityMonitoringRuleRead,
 		Update: resourceDatadogSecurityMonitoringRuleUpdate,
@@ -152,22 +152,6 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 	}
-}
-
-func resourceDatadogSecurityMonitoringRuleExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
-
-	id := d.Id()
-	_, httpResponse, err := datadogClientV2.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, id).Execute()
-	if err != nil {
-		if httpResponse != nil && httpResponse.StatusCode == 404 {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking security monitoring rule exists")
-	}
-	return true, nil
 }
 
 func resourceDatadogSecurityMonitoringRuleCreate(d *schema.ResourceData, meta interface{}) error {
@@ -322,8 +306,12 @@ func resourceDatadogSecurityMonitoringRuleRead(d *schema.ResourceData, meta inte
 	authV2 := providerConf.AuthV2
 
 	id := d.Id()
-	ruleResponse, _, err := datadogClientV2.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, id).Execute()
+	ruleResponse, httpResponse, err := datadogClientV2.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, id).Execute()
 	if err != nil {
+		if httpResponse != nil && httpResponse.StatusCode == 404 {
+			d.SetId("")
+			return errors.New("security monitoring rule does not exist")
+		}
 		return err
 	}
 
@@ -543,9 +531,7 @@ func resourceDatadogSecurityMonitoringRuleDelete(d *schema.ResourceData, meta in
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
-	_, err := datadogClientV2.SecurityMonitoringApi.DeleteSecurityMonitoringRule(authV2, d.Id()).Execute()
-
-	if err != nil {
+	if _, err := datadogClientV2.SecurityMonitoringApi.DeleteSecurityMonitoringRule(authV2, d.Id()).Execute(); err != nil {
 		return translateClientError(err, "error deleting security monitoring rule")
 	}
 
