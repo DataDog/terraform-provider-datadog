@@ -165,12 +165,10 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 		userId := responseData[0].GetId()
 		userRequest := buildDatadogUserV2UpdateStruct(d, userId)
 
-		res, _, err := datadogClientV2.UsersApi.UpdateUser(authV2, userId).Body(*userRequest).Execute()
-		if err != nil {
+		if _, _, err = datadogClientV2.UsersApi.UpdateUser(authV2, userId).Body(*userRequest).Execute(); err != nil {
 			return translateClientError(err, "error updating user")
 		}
-		userData := res.GetData()
-		d.SetId(userData.GetId())
+		d.SetId(userId)
 	} else {
 		userData := createResponse.GetData()
 		d.SetId(userData.GetId())
@@ -266,8 +264,7 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 
 		userRequest := buildDatadogUserV2UpdateStruct(d, d.Id())
 
-		_, _, err := datadogClientV2.UsersApi.UpdateUser(authV2, d.Id()).Body(*userRequest).Execute()
-		if err != nil {
+		if _, _, err := datadogClientV2.UsersApi.UpdateUser(authV2, d.Id()).Body(*userRequest).Execute(); err != nil {
 			return translateClientError(err, "error updating user")
 		}
 		if d.HasChange("roles") {
