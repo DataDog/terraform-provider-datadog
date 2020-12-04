@@ -14,10 +14,10 @@ import (
 
 // ChangeWidgetRequest Updated change widget.
 type ChangeWidgetRequest struct {
-	ApmQuery   *LogQueryDefinition   `json:"apm_query,omitempty"`
-	ChangeType *WidgetChangeType     `json:"change_type,omitempty"`
-	CompareTo  *WidgetCompareTo      `json:"compare_to,omitempty"`
-	EventQuery *EventQueryDefinition `json:"event_query,omitempty"`
+	ApmQuery   *LogQueryDefinition `json:"apm_query,omitempty"`
+	ChangeType *WidgetChangeType   `json:"change_type,omitempty"`
+	CompareTo  *WidgetCompareTo    `json:"compare_to,omitempty"`
+	EventQuery *LogQueryDefinition `json:"event_query,omitempty"`
 	// Whether to show increase as good.
 	IncreaseGood *bool                   `json:"increase_good,omitempty"`
 	LogQuery     *LogQueryDefinition     `json:"log_query,omitempty"`
@@ -147,9 +147,9 @@ func (o *ChangeWidgetRequest) SetCompareTo(v WidgetCompareTo) {
 }
 
 // GetEventQuery returns the EventQuery field value if set, zero value otherwise.
-func (o *ChangeWidgetRequest) GetEventQuery() EventQueryDefinition {
+func (o *ChangeWidgetRequest) GetEventQuery() LogQueryDefinition {
 	if o == nil || o.EventQuery == nil {
-		var ret EventQueryDefinition
+		var ret LogQueryDefinition
 		return ret
 	}
 	return *o.EventQuery
@@ -157,7 +157,7 @@ func (o *ChangeWidgetRequest) GetEventQuery() EventQueryDefinition {
 
 // GetEventQueryOk returns a tuple with the EventQuery field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ChangeWidgetRequest) GetEventQueryOk() (*EventQueryDefinition, bool) {
+func (o *ChangeWidgetRequest) GetEventQueryOk() (*LogQueryDefinition, bool) {
 	if o == nil || o.EventQuery == nil {
 		return nil, false
 	}
@@ -173,8 +173,8 @@ func (o *ChangeWidgetRequest) HasEventQuery() bool {
 	return false
 }
 
-// SetEventQuery gets a reference to the given EventQueryDefinition and assigns it to the EventQuery field.
-func (o *ChangeWidgetRequest) SetEventQuery(v EventQueryDefinition) {
+// SetEventQuery gets a reference to the given LogQueryDefinition and assigns it to the EventQuery field.
+func (o *ChangeWidgetRequest) SetEventQuery(v LogQueryDefinition) {
 	o.EventQuery = &v
 }
 

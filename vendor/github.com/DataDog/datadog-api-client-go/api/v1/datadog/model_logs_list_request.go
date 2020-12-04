@@ -19,7 +19,7 @@ type LogsListRequest struct {
 	// Number of logs return in the response.
 	Limit *int32 `json:"limit,omitempty"`
 	// The search query - following the log search syntax.
-	Query string    `json:"query"`
+	Query *string   `json:"query,omitempty"`
 	Sort  *LogsSort `json:"sort,omitempty"`
 	// Hash identifier of the first log to return in the list, available in a log `id` attribute. This parameter is used for the pagination feature.  **Note**: This parameter is ignored if the corresponding log is out of the scope of the specified time window.
 	StartAt *string             `json:"startAt,omitempty"`
@@ -30,9 +30,8 @@ type LogsListRequest struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLogsListRequest(query string, time LogsListRequestTime) *LogsListRequest {
+func NewLogsListRequest(time LogsListRequestTime) *LogsListRequest {
 	this := LogsListRequest{}
-	this.Query = query
 	this.Time = time
 	return &this
 }
@@ -109,28 +108,36 @@ func (o *LogsListRequest) SetLimit(v int32) {
 	o.Limit = &v
 }
 
-// GetQuery returns the Query field value
+// GetQuery returns the Query field value if set, zero value otherwise.
 func (o *LogsListRequest) GetQuery() string {
-	if o == nil {
+	if o == nil || o.Query == nil {
 		var ret string
 		return ret
 	}
-
-	return o.Query
+	return *o.Query
 }
 
-// GetQueryOk returns a tuple with the Query field value
+// GetQueryOk returns a tuple with the Query field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LogsListRequest) GetQueryOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.Query == nil {
 		return nil, false
 	}
-	return &o.Query, true
+	return o.Query, true
 }
 
-// SetQuery sets field value
+// HasQuery returns a boolean if a field has been set.
+func (o *LogsListRequest) HasQuery() bool {
+	if o != nil && o.Query != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetQuery gets a reference to the given string and assigns it to the Query field.
 func (o *LogsListRequest) SetQuery(v string) {
-	o.Query = v
+	o.Query = &v
 }
 
 // GetSort returns the Sort field value if set, zero value otherwise.
@@ -229,7 +236,7 @@ func (o LogsListRequest) MarshalJSON() ([]byte, error) {
 	if o.Limit != nil {
 		toSerialize["limit"] = o.Limit
 	}
-	if true {
+	if o.Query != nil {
 		toSerialize["query"] = o.Query
 	}
 	if o.Sort != nil {

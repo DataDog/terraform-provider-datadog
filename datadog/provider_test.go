@@ -93,6 +93,7 @@ var testFiles2EndpointTags = map[string]string{
 	"resource_datadog_service_level_objective_test":              "service-level-objectives",
 	"resource_datadog_synthetics_test_test":                      "synthetics",
 	"resource_datadog_synthetics_global_variable_test":           "synthetics",
+	"resource_datadog_synthetics_private_location_test":          "synthetics",
 	"resource_datadog_timeboard_test":                            "dashboards",
 	"resource_datadog_user_test":                                 "users",
 }

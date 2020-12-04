@@ -13,15 +13,18 @@ import (
 	"fmt"
 )
 
-// EventAlertType If an alert event is enabled, set its type. For example, `error`, `warning`, `info`, and `success`.
+// EventAlertType If an alert event is enabled, set its type. For example, `error`, `warning`, `info`, `success`, `user_update`, `recommendation`, and `snapshot`.
 type EventAlertType string
 
 // List of EventAlertType
 const (
-	EVENTALERTTYPE_ERROR   EventAlertType = "error"
-	EVENTALERTTYPE_WARNING EventAlertType = "warning"
-	EVENTALERTTYPE_INFO    EventAlertType = "info"
-	EVENTALERTTYPE_SUCCESS EventAlertType = "success"
+	EVENTALERTTYPE_ERROR          EventAlertType = "error"
+	EVENTALERTTYPE_WARNING        EventAlertType = "warning"
+	EVENTALERTTYPE_INFO           EventAlertType = "info"
+	EVENTALERTTYPE_SUCCESS        EventAlertType = "success"
+	EVENTALERTTYPE_USER_UPDATE    EventAlertType = "user_update"
+	EVENTALERTTYPE_RECOMMENDATION EventAlertType = "recommendation"
+	EVENTALERTTYPE_SNAPSHOT       EventAlertType = "snapshot"
 )
 
 func (v *EventAlertType) UnmarshalJSON(src []byte) error {
@@ -31,7 +34,7 @@ func (v *EventAlertType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := EventAlertType(value)
-	for _, existing := range []EventAlertType{"error", "warning", "info", "success"} {
+	for _, existing := range []EventAlertType{"error", "warning", "info", "success", "user_update", "recommendation", "snapshot"} {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil

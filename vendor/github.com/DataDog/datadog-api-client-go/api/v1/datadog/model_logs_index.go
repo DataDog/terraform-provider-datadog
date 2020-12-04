@@ -23,7 +23,7 @@ type LogsIndex struct {
 	IsRateLimited *bool `json:"is_rate_limited,omitempty"`
 	// The name of the index.
 	Name *string `json:"name,omitempty"`
-	// The number of days before logs are deleted from this index.
+	// The number of days before logs are deleted from this index. Available values depend on retention plans specified in your organization's contract/subscriptions.
 	NumRetentionDays *int64 `json:"num_retention_days,omitempty"`
 }
 

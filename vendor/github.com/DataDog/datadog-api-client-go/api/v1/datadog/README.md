@@ -26,6 +26,12 @@ Put the package under your project folder and add the following in import:
 import sw "./datadog"
 ```
 
+To use a proxy, set the environment variable `HTTP_PROXY`:
+
+```golang
+os.Setenv("HTTP_PROXY", "http://proxy_name:proxy_port")
+```
+
 ## Configuration of Server URL
 
 Default configuration comes with `Servers` field that contains server objects as defined in the OpenAPI specification.
@@ -173,8 +179,10 @@ Class | Method | HTTP request | Description
 *ServiceLevelObjectivesApi* | [**UpdateSLO**](docs/ServiceLevelObjectivesApi.md#updateslo) | **Put** /api/v1/slo/{slo_id} | Update a SLO
 *SnapshotsApi* | [**GetGraphSnapshot**](docs/SnapshotsApi.md#getgraphsnapshot) | **Get** /api/v1/graph/snapshot | Take graph snapshots
 *SyntheticsApi* | [**CreateGlobalVariable**](docs/SyntheticsApi.md#createglobalvariable) | **Post** /api/v1/synthetics/variables | Create a global variable
+*SyntheticsApi* | [**CreatePrivateLocation**](docs/SyntheticsApi.md#createprivatelocation) | **Post** /api/v1/synthetics/private-locations | Create a private location
 *SyntheticsApi* | [**CreateTest**](docs/SyntheticsApi.md#createtest) | **Post** /api/v1/synthetics/tests | Create a test
 *SyntheticsApi* | [**DeleteGlobalVariable**](docs/SyntheticsApi.md#deleteglobalvariable) | **Delete** /api/v1/synthetics/variables/{variable_id} | Delete a global variable
+*SyntheticsApi* | [**DeletePrivateLocation**](docs/SyntheticsApi.md#deleteprivatelocation) | **Delete** /api/v1/synthetics/private-locations/{location_id} | Delete a private location
 *SyntheticsApi* | [**DeleteTests**](docs/SyntheticsApi.md#deletetests) | **Post** /api/v1/synthetics/tests/delete | Delete tests
 *SyntheticsApi* | [**EditGlobalVariable**](docs/SyntheticsApi.md#editglobalvariable) | **Put** /api/v1/synthetics/variables/{variable_id} | Edit a global variable
 *SyntheticsApi* | [**GetAPITestLatestResults**](docs/SyntheticsApi.md#getapitestlatestresults) | **Get** /api/v1/synthetics/tests/{public_id}/results | Get the test&#39;s latest results summaries (API)
@@ -183,10 +191,12 @@ Class | Method | HTTP request | Description
 *SyntheticsApi* | [**GetBrowserTestLatestResults**](docs/SyntheticsApi.md#getbrowsertestlatestresults) | **Get** /api/v1/synthetics/tests/browser/{public_id}/results | Get the test&#39;s latest results summaries (browser)
 *SyntheticsApi* | [**GetBrowserTestResult**](docs/SyntheticsApi.md#getbrowsertestresult) | **Get** /api/v1/synthetics/tests/browser/{public_id}/results/{result_id} | Get a test result (browser)
 *SyntheticsApi* | [**GetGlobalVariable**](docs/SyntheticsApi.md#getglobalvariable) | **Get** /api/v1/synthetics/variables/{variable_id} | Get a global variable
+*SyntheticsApi* | [**GetPrivateLocation**](docs/SyntheticsApi.md#getprivatelocation) | **Get** /api/v1/synthetics/private-locations/{location_id} | Get a private location
 *SyntheticsApi* | [**GetTest**](docs/SyntheticsApi.md#gettest) | **Get** /api/v1/synthetics/tests/{public_id} | Get a test configuration (API)
 *SyntheticsApi* | [**ListLocations**](docs/SyntheticsApi.md#listlocations) | **Get** /api/v1/synthetics/locations | Get all locations (public and private)
 *SyntheticsApi* | [**ListTests**](docs/SyntheticsApi.md#listtests) | **Get** /api/v1/synthetics/tests | Get the list of all tests
 *SyntheticsApi* | [**TriggerCITests**](docs/SyntheticsApi.md#triggercitests) | **Post** /api/v1/synthetics/tests/trigger/ci | Trigger some Synthetics tests for CI
+*SyntheticsApi* | [**UpdatePrivateLocation**](docs/SyntheticsApi.md#updateprivatelocation) | **Put** /api/v1/synthetics/private-locations/{location_id} | Edit a private location
 *SyntheticsApi* | [**UpdateTest**](docs/SyntheticsApi.md#updatetest) | **Put** /api/v1/synthetics/tests/{public_id} | Edit a test
 *SyntheticsApi* | [**UpdateTestPauseStatus**](docs/SyntheticsApi.md#updatetestpausestatus) | **Put** /api/v1/synthetics/tests/{public_id}/status | Pause or start a test
 *TagsApi* | [**CreateHostTags**](docs/TagsApi.md#createhosttags) | **Post** /api/v1/tags/hosts/{host_name} | Add tags to a host
@@ -195,14 +205,18 @@ Class | Method | HTTP request | Description
 *TagsApi* | [**ListHostTags**](docs/TagsApi.md#listhosttags) | **Get** /api/v1/tags/hosts | Get Tags
 *TagsApi* | [**UpdateHostTags**](docs/TagsApi.md#updatehosttags) | **Put** /api/v1/tags/hosts/{host_name} | Update host tags
 *UsageMeteringApi* | [**GetDailyCustomReports**](docs/UsageMeteringApi.md#getdailycustomreports) | **Get** /api/v1/daily_custom_reports | Get the list of available daily custom reports
+*UsageMeteringApi* | [**GetIncidentManagement**](docs/UsageMeteringApi.md#getincidentmanagement) | **Get** /api/v1/usage/incident-management | Get hourly usage for incident management
+*UsageMeteringApi* | [**GetIngestedSpans**](docs/UsageMeteringApi.md#getingestedspans) | **Get** /api/v1/usage/ingested-spans | Get hourly usage for ingested spans
 *UsageMeteringApi* | [**GetMonthlyCustomReports**](docs/UsageMeteringApi.md#getmonthlycustomreports) | **Get** /api/v1/monthly_custom_reports | Get the list of available monthly custom reports
 *UsageMeteringApi* | [**GetSpecifiedDailyCustomReports**](docs/UsageMeteringApi.md#getspecifieddailycustomreports) | **Get** /api/v1/daily_custom_reports/{report_id} | Get specified daily custom reports
 *UsageMeteringApi* | [**GetSpecifiedMonthlyCustomReports**](docs/UsageMeteringApi.md#getspecifiedmonthlycustomreports) | **Get** /api/v1/monthly_custom_reports/{report_id} | Get specified monthly custom reports
 *UsageMeteringApi* | [**GetTracingWithoutLimits**](docs/UsageMeteringApi.md#gettracingwithoutlimits) | **Get** /api/v1/usage/tracing-without-limits | Get hourly usage for tracing without limits
 *UsageMeteringApi* | [**GetUsageAnalyzedLogs**](docs/UsageMeteringApi.md#getusageanalyzedlogs) | **Get** /api/v1/usage/analyzed_logs | Get hourly usage for analyzed logs
+*UsageMeteringApi* | [**GetUsageAttribution**](docs/UsageMeteringApi.md#getusageattribution) | **Get** /api/v1/usage/attribution | Get Usage Attribution
 *UsageMeteringApi* | [**GetUsageBillableSummary**](docs/UsageMeteringApi.md#getusagebillablesummary) | **Get** /api/v1/usage/billable-summary | Get billable usage across your multi-org account
 *UsageMeteringApi* | [**GetUsageFargate**](docs/UsageMeteringApi.md#getusagefargate) | **Get** /api/v1/usage/fargate | Get hourly usage for Fargate
 *UsageMeteringApi* | [**GetUsageHosts**](docs/UsageMeteringApi.md#getusagehosts) | **Get** /api/v1/usage/hosts | Get hourly usage for hosts and containers
+*UsageMeteringApi* | [**GetUsageIndexedSpans**](docs/UsageMeteringApi.md#getusageindexedspans) | **Get** /api/v1/usage/indexed-spans | Get hourly usage for indexed spans
 *UsageMeteringApi* | [**GetUsageLambda**](docs/UsageMeteringApi.md#getusagelambda) | **Get** /api/v1/usage/aws_lambda | Get hourly usage for Lambda
 *UsageMeteringApi* | [**GetUsageLogs**](docs/UsageMeteringApi.md#getusagelogs) | **Get** /api/v1/usage/logs | Get hourly usage for Logs
 *UsageMeteringApi* | [**GetUsageLogsByIndex**](docs/UsageMeteringApi.md#getusagelogsbyindex) | **Get** /api/v1/usage/logs_by_index | Get hourly usage for Logs by Index
@@ -359,6 +373,7 @@ Class | Method | HTTP request | Description
  - [LogsGrokParserType](docs/LogsGrokParserType.md)
  - [LogsIndex](docs/LogsIndex.md)
  - [LogsIndexListResponse](docs/LogsIndexListResponse.md)
+ - [LogsIndexUpdateRequest](docs/LogsIndexUpdateRequest.md)
  - [LogsIndexesOrder](docs/LogsIndexesOrder.md)
  - [LogsListRequest](docs/LogsListRequest.md)
  - [LogsListRequestTime](docs/LogsListRequestTime.md)
@@ -500,6 +515,12 @@ Class | Method | HTTP request | Description
  - [SyntheticsLocation](docs/SyntheticsLocation.md)
  - [SyntheticsLocations](docs/SyntheticsLocations.md)
  - [SyntheticsPlayingTab](docs/SyntheticsPlayingTab.md)
+ - [SyntheticsPrivateLocation](docs/SyntheticsPrivateLocation.md)
+ - [SyntheticsPrivateLocationCreationResponse](docs/SyntheticsPrivateLocationCreationResponse.md)
+ - [SyntheticsPrivateLocationCreationResponseResultEncryption](docs/SyntheticsPrivateLocationCreationResponseResultEncryption.md)
+ - [SyntheticsPrivateLocationSecrets](docs/SyntheticsPrivateLocationSecrets.md)
+ - [SyntheticsPrivateLocationSecretsAuthentication](docs/SyntheticsPrivateLocationSecretsAuthentication.md)
+ - [SyntheticsPrivateLocationSecretsConfigDecryption](docs/SyntheticsPrivateLocationSecretsConfigDecryption.md)
  - [SyntheticsResource](docs/SyntheticsResource.md)
  - [SyntheticsResourceType](docs/SyntheticsResourceType.md)
  - [SyntheticsSSLCertificate](docs/SyntheticsSSLCertificate.md)
@@ -545,6 +566,13 @@ Class | Method | HTTP request | Description
  - [ToplistWidgetRequest](docs/ToplistWidgetRequest.md)
  - [UsageAnalyzedLogsHour](docs/UsageAnalyzedLogsHour.md)
  - [UsageAnalyzedLogsResponse](docs/UsageAnalyzedLogsResponse.md)
+ - [UsageAttributionAggregatesBody](docs/UsageAttributionAggregatesBody.md)
+ - [UsageAttributionBody](docs/UsageAttributionBody.md)
+ - [UsageAttributionMetadata](docs/UsageAttributionMetadata.md)
+ - [UsageAttributionPagination](docs/UsageAttributionPagination.md)
+ - [UsageAttributionResponse](docs/UsageAttributionResponse.md)
+ - [UsageAttributionSort](docs/UsageAttributionSort.md)
+ - [UsageAttributionValues](docs/UsageAttributionValues.md)
  - [UsageBillableSummaryBody](docs/UsageBillableSummaryBody.md)
  - [UsageBillableSummaryHour](docs/UsageBillableSummaryHour.md)
  - [UsageBillableSummaryKeys](docs/UsageBillableSummaryKeys.md)
@@ -558,6 +586,12 @@ Class | Method | HTTP request | Description
  - [UsageFargateResponse](docs/UsageFargateResponse.md)
  - [UsageHostHour](docs/UsageHostHour.md)
  - [UsageHostsResponse](docs/UsageHostsResponse.md)
+ - [UsageIncidentManagementHour](docs/UsageIncidentManagementHour.md)
+ - [UsageIncidentManagementResponse](docs/UsageIncidentManagementResponse.md)
+ - [UsageIndexedSpansHour](docs/UsageIndexedSpansHour.md)
+ - [UsageIndexedSpansResponse](docs/UsageIndexedSpansResponse.md)
+ - [UsageIngestedSpansHour](docs/UsageIngestedSpansHour.md)
+ - [UsageIngestedSpansResponse](docs/UsageIngestedSpansResponse.md)
  - [UsageLambdaHour](docs/UsageLambdaHour.md)
  - [UsageLambdaResponse](docs/UsageLambdaResponse.md)
  - [UsageLogsByIndexHour](docs/UsageLogsByIndexHour.md)

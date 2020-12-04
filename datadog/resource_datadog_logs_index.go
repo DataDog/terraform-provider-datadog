@@ -125,8 +125,8 @@ func resourceDatadogLogsIndexExists(d *schema.ResourceData, meta interface{}) (b
 	return true, nil
 }
 
-func buildDatadogIndex(d *schema.ResourceData) (*datadogV1.LogsIndex, error) {
-	var ddIndex datadogV1.LogsIndex
+func buildDatadogIndex(d *schema.ResourceData) (*datadogV1.LogsIndexUpdateRequest, error) {
+	var ddIndex datadogV1.LogsIndexUpdateRequest
 	if tfFilter := d.Get("filter").([]interface{}); len(tfFilter) > 0 {
 		ddIndex.SetFilter(*buildDatadogIndexFilter(tfFilter[0].(map[string]interface{})))
 	}

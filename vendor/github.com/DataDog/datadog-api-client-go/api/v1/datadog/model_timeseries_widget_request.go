@@ -14,10 +14,10 @@ import (
 
 // TimeseriesWidgetRequest Updated timeseries widget.
 type TimeseriesWidgetRequest struct {
-	ApmQuery    *LogQueryDefinition   `json:"apm_query,omitempty"`
-	DisplayType *WidgetDisplayType    `json:"display_type,omitempty"`
-	EventQuery  *EventQueryDefinition `json:"event_query,omitempty"`
-	LogQuery    *LogQueryDefinition   `json:"log_query,omitempty"`
+	ApmQuery    *LogQueryDefinition `json:"apm_query,omitempty"`
+	DisplayType *WidgetDisplayType  `json:"display_type,omitempty"`
+	EventQuery  *LogQueryDefinition `json:"event_query,omitempty"`
+	LogQuery    *LogQueryDefinition `json:"log_query,omitempty"`
 	// Used to define expression aliases.
 	Metadata     *[]TimeseriesWidgetRequestMetadata `json:"metadata,omitempty"`
 	NetworkQuery *LogQueryDefinition                `json:"network_query,omitempty"`
@@ -113,9 +113,9 @@ func (o *TimeseriesWidgetRequest) SetDisplayType(v WidgetDisplayType) {
 }
 
 // GetEventQuery returns the EventQuery field value if set, zero value otherwise.
-func (o *TimeseriesWidgetRequest) GetEventQuery() EventQueryDefinition {
+func (o *TimeseriesWidgetRequest) GetEventQuery() LogQueryDefinition {
 	if o == nil || o.EventQuery == nil {
-		var ret EventQueryDefinition
+		var ret LogQueryDefinition
 		return ret
 	}
 	return *o.EventQuery
@@ -123,7 +123,7 @@ func (o *TimeseriesWidgetRequest) GetEventQuery() EventQueryDefinition {
 
 // GetEventQueryOk returns a tuple with the EventQuery field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TimeseriesWidgetRequest) GetEventQueryOk() (*EventQueryDefinition, bool) {
+func (o *TimeseriesWidgetRequest) GetEventQueryOk() (*LogQueryDefinition, bool) {
 	if o == nil || o.EventQuery == nil {
 		return nil, false
 	}
@@ -139,8 +139,8 @@ func (o *TimeseriesWidgetRequest) HasEventQuery() bool {
 	return false
 }
 
-// SetEventQuery gets a reference to the given EventQueryDefinition and assigns it to the EventQuery field.
-func (o *TimeseriesWidgetRequest) SetEventQuery(v EventQueryDefinition) {
+// SetEventQuery gets a reference to the given LogQueryDefinition and assigns it to the EventQuery field.
+func (o *TimeseriesWidgetRequest) SetEventQuery(v LogQueryDefinition) {
 	o.EventQuery = &v
 }
 

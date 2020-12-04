@@ -18,7 +18,7 @@ type QueryValueWidgetRequest struct {
 	ApmQuery   *LogQueryDefinition `json:"apm_query,omitempty"`
 	// List of conditional formats.
 	ConditionalFormats *[]WidgetConditionalFormat `json:"conditional_formats,omitempty"`
-	EventQuery         *EventQueryDefinition      `json:"event_query,omitempty"`
+	EventQuery         *LogQueryDefinition        `json:"event_query,omitempty"`
 	LogQuery           *LogQueryDefinition        `json:"log_query,omitempty"`
 	NetworkQuery       *LogQueryDefinition        `json:"network_query,omitempty"`
 	ProcessQuery       *ProcessQueryDefinition    `json:"process_query,omitempty"`
@@ -142,9 +142,9 @@ func (o *QueryValueWidgetRequest) SetConditionalFormats(v []WidgetConditionalFor
 }
 
 // GetEventQuery returns the EventQuery field value if set, zero value otherwise.
-func (o *QueryValueWidgetRequest) GetEventQuery() EventQueryDefinition {
+func (o *QueryValueWidgetRequest) GetEventQuery() LogQueryDefinition {
 	if o == nil || o.EventQuery == nil {
-		var ret EventQueryDefinition
+		var ret LogQueryDefinition
 		return ret
 	}
 	return *o.EventQuery
@@ -152,7 +152,7 @@ func (o *QueryValueWidgetRequest) GetEventQuery() EventQueryDefinition {
 
 // GetEventQueryOk returns a tuple with the EventQuery field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *QueryValueWidgetRequest) GetEventQueryOk() (*EventQueryDefinition, bool) {
+func (o *QueryValueWidgetRequest) GetEventQueryOk() (*LogQueryDefinition, bool) {
 	if o == nil || o.EventQuery == nil {
 		return nil, false
 	}
@@ -168,8 +168,8 @@ func (o *QueryValueWidgetRequest) HasEventQuery() bool {
 	return false
 }
 
-// SetEventQuery gets a reference to the given EventQueryDefinition and assigns it to the EventQuery field.
-func (o *QueryValueWidgetRequest) SetEventQuery(v EventQueryDefinition) {
+// SetEventQuery gets a reference to the given LogQueryDefinition and assigns it to the EventQuery field.
+func (o *QueryValueWidgetRequest) SetEventQuery(v LogQueryDefinition) {
 	o.EventQuery = &v
 }
 

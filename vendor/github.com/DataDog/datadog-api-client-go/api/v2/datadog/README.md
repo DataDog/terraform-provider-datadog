@@ -26,6 +26,12 @@ Put the package under your project folder and add the following in import:
 import sw "./datadog"
 ```
 
+To use a proxy, set the environment variable `HTTP_PROXY`:
+
+```golang
+os.Setenv("HTTP_PROXY", "http://proxy_name:proxy_port")
+```
+
 ## Configuration of Server URL
 
 Default configuration comes with `Servers` field that contains server objects as defined in the OpenAPI specification.
@@ -80,13 +86,18 @@ Class | Method | HTTP request | Description
 *IncidentServicesApi* | [**CreateIncidentService**](docs/IncidentServicesApi.md#createincidentservice) | **Post** /api/v2/services | Create a new incident service
 *IncidentServicesApi* | [**DeleteIncidentService**](docs/IncidentServicesApi.md#deleteincidentservice) | **Delete** /api/v2/services/{service_id} | Delete an existing incident service
 *IncidentServicesApi* | [**GetIncidentService**](docs/IncidentServicesApi.md#getincidentservice) | **Get** /api/v2/services/{service_id} | Get details of an incident service
-*IncidentServicesApi* | [**GetIncidentServices**](docs/IncidentServicesApi.md#getincidentservices) | **Get** /api/v2/services | Get a list of all incident services
+*IncidentServicesApi* | [**ListIncidentServices**](docs/IncidentServicesApi.md#listincidentservices) | **Get** /api/v2/services | Get a list of all incident services
 *IncidentServicesApi* | [**UpdateIncidentService**](docs/IncidentServicesApi.md#updateincidentservice) | **Patch** /api/v2/services/{service_id} | Update an existing incident service
 *IncidentTeamsApi* | [**CreateIncidentTeam**](docs/IncidentTeamsApi.md#createincidentteam) | **Post** /api/v2/teams | Create a new incident team
 *IncidentTeamsApi* | [**DeleteIncidentTeam**](docs/IncidentTeamsApi.md#deleteincidentteam) | **Delete** /api/v2/teams/{team_id} | Delete an existing incident team
 *IncidentTeamsApi* | [**GetIncidentTeam**](docs/IncidentTeamsApi.md#getincidentteam) | **Get** /api/v2/teams/{team_id} | Get details of an incident team
-*IncidentTeamsApi* | [**GetIncidentTeams**](docs/IncidentTeamsApi.md#getincidentteams) | **Get** /api/v2/teams | Get a list of all incident teams
+*IncidentTeamsApi* | [**ListIncidentTeams**](docs/IncidentTeamsApi.md#listincidentteams) | **Get** /api/v2/teams | Get a list of all incident teams
 *IncidentTeamsApi* | [**UpdateIncidentTeam**](docs/IncidentTeamsApi.md#updateincidentteam) | **Patch** /api/v2/teams/{team_id} | Update an existing incident team
+*IncidentsApi* | [**CreateIncident**](docs/IncidentsApi.md#createincident) | **Post** /api/v2/incidents | Create an incident
+*IncidentsApi* | [**DeleteIncident**](docs/IncidentsApi.md#deleteincident) | **Delete** /api/v2/incidents/{incident_id} | Delete an existing incident
+*IncidentsApi* | [**GetIncident**](docs/IncidentsApi.md#getincident) | **Get** /api/v2/incidents/{incident_id} | Get the details of an incident
+*IncidentsApi* | [**ListIncidents**](docs/IncidentsApi.md#listincidents) | **Get** /api/v2/incidents | Get a list of incidents
+*IncidentsApi* | [**UpdateIncident**](docs/IncidentsApi.md#updateincident) | **Patch** /api/v2/incidents/{incident_id} | Update an existing incident
 *LogsApi* | [**AggregateLogs**](docs/LogsApi.md#aggregatelogs) | **Post** /api/v2/logs/analytics/aggregate | Aggregate events
 *LogsApi* | [**ListLogs**](docs/LogsApi.md#listlogs) | **Post** /api/v2/logs/events/search | Get a list of logs
 *LogsApi* | [**ListLogsGet**](docs/LogsApi.md#listlogsget) | **Get** /api/v2/logs/events | Get a quick list of logs
@@ -145,6 +156,22 @@ Class | Method | HTTP request | Description
  - [DashboardListUpdateItemsRequest](docs/DashboardListUpdateItemsRequest.md)
  - [DashboardListUpdateItemsResponse](docs/DashboardListUpdateItemsResponse.md)
  - [DashboardType](docs/DashboardType.md)
+ - [IncidentCreateAttributes](docs/IncidentCreateAttributes.md)
+ - [IncidentCreateData](docs/IncidentCreateData.md)
+ - [IncidentCreateRelationships](docs/IncidentCreateRelationships.md)
+ - [IncidentCreateRequest](docs/IncidentCreateRequest.md)
+ - [IncidentFieldAttributes](docs/IncidentFieldAttributes.md)
+ - [IncidentFieldAttributesMultipleValue](docs/IncidentFieldAttributesMultipleValue.md)
+ - [IncidentFieldAttributesSingleValue](docs/IncidentFieldAttributesSingleValue.md)
+ - [IncidentFieldAttributesSingleValueType](docs/IncidentFieldAttributesSingleValueType.md)
+ - [IncidentFieldAttributesValueType](docs/IncidentFieldAttributesValueType.md)
+ - [IncidentIntegrationMetadataType](docs/IncidentIntegrationMetadataType.md)
+ - [IncidentPostmortemType](docs/IncidentPostmortemType.md)
+ - [IncidentResponse](docs/IncidentResponse.md)
+ - [IncidentResponseAttributes](docs/IncidentResponseAttributes.md)
+ - [IncidentResponseData](docs/IncidentResponseData.md)
+ - [IncidentResponseIncludedItem](docs/IncidentResponseIncludedItem.md)
+ - [IncidentResponseRelationships](docs/IncidentResponseRelationships.md)
  - [IncidentServiceCreateAttributes](docs/IncidentServiceCreateAttributes.md)
  - [IncidentServiceCreateData](docs/IncidentServiceCreateData.md)
  - [IncidentServiceCreateRequest](docs/IncidentServiceCreateRequest.md)
@@ -173,6 +200,16 @@ Class | Method | HTTP request | Description
  - [IncidentTeamUpdateData](docs/IncidentTeamUpdateData.md)
  - [IncidentTeamUpdateRequest](docs/IncidentTeamUpdateRequest.md)
  - [IncidentTeamsResponse](docs/IncidentTeamsResponse.md)
+ - [IncidentTimelineCellCreateAttributes](docs/IncidentTimelineCellCreateAttributes.md)
+ - [IncidentTimelineCellMarkdownContentType](docs/IncidentTimelineCellMarkdownContentType.md)
+ - [IncidentTimelineCellMarkdownCreateAttributes](docs/IncidentTimelineCellMarkdownCreateAttributes.md)
+ - [IncidentTimelineCellMarkdownCreateAttributesContent](docs/IncidentTimelineCellMarkdownCreateAttributesContent.md)
+ - [IncidentType](docs/IncidentType.md)
+ - [IncidentUpdateAttributes](docs/IncidentUpdateAttributes.md)
+ - [IncidentUpdateData](docs/IncidentUpdateData.md)
+ - [IncidentUpdateRelationships](docs/IncidentUpdateRelationships.md)
+ - [IncidentUpdateRequest](docs/IncidentUpdateRequest.md)
+ - [IncidentsResponse](docs/IncidentsResponse.md)
  - [Log](docs/Log.md)
  - [LogAttributes](docs/LogAttributes.md)
  - [LogType](docs/LogType.md)
@@ -237,6 +274,10 @@ Class | Method | HTTP request | Description
  - [PermissionsResponse](docs/PermissionsResponse.md)
  - [PermissionsType](docs/PermissionsType.md)
  - [QuerySortOrder](docs/QuerySortOrder.md)
+ - [RelationshipToIncidentIntegrationMetadataData](docs/RelationshipToIncidentIntegrationMetadataData.md)
+ - [RelationshipToIncidentIntegrationMetadatas](docs/RelationshipToIncidentIntegrationMetadatas.md)
+ - [RelationshipToIncidentPostmortem](docs/RelationshipToIncidentPostmortem.md)
+ - [RelationshipToIncidentPostmortemData](docs/RelationshipToIncidentPostmortemData.md)
  - [RelationshipToOrganization](docs/RelationshipToOrganization.md)
  - [RelationshipToOrganizationData](docs/RelationshipToOrganizationData.md)
  - [RelationshipToOrganizations](docs/RelationshipToOrganizations.md)

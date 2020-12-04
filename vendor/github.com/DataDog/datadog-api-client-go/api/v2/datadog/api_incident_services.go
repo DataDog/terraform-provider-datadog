@@ -577,39 +577,44 @@ func (a *IncidentServicesApiService) GetIncidentServiceExecute(r ApiGetIncidentS
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiGetIncidentServicesRequest struct {
+type ApiListIncidentServicesRequest struct {
 	ctx        _context.Context
 	ApiService *IncidentServicesApiService
 	include    *string
 	pageSize   *int64
 	pageOffset *int64
+	filter     *string
 }
 
-func (r ApiGetIncidentServicesRequest) Include(include string) ApiGetIncidentServicesRequest {
+func (r ApiListIncidentServicesRequest) Include(include string) ApiListIncidentServicesRequest {
 	r.include = &include
 	return r
 }
-func (r ApiGetIncidentServicesRequest) PageSize(pageSize int64) ApiGetIncidentServicesRequest {
+func (r ApiListIncidentServicesRequest) PageSize(pageSize int64) ApiListIncidentServicesRequest {
 	r.pageSize = &pageSize
 	return r
 }
-func (r ApiGetIncidentServicesRequest) PageOffset(pageOffset int64) ApiGetIncidentServicesRequest {
+func (r ApiListIncidentServicesRequest) PageOffset(pageOffset int64) ApiListIncidentServicesRequest {
 	r.pageOffset = &pageOffset
 	return r
 }
+func (r ApiListIncidentServicesRequest) Filter(filter string) ApiListIncidentServicesRequest {
+	r.filter = &filter
+	return r
+}
 
-func (r ApiGetIncidentServicesRequest) Execute() (IncidentServicesResponse, *_nethttp.Response, error) {
-	return r.ApiService.GetIncidentServicesExecute(r)
+func (r ApiListIncidentServicesRequest) Execute() (IncidentServicesResponse, *_nethttp.Response, error) {
+	return r.ApiService.ListIncidentServicesExecute(r)
 }
 
 /*
- * GetIncidentServices Get a list of all incident services
+ * ListIncidentServices Get a list of all incident services
  * Get all incident services uploaded for the requesting user's organization. If the `include[users]` query parameter is provided, the included attribute will contain the users related to these incident services.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @return ApiGetIncidentServicesRequest
+ * @return ApiListIncidentServicesRequest
  */
-func (a *IncidentServicesApiService) GetIncidentServices(ctx _context.Context) ApiGetIncidentServicesRequest {
-	return ApiGetIncidentServicesRequest{
+func (a *IncidentServicesApiService) ListIncidentServices(ctx _context.Context) ApiListIncidentServicesRequest {
+	return ApiListIncidentServicesRequest{
 		ApiService: a,
 		ctx:        ctx,
 	}
@@ -619,7 +624,7 @@ func (a *IncidentServicesApiService) GetIncidentServices(ctx _context.Context) A
  * Execute executes the request
  * @return IncidentServicesResponse
  */
-func (a *IncidentServicesApiService) GetIncidentServicesExecute(r ApiGetIncidentServicesRequest) (IncidentServicesResponse, *_nethttp.Response, error) {
+func (a *IncidentServicesApiService) ListIncidentServicesExecute(r ApiListIncidentServicesRequest) (IncidentServicesResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
@@ -629,14 +634,14 @@ func (a *IncidentServicesApiService) GetIncidentServicesExecute(r ApiGetIncident
 		localVarReturnValue  IncidentServicesResponse
 	)
 
-	operationId := "GetIncidentServices"
+	operationId := "ListIncidentServices"
 	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
 		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	} else {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IncidentServicesApiService.GetIncidentServices")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IncidentServicesApiService.ListIncidentServices")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
 	}
@@ -655,6 +660,9 @@ func (a *IncidentServicesApiService) GetIncidentServicesExecute(r ApiGetIncident
 	}
 	if r.pageOffset != nil {
 		localVarQueryParams.Add("page[offset]", parameterToString(*r.pageOffset, ""))
+	}
+	if r.filter != nil {
+		localVarQueryParams.Add("filter", parameterToString(*r.filter, ""))
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -675,7 +683,7 @@ func (a *IncidentServicesApiService) GetIncidentServicesExecute(r ApiGetIncident
 	}
 
 	// Set Operation-ID header for telemetry
-	localVarHeaderParams["DD-OPERATION-ID"] = "GetIncidentServices"
+	localVarHeaderParams["DD-OPERATION-ID"] = "ListIncidentServices"
 
 	if r.ctx != nil {
 		// API Key Authentication
