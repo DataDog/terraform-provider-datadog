@@ -6,9 +6,43 @@ page_title: "Provider: Datadog"
 
 The [Datadog](https://www.datadoghq.com) provider is used to interact with the resources supported by Datadog. The provider needs to be configured with the proper credentials before it can be used.
 
+Try the [hands-on tutorial](https://learn.hashicorp.com/tutorials/terraform/datadog-provider?in=terraform/use-case?utm_source=WEBSITE&utm_medium=WEB_IO&utm_offer=ARTICLE_PAGE&utm_content=DOCS) on the Datadog provider on the HashiCorp Learn site.
+
 Use the navigation to the left to read about the available resources.
 
 ## Example Usage
+
+Terraform 0.13+ uses the Terraform Registry:
+
+```hcl
+terraform {
+  required_providers {
+    datadog = {
+      source  = "DataDog/datadog"
+    }
+  }
+}
+
+
+# Configure the Datadog provider
+provider "datadog" {
+  api_key = var.datadog_api_key
+  app_key = var.datadog_app_key
+}
+
+# Create a new monitor
+resource "datadog_monitor" "default" {
+  # ...
+}
+
+# Create a new dashboard
+resource "datadog_dashboard" "default" {
+  # ...
+}
+
+```
+
+Terraform 0.12- can be specified as:
 
 ```hcl
 # Configure the Datadog provider
@@ -22,8 +56,8 @@ resource "datadog_monitor" "default" {
   # ...
 }
 
-# Create a new timeboard
-resource "datadog_timeboard" "default" {
+# Create a new dashboard
+resource "datadog_dashboard" "default" {
   # ...
 }
 ```
