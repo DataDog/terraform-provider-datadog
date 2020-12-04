@@ -2,80 +2,85 @@
 version: 1
 interactions:
 - request:
-    body: '{"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","name":"Test
-      User"}'
+    body: |
+      {"data":{"attributes":{"email":"tf-testaccdatadoguser_updated-local-1606812262@example.com","name":"Test User"},"relationships":{"roles":{"data":[]}},"type":"users"}}
     form: {}
     headers:
+      Accept:
+      - application/json
       Content-Type:
       - application/json
+      Dd-Operation-Id:
+      - CreateUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "970548731105907000"
+      - "3416493729102370228"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "970548731105907000"
-    url: https://api.datadoghq.com/api/v1/user
+      - "8763527162968773742"
+    url: https://api.datadoghq.com/api/v2/users
     method: POST
   response:
-    body: '{"user":{"disabled":false,"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","name":"Test
-      User","title":null,"is_admin":false,"role":null,"access_role":"st","verified":false,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com","icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro"}}'
+    body: '{"data":{"type":"users","id":"691479aa-33b1-11eb-8724-83bf1bf8613d","attributes":{"name":"Test
+      User","handle":"tf-testaccdatadoguser_updated-local-1606812262@example.com","created_at":"2020-12-01T08:44:23.009297+00:00","email":"tf-testaccdatadoguser_updated-local-1606812262@example.com","icon":"https://secure.gravatar.com/avatar/b52ad34d394c3c1468edc7fba7cf35c4?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
       Connection:
       - keep-alive
+      Content-Length:
+      - "610"
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
       Date:
-      - Mon, 03 Aug 2020 15:19:39 GMT
+      - Tue, 01 Dec 2020 08:44:23 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:38 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 08-Dec-2020 08:44:22 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
-      Vary:
-      - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - LF4YQmWguMLUmq9O0R5mvikMzP6UOUE0kZyZahQHAERCXjiu7gBgY5N5RjX/ExWH
+      - gxfSlUtZJz4/cDPBxW1+YhseAnu5514ckuMWbI3rl8N4exeAZPF+KTE0BQhrBgSI
       X-Dd-Version:
-      - "35.2824579"
+      - "35.3451487"
       X-Frame-Options:
       - SAMEORIGIN
-    status: 200 OK
-    code: 200
+    status: 201 Created
+    code: 201
     duration: ""
 - request:
-    body: '{"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com","name":"Test
-      User","access_role":"st","disabled":false,"is_admin":false}'
+    body: ""
     form: {}
     headers:
-      Content-Type:
+      Accept:
       - application/json
+      Dd-Operation-Id:
+      - GetUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "2078818009286945688"
+      - "9196345074419761388"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "2078818009286945688"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
-    method: PUT
+      - "8763527162968773742"
+    url: https://api.datadoghq.com/api/v2/users/691479aa-33b1-11eb-8724-83bf1bf8613d
+    method: GET
   response:
-    body: '{"user":{"disabled":false,"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","name":"Test
-      User","title":null,"is_admin":false,"role":null,"access_role":"st","verified":false,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com","icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro"}}'
+    body: '{"data":{"type":"users","id":"691479aa-33b1-11eb-8724-83bf1bf8613d","attributes":{"name":"Test
+      User","handle":"tf-testaccdatadoguser_updated-local-1606812262@example.com","created_at":"2020-12-01T08:44:23.009297+00:00","email":"tf-testaccdatadoguser_updated-local-1606812262@example.com","icon":"https://secure.gravatar.com/avatar/b52ad34d394c3c1468edc7fba7cf35c4?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -86,13 +91,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 03 Aug 2020 15:19:39 GMT
+      - Tue, 01 Dec 2020 08:44:23 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:39 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 08-Dec-2020 08:44:23 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -101,9 +106,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - KWFYkqq/bCYPvFkmXv6yRC22pYi3ixhtj5Lwkuex88jCzYJThjuX8yZSJbFftuIx
+      - VfsOYTBPajdIURjGpWdSf1qbyO21kEmlCNna/tfODfKKzbp6OFbIz8G+Qerctd6m
       X-Dd-Version:
-      - "35.2824579"
+      - "35.3451487"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -113,58 +118,24 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "9211973114086802318"
+      - "3295371567878565401"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "9211973114086802318"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
+      - "8763527162968773742"
+    url: https://api.datadoghq.com/api/v2/users/691479aa-33b1-11eb-8724-83bf1bf8613d
     method: GET
   response:
-    body: '{"user":{"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","access_role":"st","disabled":false,"is_admin":false,"icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro","verified":false,"name":"Test
-      User","roles":[{"uuid":"94172443-be03-11e9-a77a-373332f69711","created_at":"2019-08-13T19:50:19.075284","name":"Datadog
-      Standard Role","last_modified":"2019-08-13T19:50:19.075284","id":904116,"permissions":[{"display_name":"Security
-      Signals","description":"The ability to view Security signals.","restricted":false,"created_at":"2020-06-09T13:52:48.410398","name":"security_monitoring_signals_read","uuid":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"display_name":"Detection
-      Rules","description":"The ability to create and edit Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:39.099413","name":"security_monitoring_rules_write","uuid":"7b516476-aa58-11ea-95e2-93718cd56369"},{"display_name":"Detection
-      Rules","description":"The ability to read Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:25.279909","name":"security_monitoring_rules_read","uuid":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"display_name":"Logs
-      Archives","description":"The ability to read logs archives location and use
-      it for rehydration.","restricted":false,"created_at":"2020-04-23T07:40:27.966133","name":"logs_read_archives","uuid":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"display_name":"Logs
-      Read Data","description":"The ability to read log data. Can be restricted with
-      restriction queries.","restricted":false,"created_at":"2020-04-06T16:24:35.989108","name":"logs_read_data","uuid":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"display_name":"Logs
-      Read Index Data","description":"The ability to read all or some log indexes.
-      Can be granted in a limited capacity per index from the Logs interface or APIs.
-      If granted via the Roles interface or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:39:19.727450","name":"logs_read_index_data","uuid":"5e605652-dd12-11e8-9e53-375565b8970e"},{"display_name":"Log
-      Write Processors","description":"The ability to add and change some or all log
-      processor configurations. Can be granted in a limited capacity per pipeline
-      to specific roles via the Logs interface or API. If granted via the Roles interface
-      or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:40:23.969725","name":"logs_write_processors","uuid":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"display_name":"Monitors
-      Manage Downtimes","description":"The ability to set downtimes for your organization.
-      A user with this permission can suppress alerts from any monitor using a downtime,
-      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Dashboards","description":"The
-      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors","description":"The
-      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Monitors","description":"The
-      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards
-      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
-      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Log
-      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
-      Write Pipelines","description":"The ability to add and change log pipeline configurations,
-      including the ability to grant the Logs Write Processors permission to other
-      roles, for some or all pipelines. This permission also grants global Log Processor
-      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
-      Live Tail Access","description":"The ability to view the live tail feed for
-      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
-      Modify Indexes","description":"The ability to read and modify all indexes in
-      your account. This includes the ability to grant the Logs Read Index Data and
-      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
-      This permission also grants global Log Index Read and Log Exclusion Filter Write
-      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Standard
-      Access","description":"This permission gives you the ability to view and edit
-      components in your Datadog organization that do not have explicitly defined
-      permissions. This includes APM, Events, and other non-Account Management functionality.","restricted":false,"created_at":"2018-10-19T15:35:23.756736","name":"standard","uuid":"984d2f00-d3b4-11e8-a200-bb47109e9987"}]}],"title":null,"role":null,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com"}}'
+    body: '{"data":{"type":"users","id":"691479aa-33b1-11eb-8724-83bf1bf8613d","attributes":{"name":"Test
+      User","handle":"tf-testaccdatadoguser_updated-local-1606812262@example.com","created_at":"2020-12-01T08:44:23.009297+00:00","email":"tf-testaccdatadoguser_updated-local-1606812262@example.com","icon":"https://secure.gravatar.com/avatar/b52ad34d394c3c1468edc7fba7cf35c4?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -175,13 +146,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 03 Aug 2020 15:19:40 GMT
+      - Tue, 01 Dec 2020 08:44:23 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:40 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 08-Dec-2020 08:44:23 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -190,9 +161,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - CtgNqJkAqAo+MH7MN6CRbczfVHL5h+Ph91H8UoNq+Ha9YzAKwfzH+ly8e/3sEHoh
+      - EZL7bEfcgNGbknKpx0YgUay5sRnB08o7ifIkIU7pH4DOkkWS5DRjfEr3ib9KggTa
       X-Dd-Version:
-      - "35.2824579"
+      - "35.3451487"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -202,58 +173,24 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3163778649691628324"
+      - "5518807256485862635"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3163778649691628324"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
+      - "8763527162968773742"
+    url: https://api.datadoghq.com/api/v2/users/691479aa-33b1-11eb-8724-83bf1bf8613d
     method: GET
   response:
-    body: '{"user":{"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","access_role":"st","disabled":false,"is_admin":false,"icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro","verified":false,"name":"Test
-      User","roles":[{"uuid":"94172443-be03-11e9-a77a-373332f69711","created_at":"2019-08-13T19:50:19.075284","name":"Datadog
-      Standard Role","last_modified":"2019-08-13T19:50:19.075284","id":904116,"permissions":[{"display_name":"Security
-      Signals","description":"The ability to view Security signals.","restricted":false,"created_at":"2020-06-09T13:52:48.410398","name":"security_monitoring_signals_read","uuid":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"display_name":"Detection
-      Rules","description":"The ability to create and edit Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:39.099413","name":"security_monitoring_rules_write","uuid":"7b516476-aa58-11ea-95e2-93718cd56369"},{"display_name":"Detection
-      Rules","description":"The ability to read Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:25.279909","name":"security_monitoring_rules_read","uuid":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"display_name":"Logs
-      Archives","description":"The ability to read logs archives location and use
-      it for rehydration.","restricted":false,"created_at":"2020-04-23T07:40:27.966133","name":"logs_read_archives","uuid":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"display_name":"Logs
-      Read Data","description":"The ability to read log data. Can be restricted with
-      restriction queries.","restricted":false,"created_at":"2020-04-06T16:24:35.989108","name":"logs_read_data","uuid":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"display_name":"Logs
-      Read Index Data","description":"The ability to read all or some log indexes.
-      Can be granted in a limited capacity per index from the Logs interface or APIs.
-      If granted via the Roles interface or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:39:19.727450","name":"logs_read_index_data","uuid":"5e605652-dd12-11e8-9e53-375565b8970e"},{"display_name":"Log
-      Write Processors","description":"The ability to add and change some or all log
-      processor configurations. Can be granted in a limited capacity per pipeline
-      to specific roles via the Logs interface or API. If granted via the Roles interface
-      or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:40:23.969725","name":"logs_write_processors","uuid":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"display_name":"Monitors
-      Manage Downtimes","description":"The ability to set downtimes for your organization.
-      A user with this permission can suppress alerts from any monitor using a downtime,
-      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Dashboards","description":"The
-      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors","description":"The
-      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Monitors","description":"The
-      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards
-      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
-      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Log
-      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
-      Write Pipelines","description":"The ability to add and change log pipeline configurations,
-      including the ability to grant the Logs Write Processors permission to other
-      roles, for some or all pipelines. This permission also grants global Log Processor
-      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
-      Live Tail Access","description":"The ability to view the live tail feed for
-      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
-      Modify Indexes","description":"The ability to read and modify all indexes in
-      your account. This includes the ability to grant the Logs Read Index Data and
-      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
-      This permission also grants global Log Index Read and Log Exclusion Filter Write
-      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Standard
-      Access","description":"This permission gives you the ability to view and edit
-      components in your Datadog organization that do not have explicitly defined
-      permissions. This includes APM, Events, and other non-Account Management functionality.","restricted":false,"created_at":"2018-10-19T15:35:23.756736","name":"standard","uuid":"984d2f00-d3b4-11e8-a200-bb47109e9987"}]}],"title":null,"role":null,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com"}}'
+    body: '{"data":{"type":"users","id":"691479aa-33b1-11eb-8724-83bf1bf8613d","attributes":{"name":"Test
+      User","handle":"tf-testaccdatadoguser_updated-local-1606812262@example.com","created_at":"2020-12-01T08:44:23.009297+00:00","email":"tf-testaccdatadoguser_updated-local-1606812262@example.com","icon":"https://secure.gravatar.com/avatar/b52ad34d394c3c1468edc7fba7cf35c4?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -264,13 +201,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 03 Aug 2020 15:19:40 GMT
+      - Tue, 01 Dec 2020 08:44:23 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:40 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 08-Dec-2020 08:44:23 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -279,9 +216,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - iPNIjQ4FpbAevSagkUs6fM9DRnZIIseE6v4wOcEfmEX8Eal4l6BAoL574ojmNxVu
+      - IGILlPY3s4a9aUQtJHHVlvsXLPi5u8MQt/Dx/1ZwzrUgiVNBtJEB93e+6VlWNrdA
       X-Dd-Version:
-      - "35.2824579"
+      - "35.3451487"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -291,58 +228,24 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3409728497451983448"
+      - "8737647718013090380"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3409728497451983448"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
+      - "8763527162968773742"
+    url: https://api.datadoghq.com/api/v2/users/691479aa-33b1-11eb-8724-83bf1bf8613d
     method: GET
   response:
-    body: '{"user":{"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","access_role":"st","disabled":false,"is_admin":false,"icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro","verified":false,"name":"Test
-      User","roles":[{"uuid":"94172443-be03-11e9-a77a-373332f69711","created_at":"2019-08-13T19:50:19.075284","name":"Datadog
-      Standard Role","last_modified":"2019-08-13T19:50:19.075284","id":904116,"permissions":[{"display_name":"Security
-      Signals","description":"The ability to view Security signals.","restricted":false,"created_at":"2020-06-09T13:52:48.410398","name":"security_monitoring_signals_read","uuid":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"display_name":"Detection
-      Rules","description":"The ability to create and edit Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:39.099413","name":"security_monitoring_rules_write","uuid":"7b516476-aa58-11ea-95e2-93718cd56369"},{"display_name":"Detection
-      Rules","description":"The ability to read Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:25.279909","name":"security_monitoring_rules_read","uuid":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"display_name":"Logs
-      Archives","description":"The ability to read logs archives location and use
-      it for rehydration.","restricted":false,"created_at":"2020-04-23T07:40:27.966133","name":"logs_read_archives","uuid":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"display_name":"Logs
-      Read Data","description":"The ability to read log data. Can be restricted with
-      restriction queries.","restricted":false,"created_at":"2020-04-06T16:24:35.989108","name":"logs_read_data","uuid":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"display_name":"Logs
-      Read Index Data","description":"The ability to read all or some log indexes.
-      Can be granted in a limited capacity per index from the Logs interface or APIs.
-      If granted via the Roles interface or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:39:19.727450","name":"logs_read_index_data","uuid":"5e605652-dd12-11e8-9e53-375565b8970e"},{"display_name":"Log
-      Write Processors","description":"The ability to add and change some or all log
-      processor configurations. Can be granted in a limited capacity per pipeline
-      to specific roles via the Logs interface or API. If granted via the Roles interface
-      or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:40:23.969725","name":"logs_write_processors","uuid":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"display_name":"Monitors
-      Manage Downtimes","description":"The ability to set downtimes for your organization.
-      A user with this permission can suppress alerts from any monitor using a downtime,
-      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Dashboards","description":"The
-      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors","description":"The
-      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Monitors","description":"The
-      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards
-      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
-      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Log
-      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
-      Write Pipelines","description":"The ability to add and change log pipeline configurations,
-      including the ability to grant the Logs Write Processors permission to other
-      roles, for some or all pipelines. This permission also grants global Log Processor
-      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
-      Live Tail Access","description":"The ability to view the live tail feed for
-      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
-      Modify Indexes","description":"The ability to read and modify all indexes in
-      your account. This includes the ability to grant the Logs Read Index Data and
-      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
-      This permission also grants global Log Index Read and Log Exclusion Filter Write
-      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Standard
-      Access","description":"This permission gives you the ability to view and edit
-      components in your Datadog organization that do not have explicitly defined
-      permissions. This includes APM, Events, and other non-Account Management functionality.","restricted":false,"created_at":"2018-10-19T15:35:23.756736","name":"standard","uuid":"984d2f00-d3b4-11e8-a200-bb47109e9987"}]}],"title":null,"role":null,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com"}}'
+    body: '{"data":{"type":"users","id":"691479aa-33b1-11eb-8724-83bf1bf8613d","attributes":{"name":"Test
+      User","handle":"tf-testaccdatadoguser_updated-local-1606812262@example.com","created_at":"2020-12-01T08:44:23.009297+00:00","email":"tf-testaccdatadoguser_updated-local-1606812262@example.com","icon":"https://secure.gravatar.com/avatar/b52ad34d394c3c1468edc7fba7cf35c4?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -353,13 +256,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 03 Aug 2020 15:19:40 GMT
+      - Tue, 01 Dec 2020 08:44:23 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:40 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 08-Dec-2020 08:44:23 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -368,9 +271,67 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 7EKwjnrAMvkjbuKJfoQb0x6HrHo6KoZ/P/MYCNLv3lRKdOxwDSDe/0MQuxyv/lE2
+      - WMqkdiu/k4tYC8oJLm7ZFuFlnIXAYAXwOPQoxLtj7bgJQppYJErVkGl/2/O/+zpm
       X-Dd-Version:
-      - "35.2824579"
+      - "35.3451487"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"disabled":true,"email":"tf-testaccdatadoguser_updated-local-1606812262@example.com","name":"Updated User"},"id":"691479aa-33b1-11eb-8724-83bf1bf8613d","type":"users"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - UpdateUser
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "477834714192904939"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "8763527162968773742"
+    url: https://api.datadoghq.com/api/v2/users/691479aa-33b1-11eb-8724-83bf1bf8613d
+    method: PATCH
+  response:
+    body: '{"data":{"type":"users","id":"691479aa-33b1-11eb-8724-83bf1bf8613d","attributes":{"name":"Updated
+      User","handle":"tf-testaccdatadoguser_updated-local-1606812262@example.com","created_at":"2020-12-01T08:44:23.009297+00:00","email":"tf-testaccdatadoguser_updated-local-1606812262@example.com","icon":"https://secure.gravatar.com/avatar/b52ad34d394c3c1468edc7fba7cf35c4?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 01 Dec 2020 08:44:24 GMT
+      Dd-Pool:
+      - dogweb
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 08-Dec-2020 08:44:23 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - Eb2J7DZKGMCxUULFPVCE5N014uh3tvnvHgnaA7NVroaoqvWd6z7v+RZklq5100Rp
+      X-Dd-Version:
+      - "35.3451487"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -380,58 +341,24 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "7159824684978706270"
+      - "4893538036509654906"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "7159824684978706270"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
+      - "8763527162968773742"
+    url: https://api.datadoghq.com/api/v2/users/691479aa-33b1-11eb-8724-83bf1bf8613d
     method: GET
   response:
-    body: '{"user":{"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","access_role":"st","disabled":false,"is_admin":false,"icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro","verified":false,"name":"Test
-      User","roles":[{"uuid":"94172443-be03-11e9-a77a-373332f69711","created_at":"2019-08-13T19:50:19.075284","name":"Datadog
-      Standard Role","last_modified":"2019-08-13T19:50:19.075284","id":904116,"permissions":[{"display_name":"Security
-      Signals","description":"The ability to view Security signals.","restricted":false,"created_at":"2020-06-09T13:52:48.410398","name":"security_monitoring_signals_read","uuid":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"display_name":"Detection
-      Rules","description":"The ability to create and edit Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:39.099413","name":"security_monitoring_rules_write","uuid":"7b516476-aa58-11ea-95e2-93718cd56369"},{"display_name":"Detection
-      Rules","description":"The ability to read Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:25.279909","name":"security_monitoring_rules_read","uuid":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"display_name":"Logs
-      Archives","description":"The ability to read logs archives location and use
-      it for rehydration.","restricted":false,"created_at":"2020-04-23T07:40:27.966133","name":"logs_read_archives","uuid":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"display_name":"Logs
-      Read Data","description":"The ability to read log data. Can be restricted with
-      restriction queries.","restricted":false,"created_at":"2020-04-06T16:24:35.989108","name":"logs_read_data","uuid":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"display_name":"Logs
-      Read Index Data","description":"The ability to read all or some log indexes.
-      Can be granted in a limited capacity per index from the Logs interface or APIs.
-      If granted via the Roles interface or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:39:19.727450","name":"logs_read_index_data","uuid":"5e605652-dd12-11e8-9e53-375565b8970e"},{"display_name":"Log
-      Write Processors","description":"The ability to add and change some or all log
-      processor configurations. Can be granted in a limited capacity per pipeline
-      to specific roles via the Logs interface or API. If granted via the Roles interface
-      or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:40:23.969725","name":"logs_write_processors","uuid":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"display_name":"Monitors
-      Manage Downtimes","description":"The ability to set downtimes for your organization.
-      A user with this permission can suppress alerts from any monitor using a downtime,
-      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Dashboards","description":"The
-      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors","description":"The
-      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Monitors","description":"The
-      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards
-      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
-      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Log
-      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
-      Write Pipelines","description":"The ability to add and change log pipeline configurations,
-      including the ability to grant the Logs Write Processors permission to other
-      roles, for some or all pipelines. This permission also grants global Log Processor
-      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
-      Live Tail Access","description":"The ability to view the live tail feed for
-      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
-      Modify Indexes","description":"The ability to read and modify all indexes in
-      your account. This includes the ability to grant the Logs Read Index Data and
-      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
-      This permission also grants global Log Index Read and Log Exclusion Filter Write
-      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Standard
-      Access","description":"This permission gives you the ability to view and edit
-      components in your Datadog organization that do not have explicitly defined
-      permissions. This includes APM, Events, and other non-Account Management functionality.","restricted":false,"created_at":"2018-10-19T15:35:23.756736","name":"standard","uuid":"984d2f00-d3b4-11e8-a200-bb47109e9987"}]}],"title":null,"role":null,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com"}}'
+    body: '{"data":{"type":"users","id":"691479aa-33b1-11eb-8724-83bf1bf8613d","attributes":{"name":"Updated
+      User","handle":"tf-testaccdatadoguser_updated-local-1606812262@example.com","created_at":"2020-12-01T08:44:23.009297+00:00","email":"tf-testaccdatadoguser_updated-local-1606812262@example.com","icon":"https://secure.gravatar.com/avatar/b52ad34d394c3c1468edc7fba7cf35c4?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -442,13 +369,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 03 Aug 2020 15:19:40 GMT
+      - Tue, 01 Dec 2020 08:44:24 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:40 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 08-Dec-2020 08:44:24 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -457,9 +384,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - k02mGj0V/L8yR5dW7iJ5CAFIzO410CCwnO5XzBBytVdBuu4d2o9murs/g2Xs0Ays
+      - 5Vp6Lwv2kl5vwmtrK8x4SHT87up1E/Mb5wu+zWq1n+sTPuGmJfRlxsKBupN/GCCj
       X-Dd-Version:
-      - "35.2824579"
+      - "35.3451487"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -469,58 +396,24 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4106800305212848443"
+      - "8655377291086503889"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "4106800305212848443"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
+      - "8763527162968773742"
+    url: https://api.datadoghq.com/api/v2/users/691479aa-33b1-11eb-8724-83bf1bf8613d
     method: GET
   response:
-    body: '{"user":{"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","access_role":"st","disabled":false,"is_admin":false,"icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro","verified":false,"name":"Test
-      User","roles":[{"uuid":"94172443-be03-11e9-a77a-373332f69711","created_at":"2019-08-13T19:50:19.075284","name":"Datadog
-      Standard Role","last_modified":"2019-08-13T19:50:19.075284","id":904116,"permissions":[{"display_name":"Security
-      Signals","description":"The ability to view Security signals.","restricted":false,"created_at":"2020-06-09T13:52:48.410398","name":"security_monitoring_signals_read","uuid":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"display_name":"Detection
-      Rules","description":"The ability to create and edit Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:39.099413","name":"security_monitoring_rules_write","uuid":"7b516476-aa58-11ea-95e2-93718cd56369"},{"display_name":"Detection
-      Rules","description":"The ability to read Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:25.279909","name":"security_monitoring_rules_read","uuid":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"display_name":"Logs
-      Archives","description":"The ability to read logs archives location and use
-      it for rehydration.","restricted":false,"created_at":"2020-04-23T07:40:27.966133","name":"logs_read_archives","uuid":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"display_name":"Logs
-      Read Data","description":"The ability to read log data. Can be restricted with
-      restriction queries.","restricted":false,"created_at":"2020-04-06T16:24:35.989108","name":"logs_read_data","uuid":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"display_name":"Logs
-      Read Index Data","description":"The ability to read all or some log indexes.
-      Can be granted in a limited capacity per index from the Logs interface or APIs.
-      If granted via the Roles interface or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:39:19.727450","name":"logs_read_index_data","uuid":"5e605652-dd12-11e8-9e53-375565b8970e"},{"display_name":"Log
-      Write Processors","description":"The ability to add and change some or all log
-      processor configurations. Can be granted in a limited capacity per pipeline
-      to specific roles via the Logs interface or API. If granted via the Roles interface
-      or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:40:23.969725","name":"logs_write_processors","uuid":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"display_name":"Monitors
-      Manage Downtimes","description":"The ability to set downtimes for your organization.
-      A user with this permission can suppress alerts from any monitor using a downtime,
-      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Dashboards","description":"The
-      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors","description":"The
-      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Monitors","description":"The
-      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards
-      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
-      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Log
-      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
-      Write Pipelines","description":"The ability to add and change log pipeline configurations,
-      including the ability to grant the Logs Write Processors permission to other
-      roles, for some or all pipelines. This permission also grants global Log Processor
-      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
-      Live Tail Access","description":"The ability to view the live tail feed for
-      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
-      Modify Indexes","description":"The ability to read and modify all indexes in
-      your account. This includes the ability to grant the Logs Read Index Data and
-      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
-      This permission also grants global Log Index Read and Log Exclusion Filter Write
-      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Standard
-      Access","description":"This permission gives you the ability to view and edit
-      components in your Datadog organization that do not have explicitly defined
-      permissions. This includes APM, Events, and other non-Account Management functionality.","restricted":false,"created_at":"2018-10-19T15:35:23.756736","name":"standard","uuid":"984d2f00-d3b4-11e8-a200-bb47109e9987"}]}],"title":null,"role":null,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com"}}'
+    body: '{"data":{"type":"users","id":"691479aa-33b1-11eb-8724-83bf1bf8613d","attributes":{"name":"Updated
+      User","handle":"tf-testaccdatadoguser_updated-local-1606812262@example.com","created_at":"2020-12-01T08:44:23.009297+00:00","email":"tf-testaccdatadoguser_updated-local-1606812262@example.com","icon":"https://secure.gravatar.com/avatar/b52ad34d394c3c1468edc7fba7cf35c4?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -531,13 +424,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 03 Aug 2020 15:19:41 GMT
+      - Tue, 01 Dec 2020 08:44:24 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:41 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 08-Dec-2020 08:44:24 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -546,9 +439,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 3USd4a3i5VMdUtFH1CrmU+WRmzgasmxIZUVDWM4hjHBSITWp7i8OyB1hub6GWByy
+      - flm57y1PQqDCGTMvz2Hc0LeaE4WpeyLyl0nK7TyUHhnh1/aAaCfINCnK5EAgp4id
       X-Dd-Version:
-      - "35.2824579"
+      - "35.3451487"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -558,58 +451,24 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4078445921777230446"
+      - "2080600526007532308"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "4078445921777230446"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
+      - "8763527162968773742"
+    url: https://api.datadoghq.com/api/v2/users/691479aa-33b1-11eb-8724-83bf1bf8613d
     method: GET
   response:
-    body: '{"user":{"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","access_role":"st","disabled":false,"is_admin":false,"icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro","verified":false,"name":"Test
-      User","roles":[{"uuid":"94172443-be03-11e9-a77a-373332f69711","created_at":"2019-08-13T19:50:19.075284","name":"Datadog
-      Standard Role","last_modified":"2019-08-13T19:50:19.075284","id":904116,"permissions":[{"display_name":"Security
-      Signals","description":"The ability to view Security signals.","restricted":false,"created_at":"2020-06-09T13:52:48.410398","name":"security_monitoring_signals_read","uuid":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"display_name":"Detection
-      Rules","description":"The ability to create and edit Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:39.099413","name":"security_monitoring_rules_write","uuid":"7b516476-aa58-11ea-95e2-93718cd56369"},{"display_name":"Detection
-      Rules","description":"The ability to read Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:25.279909","name":"security_monitoring_rules_read","uuid":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"display_name":"Logs
-      Archives","description":"The ability to read logs archives location and use
-      it for rehydration.","restricted":false,"created_at":"2020-04-23T07:40:27.966133","name":"logs_read_archives","uuid":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"display_name":"Logs
-      Read Data","description":"The ability to read log data. Can be restricted with
-      restriction queries.","restricted":false,"created_at":"2020-04-06T16:24:35.989108","name":"logs_read_data","uuid":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"display_name":"Logs
-      Read Index Data","description":"The ability to read all or some log indexes.
-      Can be granted in a limited capacity per index from the Logs interface or APIs.
-      If granted via the Roles interface or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:39:19.727450","name":"logs_read_index_data","uuid":"5e605652-dd12-11e8-9e53-375565b8970e"},{"display_name":"Log
-      Write Processors","description":"The ability to add and change some or all log
-      processor configurations. Can be granted in a limited capacity per pipeline
-      to specific roles via the Logs interface or API. If granted via the Roles interface
-      or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:40:23.969725","name":"logs_write_processors","uuid":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"display_name":"Monitors
-      Manage Downtimes","description":"The ability to set downtimes for your organization.
-      A user with this permission can suppress alerts from any monitor using a downtime,
-      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Dashboards","description":"The
-      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors","description":"The
-      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Monitors","description":"The
-      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards
-      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
-      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Log
-      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
-      Write Pipelines","description":"The ability to add and change log pipeline configurations,
-      including the ability to grant the Logs Write Processors permission to other
-      roles, for some or all pipelines. This permission also grants global Log Processor
-      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
-      Live Tail Access","description":"The ability to view the live tail feed for
-      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
-      Modify Indexes","description":"The ability to read and modify all indexes in
-      your account. This includes the ability to grant the Logs Read Index Data and
-      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
-      This permission also grants global Log Index Read and Log Exclusion Filter Write
-      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Standard
-      Access","description":"This permission gives you the ability to view and edit
-      components in your Datadog organization that do not have explicitly defined
-      permissions. This includes APM, Events, and other non-Account Management functionality.","restricted":false,"created_at":"2018-10-19T15:35:23.756736","name":"standard","uuid":"984d2f00-d3b4-11e8-a200-bb47109e9987"}]}],"title":null,"role":null,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com"}}'
+    body: '{"data":{"type":"users","id":"691479aa-33b1-11eb-8724-83bf1bf8613d","attributes":{"name":"Updated
+      User","handle":"tf-testaccdatadoguser_updated-local-1606812262@example.com","created_at":"2020-12-01T08:44:23.009297+00:00","email":"tf-testaccdatadoguser_updated-local-1606812262@example.com","icon":"https://secure.gravatar.com/avatar/b52ad34d394c3c1468edc7fba7cf35c4?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -620,13 +479,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 03 Aug 2020 15:19:41 GMT
+      - Tue, 01 Dec 2020 08:44:24 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:41 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 08-Dec-2020 08:44:24 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -635,63 +494,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 6IV1nnLK7WsnDz57sJ36R2e8yXPkbPSdE1tO4cUJdE4sOImyUXKqYxua+hm7GRkh
+      - LYsZ0Yx6eBAuyo7daRCU44YMxz7whaow2DP3vSdsKGIEYbXvJNYBjlZ+OHX/fFOc
       X-Dd-Version:
-      - "35.2824579"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: '{"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com","name":"Updated
-      User","access_role":"adm","disabled":true,"is_admin":true}'
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "5099009596849116525"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "5099009596849116525"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
-    method: PUT
-  response:
-    body: '{"user":{"disabled":true,"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","name":"Updated
-      User","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":false,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com","icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro"}}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 03 Aug 2020 15:19:42 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:41 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - sB5zhTuYbfs8BY+jjz7Z4TrnewGGzsaPpTnZcu7fz2p42r+9ajWmJK3LvXOUIn+9
-      X-Dd-Version:
-      - "35.2824579"
+      - "35.3451487"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -701,58 +506,24 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6982220147814414258"
+      - "2369428282212887725"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "6982220147814414258"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
+      - "8763527162968773742"
+    url: https://api.datadoghq.com/api/v2/users/691479aa-33b1-11eb-8724-83bf1bf8613d
     method: GET
   response:
-    body: '{"user":{"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro","verified":false,"name":"Updated
-      User","roles":[{"uuid":"94172442-be03-11e9-a77a-3b7612558ac1","created_at":"2019-08-13T19:50:19.022791","name":"Datadog
-      Admin Role","last_modified":"2019-08-13T19:50:19.022791","id":904115,"permissions":[{"display_name":"Security
-      Signals","description":"The ability to view Security signals.","restricted":false,"created_at":"2020-06-09T13:52:48.410398","name":"security_monitoring_signals_read","uuid":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"display_name":"Detection
-      Rules","description":"The ability to create and edit Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:39.099413","name":"security_monitoring_rules_write","uuid":"7b516476-aa58-11ea-95e2-93718cd56369"},{"display_name":"Detection
-      Rules","description":"The ability to read Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:25.279909","name":"security_monitoring_rules_read","uuid":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"display_name":"Logs
-      Archives","description":"The ability to read logs archives location and use
-      it for rehydration.","restricted":false,"created_at":"2020-04-23T07:40:27.966133","name":"logs_read_archives","uuid":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"display_name":"Logs
-      Read Data","description":"The ability to read log data. Can be restricted with
-      restriction queries.","restricted":false,"created_at":"2020-04-06T16:24:35.989108","name":"logs_read_data","uuid":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"display_name":"Logs
-      Read Index Data","description":"The ability to read all or some log indexes.
-      Can be granted in a limited capacity per index from the Logs interface or APIs.
-      If granted via the Roles interface or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:39:19.727450","name":"logs_read_index_data","uuid":"5e605652-dd12-11e8-9e53-375565b8970e"},{"display_name":"Monitors","description":"The
-      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Dashboards
-      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
-      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Monitors","description":"The
-      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards","description":"The
-      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors
-      Manage Downtimes","description":"The ability to set downtimes for your organization.
-      A user with this permission can suppress alerts from any monitor using a downtime,
-      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Log
-      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
-      Public Config API","description":"The ability to access and edit logs configurations
-      via the API.","restricted":false,"created_at":"2019-05-02T08:13:01.731092","name":"logs_public_config_api","uuid":"1a92ede2-6cb2-11e9-99c6-2b3a4a0cdf0a"},{"display_name":"Logs
-      Archives","description":"The ability to add and edit log archive locations.","restricted":false,"created_at":"2018-10-31T13:40:29.040786","name":"logs_write_archives","uuid":"87b00304-dd12-11e8-9e59-cbeb5f71f72f"},{"display_name":"Logs
-      Write Pipelines","description":"The ability to add and change log pipeline configurations,
-      including the ability to grant the Logs Write Processors permission to other
-      roles, for some or all pipelines. This permission also grants global Log Processor
-      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
-      Live Tail Access","description":"The ability to view the live tail feed for
-      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
-      Modify Indexes","description":"The ability to read and modify all indexes in
-      your account. This includes the ability to grant the Logs Read Index Data and
-      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
-      This permission also grants global Log Index Read and Log Exclusion Filter Write
-      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Privileged
-      Access","description":"This permission gives you the ability to view and edit
-      everything in your Datadog organization that does not have an explicitly defined
-      permission. This includes billing and usage, user, key, and organization management.
-      This permission is inclusive of all Standard access permissions.","restricted":false,"created_at":"2018-10-19T15:35:23.734317","name":"admin","uuid":"984a2bd4-d3b4-11e8-a1ff-a7f660d43029"}]}],"title":null,"role":null,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com"}}'
+    body: '{"data":{"type":"users","id":"691479aa-33b1-11eb-8724-83bf1bf8613d","attributes":{"name":"Updated
+      User","handle":"tf-testaccdatadoguser_updated-local-1606812262@example.com","created_at":"2020-12-01T08:44:23.009297+00:00","email":"tf-testaccdatadoguser_updated-local-1606812262@example.com","icon":"https://secure.gravatar.com/avatar/b52ad34d394c3c1468edc7fba7cf35c4?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -763,13 +534,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 03 Aug 2020 15:19:42 GMT
+      - Tue, 01 Dec 2020 08:44:24 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:42 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 08-Dec-2020 08:44:24 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -778,9 +549,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 3USd4a3i5VMdUtFH1CrmU+WRmzgasmxIZUVDWM4hjHBSITWp7i8OyB1hub6GWByy
+      - 44pXRUqPlKJksqlF9t12wqxQzE9aBJ9ruTPYPBADYqfMpbefZ37/kVt2KhgjSVU2
       X-Dd-Version:
-      - "35.2824579"
+      - "35.3451487"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -790,58 +561,23 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - DisableUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "8467325840264973321"
+      - "9216170988370368376"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8467325840264973321"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
-    method: GET
+      - "8763527162968773742"
+    url: https://api.datadoghq.com/api/v2/users/691479aa-33b1-11eb-8724-83bf1bf8613d
+    method: DELETE
   response:
-    body: '{"user":{"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro","verified":false,"name":"Updated
-      User","roles":[{"uuid":"94172442-be03-11e9-a77a-3b7612558ac1","created_at":"2019-08-13T19:50:19.022791","name":"Datadog
-      Admin Role","last_modified":"2019-08-13T19:50:19.022791","id":904115,"permissions":[{"display_name":"Security
-      Signals","description":"The ability to view Security signals.","restricted":false,"created_at":"2020-06-09T13:52:48.410398","name":"security_monitoring_signals_read","uuid":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"display_name":"Detection
-      Rules","description":"The ability to create and edit Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:39.099413","name":"security_monitoring_rules_write","uuid":"7b516476-aa58-11ea-95e2-93718cd56369"},{"display_name":"Detection
-      Rules","description":"The ability to read Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:25.279909","name":"security_monitoring_rules_read","uuid":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"display_name":"Logs
-      Archives","description":"The ability to read logs archives location and use
-      it for rehydration.","restricted":false,"created_at":"2020-04-23T07:40:27.966133","name":"logs_read_archives","uuid":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"display_name":"Logs
-      Read Data","description":"The ability to read log data. Can be restricted with
-      restriction queries.","restricted":false,"created_at":"2020-04-06T16:24:35.989108","name":"logs_read_data","uuid":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"display_name":"Logs
-      Read Index Data","description":"The ability to read all or some log indexes.
-      Can be granted in a limited capacity per index from the Logs interface or APIs.
-      If granted via the Roles interface or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:39:19.727450","name":"logs_read_index_data","uuid":"5e605652-dd12-11e8-9e53-375565b8970e"},{"display_name":"Monitors","description":"The
-      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Dashboards
-      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
-      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Monitors","description":"The
-      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards","description":"The
-      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors
-      Manage Downtimes","description":"The ability to set downtimes for your organization.
-      A user with this permission can suppress alerts from any monitor using a downtime,
-      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Log
-      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
-      Public Config API","description":"The ability to access and edit logs configurations
-      via the API.","restricted":false,"created_at":"2019-05-02T08:13:01.731092","name":"logs_public_config_api","uuid":"1a92ede2-6cb2-11e9-99c6-2b3a4a0cdf0a"},{"display_name":"Logs
-      Archives","description":"The ability to add and edit log archive locations.","restricted":false,"created_at":"2018-10-31T13:40:29.040786","name":"logs_write_archives","uuid":"87b00304-dd12-11e8-9e59-cbeb5f71f72f"},{"display_name":"Logs
-      Write Pipelines","description":"The ability to add and change log pipeline configurations,
-      including the ability to grant the Logs Write Processors permission to other
-      roles, for some or all pipelines. This permission also grants global Log Processor
-      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
-      Live Tail Access","description":"The ability to view the live tail feed for
-      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
-      Modify Indexes","description":"The ability to read and modify all indexes in
-      your account. This includes the ability to grant the Logs Read Index Data and
-      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
-      This permission also grants global Log Index Read and Log Exclusion Filter Write
-      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Privileged
-      Access","description":"This permission gives you the ability to view and edit
-      everything in your Datadog organization that does not have an explicitly defined
-      permission. This includes billing and usage, user, key, and organization management.
-      This permission is inclusive of all Standard access permissions.","restricted":false,"created_at":"2018-10-19T15:35:23.734317","name":"admin","uuid":"984a2bd4-d3b4-11e8-a1ff-a7f660d43029"}]}],"title":null,"role":null,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com"}}'
+    body: '{"errors": ["691479aa-33b1-11eb-8724-83bf1bf8613d not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -852,85 +588,46 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 03 Aug 2020 15:19:42 GMT
+      - Tue, 01 Dec 2020 08:44:25 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:42 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - kmSW3dF2nkUVmpIsiGo6VDyra9DPu5+FHtMhBAws3pmuho+70HqZtO8H89OjHWGF
       X-Dd-Version:
-      - "35.2824579"
+      - "35.3451487"
       X-Frame-Options:
       - SAMEORIGIN
-    status: 200 OK
-    code: 200
+    status: 404 Not Found
+    code: 404
     duration: ""
 - request:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "1891610748899681415"
+      - "3293404336101230887"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "1891610748899681415"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
+      - "8763527162968773742"
+    url: https://api.datadoghq.com/api/v2/users/691479aa-33b1-11eb-8724-83bf1bf8613d
     method: GET
   response:
-    body: '{"user":{"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro","verified":false,"name":"Updated
-      User","roles":[{"uuid":"94172442-be03-11e9-a77a-3b7612558ac1","created_at":"2019-08-13T19:50:19.022791","name":"Datadog
-      Admin Role","last_modified":"2019-08-13T19:50:19.022791","id":904115,"permissions":[{"display_name":"Security
-      Signals","description":"The ability to view Security signals.","restricted":false,"created_at":"2020-06-09T13:52:48.410398","name":"security_monitoring_signals_read","uuid":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"display_name":"Detection
-      Rules","description":"The ability to create and edit Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:39.099413","name":"security_monitoring_rules_write","uuid":"7b516476-aa58-11ea-95e2-93718cd56369"},{"display_name":"Detection
-      Rules","description":"The ability to read Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:25.279909","name":"security_monitoring_rules_read","uuid":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"display_name":"Logs
-      Archives","description":"The ability to read logs archives location and use
-      it for rehydration.","restricted":false,"created_at":"2020-04-23T07:40:27.966133","name":"logs_read_archives","uuid":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"display_name":"Logs
-      Read Data","description":"The ability to read log data. Can be restricted with
-      restriction queries.","restricted":false,"created_at":"2020-04-06T16:24:35.989108","name":"logs_read_data","uuid":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"display_name":"Logs
-      Read Index Data","description":"The ability to read all or some log indexes.
-      Can be granted in a limited capacity per index from the Logs interface or APIs.
-      If granted via the Roles interface or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:39:19.727450","name":"logs_read_index_data","uuid":"5e605652-dd12-11e8-9e53-375565b8970e"},{"display_name":"Monitors","description":"The
-      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Dashboards
-      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
-      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Monitors","description":"The
-      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards","description":"The
-      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors
-      Manage Downtimes","description":"The ability to set downtimes for your organization.
-      A user with this permission can suppress alerts from any monitor using a downtime,
-      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Log
-      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
-      Public Config API","description":"The ability to access and edit logs configurations
-      via the API.","restricted":false,"created_at":"2019-05-02T08:13:01.731092","name":"logs_public_config_api","uuid":"1a92ede2-6cb2-11e9-99c6-2b3a4a0cdf0a"},{"display_name":"Logs
-      Archives","description":"The ability to add and edit log archive locations.","restricted":false,"created_at":"2018-10-31T13:40:29.040786","name":"logs_write_archives","uuid":"87b00304-dd12-11e8-9e59-cbeb5f71f72f"},{"display_name":"Logs
-      Write Pipelines","description":"The ability to add and change log pipeline configurations,
-      including the ability to grant the Logs Write Processors permission to other
-      roles, for some or all pipelines. This permission also grants global Log Processor
-      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
-      Live Tail Access","description":"The ability to view the live tail feed for
-      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
-      Modify Indexes","description":"The ability to read and modify all indexes in
-      your account. This includes the ability to grant the Logs Read Index Data and
-      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
-      This permission also grants global Log Index Read and Log Exclusion Filter Write
-      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Privileged
-      Access","description":"This permission gives you the ability to view and edit
-      everything in your Datadog organization that does not have an explicitly defined
-      permission. This includes billing and usage, user, key, and organization management.
-      This permission is inclusive of all Standard access permissions.","restricted":false,"created_at":"2018-10-19T15:35:23.734317","name":"admin","uuid":"984a2bd4-d3b4-11e8-a1ff-a7f660d43029"}]}],"title":null,"role":null,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com"}}'
+    body: '{"data":{"type":"users","id":"691479aa-33b1-11eb-8724-83bf1bf8613d","attributes":{"name":"Updated
+      User","handle":"tf-testaccdatadoguser_updated-local-1606812262@example.com","created_at":"2020-12-01T08:44:23.009297+00:00","email":"tf-testaccdatadoguser_updated-local-1606812262@example.com","icon":"https://secure.gravatar.com/avatar/b52ad34d394c3c1468edc7fba7cf35c4?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -941,13 +638,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 03 Aug 2020 15:19:42 GMT
+      - Tue, 01 Dec 2020 08:44:25 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:42 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 08-Dec-2020 08:44:25 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -956,454 +653,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - IQ8K2fbi9+hzvlptawk0u/OuKVQnGsq/zTg5fJDW+VMOK8B6bbyB7UdQwiRey3sj
+      - hw3ZauSSamfHLo55DFwif1/mO6RiYSc0/libBchlIMnyWX9rK7JgS3Pek5rkz683
       X-Dd-Version:
-      - "35.2824579"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "352032902556625382"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "352032902556625382"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
-    method: GET
-  response:
-    body: '{"user":{"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro","verified":false,"name":"Updated
-      User","roles":[{"uuid":"94172442-be03-11e9-a77a-3b7612558ac1","created_at":"2019-08-13T19:50:19.022791","name":"Datadog
-      Admin Role","last_modified":"2019-08-13T19:50:19.022791","id":904115,"permissions":[{"display_name":"Security
-      Signals","description":"The ability to view Security signals.","restricted":false,"created_at":"2020-06-09T13:52:48.410398","name":"security_monitoring_signals_read","uuid":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"display_name":"Detection
-      Rules","description":"The ability to create and edit Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:39.099413","name":"security_monitoring_rules_write","uuid":"7b516476-aa58-11ea-95e2-93718cd56369"},{"display_name":"Detection
-      Rules","description":"The ability to read Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:25.279909","name":"security_monitoring_rules_read","uuid":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"display_name":"Logs
-      Archives","description":"The ability to read logs archives location and use
-      it for rehydration.","restricted":false,"created_at":"2020-04-23T07:40:27.966133","name":"logs_read_archives","uuid":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"display_name":"Logs
-      Read Data","description":"The ability to read log data. Can be restricted with
-      restriction queries.","restricted":false,"created_at":"2020-04-06T16:24:35.989108","name":"logs_read_data","uuid":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"display_name":"Logs
-      Read Index Data","description":"The ability to read all or some log indexes.
-      Can be granted in a limited capacity per index from the Logs interface or APIs.
-      If granted via the Roles interface or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:39:19.727450","name":"logs_read_index_data","uuid":"5e605652-dd12-11e8-9e53-375565b8970e"},{"display_name":"Monitors","description":"The
-      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Dashboards
-      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
-      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Monitors","description":"The
-      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards","description":"The
-      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors
-      Manage Downtimes","description":"The ability to set downtimes for your organization.
-      A user with this permission can suppress alerts from any monitor using a downtime,
-      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Log
-      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
-      Public Config API","description":"The ability to access and edit logs configurations
-      via the API.","restricted":false,"created_at":"2019-05-02T08:13:01.731092","name":"logs_public_config_api","uuid":"1a92ede2-6cb2-11e9-99c6-2b3a4a0cdf0a"},{"display_name":"Logs
-      Archives","description":"The ability to add and edit log archive locations.","restricted":false,"created_at":"2018-10-31T13:40:29.040786","name":"logs_write_archives","uuid":"87b00304-dd12-11e8-9e59-cbeb5f71f72f"},{"display_name":"Logs
-      Write Pipelines","description":"The ability to add and change log pipeline configurations,
-      including the ability to grant the Logs Write Processors permission to other
-      roles, for some or all pipelines. This permission also grants global Log Processor
-      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
-      Live Tail Access","description":"The ability to view the live tail feed for
-      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
-      Modify Indexes","description":"The ability to read and modify all indexes in
-      your account. This includes the ability to grant the Logs Read Index Data and
-      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
-      This permission also grants global Log Index Read and Log Exclusion Filter Write
-      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Privileged
-      Access","description":"This permission gives you the ability to view and edit
-      everything in your Datadog organization that does not have an explicitly defined
-      permission. This includes billing and usage, user, key, and organization management.
-      This permission is inclusive of all Standard access permissions.","restricted":false,"created_at":"2018-10-19T15:35:23.734317","name":"admin","uuid":"984a2bd4-d3b4-11e8-a1ff-a7f660d43029"}]}],"title":null,"role":null,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com"}}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 03 Aug 2020 15:19:43 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:43 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - HgPqOMxUu8mQr0YHKc8QadJlMH1mybh9Hls2Rb2pQDq7EaN8dkbtF0x0ZQb+8S1M
-      X-Dd-Version:
-      - "35.2824579"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "7651604979870908042"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7651604979870908042"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
-    method: GET
-  response:
-    body: '{"user":{"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro","verified":false,"name":"Updated
-      User","roles":[{"uuid":"94172442-be03-11e9-a77a-3b7612558ac1","created_at":"2019-08-13T19:50:19.022791","name":"Datadog
-      Admin Role","last_modified":"2019-08-13T19:50:19.022791","id":904115,"permissions":[{"display_name":"Security
-      Signals","description":"The ability to view Security signals.","restricted":false,"created_at":"2020-06-09T13:52:48.410398","name":"security_monitoring_signals_read","uuid":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"display_name":"Detection
-      Rules","description":"The ability to create and edit Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:39.099413","name":"security_monitoring_rules_write","uuid":"7b516476-aa58-11ea-95e2-93718cd56369"},{"display_name":"Detection
-      Rules","description":"The ability to read Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:25.279909","name":"security_monitoring_rules_read","uuid":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"display_name":"Logs
-      Archives","description":"The ability to read logs archives location and use
-      it for rehydration.","restricted":false,"created_at":"2020-04-23T07:40:27.966133","name":"logs_read_archives","uuid":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"display_name":"Logs
-      Read Data","description":"The ability to read log data. Can be restricted with
-      restriction queries.","restricted":false,"created_at":"2020-04-06T16:24:35.989108","name":"logs_read_data","uuid":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"display_name":"Logs
-      Read Index Data","description":"The ability to read all or some log indexes.
-      Can be granted in a limited capacity per index from the Logs interface or APIs.
-      If granted via the Roles interface or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:39:19.727450","name":"logs_read_index_data","uuid":"5e605652-dd12-11e8-9e53-375565b8970e"},{"display_name":"Monitors","description":"The
-      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Dashboards
-      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
-      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Monitors","description":"The
-      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards","description":"The
-      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors
-      Manage Downtimes","description":"The ability to set downtimes for your organization.
-      A user with this permission can suppress alerts from any monitor using a downtime,
-      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Log
-      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
-      Public Config API","description":"The ability to access and edit logs configurations
-      via the API.","restricted":false,"created_at":"2019-05-02T08:13:01.731092","name":"logs_public_config_api","uuid":"1a92ede2-6cb2-11e9-99c6-2b3a4a0cdf0a"},{"display_name":"Logs
-      Archives","description":"The ability to add and edit log archive locations.","restricted":false,"created_at":"2018-10-31T13:40:29.040786","name":"logs_write_archives","uuid":"87b00304-dd12-11e8-9e59-cbeb5f71f72f"},{"display_name":"Logs
-      Write Pipelines","description":"The ability to add and change log pipeline configurations,
-      including the ability to grant the Logs Write Processors permission to other
-      roles, for some or all pipelines. This permission also grants global Log Processor
-      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
-      Live Tail Access","description":"The ability to view the live tail feed for
-      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
-      Modify Indexes","description":"The ability to read and modify all indexes in
-      your account. This includes the ability to grant the Logs Read Index Data and
-      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
-      This permission also grants global Log Index Read and Log Exclusion Filter Write
-      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Privileged
-      Access","description":"This permission gives you the ability to view and edit
-      everything in your Datadog organization that does not have an explicitly defined
-      permission. This includes billing and usage, user, key, and organization management.
-      This permission is inclusive of all Standard access permissions.","restricted":false,"created_at":"2018-10-19T15:35:23.734317","name":"admin","uuid":"984a2bd4-d3b4-11e8-a1ff-a7f660d43029"}]}],"title":null,"role":null,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com"}}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 03 Aug 2020 15:19:43 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:43 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - kmSW3dF2nkUVmpIsiGo6VDyra9DPu5+FHtMhBAws3pmuho+70HqZtO8H89OjHWGF
-      X-Dd-Version:
-      - "35.2824579"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "5479504083342440963"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "5479504083342440963"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
-    method: GET
-  response:
-    body: '{"user":{"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro","verified":false,"name":"Updated
-      User","roles":[{"uuid":"94172442-be03-11e9-a77a-3b7612558ac1","created_at":"2019-08-13T19:50:19.022791","name":"Datadog
-      Admin Role","last_modified":"2019-08-13T19:50:19.022791","id":904115,"permissions":[{"display_name":"Security
-      Signals","description":"The ability to view Security signals.","restricted":false,"created_at":"2020-06-09T13:52:48.410398","name":"security_monitoring_signals_read","uuid":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"display_name":"Detection
-      Rules","description":"The ability to create and edit Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:39.099413","name":"security_monitoring_rules_write","uuid":"7b516476-aa58-11ea-95e2-93718cd56369"},{"display_name":"Detection
-      Rules","description":"The ability to read Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:25.279909","name":"security_monitoring_rules_read","uuid":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"display_name":"Logs
-      Archives","description":"The ability to read logs archives location and use
-      it for rehydration.","restricted":false,"created_at":"2020-04-23T07:40:27.966133","name":"logs_read_archives","uuid":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"display_name":"Logs
-      Read Data","description":"The ability to read log data. Can be restricted with
-      restriction queries.","restricted":false,"created_at":"2020-04-06T16:24:35.989108","name":"logs_read_data","uuid":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"display_name":"Logs
-      Read Index Data","description":"The ability to read all or some log indexes.
-      Can be granted in a limited capacity per index from the Logs interface or APIs.
-      If granted via the Roles interface or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:39:19.727450","name":"logs_read_index_data","uuid":"5e605652-dd12-11e8-9e53-375565b8970e"},{"display_name":"Monitors","description":"The
-      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Dashboards
-      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
-      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Monitors","description":"The
-      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards","description":"The
-      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors
-      Manage Downtimes","description":"The ability to set downtimes for your organization.
-      A user with this permission can suppress alerts from any monitor using a downtime,
-      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Log
-      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
-      Public Config API","description":"The ability to access and edit logs configurations
-      via the API.","restricted":false,"created_at":"2019-05-02T08:13:01.731092","name":"logs_public_config_api","uuid":"1a92ede2-6cb2-11e9-99c6-2b3a4a0cdf0a"},{"display_name":"Logs
-      Archives","description":"The ability to add and edit log archive locations.","restricted":false,"created_at":"2018-10-31T13:40:29.040786","name":"logs_write_archives","uuid":"87b00304-dd12-11e8-9e59-cbeb5f71f72f"},{"display_name":"Logs
-      Write Pipelines","description":"The ability to add and change log pipeline configurations,
-      including the ability to grant the Logs Write Processors permission to other
-      roles, for some or all pipelines. This permission also grants global Log Processor
-      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
-      Live Tail Access","description":"The ability to view the live tail feed for
-      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
-      Modify Indexes","description":"The ability to read and modify all indexes in
-      your account. This includes the ability to grant the Logs Read Index Data and
-      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
-      This permission also grants global Log Index Read and Log Exclusion Filter Write
-      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Privileged
-      Access","description":"This permission gives you the ability to view and edit
-      everything in your Datadog organization that does not have an explicitly defined
-      permission. This includes billing and usage, user, key, and organization management.
-      This permission is inclusive of all Standard access permissions.","restricted":false,"created_at":"2018-10-19T15:35:23.734317","name":"admin","uuid":"984a2bd4-d3b4-11e8-a1ff-a7f660d43029"}]}],"title":null,"role":null,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com"}}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 03 Aug 2020 15:19:43 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:43 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 7EKwjnrAMvkjbuKJfoQb0x6HrHo6KoZ/P/MYCNLv3lRKdOxwDSDe/0MQuxyv/lE2
-      X-Dd-Version:
-      - "35.2824579"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "618389538202833291"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "618389538202833291"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
-    method: GET
-  response:
-    body: '{"user":{"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro","verified":false,"name":"Updated
-      User","roles":[{"uuid":"94172442-be03-11e9-a77a-3b7612558ac1","created_at":"2019-08-13T19:50:19.022791","name":"Datadog
-      Admin Role","last_modified":"2019-08-13T19:50:19.022791","id":904115,"permissions":[{"display_name":"Security
-      Signals","description":"The ability to view Security signals.","restricted":false,"created_at":"2020-06-09T13:52:48.410398","name":"security_monitoring_signals_read","uuid":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"display_name":"Detection
-      Rules","description":"The ability to create and edit Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:39.099413","name":"security_monitoring_rules_write","uuid":"7b516476-aa58-11ea-95e2-93718cd56369"},{"display_name":"Detection
-      Rules","description":"The ability to read Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:25.279909","name":"security_monitoring_rules_read","uuid":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"display_name":"Logs
-      Archives","description":"The ability to read logs archives location and use
-      it for rehydration.","restricted":false,"created_at":"2020-04-23T07:40:27.966133","name":"logs_read_archives","uuid":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"display_name":"Logs
-      Read Data","description":"The ability to read log data. Can be restricted with
-      restriction queries.","restricted":false,"created_at":"2020-04-06T16:24:35.989108","name":"logs_read_data","uuid":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"display_name":"Logs
-      Read Index Data","description":"The ability to read all or some log indexes.
-      Can be granted in a limited capacity per index from the Logs interface or APIs.
-      If granted via the Roles interface or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:39:19.727450","name":"logs_read_index_data","uuid":"5e605652-dd12-11e8-9e53-375565b8970e"},{"display_name":"Monitors","description":"The
-      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Dashboards
-      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
-      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Monitors","description":"The
-      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards","description":"The
-      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors
-      Manage Downtimes","description":"The ability to set downtimes for your organization.
-      A user with this permission can suppress alerts from any monitor using a downtime,
-      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Log
-      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
-      Public Config API","description":"The ability to access and edit logs configurations
-      via the API.","restricted":false,"created_at":"2019-05-02T08:13:01.731092","name":"logs_public_config_api","uuid":"1a92ede2-6cb2-11e9-99c6-2b3a4a0cdf0a"},{"display_name":"Logs
-      Archives","description":"The ability to add and edit log archive locations.","restricted":false,"created_at":"2018-10-31T13:40:29.040786","name":"logs_write_archives","uuid":"87b00304-dd12-11e8-9e59-cbeb5f71f72f"},{"display_name":"Logs
-      Write Pipelines","description":"The ability to add and change log pipeline configurations,
-      including the ability to grant the Logs Write Processors permission to other
-      roles, for some or all pipelines. This permission also grants global Log Processor
-      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
-      Live Tail Access","description":"The ability to view the live tail feed for
-      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
-      Modify Indexes","description":"The ability to read and modify all indexes in
-      your account. This includes the ability to grant the Logs Read Index Data and
-      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
-      This permission also grants global Log Index Read and Log Exclusion Filter Write
-      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Privileged
-      Access","description":"This permission gives you the ability to view and edit
-      everything in your Datadog organization that does not have an explicitly defined
-      permission. This includes billing and usage, user, key, and organization management.
-      This permission is inclusive of all Standard access permissions.","restricted":false,"created_at":"2018-10-19T15:35:23.734317","name":"admin","uuid":"984a2bd4-d3b4-11e8-a1ff-a7f660d43029"}]}],"title":null,"role":null,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com"}}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 03 Aug 2020 15:19:43 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:43 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - t1UEkVoW7IT8ZLi5FCj4fR66cLOjAR4/mjwMsdtZKRUOz4s90N2Sjg1hNlFhkqc8
-      X-Dd-Version:
-      - "35.2824579"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.10.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.14.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "7543597581108802332"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7543597581108802332"
-    url: https://api.datadoghq.com/api/v1/user/tf-testaccdatadoguser_updated-local-1596467977@example.com
-    method: GET
-  response:
-    body: '{"user":{"handle":"tf-testaccdatadoguser_updated-local-1596467977@example.com","access_role":"adm","disabled":true,"is_admin":true,"icon":"https://secure.gravatar.com/avatar/1097d35d67274981f6a97fa6bb5853c8?s=48&d=retro","verified":false,"name":"Updated
-      User","roles":[{"uuid":"94172442-be03-11e9-a77a-3b7612558ac1","created_at":"2019-08-13T19:50:19.022791","name":"Datadog
-      Admin Role","last_modified":"2019-08-13T19:50:19.022791","id":904115,"permissions":[{"display_name":"Security
-      Signals","description":"The ability to view Security signals.","restricted":false,"created_at":"2020-06-09T13:52:48.410398","name":"security_monitoring_signals_read","uuid":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"display_name":"Detection
-      Rules","description":"The ability to create and edit Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:39.099413","name":"security_monitoring_rules_write","uuid":"7b516476-aa58-11ea-95e2-93718cd56369"},{"display_name":"Detection
-      Rules","description":"The ability to read Detection rules.","restricted":false,"created_at":"2020-06-09T13:52:25.279909","name":"security_monitoring_rules_read","uuid":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"display_name":"Logs
-      Archives","description":"The ability to read logs archives location and use
-      it for rehydration.","restricted":false,"created_at":"2020-04-23T07:40:27.966133","name":"logs_read_archives","uuid":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"display_name":"Logs
-      Read Data","description":"The ability to read log data. Can be restricted with
-      restriction queries.","restricted":false,"created_at":"2020-04-06T16:24:35.989108","name":"logs_read_data","uuid":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"display_name":"Logs
-      Read Index Data","description":"The ability to read all or some log indexes.
-      Can be granted in a limited capacity per index from the Logs interface or APIs.
-      If granted via the Roles interface or API the permission has global scope.","restricted":false,"created_at":"2018-10-31T13:39:19.727450","name":"logs_read_index_data","uuid":"5e605652-dd12-11e8-9e53-375565b8970e"},{"display_name":"Monitors","description":"The
-      ability to change, mute, and delete individual monitors.","restricted":false,"created_at":"2019-09-16T18:39:15.597109","name":"monitors_write","uuid":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"display_name":"Dashboards
-      Share","description":"The ability to share dashboards externally.","restricted":false,"created_at":"2019-09-10T14:39:51.967094","name":"dashboards_public_share","uuid":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"display_name":"Dashboards","description":"The
-      ability to create and change dashboards.","restricted":false,"created_at":"2019-09-10T14:39:51.962944","name":"dashboards_write","uuid":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"display_name":"Monitors","description":"The
-      ability to view monitors.","restricted":true,"created_at":"2019-09-16T18:39:07.744297","name":"monitors_read","uuid":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"display_name":"Dashboards","description":"The
-      ability to view dashboards.","restricted":true,"created_at":"2019-09-10T14:39:51.955175","name":"dashboards_read","uuid":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"display_name":"Monitors
-      Manage Downtimes","description":"The ability to set downtimes for your organization.
-      A user with this permission can suppress alerts from any monitor using a downtime,
-      even if they do not have permission to edit those monitors explicitly.","restricted":false,"created_at":"2019-09-16T18:39:23.306702","name":"monitors_downtime","uuid":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"display_name":"Log
-      Generate Metrics","description":"The ability to create custom metrics from logs.","restricted":false,"created_at":"2019-07-25T12:27:39.640758","name":"logs_generate_metrics","uuid":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"display_name":"Logs
-      Public Config API","description":"The ability to access and edit logs configurations
-      via the API.","restricted":false,"created_at":"2019-05-02T08:13:01.731092","name":"logs_public_config_api","uuid":"1a92ede2-6cb2-11e9-99c6-2b3a4a0cdf0a"},{"display_name":"Logs
-      Archives","description":"The ability to add and edit log archive locations.","restricted":false,"created_at":"2018-10-31T13:40:29.040786","name":"logs_write_archives","uuid":"87b00304-dd12-11e8-9e59-cbeb5f71f72f"},{"display_name":"Logs
-      Write Pipelines","description":"The ability to add and change log pipeline configurations,
-      including the ability to grant the Logs Write Processors permission to other
-      roles, for some or all pipelines. This permission also grants global Log Processor
-      Write implicitly.","restricted":false,"created_at":"2018-10-31T13:40:17.996379","name":"logs_write_pipelines","uuid":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"display_name":"Logs
-      Live Tail Access","description":"The ability to view the live tail feed for
-      all log indexes, even if otherwise specifically restricted.","restricted":false,"created_at":"2018-10-31T13:39:48.292879","name":"logs_live_tail","uuid":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"display_name":"Logs
-      Modify Indexes","description":"The ability to read and modify all indexes in
-      your account. This includes the ability to grant the Logs Read Index Data and
-      Logs Write Exclusion Filter permission to other roles, for some or all indexes.
-      This permission also grants global Log Index Read and Log Exclusion Filter Write
-      implicitly.","restricted":false,"created_at":"2018-10-31T13:39:27.148615","name":"logs_modify_indexes","uuid":"62cc036c-dd12-11e8-9e54-db9995643092"},{"display_name":"Privileged
-      Access","description":"This permission gives you the ability to view and edit
-      everything in your Datadog organization that does not have an explicitly defined
-      permission. This includes billing and usage, user, key, and organization management.
-      This permission is inclusive of all Standard access permissions.","restricted":false,"created_at":"2018-10-19T15:35:23.734317","name":"admin","uuid":"984a2bd4-d3b4-11e8-a1ff-a7f660d43029"}]}],"title":null,"role":null,"email":"tf-testaccdatadoguser_updated-local-1596467977@example.com"}}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 03 Aug 2020 15:19:44 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 10-Aug-2020 15:19:44 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - uCYaXyX3yBBDejWpwoVtXzMAOvIFPqLV7TnTRxvDqbaBB5zY5AVwaGFVj6h3q0R9
-      X-Dd-Version:
-      - "35.2824579"
+      - "35.3451487"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

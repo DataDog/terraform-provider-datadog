@@ -24,19 +24,21 @@ func TestDatadogUser_import(t *testing.T) {
 				Config: testAccCheckDatadogUserConfigImported(username),
 			},
 			{
-				ResourceName:      resourceName,
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:            resourceName,
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"access_role"},
 			},
 		},
 	})
 }
 
 func testAccCheckDatadogUserConfigImported(uniq string) string {
-	return fmt.Sprintf(`
+	return fmt.Sprintf(`%s
+
 resource "datadog_user" "foo" {
   email  = "%s"
-  handle = "%s"
   name   = "Test User"
-}`, uniq, uniq)
+  roles  = [data.datadog_role.st_role.id, data.datadog_role.adm_role.id]
+}`, roleDatasources, uniq)
 }
