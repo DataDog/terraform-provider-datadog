@@ -206,6 +206,10 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Computed: true,
 			},
 			"step": syntheticsTestStep(),
+			"force_step_params_update": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -464,6 +468,22 @@ func syntheticsTestStep() *schema.Schema {
 				"params": {
 					Type:     schema.TypeString,
 					Required: true,
+					DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
+						// if there is no old value we let TF handle this
+						if old == "" {
+							return old == new
+						}
+
+						// if the field force_step_params_update is present we force the update
+						// of the step params
+						if attr, ok := d.GetOk("force_step_params_update"); ok && attr.(bool) {
+							return false
+						}
+
+						// by default we ignore the diff for step parameters because some of them
+						// are updated by the backend.
+						return true
+					},
 				},
 			},
 		},
