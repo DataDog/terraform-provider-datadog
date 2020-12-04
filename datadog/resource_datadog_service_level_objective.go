@@ -80,6 +80,10 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				ForceNew:     true,
 				ValidateFunc: ValidateServiceLevelObjectiveTypeString,
 			},
+			"force_delete": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 
 			// Metric-Based SLO
 			"query": {
@@ -429,8 +433,13 @@ func resourceDatadogServiceLevelObjectiveDelete(d *schema.ResourceData, meta int
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
+	var err error
 
-	_, _, err := datadogClientV1.ServiceLevelObjectivesApi.DeleteSLO(authV1, d.Id()).Execute()
+	if d.Get("force_delete").(bool) {
+		_, _, err = datadogClientV1.ServiceLevelObjectivesApi.DeleteSLO(authV1, d.Id()).Force("true").Execute()
+	} else {
+		_, _, err = datadogClientV1.ServiceLevelObjectivesApi.DeleteSLO(authV1, d.Id()).Execute()
+	}
 	if err != nil {
 		return translateClientError(err, "error deleting service level objective")
 	}

@@ -12,6 +12,38 @@ Use the navigation to the left to read about the available resources.
 
 ## Example Usage
 
+Terraform 0.13+ uses the Terraform Registry:
+
+```hcl
+terraform {
+  required_providers {
+    datadog = {
+      source  = "DataDog/datadog"
+    }
+  }
+}
+
+
+# Configure the Datadog provider
+provider "datadog" {
+  api_key = var.datadog_api_key
+  app_key = var.datadog_app_key
+}
+
+# Create a new monitor
+resource "datadog_monitor" "default" {
+  # ...
+}
+
+# Create a new dashboard
+resource "datadog_dashboard" "default" {
+  # ...
+}
+
+```
+
+Terraform 0.12- can be specified as:
+
 ```hcl
 # Configure the Datadog provider
 provider "datadog" {
@@ -24,8 +56,8 @@ resource "datadog_monitor" "default" {
   # ...
 }
 
-# Create a new timeboard
-resource "datadog_timeboard" "default" {
+# Create a new dashboard
+resource "datadog_dashboard" "default" {
   # ...
 }
 ```
