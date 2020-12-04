@@ -1,12 +1,21 @@
 package datadog
 
 import (
+	"fmt"
 	"log"
+	"regexp"
 	"strings"
 
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/zorkian/go-datadog-api"
 )
+
+var uuidRegex = regexp.MustCompile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+
+func isV2User(id string) bool {
+	return uuidRegex.MatchString(id)
+}
 
 func resourceDatadogUser() *schema.Resource {
 	return &schema.Resource{
@@ -14,7 +23,6 @@ func resourceDatadogUser() *schema.Resource {
 		Read:   resourceDatadogUserRead,
 		Update: resourceDatadogUserUpdate,
 		Delete: resourceDatadogUserDelete,
-		Exists: resourceDatadogUserExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogUserImport,
 		},
@@ -30,29 +38,35 @@ func resourceDatadogUser() *schema.Resource {
 				Required: true,
 			},
 			"handle": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:       schema.TypeString,
+				Optional:   true,
+				Deprecated: "This parameter is deprecated and will be removed from the next Major version",
 			},
 			"is_admin": {
 				Type:       schema.TypeBool,
 				Computed:   true,
 				Optional:   true,
-				Deprecated: "This parameter will be replaced by `access_role` and will be removed from the next Major version",
+				Deprecated: "This parameter is replaced by `roles` and will be removed from the next Major version",
 			},
 			"access_role": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Required: false,
-				Default:  "st",
+				Type:       schema.TypeString,
+				Optional:   true,
+				Default:    "st",
+				Deprecated: "This parameter is replaced by `roles` and will be removed from the next Major version",
 			},
 			"name": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 			"role": {
 				Type:       schema.TypeString,
 				Optional:   true,
 				Deprecated: "This parameter was removed from the API and has no effect",
+			},
+			"roles": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"verified": {
 				Type:     schema.TypeBool,
@@ -60,22 +74,6 @@ func resourceDatadogUser() *schema.Resource {
 			},
 		},
 	}
-}
-
-func resourceDatadogUserExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	// Exists - This is called to verify a resource still exists. It is called prior to Read,
-	// and lowers the burden of Read to be able to assume the resource exists.
-	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-
-	if _, err := client.GetUser(d.Id()); err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking user exists")
-	}
-
-	return true, nil
 }
 
 func buildDatadogUserStruct(d *schema.ResourceData) *datadog.User {
@@ -90,58 +88,223 @@ func buildDatadogUserStruct(d *schema.ResourceData) *datadog.User {
 	return &u
 }
 
+func buildDatadogUserV2Struct(d *schema.ResourceData, providerConf *ProviderConfiguration) *datadogV2.UserCreateRequest {
+	userAttributes := datadogV2.NewUserCreateAttributesWithDefaults()
+	userAttributes.SetEmail(d.Get("email").(string))
+	if v, ok := d.GetOk("name"); ok {
+		userAttributes.SetName(v.(string))
+	}
+
+	userCreate := datadogV2.NewUserCreateDataWithDefaults()
+	userCreate.SetAttributes(*userAttributes)
+
+	roles := d.Get("roles").(*schema.Set).List()
+	rolesData := make([]datadogV2.RelationshipToRoleData, len(roles))
+	for i, role := range roles {
+		roleData := datadogV2.NewRelationshipToRoleData()
+		roleData.SetId(role.(string))
+		rolesData[i] = *roleData
+	}
+
+	toRoles := datadogV2.NewRelationshipToRoles()
+	toRoles.SetData(rolesData)
+
+	userRelationships := datadogV2.NewUserRelationships()
+	userRelationships.SetRoles(*toRoles)
+	userCreate.SetRelationships(*userRelationships)
+
+	userRequest := datadogV2.NewUserCreateRequestWithDefaults()
+	userRequest.SetData(*userCreate)
+
+	return userRequest
+}
+
+func buildDatadogUserV2UpdateStruct(d *schema.ResourceData, userId string) *datadogV2.UserUpdateRequest {
+	userAttributes := datadogV2.NewUserUpdateAttributesWithDefaults()
+	userAttributes.SetEmail(d.Get("email").(string))
+	if v, ok := d.GetOk("name"); ok {
+		userAttributes.SetName(v.(string))
+	}
+	userAttributes.SetDisabled(d.Get("disabled").(bool))
+
+	userUpdate := datadogV2.NewUserUpdateDataWithDefaults()
+	userUpdate.SetAttributes(*userAttributes)
+	userUpdate.SetId(userId)
+
+	userRequest := datadogV2.NewUserUpdateRequestWithDefaults()
+	userRequest.SetData(*userUpdate)
+
+	return userRequest
+}
+
 func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
 
-	u := buildDatadogUserStruct(d)
+	userRequest := buildDatadogUserV2Struct(d, providerConf)
 
 	// Datadog does not actually delete users, so CreateUser might return a 409.
 	// We ignore that case and proceed, likely re-enabling the user.
-	if _, err := client.CreateUser(u.Handle, u.Name); err != nil {
-		if !strings.Contains(err.Error(), "API error 409 Conflict") {
+	createResponse, httpresp, err := datadogClientV2.UsersApi.CreateUser(authV2).Body(*userRequest).Execute()
+	if err != nil {
+		if httpresp == nil || httpresp.StatusCode != 409 {
 			return translateClientError(err, "error creating user")
 		}
-		log.Printf("[INFO] Updating existing Datadog user %s", *u.Handle)
-	}
+		email := d.Get("email").(string)
+		log.Printf("[INFO] Updating existing Datadog user %s", email)
+		// Find user ID by listing user and filtering by email
+		listResponse, _, err := datadogClientV2.UsersApi.ListUsers(authV2).Filter(email).Execute()
+		if err != nil {
+			return translateClientError(err, "error searching user")
+		}
+		responseData := listResponse.GetData()
+		if len(responseData) != 1 {
+			return fmt.Errorf("could not find single user with email %s", email)
+		}
+		userId := responseData[0].GetId()
+		userRequest := buildDatadogUserV2UpdateStruct(d, userId)
 
-	if err := client.UpdateUser(*u); err != nil {
-		return translateClientError(err, "error updating user")
+		if _, _, err = datadogClientV2.UsersApi.UpdateUser(authV2, userId).Body(*userRequest).Execute(); err != nil {
+			return translateClientError(err, "error updating user")
+		}
+		d.SetId(userId)
+	} else {
+		userData := createResponse.GetData()
+		d.SetId(userData.GetId())
 	}
-
-	d.SetId(u.GetHandle())
 
 	return resourceDatadogUserRead(d, meta)
 }
 
 func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
 
-	u, err := client.GetUser(d.Id())
-	if err != nil {
-		return err
+	if isV2User(d.Id()) {
+		datadogClientV2 := providerConf.DatadogClientV2
+		authV2 := providerConf.AuthV2
+
+		userResponse, httpResponse, err := datadogClientV2.UsersApi.GetUser(authV2, d.Id()).Execute()
+		if err != nil {
+			if httpResponse != nil && httpResponse.StatusCode == 404 {
+				d.SetId("")
+				return nil
+			}
+			return translateClientError(err, "error getting user")
+		}
+
+		userData := userResponse.GetData()
+		userAttributes := userData.GetAttributes()
+
+		userRelations := userData.GetRelationships()
+		userRolesRelations := userRelations.GetRoles()
+		userRoles := userRolesRelations.GetData()
+
+		if err := d.Set("email", userAttributes.GetEmail()); err != nil {
+			return err
+		}
+		if err := d.Set("name", userAttributes.GetName()); err != nil {
+			return err
+		}
+		if err := d.Set("verified", userAttributes.GetVerified()); err != nil {
+			return err
+		}
+		if err := d.Set("disabled", userAttributes.GetDisabled()); err != nil {
+			return err
+		}
+		roles := make([]string, len(userRoles))
+		for i, userRole := range userRoles {
+			roles[i] = userRole.GetId()
+		}
+		if err := d.Set("roles", roles); err != nil {
+			return err
+		}
+	} else {
+		client := providerConf.CommunityClient
+		u, err := client.GetUser(d.Id())
+		if err != nil {
+			if strings.Contains(err.Error(), "404 Not Found") {
+				d.SetId("")
+				return nil
+			}
+			return err
+		}
+
+		if err := d.Set("disabled", u.GetDisabled()); err != nil {
+			return err
+		}
+		if err := d.Set("email", u.GetEmail()); err != nil {
+			return err
+		}
+		if err := d.Set("handle", u.GetHandle()); err != nil {
+			return err
+		}
+		if err := d.Set("name", u.GetName()); err != nil {
+			return err
+		}
+		if err := d.Set("verified", u.GetVerified()); err != nil {
+			return err
+		}
+		if err := d.Set("access_role", u.GetAccessRole()); err != nil {
+			return err
+		}
+		if err := d.Set("is_admin", u.GetIsAdmin()); err != nil {
+			return err
+		}
 	}
-
-	d.Set("disabled", u.GetDisabled())
-	d.Set("email", u.GetEmail())
-	d.Set("handle", u.GetHandle())
-	d.Set("name", u.GetName())
-	d.Set("verified", u.GetVerified())
-	d.Set("access_role", u.GetAccessRole())
-	d.Set("is_admin", u.GetIsAdmin())
 	return nil
 }
 
 func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
 
-	u := buildDatadogUserStruct(d)
-	u.SetHandle(d.Id())
+	if isV2User(d.Id()) {
+		datadogClientV2 := providerConf.DatadogClientV2
+		authV2 := providerConf.AuthV2
 
-	if err := client.UpdateUser(*u); err != nil {
-		return translateClientError(err, "error updating user")
+		userRequest := buildDatadogUserV2UpdateStruct(d, d.Id())
+
+		if _, _, err := datadogClientV2.UsersApi.UpdateUser(authV2, d.Id()).Body(*userRequest).Execute(); err != nil {
+			return translateClientError(err, "error updating user")
+		}
+		if d.HasChange("roles") {
+			oldRolesI, newRolesI := d.GetChange("roles")
+			oldRoles := oldRolesI.(*schema.Set)
+			newRoles := newRolesI.(*schema.Set)
+			rolesToRemove := oldRoles.Difference(newRoles)
+			rolesToAdd := newRoles.Difference(oldRoles)
+			for _, roleI := range rolesToRemove.List() {
+				role := roleI.(string)
+				userRelation := datadogV2.NewRelationshipToUserWithDefaults()
+				userRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
+				userRelationData.SetId(d.Id())
+				userRelation.SetData(*userRelationData)
+				_, _, err := datadogClientV2.RolesApi.RemoveUserFromRole(authV2, role).Body(*userRelation).Execute()
+				if err != nil {
+					return translateClientError(err, "error removing user from role")
+				}
+			}
+			for _, roleI := range rolesToAdd.List() {
+				role := roleI.(string)
+				roleRelation := datadogV2.NewRelationshipToUserWithDefaults()
+				roleRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
+				roleRelationData.SetId(d.Id())
+				roleRelation.SetData(*roleRelationData)
+				_, _, err := datadogClientV2.RolesApi.AddUserToRole(authV2, role).Body(*roleRelation).Execute()
+				if err != nil {
+					return translateClientError(err, "error adding user to role")
+				}
+			}
+		}
+	} else {
+		client := providerConf.CommunityClient
+
+		u := buildDatadogUserStruct(d)
+		u.SetHandle(d.Id())
+
+		if err := client.UpdateUser(*u); err != nil {
+			return translateClientError(err, "error updating user")
+		}
 	}
 
 	return resourceDatadogUserRead(d, meta)
@@ -149,16 +312,29 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 
 func resourceDatadogUserDelete(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
 
-	// Datadog does not actually delete users, but instead marks them as disabled.
-	// Bypass DeleteUser if GetUser returns User.Disabled == true, otherwise it will 400.
-	if u, err := client.GetUser(d.Id()); err == nil && u.GetDisabled() {
-		return nil
-	}
+	if isV2User(d.Id()) {
+		datadogClientV2 := providerConf.DatadogClientV2
+		authV2 := providerConf.AuthV2
 
-	if err := client.DeleteUser(d.Id()); err != nil {
-		return translateClientError(err, "error deleting user")
+		if httpResponse, err := datadogClientV2.UsersApi.DisableUser(authV2, d.Id()).Execute(); err != nil {
+			if httpResponse != nil && httpResponse.StatusCode == 404 {
+				return nil
+			}
+			return translateClientError(err, "error disabling user")
+		}
+	} else {
+		client := providerConf.CommunityClient
+
+		// Datadog does not actually delete users, but instead marks them as disabled.
+		// Bypass DeleteUser if GetUser returns User.Disabled == true, otherwise it will 400.
+		if u, err := client.GetUser(d.Id()); err == nil && u.GetDisabled() {
+			return nil
+		}
+
+		if err := client.DeleteUser(d.Id()); err != nil {
+			return translateClientError(err, "error deleting user")
+		}
 	}
 
 	return nil
