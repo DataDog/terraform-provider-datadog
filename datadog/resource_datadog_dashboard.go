@@ -52,6 +52,7 @@ func resourceDatadogDashboard() *schema.Resource {
 			"layout_type": {
 				Type:         schema.TypeString,
 				Required:     true,
+				ForceNew:     true,
 				Description:  "The layout type of the dashboard, either 'free' or 'ordered'.",
 				ValidateFunc: validateDashboardLayoutType,
 			},

@@ -452,6 +452,56 @@ resource "datadog_dashboard" "ordered_dashboard" {
 }`, uniq)
 }
 
+func datadogSimpleOrderedDashboardConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard" "simple_ordered_dashboard" {
+	title         = "%s"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = true
+	widget {
+		alert_graph_definition {
+			alert_id = "895605"
+			viz_type = "timeseries"
+			title = "Widget Title"
+			time = {
+				live_span = "1h"
+			}
+		}
+	}
+	template_variable {
+		name   = "var_1"
+		prefix = "host"
+		default = "aws"
+	}
+	template_variable {
+		name   = "var_2"
+		prefix = "service_name"
+		default = "autoscaling"
+	}
+	template_variable_preset {
+		name = "preset_1"
+
+		template_variable {
+			name = "var_1"
+			value = "var_1_value"
+		}
+		template_variable {
+			name = "var_2"
+			value = "var_2_value"
+		}
+	}
+	template_variable_preset {
+		name = "preset_2"
+
+		template_variable {
+			name = "var_1"
+			value = "var_1_value"
+		}
+	}
+}`, uniq)
+}
+
 func datadogFreeDashboardConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_dashboard" "free_dashboard" {
@@ -632,6 +682,130 @@ resource "datadog_dashboard" "free_dashboard" {
 		}
 	}
 }`, uniq)
+}
+
+func datadogSimpleFreeDashboardConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard" "simple_free_dashboard" {
+	title         = "%s"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "free"
+	is_read_only  = true
+	widget {
+		alert_graph_definition {
+			alert_id = "895605"
+			viz_type = "timeseries"
+			title = "Widget Title"
+			time = {
+				live_span = "1h"
+			}
+		}
+		layout = {
+			height = 43
+			width = 32
+			x = 5
+			y = 5
+		}
+	}
+	template_variable {
+		name   = "var_1"
+		prefix = "host"
+		default = "aws"
+	}
+	template_variable {
+		name   = "var_2"
+		prefix = "service_name"
+		default = "autoscaling"
+	}
+	template_variable_preset {
+		name = "preset_1"
+
+		template_variable {
+			name = "var_1"
+			value = "var_1_value"
+		}
+		template_variable {
+			name = "var_2"
+			value = "var_2_value"
+		}
+	}
+	template_variable_preset {
+		name = "preset_2"
+
+		template_variable {
+			name = "var_1"
+			value = "var_1_value"
+		}
+	}
+}`, uniq)
+}
+
+var datadogSimpleOrderedDashboardAsserts = []string{
+	// Dashboard metadata
+	"description = Created using the Datadog provider in Terraform",
+	"layout_type = ordered",
+	"is_read_only = true",
+	"widget.# = 1",
+	// Alert Graph widget
+	"widget.0.alert_graph_definition.0.alert_id = 895605",
+	"widget.0.alert_graph_definition.0.viz_type = timeseries",
+	"widget.0.alert_graph_definition.0.title = Widget Title",
+	"widget.0.alert_graph_definition.0.time.live_span = 1h",
+	// Template Variables
+	"template_variable.# = 2",
+	"template_variable.0.name = var_1",
+	"template_variable.0.prefix = host",
+	"template_variable.0.default = aws",
+	"template_variable.1.name = var_2",
+	"template_variable.1.prefix = service_name",
+	"template_variable.1.default = autoscaling",
+	"description = Created using the Datadog provider in Terraform",
+	// Template Variable Presets
+	"template_variable_preset.# = 2",
+	"template_variable_preset.0.name = preset_1",
+	"template_variable_preset.0.template_variable.0.name = var_1",
+	"template_variable_preset.0.template_variable.0.value = var_1_value",
+	"template_variable_preset.0.template_variable.1.name = var_2",
+	"template_variable_preset.0.template_variable.1.value = var_2_value",
+	"template_variable_preset.1.name = preset_2",
+	"template_variable_preset.1.template_variable.0.name = var_1",
+	"template_variable_preset.1.template_variable.0.value = var_1_value",
+}
+
+var datadogSimpleFreeDashboardAsserts = []string{
+	// Dashboard metadata
+	"description = Created using the Datadog provider in Terraform",
+	"layout_type = free",
+	"is_read_only = true",
+	"widget.# = 1",
+	// Alert Graph widget
+	"widget.0.alert_graph_definition.0.alert_id = 895605",
+	"widget.0.alert_graph_definition.0.viz_type = timeseries",
+	"widget.0.alert_graph_definition.0.title = Widget Title",
+	"widget.0.alert_graph_definition.0.time.live_span = 1h",
+	"widget.0.layout.height = 43",
+	"widget.0.layout.width = 32",
+	"widget.0.layout.x = 5",
+	"widget.0.layout.y = 5",
+	// Template Variables
+	"template_variable.# = 2",
+	"template_variable.0.name = var_1",
+	"template_variable.0.prefix = host",
+	"template_variable.0.default = aws",
+	"template_variable.1.name = var_2",
+	"template_variable.1.prefix = service_name",
+	"template_variable.1.default = autoscaling",
+	"description = Created using the Datadog provider in Terraform",
+	// Template Variable Presets
+	"template_variable_preset.# = 2",
+	"template_variable_preset.0.name = preset_1",
+	"template_variable_preset.0.template_variable.0.name = var_1",
+	"template_variable_preset.0.template_variable.0.value = var_1_value",
+	"template_variable_preset.0.template_variable.1.name = var_2",
+	"template_variable_preset.0.template_variable.1.value = var_2_value",
+	"template_variable_preset.1.name = preset_2",
+	"template_variable_preset.1.template_variable.0.name = var_1",
+	"template_variable_preset.1.template_variable.0.value = var_1_value",
 }
 
 var datadogOrderedDashboardAsserts = []string{
@@ -1045,6 +1219,37 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 				Config: datadogFreeDashboardConfig(dbName),
 				Check: resource.ComposeTestCheckFunc(
 					testCheckResourceAttrs("datadog_dashboard.free_dashboard", checkDashboardExists(accProvider), asserts)...,
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	dbName := uniqueEntityName(clock, t)
+	freeAsserts := datadogSimpleFreeDashboardAsserts
+	freeAsserts = append(freeAsserts, fmt.Sprintf("title = %s", dbName))
+	orderedAsserts := datadogSimpleOrderedDashboardAsserts
+	orderedAsserts = append(orderedAsserts, fmt.Sprintf("title = %s", dbName))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: checkDashboardDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: datadogSimpleFreeDashboardConfig(dbName),
+				Check: resource.ComposeTestCheckFunc(
+					testCheckResourceAttrs("datadog_dashboard.simple_free_dashboard", checkDashboardExists(accProvider), freeAsserts)...,
+				),
+			},
+			{
+				Config: datadogSimpleOrderedDashboardConfig(dbName),
+				Check: resource.ComposeTestCheckFunc(
+					testCheckResourceAttrs("datadog_dashboard.simple_ordered_dashboard", checkDashboardExists(accProvider), orderedAsserts)...,
 				),
 			},
 		},
