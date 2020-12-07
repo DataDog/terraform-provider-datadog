@@ -253,7 +253,7 @@ The type of monitor chosen from:
 Example: `time_aggr(time_window):space_aggr:metric{tags} [by {key}] operator #`
 
 - `time_aggr`: avg, sum, max, min, change, or pct_change
-- `time_window`: `last_#m` (with `#` being 5, 10, 15, or 30) or `last_#h`(with `#` being 1, 2, or 4), or `last_1d`
+- `time_window`: `last_#m` (with `#` between 1 and 2880 depending on the monitor type) or `last_#h`(with `#` between 1 and 48 depending on the monitor type), or `last_1d`
 - `space_aggr`: avg, sum, min, or max
 - `tags`: one or more tags (comma-separated), or *
 - `key`: a 'key' in key:value tag syntax; defines a separate alert for each tag in the group (multi-alert)
@@ -265,7 +265,7 @@ timeshift):space_aggr:metric{tags} [by {key}] operator #` with:
 
 - `change_aggr` change, pct_change
 - `time_aggr` avg, sum, max, min [Learn more](https://docs.datadoghq.com/monitors/monitor_types/#define-the-conditions)
-- `time_window` last\_#m (1, 5, 10, 15, or 30), last\_#h (1, 2, or 4), or last_#d (1 or 2)
+- `time_window` last\_#m (between 1 and 2880 depending on the monitor type), last\_#h (between 1 and 48 depending on the monitor type), or last_#d (1 or 2)
 - `timeshift` #m_ago (5, 10, 15, or 30), #h_ago (1, 2, or 4), or 1d_ago
 
 Use this to create an outlier monitor using the following query:
@@ -293,7 +293,7 @@ Example: `events('sources:nagios status:error,warning priority:normal tags: "str
 - **`tags`** event tags (comma-separated).
 - **`excluded_tags`** excluded event tags (comma-separated).
 - **`rollup`** the stats roll-up method. `count` is the only supported method now.
-- **`last`** the timeframe to roll up the counts. Examples: 60s, 4h. Supported timeframes: s, m, h and d. This value should not exceed 48 hours.
+- **`last`** the timeframe to roll up the counts. Examples: 45m, 4h. Supported timeframes: m, h and d. This value should not exceed 48 hours.
 
 **Process Alert Query**
 
@@ -302,7 +302,7 @@ Example: `processes(search).over(tags).rollup('count').last(timeframe) operator 
 - **`search`** free text search string for querying processes.
 Matching processes match results on the [Live Processes](https://docs.datadoghq.com/infrastructure/process/?tab=linuxwindows) page.
 - **`tags`** one or more tags (comma-separated)
-- **`timeframe`** the timeframe to roll up the counts. Examples: 60s, 4h. Supported timeframes: s, m, h and d
+- **`timeframe`** the timeframe to roll up the counts. Examples: 10m, 4h. Supported timeframes: s, m, h and d
 - **`operator`** <, <=, >, >=, ==, or !=
 - **`#`** an integer or decimal number used to set the threshold
 
@@ -314,7 +314,7 @@ Example: `logs(query).index(index_name).rollup(rollup_method[, measure]).last(ti
 - **`index_name`** For multi-index organizations, the log index in which the request is performed.
 - **`rollup_method`** The stats roll-up method - supports `count`, `avg` and `cardinality`.
 - **`measure`** For `avg` and cardinality `rollup_method` - specify the measure or the facet name you want to use.
-- **`time_window`** #m (5, 10, 15, or 30), #h (1, 2, or 4, 24)
+- **`time_window`** #m (between 1 and 1440), #h (between 1 and 24)
 - **`operator`** `<`, `<=`, `>`, `>=`, `==`, or `!=`.
 - **`#`** an integer or decimal number used to set the threshold.
 

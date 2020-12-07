@@ -1408,7 +1408,6 @@ type ApiGetUsageAttributionRequest struct {
 	startMonth    *time.Time
 	fields        *string
 	endMonth      *time.Time
-	orgId         *int64
 	sortDirection *UsageSortDirection
 	sortName      *UsageAttributionSort
 }
@@ -1423,10 +1422,6 @@ func (r ApiGetUsageAttributionRequest) Fields(fields string) ApiGetUsageAttribut
 }
 func (r ApiGetUsageAttributionRequest) EndMonth(endMonth time.Time) ApiGetUsageAttributionRequest {
 	r.endMonth = &endMonth
-	return r
-}
-func (r ApiGetUsageAttributionRequest) OrgId(orgId int64) ApiGetUsageAttributionRequest {
-	r.orgId = &orgId
 	return r
 }
 func (r ApiGetUsageAttributionRequest) SortDirection(sortDirection UsageSortDirection) ApiGetUsageAttributionRequest {
@@ -1469,6 +1464,13 @@ func (a *UsageMeteringApiService) GetUsageAttributionExecute(r ApiGetUsageAttrib
 		localVarReturnValue  UsageAttributionResponse
 	)
 
+	operationId := "GetUsageAttribution"
+	if r.ApiService.client.cfg.IsUnstableOperationEnabled(operationId) {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	} else {
+		return localVarReturnValue, nil, GenericOpenAPIError{error: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UsageMeteringApiService.GetUsageAttribution")
 	if err != nil {
 		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
@@ -1490,9 +1492,6 @@ func (a *UsageMeteringApiService) GetUsageAttributionExecute(r ApiGetUsageAttrib
 	localVarQueryParams.Add("fields", parameterToString(*r.fields, ""))
 	if r.endMonth != nil {
 		localVarQueryParams.Add("end_month", parameterToString(*r.endMonth, ""))
-	}
-	if r.orgId != nil {
-		localVarQueryParams.Add("org_id", parameterToString(*r.orgId, ""))
 	}
 	if r.sortDirection != nil {
 		localVarQueryParams.Add("sort_direction", parameterToString(*r.sortDirection, ""))
@@ -4495,6 +4494,7 @@ type ApiGetUsageTopAvgMetricsRequest struct {
 	ApiService *UsageMeteringApiService
 	month      *time.Time
 	names      *[]string
+	limit      *int32
 }
 
 func (r ApiGetUsageTopAvgMetricsRequest) Month(month time.Time) ApiGetUsageTopAvgMetricsRequest {
@@ -4505,13 +4505,17 @@ func (r ApiGetUsageTopAvgMetricsRequest) Names(names []string) ApiGetUsageTopAvg
 	r.names = &names
 	return r
 }
+func (r ApiGetUsageTopAvgMetricsRequest) Limit(limit int32) ApiGetUsageTopAvgMetricsRequest {
+	r.limit = &limit
+	return r
+}
 
 func (r ApiGetUsageTopAvgMetricsRequest) Execute() (UsageTopAvgMetricsResponse, *_nethttp.Response, error) {
 	return r.ApiService.GetUsageTopAvgMetricsExecute(r)
 }
 
 /*
- * GetUsageTopAvgMetrics Get top 500 custom metrics by hourly average
+ * GetUsageTopAvgMetrics Get top custom metrics by hourly average
  * Get top [custom metrics](https://docs.datadoghq.com/developers/metrics/custom_metrics/) by hourly average.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ApiGetUsageTopAvgMetricsRequest
@@ -4562,6 +4566,9 @@ func (a *UsageMeteringApiService) GetUsageTopAvgMetricsExecute(r ApiGetUsageTopA
 		} else {
 			localVarQueryParams.Add("names", parameterToString(t, "multi"))
 		}
+	}
+	if r.limit != nil {
+		localVarQueryParams.Add("limit", parameterToString(*r.limit, ""))
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

@@ -14,21 +14,19 @@ import (
 
 // OrganizationCreateBody Object describing an organization to create.
 type OrganizationCreateBody struct {
-	Billing OrganizationBilling `json:"billing"`
+	Billing *OrganizationBilling `json:"billing,omitempty"`
 	// The name of the new child-organization, limited to 32 characters.
-	Name         string                   `json:"name"`
-	Subscription OrganizationSubscription `json:"subscription"`
+	Name         string                    `json:"name"`
+	Subscription *OrganizationSubscription `json:"subscription,omitempty"`
 }
 
 // NewOrganizationCreateBody instantiates a new OrganizationCreateBody object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewOrganizationCreateBody(billing OrganizationBilling, name string, subscription OrganizationSubscription) *OrganizationCreateBody {
+func NewOrganizationCreateBody(name string) *OrganizationCreateBody {
 	this := OrganizationCreateBody{}
-	this.Billing = billing
 	this.Name = name
-	this.Subscription = subscription
 	return &this
 }
 
@@ -40,28 +38,36 @@ func NewOrganizationCreateBodyWithDefaults() *OrganizationCreateBody {
 	return &this
 }
 
-// GetBilling returns the Billing field value
+// GetBilling returns the Billing field value if set, zero value otherwise.
 func (o *OrganizationCreateBody) GetBilling() OrganizationBilling {
-	if o == nil {
+	if o == nil || o.Billing == nil {
 		var ret OrganizationBilling
 		return ret
 	}
-
-	return o.Billing
+	return *o.Billing
 }
 
-// GetBillingOk returns a tuple with the Billing field value
+// GetBillingOk returns a tuple with the Billing field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OrganizationCreateBody) GetBillingOk() (*OrganizationBilling, bool) {
-	if o == nil {
+	if o == nil || o.Billing == nil {
 		return nil, false
 	}
-	return &o.Billing, true
+	return o.Billing, true
 }
 
-// SetBilling sets field value
+// HasBilling returns a boolean if a field has been set.
+func (o *OrganizationCreateBody) HasBilling() bool {
+	if o != nil && o.Billing != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetBilling gets a reference to the given OrganizationBilling and assigns it to the Billing field.
 func (o *OrganizationCreateBody) SetBilling(v OrganizationBilling) {
-	o.Billing = v
+	o.Billing = &v
 }
 
 // GetName returns the Name field value
@@ -88,39 +94,47 @@ func (o *OrganizationCreateBody) SetName(v string) {
 	o.Name = v
 }
 
-// GetSubscription returns the Subscription field value
+// GetSubscription returns the Subscription field value if set, zero value otherwise.
 func (o *OrganizationCreateBody) GetSubscription() OrganizationSubscription {
-	if o == nil {
+	if o == nil || o.Subscription == nil {
 		var ret OrganizationSubscription
 		return ret
 	}
-
-	return o.Subscription
+	return *o.Subscription
 }
 
-// GetSubscriptionOk returns a tuple with the Subscription field value
+// GetSubscriptionOk returns a tuple with the Subscription field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OrganizationCreateBody) GetSubscriptionOk() (*OrganizationSubscription, bool) {
-	if o == nil {
+	if o == nil || o.Subscription == nil {
 		return nil, false
 	}
-	return &o.Subscription, true
+	return o.Subscription, true
 }
 
-// SetSubscription sets field value
+// HasSubscription returns a boolean if a field has been set.
+func (o *OrganizationCreateBody) HasSubscription() bool {
+	if o != nil && o.Subscription != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSubscription gets a reference to the given OrganizationSubscription and assigns it to the Subscription field.
 func (o *OrganizationCreateBody) SetSubscription(v OrganizationSubscription) {
-	o.Subscription = v
+	o.Subscription = &v
 }
 
 func (o OrganizationCreateBody) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if true {
+	if o.Billing != nil {
 		toSerialize["billing"] = o.Billing
 	}
 	if true {
 		toSerialize["name"] = o.Name
 	}
-	if true {
+	if o.Subscription != nil {
 		toSerialize["subscription"] = o.Subscription
 	}
 	return json.Marshal(toSerialize)
