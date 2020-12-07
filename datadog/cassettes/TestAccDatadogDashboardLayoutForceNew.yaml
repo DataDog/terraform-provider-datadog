@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"template_variable_presets":[{"name":"preset_1","template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}]},{"name":"preset_2","template_variables":[{"name":"var_1","value":"var_1_value"}]}],"template_variables":[{"default":"aws","name":"var_1","prefix":"host"},{"default":"autoscaling","name":"var_2","prefix":"service_name"}],"title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","widgets":[{"definition":{"alert_id":"895605","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"template_variable_presets":[{"name":"preset_1","template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}]},{"name":"preset_2","template_variables":[{"name":"var_1","value":"var_1_value"}]}],"template_variables":[{"default":"aws","name":"var_1","prefix":"host"},{"default":"autoscaling","name":"var_2","prefix":"service_name"}],"title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","widgets":[{"definition":{"alert_id":"895605","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
     form: {}
     headers:
       Accept:
@@ -16,17 +16,17 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "2216060718624230254"
+      - "195744637424757414"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
+      - "8347571177154862726"
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"jbm-qtr-e5p","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","url":"/dashboard/jbm-qtr-e5p/tf-testaccdatadogdashboardlayoutforcenew-local-1607350502","created_at":"2020-12-07T14:15:06.538853+00:00","modified_at":"2020-12-07T14:15:06.538853+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1625193144442572}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"4w6-yr5-95x","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","url":"/dashboard/4w6-yr5-95x/tf-testaccdatadogdashboardlayoutforcenew-local-1607359414","created_at":"2020-12-07T16:43:38.990374+00:00","modified_at":"2020-12-07T16:43:38.990374+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8193502468987712}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -37,13 +37,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:08 GMT
+      - Mon, 07 Dec 2020 16:43:40 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:06 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:43:38 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -52,9 +52,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - h6yqPaHNwx3ZGZPMs75pO93HC01YoL8B6e/Fb89zqQCmU57u6KTAhksrYQV/dzkY
+      - u6DvYk2HTsv9JK8VlfzAetNutf1Eel5LZX1SupoC065LdrYdAgOwtNj060V1NNiO
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -72,17 +72,17 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "2220063909136450511"
+      - "2823119679984662541"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
-    url: https://api.datadoghq.com/api/v1/dashboard/jbm-qtr-e5p
+      - "8347571177154862726"
+    url: https://api.datadoghq.com/api/v1/dashboard/4w6-yr5-95x
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"jbm-qtr-e5p","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","url":"/dashboard/jbm-qtr-e5p/tf-testaccdatadogdashboardlayoutforcenew-local-1607350502","created_at":"2020-12-07T14:15:06.538853+00:00","modified_at":"2020-12-07T14:15:06.538853+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1625193144442572}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"4w6-yr5-95x","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","url":"/dashboard/4w6-yr5-95x/tf-testaccdatadogdashboardlayoutforcenew-local-1607359414","created_at":"2020-12-07T16:43:38.990374+00:00","modified_at":"2020-12-07T16:43:38.990374+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8193502468987712}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -93,13 +93,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:08 GMT
+      - Mon, 07 Dec 2020 16:43:41 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:08 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:43:41 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -108,9 +108,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - hhAfI9DpjHRbHS2z+2prVh0mHwAun3McFDOF8AzNv8c8J6c/l2q8Kye8syKGTxkY
+      - WInJ5NoKnWsGfpc5/7O8IFkOGqBCSPXHlW+v7fDYTqv2rGTGsFEBI9cuh2tqdLoD
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -128,17 +128,17 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "5605793877046171930"
+      - "3029113879065407626"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
-    url: https://api.datadoghq.com/api/v1/dashboard/jbm-qtr-e5p
+      - "8347571177154862726"
+    url: https://api.datadoghq.com/api/v1/dashboard/4w6-yr5-95x
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"jbm-qtr-e5p","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","url":"/dashboard/jbm-qtr-e5p/tf-testaccdatadogdashboardlayoutforcenew-local-1607350502","created_at":"2020-12-07T14:15:06.538853+00:00","modified_at":"2020-12-07T14:15:06.538853+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1625193144442572}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"4w6-yr5-95x","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","url":"/dashboard/4w6-yr5-95x/tf-testaccdatadogdashboardlayoutforcenew-local-1607359414","created_at":"2020-12-07T16:43:38.990374+00:00","modified_at":"2020-12-07T16:43:38.990374+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8193502468987712}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -149,13 +149,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:09 GMT
+      - Mon, 07 Dec 2020 16:43:41 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:09 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:43:41 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -164,9 +164,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 1cd0/X8iFjFNZXjpX11JpiLJbbxmicjztoLT0xgVCngh7XkSAjfiT2A4vALPTlNE
+      - i3kq+QX78RffjnNgnM5zmiWzGMsFnhM4liQTSNUgnpglr14R7eRaqNxK/q9SML9W
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -184,17 +184,17 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6223942433404261285"
+      - "6012347493521868137"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
-    url: https://api.datadoghq.com/api/v1/dashboard/jbm-qtr-e5p
+      - "8347571177154862726"
+    url: https://api.datadoghq.com/api/v1/dashboard/4w6-yr5-95x
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"jbm-qtr-e5p","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","url":"/dashboard/jbm-qtr-e5p/tf-testaccdatadogdashboardlayoutforcenew-local-1607350502","created_at":"2020-12-07T14:15:06.538853+00:00","modified_at":"2020-12-07T14:15:06.538853+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1625193144442572}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"4w6-yr5-95x","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","url":"/dashboard/4w6-yr5-95x/tf-testaccdatadogdashboardlayoutforcenew-local-1607359414","created_at":"2020-12-07T16:43:38.990374+00:00","modified_at":"2020-12-07T16:43:38.990374+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8193502468987712}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -205,13 +205,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:12 GMT
+      - Mon, 07 Dec 2020 16:43:45 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:12 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:43:45 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -220,9 +220,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Et2YiqVRxti9EZo6Gk/yyRrgDmYxZuoE62JE6GLJjDYX0PgDmkmo9d4ASFrtRIDj
+      - pv0z9DOVfESVNK6d1tOJ7YfC31qHNEzJNjdRZStq3qVP6piD/gWCa9pwKd90Upzy
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -240,17 +240,17 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "2621740728271994435"
+      - "7750253521120672782"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
-    url: https://api.datadoghq.com/api/v1/dashboard/jbm-qtr-e5p
+      - "8347571177154862726"
+    url: https://api.datadoghq.com/api/v1/dashboard/4w6-yr5-95x
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"jbm-qtr-e5p","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","url":"/dashboard/jbm-qtr-e5p/tf-testaccdatadogdashboardlayoutforcenew-local-1607350502","created_at":"2020-12-07T14:15:06.538853+00:00","modified_at":"2020-12-07T14:15:06.538853+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1625193144442572}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"4w6-yr5-95x","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","url":"/dashboard/4w6-yr5-95x/tf-testaccdatadogdashboardlayoutforcenew-local-1607359414","created_at":"2020-12-07T16:43:38.990374+00:00","modified_at":"2020-12-07T16:43:38.990374+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8193502468987712}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -261,13 +261,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:12 GMT
+      - Mon, 07 Dec 2020 16:43:45 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:12 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:43:45 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -276,9 +276,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - WrTDvawKJxc/3XHcVO+oe9kLOi9bBLB0fyesfpZ4AlLEoPVyUvH7rJdlyTxrqyNg
+      - DMzWnlnvmcVWit+nOzgpRgMecUZPFvENKg8LkKYn4Tsj68gJTKm0BuKxCJH0FFN4
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -296,17 +296,17 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "7496617422952093671"
+      - "7076654257686876687"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
-    url: https://api.datadoghq.com/api/v1/dashboard/jbm-qtr-e5p
+      - "8347571177154862726"
+    url: https://api.datadoghq.com/api/v1/dashboard/4w6-yr5-95x
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"jbm-qtr-e5p","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","url":"/dashboard/jbm-qtr-e5p/tf-testaccdatadogdashboardlayoutforcenew-local-1607350502","created_at":"2020-12-07T14:15:06.538853+00:00","modified_at":"2020-12-07T14:15:06.538853+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1625193144442572}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"4w6-yr5-95x","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","url":"/dashboard/4w6-yr5-95x/tf-testaccdatadogdashboardlayoutforcenew-local-1607359414","created_at":"2020-12-07T16:43:38.990374+00:00","modified_at":"2020-12-07T16:43:38.990374+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8193502468987712}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -317,13 +317,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:15 GMT
+      - Mon, 07 Dec 2020 16:43:49 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:15 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:43:49 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -332,9 +332,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - uJ83xA1OCfjNbetv+4JhF+oFizEHF56t3Lja6jtB8P5etMWBi14GRkWSrGetOvyr
+      - lgQawiZEOFHj/SKplEcqOwzaMI6OQtdSQ9dotiTxYUar2ksXhijPkw9yrBoSKHNa
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -352,17 +352,17 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6964454650219550674"
+      - "2687139413859903887"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
-    url: https://api.datadoghq.com/api/v1/dashboard/jbm-qtr-e5p
+      - "8347571177154862726"
+    url: https://api.datadoghq.com/api/v1/dashboard/4w6-yr5-95x
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"jbm-qtr-e5p","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","url":"/dashboard/jbm-qtr-e5p/tf-testaccdatadogdashboardlayoutforcenew-local-1607350502","created_at":"2020-12-07T14:15:06.538853+00:00","modified_at":"2020-12-07T14:15:06.538853+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"layout":{"y":5,"width":32,"x":5,"height":43},"id":1625193144442572}],"layout_type":"free"}'
+      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"4w6-yr5-95x","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","url":"/dashboard/4w6-yr5-95x/tf-testaccdatadogdashboardlayoutforcenew-local-1607359414","created_at":"2020-12-07T16:43:38.990374+00:00","modified_at":"2020-12-07T16:43:38.990374+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8193502468987712}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -373,13 +373,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:15 GMT
+      - Mon, 07 Dec 2020 16:43:49 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:15 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:43:49 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -388,9 +388,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - nuSFLkQ1s7gwoRNAfifc8jXTyjLsWBSRPtQKveq6qMTKGNJs/ULg6uo/9G1YZzFs
+      - Wu8XyxdUJ940l1hlQ/4Scl2Xta78KG1wkfVN63sn1HQ3Sk/ZYNPBQ2v2fbOhjvmn
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -408,15 +408,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4846062211972653755"
+      - "3578454885357859008"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
-    url: https://api.datadoghq.com/api/v1/dashboard/jbm-qtr-e5p
+      - "8347571177154862726"
+    url: https://api.datadoghq.com/api/v1/dashboard/4w6-yr5-95x
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"jbm-qtr-e5p"}'
+    body: '{"deleted_dashboard_id":"4w6-yr5-95x"}'
     headers:
       Cache-Control:
       - no-cache
@@ -427,13 +427,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:19 GMT
+      - Mon, 07 Dec 2020 16:43:55 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:19 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:43:55 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -442,9 +442,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - fOvn++WNyeGiJqGJ1RGVl2OtzlCSW+9FmhW07NDhLHuS9Ypy2JL89j65gnqIRQTf
+      - 8uM7lo6fgdRC0R8G89u29ss3GmR5rKsxJfYvyjSE9oa+oPL40dVup+1mn/0Ku0bY
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -452,7 +452,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[{"name":"preset_1","template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}]},{"name":"preset_2","template_variables":[{"name":"var_1","value":"var_1_value"}]}],"template_variables":[{"default":"aws","name":"var_1","prefix":"host"},{"default":"autoscaling","name":"var_2","prefix":"service_name"}],"title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","widgets":[{"definition":{"alert_id":"895605","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[{"name":"preset_1","template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}]},{"name":"preset_2","template_variables":[{"name":"var_1","value":"var_1_value"}]}],"template_variables":[{"default":"aws","name":"var_1","prefix":"host"},{"default":"autoscaling","name":"var_2","prefix":"service_name"}],"title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","widgets":[{"definition":{"alert_id":"895605","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"}}]}
     form: {}
     headers:
       Accept:
@@ -465,17 +465,17 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "8889367777527632453"
+      - "9085852436965227259"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
+      - "8347571177154862726"
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"zy3-43t-a6x","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","url":"/dashboard/zy3-43t-a6x/tf-testaccdatadogdashboardlayoutforcenew-local-1607350502","created_at":"2020-12-07T14:15:20.327246+00:00","modified_at":"2020-12-07T14:15:20.327246+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":3062722593411806}],"layout_type":"ordered"}'
+      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"abt-i5h-xje","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","url":"/dashboard/abt-i5h-xje/tf-testaccdatadogdashboardlayoutforcenew-local-1607359414","created_at":"2020-12-07T16:43:57.438743+00:00","modified_at":"2020-12-07T16:43:57.438743+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":8673407758822709}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -486,13 +486,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:22 GMT
+      - Mon, 07 Dec 2020 16:43:59 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:20 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:43:57 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -501,9 +501,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - RquGBod+QwJwo5jKyeuGJHvfWvWfZ0hMpUnxtqqEEEpqySzsuyt8sx6iN5riB0bK
+      - FELlv8T8VRoaBxHjLbAG9Fvj68G6pP0FZF7JKMI72/5H4OtG/s8AVYiF1c9f4D6g
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -521,17 +521,17 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4330142395310191417"
+      - "282239005176876739"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
-    url: https://api.datadoghq.com/api/v1/dashboard/zy3-43t-a6x
+      - "8347571177154862726"
+    url: https://api.datadoghq.com/api/v1/dashboard/abt-i5h-xje
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"zy3-43t-a6x","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","url":"/dashboard/zy3-43t-a6x/tf-testaccdatadogdashboardlayoutforcenew-local-1607350502","created_at":"2020-12-07T14:15:20.327246+00:00","modified_at":"2020-12-07T14:15:20.327246+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":3062722593411806}],"layout_type":"ordered"}'
+      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"abt-i5h-xje","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","url":"/dashboard/abt-i5h-xje/tf-testaccdatadogdashboardlayoutforcenew-local-1607359414","created_at":"2020-12-07T16:43:57.438743+00:00","modified_at":"2020-12-07T16:43:57.438743+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":8673407758822709}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -542,13 +542,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:22 GMT
+      - Mon, 07 Dec 2020 16:43:59 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:22 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:43:59 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -557,9 +557,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - IEUzjgpnyUrp74lH2dqPweGXNQU7es3CY44HHPIdy7aSNeimMebMvcKCoCgyWWVx
+      - gwxwlHJSLmAXGvHTSu/VslfvUPji2blx0q1wqJSN+1mxCKSPKKSSC5xzBG+/OLHq
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -577,17 +577,17 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6314419353035793540"
+      - "11925175143106250"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
-    url: https://api.datadoghq.com/api/v1/dashboard/zy3-43t-a6x
+      - "8347571177154862726"
+    url: https://api.datadoghq.com/api/v1/dashboard/abt-i5h-xje
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"zy3-43t-a6x","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","url":"/dashboard/zy3-43t-a6x/tf-testaccdatadogdashboardlayoutforcenew-local-1607350502","created_at":"2020-12-07T14:15:20.327246+00:00","modified_at":"2020-12-07T14:15:20.327246+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":3062722593411806}],"layout_type":"ordered"}'
+      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"abt-i5h-xje","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","url":"/dashboard/abt-i5h-xje/tf-testaccdatadogdashboardlayoutforcenew-local-1607359414","created_at":"2020-12-07T16:43:57.438743+00:00","modified_at":"2020-12-07T16:43:57.438743+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":8673407758822709}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -598,13 +598,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:22 GMT
+      - Mon, 07 Dec 2020 16:43:59 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:22 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:43:59 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -613,9 +613,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - KcNcHUGB08YdugVH3r9bPpps+kNHA5hdt/i0HnHlCpX4wCTIXYMJnhyM7E+8Tni0
+      - IcBiRsjZgsw3C3GYI9UqZdfE26Zt8mXBfnPp610FoUCOarhFSAw0deJpN5v2N8Dj
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -633,17 +633,17 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3055179343000267262"
+      - "5385378324049755908"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
-    url: https://api.datadoghq.com/api/v1/dashboard/zy3-43t-a6x
+      - "8347571177154862726"
+    url: https://api.datadoghq.com/api/v1/dashboard/abt-i5h-xje
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"zy3-43t-a6x","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","url":"/dashboard/zy3-43t-a6x/tf-testaccdatadogdashboardlayoutforcenew-local-1607350502","created_at":"2020-12-07T14:15:20.327246+00:00","modified_at":"2020-12-07T14:15:20.327246+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":3062722593411806}],"layout_type":"ordered"}'
+      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"abt-i5h-xje","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","url":"/dashboard/abt-i5h-xje/tf-testaccdatadogdashboardlayoutforcenew-local-1607359414","created_at":"2020-12-07T16:43:57.438743+00:00","modified_at":"2020-12-07T16:43:57.438743+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":8673407758822709}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -654,13 +654,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:25 GMT
+      - Mon, 07 Dec 2020 16:44:02 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:25 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:44:02 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -669,9 +669,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - POuDbGLugqXrJfoVh1EySG2rrzsK54DWLRF5/pTAPkxizo7RlYf80RrCYTzc0hnv
+      - PdDr7CGzRKV1JiazIN9M5t58W3VmC092V0tka6KkG4tNQ2dswwjUu1lc7Z0OYqEX
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -689,17 +689,17 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "5346147524728751328"
+      - "2517155904270580196"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
-    url: https://api.datadoghq.com/api/v1/dashboard/zy3-43t-a6x
+      - "8347571177154862726"
+    url: https://api.datadoghq.com/api/v1/dashboard/abt-i5h-xje
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"zy3-43t-a6x","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","url":"/dashboard/zy3-43t-a6x/tf-testaccdatadogdashboardlayoutforcenew-local-1607350502","created_at":"2020-12-07T14:15:20.327246+00:00","modified_at":"2020-12-07T14:15:20.327246+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":3062722593411806}],"layout_type":"ordered"}'
+      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"abt-i5h-xje","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","url":"/dashboard/abt-i5h-xje/tf-testaccdatadogdashboardlayoutforcenew-local-1607359414","created_at":"2020-12-07T16:43:57.438743+00:00","modified_at":"2020-12-07T16:43:57.438743+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":8673407758822709}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -710,13 +710,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:25 GMT
+      - Mon, 07 Dec 2020 16:44:02 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:25 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:44:02 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -725,9 +725,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Y0Wuc8E3+SpVlnTzK4RUu97zkN6KtouappB64/8RP7vhb/NV3oylxGvm6vZWDPy/
+      - gr+QII7IFZVxhXS35BsEOrW9Uz3gs+l7g2tB1FOjy4hKCe3rtnWg3KfE74dirBtE
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -745,17 +745,17 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6974849189974639766"
+      - "8438748487441261620"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
-    url: https://api.datadoghq.com/api/v1/dashboard/zy3-43t-a6x
+      - "8347571177154862726"
+    url: https://api.datadoghq.com/api/v1/dashboard/abt-i5h-xje
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"zy3-43t-a6x","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","url":"/dashboard/zy3-43t-a6x/tf-testaccdatadogdashboardlayoutforcenew-local-1607350502","created_at":"2020-12-07T14:15:20.327246+00:00","modified_at":"2020-12-07T14:15:20.327246+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":3062722593411806}],"layout_type":"ordered"}'
+      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"abt-i5h-xje","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","url":"/dashboard/abt-i5h-xje/tf-testaccdatadogdashboardlayoutforcenew-local-1607359414","created_at":"2020-12-07T16:43:57.438743+00:00","modified_at":"2020-12-07T16:43:57.438743+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":8673407758822709}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -766,13 +766,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:29 GMT
+      - Mon, 07 Dec 2020 16:44:06 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:29 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:44:06 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -781,9 +781,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 5Cj6NNcncFcQ6G9NKti+kar8gWVql7fBvPeJG7XhNnPs269m3W9o1I+JeGPUiuK3
+      - mpg/BCzsUMOxVwcAuQg/6c40bDAb3ejXVT4tkiODN0ExybQ/Ia68faurJX6CivjX
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -801,17 +801,17 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "664223317668234733"
+      - "1468389769845105853"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
-    url: https://api.datadoghq.com/api/v1/dashboard/zy3-43t-a6x
+      - "8347571177154862726"
+    url: https://api.datadoghq.com/api/v1/dashboard/abt-i5h-xje
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"zy3-43t-a6x","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607350502","url":"/dashboard/zy3-43t-a6x/tf-testaccdatadogdashboardlayoutforcenew-local-1607350502","created_at":"2020-12-07T14:15:20.327246+00:00","modified_at":"2020-12-07T14:15:20.327246+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
-      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":3062722593411806}],"layout_type":"ordered"}'
+      Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":true,"id":"abt-i5h-xje","title":"tf-TestAccDatadogDashboardLayoutForceNew-local-1607359414","url":"/dashboard/abt-i5h-xje/tf-testaccdatadogdashboardlayoutforcenew-local-1607359414","created_at":"2020-12-07T16:43:57.438743+00:00","modified_at":"2020-12-07T16:43:57.438743+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"alert_id":"895605","title":"Widget
+      Title","type":"alert_graph","viz_type":"timeseries","time":{"live_span":"1h"}},"id":8673407758822709}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -822,13 +822,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:29 GMT
+      - Mon, 07 Dec 2020 16:44:06 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:29 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:44:06 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -837,9 +837,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - lqMB0JFM99VhRtxXIpWUr9JgjDFKxnlkUv1nxFsIcQfFO0NMuI7D2Hh8tiSgYzCo
+      - 2vDhfmOEUBStl6KJFsHicYMybqtUSJ6AfSEVJTVlECBUwTgB5ievW7vT4NcYmXtK
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -857,15 +857,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6864982892059661627"
+      - "6457119410836470390"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
-    url: https://api.datadoghq.com/api/v1/dashboard/zy3-43t-a6x
+      - "8347571177154862726"
+    url: https://api.datadoghq.com/api/v1/dashboard/abt-i5h-xje
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"zy3-43t-a6x"}'
+    body: '{"deleted_dashboard_id":"abt-i5h-xje"}'
     headers:
       Cache-Control:
       - no-cache
@@ -876,13 +876,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:31 GMT
+      - Mon, 07 Dec 2020 16:44:08 GMT
       Dd-Pool:
       - dogweb
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 14:15:31 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 14-Dec-2020 16:44:08 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -891,9 +891,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - FHfHzbfIddsg0sQ7IeNBOxLqb5wz+d6n32kEDCDFZtJpoagPnr4KgZnA3JebHBTT
+      - /AIuUBUzXheMzx1cvxhB+WjJEVZnNytkpRgIpTWZSwENaLk6ZqapvZetzfxbHHYM
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -911,15 +911,15 @@ interactions:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
         datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4191609285543505470"
+      - "3681186802948114868"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "3157521384868134745"
-    url: https://api.datadoghq.com/api/v1/dashboard/zy3-43t-a6x
+      - "8347571177154862726"
+    url: https://api.datadoghq.com/api/v1/dashboard/abt-i5h-xje
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID zy3-43t-a6x not found"]}'
+    body: '{"errors": ["Dashboard with ID abt-i5h-xje not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -930,7 +930,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 07 Dec 2020 14:15:31 GMT
+      - Mon, 07 Dec 2020 16:44:08 GMT
       Dd-Pool:
       - dogweb
       Pragma:
@@ -942,7 +942,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3489274"
+      - "35.3490881"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found

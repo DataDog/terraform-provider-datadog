@@ -454,7 +454,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 
 func datadogSimpleOrderedDashboardConfig(uniq string) string {
 	return fmt.Sprintf(`
-resource "datadog_dashboard" "simple_ordered_dashboard" {
+resource "datadog_dashboard" "simple_dashboard" {
 	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
@@ -686,7 +686,7 @@ resource "datadog_dashboard" "free_dashboard" {
 
 func datadogSimpleFreeDashboardConfig(uniq string) string {
 	return fmt.Sprintf(`
-resource "datadog_dashboard" "simple_free_dashboard" {
+resource "datadog_dashboard" "simple_dashboard" {
 	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
@@ -1243,13 +1243,13 @@ func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
 			{
 				Config: datadogSimpleFreeDashboardConfig(dbName),
 				Check: resource.ComposeTestCheckFunc(
-					testCheckResourceAttrs("datadog_dashboard.simple_free_dashboard", checkDashboardExists(accProvider), freeAsserts)...,
+					testCheckResourceAttrs("datadog_dashboard.simple_dashboard", checkDashboardExists(accProvider), freeAsserts)...,
 				),
 			},
 			{
 				Config: datadogSimpleOrderedDashboardConfig(dbName),
 				Check: resource.ComposeTestCheckFunc(
-					testCheckResourceAttrs("datadog_dashboard.simple_ordered_dashboard", checkDashboardExists(accProvider), orderedAsserts)...,
+					testCheckResourceAttrs("datadog_dashboard.simple_dashboard", checkDashboardExists(accProvider), orderedAsserts)...,
 				),
 			},
 		},
