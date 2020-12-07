@@ -404,11 +404,12 @@ func (r ApiGetIncidentServiceRequest) Execute() (IncidentServiceResponse, *_neth
 
 /*
  * GetIncidentService Get details of an incident service
- * Get details of an incident service. If the `include[users]` query parameter is provided, the included attribute will contain the users related to these incident services.
+ * Get details of an incident service. If the `include[users]` query parameter is provided,
+the included attribute will contain the users related to these incident services.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param serviceId The ID of the incident service.
  * @return ApiGetIncidentServiceRequest
- */
+*/
 func (a *IncidentServicesApiService) GetIncidentService(ctx _context.Context, serviceId string) ApiGetIncidentServiceRequest {
 	return ApiGetIncidentServiceRequest{
 		ApiService: a,

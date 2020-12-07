@@ -141,6 +141,105 @@ func NewConfiguration() *Configuration {
 			},
 		},
 		OperationServers: map[string]ServerConfigurations{
+			"AWSIntegrationApiService.CreateAWSTagFilter": {
+				{
+					URL:         "https://{subdomain}.{site}",
+					Description: "No description provided",
+					Variables: map[string]ServerVariable{
+						"site": ServerVariable{
+							Description:  "The regional site for our customers.",
+							DefaultValue: "datadoghq.com",
+							EnumValues: []string{
+								"datadoghq.com",
+							},
+						},
+						"subdomain": ServerVariable{
+							Description:  "The subdomain where the API is deployed.",
+							DefaultValue: "api",
+						},
+					},
+				},
+				{
+					URL:         "{protocol}://{name}",
+					Description: "No description provided",
+					Variables: map[string]ServerVariable{
+						"name": ServerVariable{
+							Description:  "Full site DNS name.",
+							DefaultValue: "api.datadoghq.com",
+						},
+						"protocol": ServerVariable{
+							Description:  "The protocol for accessing the API.",
+							DefaultValue: "https",
+						},
+					},
+				},
+			},
+			"AWSIntegrationApiService.DeleteAWSTagFilter": {
+				{
+					URL:         "https://{subdomain}.{site}",
+					Description: "No description provided",
+					Variables: map[string]ServerVariable{
+						"site": ServerVariable{
+							Description:  "The regional site for our customers.",
+							DefaultValue: "datadoghq.com",
+							EnumValues: []string{
+								"datadoghq.com",
+							},
+						},
+						"subdomain": ServerVariable{
+							Description:  "The subdomain where the API is deployed.",
+							DefaultValue: "api",
+						},
+					},
+				},
+				{
+					URL:         "{protocol}://{name}",
+					Description: "No description provided",
+					Variables: map[string]ServerVariable{
+						"name": ServerVariable{
+							Description:  "Full site DNS name.",
+							DefaultValue: "api.datadoghq.com",
+						},
+						"protocol": ServerVariable{
+							Description:  "The protocol for accessing the API.",
+							DefaultValue: "https",
+						},
+					},
+				},
+			},
+			"AWSIntegrationApiService.ListAWSTagFilters": {
+				{
+					URL:         "https://{subdomain}.{site}",
+					Description: "No description provided",
+					Variables: map[string]ServerVariable{
+						"site": ServerVariable{
+							Description:  "The regional site for our customers.",
+							DefaultValue: "datadoghq.com",
+							EnumValues: []string{
+								"datadoghq.com",
+							},
+						},
+						"subdomain": ServerVariable{
+							Description:  "The subdomain where the API is deployed.",
+							DefaultValue: "api",
+						},
+					},
+				},
+				{
+					URL:         "{protocol}://{name}",
+					Description: "No description provided",
+					Variables: map[string]ServerVariable{
+						"name": ServerVariable{
+							Description:  "Full site DNS name.",
+							DefaultValue: "api.datadoghq.com",
+						},
+						"protocol": ServerVariable{
+							Description:  "The protocol for accessing the API.",
+							DefaultValue: "https",
+						},
+					},
+				},
+			},
 			"IPRangesApiService.GetIPRanges": {
 				{
 					URL:         "https://{subdomain}.{site}",
@@ -187,6 +286,7 @@ func NewConfiguration() *Configuration {
 			"GetMonthlyCustomReports":          false,
 			"GetSpecifiedDailyCustomReports":   false,
 			"GetSpecifiedMonthlyCustomReports": false,
+			"GetUsageAttribution":              false,
 		},
 	}
 	return cfg

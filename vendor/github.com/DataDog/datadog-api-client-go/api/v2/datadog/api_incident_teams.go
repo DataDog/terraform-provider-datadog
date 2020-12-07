@@ -404,11 +404,12 @@ func (r ApiGetIncidentTeamRequest) Execute() (IncidentTeamResponse, *_nethttp.Re
 
 /*
  * GetIncidentTeam Get details of an incident team
- * Get details of an incident team. If the `include[users]` query parameter is provided, the included attribute will contain the users related to these incident teams.
+ * Get details of an incident team. If the `include[users]` query parameter is provided,
+the included attribute will contain the users related to these incident teams.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param teamId The ID of the incident team.
  * @return ApiGetIncidentTeamRequest
- */
+*/
 func (a *IncidentTeamsApiService) GetIncidentTeam(ctx _context.Context, teamId string) ApiGetIncidentTeamRequest {
 	return ApiGetIncidentTeamRequest{
 		ApiService: a,
