@@ -1,3 +1,23 @@
+## 2.18.0 (December 8, 2020)
+
+IMPROVEMENTS:
+
+-   `datadog_synthetics_private_location`: Add support for synthetics private locations ([#761](https://github.com/DataDog/terraform-provider-datadog/pull/761))
+-   `datadog_security_monitoring_rule`: Add support for security monitoring rules ([#763](https://github.com/DataDog/terraform-provider-datadog/pull/763))
+
+FEATURES:
+
+-   `datadog_service_level_objective`: Add `force_delete` attribute, to manage deletion in dashboard references ([#771](https://github.com/DataDog/terraform-provider-datadog/pull/771))
+-   `datadog_synthetics_global_variable`: Add support for secure global variables ([#758](https://github.com/DataDog/terraform-provider-datadog/pull/758))
+
+BUGFIXES:
+
+-   `datadog_synthetics_test`: Handle numbers in `targetvalue` for synthetics assertions ([#766](https://github.com/DataDog/terraform-provider-datadog/pull/766))
+
+NOTES:
+
+-   `datadog_user`: Use v2 API. This deprecates several v1 only attributes ([#752](https://github.com/DataDog/terraform-provider-datadog/pull/752))
+
 ## 2.17.0 (November 24, 2020)
 
 FEATURES:
