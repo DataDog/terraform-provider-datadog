@@ -49,10 +49,12 @@ func resourceDatadogUser() *schema.Resource {
 				Deprecated: "This parameter is replaced by `roles` and will be removed from the next Major version",
 			},
 			"access_role": {
-				Type:       schema.TypeString,
-				Optional:   true,
-				Default:    "st",
-				Deprecated: "This parameter is replaced by `roles` and will be removed from the next Major version",
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "st",
+				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+					return (d.Get("roles").(*schema.Set)).Len() > 0
+				},
 			},
 			"name": {
 				Type:     schema.TypeString,
