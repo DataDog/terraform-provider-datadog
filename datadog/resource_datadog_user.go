@@ -258,6 +258,24 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 
+	if !isV2User(d.Id()) && (d.Get("roles").(*schema.Set)).Len() > 0 {
+		datadogClientV2 := providerConf.DatadogClientV2
+		authV2 := providerConf.AuthV2
+		email := d.Get("email").(string)
+		log.Printf("[INFO] Migrating existing Datadog user %s", email)
+		// Find user ID by listing user and filtering by email
+		listResponse, _, err := datadogClientV2.UsersApi.ListUsers(authV2).Filter(email).Execute()
+		if err != nil {
+			return translateClientError(err, "error searching user")
+		}
+		responseData := listResponse.GetData()
+		if len(responseData) != 1 {
+			return fmt.Errorf("could not find single user with email %s", email)
+		}
+		userId := responseData[0].GetId()
+		d.SetId(userId)
+	}
+
 	if isV2User(d.Id()) {
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
