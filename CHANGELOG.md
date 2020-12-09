@@ -1,3 +1,10 @@
+## 2.18.1 (December 9, 2020)
+
+BUGFIXES:
+
+-   `datadog_user`: Automatically upgrade users when `roles` is set ([#778](https://github.com/DataDog/terraform-provider-datadog/pull/778)
+-   `datadog_dashboard`: Add ForceNew to `layout_type` dashboard attribute ([#774](https://github.com/DataDog/terraform-provider-datadog/pull/774)
+
 ## 2.18.0 (December 8, 2020)
 
 IMPROVEMENTS:
