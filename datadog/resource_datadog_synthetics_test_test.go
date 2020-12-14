@@ -529,7 +529,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.#", "4"),
+				"datadog_synthetics_test.bar", "assertion.#", "7"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.type", "header"),
 			resource.TestCheckResourceAttr(
@@ -568,6 +568,24 @@ func createSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.operator", "moreThan"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.targetvalue", "5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.type", "statusCode"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.operator", "isNot"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.target", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.5.type", "statusCode"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.5.operator", "matches"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.5.target", "20[04]"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.6.type", "statusCode"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.6.operator", "doesNotMatch"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.6.target", "20[04]"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -661,6 +679,21 @@ resource "datadog_synthetics_test" "bar" {
 			targetvalue = "5"
 			jsonpath = "something"
 		}
+	}
+	assertion {
+		type = "statusCode"
+		operator = "isNot"
+		target = "200"
+	}
+	assertion {
+		type = "statusCode"
+		operator = "matches"
+		target = "20[04]"
+	}
+	assertion {
+		type = "statusCode"
+		operator = "doesNotMatch"
+		target = "20[04]"
 	}
 
 	locations = [ "aws:eu-central-1" ]

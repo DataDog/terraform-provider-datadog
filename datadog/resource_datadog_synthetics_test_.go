@@ -552,11 +552,15 @@ func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{
 	return nil
 }
 
-func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType) bool {
-	for _, intTargetAssertionType := range []datadogV1.SyntheticsAssertionType{datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME, datadogV1.SYNTHETICSASSERTIONTYPE_STATUS_CODE, datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE} {
+func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType, assertionOperator datadogV1.SyntheticsAssertionOperator) bool {
+	for _, intTargetAssertionType := range []datadogV1.SyntheticsAssertionType{datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME, datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE} {
 		if assertionType == intTargetAssertionType {
 			return true
 		}
+	}
+	if assertionType == datadogV1.SYNTHETICSASSERTIONTYPE_STATUS_CODE &&
+		(assertionOperator == datadogV1.SYNTHETICSASSERTIONOPERATOR_IS || assertionOperator == datadogV1.SYNTHETICSASSERTIONOPERATOR_IS_NOT) {
+		return true
 	}
 	return false
 }
@@ -651,7 +655,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 						assertionTarget.SetProperty(assertionProperty)
 					}
 					if v, ok := assertionMap["target"]; ok {
-						if isTargetOfTypeInt(assertionTarget.GetType()) {
+						if isTargetOfTypeInt(assertionTarget.GetType(), assertionTarget.GetOperator()) {
 							assertionTargetInt, _ := strconv.Atoi(v.(string))
 							assertionTarget.SetTarget(assertionTargetInt)
 						} else {
@@ -708,7 +712,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 							assertionTarget.SetProperty(v)
 						}
 						if v, ok := assertionMap["target"]; ok {
-							if isTargetOfTypeInt(assertionTarget.GetType()) {
+							if isTargetOfTypeInt(assertionTarget.GetType(), assertionTarget.GetOperator()) {
 								assertionTargetInt, _ := strconv.Atoi(v.(string))
 								assertionTarget.SetTarget(assertionTargetInt)
 							} else {
