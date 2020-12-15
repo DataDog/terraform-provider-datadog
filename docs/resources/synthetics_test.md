@@ -324,7 +324,7 @@ resource "datadog_synthetics_test" "test_api" {
       target = "200"
   }
   assertion {
-      type = "responsTime"
+      type = "responseTime"
       operator = "lessThan"
       target = "1000"
   }
