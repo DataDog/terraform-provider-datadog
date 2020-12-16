@@ -176,6 +176,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	configV1.SetUnstableOperationEnabled("GetLogsIndex", true)
 	configV1.SetUnstableOperationEnabled("ListLogIndexes", true)
 	configV1.SetUnstableOperationEnabled("UpdateLogsIndex", true)
+	configV1.SetUnstableOperationEnabled("UpdateLogsIndexOrder", true)
 	configV1.UserAgent = getUserAgent(configV1.UserAgent)
 	configV1.Debug = logging.IsDebugOrHigher()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
