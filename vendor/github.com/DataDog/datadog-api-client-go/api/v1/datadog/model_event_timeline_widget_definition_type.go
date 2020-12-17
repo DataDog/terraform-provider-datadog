@@ -21,6 +21,10 @@ const (
 	EVENTTIMELINEWIDGETDEFINITIONTYPE_EVENT_TIMELINE EventTimelineWidgetDefinitionType = "event_timeline"
 )
 
+var allowedEventTimelineWidgetDefinitionTypeEnumValues = []EventTimelineWidgetDefinitionType{
+	"event_timeline",
+}
+
 func (v *EventTimelineWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *EventTimelineWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := EventTimelineWidgetDefinitionType(value)
-	for _, existing := range []EventTimelineWidgetDefinitionType{"event_timeline"} {
+	for _, existing := range allowedEventTimelineWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *EventTimelineWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid EventTimelineWidgetDefinitionType", value)
+}
+
+// NewEventTimelineWidgetDefinitionTypeFromValue returns a pointer to a valid EventTimelineWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewEventTimelineWidgetDefinitionTypeFromValue(v string) (*EventTimelineWidgetDefinitionType, error) {
+	ev := EventTimelineWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for EventTimelineWidgetDefinitionType: valid values are %v", v, allowedEventTimelineWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v EventTimelineWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedEventTimelineWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to EventTimelineWidgetDefinitionType value

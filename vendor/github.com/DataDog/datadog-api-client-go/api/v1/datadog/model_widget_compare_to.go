@@ -24,6 +24,13 @@ const (
 	WIDGETCOMPARETO_MONTH_BEFORE WidgetCompareTo = "month_before"
 )
 
+var allowedWidgetCompareToEnumValues = []WidgetCompareTo{
+	"hour_before",
+	"day_before",
+	"week_before",
+	"month_before",
+}
+
 func (v *WidgetCompareTo) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -31,7 +38,7 @@ func (v *WidgetCompareTo) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetCompareTo(value)
-	for _, existing := range []WidgetCompareTo{"hour_before", "day_before", "week_before", "month_before"} {
+	for _, existing := range allowedWidgetCompareToEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -39,6 +46,27 @@ func (v *WidgetCompareTo) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetCompareTo", value)
+}
+
+// NewWidgetCompareToFromValue returns a pointer to a valid WidgetCompareTo
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetCompareToFromValue(v string) (*WidgetCompareTo, error) {
+	ev := WidgetCompareTo(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetCompareTo: valid values are %v", v, allowedWidgetCompareToEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetCompareTo) IsValid() bool {
+	for _, existing := range allowedWidgetCompareToEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetCompareTo value

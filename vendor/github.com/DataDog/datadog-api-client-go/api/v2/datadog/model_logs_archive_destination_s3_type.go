@@ -21,6 +21,10 @@ const (
 	LOGSARCHIVEDESTINATIONS3TYPE_S3 LogsArchiveDestinationS3Type = "s3"
 )
 
+var allowedLogsArchiveDestinationS3TypeEnumValues = []LogsArchiveDestinationS3Type{
+	"s3",
+}
+
 func (v *LogsArchiveDestinationS3Type) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *LogsArchiveDestinationS3Type) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsArchiveDestinationS3Type(value)
-	for _, existing := range []LogsArchiveDestinationS3Type{"s3"} {
+	for _, existing := range allowedLogsArchiveDestinationS3TypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *LogsArchiveDestinationS3Type) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsArchiveDestinationS3Type", value)
+}
+
+// NewLogsArchiveDestinationS3TypeFromValue returns a pointer to a valid LogsArchiveDestinationS3Type
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsArchiveDestinationS3TypeFromValue(v string) (*LogsArchiveDestinationS3Type, error) {
+	ev := LogsArchiveDestinationS3Type(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsArchiveDestinationS3Type: valid values are %v", v, allowedLogsArchiveDestinationS3TypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsArchiveDestinationS3Type) IsValid() bool {
+	for _, existing := range allowedLogsArchiveDestinationS3TypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsArchiveDestinationS3Type value

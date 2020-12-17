@@ -22,6 +22,11 @@ const (
 	SLOTYPENUMERIC_METRIC  SLOTypeNumeric = 1
 )
 
+var allowedSLOTypeNumericEnumValues = []SLOTypeNumeric{
+	0,
+	1,
+}
+
 func (v *SLOTypeNumeric) UnmarshalJSON(src []byte) error {
 	var value int32
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *SLOTypeNumeric) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SLOTypeNumeric(value)
-	for _, existing := range []SLOTypeNumeric{0, 1} {
+	for _, existing := range allowedSLOTypeNumericEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *SLOTypeNumeric) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SLOTypeNumeric", value)
+}
+
+// NewSLOTypeNumericFromValue returns a pointer to a valid SLOTypeNumeric
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSLOTypeNumericFromValue(v int32) (*SLOTypeNumeric, error) {
+	ev := SLOTypeNumeric(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SLOTypeNumeric: valid values are %v", v, allowedSLOTypeNumericEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SLOTypeNumeric) IsValid() bool {
+	for _, existing := range allowedSLOTypeNumericEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SLOTypeNumeric value

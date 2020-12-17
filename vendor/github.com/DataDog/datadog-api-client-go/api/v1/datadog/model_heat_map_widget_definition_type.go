@@ -21,6 +21,10 @@ const (
 	HEATMAPWIDGETDEFINITIONTYPE_HEATMAP HeatMapWidgetDefinitionType = "heatmap"
 )
 
+var allowedHeatMapWidgetDefinitionTypeEnumValues = []HeatMapWidgetDefinitionType{
+	"heatmap",
+}
+
 func (v *HeatMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *HeatMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := HeatMapWidgetDefinitionType(value)
-	for _, existing := range []HeatMapWidgetDefinitionType{"heatmap"} {
+	for _, existing := range allowedHeatMapWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *HeatMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid HeatMapWidgetDefinitionType", value)
+}
+
+// NewHeatMapWidgetDefinitionTypeFromValue returns a pointer to a valid HeatMapWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewHeatMapWidgetDefinitionTypeFromValue(v string) (*HeatMapWidgetDefinitionType, error) {
+	ev := HeatMapWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for HeatMapWidgetDefinitionType: valid values are %v", v, allowedHeatMapWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v HeatMapWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedHeatMapWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to HeatMapWidgetDefinitionType value

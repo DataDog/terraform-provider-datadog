@@ -30,6 +30,19 @@ const (
 	SECURITYMONITORINGRULEKEEPALIVE_SIX_HOURS       SecurityMonitoringRuleKeepAlive = 21600
 )
 
+var allowedSecurityMonitoringRuleKeepAliveEnumValues = []SecurityMonitoringRuleKeepAlive{
+	0,
+	60,
+	300,
+	600,
+	900,
+	1800,
+	3600,
+	7200,
+	10800,
+	21600,
+}
+
 func (v *SecurityMonitoringRuleKeepAlive) UnmarshalJSON(src []byte) error {
 	var value int32
 	err := json.Unmarshal(src, &value)
@@ -37,7 +50,7 @@ func (v *SecurityMonitoringRuleKeepAlive) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SecurityMonitoringRuleKeepAlive(value)
-	for _, existing := range []SecurityMonitoringRuleKeepAlive{0, 60, 300, 600, 900, 1800, 3600, 7200, 10800, 21600} {
+	for _, existing := range allowedSecurityMonitoringRuleKeepAliveEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -45,6 +58,27 @@ func (v *SecurityMonitoringRuleKeepAlive) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SecurityMonitoringRuleKeepAlive", value)
+}
+
+// NewSecurityMonitoringRuleKeepAliveFromValue returns a pointer to a valid SecurityMonitoringRuleKeepAlive
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSecurityMonitoringRuleKeepAliveFromValue(v int32) (*SecurityMonitoringRuleKeepAlive, error) {
+	ev := SecurityMonitoringRuleKeepAlive(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SecurityMonitoringRuleKeepAlive: valid values are %v", v, allowedSecurityMonitoringRuleKeepAliveEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SecurityMonitoringRuleKeepAlive) IsValid() bool {
+	for _, existing := range allowedSecurityMonitoringRuleKeepAliveEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SecurityMonitoringRuleKeepAlive value

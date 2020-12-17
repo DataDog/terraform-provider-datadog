@@ -31,6 +31,20 @@ const (
 	MONITORTYPE_SLO_ALERT             MonitorType = "slo alert"
 )
 
+var allowedMonitorTypeEnumValues = []MonitorType{
+	"composite",
+	"event alert",
+	"log alert",
+	"metric alert",
+	"process alert",
+	"query alert",
+	"rum alert",
+	"service check",
+	"synthetics alert",
+	"trace-analytics alert",
+	"slo alert",
+}
+
 func (v *MonitorType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -38,7 +52,7 @@ func (v *MonitorType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := MonitorType(value)
-	for _, existing := range []MonitorType{"composite", "event alert", "log alert", "metric alert", "process alert", "query alert", "rum alert", "service check", "synthetics alert", "trace-analytics alert", "slo alert"} {
+	for _, existing := range allowedMonitorTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -46,6 +60,27 @@ func (v *MonitorType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid MonitorType", value)
+}
+
+// NewMonitorTypeFromValue returns a pointer to a valid MonitorType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewMonitorTypeFromValue(v string) (*MonitorType, error) {
+	ev := MonitorType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for MonitorType: valid values are %v", v, allowedMonitorTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v MonitorType) IsValid() bool {
+	for _, existing := range allowedMonitorTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to MonitorType value

@@ -38,6 +38,27 @@ const (
 	USAGEATTRIBUTIONSORT_CUSTOM_TIMESERIES_USAGE      UsageAttributionSort = "custom_timeseries_usage"
 )
 
+var allowedUsageAttributionSortEnumValues = []UsageAttributionSort{
+	"api_percentage",
+	"snmp_usage",
+	"lambda_percentage",
+	"apm_host_usage",
+	"api_usage",
+	"container_usage",
+	"custom_timeseries_percentage",
+	"container_percentage",
+	"lambda_usage",
+	"apm_host_percentage",
+	"npm_host_percentage",
+	"browser_percentage",
+	"browser_usage",
+	"infra_host_percentage",
+	"snmp_percentage",
+	"npm_host_usage",
+	"infra_host_usage",
+	"custom_timeseries_usage",
+}
+
 func (v *UsageAttributionSort) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -45,7 +66,7 @@ func (v *UsageAttributionSort) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := UsageAttributionSort(value)
-	for _, existing := range []UsageAttributionSort{"api_percentage", "snmp_usage", "lambda_percentage", "apm_host_usage", "api_usage", "container_usage", "custom_timeseries_percentage", "container_percentage", "lambda_usage", "apm_host_percentage", "npm_host_percentage", "browser_percentage", "browser_usage", "infra_host_percentage", "snmp_percentage", "npm_host_usage", "infra_host_usage", "custom_timeseries_usage"} {
+	for _, existing := range allowedUsageAttributionSortEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -53,6 +74,27 @@ func (v *UsageAttributionSort) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid UsageAttributionSort", value)
+}
+
+// NewUsageAttributionSortFromValue returns a pointer to a valid UsageAttributionSort
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewUsageAttributionSortFromValue(v string) (*UsageAttributionSort, error) {
+	ev := UsageAttributionSort(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for UsageAttributionSort: valid values are %v", v, allowedUsageAttributionSortEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v UsageAttributionSort) IsValid() bool {
+	for _, existing := range allowedUsageAttributionSortEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to UsageAttributionSort value

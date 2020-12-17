@@ -1609,8 +1609,8 @@ func (r ApiGetUsageBillableSummaryRequest) Execute() (UsageBillableSummaryRespon
 }
 
 /*
- * GetUsageBillableSummary Get billable usage across your multi-org account
- * Get billable usage across your multi-org account.
+ * GetUsageBillableSummary Get billable usage across your account
+ * Get billable usage across your account.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ApiGetUsageBillableSummaryRequest
  */
@@ -3663,7 +3663,7 @@ func (r ApiGetUsageSummaryRequest) Execute() (UsageSummaryResponse, *_nethttp.Re
 
 /*
  * GetUsageSummary Get usage across your multi-org account
- * Get usage across your multi-org account.
+ * Get usage across your multi-org account. You must have the multi-org feature enabled.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ApiGetUsageSummaryRequest
  */

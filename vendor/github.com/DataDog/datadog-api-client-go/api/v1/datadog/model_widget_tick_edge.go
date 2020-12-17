@@ -24,6 +24,13 @@ const (
 	WIDGETTICKEDGE_TOP    WidgetTickEdge = "top"
 )
 
+var allowedWidgetTickEdgeEnumValues = []WidgetTickEdge{
+	"bottom",
+	"left",
+	"right",
+	"top",
+}
+
 func (v *WidgetTickEdge) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -31,7 +38,7 @@ func (v *WidgetTickEdge) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetTickEdge(value)
-	for _, existing := range []WidgetTickEdge{"bottom", "left", "right", "top"} {
+	for _, existing := range allowedWidgetTickEdgeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -39,6 +46,27 @@ func (v *WidgetTickEdge) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetTickEdge", value)
+}
+
+// NewWidgetTickEdgeFromValue returns a pointer to a valid WidgetTickEdge
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetTickEdgeFromValue(v string) (*WidgetTickEdge, error) {
+	ev := WidgetTickEdge(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetTickEdge: valid values are %v", v, allowedWidgetTickEdgeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetTickEdge) IsValid() bool {
+	for _, existing := range allowedWidgetTickEdgeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetTickEdge value

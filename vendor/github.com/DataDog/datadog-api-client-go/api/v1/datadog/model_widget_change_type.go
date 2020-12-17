@@ -22,6 +22,11 @@ const (
 	WIDGETCHANGETYPE_RELATIVE WidgetChangeType = "relative"
 )
 
+var allowedWidgetChangeTypeEnumValues = []WidgetChangeType{
+	"absolute",
+	"relative",
+}
+
 func (v *WidgetChangeType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *WidgetChangeType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetChangeType(value)
-	for _, existing := range []WidgetChangeType{"absolute", "relative"} {
+	for _, existing := range allowedWidgetChangeTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *WidgetChangeType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetChangeType", value)
+}
+
+// NewWidgetChangeTypeFromValue returns a pointer to a valid WidgetChangeType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetChangeTypeFromValue(v string) (*WidgetChangeType, error) {
+	ev := WidgetChangeType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetChangeType: valid values are %v", v, allowedWidgetChangeTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetChangeType) IsValid() bool {
+	for _, existing := range allowedWidgetChangeTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetChangeType value

@@ -24,6 +24,13 @@ const (
 	SECURITYMONITORINGRULEQUERYAGGREGATION_MAX         SecurityMonitoringRuleQueryAggregation = "max"
 )
 
+var allowedSecurityMonitoringRuleQueryAggregationEnumValues = []SecurityMonitoringRuleQueryAggregation{
+	"count",
+	"cardinality",
+	"sum",
+	"max",
+}
+
 func (v *SecurityMonitoringRuleQueryAggregation) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -31,7 +38,7 @@ func (v *SecurityMonitoringRuleQueryAggregation) UnmarshalJSON(src []byte) error
 		return err
 	}
 	enumTypeValue := SecurityMonitoringRuleQueryAggregation(value)
-	for _, existing := range []SecurityMonitoringRuleQueryAggregation{"count", "cardinality", "sum", "max"} {
+	for _, existing := range allowedSecurityMonitoringRuleQueryAggregationEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -39,6 +46,27 @@ func (v *SecurityMonitoringRuleQueryAggregation) UnmarshalJSON(src []byte) error
 	}
 
 	return fmt.Errorf("%+v is not a valid SecurityMonitoringRuleQueryAggregation", value)
+}
+
+// NewSecurityMonitoringRuleQueryAggregationFromValue returns a pointer to a valid SecurityMonitoringRuleQueryAggregation
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSecurityMonitoringRuleQueryAggregationFromValue(v string) (*SecurityMonitoringRuleQueryAggregation, error) {
+	ev := SecurityMonitoringRuleQueryAggregation(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SecurityMonitoringRuleQueryAggregation: valid values are %v", v, allowedSecurityMonitoringRuleQueryAggregationEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SecurityMonitoringRuleQueryAggregation) IsValid() bool {
+	for _, existing := range allowedSecurityMonitoringRuleQueryAggregationEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SecurityMonitoringRuleQueryAggregation value

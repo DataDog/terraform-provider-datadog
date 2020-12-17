@@ -23,6 +23,12 @@ const (
 	WIDGETVIEWMODE_BOTH      WidgetViewMode = "both"
 )
 
+var allowedWidgetViewModeEnumValues = []WidgetViewMode{
+	"overall",
+	"component",
+	"both",
+}
+
 func (v *WidgetViewMode) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -30,7 +36,7 @@ func (v *WidgetViewMode) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetViewMode(value)
-	for _, existing := range []WidgetViewMode{"overall", "component", "both"} {
+	for _, existing := range allowedWidgetViewModeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -38,6 +44,27 @@ func (v *WidgetViewMode) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetViewMode", value)
+}
+
+// NewWidgetViewModeFromValue returns a pointer to a valid WidgetViewMode
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetViewModeFromValue(v string) (*WidgetViewMode, error) {
+	ev := WidgetViewMode(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetViewMode: valid values are %v", v, allowedWidgetViewModeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetViewMode) IsValid() bool {
+	for _, existing := range allowedWidgetViewModeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetViewMode value

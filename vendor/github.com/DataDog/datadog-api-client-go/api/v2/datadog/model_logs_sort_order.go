@@ -22,6 +22,11 @@ const (
 	LOGSSORTORDER_DESCENDING LogsSortOrder = "desc"
 )
 
+var allowedLogsSortOrderEnumValues = []LogsSortOrder{
+	"asc",
+	"desc",
+}
+
 func (v *LogsSortOrder) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *LogsSortOrder) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsSortOrder(value)
-	for _, existing := range []LogsSortOrder{"asc", "desc"} {
+	for _, existing := range allowedLogsSortOrderEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *LogsSortOrder) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsSortOrder", value)
+}
+
+// NewLogsSortOrderFromValue returns a pointer to a valid LogsSortOrder
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsSortOrderFromValue(v string) (*LogsSortOrder, error) {
+	ev := LogsSortOrder(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsSortOrder: valid values are %v", v, allowedLogsSortOrderEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsSortOrder) IsValid() bool {
+	for _, existing := range allowedLogsSortOrderEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsSortOrder value

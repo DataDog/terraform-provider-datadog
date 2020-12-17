@@ -23,6 +23,12 @@ const (
 	WIDGETSUMMARYTYPE_COMBINED WidgetSummaryType = "combined"
 )
 
+var allowedWidgetSummaryTypeEnumValues = []WidgetSummaryType{
+	"monitors",
+	"groups",
+	"combined",
+}
+
 func (v *WidgetSummaryType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -30,7 +36,7 @@ func (v *WidgetSummaryType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetSummaryType(value)
-	for _, existing := range []WidgetSummaryType{"monitors", "groups", "combined"} {
+	for _, existing := range allowedWidgetSummaryTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -38,6 +44,27 @@ func (v *WidgetSummaryType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetSummaryType", value)
+}
+
+// NewWidgetSummaryTypeFromValue returns a pointer to a valid WidgetSummaryType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetSummaryTypeFromValue(v string) (*WidgetSummaryType, error) {
+	ev := WidgetSummaryType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetSummaryType: valid values are %v", v, allowedWidgetSummaryTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetSummaryType) IsValid() bool {
+	for _, existing := range allowedWidgetSummaryTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetSummaryType value

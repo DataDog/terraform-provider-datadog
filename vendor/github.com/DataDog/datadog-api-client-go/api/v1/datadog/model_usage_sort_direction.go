@@ -22,6 +22,11 @@ const (
 	USAGESORTDIRECTION_ASC  UsageSortDirection = "asc"
 )
 
+var allowedUsageSortDirectionEnumValues = []UsageSortDirection{
+	"desc",
+	"asc",
+}
+
 func (v *UsageSortDirection) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *UsageSortDirection) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := UsageSortDirection(value)
-	for _, existing := range []UsageSortDirection{"desc", "asc"} {
+	for _, existing := range allowedUsageSortDirectionEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *UsageSortDirection) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid UsageSortDirection", value)
+}
+
+// NewUsageSortDirectionFromValue returns a pointer to a valid UsageSortDirection
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewUsageSortDirectionFromValue(v string) (*UsageSortDirection, error) {
+	ev := UsageSortDirection(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for UsageSortDirection: valid values are %v", v, allowedUsageSortDirectionEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v UsageSortDirection) IsValid() bool {
+	for _, existing := range allowedUsageSortDirectionEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to UsageSortDirection value

@@ -21,6 +21,10 @@ const (
 	USERINVITATIONSTYPE_USER_INVITATIONS UserInvitationsType = "user_invitations"
 )
 
+var allowedUserInvitationsTypeEnumValues = []UserInvitationsType{
+	"user_invitations",
+}
+
 func (v *UserInvitationsType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *UserInvitationsType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := UserInvitationsType(value)
-	for _, existing := range []UserInvitationsType{"user_invitations"} {
+	for _, existing := range allowedUserInvitationsTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *UserInvitationsType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid UserInvitationsType", value)
+}
+
+// NewUserInvitationsTypeFromValue returns a pointer to a valid UserInvitationsType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewUserInvitationsTypeFromValue(v string) (*UserInvitationsType, error) {
+	ev := UserInvitationsType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for UserInvitationsType: valid values are %v", v, allowedUserInvitationsTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v UserInvitationsType) IsValid() bool {
+	for _, existing := range allowedUserInvitationsTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to UserInvitationsType value

@@ -21,6 +21,10 @@ const (
 	LOGSURLPARSERTYPE_URL_PARSER LogsURLParserType = "url-parser"
 )
 
+var allowedLogsURLParserTypeEnumValues = []LogsURLParserType{
+	"url-parser",
+}
+
 func (v *LogsURLParserType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *LogsURLParserType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsURLParserType(value)
-	for _, existing := range []LogsURLParserType{"url-parser"} {
+	for _, existing := range allowedLogsURLParserTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *LogsURLParserType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsURLParserType", value)
+}
+
+// NewLogsURLParserTypeFromValue returns a pointer to a valid LogsURLParserType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsURLParserTypeFromValue(v string) (*LogsURLParserType, error) {
+	ev := LogsURLParserType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsURLParserType: valid values are %v", v, allowedLogsURLParserTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsURLParserType) IsValid() bool {
+	for _, existing := range allowedLogsURLParserTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsURLParserType value

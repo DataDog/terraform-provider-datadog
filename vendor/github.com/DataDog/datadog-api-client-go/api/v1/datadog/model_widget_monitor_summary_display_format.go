@@ -23,6 +23,12 @@ const (
 	WIDGETMONITORSUMMARYDISPLAYFORMAT_LIST            WidgetMonitorSummaryDisplayFormat = "list"
 )
 
+var allowedWidgetMonitorSummaryDisplayFormatEnumValues = []WidgetMonitorSummaryDisplayFormat{
+	"counts",
+	"countsAndList",
+	"list",
+}
+
 func (v *WidgetMonitorSummaryDisplayFormat) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -30,7 +36,7 @@ func (v *WidgetMonitorSummaryDisplayFormat) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetMonitorSummaryDisplayFormat(value)
-	for _, existing := range []WidgetMonitorSummaryDisplayFormat{"counts", "countsAndList", "list"} {
+	for _, existing := range allowedWidgetMonitorSummaryDisplayFormatEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -38,6 +44,27 @@ func (v *WidgetMonitorSummaryDisplayFormat) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetMonitorSummaryDisplayFormat", value)
+}
+
+// NewWidgetMonitorSummaryDisplayFormatFromValue returns a pointer to a valid WidgetMonitorSummaryDisplayFormat
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetMonitorSummaryDisplayFormatFromValue(v string) (*WidgetMonitorSummaryDisplayFormat, error) {
+	ev := WidgetMonitorSummaryDisplayFormat(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetMonitorSummaryDisplayFormat: valid values are %v", v, allowedWidgetMonitorSummaryDisplayFormatEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetMonitorSummaryDisplayFormat) IsValid() bool {
+	for _, existing := range allowedWidgetMonitorSummaryDisplayFormatEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetMonitorSummaryDisplayFormat value

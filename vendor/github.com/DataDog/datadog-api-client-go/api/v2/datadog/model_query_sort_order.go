@@ -22,6 +22,11 @@ const (
 	QUERYSORTORDER_DESC QuerySortOrder = "desc"
 )
 
+var allowedQuerySortOrderEnumValues = []QuerySortOrder{
+	"asc",
+	"desc",
+}
+
 func (v *QuerySortOrder) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *QuerySortOrder) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := QuerySortOrder(value)
-	for _, existing := range []QuerySortOrder{"asc", "desc"} {
+	for _, existing := range allowedQuerySortOrderEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *QuerySortOrder) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid QuerySortOrder", value)
+}
+
+// NewQuerySortOrderFromValue returns a pointer to a valid QuerySortOrder
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewQuerySortOrderFromValue(v string) (*QuerySortOrder, error) {
+	ev := QuerySortOrder(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for QuerySortOrder: valid values are %v", v, allowedQuerySortOrderEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v QuerySortOrder) IsValid() bool {
+	for _, existing := range allowedQuerySortOrderEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to QuerySortOrder value

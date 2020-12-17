@@ -29,6 +29,18 @@ const (
 	SYNTHETICSDEVICEID_FIREFOX_MOBILE_SMALL SyntheticsDeviceID = "firefox.mobile_small"
 )
 
+var allowedSyntheticsDeviceIDEnumValues = []SyntheticsDeviceID{
+	"laptop_large",
+	"tablet",
+	"mobile_small",
+	"chrome.laptop_large",
+	"chrome.tablet",
+	"chrome.mobile_small",
+	"firefox.laptop_large",
+	"firefox.tablet",
+	"firefox.mobile_small",
+}
+
 func (v *SyntheticsDeviceID) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -36,7 +48,7 @@ func (v *SyntheticsDeviceID) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsDeviceID(value)
-	for _, existing := range []SyntheticsDeviceID{"laptop_large", "tablet", "mobile_small", "chrome.laptop_large", "chrome.tablet", "chrome.mobile_small", "firefox.laptop_large", "firefox.tablet", "firefox.mobile_small"} {
+	for _, existing := range allowedSyntheticsDeviceIDEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -44,6 +56,27 @@ func (v *SyntheticsDeviceID) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsDeviceID", value)
+}
+
+// NewSyntheticsDeviceIDFromValue returns a pointer to a valid SyntheticsDeviceID
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsDeviceIDFromValue(v string) (*SyntheticsDeviceID, error) {
+	ev := SyntheticsDeviceID(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsDeviceID: valid values are %v", v, allowedSyntheticsDeviceIDEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsDeviceID) IsValid() bool {
+	for _, existing := range allowedSyntheticsDeviceIDEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsDeviceID value
