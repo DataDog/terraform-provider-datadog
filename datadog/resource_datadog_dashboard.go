@@ -4385,6 +4385,132 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 	return terraformDefinition
 }
 
+func getFormulaQuerySchema() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"metric_query": {
+					Type:     schema.TypeList,
+					Optional: true,
+					MaxItems: 1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"query": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"aggregator": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"name": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+						},
+					},
+				},
+				"event_query": {
+					Type:     schema.TypeList,
+					Optional: true,
+					MaxItems: 1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"search": {
+								Type:     schema.TypeList,
+								Optional: true,
+								MaxItems: 1,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"query": {
+											Type:     schema.TypeString,
+											Required: true,
+										},
+									},
+								},
+							},
+							"indexes": {
+								Type:     schema.TypeList,
+								Optional: true,
+								Elem:     &schema.Schema{Type: schema.TypeString},
+							},
+							"compute": {
+								Type:     schema.TypeList,
+								Required: true,
+								MaxItems: 1,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"aggregation": {
+											Type:     schema.TypeString,
+											Required: true,
+										},
+										"metric": {
+											Type:     schema.TypeString,
+											Optional: true,
+										},
+									},
+								},
+							},
+							"group_by": {
+								Type:     schema.TypeList,
+								Optional: true,
+								MaxItems: 1,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"facet": {
+											Type:     schema.TypeString,
+											Required: true,
+										},
+										"limit": {
+											Type:     schema.TypeInt,
+											Optional: true,
+										},
+										"sort": {
+											Type:     schema.TypeList,
+											Optional: true,
+											MaxItems: 1,
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"aggregation": {
+														Type:     schema.TypeString,
+														Required: true,
+													},
+													"metric": {
+														Type:     schema.TypeString,
+														Optional: true,
+													},
+													"order": {
+														Type:     schema.TypeString,
+														Optional: true,
+													},
+													"type": {
+														Type:     schema.TypeString,
+														Optional: true,
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							"name": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 func getTimeseriesRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
@@ -4395,6 +4521,7 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 		"network_query":  getApmLogNetworkRumSecurityQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"query":          getFormulaQuerySchema(),
 		// Settings specific to Timeseries requests
 		"style": {
 			Description: "Style of the widget graph. Exactly one `style` block is allowed with the structure below.",
@@ -4455,6 +4582,25 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
+func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.FormulaAndFunctionsEventsDataSource(data["data_source"].(string))
+	aggregation := datadogV1.FormulaAndFunctionsEventAggregation(data["aggregation"].(string))
+	compute := datadogV1.NewTimeSeriesFormulasAndFunctionEventQueryDefinitionCompute(aggregation)
+	eventQuery := datadogV1.NewTimeSeriesFormulasAndFunctionEventQueryDefinition(*compute, dataSource)
+	return datadogV1.TimeSeriesFormulasAndFunctionEventQueryDefinitionAsFormulaAndFunctionQueryDefinition(eventQuery)
+}
+
+func buildDatadogMetricQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.FormulaAndFunctionMetricDataSource("metrics")
+	metricQuery := datadogV1.NewTimeSeriesFormulaAndFunctionMetricQueryDefinition(dataSource, data["query"].(string))
+	if v, ok := data["name"].(string); ok && len(v) != 0 {
+		metricQuery.Name = &v
+	}
+
+	return datadogV1.TimeSeriesFormulaAndFunctionMetricQueryDefinitionAsFormulaAndFunctionQueryDefinition(metricQuery)
+}
+
 func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadogV1.TimeseriesWidgetRequest {
 	datadogRequests := make([]datadogV1.TimeseriesWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
@@ -4481,6 +4627,18 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogTimeseriesRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+			for i, q := range v {
+				query := q.(map[string]interface{})
+				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] =  buildDatadogEventQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] =  buildDatadogMetricQuery(w[0].(map[string]interface{}))
+				}
+			}
+			datadogTimeseriesRequest.Queries = &queries
+			datadogTimeseriesRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("timeseries"))
 		}
 		if style, ok := terraformRequest["style"].([]interface{}); ok && len(style) > 0 {
 			if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
