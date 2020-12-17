@@ -4721,7 +4721,14 @@ func getWidgetConditionalFormatSchema() map[string]*schema.Schema {
 			Required: true,
 		},
 		"palette": {
-			Type:     schema.TypeString,
+			Type: schema.TypeString,
+			ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+				_, err := datadogV1.NewWidgetPaletteFromValue(val.(string))
+				if err != nil {
+					errs = append(errs, err)
+				}
+				return
+			},
 			Required: true,
 		},
 		"custom_bg_color": {
