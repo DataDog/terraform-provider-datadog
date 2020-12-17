@@ -16,7 +16,7 @@ data "datadog_role" "test" {
 
 ## Argument Reference
 
--   `filter`: A string on which to filter the roles.
+-   `filter`: (Required) A string on which to filter the roles.
 
 ~> **NOTE:** If more or less than a single match is returned by the search, Terraform will fail. Ensure that your search is specific enough to return a single role.
 
