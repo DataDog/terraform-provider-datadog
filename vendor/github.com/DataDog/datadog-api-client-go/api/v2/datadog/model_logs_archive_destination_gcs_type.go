@@ -21,6 +21,10 @@ const (
 	LOGSARCHIVEDESTINATIONGCSTYPE_GCS LogsArchiveDestinationGCSType = "gcs"
 )
 
+var allowedLogsArchiveDestinationGCSTypeEnumValues = []LogsArchiveDestinationGCSType{
+	"gcs",
+}
+
 func (v *LogsArchiveDestinationGCSType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *LogsArchiveDestinationGCSType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsArchiveDestinationGCSType(value)
-	for _, existing := range []LogsArchiveDestinationGCSType{"gcs"} {
+	for _, existing := range allowedLogsArchiveDestinationGCSTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *LogsArchiveDestinationGCSType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsArchiveDestinationGCSType", value)
+}
+
+// NewLogsArchiveDestinationGCSTypeFromValue returns a pointer to a valid LogsArchiveDestinationGCSType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsArchiveDestinationGCSTypeFromValue(v string) (*LogsArchiveDestinationGCSType, error) {
+	ev := LogsArchiveDestinationGCSType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsArchiveDestinationGCSType: valid values are %v", v, allowedLogsArchiveDestinationGCSTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsArchiveDestinationGCSType) IsValid() bool {
+	for _, existing := range allowedLogsArchiveDestinationGCSTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsArchiveDestinationGCSType value

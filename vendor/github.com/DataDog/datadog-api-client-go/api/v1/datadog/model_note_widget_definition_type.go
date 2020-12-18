@@ -21,6 +21,10 @@ const (
 	NOTEWIDGETDEFINITIONTYPE_NOTE NoteWidgetDefinitionType = "note"
 )
 
+var allowedNoteWidgetDefinitionTypeEnumValues = []NoteWidgetDefinitionType{
+	"note",
+}
+
 func (v *NoteWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *NoteWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := NoteWidgetDefinitionType(value)
-	for _, existing := range []NoteWidgetDefinitionType{"note"} {
+	for _, existing := range allowedNoteWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *NoteWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid NoteWidgetDefinitionType", value)
+}
+
+// NewNoteWidgetDefinitionTypeFromValue returns a pointer to a valid NoteWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewNoteWidgetDefinitionTypeFromValue(v string) (*NoteWidgetDefinitionType, error) {
+	ev := NoteWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for NoteWidgetDefinitionType: valid values are %v", v, allowedNoteWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v NoteWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedNoteWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to NoteWidgetDefinitionType value

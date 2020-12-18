@@ -21,6 +21,10 @@ const (
 	TABLEWIDGETDEFINITIONTYPE_QUERY_TABLE TableWidgetDefinitionType = "query_table"
 )
 
+var allowedTableWidgetDefinitionTypeEnumValues = []TableWidgetDefinitionType{
+	"query_table",
+}
+
 func (v *TableWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *TableWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := TableWidgetDefinitionType(value)
-	for _, existing := range []TableWidgetDefinitionType{"query_table"} {
+	for _, existing := range allowedTableWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *TableWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid TableWidgetDefinitionType", value)
+}
+
+// NewTableWidgetDefinitionTypeFromValue returns a pointer to a valid TableWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewTableWidgetDefinitionTypeFromValue(v string) (*TableWidgetDefinitionType, error) {
+	ev := TableWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for TableWidgetDefinitionType: valid values are %v", v, allowedTableWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v TableWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedTableWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to TableWidgetDefinitionType value

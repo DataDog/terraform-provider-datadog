@@ -35,6 +35,24 @@ const (
 	WIDGETLIVESPAN_ALERT                WidgetLiveSpan = "alert"
 )
 
+var allowedWidgetLiveSpanEnumValues = []WidgetLiveSpan{
+	"1m",
+	"5m",
+	"10m",
+	"15m",
+	"30m",
+	"1h",
+	"4h",
+	"1d",
+	"2d",
+	"1w",
+	"1mo",
+	"3mo",
+	"6mo",
+	"1y",
+	"alert",
+}
+
 func (v *WidgetLiveSpan) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -42,7 +60,7 @@ func (v *WidgetLiveSpan) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetLiveSpan(value)
-	for _, existing := range []WidgetLiveSpan{"1m", "5m", "10m", "15m", "30m", "1h", "4h", "1d", "2d", "1w", "1mo", "3mo", "6mo", "1y", "alert"} {
+	for _, existing := range allowedWidgetLiveSpanEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -50,6 +68,27 @@ func (v *WidgetLiveSpan) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetLiveSpan", value)
+}
+
+// NewWidgetLiveSpanFromValue returns a pointer to a valid WidgetLiveSpan
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetLiveSpanFromValue(v string) (*WidgetLiveSpan, error) {
+	ev := WidgetLiveSpan(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetLiveSpan: valid values are %v", v, allowedWidgetLiveSpanEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetLiveSpan) IsValid() bool {
+	for _, existing := range allowedWidgetLiveSpanEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetLiveSpan value

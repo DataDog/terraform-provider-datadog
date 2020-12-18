@@ -21,6 +21,10 @@ const (
 	USERSTYPE_USERS UsersType = "users"
 )
 
+var allowedUsersTypeEnumValues = []UsersType{
+	"users",
+}
+
 func (v *UsersType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *UsersType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := UsersType(value)
-	for _, existing := range []UsersType{"users"} {
+	for _, existing := range allowedUsersTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *UsersType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid UsersType", value)
+}
+
+// NewUsersTypeFromValue returns a pointer to a valid UsersType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewUsersTypeFromValue(v string) (*UsersType, error) {
+	ev := UsersType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for UsersType: valid values are %v", v, allowedUsersTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v UsersType) IsValid() bool {
+	for _, existing := range allowedUsersTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to UsersType value

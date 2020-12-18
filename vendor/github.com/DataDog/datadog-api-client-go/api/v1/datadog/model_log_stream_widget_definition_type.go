@@ -21,6 +21,10 @@ const (
 	LOGSTREAMWIDGETDEFINITIONTYPE_LOG_STREAM LogStreamWidgetDefinitionType = "log_stream"
 )
 
+var allowedLogStreamWidgetDefinitionTypeEnumValues = []LogStreamWidgetDefinitionType{
+	"log_stream",
+}
+
 func (v *LogStreamWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *LogStreamWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogStreamWidgetDefinitionType(value)
-	for _, existing := range []LogStreamWidgetDefinitionType{"log_stream"} {
+	for _, existing := range allowedLogStreamWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *LogStreamWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogStreamWidgetDefinitionType", value)
+}
+
+// NewLogStreamWidgetDefinitionTypeFromValue returns a pointer to a valid LogStreamWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogStreamWidgetDefinitionTypeFromValue(v string) (*LogStreamWidgetDefinitionType, error) {
+	ev := LogStreamWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogStreamWidgetDefinitionType: valid values are %v", v, allowedLogStreamWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogStreamWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedLogStreamWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogStreamWidgetDefinitionType value

@@ -21,6 +21,10 @@ const (
 	CHANGEWIDGETDEFINITIONTYPE_CHANGE ChangeWidgetDefinitionType = "change"
 )
 
+var allowedChangeWidgetDefinitionTypeEnumValues = []ChangeWidgetDefinitionType{
+	"change",
+}
+
 func (v *ChangeWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *ChangeWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := ChangeWidgetDefinitionType(value)
-	for _, existing := range []ChangeWidgetDefinitionType{"change"} {
+	for _, existing := range allowedChangeWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *ChangeWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid ChangeWidgetDefinitionType", value)
+}
+
+// NewChangeWidgetDefinitionTypeFromValue returns a pointer to a valid ChangeWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewChangeWidgetDefinitionTypeFromValue(v string) (*ChangeWidgetDefinitionType, error) {
+	ev := ChangeWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for ChangeWidgetDefinitionType: valid values are %v", v, allowedChangeWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v ChangeWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedChangeWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to ChangeWidgetDefinitionType value

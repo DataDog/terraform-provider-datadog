@@ -25,6 +25,14 @@ const (
 	DASHBOARDTYPE_HOST_TIMEBOARD          DashboardType = "host_timeboard"
 )
 
+var allowedDashboardTypeEnumValues = []DashboardType{
+	"custom_timeboard",
+	"custom_screenboard",
+	"integration_screenboard",
+	"integration_timeboard",
+	"host_timeboard",
+}
+
 func (v *DashboardType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -32,7 +40,7 @@ func (v *DashboardType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := DashboardType(value)
-	for _, existing := range []DashboardType{"custom_timeboard", "custom_screenboard", "integration_screenboard", "integration_timeboard", "host_timeboard"} {
+	for _, existing := range allowedDashboardTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -40,6 +48,27 @@ func (v *DashboardType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid DashboardType", value)
+}
+
+// NewDashboardTypeFromValue returns a pointer to a valid DashboardType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewDashboardTypeFromValue(v string) (*DashboardType, error) {
+	ev := DashboardType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for DashboardType: valid values are %v", v, allowedDashboardTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v DashboardType) IsValid() bool {
+	for _, existing := range allowedDashboardTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to DashboardType value

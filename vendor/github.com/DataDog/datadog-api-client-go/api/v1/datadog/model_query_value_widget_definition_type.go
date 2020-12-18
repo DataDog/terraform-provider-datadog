@@ -21,6 +21,10 @@ const (
 	QUERYVALUEWIDGETDEFINITIONTYPE_QUERY_VALUE QueryValueWidgetDefinitionType = "query_value"
 )
 
+var allowedQueryValueWidgetDefinitionTypeEnumValues = []QueryValueWidgetDefinitionType{
+	"query_value",
+}
+
 func (v *QueryValueWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *QueryValueWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := QueryValueWidgetDefinitionType(value)
-	for _, existing := range []QueryValueWidgetDefinitionType{"query_value"} {
+	for _, existing := range allowedQueryValueWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *QueryValueWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid QueryValueWidgetDefinitionType", value)
+}
+
+// NewQueryValueWidgetDefinitionTypeFromValue returns a pointer to a valid QueryValueWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewQueryValueWidgetDefinitionTypeFromValue(v string) (*QueryValueWidgetDefinitionType, error) {
+	ev := QueryValueWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for QueryValueWidgetDefinitionType: valid values are %v", v, allowedQueryValueWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v QueryValueWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedQueryValueWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to QueryValueWidgetDefinitionType value

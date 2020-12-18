@@ -21,6 +21,10 @@ const (
 	INCIDENTINTEGRATIONMETADATATYPE_INCIDENT_INTEGRATION_METADATA IncidentIntegrationMetadataType = "incident_integration_metadata"
 )
 
+var allowedIncidentIntegrationMetadataTypeEnumValues = []IncidentIntegrationMetadataType{
+	"incident_integration_metadata",
+}
+
 func (v *IncidentIntegrationMetadataType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *IncidentIntegrationMetadataType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := IncidentIntegrationMetadataType(value)
-	for _, existing := range []IncidentIntegrationMetadataType{"incident_integration_metadata"} {
+	for _, existing := range allowedIncidentIntegrationMetadataTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *IncidentIntegrationMetadataType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid IncidentIntegrationMetadataType", value)
+}
+
+// NewIncidentIntegrationMetadataTypeFromValue returns a pointer to a valid IncidentIntegrationMetadataType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewIncidentIntegrationMetadataTypeFromValue(v string) (*IncidentIntegrationMetadataType, error) {
+	ev := IncidentIntegrationMetadataType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for IncidentIntegrationMetadataType: valid values are %v", v, allowedIncidentIntegrationMetadataTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v IncidentIntegrationMetadataType) IsValid() bool {
+	for _, existing := range allowedIncidentIntegrationMetadataTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to IncidentIntegrationMetadataType value

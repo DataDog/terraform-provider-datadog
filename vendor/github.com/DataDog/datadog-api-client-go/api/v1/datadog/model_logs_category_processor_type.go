@@ -21,6 +21,10 @@ const (
 	LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR LogsCategoryProcessorType = "category-processor"
 )
 
+var allowedLogsCategoryProcessorTypeEnumValues = []LogsCategoryProcessorType{
+	"category-processor",
+}
+
 func (v *LogsCategoryProcessorType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *LogsCategoryProcessorType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsCategoryProcessorType(value)
-	for _, existing := range []LogsCategoryProcessorType{"category-processor"} {
+	for _, existing := range allowedLogsCategoryProcessorTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *LogsCategoryProcessorType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsCategoryProcessorType", value)
+}
+
+// NewLogsCategoryProcessorTypeFromValue returns a pointer to a valid LogsCategoryProcessorType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsCategoryProcessorTypeFromValue(v string) (*LogsCategoryProcessorType, error) {
+	ev := LogsCategoryProcessorType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsCategoryProcessorType: valid values are %v", v, allowedLogsCategoryProcessorTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsCategoryProcessorType) IsValid() bool {
+	for _, existing := range allowedLogsCategoryProcessorTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsCategoryProcessorType value

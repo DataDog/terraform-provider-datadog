@@ -23,6 +23,12 @@ const (
 	WIDGETMESSAGEDISPLAY_EXPANDED_LARGE  WidgetMessageDisplay = "expanded-lg"
 )
 
+var allowedWidgetMessageDisplayEnumValues = []WidgetMessageDisplay{
+	"inline",
+	"expanded-md",
+	"expanded-lg",
+}
+
 func (v *WidgetMessageDisplay) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -30,7 +36,7 @@ func (v *WidgetMessageDisplay) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetMessageDisplay(value)
-	for _, existing := range []WidgetMessageDisplay{"inline", "expanded-md", "expanded-lg"} {
+	for _, existing := range allowedWidgetMessageDisplayEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -38,6 +44,27 @@ func (v *WidgetMessageDisplay) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetMessageDisplay", value)
+}
+
+// NewWidgetMessageDisplayFromValue returns a pointer to a valid WidgetMessageDisplay
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetMessageDisplayFromValue(v string) (*WidgetMessageDisplay, error) {
+	ev := WidgetMessageDisplay(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetMessageDisplay: valid values are %v", v, allowedWidgetMessageDisplayEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetMessageDisplay) IsValid() bool {
+	for _, existing := range allowedWidgetMessageDisplayEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetMessageDisplay value

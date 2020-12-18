@@ -22,6 +22,11 @@ const (
 	SECURITYMONITORINGSIGNALSSORT_TIMESTAMP_DESCENDING SecurityMonitoringSignalsSort = "-timestamp"
 )
 
+var allowedSecurityMonitoringSignalsSortEnumValues = []SecurityMonitoringSignalsSort{
+	"timestamp",
+	"-timestamp",
+}
+
 func (v *SecurityMonitoringSignalsSort) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *SecurityMonitoringSignalsSort) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SecurityMonitoringSignalsSort(value)
-	for _, existing := range []SecurityMonitoringSignalsSort{"timestamp", "-timestamp"} {
+	for _, existing := range allowedSecurityMonitoringSignalsSortEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *SecurityMonitoringSignalsSort) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SecurityMonitoringSignalsSort", value)
+}
+
+// NewSecurityMonitoringSignalsSortFromValue returns a pointer to a valid SecurityMonitoringSignalsSort
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSecurityMonitoringSignalsSortFromValue(v string) (*SecurityMonitoringSignalsSort, error) {
+	ev := SecurityMonitoringSignalsSort(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SecurityMonitoringSignalsSort: valid values are %v", v, allowedSecurityMonitoringSignalsSortEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SecurityMonitoringSignalsSort) IsValid() bool {
+	for _, existing := range allowedSecurityMonitoringSignalsSortEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SecurityMonitoringSignalsSort value

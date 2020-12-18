@@ -41,7 +41,7 @@ type Downtime struct {
 	Scope *[]string `json:"scope,omitempty"`
 	// POSIX timestamp to start the downtime. If not provided, the downtime starts the moment it is created.
 	Start *int64 `json:"start,omitempty"`
-	// The timezone for the downtime.
+	// The timezone in which to display the downtime's start and end times in Datadog applications.
 	Timezone *string `json:"timezone,omitempty"`
 	// ID of the last user that updated the downtime.
 	UpdaterId NullableInt32 `json:"updater_id,omitempty"`

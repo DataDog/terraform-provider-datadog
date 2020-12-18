@@ -24,6 +24,13 @@ const (
 	SYNTHETICSTESTDETAILSSUBTYPE_DNS  SyntheticsTestDetailsSubType = "dns"
 )
 
+var allowedSyntheticsTestDetailsSubTypeEnumValues = []SyntheticsTestDetailsSubType{
+	"http",
+	"ssl",
+	"tcp",
+	"dns",
+}
+
 func (v *SyntheticsTestDetailsSubType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -31,7 +38,7 @@ func (v *SyntheticsTestDetailsSubType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsTestDetailsSubType(value)
-	for _, existing := range []SyntheticsTestDetailsSubType{"http", "ssl", "tcp", "dns"} {
+	for _, existing := range allowedSyntheticsTestDetailsSubTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -39,6 +46,27 @@ func (v *SyntheticsTestDetailsSubType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsTestDetailsSubType", value)
+}
+
+// NewSyntheticsTestDetailsSubTypeFromValue returns a pointer to a valid SyntheticsTestDetailsSubType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsTestDetailsSubTypeFromValue(v string) (*SyntheticsTestDetailsSubType, error) {
+	ev := SyntheticsTestDetailsSubType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsTestDetailsSubType: valid values are %v", v, allowedSyntheticsTestDetailsSubTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsTestDetailsSubType) IsValid() bool {
+	for _, existing := range allowedSyntheticsTestDetailsSubTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsTestDetailsSubType value

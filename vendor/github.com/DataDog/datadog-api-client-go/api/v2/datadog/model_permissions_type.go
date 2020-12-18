@@ -21,6 +21,10 @@ const (
 	PERMISSIONSTYPE_PERMISSIONS PermissionsType = "permissions"
 )
 
+var allowedPermissionsTypeEnumValues = []PermissionsType{
+	"permissions",
+}
+
 func (v *PermissionsType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *PermissionsType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := PermissionsType(value)
-	for _, existing := range []PermissionsType{"permissions"} {
+	for _, existing := range allowedPermissionsTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *PermissionsType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid PermissionsType", value)
+}
+
+// NewPermissionsTypeFromValue returns a pointer to a valid PermissionsType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewPermissionsTypeFromValue(v string) (*PermissionsType, error) {
+	ev := PermissionsType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for PermissionsType: valid values are %v", v, allowedPermissionsTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v PermissionsType) IsValid() bool {
+	for _, existing := range allowedPermissionsTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to PermissionsType value

@@ -21,6 +21,10 @@ const (
 	LOGSUSERAGENTPARSERTYPE_USER_AGENT_PARSER LogsUserAgentParserType = "user-agent-parser"
 )
 
+var allowedLogsUserAgentParserTypeEnumValues = []LogsUserAgentParserType{
+	"user-agent-parser",
+}
+
 func (v *LogsUserAgentParserType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *LogsUserAgentParserType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsUserAgentParserType(value)
-	for _, existing := range []LogsUserAgentParserType{"user-agent-parser"} {
+	for _, existing := range allowedLogsUserAgentParserTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *LogsUserAgentParserType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsUserAgentParserType", value)
+}
+
+// NewLogsUserAgentParserTypeFromValue returns a pointer to a valid LogsUserAgentParserType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsUserAgentParserTypeFromValue(v string) (*LogsUserAgentParserType, error) {
+	ev := LogsUserAgentParserType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsUserAgentParserType: valid values are %v", v, allowedLogsUserAgentParserTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsUserAgentParserType) IsValid() bool {
+	for _, existing := range allowedLogsUserAgentParserTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsUserAgentParserType value

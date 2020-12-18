@@ -28,6 +28,17 @@ const (
 	SECURITYMONITORINGRULEEVALUATIONWINDOW_TWO_HOURS       SecurityMonitoringRuleEvaluationWindow = 7200
 )
 
+var allowedSecurityMonitoringRuleEvaluationWindowEnumValues = []SecurityMonitoringRuleEvaluationWindow{
+	0,
+	60,
+	300,
+	600,
+	900,
+	1800,
+	3600,
+	7200,
+}
+
 func (v *SecurityMonitoringRuleEvaluationWindow) UnmarshalJSON(src []byte) error {
 	var value int32
 	err := json.Unmarshal(src, &value)
@@ -35,7 +46,7 @@ func (v *SecurityMonitoringRuleEvaluationWindow) UnmarshalJSON(src []byte) error
 		return err
 	}
 	enumTypeValue := SecurityMonitoringRuleEvaluationWindow(value)
-	for _, existing := range []SecurityMonitoringRuleEvaluationWindow{0, 60, 300, 600, 900, 1800, 3600, 7200} {
+	for _, existing := range allowedSecurityMonitoringRuleEvaluationWindowEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -43,6 +54,27 @@ func (v *SecurityMonitoringRuleEvaluationWindow) UnmarshalJSON(src []byte) error
 	}
 
 	return fmt.Errorf("%+v is not a valid SecurityMonitoringRuleEvaluationWindow", value)
+}
+
+// NewSecurityMonitoringRuleEvaluationWindowFromValue returns a pointer to a valid SecurityMonitoringRuleEvaluationWindow
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSecurityMonitoringRuleEvaluationWindowFromValue(v int32) (*SecurityMonitoringRuleEvaluationWindow, error) {
+	ev := SecurityMonitoringRuleEvaluationWindow(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SecurityMonitoringRuleEvaluationWindow: valid values are %v", v, allowedSecurityMonitoringRuleEvaluationWindowEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SecurityMonitoringRuleEvaluationWindow) IsValid() bool {
+	for _, existing := range allowedSecurityMonitoringRuleEvaluationWindowEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SecurityMonitoringRuleEvaluationWindow value

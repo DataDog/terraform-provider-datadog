@@ -21,6 +21,10 @@ const (
 	EVENTSTREAMWIDGETDEFINITIONTYPE_EVENT_STREAM EventStreamWidgetDefinitionType = "event_stream"
 )
 
+var allowedEventStreamWidgetDefinitionTypeEnumValues = []EventStreamWidgetDefinitionType{
+	"event_stream",
+}
+
 func (v *EventStreamWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *EventStreamWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := EventStreamWidgetDefinitionType(value)
-	for _, existing := range []EventStreamWidgetDefinitionType{"event_stream"} {
+	for _, existing := range allowedEventStreamWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *EventStreamWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid EventStreamWidgetDefinitionType", value)
+}
+
+// NewEventStreamWidgetDefinitionTypeFromValue returns a pointer to a valid EventStreamWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewEventStreamWidgetDefinitionTypeFromValue(v string) (*EventStreamWidgetDefinitionType, error) {
+	ev := EventStreamWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for EventStreamWidgetDefinitionType: valid values are %v", v, allowedEventStreamWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v EventStreamWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedEventStreamWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to EventStreamWidgetDefinitionType value

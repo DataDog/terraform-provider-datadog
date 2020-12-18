@@ -23,6 +23,12 @@ const (
 	SLOTIMEFRAME_NINETY_DAYS SLOTimeframe = "90d"
 )
 
+var allowedSLOTimeframeEnumValues = []SLOTimeframe{
+	"7d",
+	"30d",
+	"90d",
+}
+
 func (v *SLOTimeframe) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -30,7 +36,7 @@ func (v *SLOTimeframe) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SLOTimeframe(value)
-	for _, existing := range []SLOTimeframe{"7d", "30d", "90d"} {
+	for _, existing := range allowedSLOTimeframeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -38,6 +44,27 @@ func (v *SLOTimeframe) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SLOTimeframe", value)
+}
+
+// NewSLOTimeframeFromValue returns a pointer to a valid SLOTimeframe
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSLOTimeframeFromValue(v string) (*SLOTimeframe, error) {
+	ev := SLOTimeframe(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SLOTimeframe: valid values are %v", v, allowedSLOTimeframeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SLOTimeframe) IsValid() bool {
+	for _, existing := range allowedSLOTimeframeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SLOTimeframe value

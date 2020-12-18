@@ -23,6 +23,12 @@ const (
 	WIDGETSERVICESUMMARYDISPLAYFORMAT_THREE_COLUMN WidgetServiceSummaryDisplayFormat = "three_column"
 )
 
+var allowedWidgetServiceSummaryDisplayFormatEnumValues = []WidgetServiceSummaryDisplayFormat{
+	"one_column",
+	"two_column",
+	"three_column",
+}
+
 func (v *WidgetServiceSummaryDisplayFormat) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -30,7 +36,7 @@ func (v *WidgetServiceSummaryDisplayFormat) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetServiceSummaryDisplayFormat(value)
-	for _, existing := range []WidgetServiceSummaryDisplayFormat{"one_column", "two_column", "three_column"} {
+	for _, existing := range allowedWidgetServiceSummaryDisplayFormatEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -38,6 +44,27 @@ func (v *WidgetServiceSummaryDisplayFormat) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetServiceSummaryDisplayFormat", value)
+}
+
+// NewWidgetServiceSummaryDisplayFormatFromValue returns a pointer to a valid WidgetServiceSummaryDisplayFormat
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetServiceSummaryDisplayFormatFromValue(v string) (*WidgetServiceSummaryDisplayFormat, error) {
+	ev := WidgetServiceSummaryDisplayFormat(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetServiceSummaryDisplayFormat: valid values are %v", v, allowedWidgetServiceSummaryDisplayFormatEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetServiceSummaryDisplayFormat) IsValid() bool {
+	for _, existing := range allowedWidgetServiceSummaryDisplayFormatEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetServiceSummaryDisplayFormat value

@@ -25,6 +25,14 @@ const (
 	SYNTHETICSPLAYINGTAB_TAB_3    SyntheticsPlayingTab = 3
 )
 
+var allowedSyntheticsPlayingTabEnumValues = []SyntheticsPlayingTab{
+	-1,
+	0,
+	1,
+	2,
+	3,
+}
+
 func (v *SyntheticsPlayingTab) UnmarshalJSON(src []byte) error {
 	var value int64
 	err := json.Unmarshal(src, &value)
@@ -32,7 +40,7 @@ func (v *SyntheticsPlayingTab) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsPlayingTab(value)
-	for _, existing := range []SyntheticsPlayingTab{-1, 0, 1, 2, 3} {
+	for _, existing := range allowedSyntheticsPlayingTabEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -40,6 +48,27 @@ func (v *SyntheticsPlayingTab) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsPlayingTab", value)
+}
+
+// NewSyntheticsPlayingTabFromValue returns a pointer to a valid SyntheticsPlayingTab
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsPlayingTabFromValue(v int64) (*SyntheticsPlayingTab, error) {
+	ev := SyntheticsPlayingTab(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsPlayingTab: valid values are %v", v, allowedSyntheticsPlayingTabEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsPlayingTab) IsValid() bool {
+	for _, existing := range allowedSyntheticsPlayingTabEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsPlayingTab value

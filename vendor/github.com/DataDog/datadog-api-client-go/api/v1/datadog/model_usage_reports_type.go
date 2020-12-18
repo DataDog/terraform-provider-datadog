@@ -21,6 +21,10 @@ const (
 	USAGEREPORTSTYPE_REPORTS UsageReportsType = "reports"
 )
 
+var allowedUsageReportsTypeEnumValues = []UsageReportsType{
+	"reports",
+}
+
 func (v *UsageReportsType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *UsageReportsType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := UsageReportsType(value)
-	for _, existing := range []UsageReportsType{"reports"} {
+	for _, existing := range allowedUsageReportsTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *UsageReportsType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid UsageReportsType", value)
+}
+
+// NewUsageReportsTypeFromValue returns a pointer to a valid UsageReportsType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewUsageReportsTypeFromValue(v string) (*UsageReportsType, error) {
+	ev := UsageReportsType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for UsageReportsType: valid values are %v", v, allowedUsageReportsTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v UsageReportsType) IsValid() bool {
+	for _, existing := range allowedUsageReportsTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to UsageReportsType value

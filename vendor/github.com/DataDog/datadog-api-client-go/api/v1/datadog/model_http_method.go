@@ -27,6 +27,16 @@ const (
 	HTTPMETHOD_OPTIONS HTTPMethod = "OPTIONS"
 )
 
+var allowedHTTPMethodEnumValues = []HTTPMethod{
+	"GET",
+	"POST",
+	"PATCH",
+	"PUT",
+	"DELETE",
+	"HEAD",
+	"OPTIONS",
+}
+
 func (v *HTTPMethod) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -34,7 +44,7 @@ func (v *HTTPMethod) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := HTTPMethod(value)
-	for _, existing := range []HTTPMethod{"GET", "POST", "PATCH", "PUT", "DELETE", "HEAD", "OPTIONS"} {
+	for _, existing := range allowedHTTPMethodEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -42,6 +52,27 @@ func (v *HTTPMethod) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid HTTPMethod", value)
+}
+
+// NewHTTPMethodFromValue returns a pointer to a valid HTTPMethod
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewHTTPMethodFromValue(v string) (*HTTPMethod, error) {
+	ev := HTTPMethod(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for HTTPMethod: valid values are %v", v, allowedHTTPMethodEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v HTTPMethod) IsValid() bool {
+	for _, existing := range allowedHTTPMethodEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to HTTPMethod value

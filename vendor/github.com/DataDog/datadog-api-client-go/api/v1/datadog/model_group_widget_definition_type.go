@@ -21,6 +21,10 @@ const (
 	GROUPWIDGETDEFINITIONTYPE_GROUP GroupWidgetDefinitionType = "group"
 )
 
+var allowedGroupWidgetDefinitionTypeEnumValues = []GroupWidgetDefinitionType{
+	"group",
+}
+
 func (v *GroupWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *GroupWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := GroupWidgetDefinitionType(value)
-	for _, existing := range []GroupWidgetDefinitionType{"group"} {
+	for _, existing := range allowedGroupWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *GroupWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid GroupWidgetDefinitionType", value)
+}
+
+// NewGroupWidgetDefinitionTypeFromValue returns a pointer to a valid GroupWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewGroupWidgetDefinitionTypeFromValue(v string) (*GroupWidgetDefinitionType, error) {
+	ev := GroupWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for GroupWidgetDefinitionType: valid values are %v", v, allowedGroupWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v GroupWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedGroupWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to GroupWidgetDefinitionType value

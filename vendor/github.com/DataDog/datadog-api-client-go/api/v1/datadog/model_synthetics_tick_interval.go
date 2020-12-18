@@ -29,6 +29,18 @@ const (
 	SYNTHETICSTICKINTERVAL_WEEK            SyntheticsTickInterval = 604800
 )
 
+var allowedSyntheticsTickIntervalEnumValues = []SyntheticsTickInterval{
+	60,
+	300,
+	900,
+	1800,
+	3600,
+	21600,
+	43200,
+	86400,
+	604800,
+}
+
 func (v *SyntheticsTickInterval) UnmarshalJSON(src []byte) error {
 	var value int64
 	err := json.Unmarshal(src, &value)
@@ -36,7 +48,7 @@ func (v *SyntheticsTickInterval) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsTickInterval(value)
-	for _, existing := range []SyntheticsTickInterval{60, 300, 900, 1800, 3600, 21600, 43200, 86400, 604800} {
+	for _, existing := range allowedSyntheticsTickIntervalEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -44,6 +56,27 @@ func (v *SyntheticsTickInterval) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsTickInterval", value)
+}
+
+// NewSyntheticsTickIntervalFromValue returns a pointer to a valid SyntheticsTickInterval
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsTickIntervalFromValue(v int64) (*SyntheticsTickInterval, error) {
+	ev := SyntheticsTickInterval(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsTickInterval: valid values are %v", v, allowedSyntheticsTickIntervalEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsTickInterval) IsValid() bool {
+	for _, existing := range allowedSyntheticsTickIntervalEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsTickInterval value

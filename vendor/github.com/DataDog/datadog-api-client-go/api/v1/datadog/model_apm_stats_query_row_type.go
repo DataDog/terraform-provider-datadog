@@ -23,6 +23,12 @@ const (
 	APMSTATSQUERYROWTYPE_SPAN     ApmStatsQueryRowType = "span"
 )
 
+var allowedApmStatsQueryRowTypeEnumValues = []ApmStatsQueryRowType{
+	"service",
+	"resource",
+	"span",
+}
+
 func (v *ApmStatsQueryRowType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -30,7 +36,7 @@ func (v *ApmStatsQueryRowType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := ApmStatsQueryRowType(value)
-	for _, existing := range []ApmStatsQueryRowType{"service", "resource", "span"} {
+	for _, existing := range allowedApmStatsQueryRowTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -38,6 +44,27 @@ func (v *ApmStatsQueryRowType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid ApmStatsQueryRowType", value)
+}
+
+// NewApmStatsQueryRowTypeFromValue returns a pointer to a valid ApmStatsQueryRowType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewApmStatsQueryRowTypeFromValue(v string) (*ApmStatsQueryRowType, error) {
+	ev := ApmStatsQueryRowType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for ApmStatsQueryRowType: valid values are %v", v, allowedApmStatsQueryRowTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v ApmStatsQueryRowType) IsValid() bool {
+	for _, existing := range allowedApmStatsQueryRowTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to ApmStatsQueryRowType value

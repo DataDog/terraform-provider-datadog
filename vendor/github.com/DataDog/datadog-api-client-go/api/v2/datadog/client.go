@@ -189,6 +189,14 @@ func (c *APIClient) callAPI(request *http.Request) (*http.Response, error) {
 		if err != nil {
 			return nil, err
 		}
+		// Strip any api keys from the response being logged
+		keys, ok := request.Context().Value(ContextAPIKeys).(map[string]APIKey)
+		if keys != nil && ok {
+			for _, apiKey := range keys {
+				valueRegex := regexp.MustCompile(fmt.Sprintf("(?m)%s", apiKey.Key))
+				dump = valueRegex.ReplaceAll(dump, []byte("REDACTED"))
+			}
+		}
 		log.Printf("\n%s\n", string(dump))
 	}
 
@@ -397,7 +405,7 @@ func (c *APIClient) decode(v interface{}, b []byte, contentType string) (err err
 					return err
 				}
 			} else {
-				errors.New("Unknown type with GetActualInstance but no unmarshalObj.UnmarshalJSON defined")
+				return errors.New("Unknown type with GetActualInstance but no unmarshalObj.UnmarshalJSON defined")
 			}
 		} else if err = json.Unmarshal(b, v); err != nil { // simple model
 			return err

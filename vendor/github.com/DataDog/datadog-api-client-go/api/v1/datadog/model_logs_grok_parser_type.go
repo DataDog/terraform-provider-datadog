@@ -21,6 +21,10 @@ const (
 	LOGSGROKPARSERTYPE_GROK_PARSER LogsGrokParserType = "grok-parser"
 )
 
+var allowedLogsGrokParserTypeEnumValues = []LogsGrokParserType{
+	"grok-parser",
+}
+
 func (v *LogsGrokParserType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *LogsGrokParserType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsGrokParserType(value)
-	for _, existing := range []LogsGrokParserType{"grok-parser"} {
+	for _, existing := range allowedLogsGrokParserTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *LogsGrokParserType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsGrokParserType", value)
+}
+
+// NewLogsGrokParserTypeFromValue returns a pointer to a valid LogsGrokParserType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsGrokParserTypeFromValue(v string) (*LogsGrokParserType, error) {
+	ev := LogsGrokParserType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsGrokParserType: valid values are %v", v, allowedLogsGrokParserTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsGrokParserType) IsValid() bool {
+	for _, existing := range allowedLogsGrokParserTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsGrokParserType value

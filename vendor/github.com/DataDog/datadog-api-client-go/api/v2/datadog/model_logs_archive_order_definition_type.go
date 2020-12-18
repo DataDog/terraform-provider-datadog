@@ -21,6 +21,10 @@ const (
 	LOGSARCHIVEORDERDEFINITIONTYPE_ARCHIVE_ORDER LogsArchiveOrderDefinitionType = "archive_order"
 )
 
+var allowedLogsArchiveOrderDefinitionTypeEnumValues = []LogsArchiveOrderDefinitionType{
+	"archive_order",
+}
+
 func (v *LogsArchiveOrderDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *LogsArchiveOrderDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsArchiveOrderDefinitionType(value)
-	for _, existing := range []LogsArchiveOrderDefinitionType{"archive_order"} {
+	for _, existing := range allowedLogsArchiveOrderDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *LogsArchiveOrderDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsArchiveOrderDefinitionType", value)
+}
+
+// NewLogsArchiveOrderDefinitionTypeFromValue returns a pointer to a valid LogsArchiveOrderDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsArchiveOrderDefinitionTypeFromValue(v string) (*LogsArchiveOrderDefinitionType, error) {
+	ev := LogsArchiveOrderDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsArchiveOrderDefinitionType: valid values are %v", v, allowedLogsArchiveOrderDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsArchiveOrderDefinitionType) IsValid() bool {
+	for _, existing := range allowedLogsArchiveOrderDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsArchiveOrderDefinitionType value

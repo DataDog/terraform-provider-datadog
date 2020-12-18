@@ -23,6 +23,12 @@ const (
 	WIDGETIMAGESIZING_CENTER WidgetImageSizing = "center"
 )
 
+var allowedWidgetImageSizingEnumValues = []WidgetImageSizing{
+	"zoom",
+	"fit",
+	"center",
+}
+
 func (v *WidgetImageSizing) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -30,7 +36,7 @@ func (v *WidgetImageSizing) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetImageSizing(value)
-	for _, existing := range []WidgetImageSizing{"zoom", "fit", "center"} {
+	for _, existing := range allowedWidgetImageSizingEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -38,6 +44,27 @@ func (v *WidgetImageSizing) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetImageSizing", value)
+}
+
+// NewWidgetImageSizingFromValue returns a pointer to a valid WidgetImageSizing
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetImageSizingFromValue(v string) (*WidgetImageSizing, error) {
+	ev := WidgetImageSizing(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetImageSizing: valid values are %v", v, allowedWidgetImageSizingEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetImageSizing) IsValid() bool {
+	for _, existing := range allowedWidgetImageSizingEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetImageSizing value

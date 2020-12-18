@@ -22,6 +22,11 @@ const (
 	USAGEMETRICCATEGORY_CUSTOM   UsageMetricCategory = "custom"
 )
 
+var allowedUsageMetricCategoryEnumValues = []UsageMetricCategory{
+	"standard",
+	"custom",
+}
+
 func (v *UsageMetricCategory) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *UsageMetricCategory) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := UsageMetricCategory(value)
-	for _, existing := range []UsageMetricCategory{"standard", "custom"} {
+	for _, existing := range allowedUsageMetricCategoryEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *UsageMetricCategory) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid UsageMetricCategory", value)
+}
+
+// NewUsageMetricCategoryFromValue returns a pointer to a valid UsageMetricCategory
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewUsageMetricCategoryFromValue(v string) (*UsageMetricCategory, error) {
+	ev := UsageMetricCategory(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for UsageMetricCategory: valid values are %v", v, allowedUsageMetricCategoryEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v UsageMetricCategory) IsValid() bool {
+	for _, existing := range allowedUsageMetricCategoryEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to UsageMetricCategory value

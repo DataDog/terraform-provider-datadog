@@ -22,6 +22,11 @@ const (
 	SYNTHETICSTESTDETAILSTYPE_BROWSER SyntheticsTestDetailsType = "browser"
 )
 
+var allowedSyntheticsTestDetailsTypeEnumValues = []SyntheticsTestDetailsType{
+	"api",
+	"browser",
+}
+
 func (v *SyntheticsTestDetailsType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *SyntheticsTestDetailsType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsTestDetailsType(value)
-	for _, existing := range []SyntheticsTestDetailsType{"api", "browser"} {
+	for _, existing := range allowedSyntheticsTestDetailsTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *SyntheticsTestDetailsType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsTestDetailsType", value)
+}
+
+// NewSyntheticsTestDetailsTypeFromValue returns a pointer to a valid SyntheticsTestDetailsType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsTestDetailsTypeFromValue(v string) (*SyntheticsTestDetailsType, error) {
+	ev := SyntheticsTestDetailsType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsTestDetailsType: valid values are %v", v, allowedSyntheticsTestDetailsTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsTestDetailsType) IsValid() bool {
+	for _, existing := range allowedSyntheticsTestDetailsTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsTestDetailsType value

@@ -21,6 +21,10 @@ const (
 	TIMESERIESWIDGETDEFINITIONTYPE_TIMESERIES TimeseriesWidgetDefinitionType = "timeseries"
 )
 
+var allowedTimeseriesWidgetDefinitionTypeEnumValues = []TimeseriesWidgetDefinitionType{
+	"timeseries",
+}
+
 func (v *TimeseriesWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *TimeseriesWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := TimeseriesWidgetDefinitionType(value)
-	for _, existing := range []TimeseriesWidgetDefinitionType{"timeseries"} {
+	for _, existing := range allowedTimeseriesWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *TimeseriesWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid TimeseriesWidgetDefinitionType", value)
+}
+
+// NewTimeseriesWidgetDefinitionTypeFromValue returns a pointer to a valid TimeseriesWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewTimeseriesWidgetDefinitionTypeFromValue(v string) (*TimeseriesWidgetDefinitionType, error) {
+	ev := TimeseriesWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for TimeseriesWidgetDefinitionType: valid values are %v", v, allowedTimeseriesWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v TimeseriesWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedTimeseriesWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to TimeseriesWidgetDefinitionType value

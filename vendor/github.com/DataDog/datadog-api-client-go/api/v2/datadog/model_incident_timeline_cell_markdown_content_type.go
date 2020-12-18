@@ -21,6 +21,10 @@ const (
 	INCIDENTTIMELINECELLMARKDOWNCONTENTTYPE_MARKDOWN IncidentTimelineCellMarkdownContentType = "markdown"
 )
 
+var allowedIncidentTimelineCellMarkdownContentTypeEnumValues = []IncidentTimelineCellMarkdownContentType{
+	"markdown",
+}
+
 func (v *IncidentTimelineCellMarkdownContentType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *IncidentTimelineCellMarkdownContentType) UnmarshalJSON(src []byte) erro
 		return err
 	}
 	enumTypeValue := IncidentTimelineCellMarkdownContentType(value)
-	for _, existing := range []IncidentTimelineCellMarkdownContentType{"markdown"} {
+	for _, existing := range allowedIncidentTimelineCellMarkdownContentTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *IncidentTimelineCellMarkdownContentType) UnmarshalJSON(src []byte) erro
 	}
 
 	return fmt.Errorf("%+v is not a valid IncidentTimelineCellMarkdownContentType", value)
+}
+
+// NewIncidentTimelineCellMarkdownContentTypeFromValue returns a pointer to a valid IncidentTimelineCellMarkdownContentType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewIncidentTimelineCellMarkdownContentTypeFromValue(v string) (*IncidentTimelineCellMarkdownContentType, error) {
+	ev := IncidentTimelineCellMarkdownContentType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for IncidentTimelineCellMarkdownContentType: valid values are %v", v, allowedIncidentTimelineCellMarkdownContentTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v IncidentTimelineCellMarkdownContentType) IsValid() bool {
+	for _, existing := range allowedIncidentTimelineCellMarkdownContentTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to IncidentTimelineCellMarkdownContentType value

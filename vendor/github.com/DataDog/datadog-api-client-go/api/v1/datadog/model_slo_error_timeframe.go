@@ -24,6 +24,13 @@ const (
 	SLOERRORTIMEFRAME_ALL         SLOErrorTimeframe = "all"
 )
 
+var allowedSLOErrorTimeframeEnumValues = []SLOErrorTimeframe{
+	"7d",
+	"30d",
+	"90d",
+	"all",
+}
+
 func (v *SLOErrorTimeframe) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -31,7 +38,7 @@ func (v *SLOErrorTimeframe) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SLOErrorTimeframe(value)
-	for _, existing := range []SLOErrorTimeframe{"7d", "30d", "90d", "all"} {
+	for _, existing := range allowedSLOErrorTimeframeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -39,6 +46,27 @@ func (v *SLOErrorTimeframe) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SLOErrorTimeframe", value)
+}
+
+// NewSLOErrorTimeframeFromValue returns a pointer to a valid SLOErrorTimeframe
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSLOErrorTimeframeFromValue(v string) (*SLOErrorTimeframe, error) {
+	ev := SLOErrorTimeframe(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SLOErrorTimeframe: valid values are %v", v, allowedSLOErrorTimeframeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SLOErrorTimeframe) IsValid() bool {
+	for _, existing := range allowedSLOErrorTimeframeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SLOErrorTimeframe value
