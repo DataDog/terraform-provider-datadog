@@ -24,6 +24,13 @@ const (
 	USAGESORT_END_DATE    UsageSort = "end_date"
 )
 
+var allowedUsageSortEnumValues = []UsageSort{
+	"computed_on",
+	"size",
+	"start_date",
+	"end_date",
+}
+
 func (v *UsageSort) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -31,7 +38,7 @@ func (v *UsageSort) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := UsageSort(value)
-	for _, existing := range []UsageSort{"computed_on", "size", "start_date", "end_date"} {
+	for _, existing := range allowedUsageSortEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -39,6 +46,27 @@ func (v *UsageSort) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid UsageSort", value)
+}
+
+// NewUsageSortFromValue returns a pointer to a valid UsageSort
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewUsageSortFromValue(v string) (*UsageSort, error) {
+	ev := UsageSort(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for UsageSort: valid values are %v", v, allowedUsageSortEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v UsageSort) IsValid() bool {
+	for _, existing := range allowedUsageSortEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to UsageSort value

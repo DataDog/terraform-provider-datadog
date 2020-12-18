@@ -23,6 +23,12 @@ const (
 	WIDGETDISPLAYTYPE_LINE WidgetDisplayType = "line"
 )
 
+var allowedWidgetDisplayTypeEnumValues = []WidgetDisplayType{
+	"area",
+	"bars",
+	"line",
+}
+
 func (v *WidgetDisplayType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -30,7 +36,7 @@ func (v *WidgetDisplayType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetDisplayType(value)
-	for _, existing := range []WidgetDisplayType{"area", "bars", "line"} {
+	for _, existing := range allowedWidgetDisplayTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -38,6 +44,27 @@ func (v *WidgetDisplayType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetDisplayType", value)
+}
+
+// NewWidgetDisplayTypeFromValue returns a pointer to a valid WidgetDisplayType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetDisplayTypeFromValue(v string) (*WidgetDisplayType, error) {
+	ev := WidgetDisplayType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetDisplayType: valid values are %v", v, allowedWidgetDisplayTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetDisplayType) IsValid() bool {
+	for _, existing := range allowedWidgetDisplayTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetDisplayType value

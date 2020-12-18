@@ -22,6 +22,11 @@ const (
 	SYNTHETICSBROWSERERRORTYPE_JS      SyntheticsBrowserErrorType = "js"
 )
 
+var allowedSyntheticsBrowserErrorTypeEnumValues = []SyntheticsBrowserErrorType{
+	"network",
+	"js",
+}
+
 func (v *SyntheticsBrowserErrorType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *SyntheticsBrowserErrorType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsBrowserErrorType(value)
-	for _, existing := range []SyntheticsBrowserErrorType{"network", "js"} {
+	for _, existing := range allowedSyntheticsBrowserErrorTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *SyntheticsBrowserErrorType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsBrowserErrorType", value)
+}
+
+// NewSyntheticsBrowserErrorTypeFromValue returns a pointer to a valid SyntheticsBrowserErrorType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsBrowserErrorTypeFromValue(v string) (*SyntheticsBrowserErrorType, error) {
+	ev := SyntheticsBrowserErrorType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsBrowserErrorType: valid values are %v", v, allowedSyntheticsBrowserErrorTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsBrowserErrorType) IsValid() bool {
+	for _, existing := range allowedSyntheticsBrowserErrorTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsBrowserErrorType value

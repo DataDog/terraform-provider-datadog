@@ -21,6 +21,10 @@ const (
 	IMAGEWIDGETDEFINITIONTYPE_IMAGE ImageWidgetDefinitionType = "image"
 )
 
+var allowedImageWidgetDefinitionTypeEnumValues = []ImageWidgetDefinitionType{
+	"image",
+}
+
 func (v *ImageWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *ImageWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := ImageWidgetDefinitionType(value)
-	for _, existing := range []ImageWidgetDefinitionType{"image"} {
+	for _, existing := range allowedImageWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *ImageWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid ImageWidgetDefinitionType", value)
+}
+
+// NewImageWidgetDefinitionTypeFromValue returns a pointer to a valid ImageWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewImageWidgetDefinitionTypeFromValue(v string) (*ImageWidgetDefinitionType, error) {
+	ev := ImageWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for ImageWidgetDefinitionType: valid values are %v", v, allowedImageWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v ImageWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedImageWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to ImageWidgetDefinitionType value

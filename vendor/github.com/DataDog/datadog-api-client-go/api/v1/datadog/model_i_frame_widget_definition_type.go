@@ -21,6 +21,10 @@ const (
 	IFRAMEWIDGETDEFINITIONTYPE_IFRAME IFrameWidgetDefinitionType = "iframe"
 )
 
+var allowedIFrameWidgetDefinitionTypeEnumValues = []IFrameWidgetDefinitionType{
+	"iframe",
+}
+
 func (v *IFrameWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *IFrameWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := IFrameWidgetDefinitionType(value)
-	for _, existing := range []IFrameWidgetDefinitionType{"iframe"} {
+	for _, existing := range allowedIFrameWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *IFrameWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid IFrameWidgetDefinitionType", value)
+}
+
+// NewIFrameWidgetDefinitionTypeFromValue returns a pointer to a valid IFrameWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewIFrameWidgetDefinitionTypeFromValue(v string) (*IFrameWidgetDefinitionType, error) {
+	ev := IFrameWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for IFrameWidgetDefinitionType: valid values are %v", v, allowedIFrameWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v IFrameWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedIFrameWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to IFrameWidgetDefinitionType value

@@ -31,6 +31,20 @@ const (
 	SYNTHETICSCHECKTYPE_MATCH_REGEX     SyntheticsCheckType = "matchRegex"
 )
 
+var allowedSyntheticsCheckTypeEnumValues = []SyntheticsCheckType{
+	"equals",
+	"notEquals",
+	"contains",
+	"notContains",
+	"startsWith",
+	"notStartsWith",
+	"greater",
+	"lower",
+	"greaterEquals",
+	"lowerEquals",
+	"matchRegex",
+}
+
 func (v *SyntheticsCheckType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -38,7 +52,7 @@ func (v *SyntheticsCheckType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsCheckType(value)
-	for _, existing := range []SyntheticsCheckType{"equals", "notEquals", "contains", "notContains", "startsWith", "notStartsWith", "greater", "lower", "greaterEquals", "lowerEquals", "matchRegex"} {
+	for _, existing := range allowedSyntheticsCheckTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -46,6 +60,27 @@ func (v *SyntheticsCheckType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsCheckType", value)
+}
+
+// NewSyntheticsCheckTypeFromValue returns a pointer to a valid SyntheticsCheckType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsCheckTypeFromValue(v string) (*SyntheticsCheckType, error) {
+	ev := SyntheticsCheckType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsCheckType: valid values are %v", v, allowedSyntheticsCheckTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsCheckType) IsValid() bool {
+	for _, existing := range allowedSyntheticsCheckTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsCheckType value

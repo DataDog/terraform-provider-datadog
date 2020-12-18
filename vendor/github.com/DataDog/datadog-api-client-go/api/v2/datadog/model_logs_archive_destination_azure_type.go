@@ -21,6 +21,10 @@ const (
 	LOGSARCHIVEDESTINATIONAZURETYPE_AZURE LogsArchiveDestinationAzureType = "azure"
 )
 
+var allowedLogsArchiveDestinationAzureTypeEnumValues = []LogsArchiveDestinationAzureType{
+	"azure",
+}
+
 func (v *LogsArchiveDestinationAzureType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *LogsArchiveDestinationAzureType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsArchiveDestinationAzureType(value)
-	for _, existing := range []LogsArchiveDestinationAzureType{"azure"} {
+	for _, existing := range allowedLogsArchiveDestinationAzureTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *LogsArchiveDestinationAzureType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsArchiveDestinationAzureType", value)
+}
+
+// NewLogsArchiveDestinationAzureTypeFromValue returns a pointer to a valid LogsArchiveDestinationAzureType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsArchiveDestinationAzureTypeFromValue(v string) (*LogsArchiveDestinationAzureType, error) {
+	ev := LogsArchiveDestinationAzureType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsArchiveDestinationAzureType: valid values are %v", v, allowedLogsArchiveDestinationAzureTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsArchiveDestinationAzureType) IsValid() bool {
+	for _, existing := range allowedLogsArchiveDestinationAzureTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsArchiveDestinationAzureType value

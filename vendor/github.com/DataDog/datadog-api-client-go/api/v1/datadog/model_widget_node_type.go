@@ -22,6 +22,11 @@ const (
 	WIDGETNODETYPE_CONTAINER WidgetNodeType = "container"
 )
 
+var allowedWidgetNodeTypeEnumValues = []WidgetNodeType{
+	"host",
+	"container",
+}
+
 func (v *WidgetNodeType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *WidgetNodeType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetNodeType(value)
-	for _, existing := range []WidgetNodeType{"host", "container"} {
+	for _, existing := range allowedWidgetNodeTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *WidgetNodeType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetNodeType", value)
+}
+
+// NewWidgetNodeTypeFromValue returns a pointer to a valid WidgetNodeType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetNodeTypeFromValue(v string) (*WidgetNodeType, error) {
+	ev := WidgetNodeType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetNodeType: valid values are %v", v, allowedWidgetNodeTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetNodeType) IsValid() bool {
+	for _, existing := range allowedWidgetNodeTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetNodeType value

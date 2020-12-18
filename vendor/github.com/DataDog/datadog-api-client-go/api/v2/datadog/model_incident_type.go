@@ -21,6 +21,10 @@ const (
 	INCIDENTTYPE_INCIDENTS IncidentType = "incidents"
 )
 
+var allowedIncidentTypeEnumValues = []IncidentType{
+	"incidents",
+}
+
 func (v *IncidentType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *IncidentType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := IncidentType(value)
-	for _, existing := range []IncidentType{"incidents"} {
+	for _, existing := range allowedIncidentTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *IncidentType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid IncidentType", value)
+}
+
+// NewIncidentTypeFromValue returns a pointer to a valid IncidentType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewIncidentTypeFromValue(v string) (*IncidentType, error) {
+	ev := IncidentType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for IncidentType: valid values are %v", v, allowedIncidentTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v IncidentType) IsValid() bool {
+	for _, existing := range allowedIncidentTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to IncidentType value

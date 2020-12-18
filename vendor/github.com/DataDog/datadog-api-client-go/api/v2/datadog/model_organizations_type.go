@@ -21,6 +21,10 @@ const (
 	ORGANIZATIONSTYPE_ORGS OrganizationsType = "orgs"
 )
 
+var allowedOrganizationsTypeEnumValues = []OrganizationsType{
+	"orgs",
+}
+
 func (v *OrganizationsType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *OrganizationsType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := OrganizationsType(value)
-	for _, existing := range []OrganizationsType{"orgs"} {
+	for _, existing := range allowedOrganizationsTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *OrganizationsType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid OrganizationsType", value)
+}
+
+// NewOrganizationsTypeFromValue returns a pointer to a valid OrganizationsType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewOrganizationsTypeFromValue(v string) (*OrganizationsType, error) {
+	ev := OrganizationsType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for OrganizationsType: valid values are %v", v, allowedOrganizationsTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v OrganizationsType) IsValid() bool {
+	for _, existing := range allowedOrganizationsTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to OrganizationsType value

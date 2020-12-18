@@ -25,6 +25,14 @@ const (
 	WIDGETAGGREGATOR_SUM     WidgetAggregator = "sum"
 )
 
+var allowedWidgetAggregatorEnumValues = []WidgetAggregator{
+	"avg",
+	"last",
+	"max",
+	"min",
+	"sum",
+}
+
 func (v *WidgetAggregator) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -32,7 +40,7 @@ func (v *WidgetAggregator) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetAggregator(value)
-	for _, existing := range []WidgetAggregator{"avg", "last", "max", "min", "sum"} {
+	for _, existing := range allowedWidgetAggregatorEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -40,6 +48,27 @@ func (v *WidgetAggregator) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetAggregator", value)
+}
+
+// NewWidgetAggregatorFromValue returns a pointer to a valid WidgetAggregator
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetAggregatorFromValue(v string) (*WidgetAggregator, error) {
+	ev := WidgetAggregator(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetAggregator: valid values are %v", v, allowedWidgetAggregatorEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetAggregator) IsValid() bool {
+	for _, existing := range allowedWidgetAggregatorEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetAggregator value

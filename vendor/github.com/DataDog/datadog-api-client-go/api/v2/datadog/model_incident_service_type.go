@@ -21,6 +21,10 @@ const (
 	INCIDENTSERVICETYPE_SERVICES IncidentServiceType = "services"
 )
 
+var allowedIncidentServiceTypeEnumValues = []IncidentServiceType{
+	"services",
+}
+
 func (v *IncidentServiceType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *IncidentServiceType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := IncidentServiceType(value)
-	for _, existing := range []IncidentServiceType{"services"} {
+	for _, existing := range allowedIncidentServiceTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *IncidentServiceType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid IncidentServiceType", value)
+}
+
+// NewIncidentServiceTypeFromValue returns a pointer to a valid IncidentServiceType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewIncidentServiceTypeFromValue(v string) (*IncidentServiceType, error) {
+	ev := IncidentServiceType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for IncidentServiceType: valid values are %v", v, allowedIncidentServiceTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v IncidentServiceType) IsValid() bool {
+	for _, existing := range allowedIncidentServiceTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to IncidentServiceType value

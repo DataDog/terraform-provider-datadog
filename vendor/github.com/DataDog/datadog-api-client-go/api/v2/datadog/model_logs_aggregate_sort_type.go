@@ -22,6 +22,11 @@ const (
 	LOGSAGGREGATESORTTYPE_MEASURE      LogsAggregateSortType = "measure"
 )
 
+var allowedLogsAggregateSortTypeEnumValues = []LogsAggregateSortType{
+	"alphabetical",
+	"measure",
+}
+
 func (v *LogsAggregateSortType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *LogsAggregateSortType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsAggregateSortType(value)
-	for _, existing := range []LogsAggregateSortType{"alphabetical", "measure"} {
+	for _, existing := range allowedLogsAggregateSortTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *LogsAggregateSortType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsAggregateSortType", value)
+}
+
+// NewLogsAggregateSortTypeFromValue returns a pointer to a valid LogsAggregateSortType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsAggregateSortTypeFromValue(v string) (*LogsAggregateSortType, error) {
+	ev := LogsAggregateSortType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsAggregateSortType: valid values are %v", v, allowedLogsAggregateSortTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsAggregateSortType) IsValid() bool {
+	for _, existing := range allowedLogsAggregateSortTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsAggregateSortType value

@@ -21,6 +21,10 @@ const (
 	LOGSSTRINGBUILDERPROCESSORTYPE_STRING_BUILDER_PROCESSOR LogsStringBuilderProcessorType = "string-builder-processor"
 )
 
+var allowedLogsStringBuilderProcessorTypeEnumValues = []LogsStringBuilderProcessorType{
+	"string-builder-processor",
+}
+
 func (v *LogsStringBuilderProcessorType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *LogsStringBuilderProcessorType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsStringBuilderProcessorType(value)
-	for _, existing := range []LogsStringBuilderProcessorType{"string-builder-processor"} {
+	for _, existing := range allowedLogsStringBuilderProcessorTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *LogsStringBuilderProcessorType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsStringBuilderProcessorType", value)
+}
+
+// NewLogsStringBuilderProcessorTypeFromValue returns a pointer to a valid LogsStringBuilderProcessorType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsStringBuilderProcessorTypeFromValue(v string) (*LogsStringBuilderProcessorType, error) {
+	ev := LogsStringBuilderProcessorType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsStringBuilderProcessorType: valid values are %v", v, allowedLogsStringBuilderProcessorTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsStringBuilderProcessorType) IsValid() bool {
+	for _, existing := range allowedLogsStringBuilderProcessorTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsStringBuilderProcessorType value

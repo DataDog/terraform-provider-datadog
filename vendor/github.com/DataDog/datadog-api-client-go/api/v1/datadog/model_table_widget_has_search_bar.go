@@ -23,6 +23,12 @@ const (
 	TABLEWIDGETHASSEARCHBAR_AUTO   TableWidgetHasSearchBar = "auto"
 )
 
+var allowedTableWidgetHasSearchBarEnumValues = []TableWidgetHasSearchBar{
+	"always",
+	"never",
+	"auto",
+}
+
 func (v *TableWidgetHasSearchBar) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -30,7 +36,7 @@ func (v *TableWidgetHasSearchBar) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := TableWidgetHasSearchBar(value)
-	for _, existing := range []TableWidgetHasSearchBar{"always", "never", "auto"} {
+	for _, existing := range allowedTableWidgetHasSearchBarEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -38,6 +44,27 @@ func (v *TableWidgetHasSearchBar) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid TableWidgetHasSearchBar", value)
+}
+
+// NewTableWidgetHasSearchBarFromValue returns a pointer to a valid TableWidgetHasSearchBar
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewTableWidgetHasSearchBarFromValue(v string) (*TableWidgetHasSearchBar, error) {
+	ev := TableWidgetHasSearchBar(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for TableWidgetHasSearchBar: valid values are %v", v, allowedTableWidgetHasSearchBarEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v TableWidgetHasSearchBar) IsValid() bool {
+	for _, existing := range allowedTableWidgetHasSearchBarEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to TableWidgetHasSearchBar value

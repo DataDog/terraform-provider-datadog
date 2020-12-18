@@ -28,6 +28,17 @@ const (
 	SYNTHETICSASSERTIONTYPE_RECORD_SOME   SyntheticsAssertionType = "recordSome"
 )
 
+var allowedSyntheticsAssertionTypeEnumValues = []SyntheticsAssertionType{
+	"body",
+	"header",
+	"statusCode",
+	"certificate",
+	"responseTime",
+	"property",
+	"recordEvery",
+	"recordSome",
+}
+
 func (v *SyntheticsAssertionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -35,7 +46,7 @@ func (v *SyntheticsAssertionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsAssertionType(value)
-	for _, existing := range []SyntheticsAssertionType{"body", "header", "statusCode", "certificate", "responseTime", "property", "recordEvery", "recordSome"} {
+	for _, existing := range allowedSyntheticsAssertionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -43,6 +54,27 @@ func (v *SyntheticsAssertionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsAssertionType", value)
+}
+
+// NewSyntheticsAssertionTypeFromValue returns a pointer to a valid SyntheticsAssertionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsAssertionTypeFromValue(v string) (*SyntheticsAssertionType, error) {
+	ev := SyntheticsAssertionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsAssertionType: valid values are %v", v, allowedSyntheticsAssertionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsAssertionType) IsValid() bool {
+	for _, existing := range allowedSyntheticsAssertionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsAssertionType value

@@ -45,6 +45,34 @@ const (
 	SYNTHETICSSTEPTYPE_WAIT                      SyntheticsStepType = "wait"
 )
 
+var allowedSyntheticsStepTypeEnumValues = []SyntheticsStepType{
+	"assertCurrentUrl",
+	"assertElementAttribute",
+	"assertElementContent",
+	"assertElementPresent",
+	"assertEmail",
+	"assertFileDownload",
+	"assertFromJavascript",
+	"assertPageContains",
+	"assertPageLacks",
+	"click",
+	"extractFromJavascript",
+	"extractVariable",
+	"goToEmailLink",
+	"goToUrl",
+	"goToUrlAndMeasureTti",
+	"hover",
+	"playSubTest",
+	"pressKey",
+	"refresh",
+	"runApiTest",
+	"scroll",
+	"selectOption",
+	"typeText",
+	"uploadFiles",
+	"wait",
+}
+
 func (v *SyntheticsStepType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -52,7 +80,7 @@ func (v *SyntheticsStepType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsStepType(value)
-	for _, existing := range []SyntheticsStepType{"assertCurrentUrl", "assertElementAttribute", "assertElementContent", "assertElementPresent", "assertEmail", "assertFileDownload", "assertFromJavascript", "assertPageContains", "assertPageLacks", "click", "extractFromJavascript", "extractVariable", "goToEmailLink", "goToUrl", "goToUrlAndMeasureTti", "hover", "playSubTest", "pressKey", "refresh", "runApiTest", "scroll", "selectOption", "typeText", "uploadFiles", "wait"} {
+	for _, existing := range allowedSyntheticsStepTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -60,6 +88,27 @@ func (v *SyntheticsStepType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsStepType", value)
+}
+
+// NewSyntheticsStepTypeFromValue returns a pointer to a valid SyntheticsStepType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsStepTypeFromValue(v string) (*SyntheticsStepType, error) {
+	ev := SyntheticsStepType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsStepType: valid values are %v", v, allowedSyntheticsStepTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsStepType) IsValid() bool {
+	for _, existing := range allowedSyntheticsStepTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsStepType value

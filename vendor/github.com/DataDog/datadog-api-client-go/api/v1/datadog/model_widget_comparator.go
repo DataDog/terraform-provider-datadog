@@ -24,6 +24,13 @@ const (
 	WIDGETCOMPARATOR_LESS_THAN_OR_EQUAL_TO    WidgetComparator = "<="
 )
 
+var allowedWidgetComparatorEnumValues = []WidgetComparator{
+	">",
+	">=",
+	"<",
+	"<=",
+}
+
 func (v *WidgetComparator) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -31,7 +38,7 @@ func (v *WidgetComparator) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetComparator(value)
-	for _, existing := range []WidgetComparator{">", ">=", "<", "<="} {
+	for _, existing := range allowedWidgetComparatorEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -39,6 +46,27 @@ func (v *WidgetComparator) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetComparator", value)
+}
+
+// NewWidgetComparatorFromValue returns a pointer to a valid WidgetComparator
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetComparatorFromValue(v string) (*WidgetComparator, error) {
+	ev := WidgetComparator(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetComparator: valid values are %v", v, allowedWidgetComparatorEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetComparator) IsValid() bool {
+	for _, existing := range allowedWidgetComparatorEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetComparator value

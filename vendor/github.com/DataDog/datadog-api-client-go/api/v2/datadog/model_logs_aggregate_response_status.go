@@ -22,6 +22,11 @@ const (
 	LOGSAGGREGATERESPONSESTATUS_TIMEOUT LogsAggregateResponseStatus = "timeout"
 )
 
+var allowedLogsAggregateResponseStatusEnumValues = []LogsAggregateResponseStatus{
+	"done",
+	"timeout",
+}
+
 func (v *LogsAggregateResponseStatus) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *LogsAggregateResponseStatus) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsAggregateResponseStatus(value)
-	for _, existing := range []LogsAggregateResponseStatus{"done", "timeout"} {
+	for _, existing := range allowedLogsAggregateResponseStatusEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *LogsAggregateResponseStatus) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsAggregateResponseStatus", value)
+}
+
+// NewLogsAggregateResponseStatusFromValue returns a pointer to a valid LogsAggregateResponseStatus
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsAggregateResponseStatusFromValue(v string) (*LogsAggregateResponseStatus, error) {
+	ev := LogsAggregateResponseStatus(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsAggregateResponseStatus: valid values are %v", v, allowedLogsAggregateResponseStatusEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsAggregateResponseStatus) IsValid() bool {
+	for _, existing := range allowedLogsAggregateResponseStatusEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsAggregateResponseStatus value

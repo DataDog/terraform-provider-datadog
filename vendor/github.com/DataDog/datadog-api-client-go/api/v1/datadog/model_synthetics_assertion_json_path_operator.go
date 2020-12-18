@@ -21,6 +21,10 @@ const (
 	SYNTHETICSASSERTIONJSONPATHOPERATOR_VALIDATES_JSON_PATH SyntheticsAssertionJSONPathOperator = "validatesJSONPath"
 )
 
+var allowedSyntheticsAssertionJSONPathOperatorEnumValues = []SyntheticsAssertionJSONPathOperator{
+	"validatesJSONPath",
+}
+
 func (v *SyntheticsAssertionJSONPathOperator) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *SyntheticsAssertionJSONPathOperator) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsAssertionJSONPathOperator(value)
-	for _, existing := range []SyntheticsAssertionJSONPathOperator{"validatesJSONPath"} {
+	for _, existing := range allowedSyntheticsAssertionJSONPathOperatorEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *SyntheticsAssertionJSONPathOperator) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsAssertionJSONPathOperator", value)
+}
+
+// NewSyntheticsAssertionJSONPathOperatorFromValue returns a pointer to a valid SyntheticsAssertionJSONPathOperator
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsAssertionJSONPathOperatorFromValue(v string) (*SyntheticsAssertionJSONPathOperator, error) {
+	ev := SyntheticsAssertionJSONPathOperator(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsAssertionJSONPathOperator: valid values are %v", v, allowedSyntheticsAssertionJSONPathOperatorEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsAssertionJSONPathOperator) IsValid() bool {
+	for _, existing := range allowedSyntheticsAssertionJSONPathOperatorEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsAssertionJSONPathOperator value

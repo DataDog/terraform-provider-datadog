@@ -29,6 +29,18 @@ const (
 	MONITORDEVICEID_FIREFOX_MOBILE_SMALL MonitorDeviceID = "firefox.mobile_small"
 )
 
+var allowedMonitorDeviceIDEnumValues = []MonitorDeviceID{
+	"laptop_large",
+	"tablet",
+	"mobile_small",
+	"chrome.laptop_large",
+	"chrome.tablet",
+	"chrome.mobile_small",
+	"firefox.laptop_large",
+	"firefox.tablet",
+	"firefox.mobile_small",
+}
+
 func (v *MonitorDeviceID) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -36,7 +48,7 @@ func (v *MonitorDeviceID) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := MonitorDeviceID(value)
-	for _, existing := range []MonitorDeviceID{"laptop_large", "tablet", "mobile_small", "chrome.laptop_large", "chrome.tablet", "chrome.mobile_small", "firefox.laptop_large", "firefox.tablet", "firefox.mobile_small"} {
+	for _, existing := range allowedMonitorDeviceIDEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -44,6 +56,27 @@ func (v *MonitorDeviceID) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid MonitorDeviceID", value)
+}
+
+// NewMonitorDeviceIDFromValue returns a pointer to a valid MonitorDeviceID
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewMonitorDeviceIDFromValue(v string) (*MonitorDeviceID, error) {
+	ev := MonitorDeviceID(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for MonitorDeviceID: valid values are %v", v, allowedMonitorDeviceIDEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v MonitorDeviceID) IsValid() bool {
+	for _, existing := range allowedMonitorDeviceIDEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to MonitorDeviceID value

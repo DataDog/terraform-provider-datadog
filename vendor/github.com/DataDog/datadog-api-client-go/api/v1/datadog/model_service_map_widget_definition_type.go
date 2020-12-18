@@ -21,6 +21,10 @@ const (
 	SERVICEMAPWIDGETDEFINITIONTYPE_SERVICEMAP ServiceMapWidgetDefinitionType = "servicemap"
 )
 
+var allowedServiceMapWidgetDefinitionTypeEnumValues = []ServiceMapWidgetDefinitionType{
+	"servicemap",
+}
+
 func (v *ServiceMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *ServiceMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := ServiceMapWidgetDefinitionType(value)
-	for _, existing := range []ServiceMapWidgetDefinitionType{"servicemap"} {
+	for _, existing := range allowedServiceMapWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *ServiceMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid ServiceMapWidgetDefinitionType", value)
+}
+
+// NewServiceMapWidgetDefinitionTypeFromValue returns a pointer to a valid ServiceMapWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewServiceMapWidgetDefinitionTypeFromValue(v string) (*ServiceMapWidgetDefinitionType, error) {
+	ev := ServiceMapWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for ServiceMapWidgetDefinitionType: valid values are %v", v, allowedServiceMapWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v ServiceMapWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedServiceMapWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to ServiceMapWidgetDefinitionType value

@@ -21,6 +21,10 @@ const (
 	LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER LogsMessageRemapperType = "message-remapper"
 )
 
+var allowedLogsMessageRemapperTypeEnumValues = []LogsMessageRemapperType{
+	"message-remapper",
+}
+
 func (v *LogsMessageRemapperType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *LogsMessageRemapperType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsMessageRemapperType(value)
-	for _, existing := range []LogsMessageRemapperType{"message-remapper"} {
+	for _, existing := range allowedLogsMessageRemapperTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *LogsMessageRemapperType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsMessageRemapperType", value)
+}
+
+// NewLogsMessageRemapperTypeFromValue returns a pointer to a valid LogsMessageRemapperType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsMessageRemapperTypeFromValue(v string) (*LogsMessageRemapperType, error) {
+	ev := LogsMessageRemapperType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsMessageRemapperType: valid values are %v", v, allowedLogsMessageRemapperTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsMessageRemapperType) IsValid() bool {
+	for _, existing := range allowedLogsMessageRemapperTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsMessageRemapperType value

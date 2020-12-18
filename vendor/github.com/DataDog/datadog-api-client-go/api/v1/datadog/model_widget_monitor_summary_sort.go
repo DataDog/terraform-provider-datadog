@@ -35,6 +35,24 @@ const (
 	WIDGETMONITORSUMMARYSORT_TRIGGERED_DESCENDING WidgetMonitorSummarySort = "triggered,desc"
 )
 
+var allowedWidgetMonitorSummarySortEnumValues = []WidgetMonitorSummarySort{
+	"name",
+	"group",
+	"status",
+	"tags",
+	"triggered",
+	"group,asc",
+	"group,desc",
+	"name,asc",
+	"name,desc",
+	"status,asc",
+	"status,desc",
+	"tags,asc",
+	"tags,desc",
+	"triggered,asc",
+	"triggered,desc",
+}
+
 func (v *WidgetMonitorSummarySort) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -42,7 +60,7 @@ func (v *WidgetMonitorSummarySort) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetMonitorSummarySort(value)
-	for _, existing := range []WidgetMonitorSummarySort{"name", "group", "status", "tags", "triggered", "group,asc", "group,desc", "name,asc", "name,desc", "status,asc", "status,desc", "tags,asc", "tags,desc", "triggered,asc", "triggered,desc"} {
+	for _, existing := range allowedWidgetMonitorSummarySortEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -50,6 +68,27 @@ func (v *WidgetMonitorSummarySort) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetMonitorSummarySort", value)
+}
+
+// NewWidgetMonitorSummarySortFromValue returns a pointer to a valid WidgetMonitorSummarySort
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetMonitorSummarySortFromValue(v string) (*WidgetMonitorSummarySort, error) {
+	ev := WidgetMonitorSummarySort(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetMonitorSummarySort: valid values are %v", v, allowedWidgetMonitorSummarySortEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetMonitorSummarySort) IsValid() bool {
+	for _, existing := range allowedWidgetMonitorSummarySortEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetMonitorSummarySort value

@@ -26,6 +26,15 @@ const (
 	ROLESSORT_USER_COUNT_DESCENDING  RolesSort = "-user_count"
 )
 
+var allowedRolesSortEnumValues = []RolesSort{
+	"name",
+	"-name",
+	"modified_at",
+	"-modified_at",
+	"user_count",
+	"-user_count",
+}
+
 func (v *RolesSort) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -33,7 +42,7 @@ func (v *RolesSort) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := RolesSort(value)
-	for _, existing := range []RolesSort{"name", "-name", "modified_at", "-modified_at", "user_count", "-user_count"} {
+	for _, existing := range allowedRolesSortEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -41,6 +50,27 @@ func (v *RolesSort) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid RolesSort", value)
+}
+
+// NewRolesSortFromValue returns a pointer to a valid RolesSort
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewRolesSortFromValue(v string) (*RolesSort, error) {
+	ev := RolesSort(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for RolesSort: valid values are %v", v, allowedRolesSortEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v RolesSort) IsValid() bool {
+	for _, existing := range allowedRolesSortEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to RolesSort value

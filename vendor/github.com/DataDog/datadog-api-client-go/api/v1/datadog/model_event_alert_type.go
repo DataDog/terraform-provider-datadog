@@ -27,6 +27,16 @@ const (
 	EVENTALERTTYPE_SNAPSHOT       EventAlertType = "snapshot"
 )
 
+var allowedEventAlertTypeEnumValues = []EventAlertType{
+	"error",
+	"warning",
+	"info",
+	"success",
+	"user_update",
+	"recommendation",
+	"snapshot",
+}
+
 func (v *EventAlertType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -34,7 +44,7 @@ func (v *EventAlertType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := EventAlertType(value)
-	for _, existing := range []EventAlertType{"error", "warning", "info", "success", "user_update", "recommendation", "snapshot"} {
+	for _, existing := range allowedEventAlertTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -42,6 +52,27 @@ func (v *EventAlertType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid EventAlertType", value)
+}
+
+// NewEventAlertTypeFromValue returns a pointer to a valid EventAlertType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewEventAlertTypeFromValue(v string) (*EventAlertType, error) {
+	ev := EventAlertType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for EventAlertType: valid values are %v", v, allowedEventAlertTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v EventAlertType) IsValid() bool {
+	for _, existing := range allowedEventAlertTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to EventAlertType value

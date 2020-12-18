@@ -21,6 +21,10 @@ const (
 	SECURITYMONITORINGSIGNALTYPE_SIGNAL SecurityMonitoringSignalType = "signal"
 )
 
+var allowedSecurityMonitoringSignalTypeEnumValues = []SecurityMonitoringSignalType{
+	"signal",
+}
+
 func (v *SecurityMonitoringSignalType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *SecurityMonitoringSignalType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SecurityMonitoringSignalType(value)
-	for _, existing := range []SecurityMonitoringSignalType{"signal"} {
+	for _, existing := range allowedSecurityMonitoringSignalTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *SecurityMonitoringSignalType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SecurityMonitoringSignalType", value)
+}
+
+// NewSecurityMonitoringSignalTypeFromValue returns a pointer to a valid SecurityMonitoringSignalType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSecurityMonitoringSignalTypeFromValue(v string) (*SecurityMonitoringSignalType, error) {
+	ev := SecurityMonitoringSignalType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SecurityMonitoringSignalType: valid values are %v", v, allowedSecurityMonitoringSignalTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SecurityMonitoringSignalType) IsValid() bool {
+	for _, existing := range allowedSecurityMonitoringSignalTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SecurityMonitoringSignalType value

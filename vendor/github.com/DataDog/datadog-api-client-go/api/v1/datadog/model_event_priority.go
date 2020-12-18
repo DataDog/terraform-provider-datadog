@@ -22,6 +22,11 @@ const (
 	EVENTPRIORITY_LOW    EventPriority = "low"
 )
 
+var allowedEventPriorityEnumValues = []EventPriority{
+	"normal",
+	"low",
+}
+
 func (v *EventPriority) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *EventPriority) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := EventPriority(value)
-	for _, existing := range []EventPriority{"normal", "low"} {
+	for _, existing := range allowedEventPriorityEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *EventPriority) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid EventPriority", value)
+}
+
+// NewEventPriorityFromValue returns a pointer to a valid EventPriority
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewEventPriorityFromValue(v string) (*EventPriority, error) {
+	ev := EventPriority(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for EventPriority: valid values are %v", v, allowedEventPriorityEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v EventPriority) IsValid() bool {
+	for _, existing := range allowedEventPriorityEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to EventPriority value

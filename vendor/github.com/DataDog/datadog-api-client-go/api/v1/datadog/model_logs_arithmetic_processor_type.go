@@ -21,6 +21,10 @@ const (
 	LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR LogsArithmeticProcessorType = "arithmetic-processor"
 )
 
+var allowedLogsArithmeticProcessorTypeEnumValues = []LogsArithmeticProcessorType{
+	"arithmetic-processor",
+}
+
 func (v *LogsArithmeticProcessorType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *LogsArithmeticProcessorType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsArithmeticProcessorType(value)
-	for _, existing := range []LogsArithmeticProcessorType{"arithmetic-processor"} {
+	for _, existing := range allowedLogsArithmeticProcessorTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *LogsArithmeticProcessorType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsArithmeticProcessorType", value)
+}
+
+// NewLogsArithmeticProcessorTypeFromValue returns a pointer to a valid LogsArithmeticProcessorType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsArithmeticProcessorTypeFromValue(v string) (*LogsArithmeticProcessorType, error) {
+	ev := LogsArithmeticProcessorType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsArithmeticProcessorType: valid values are %v", v, allowedLogsArithmeticProcessorTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsArithmeticProcessorType) IsValid() bool {
+	for _, existing := range allowedLogsArithmeticProcessorTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsArithmeticProcessorType value
