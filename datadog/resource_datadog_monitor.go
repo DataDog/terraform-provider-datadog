@@ -57,9 +57,10 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"type": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:         schema.TypeString,
+				Required:     true,
+				ForceNew:     true,
+				ValidateFunc: validateMonitorType,
 				// Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
 					if (oldVal == "query alert" && newVal == "metric alert") ||
@@ -652,4 +653,12 @@ func suppressDataDogFloatIntDiff(k, old string, new string, d *schema.ResourceDa
 		return true
 	}
 	return false
+}
+
+func validateMonitorType(val interface{}, key string) (warns []string, errs []error) {
+	_, err := datadogV1.NewMonitorTypeFromValue(val.(string))
+	if err != nil {
+		errs = append(errs, err)
+	}
+	return
 }

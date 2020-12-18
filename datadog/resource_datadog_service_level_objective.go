@@ -48,8 +48,9 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"timeframe": {
-							Type:     schema.TypeString,
-							Required: true,
+							Type:         schema.TypeString,
+							ValidateFunc: validateSLOTimeframe,
+							Required:     true,
 						},
 						"target": {
 							Type:             schema.TypeFloat,
@@ -148,14 +149,19 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 }
 
 // ValidateServiceLevelObjectiveTypeString is a ValidateFunc that ensures the SLO is of one of the supported types
-func ValidateServiceLevelObjectiveTypeString(v interface{}, k string) (ws []string, errors []error) {
-	switch datadogV1.SLOType(v.(string)) {
-	case datadogV1.SLOTYPE_MONITOR:
-		break
-	case datadogV1.SLOTYPE_METRIC:
-		break
-	default:
-		errors = append(errors, fmt.Errorf("invalid type %s specified for SLO", v.(string)))
+func ValidateServiceLevelObjectiveTypeString(val interface{}, key string) (warns []string, errs []error) {
+	_, err := datadogV1.NewSLOTypeFromValue(val.(string))
+	if err != nil {
+		errs = append(errs, err)
+	}
+	return
+}
+
+// ValidateServiceLevelObjectiveTypeString is a ValidateFunc that ensures the SLO is of one of the supported types
+func validateSLOTimeframe(val interface{}, key string) (warns []string, errs []error) {
+	_, err := datadogV1.NewSLOTimeframeFromValue(val.(string))
+	if err != nil {
+		errs = append(errs, err)
 	}
 	return
 }

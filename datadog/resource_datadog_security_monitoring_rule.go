@@ -46,9 +46,10 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 						Elem:        &schema.Schema{Type: schema.TypeString},
 					},
 					"status": {
-						Type:        schema.TypeString,
-						Required:    true,
-						Description: "Severity of the Security Signal.",
+						Type:         schema.TypeString,
+						ValidateFunc: validateSecurityMonitoringRuleSeverity,
+						Required:     true,
+						Description:  "Severity of the Security Signal.",
 					},
 				},
 			},
@@ -82,21 +83,24 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"evaluation_window": {
-						Type:        schema.TypeInt,
-						Required:    true,
-						Description: "A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time.",
+						Type:         schema.TypeInt,
+						ValidateFunc: validateMonitoringRuleEvaluationWindow,
+						Required:     true,
+						Description:  "A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time.",
 					},
 
 					"keep_alive": {
-						Type:        schema.TypeInt,
-						Required:    true,
-						Description: "Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window.",
+						Type:         schema.TypeInt,
+						ValidateFunc: validateMonitoringRuleKeepAlive,
+						Required:     true,
+						Description:  "Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window.",
 					},
 
 					"max_signal_duration": {
-						Type:        schema.TypeInt,
-						Required:    true,
-						Description: "A signal will “close” regardless of the query being matched once the time exceeds the maximum duration. This time is calculated from the first seen timestamp.",
+						Type:         schema.TypeInt,
+						ValidateFunc: validateMonitoringRuleMaxSignalDuration,
+						Required:     true,
+						Description:  "A signal will “close” regardless of the query being matched once the time exceeds the maximum duration. This time is calculated from the first seen timestamp.",
 					},
 				},
 			},
@@ -109,9 +113,10 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"aggregation": {
-						Type:        schema.TypeString,
-						Optional:    true,
-						Description: "The aggregation type.",
+						Type:         schema.TypeString,
+						ValidateFunc: validateMonitoringRuleQueryAggregation,
+						Optional:     true,
+						Description:  "The aggregation type.",
 					},
 					"distinct_fields": {
 						Type:        schema.TypeList,
@@ -535,4 +540,44 @@ func resourceDatadogSecurityMonitoringRuleDelete(d *schema.ResourceData, meta in
 	}
 
 	return nil
+}
+
+func validateMonitoringRuleEvaluationWindow(val interface{}, key string) (warns []string, errs []error) {
+	_, err := datadogV2.NewSecurityMonitoringRuleEvaluationWindowFromValue(int32(val.(int)))
+	if err != nil {
+		errs = append(errs, err)
+	}
+	return
+}
+
+func validateMonitoringRuleKeepAlive(val interface{}, key string) (warns []string, errs []error) {
+	_, err := datadogV2.NewSecurityMonitoringRuleKeepAliveFromValue(int32(val.(int)))
+	if err != nil {
+		errs = append(errs, err)
+	}
+	return
+}
+
+func validateMonitoringRuleMaxSignalDuration(val interface{}, key string) (warns []string, errs []error) {
+	_, err := datadogV2.NewSecurityMonitoringRuleMaxSignalDurationFromValue(int32(val.(int)))
+	if err != nil {
+		errs = append(errs, err)
+	}
+	return
+}
+
+func validateMonitoringRuleQueryAggregation(val interface{}, key string) (warns []string, errs []error) {
+	_, err := datadogV2.NewSecurityMonitoringRuleQueryAggregationFromValue(val.(string))
+	if err != nil {
+		errs = append(errs, err)
+	}
+	return
+}
+
+func validateSecurityMonitoringRuleSeverity(val interface{}, key string) (warns []string, errs []error) {
+	_, err := datadogV2.NewSecurityMonitoringRuleSeverityFromValue(val.(string))
+	if err != nil {
+		errs = append(errs, err)
+	}
+	return
 }
