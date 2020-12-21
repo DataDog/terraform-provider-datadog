@@ -22,6 +22,11 @@ const (
 	WIDGETMARGIN_LARGE WidgetMargin = "large"
 )
 
+var allowedWidgetMarginEnumValues = []WidgetMargin{
+	"small",
+	"large",
+}
+
 func (v *WidgetMargin) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *WidgetMargin) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetMargin(value)
-	for _, existing := range []WidgetMargin{"small", "large"} {
+	for _, existing := range allowedWidgetMarginEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *WidgetMargin) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetMargin", value)
+}
+
+// NewWidgetMarginFromValue returns a pointer to a valid WidgetMargin
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetMarginFromValue(v string) (*WidgetMargin, error) {
+	ev := WidgetMargin(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetMargin: valid values are %v", v, allowedWidgetMarginEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetMargin) IsValid() bool {
+	for _, existing := range allowedWidgetMarginEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetMargin value

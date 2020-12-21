@@ -22,6 +22,11 @@ const (
 	WIDGETEVENTSIZE_LARGE WidgetEventSize = "l"
 )
 
+var allowedWidgetEventSizeEnumValues = []WidgetEventSize{
+	"s",
+	"l",
+}
+
 func (v *WidgetEventSize) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *WidgetEventSize) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetEventSize(value)
-	for _, existing := range []WidgetEventSize{"s", "l"} {
+	for _, existing := range allowedWidgetEventSizeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *WidgetEventSize) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetEventSize", value)
+}
+
+// NewWidgetEventSizeFromValue returns a pointer to a valid WidgetEventSize
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetEventSizeFromValue(v string) (*WidgetEventSize, error) {
+	ev := WidgetEventSize(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetEventSize: valid values are %v", v, allowedWidgetEventSizeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetEventSize) IsValid() bool {
+	for _, existing := range allowedWidgetEventSizeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetEventSize value

@@ -22,6 +22,11 @@ const (
 	WIDGETSORT_DESCENDING WidgetSort = "desc"
 )
 
+var allowedWidgetSortEnumValues = []WidgetSort{
+	"asc",
+	"desc",
+}
+
 func (v *WidgetSort) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *WidgetSort) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetSort(value)
-	for _, existing := range []WidgetSort{"asc", "desc"} {
+	for _, existing := range allowedWidgetSortEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *WidgetSort) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetSort", value)
+}
+
+// NewWidgetSortFromValue returns a pointer to a valid WidgetSort
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetSortFromValue(v string) (*WidgetSort, error) {
+	ev := WidgetSort(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetSort: valid values are %v", v, allowedWidgetSortEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetSort) IsValid() bool {
+	for _, existing := range allowedWidgetSortEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetSort value

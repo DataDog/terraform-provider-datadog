@@ -21,6 +21,10 @@ const (
 	SLOWIDGETDEFINITIONTYPE_SLO SLOWidgetDefinitionType = "slo"
 )
 
+var allowedSLOWidgetDefinitionTypeEnumValues = []SLOWidgetDefinitionType{
+	"slo",
+}
+
 func (v *SLOWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *SLOWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SLOWidgetDefinitionType(value)
-	for _, existing := range []SLOWidgetDefinitionType{"slo"} {
+	for _, existing := range allowedSLOWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *SLOWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SLOWidgetDefinitionType", value)
+}
+
+// NewSLOWidgetDefinitionTypeFromValue returns a pointer to a valid SLOWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSLOWidgetDefinitionTypeFromValue(v string) (*SLOWidgetDefinitionType, error) {
+	ev := SLOWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SLOWidgetDefinitionType: valid values are %v", v, allowedSLOWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SLOWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedSLOWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SLOWidgetDefinitionType value

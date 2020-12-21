@@ -21,6 +21,10 @@ const (
 	PROCESSSUMMARYTYPE_PROCESS ProcessSummaryType = "process"
 )
 
+var allowedProcessSummaryTypeEnumValues = []ProcessSummaryType{
+	"process",
+}
+
 func (v *ProcessSummaryType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *ProcessSummaryType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := ProcessSummaryType(value)
-	for _, existing := range []ProcessSummaryType{"process"} {
+	for _, existing := range allowedProcessSummaryTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *ProcessSummaryType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid ProcessSummaryType", value)
+}
+
+// NewProcessSummaryTypeFromValue returns a pointer to a valid ProcessSummaryType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewProcessSummaryTypeFromValue(v string) (*ProcessSummaryType, error) {
+	ev := ProcessSummaryType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for ProcessSummaryType: valid values are %v", v, allowedProcessSummaryTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v ProcessSummaryType) IsValid() bool {
+	for _, existing := range allowedProcessSummaryTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to ProcessSummaryType value

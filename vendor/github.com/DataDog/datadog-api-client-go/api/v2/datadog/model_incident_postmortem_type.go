@@ -21,6 +21,10 @@ const (
 	INCIDENTPOSTMORTEMTYPE_INCIDENT_POSTMORTEMS IncidentPostmortemType = "incident_postmortems"
 )
 
+var allowedIncidentPostmortemTypeEnumValues = []IncidentPostmortemType{
+	"incident_postmortems",
+}
+
 func (v *IncidentPostmortemType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *IncidentPostmortemType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := IncidentPostmortemType(value)
-	for _, existing := range []IncidentPostmortemType{"incident_postmortems"} {
+	for _, existing := range allowedIncidentPostmortemTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *IncidentPostmortemType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid IncidentPostmortemType", value)
+}
+
+// NewIncidentPostmortemTypeFromValue returns a pointer to a valid IncidentPostmortemType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewIncidentPostmortemTypeFromValue(v string) (*IncidentPostmortemType, error) {
+	ev := IncidentPostmortemType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for IncidentPostmortemType: valid values are %v", v, allowedIncidentPostmortemTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v IncidentPostmortemType) IsValid() bool {
+	for _, existing := range allowedIncidentPostmortemTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to IncidentPostmortemType value

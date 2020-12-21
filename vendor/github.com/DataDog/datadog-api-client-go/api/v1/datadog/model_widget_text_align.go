@@ -23,6 +23,12 @@ const (
 	WIDGETTEXTALIGN_RIGHT  WidgetTextAlign = "right"
 )
 
+var allowedWidgetTextAlignEnumValues = []WidgetTextAlign{
+	"center",
+	"left",
+	"right",
+}
+
 func (v *WidgetTextAlign) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -30,7 +36,7 @@ func (v *WidgetTextAlign) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetTextAlign(value)
-	for _, existing := range []WidgetTextAlign{"center", "left", "right"} {
+	for _, existing := range allowedWidgetTextAlignEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -38,6 +44,27 @@ func (v *WidgetTextAlign) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetTextAlign", value)
+}
+
+// NewWidgetTextAlignFromValue returns a pointer to a valid WidgetTextAlign
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetTextAlignFromValue(v string) (*WidgetTextAlign, error) {
+	ev := WidgetTextAlign(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetTextAlign: valid values are %v", v, allowedWidgetTextAlignEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetTextAlign) IsValid() bool {
+	for _, existing := range allowedWidgetTextAlignEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetTextAlign value

@@ -22,6 +22,11 @@ const (
 	LOGSCOMPUTETYPE_TOTAL      LogsComputeType = "total"
 )
 
+var allowedLogsComputeTypeEnumValues = []LogsComputeType{
+	"timeseries",
+	"total",
+}
+
 func (v *LogsComputeType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *LogsComputeType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsComputeType(value)
-	for _, existing := range []LogsComputeType{"timeseries", "total"} {
+	for _, existing := range allowedLogsComputeTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *LogsComputeType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsComputeType", value)
+}
+
+// NewLogsComputeTypeFromValue returns a pointer to a valid LogsComputeType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsComputeTypeFromValue(v string) (*LogsComputeType, error) {
+	ev := LogsComputeType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsComputeType: valid values are %v", v, allowedLogsComputeTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsComputeType) IsValid() bool {
+	for _, existing := range allowedLogsComputeTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsComputeType value

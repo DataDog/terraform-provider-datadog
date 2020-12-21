@@ -18,11 +18,20 @@ type SyntheticsBrowserVariableType string
 
 // List of SyntheticsBrowserVariableType
 const (
-	SYNTHETICSBROWSERVARIABLETYPE_ELEMENT SyntheticsBrowserVariableType = "element"
-	SYNTHETICSBROWSERVARIABLETYPE_EMAIL   SyntheticsBrowserVariableType = "email"
-	SYNTHETICSBROWSERVARIABLETYPE_GLOBAL  SyntheticsBrowserVariableType = "global"
-	SYNTHETICSBROWSERVARIABLETYPE_TEXT    SyntheticsBrowserVariableType = "text"
+	SYNTHETICSBROWSERVARIABLETYPE_ELEMENT    SyntheticsBrowserVariableType = "element"
+	SYNTHETICSBROWSERVARIABLETYPE_EMAIL      SyntheticsBrowserVariableType = "email"
+	SYNTHETICSBROWSERVARIABLETYPE_GLOBAL     SyntheticsBrowserVariableType = "global"
+	SYNTHETICSBROWSERVARIABLETYPE_JAVASCRIPT SyntheticsBrowserVariableType = "javascript"
+	SYNTHETICSBROWSERVARIABLETYPE_TEXT       SyntheticsBrowserVariableType = "text"
 )
+
+var allowedSyntheticsBrowserVariableTypeEnumValues = []SyntheticsBrowserVariableType{
+	"element",
+	"email",
+	"global",
+	"javascript",
+	"text",
+}
 
 func (v *SyntheticsBrowserVariableType) UnmarshalJSON(src []byte) error {
 	var value string
@@ -31,7 +40,7 @@ func (v *SyntheticsBrowserVariableType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsBrowserVariableType(value)
-	for _, existing := range []SyntheticsBrowserVariableType{"element", "email", "global", "text"} {
+	for _, existing := range allowedSyntheticsBrowserVariableTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -39,6 +48,27 @@ func (v *SyntheticsBrowserVariableType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsBrowserVariableType", value)
+}
+
+// NewSyntheticsBrowserVariableTypeFromValue returns a pointer to a valid SyntheticsBrowserVariableType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsBrowserVariableTypeFromValue(v string) (*SyntheticsBrowserVariableType, error) {
+	ev := SyntheticsBrowserVariableType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsBrowserVariableType: valid values are %v", v, allowedSyntheticsBrowserVariableTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsBrowserVariableType) IsValid() bool {
+	for _, existing := range allowedSyntheticsBrowserVariableTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsBrowserVariableType value

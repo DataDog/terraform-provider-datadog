@@ -21,6 +21,10 @@ const (
 	LOGTYPE_LOG LogType = "log"
 )
 
+var allowedLogTypeEnumValues = []LogType{
+	"log",
+}
+
 func (v *LogType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *LogType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogType(value)
-	for _, existing := range []LogType{"log"} {
+	for _, existing := range allowedLogTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *LogType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogType", value)
+}
+
+// NewLogTypeFromValue returns a pointer to a valid LogType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogTypeFromValue(v string) (*LogType, error) {
+	ev := LogType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogType: valid values are %v", v, allowedLogTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogType) IsValid() bool {
+	for _, existing := range allowedLogTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogType value

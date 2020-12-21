@@ -22,6 +22,11 @@ const (
 	TABLEWIDGETCELLDISPLAYMODE_BAR    TableWidgetCellDisplayMode = "bar"
 )
 
+var allowedTableWidgetCellDisplayModeEnumValues = []TableWidgetCellDisplayMode{
+	"number",
+	"bar",
+}
+
 func (v *TableWidgetCellDisplayMode) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *TableWidgetCellDisplayMode) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := TableWidgetCellDisplayMode(value)
-	for _, existing := range []TableWidgetCellDisplayMode{"number", "bar"} {
+	for _, existing := range allowedTableWidgetCellDisplayModeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *TableWidgetCellDisplayMode) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid TableWidgetCellDisplayMode", value)
+}
+
+// NewTableWidgetCellDisplayModeFromValue returns a pointer to a valid TableWidgetCellDisplayMode
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewTableWidgetCellDisplayModeFromValue(v string) (*TableWidgetCellDisplayMode, error) {
+	ev := TableWidgetCellDisplayMode(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for TableWidgetCellDisplayMode: valid values are %v", v, allowedTableWidgetCellDisplayModeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v TableWidgetCellDisplayMode) IsValid() bool {
+	for _, existing := range allowedTableWidgetCellDisplayModeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to TableWidgetCellDisplayMode value

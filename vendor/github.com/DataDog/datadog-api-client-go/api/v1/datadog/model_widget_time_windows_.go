@@ -27,6 +27,16 @@ const (
 	WIDGETTIMEWINDOWS_PREVIOUS_MONTH WidgetTimeWindows = "previous_month"
 )
 
+var allowedWidgetTimeWindowsEnumValues = []WidgetTimeWindows{
+	"7d",
+	"30d",
+	"90d",
+	"week_to_date",
+	"previous_week",
+	"month_to_date",
+	"previous_month",
+}
+
 func (v *WidgetTimeWindows) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -34,7 +44,7 @@ func (v *WidgetTimeWindows) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetTimeWindows(value)
-	for _, existing := range []WidgetTimeWindows{"7d", "30d", "90d", "week_to_date", "previous_week", "month_to_date", "previous_month"} {
+	for _, existing := range allowedWidgetTimeWindowsEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -42,6 +52,27 @@ func (v *WidgetTimeWindows) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetTimeWindows", value)
+}
+
+// NewWidgetTimeWindowsFromValue returns a pointer to a valid WidgetTimeWindows
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetTimeWindowsFromValue(v string) (*WidgetTimeWindows, error) {
+	ev := WidgetTimeWindows(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetTimeWindows: valid values are %v", v, allowedWidgetTimeWindowsEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetTimeWindows) IsValid() bool {
+	for _, existing := range allowedWidgetTimeWindowsEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetTimeWindows value

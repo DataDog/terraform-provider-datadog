@@ -23,6 +23,12 @@ const (
 	SYNTHETICSTESTMONITORSTATUS_NO_DATA     SyntheticsTestMonitorStatus = 2
 )
 
+var allowedSyntheticsTestMonitorStatusEnumValues = []SyntheticsTestMonitorStatus{
+	0,
+	1,
+	2,
+}
+
 func (v *SyntheticsTestMonitorStatus) UnmarshalJSON(src []byte) error {
 	var value int64
 	err := json.Unmarshal(src, &value)
@@ -30,7 +36,7 @@ func (v *SyntheticsTestMonitorStatus) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsTestMonitorStatus(value)
-	for _, existing := range []SyntheticsTestMonitorStatus{0, 1, 2} {
+	for _, existing := range allowedSyntheticsTestMonitorStatusEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -38,6 +44,27 @@ func (v *SyntheticsTestMonitorStatus) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsTestMonitorStatus", value)
+}
+
+// NewSyntheticsTestMonitorStatusFromValue returns a pointer to a valid SyntheticsTestMonitorStatus
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsTestMonitorStatusFromValue(v int64) (*SyntheticsTestMonitorStatus, error) {
+	ev := SyntheticsTestMonitorStatus(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsTestMonitorStatus: valid values are %v", v, allowedSyntheticsTestMonitorStatusEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsTestMonitorStatus) IsValid() bool {
+	for _, existing := range allowedSyntheticsTestMonitorStatusEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsTestMonitorStatus value

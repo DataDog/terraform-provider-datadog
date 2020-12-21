@@ -22,6 +22,11 @@ const (
 	SYNTHETICSTESTPAUSESTATUS_PAUSED SyntheticsTestPauseStatus = "paused"
 )
 
+var allowedSyntheticsTestPauseStatusEnumValues = []SyntheticsTestPauseStatus{
+	"live",
+	"paused",
+}
+
 func (v *SyntheticsTestPauseStatus) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *SyntheticsTestPauseStatus) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsTestPauseStatus(value)
-	for _, existing := range []SyntheticsTestPauseStatus{"live", "paused"} {
+	for _, existing := range allowedSyntheticsTestPauseStatusEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *SyntheticsTestPauseStatus) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsTestPauseStatus", value)
+}
+
+// NewSyntheticsTestPauseStatusFromValue returns a pointer to a valid SyntheticsTestPauseStatus
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsTestPauseStatusFromValue(v string) (*SyntheticsTestPauseStatus, error) {
+	ev := SyntheticsTestPauseStatus(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsTestPauseStatus: valid values are %v", v, allowedSyntheticsTestPauseStatusEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsTestPauseStatus) IsValid() bool {
+	for _, existing := range allowedSyntheticsTestPauseStatusEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsTestPauseStatus value

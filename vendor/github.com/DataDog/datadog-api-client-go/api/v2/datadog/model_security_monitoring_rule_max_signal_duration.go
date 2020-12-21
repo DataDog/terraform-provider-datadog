@@ -32,6 +32,21 @@ const (
 	SECURITYMONITORINGRULEMAXSIGNALDURATION_ONE_DAY         SecurityMonitoringRuleMaxSignalDuration = 86400
 )
 
+var allowedSecurityMonitoringRuleMaxSignalDurationEnumValues = []SecurityMonitoringRuleMaxSignalDuration{
+	0,
+	60,
+	300,
+	600,
+	900,
+	1800,
+	3600,
+	7200,
+	10800,
+	21600,
+	43200,
+	86400,
+}
+
 func (v *SecurityMonitoringRuleMaxSignalDuration) UnmarshalJSON(src []byte) error {
 	var value int32
 	err := json.Unmarshal(src, &value)
@@ -39,7 +54,7 @@ func (v *SecurityMonitoringRuleMaxSignalDuration) UnmarshalJSON(src []byte) erro
 		return err
 	}
 	enumTypeValue := SecurityMonitoringRuleMaxSignalDuration(value)
-	for _, existing := range []SecurityMonitoringRuleMaxSignalDuration{0, 60, 300, 600, 900, 1800, 3600, 7200, 10800, 21600, 43200, 86400} {
+	for _, existing := range allowedSecurityMonitoringRuleMaxSignalDurationEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -47,6 +62,27 @@ func (v *SecurityMonitoringRuleMaxSignalDuration) UnmarshalJSON(src []byte) erro
 	}
 
 	return fmt.Errorf("%+v is not a valid SecurityMonitoringRuleMaxSignalDuration", value)
+}
+
+// NewSecurityMonitoringRuleMaxSignalDurationFromValue returns a pointer to a valid SecurityMonitoringRuleMaxSignalDuration
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSecurityMonitoringRuleMaxSignalDurationFromValue(v int32) (*SecurityMonitoringRuleMaxSignalDuration, error) {
+	ev := SecurityMonitoringRuleMaxSignalDuration(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SecurityMonitoringRuleMaxSignalDuration: valid values are %v", v, allowedSecurityMonitoringRuleMaxSignalDurationEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SecurityMonitoringRuleMaxSignalDuration) IsValid() bool {
+	for _, existing := range allowedSecurityMonitoringRuleMaxSignalDurationEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SecurityMonitoringRuleMaxSignalDuration value

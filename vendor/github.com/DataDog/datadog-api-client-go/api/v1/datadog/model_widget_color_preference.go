@@ -22,6 +22,11 @@ const (
 	WIDGETCOLORPREFERENCE_TEXT       WidgetColorPreference = "text"
 )
 
+var allowedWidgetColorPreferenceEnumValues = []WidgetColorPreference{
+	"background",
+	"text",
+}
+
 func (v *WidgetColorPreference) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *WidgetColorPreference) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetColorPreference(value)
-	for _, existing := range []WidgetColorPreference{"background", "text"} {
+	for _, existing := range allowedWidgetColorPreferenceEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *WidgetColorPreference) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetColorPreference", value)
+}
+
+// NewWidgetColorPreferenceFromValue returns a pointer to a valid WidgetColorPreference
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetColorPreferenceFromValue(v string) (*WidgetColorPreference, error) {
+	ev := WidgetColorPreference(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetColorPreference: valid values are %v", v, allowedWidgetColorPreferenceEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetColorPreference) IsValid() bool {
+	for _, existing := range allowedWidgetColorPreferenceEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetColorPreference value

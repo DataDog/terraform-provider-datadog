@@ -21,6 +21,10 @@ const (
 	HOSTMAPWIDGETDEFINITIONTYPE_HOSTMAP HostMapWidgetDefinitionType = "hostmap"
 )
 
+var allowedHostMapWidgetDefinitionTypeEnumValues = []HostMapWidgetDefinitionType{
+	"hostmap",
+}
+
 func (v *HostMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *HostMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := HostMapWidgetDefinitionType(value)
-	for _, existing := range []HostMapWidgetDefinitionType{"hostmap"} {
+	for _, existing := range allowedHostMapWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *HostMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid HostMapWidgetDefinitionType", value)
+}
+
+// NewHostMapWidgetDefinitionTypeFromValue returns a pointer to a valid HostMapWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewHostMapWidgetDefinitionTypeFromValue(v string) (*HostMapWidgetDefinitionType, error) {
+	ev := HostMapWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for HostMapWidgetDefinitionType: valid values are %v", v, allowedHostMapWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v HostMapWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedHostMapWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to HostMapWidgetDefinitionType value
