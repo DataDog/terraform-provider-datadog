@@ -12,11 +12,12 @@ import (
 
 func resourceDatadogDashboardList() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogDashboardListCreate,
-		Update: resourceDatadogDashboardListUpdate,
-		Read:   resourceDatadogDashboardListRead,
-		Delete: resourceDatadogDashboardListDelete,
-		Exists: resourceDatadogDashboardListExists,
+		Description: "Provides a Datadog dashboard_list resource. This can be used to create and manage Datadog Dashboard Lists and the individual dashboards within them.",
+		Create:      resourceDatadogDashboardListCreate,
+		Update:      resourceDatadogDashboardListUpdate,
+		Read:        resourceDatadogDashboardListRead,
+		Delete:      resourceDatadogDashboardListDelete,
+		Exists:      resourceDatadogDashboardListExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogDashboardListImport,
 		},

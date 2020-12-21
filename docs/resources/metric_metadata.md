@@ -1,31 +1,30 @@
 ---
-page_title: "datadog_metric_metadata"
+page_title: "datadog_metric_metadata Resource - terraform-provider-datadog"
+subcategory: ""
+description: |-
+  Provides a Datadog metric_metadata resource. This can be used to manage a metric's metadata.
 ---
 
-# datadog_metric_metadata Resource
+# Resource `datadog_metric_metadata`
 
 Provides a Datadog metric_metadata resource. This can be used to manage a metric's metadata.
 
-## Example Usage
 
-```hcl
-# Manage a Datadog metric's metadata
-resource "datadog_metric_metadata" "request_time" {
-  metric      = "request.time"
-  short_name  = "Request time"
-  description = "99th percentile request time in millseconds"
-  type        = "gauge"
-  unit        = "millisecond"
-}
-```
 
-## Argument Reference
+## Schema
 
-The following arguments are supported:
+### Required
 
--   `metric`: (Required) The name of the metric.
--   `description`: (Optional) A description of the metric.
--   `short_name`: (Optional) A short name of the metric.
--   `unit`: (Optional) Primary unit of the metric such as 'byte' or 'operation'.
--   `per_unit`: (Optional) 'Per' unit of the metric such as 'second' in 'bytes per second'.
--   `statsd_interval`: (Optional) If applicable, stasd flush interval in seconds for the metric.
+- **metric** (String, Required)
+
+### Optional
+
+- **description** (String, Optional)
+- **id** (String, Optional) The ID of this resource.
+- **per_unit** (String, Optional)
+- **short_name** (String, Optional)
+- **statsd_interval** (Number, Optional)
+- **type** (String, Optional)
+- **unit** (String, Optional)
+
+

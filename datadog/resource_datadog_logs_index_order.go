@@ -7,11 +7,12 @@ import (
 
 func resourceDatadogLogsIndexOrder() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogLogsIndexOrderCreate,
-		Update: resourceDatadogLogsIndexOrderUpdate,
-		Read:   resourceDatadogLogsIndexOrderRead,
-		Delete: resourceDatadogLogsIndexOrderDelete,
-		Exists: resourceDatadogLogsIndexOrderExists,
+		Description: "Provides a Datadog Logs Index API resource. This can be used to manage the order of Datadog logs indexes.",
+		Create:      resourceDatadogLogsIndexOrderCreate,
+		Update:      resourceDatadogLogsIndexOrderUpdate,
+		Read:        resourceDatadogLogsIndexOrderRead,
+		Delete:      resourceDatadogLogsIndexOrderDelete,
+		Exists:      resourceDatadogLogsIndexOrderExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},

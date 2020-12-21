@@ -12,19 +12,23 @@ import (
 
 func dataSourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceDatadogMonitorsRead,
+		Description: "Use this data source to retrieve information about an existing monitor for use in other resources.",
+		Read:        dataSourceDatadogMonitorsRead,
 
 		Schema: map[string]*schema.Schema{
 			"name_filter": {
+				Description: "A monitor name to limit the search.",
 				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"tags_filter": {
+				Description: "A list of tags to limit the search. This filters on the monitor scope.",
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"monitor_tags_filter": {
+				Description: "A list of monitor tags to limit the search. This filters on the tags set on the monitor itself.",
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
@@ -32,28 +36,34 @@ func dataSourceDatadogMonitor() *schema.Resource {
 
 			// Computed values
 			"name": {
+				Description: "Name of the monitor",
 				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"message": {
+				Description: "Message included with notifications for this monitor.",
 				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"escalation_message": {
+				Description: "Message included with a re-notification for this monitor.",
 				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"query": {
+				Description: "Query of the monitor.",
 				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"type": {
+				Description: "Type of the monitor.",
 				Type:     schema.TypeString,
 				Computed: true,
 			},
 
 			// Options
 			"thresholds": {
+				Description: "Alert thresholds of the monitor.",
 				Type:     schema.TypeMap,
 				Computed: true,
 				Elem: &schema.Resource{
@@ -86,6 +96,7 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"threshold_windows": {
+				Description: "Mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. This is only used by anomaly monitors.",
 				Type:     schema.TypeMap,
 				Computed: true,
 				Elem: &schema.Resource{
@@ -102,46 +113,57 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"notify_no_data": {
+				Description: "Whether or not this monitor notifies when data stops reporting.",
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
 			"new_host_delay": {
+				Description: "Time (in seconds) allowing a host to boot and applications to fully start before starting the evaluation of monitor results.",
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
 			"evaluation_delay": {
+				Description: "Time (in seconds) for which evaluation is delayed. This is only used by metric monitors.",
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
 			"no_data_timeframe": {
+				Description: "The number of minutes before the monitor notifies when data stops reporting.",
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
 			"renotify_interval": {
+				Description: "The number of minutes after the last notification before the monitor re-notifies on the current status.",
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
 			"notify_audit": {
+				Description: "Whether or not tagged users are notified on changes to the monitor.",
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
 			"timeout_h": {
+				Description: "Number of hours of the monitor not reporting data before it automatically resolves from a triggered state.",
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
 			"require_full_window": {
+				Description: "Whether or not the monitor needs a full window of data before it is evaluated.",
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
 			"locked": {
+				Description: "Whether or not changes to the monitor are restricted to the creator or admins.",
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
 			"include_tags": {
+				Description: "Whether or not notifications from the monitor automatically inserts its triggering tags into the title.",
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
 			"tags": {
+				Description: "List of tags associated with the monitor.",
 				// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
 				// we order them explicitly in the read/create/update methods of this resource and using
 				// TypeSet makes Terraform ignore differences in order when creating a plan
@@ -150,6 +172,7 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"enable_logs_sample": {
+				Description: "Whether or not a list of log values which triggered the alert is included. This is only used by log monitors.",
 				Type:     schema.TypeBool,
 				Computed: true,
 			},

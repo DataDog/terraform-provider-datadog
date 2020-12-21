@@ -10,10 +10,11 @@ import (
 
 func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogSyntheticsGlobalVariableCreate,
-		Read:   resourceDatadogSyntheticsGlobalVariableRead,
-		Update: resourceDatadogSyntheticsGlobalVariableUpdate,
-		Delete: resourceDatadogSyntheticsGlobalVariableDelete,
+		Description: "Provides a Datadog synthetics global variable resource. This can be used to create and manage Datadog synthetics global variables.",
+		Create:      resourceDatadogSyntheticsGlobalVariableCreate,
+		Read:        resourceDatadogSyntheticsGlobalVariableRead,
+		Update:      resourceDatadogSyntheticsGlobalVariableUpdate,
+		Delete:      resourceDatadogSyntheticsGlobalVariableDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},

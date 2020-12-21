@@ -80,4 +80,7 @@ update-go-client:
 get-test-deps:
 	gotestsum --version || (cd `mktemp -d`;	GO111MODULE=auto GOFLAGS='' go get -u gotest.tools/gotestsum; cd -)
 
+tools:
+	go generate -tags tools tools/tools.go
+
 .PHONY: build test testacc cassettes vet fmt fmtcheck errcheck test-compile get-test-deps

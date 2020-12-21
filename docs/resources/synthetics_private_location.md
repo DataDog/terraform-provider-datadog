@@ -1,38 +1,30 @@
 ---
-page_title: "datadog_synthetics_private_location"
+page_title: "datadog_synthetics_private_location Resource - terraform-provider-datadog"
+subcategory: ""
+description: |-
+  Provides a Datadog synthetics private location resource. This can be used to create and manage Datadog synthetics private locations.
 ---
 
-# datadog_synthetics_private_location Resource
+# Resource `datadog_synthetics_private_location`
 
 Provides a Datadog synthetics private location resource. This can be used to create and manage Datadog synthetics private locations.
 
-## Example Usage
 
-```hcl
-resource "datadog_synthetics_private_location" "private_location" {
-    name = "First private location"
-    description = "Description of the private location"
-    tags = ["foo:bar", "env:test"]
-}
-```
 
-## Argument Reference
+## Schema
 
-The following arguments are supported:
+### Required
 
--   `name`: (Required) Synthetics private location name.
--   `description`: (Optional) Description of the private location.
--   `tags`: (Required) A list of tags to associate with your synthetics private location.
+- **name** (String, Required)
 
-## Argument Reference
+### Optional
 
--   `id`: ID of the Datadog synthetics private location.
--   `config`: Configuration skeleton for the private location. See installation instructions of the private location on how to use this configuration.
+- **description** (String, Optional)
+- **id** (String, Optional) The ID of this resource.
+- **tags** (List of String, Optional)
 
-## Import
+### Read-only
 
-Synthetics private locations can be imported using their string ID, e.g.
+- **config** (String, Read-only)
 
-```
-$ terraform import datadog_synthetics_private_location.bar pl:private-location-name-abcdef123456
-```
+

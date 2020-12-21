@@ -1,122 +1,57 @@
 ---
-page_title: "datadog_service_level_objective"
+page_title: "datadog_service_level_objective Resource - terraform-provider-datadog"
+subcategory: ""
+description: |-
+  Provides a Datadog service level objective resource. This can be used to create and manage Datadog service level objectives.
 ---
 
-# datadog_service_level_objective Resource
+# Resource `datadog_service_level_objective`
 
 Provides a Datadog service level objective resource. This can be used to create and manage Datadog service level objectives.
 
-## Example Usage
 
-### Metric-Based SLO
 
-```hcl
-# Create a new Datadog service level objective
-resource "datadog_service_level_objective" "foo" {
-  name               = "Example Metric SLO"
-  type               = "metric"
-  description        = "My custom metric SLO"
-  query {
-    numerator = "sum:my.custom.count.metric{type:good_events}.as_count()"
-    denominator = "sum:my.custom.count.metric{*}.as_count()"
-  }
+## Schema
 
-  thresholds {
-    timeframe = "7d"
-    target = 99.9
-    warning = 99.99
-    target_display = "99.900"
-    warning_display = "99.990"
-  }
+### Required
 
-  thresholds {
-    timeframe = "30d"
-    target = 99.9
-    warning = 99.99
-    target_display = "99.900"
-    warning_display = "99.990"
-  }
+- **name** (String, Required)
+- **thresholds** (Block List, Min: 1) (see [below for nested schema](#nestedblock--thresholds))
+- **type** (String, Required)
 
-  tags = ["foo:bar", "baz"]
-}
-```
+### Optional
 
-### Monitor-Based SLO
+- **description** (String, Optional)
+- **force_delete** (Boolean, Optional)
+- **groups** (Set of String, Optional) A static set of groups to filter monitor-based SLOs
+- **id** (String, Optional) The ID of this resource.
+- **monitor_ids** (Set of Number, Optional) A static set of monitor IDs to use as part of the SLO
+- **monitor_search** (String, Optional)
+- **query** (Block List, Max: 1) The metric query of good / total events (see [below for nested schema](#nestedblock--query))
+- **tags** (Set of String, Optional)
+- **validate** (Boolean, Optional)
 
-```hcl
-# Create a new Datadog service level objective
-resource "datadog_service_level_objective" "bar" {
-  name               = "Example Monitor SLO"
-  type               = "monitor"
-  description        = "My custom monitor SLO"
-  monitor_ids = [1, 2, 3]
+<a id="nestedblock--thresholds"></a>
+### Nested Schema for `thresholds`
 
-  thresholds {
-    timeframe = "7d"
-    target = 99.9
-    warning = 99.99
-  }
+Required:
 
-  thresholds {
-    timeframe = "30d"
-    target = 99.9
-    warning = 99.99
-  }
+- **target** (Number, Required)
+- **timeframe** (String, Required)
 
-  tags = ["foo:bar", "baz"]
-}
-```
+Optional:
 
-## Argument Reference
+- **target_display** (String, Optional)
+- **warning** (Number, Optional)
+- **warning_display** (String, Optional)
 
-The following arguments are supported:
 
--   `type`: (Required) The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object) page. Available options to choose from are:
-    -   `metric`
-    -   `monitor`
--   `name`: (Required) Name of Datadog service level objective
--   `description`: (Optional) A description of this service level objective.
--   `tags` (Optional) A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
--   `force_delete` (Optional) A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. dashboards).
--   `thresholds`: (Required) - A list of thresholds and targets that define the service level objectives from the provided SLIs.
-    -   `timeframe` (Required) - the time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object) page. Available options to choose from are:
-        -   `7d`
-        -   `30d`
-        -   `90d`
-    -   `target`: (Required) the objective's target `[0,100]`
-    -   `target_display`: (Optional) the string version to specify additional digits in the case of `99` but want 3 digits like `99.000` to display.
-    -   `warning`: (Optional) the objective's warning value `[0,100]`. This must be `> target` value.
-    -   `warning_display`: (Optional) the string version to specify additional digits in the case of `99` but want 3 digits like `99.000` to display.
+<a id="nestedblock--query"></a>
+### Nested Schema for `query`
 
-The following options are specific to the `type` of service level objective:
+Required:
 
--   `metric` type SLOs:
-    -   `query`: (Required) The metric query configuration to use for the SLI. This is a dictionary and requires both the `numerator` and `denominator` fields which should be `count` metrics using the `sum` aggregator.
-        -   `numerator`: (Required) the sum of all the `good` events
-        -   `denominator`: (Required) the sum of the `total` events
-        -   Example Usage:
+- **denominator** (String, Required)
+- **numerator** (String, Required)
 
-```hcl
-query {
-    numerator   = "sum:my.custom.count.metric{type:good}.as_count()"
-    denominator = "sum:my.custom.count.metric{*}.as_count()"
-}
-```
 
--   `monitor` type SLOs:
-    -   `monitor_ids`: (Required) A list of numeric monitor IDs for which to use as SLIs. Their tags will be auto-imported into `monitor_tags` field in the API resource.
-    -   `groups`: (Optional) A custom set of groups from the monitor(s) for which to use as the SLI instead of all the groups.
-
-## Attributes Reference
-
-The following attributes are exported:
-
--   `id`: ID of the Datadog service level objective
-
-## Import
-
-Service Level Objectives can be imported using their string ID, e.g.
-
-```
-$ terraform import datadog_service_level_objective.baz 12345678901234567890123456789012
-```

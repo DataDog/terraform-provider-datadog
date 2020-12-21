@@ -19,10 +19,11 @@ func isV2User(id string) bool {
 
 func resourceDatadogUser() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogUserCreate,
-		Read:   resourceDatadogUserRead,
-		Update: resourceDatadogUserUpdate,
-		Delete: resourceDatadogUserDelete,
+		Description: "Provides a Datadog user resource. This can be used to create and manage Datadog users.",
+		Create:      resourceDatadogUserCreate,
+		Read:        resourceDatadogUserRead,
+		Update:      resourceDatadogUserUpdate,
+		Delete:      resourceDatadogUserDelete,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogUserImport,
 		},

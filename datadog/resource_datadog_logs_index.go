@@ -45,11 +45,12 @@ var exclusionFilterSchema = map[string]*schema.Schema{
 
 func resourceDatadogLogsIndex() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogLogsIndexCreate,
-		Update: resourceDatadogLogsIndexUpdate,
-		Read:   resourceDatadogLogsIndexRead,
-		Delete: resourceDatadogLogsIndexDelete,
-		Exists: resourceDatadogLogsIndexExists,
+		Description: "Provides a Datadog Logs Index API resource. This can be used to create and manage Datadog logs indexes.",
+		Create:      resourceDatadogLogsIndexCreate,
+		Update:      resourceDatadogLogsIndexUpdate,
+		Read:        resourceDatadogLogsIndexRead,
+		Delete:      resourceDatadogLogsIndexDelete,
+		Exists:      resourceDatadogLogsIndexExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},

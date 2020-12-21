@@ -415,6 +415,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 	}
 
 	return &schema.Resource{
+		Description:        "Provides a Datadog timeboard resource. This can be used to create and manage Datadog timeboards.",
 		DeprecationMessage: "This resource is deprecated. Instead use the Dashboard resource",
 		Create:             resourceDatadogTimeboardCreate,
 		Update:             resourceDatadogTimeboardUpdate,

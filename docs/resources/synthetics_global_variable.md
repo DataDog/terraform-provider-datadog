@@ -1,36 +1,28 @@
 ---
-page_title: "datadog_synthetics_global_variable"
+page_title: "datadog_synthetics_global_variable Resource - terraform-provider-datadog"
+subcategory: ""
+description: |-
+  Provides a Datadog synthetics global variable resource. This can be used to create and manage Datadog synthetics global variables.
 ---
 
-# datadog_synthetics_global_variable Resource
+# Resource `datadog_synthetics_global_variable`
 
 Provides a Datadog synthetics global variable resource. This can be used to create and manage Datadog synthetics global variables.
 
-## Example Usage
 
-```hcl
-resource "datadog_synthetics_global_variable" "test_variable" {
-    name = "EXAMPLE_VARIABLE"
-    description = "Description of the variable"
-    tags = ["foo:bar", "env:test"]
-    value = "variable-value"
-}
-```
 
-## Argument Reference
+## Schema
 
-The following arguments are supported:
+### Required
 
--   `name`: (Required) Synthetics global variable name.
--   `description`: (Optional) Description of the global variable.
--   `tags`: (Required) A list of tags to associate with your synthetics global variable.
--   `value`: (Required) The value of the global variable.
--   `secure`: (Optional) Sets the variable as secure, true or false.
+- **name** (String, Required)
+- **value** (String, Required)
 
-## Import
+### Optional
 
-Synthetics global variables can be imported using their string ID, e.g.
+- **description** (String, Optional)
+- **id** (String, Optional) The ID of this resource.
+- **secure** (Boolean, Optional)
+- **tags** (List of String, Optional)
 
-```
-$ terraform import datadog_synthetics_global_variable.fizz abcde123-fghi-456-jkl-mnopqrstuv
-```
+

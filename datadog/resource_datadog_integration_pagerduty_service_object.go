@@ -11,11 +11,12 @@ const maskedSecret = "*****"
 
 func resourceDatadogIntegrationPagerdutySO() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogIntegrationPagerdutySOCreate,
-		Read:   resourceDatadogIntegrationPagerdutySORead,
-		Exists: resourceDatadogIntegrationPagerdutySOExists,
-		Update: resourceDatadogIntegrationPagerdutySOUpdate,
-		Delete: resourceDatadogIntegrationPagerdutySODelete,
+		Description: "Provides access to individual Service Objects of Datadog - PagerDuty integrations. Note that the Datadog - PagerDuty integration must be activated in the Datadog UI in order for this resource to be usable.",
+		Create:      resourceDatadogIntegrationPagerdutySOCreate,
+		Read:        resourceDatadogIntegrationPagerdutySORead,
+		Exists:      resourceDatadogIntegrationPagerdutySOExists,
+		Update:      resourceDatadogIntegrationPagerdutySOUpdate,
+		Delete:      resourceDatadogIntegrationPagerdutySODelete,
 		// since the API never returns service_key, it's impossible to meaningfully import resources
 		Importer: nil,
 

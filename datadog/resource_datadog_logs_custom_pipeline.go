@@ -85,6 +85,7 @@ var arithmeticProcessor = &schema.Schema{
 	MaxItems: 1,
 	Optional: true,
 	Elem: &schema.Resource{
+		Description: "Provides a Datadog Logs Pipeline API resource, which is used to create and manage Datadog logs custom pipelines.",
 		Schema: map[string]*schema.Schema{
 			"name":               {Type: schema.TypeString, Optional: true},
 			"is_enabled":         {Type: schema.TypeBool, Optional: true},

@@ -12,6 +12,7 @@ import (
 
 func resourceDatadogServiceLevelObjective() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Provides a Datadog service level objective resource. This can be used to create and manage Datadog service level objectives.",
 		Create:        resourceDatadogServiceLevelObjectiveCreate,
 		Read:          resourceDatadogServiceLevelObjectiveRead,
 		Update:        resourceDatadogServiceLevelObjectiveUpdate,

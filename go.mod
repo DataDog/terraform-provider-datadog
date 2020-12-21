@@ -9,15 +9,12 @@ require (
 	github.com/hashicorp/go-hclog v0.12.0 // indirect
 	github.com/hashicorp/go-uuid v1.0.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/hashicorp/terraform-plugin-sdk v1.15.0
+	github.com/hashicorp/terraform-plugin-docs v0.2.0
+	github.com/hashicorp/terraform-plugin-sdk v1.16.0
 	github.com/jonboulle/clockwork v0.1.0
 	github.com/kr/pretty v0.2.0
-	github.com/mattn/go-isatty v0.0.12 // indirect
 	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/zorkian/go-datadog-api v2.30.0+incompatible
-	golang.org/x/crypto v0.0.0-20200204104054-c9f3fb736b72 // indirect
-	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
-	golang.org/x/text v0.3.3 // indirect
 	gopkg.in/DataDog/dd-trace-go.v1 v1.25.0
 )
 

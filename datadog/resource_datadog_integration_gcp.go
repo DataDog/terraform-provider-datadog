@@ -9,11 +9,12 @@ import (
 
 func resourceDatadogIntegrationGcp() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogIntegrationGcpCreate,
-		Read:   resourceDatadogIntegrationGcpRead,
-		Update: resourceDatadogIntegrationGcpUpdate,
-		Delete: resourceDatadogIntegrationGcpDelete,
-		Exists: resourceDatadogIntegrationGcpExists,
+		Description: "Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
+		Create:      resourceDatadogIntegrationGcpCreate,
+		Read:        resourceDatadogIntegrationGcpRead,
+		Update:      resourceDatadogIntegrationGcpUpdate,
+		Delete:      resourceDatadogIntegrationGcpDelete,
+		Exists:      resourceDatadogIntegrationGcpExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogIntegrationGcpImport,
 		},

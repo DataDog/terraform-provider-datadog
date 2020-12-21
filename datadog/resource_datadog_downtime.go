@@ -19,11 +19,12 @@ import (
 
 func resourceDatadogDowntime() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogDowntimeCreate,
-		Read:   resourceDatadogDowntimeRead,
-		Update: resourceDatadogDowntimeUpdate,
-		Delete: resourceDatadogDowntimeDelete,
-		Exists: resourceDatadogDowntimeExists,
+		Description: "Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.",
+		Create:      resourceDatadogDowntimeCreate,
+		Read:        resourceDatadogDowntimeRead,
+		Update:      resourceDatadogDowntimeUpdate,
+		Delete:      resourceDatadogDowntimeDelete,
+		Exists:      resourceDatadogDowntimeExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogDowntimeImport,
 		},

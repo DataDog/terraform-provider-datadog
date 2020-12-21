@@ -8,11 +8,12 @@ import (
 
 func resourceDatadogLogsArchive() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogLogsArchiveCreate,
-		Update: resourceDatadogLogsArchiveUpdate,
-		Read:   resourceDatadogLogsArchiveRead,
-		Delete: resourceDatadogLogsArchiveDelete,
-		Exists: resourceDatadogLogsArchiveExists,
+		Description: "Provides a Datadog Logs Archive API resource, which is used to create and manage Datadog logs archives.",
+		Create:      resourceDatadogLogsArchiveCreate,
+		Update:      resourceDatadogLogsArchiveUpdate,
+		Read:        resourceDatadogLogsArchiveRead,
+		Delete:      resourceDatadogLogsArchiveDelete,
+		Exists:      resourceDatadogLogsArchiveExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},

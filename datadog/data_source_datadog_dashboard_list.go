@@ -11,10 +11,12 @@ import (
 
 func dataSourceDatadogDashboardList() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceDatadogDashboardListRead,
+		Description: "Use this data source to retrieve information about an existing dashboard list, for use in other resources. In particular, it can be used in a dashboard to register it in the list.",
+		Read:        dataSourceDatadogDashboardListRead,
 
 		Schema: map[string]*schema.Schema{
 			"name": {
+				Description: "A dashboard list name to limit the search.",
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validation.StringIsNotEmpty,

@@ -21,10 +21,11 @@ var syntheticsVariableTypes = []string{"element", "email", "global", "text"}
 
 func resourceDatadogSyntheticsTest() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogSyntheticsTestCreate,
-		Read:   resourceDatadogSyntheticsTestRead,
-		Update: resourceDatadogSyntheticsTestUpdate,
-		Delete: resourceDatadogSyntheticsTestDelete,
+		Description: "Provides a Datadog synthetics test resource. This can be used to create and manage Datadog synthetics test.",
+		Create:      resourceDatadogSyntheticsTestCreate,
+		Read:        resourceDatadogSyntheticsTestRead,
+		Update:      resourceDatadogSyntheticsTestUpdate,
+		Delete:      resourceDatadogSyntheticsTestDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},

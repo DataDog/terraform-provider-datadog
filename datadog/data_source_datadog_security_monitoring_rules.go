@@ -15,7 +15,8 @@ import (
 
 func dataSourceDatadogSecurityMonitoringRules() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceDatadogSecurityMonitoringRulesRead,
+		Description: "Use this data source to retrieve information about existing security monitoring rules for use in other resources.",
+		Read:        dataSourceDatadogSecurityMonitoringRulesRead,
 
 		Schema: map[string]*schema.Schema{
 			// Filters
@@ -44,11 +45,13 @@ func dataSourceDatadogSecurityMonitoringRules() *schema.Resource {
 
 			// Computed
 			"rule_ids": {
+				Description: "List of ids of the matched rules.",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"rules": {
+				Description: "List of roles",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{

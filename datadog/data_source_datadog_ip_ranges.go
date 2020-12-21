@@ -6,78 +6,93 @@ import (
 
 func dataSourceDatadogIpRanges() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceDatadogIPRangesRead,
+		Description: "Use this data source to retrieve information about Datadog's IP addresses.",
+		Read:        dataSourceDatadogIPRangesRead,
 
 		// IP ranges are divided between ipv4 and ipv6
 		Schema: map[string]*schema.Schema{
 			// v4
 			"agents_ipv4": {
+				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the agent endpoint.",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"api_ipv4": {
+				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the api endpoint.",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"apm_ipv4": {
+				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the apm endpoint.",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"logs_ipv4": {
+				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the logs endpoint.",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"process_ipv4": {
+				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the process endpoint.",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"synthetics_ipv4": {
+				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the synthetics endpoint",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"webhooks_ipv4": {
+				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the webhooks endpoint.",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			// v6
 			"agents_ipv6": {
+				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the agent endpoint.",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"api_ipv6": {
+				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the api endpoint.",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"apm_ipv6": {
+				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the apm endpoint.",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"logs_ipv6": {
+				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the logs endpoint.",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"process_ipv6": {
+				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the process endpoint.",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"synthetics_ipv6": {
+				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the synthetics endpoint.",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"webhooks_ipv6": {
+				Description: "n Array of IPv6 addresses in CIDR format specifying the A records for the webhooks endpoint.",
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
