@@ -13,8 +13,8 @@ func dataSourceDatadogSyntheticsLocations() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"locations": {
 				Description: "A map of available Synthetics location IDs to names for Synthetics tests.",
-				Type:     schema.TypeMap,
-				Computed: true,
+				Type:        schema.TypeMap,
+				Computed:    true,
 			},
 		},
 	}

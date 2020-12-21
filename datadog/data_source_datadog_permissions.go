@@ -13,8 +13,8 @@ func dataSourceDatadogPermissions() *schema.Resource {
 			// Computed values
 			"permissions": {
 				Description: "Map of permissions names to their corresponding ID.",
-				Type:     schema.TypeMap,
-				Computed: true,
+				Type:        schema.TypeMap,
+				Computed:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
