@@ -9,7 +9,20 @@ description: |-
 
 Provides a Datadog Security Monitoring Rule API resource for default rules.
 
+## Example Usage
 
+```terraform
+resource "datadog_security_monitoring_default_rule" "adefaultrule" {
+    rule_id = "ojo-qef-3g3"
+    enabled = true
+
+    # Change the notifications for the high case
+    case {
+        status = "high"
+        notifications = ["@me"]
+    }
+}
+```
 
 ## Schema
 
@@ -27,4 +40,14 @@ Required:
 - **notifications** (List of String, Required) Notification targets for each rule case.
 - **status** (String, Required) Status of the rule case to match.
 
+## Import
 
+Import is supported using the following syntax:
+
+```shell
+# Default rules need to be imported using their ID before applying.
+resource "datadog_security_monitoring_default_rule" "adefaultrule" {
+}
+
+terraform import datadog_security_monitoring_default_rule.adefaultrule m0o-hto-lkb
+```

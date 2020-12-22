@@ -93,4 +93,10 @@ Required:
 - **dash_id** (String, Required) The ID of the dashboard to add
 - **type** (String, Required) The type of this dashboard
 
+## Import
 
+Import is supported using the following syntax:
+
+```shell
+terraform import datadog_dashboard_list.new_list 123456
+```

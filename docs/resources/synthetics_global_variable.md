@@ -9,7 +9,16 @@ description: |-
 
 Provides a Datadog synthetics global variable resource. This can be used to create and manage Datadog synthetics global variables.
 
+## Example Usage
 
+```terraform
+resource "datadog_synthetics_global_variable" "test_variable" {
+    name = "EXAMPLE_VARIABLE"
+    description = "Description of the variable"
+    tags = ["foo:bar", "env:test"]
+    value = "variable-value"
+}
+```
 
 ## Schema
 
@@ -25,4 +34,11 @@ Provides a Datadog synthetics global variable resource. This can be used to crea
 - **secure** (Boolean, Optional)
 - **tags** (List of String, Optional)
 
+## Import
 
+Import is supported using the following syntax:
+
+```shell
+# Synthetics global variables can be imported using their string ID, e.g.
+terraform import datadog_synthetics_global_variable.fizz abcde123-fghi-456-jkl-mnopqrstuv
+```

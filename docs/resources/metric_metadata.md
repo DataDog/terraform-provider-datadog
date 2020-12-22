@@ -9,7 +9,18 @@ description: |-
 
 Provides a Datadog metric_metadata resource. This can be used to manage a metric's metadata.
 
+## Example Usage
 
+```terraform
+# Manage a Datadog metric's metadata
+resource "datadog_metric_metadata" "request_time" {
+  metric      = "request.time"
+  short_name  = "Request time"
+  description = "99th percentile request time in millseconds"
+  type        = "gauge"
+  unit        = "millisecond"
+}
+```
 
 ## Schema
 

@@ -76,4 +76,10 @@ Optional:
 - **until_occurrences** (Number, Optional)
 - **week_days** (List of String, Optional)
 
+## Import
 
+Import is supported using the following syntax:
+
+```shell
+terraform import datadog_downtime.bytes_received_localhost 2081
+```

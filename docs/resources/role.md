@@ -9,7 +9,23 @@ description: |-
 
 Provides a Datadog role resource. This can be used to create and manage Datadog roles.
 
+## Example Usage
 
+```terraform
+# Source the permissions
+data "datadog_permissions" "bar" {}
+
+# Create a new Datadog role
+resource "datadog_role" "foo" {
+  name  = "foo"
+  permission {
+    id = data.datadog_permissions.bar.permissions.monitors_downtime
+ }
+  permission {
+    id = data.datadog_permissions.bar.permissions.monitors_write
+ }
+}
+```
 
 ## Schema
 
@@ -37,4 +53,11 @@ Read-only:
 
 - **name** (String, Read-only) Name of the permission.
 
+## Import
 
+Import is supported using the following syntax:
+
+```shell
+# Roles can be imported using their ID, e.g.
+terraform import datadog_role.example_role 000000-0000-0000-0000-000000000000
+```
