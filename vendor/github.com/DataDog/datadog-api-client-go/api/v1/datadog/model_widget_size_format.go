@@ -23,6 +23,12 @@ const (
 	WIDGETSIZEFORMAT_LARGE  WidgetSizeFormat = "large"
 )
 
+var allowedWidgetSizeFormatEnumValues = []WidgetSizeFormat{
+	"small",
+	"medium",
+	"large",
+}
+
 func (v *WidgetSizeFormat) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -30,7 +36,7 @@ func (v *WidgetSizeFormat) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetSizeFormat(value)
-	for _, existing := range []WidgetSizeFormat{"small", "medium", "large"} {
+	for _, existing := range allowedWidgetSizeFormatEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -38,6 +44,27 @@ func (v *WidgetSizeFormat) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetSizeFormat", value)
+}
+
+// NewWidgetSizeFormatFromValue returns a pointer to a valid WidgetSizeFormat
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetSizeFormatFromValue(v string) (*WidgetSizeFormat, error) {
+	ev := WidgetSizeFormat(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetSizeFormat: valid values are %v", v, allowedWidgetSizeFormatEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetSizeFormat) IsValid() bool {
+	for _, existing := range allowedWidgetSizeFormatEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetSizeFormat value

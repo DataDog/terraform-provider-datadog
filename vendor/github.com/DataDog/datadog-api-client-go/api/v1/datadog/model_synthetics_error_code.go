@@ -27,6 +27,16 @@ const (
 	SYNTHETICSERRORCODE_INCORRECT_ASSERTION SyntheticsErrorCode = "INCORRECT_ASSERTION"
 )
 
+var allowedSyntheticsErrorCodeEnumValues = []SyntheticsErrorCode{
+	"NO_ERROR",
+	"UNKNOWN",
+	"DNS",
+	"SSL",
+	"TIMEOUT",
+	"DENIED",
+	"INCORRECT_ASSERTION",
+}
+
 func (v *SyntheticsErrorCode) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -34,7 +44,7 @@ func (v *SyntheticsErrorCode) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsErrorCode(value)
-	for _, existing := range []SyntheticsErrorCode{"NO_ERROR", "UNKNOWN", "DNS", "SSL", "TIMEOUT", "DENIED", "INCORRECT_ASSERTION"} {
+	for _, existing := range allowedSyntheticsErrorCodeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -42,6 +52,27 @@ func (v *SyntheticsErrorCode) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsErrorCode", value)
+}
+
+// NewSyntheticsErrorCodeFromValue returns a pointer to a valid SyntheticsErrorCode
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsErrorCodeFromValue(v string) (*SyntheticsErrorCode, error) {
+	ev := SyntheticsErrorCode(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsErrorCode: valid values are %v", v, allowedSyntheticsErrorCodeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsErrorCode) IsValid() bool {
+	for _, existing := range allowedSyntheticsErrorCodeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsErrorCode value

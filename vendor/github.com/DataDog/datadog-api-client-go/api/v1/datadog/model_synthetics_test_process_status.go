@@ -25,6 +25,14 @@ const (
 	SYNTHETICSTESTPROCESSSTATUS_FINISHED_WITH_ERROR SyntheticsTestProcessStatus = "finished_with_error"
 )
 
+var allowedSyntheticsTestProcessStatusEnumValues = []SyntheticsTestProcessStatus{
+	"not_scheduled",
+	"scheduled",
+	"started",
+	"finished",
+	"finished_with_error",
+}
+
 func (v *SyntheticsTestProcessStatus) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -32,7 +40,7 @@ func (v *SyntheticsTestProcessStatus) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsTestProcessStatus(value)
-	for _, existing := range []SyntheticsTestProcessStatus{"not_scheduled", "scheduled", "started", "finished", "finished_with_error"} {
+	for _, existing := range allowedSyntheticsTestProcessStatusEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -40,6 +48,27 @@ func (v *SyntheticsTestProcessStatus) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsTestProcessStatus", value)
+}
+
+// NewSyntheticsTestProcessStatusFromValue returns a pointer to a valid SyntheticsTestProcessStatus
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsTestProcessStatusFromValue(v string) (*SyntheticsTestProcessStatus, error) {
+	ev := SyntheticsTestProcessStatus(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsTestProcessStatus: valid values are %v", v, allowedSyntheticsTestProcessStatusEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsTestProcessStatus) IsValid() bool {
+	for _, existing := range allowedSyntheticsTestProcessStatusEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsTestProcessStatus value

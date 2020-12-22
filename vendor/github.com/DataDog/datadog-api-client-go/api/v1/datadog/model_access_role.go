@@ -24,6 +24,13 @@ const (
 	ACCESSROLE_ERROR     AccessRole = "ERROR"
 )
 
+var allowedAccessRoleEnumValues = []AccessRole{
+	"st",
+	"adm",
+	"ro",
+	"ERROR",
+}
+
 func (v *AccessRole) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -31,7 +38,7 @@ func (v *AccessRole) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := AccessRole(value)
-	for _, existing := range []AccessRole{"st", "adm", "ro", "ERROR"} {
+	for _, existing := range allowedAccessRoleEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -39,6 +46,27 @@ func (v *AccessRole) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid AccessRole", value)
+}
+
+// NewAccessRoleFromValue returns a pointer to a valid AccessRole
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewAccessRoleFromValue(v string) (*AccessRole, error) {
+	ev := AccessRole(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for AccessRole: valid values are %v", v, allowedAccessRoleEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v AccessRole) IsValid() bool {
+	for _, existing := range allowedAccessRoleEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to AccessRole value

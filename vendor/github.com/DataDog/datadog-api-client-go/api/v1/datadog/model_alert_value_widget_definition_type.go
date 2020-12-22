@@ -21,6 +21,10 @@ const (
 	ALERTVALUEWIDGETDEFINITIONTYPE_ALERT_VALUE AlertValueWidgetDefinitionType = "alert_value"
 )
 
+var allowedAlertValueWidgetDefinitionTypeEnumValues = []AlertValueWidgetDefinitionType{
+	"alert_value",
+}
+
 func (v *AlertValueWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *AlertValueWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := AlertValueWidgetDefinitionType(value)
-	for _, existing := range []AlertValueWidgetDefinitionType{"alert_value"} {
+	for _, existing := range allowedAlertValueWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *AlertValueWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid AlertValueWidgetDefinitionType", value)
+}
+
+// NewAlertValueWidgetDefinitionTypeFromValue returns a pointer to a valid AlertValueWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewAlertValueWidgetDefinitionTypeFromValue(v string) (*AlertValueWidgetDefinitionType, error) {
+	ev := AlertValueWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for AlertValueWidgetDefinitionType: valid values are %v", v, allowedAlertValueWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v AlertValueWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedAlertValueWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to AlertValueWidgetDefinitionType value

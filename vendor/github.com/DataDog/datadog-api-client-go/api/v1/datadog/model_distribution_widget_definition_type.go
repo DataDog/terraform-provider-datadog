@@ -21,6 +21,10 @@ const (
 	DISTRIBUTIONWIDGETDEFINITIONTYPE_DISTRIBUTION DistributionWidgetDefinitionType = "distribution"
 )
 
+var allowedDistributionWidgetDefinitionTypeEnumValues = []DistributionWidgetDefinitionType{
+	"distribution",
+}
+
 func (v *DistributionWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *DistributionWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := DistributionWidgetDefinitionType(value)
-	for _, existing := range []DistributionWidgetDefinitionType{"distribution"} {
+	for _, existing := range allowedDistributionWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *DistributionWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid DistributionWidgetDefinitionType", value)
+}
+
+// NewDistributionWidgetDefinitionTypeFromValue returns a pointer to a valid DistributionWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewDistributionWidgetDefinitionTypeFromValue(v string) (*DistributionWidgetDefinitionType, error) {
+	ev := DistributionWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for DistributionWidgetDefinitionType: valid values are %v", v, allowedDistributionWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v DistributionWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedDistributionWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to DistributionWidgetDefinitionType value

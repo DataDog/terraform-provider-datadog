@@ -21,6 +21,10 @@ const (
 	SERVICESUMMARYWIDGETDEFINITIONTYPE_TRACE_SERVICE ServiceSummaryWidgetDefinitionType = "trace_service"
 )
 
+var allowedServiceSummaryWidgetDefinitionTypeEnumValues = []ServiceSummaryWidgetDefinitionType{
+	"trace_service",
+}
+
 func (v *ServiceSummaryWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *ServiceSummaryWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := ServiceSummaryWidgetDefinitionType(value)
-	for _, existing := range []ServiceSummaryWidgetDefinitionType{"trace_service"} {
+	for _, existing := range allowedServiceSummaryWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *ServiceSummaryWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid ServiceSummaryWidgetDefinitionType", value)
+}
+
+// NewServiceSummaryWidgetDefinitionTypeFromValue returns a pointer to a valid ServiceSummaryWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewServiceSummaryWidgetDefinitionTypeFromValue(v string) (*ServiceSummaryWidgetDefinitionType, error) {
+	ev := ServiceSummaryWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for ServiceSummaryWidgetDefinitionType: valid values are %v", v, allowedServiceSummaryWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v ServiceSummaryWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedServiceSummaryWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to ServiceSummaryWidgetDefinitionType value

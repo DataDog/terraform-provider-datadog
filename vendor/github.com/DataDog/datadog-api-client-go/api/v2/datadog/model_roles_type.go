@@ -21,6 +21,10 @@ const (
 	ROLESTYPE_ROLES RolesType = "roles"
 )
 
+var allowedRolesTypeEnumValues = []RolesType{
+	"roles",
+}
+
 func (v *RolesType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *RolesType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := RolesType(value)
-	for _, existing := range []RolesType{"roles"} {
+	for _, existing := range allowedRolesTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *RolesType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid RolesType", value)
+}
+
+// NewRolesTypeFromValue returns a pointer to a valid RolesType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewRolesTypeFromValue(v string) (*RolesType, error) {
+	ev := RolesType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for RolesType: valid values are %v", v, allowedRolesTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v RolesType) IsValid() bool {
+	for _, existing := range allowedRolesTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to RolesType value

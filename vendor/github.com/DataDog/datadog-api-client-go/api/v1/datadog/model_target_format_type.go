@@ -24,6 +24,13 @@ const (
 	TARGETFORMATTYPE_DOUBLE  TargetFormatType = "double"
 )
 
+var allowedTargetFormatTypeEnumValues = []TargetFormatType{
+	"auto",
+	"string",
+	"integer",
+	"double",
+}
+
 func (v *TargetFormatType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -31,7 +38,7 @@ func (v *TargetFormatType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := TargetFormatType(value)
-	for _, existing := range []TargetFormatType{"auto", "string", "integer", "double"} {
+	for _, existing := range allowedTargetFormatTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -39,6 +46,27 @@ func (v *TargetFormatType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid TargetFormatType", value)
+}
+
+// NewTargetFormatTypeFromValue returns a pointer to a valid TargetFormatType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewTargetFormatTypeFromValue(v string) (*TargetFormatType, error) {
+	ev := TargetFormatType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for TargetFormatType: valid values are %v", v, allowedTargetFormatTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v TargetFormatType) IsValid() bool {
+	for _, existing := range allowedTargetFormatTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to TargetFormatType value

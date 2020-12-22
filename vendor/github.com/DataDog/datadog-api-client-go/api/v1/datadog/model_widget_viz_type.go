@@ -22,6 +22,11 @@ const (
 	WIDGETVIZTYPE_TOPLIST    WidgetVizType = "toplist"
 )
 
+var allowedWidgetVizTypeEnumValues = []WidgetVizType{
+	"timeseries",
+	"toplist",
+}
+
 func (v *WidgetVizType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *WidgetVizType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetVizType(value)
-	for _, existing := range []WidgetVizType{"timeseries", "toplist"} {
+	for _, existing := range allowedWidgetVizTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *WidgetVizType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetVizType", value)
+}
+
+// NewWidgetVizTypeFromValue returns a pointer to a valid WidgetVizType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetVizTypeFromValue(v string) (*WidgetVizType, error) {
+	ev := WidgetVizType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetVizType: valid values are %v", v, allowedWidgetVizTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetVizType) IsValid() bool {
+	for _, existing := range allowedWidgetVizTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetVizType value

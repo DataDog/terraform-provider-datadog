@@ -25,6 +25,14 @@ const (
 	SECURITYMONITORINGRULESEVERITY_CRITICAL SecurityMonitoringRuleSeverity = "critical"
 )
 
+var allowedSecurityMonitoringRuleSeverityEnumValues = []SecurityMonitoringRuleSeverity{
+	"info",
+	"low",
+	"medium",
+	"high",
+	"critical",
+}
+
 func (v *SecurityMonitoringRuleSeverity) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -32,7 +40,7 @@ func (v *SecurityMonitoringRuleSeverity) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SecurityMonitoringRuleSeverity(value)
-	for _, existing := range []SecurityMonitoringRuleSeverity{"info", "low", "medium", "high", "critical"} {
+	for _, existing := range allowedSecurityMonitoringRuleSeverityEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -40,6 +48,27 @@ func (v *SecurityMonitoringRuleSeverity) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SecurityMonitoringRuleSeverity", value)
+}
+
+// NewSecurityMonitoringRuleSeverityFromValue returns a pointer to a valid SecurityMonitoringRuleSeverity
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSecurityMonitoringRuleSeverityFromValue(v string) (*SecurityMonitoringRuleSeverity, error) {
+	ev := SecurityMonitoringRuleSeverity(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SecurityMonitoringRuleSeverity: valid values are %v", v, allowedSecurityMonitoringRuleSeverityEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SecurityMonitoringRuleSeverity) IsValid() bool {
+	for _, existing := range allowedSecurityMonitoringRuleSeverityEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SecurityMonitoringRuleSeverity value

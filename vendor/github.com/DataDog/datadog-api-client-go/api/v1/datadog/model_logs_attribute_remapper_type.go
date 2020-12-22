@@ -21,6 +21,10 @@ const (
 	LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER LogsAttributeRemapperType = "attribute-remapper"
 )
 
+var allowedLogsAttributeRemapperTypeEnumValues = []LogsAttributeRemapperType{
+	"attribute-remapper",
+}
+
 func (v *LogsAttributeRemapperType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *LogsAttributeRemapperType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsAttributeRemapperType(value)
-	for _, existing := range []LogsAttributeRemapperType{"attribute-remapper"} {
+	for _, existing := range allowedLogsAttributeRemapperTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *LogsAttributeRemapperType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsAttributeRemapperType", value)
+}
+
+// NewLogsAttributeRemapperTypeFromValue returns a pointer to a valid LogsAttributeRemapperType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsAttributeRemapperTypeFromValue(v string) (*LogsAttributeRemapperType, error) {
+	ev := LogsAttributeRemapperType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsAttributeRemapperType: valid values are %v", v, allowedLogsAttributeRemapperTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsAttributeRemapperType) IsValid() bool {
+	for _, existing := range allowedLogsAttributeRemapperTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsAttributeRemapperType value

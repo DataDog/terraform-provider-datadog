@@ -21,6 +21,10 @@ const (
 	FREETEXTWIDGETDEFINITIONTYPE_FREE_TEXT FreeTextWidgetDefinitionType = "free_text"
 )
 
+var allowedFreeTextWidgetDefinitionTypeEnumValues = []FreeTextWidgetDefinitionType{
+	"free_text",
+}
+
 func (v *FreeTextWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *FreeTextWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := FreeTextWidgetDefinitionType(value)
-	for _, existing := range []FreeTextWidgetDefinitionType{"free_text"} {
+	for _, existing := range allowedFreeTextWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *FreeTextWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid FreeTextWidgetDefinitionType", value)
+}
+
+// NewFreeTextWidgetDefinitionTypeFromValue returns a pointer to a valid FreeTextWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewFreeTextWidgetDefinitionTypeFromValue(v string) (*FreeTextWidgetDefinitionType, error) {
+	ev := FreeTextWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for FreeTextWidgetDefinitionType: valid values are %v", v, allowedFreeTextWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v FreeTextWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedFreeTextWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to FreeTextWidgetDefinitionType value

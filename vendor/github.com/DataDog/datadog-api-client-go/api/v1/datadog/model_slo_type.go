@@ -22,6 +22,11 @@ const (
 	SLOTYPE_MONITOR SLOType = "monitor"
 )
 
+var allowedSLOTypeEnumValues = []SLOType{
+	"metric",
+	"monitor",
+}
+
 func (v *SLOType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *SLOType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SLOType(value)
-	for _, existing := range []SLOType{"metric", "monitor"} {
+	for _, existing := range allowedSLOTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *SLOType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SLOType", value)
+}
+
+// NewSLOTypeFromValue returns a pointer to a valid SLOType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSLOTypeFromValue(v string) (*SLOType, error) {
+	ev := SLOType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SLOType: valid values are %v", v, allowedSLOTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SLOType) IsValid() bool {
+	for _, existing := range allowedSLOTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SLOType value

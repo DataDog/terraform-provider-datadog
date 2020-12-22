@@ -31,6 +31,20 @@ const (
 	LOGSAGGREGATIONFUNCTION_AVG           LogsAggregationFunction = "avg"
 )
 
+var allowedLogsAggregationFunctionEnumValues = []LogsAggregationFunction{
+	"count",
+	"cardinality",
+	"pc75",
+	"pc90",
+	"pc95",
+	"pc98",
+	"pc99",
+	"sum",
+	"min",
+	"max",
+	"avg",
+}
+
 func (v *LogsAggregationFunction) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -38,7 +52,7 @@ func (v *LogsAggregationFunction) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsAggregationFunction(value)
-	for _, existing := range []LogsAggregationFunction{"count", "cardinality", "pc75", "pc90", "pc95", "pc98", "pc99", "sum", "min", "max", "avg"} {
+	for _, existing := range allowedLogsAggregationFunctionEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -46,6 +60,27 @@ func (v *LogsAggregationFunction) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsAggregationFunction", value)
+}
+
+// NewLogsAggregationFunctionFromValue returns a pointer to a valid LogsAggregationFunction
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsAggregationFunctionFromValue(v string) (*LogsAggregationFunction, error) {
+	ev := LogsAggregationFunction(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsAggregationFunction: valid values are %v", v, allowedLogsAggregationFunctionEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsAggregationFunction) IsValid() bool {
+	for _, existing := range allowedLogsAggregationFunctionEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsAggregationFunction value

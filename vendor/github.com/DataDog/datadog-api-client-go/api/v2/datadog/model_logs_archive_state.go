@@ -24,6 +24,13 @@ const (
 	LOGSARCHIVESTATE_WORKING_AUTH_LEGACY LogsArchiveState = "WORKING_AUTH_LEGACY"
 )
 
+var allowedLogsArchiveStateEnumValues = []LogsArchiveState{
+	"UNKNOWN",
+	"WORKING",
+	"FAILING",
+	"WORKING_AUTH_LEGACY",
+}
+
 func (v *LogsArchiveState) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -31,7 +38,7 @@ func (v *LogsArchiveState) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LogsArchiveState(value)
-	for _, existing := range []LogsArchiveState{"UNKNOWN", "WORKING", "FAILING", "WORKING_AUTH_LEGACY"} {
+	for _, existing := range allowedLogsArchiveStateEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -39,6 +46,27 @@ func (v *LogsArchiveState) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid LogsArchiveState", value)
+}
+
+// NewLogsArchiveStateFromValue returns a pointer to a valid LogsArchiveState
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewLogsArchiveStateFromValue(v string) (*LogsArchiveState, error) {
+	ev := LogsArchiveState(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for LogsArchiveState: valid values are %v", v, allowedLogsArchiveStateEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v LogsArchiveState) IsValid() bool {
+	for _, existing := range allowedLogsArchiveStateEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to LogsArchiveState value

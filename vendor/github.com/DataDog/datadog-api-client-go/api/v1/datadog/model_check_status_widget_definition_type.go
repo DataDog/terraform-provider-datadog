@@ -21,6 +21,10 @@ const (
 	CHECKSTATUSWIDGETDEFINITIONTYPE_CHECK_STATUS CheckStatusWidgetDefinitionType = "check_status"
 )
 
+var allowedCheckStatusWidgetDefinitionTypeEnumValues = []CheckStatusWidgetDefinitionType{
+	"check_status",
+}
+
 func (v *CheckStatusWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *CheckStatusWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := CheckStatusWidgetDefinitionType(value)
-	for _, existing := range []CheckStatusWidgetDefinitionType{"check_status"} {
+	for _, existing := range allowedCheckStatusWidgetDefinitionTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *CheckStatusWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid CheckStatusWidgetDefinitionType", value)
+}
+
+// NewCheckStatusWidgetDefinitionTypeFromValue returns a pointer to a valid CheckStatusWidgetDefinitionType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewCheckStatusWidgetDefinitionTypeFromValue(v string) (*CheckStatusWidgetDefinitionType, error) {
+	ev := CheckStatusWidgetDefinitionType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for CheckStatusWidgetDefinitionType: valid values are %v", v, allowedCheckStatusWidgetDefinitionTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v CheckStatusWidgetDefinitionType) IsValid() bool {
+	for _, existing := range allowedCheckStatusWidgetDefinitionTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to CheckStatusWidgetDefinitionType value

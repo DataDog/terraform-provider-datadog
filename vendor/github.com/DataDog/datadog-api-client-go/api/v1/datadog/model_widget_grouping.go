@@ -22,6 +22,11 @@ const (
 	WIDGETGROUPING_CLUSTER WidgetGrouping = "cluster"
 )
 
+var allowedWidgetGroupingEnumValues = []WidgetGrouping{
+	"check",
+	"cluster",
+}
+
 func (v *WidgetGrouping) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -29,7 +34,7 @@ func (v *WidgetGrouping) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := WidgetGrouping(value)
-	for _, existing := range []WidgetGrouping{"check", "cluster"} {
+	for _, existing := range allowedWidgetGroupingEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -37,6 +42,27 @@ func (v *WidgetGrouping) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid WidgetGrouping", value)
+}
+
+// NewWidgetGroupingFromValue returns a pointer to a valid WidgetGrouping
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewWidgetGroupingFromValue(v string) (*WidgetGrouping, error) {
+	ev := WidgetGrouping(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for WidgetGrouping: valid values are %v", v, allowedWidgetGroupingEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v WidgetGrouping) IsValid() bool {
+	for _, existing := range allowedWidgetGroupingEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to WidgetGrouping value

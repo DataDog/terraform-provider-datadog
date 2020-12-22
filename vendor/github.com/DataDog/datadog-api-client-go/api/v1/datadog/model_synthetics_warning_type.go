@@ -21,6 +21,10 @@ const (
 	SYNTHETICSWARNINGTYPE_USER_LOCATOR SyntheticsWarningType = "user_locator"
 )
 
+var allowedSyntheticsWarningTypeEnumValues = []SyntheticsWarningType{
+	"user_locator",
+}
+
 func (v *SyntheticsWarningType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
@@ -28,7 +32,7 @@ func (v *SyntheticsWarningType) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := SyntheticsWarningType(value)
-	for _, existing := range []SyntheticsWarningType{"user_locator"} {
+	for _, existing := range allowedSyntheticsWarningTypeEnumValues {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil
@@ -36,6 +40,27 @@ func (v *SyntheticsWarningType) UnmarshalJSON(src []byte) error {
 	}
 
 	return fmt.Errorf("%+v is not a valid SyntheticsWarningType", value)
+}
+
+// NewSyntheticsWarningTypeFromValue returns a pointer to a valid SyntheticsWarningType
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func NewSyntheticsWarningTypeFromValue(v string) (*SyntheticsWarningType, error) {
+	ev := SyntheticsWarningType(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for SyntheticsWarningType: valid values are %v", v, allowedSyntheticsWarningTypeEnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v SyntheticsWarningType) IsValid() bool {
+	for _, existing := range allowedSyntheticsWarningTypeEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
 }
 
 // Ptr returns reference to SyntheticsWarningType value
