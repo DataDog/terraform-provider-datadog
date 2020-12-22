@@ -24,8 +24,6 @@ type SyntheticsStepDetail struct {
 	// Error returned by the test.
 	Error      *string               `json:"error,omitempty"`
 	PlayingTab *SyntheticsPlayingTab `json:"playingTab,omitempty"`
-	// Array of resources collected by the test.
-	Resources *[]SyntheticsResource `json:"resources,omitempty"`
 	// Whether or not screenshots where collected by the test.
 	ScreenshotBucketKey *bool `json:"screenshotBucketKey,omitempty"`
 	// Whether or not to skip this step.
@@ -254,38 +252,6 @@ func (o *SyntheticsStepDetail) HasPlayingTab() bool {
 // SetPlayingTab gets a reference to the given SyntheticsPlayingTab and assigns it to the PlayingTab field.
 func (o *SyntheticsStepDetail) SetPlayingTab(v SyntheticsPlayingTab) {
 	o.PlayingTab = &v
-}
-
-// GetResources returns the Resources field value if set, zero value otherwise.
-func (o *SyntheticsStepDetail) GetResources() []SyntheticsResource {
-	if o == nil || o.Resources == nil {
-		var ret []SyntheticsResource
-		return ret
-	}
-	return *o.Resources
-}
-
-// GetResourcesOk returns a tuple with the Resources field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SyntheticsStepDetail) GetResourcesOk() (*[]SyntheticsResource, bool) {
-	if o == nil || o.Resources == nil {
-		return nil, false
-	}
-	return o.Resources, true
-}
-
-// HasResources returns a boolean if a field has been set.
-func (o *SyntheticsStepDetail) HasResources() bool {
-	if o != nil && o.Resources != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetResources gets a reference to the given []SyntheticsResource and assigns it to the Resources field.
-func (o *SyntheticsStepDetail) SetResources(v []SyntheticsResource) {
-	o.Resources = &v
 }
 
 // GetScreenshotBucketKey returns the ScreenshotBucketKey field value if set, zero value otherwise.
@@ -627,9 +593,6 @@ func (o SyntheticsStepDetail) MarshalJSON() ([]byte, error) {
 	}
 	if o.PlayingTab != nil {
 		toSerialize["playingTab"] = o.PlayingTab
-	}
-	if o.Resources != nil {
-		toSerialize["resources"] = o.Resources
 	}
 	if o.ScreenshotBucketKey != nil {
 		toSerialize["screenshotBucketKey"] = o.ScreenshotBucketKey
