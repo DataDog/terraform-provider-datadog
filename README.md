@@ -37,7 +37,7 @@ Further [usage documentation is available on the Terraform website](https://www.
 
 ## Developing the Provider
 
-If you wish to build the provider locally to manually execute terraform examples, you'll first need [Go](http://www.golang.org) installed on your machine (version 1.11+ is _required_). You'll also need to correctly setup a [GOPATH](http://golang.org/doc/code.html#GOPATH), as well as adding `$GOPATH/bin` to your `$PATH`.
+If you wish to build the provider locally to manually execute terraform examples:
 
 <details><summary>Terraform 0.13.x</summary>
 To compile the provider, run `make build_013`. This will build the provider and put the provider binary in a locally mirrored plugin directory.
