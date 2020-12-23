@@ -493,8 +493,8 @@ func buildTerraformURLParser(ddURL *datadogV1.LogsURLParser) map[string]interfac
 		"sources":                  ddURL.Sources,
 		"target":                   ddURL.GetTarget(),
 		"normalize_ending_slashes": ddURL.GetNormalizeEndingSlashes(),
-		"name":                     ddURL.GetName(),
-		"is_enabled":               ddURL.GetIsEnabled(),
+		"name":       ddURL.GetName(),
+		"is_enabled": ddURL.GetIsEnabled(),
 	}
 }
 
