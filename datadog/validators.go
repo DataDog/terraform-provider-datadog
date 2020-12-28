@@ -27,11 +27,15 @@ func validateAggregatorMethod(v interface{}, k string) (ws []string, errors []er
 // validateEnumValue returns a validate func for an enum value. It takes the constructor with validation for the enum as an argument.
 // Such a constructor is for instance `datadogV1.NewWidgetLineWidthFromValue`
 func validateEnumValue(newEnumFunc interface{}) schema.SchemaValidateFunc {
+
+	// Get type of arg to convert int to int32/64 for instance
+	f := reflect.TypeOf(newEnumFunc)
+	argT := f.In(0)
+
 	return func(val interface{}, key string) (warns []string, errs []error) {
 		arg := reflect.ValueOf(val)
-		outs := reflect.ValueOf(newEnumFunc).Call([]reflect.Value{arg})
-		err := outs[1].Interface()
-		if err != nil {
+		outs := reflect.ValueOf(newEnumFunc).Call([]reflect.Value{arg.Convert(argT)})
+		if err := outs[1].Interface(); err != nil {
 			errs = append(errs, err.(error))
 		}
 		return
