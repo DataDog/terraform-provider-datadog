@@ -102,7 +102,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 						},
 						"operator": {
 							Type:         schema.TypeString,
-							ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsAssertionOperatorFromValue),
+							ValidateFunc: validateSyntheticsAssertionOperator,
 							Required:     true,
 						},
 						"property": {
@@ -1191,4 +1191,15 @@ func setFloatTargetValue(subTarget *datadogV1.SyntheticsAssertionJSONPathTargetT
 	if floatValue, err := strconv.ParseFloat(value, 64); err == nil {
 		subTarget.SetTargetValue(floatValue)
 	}
+}
+
+func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []string, errs []error) {
+	_, err := datadogV1.NewSyntheticsAssertionOperatorFromValue(val.(string))
+	if err != nil {
+		_, err2 := datadogV1.NewSyntheticsAssertionJSONPathOperatorFromValue(val.(string))
+		if err2 != nil {
+			errs = append(errs, err, err2)
+		}
+	}
+	return
 }

@@ -54,7 +54,7 @@ func resourceDatadogDashboard() *schema.Resource {
 				Required:     true,
 				ForceNew:     true,
 				Description:  "The layout type of the dashboard, either 'free' or 'ordered'.",
-				ValidateFunc: validateEnumValue(datadogV1.NewWidgetLayoutTypeFromValue),
+				ValidateFunc: validateEnumValue(datadogV1.NewDashboardLayoutTypeFromValue),
 			},
 			"description": {
 				Type:        schema.TypeString,
