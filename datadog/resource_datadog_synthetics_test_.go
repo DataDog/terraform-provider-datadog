@@ -28,7 +28,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			"type": {
 				Type:         schema.TypeString,
 				Required:     true,
-				ValidateFunc: validateSyntheticTestDetailsType,
+				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
 			},
 			"subtype": {
 				Type:     schema.TypeString,
@@ -40,7 +40,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					}
 					return old == new
 				},
-				ValidateFunc: validateSyntheticsTestDetailsSubType,
+				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTestDetailsSubTypeFromValue),
 			},
 			"request": syntheticsTestRequest(),
 			"request_headers": {
@@ -97,12 +97,12 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 						"type": {
 							Type:         schema.TypeString,
-							ValidateFunc: validateSyntheticsAssertionType,
+							ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue),
 							Required:     true,
 						},
 						"operator": {
 							Type:         schema.TypeString,
-							ValidateFunc: validateSyntheticsAssertionOperator,
+							ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsAssertionOperatorFromValue),
 							Required:     true,
 						},
 						"property": {
@@ -162,7 +162,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 						"type": {
 							Type:         schema.TypeString,
 							Required:     true,
-							ValidateFunc: validateSyntheticsBrowserVariableType,
+							ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsBrowserVariableTypeFromValue),
 						},
 					},
 				},
@@ -172,7 +172,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Optional: true,
 				Elem: &schema.Schema{
 					Type:         schema.TypeString,
-					ValidateFunc: validateSyntheticsDeviceIDs,
+					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsDeviceIDFromValue),
 				},
 			},
 			"locations": {
@@ -200,7 +200,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			},
 			"status": {
 				Type:         schema.TypeString,
-				ValidateFunc: validateSyntheticsTestPauseStatus,
+				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTestPauseStatusFromValue),
 				Required:     true,
 			},
 			"monitor_id": {
@@ -220,7 +220,7 @@ func syntheticsTestRequest() *schema.Schema {
 			Schema: map[string]*schema.Schema{
 				"method": {
 					Type:         schema.TypeString,
-					ValidateFunc: validateHTTPMethod,
+					ValidateFunc: validateEnumValue(datadogV1.NewHTTPMethodFromValue),
 					Optional:     true,
 				},
 				"url": {
@@ -348,7 +348,7 @@ func syntheticsTestOptions() *schema.Schema {
 				},
 				"tick_every": {
 					Type:         schema.TypeInt,
-					ValidateFunc: validateSyntheticsTickInterval,
+					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
 					Required:     true,
 				},
 				"accept_self_signed": {
@@ -390,7 +390,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 				},
 				"tick_every": {
 					Type:         schema.TypeInt,
-					ValidateFunc: validateSyntheticsTickInterval,
+					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
 					Optional:     true,
 				},
 				"accept_self_signed": {
@@ -456,7 +456,7 @@ func syntheticsTestStep() *schema.Schema {
 				},
 				"type": {
 					Type:         schema.TypeString,
-					ValidateFunc: validateSyntheticsStepType,
+					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsStepTypeFromValue),
 					Required:     true,
 				},
 				"allow_failure": {
@@ -1191,87 +1191,4 @@ func setFloatTargetValue(subTarget *datadogV1.SyntheticsAssertionJSONPathTargetT
 	if floatValue, err := strconv.ParseFloat(value, 64); err == nil {
 		subTarget.SetTargetValue(floatValue)
 	}
-}
-
-func validateHTTPMethod(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV1.NewHTTPMethodFromValue(val.(string))
-	if err != nil {
-		errs = append(errs, err)
-	}
-	return
-}
-
-func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV1.NewSyntheticsAssertionOperatorFromValue(val.(string))
-	if err != nil {
-		_, err2 := datadogV1.NewSyntheticsAssertionJSONPathOperatorFromValue(val.(string))
-		if err2 != nil {
-			errs = append(errs, err, err2)
-		}
-	}
-	return
-}
-
-func validateSyntheticsAssertionType(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV1.NewSyntheticsAssertionTypeFromValue(val.(string))
-	if err != nil {
-		errs = append(errs, err)
-	}
-	return
-}
-
-func validateSyntheticsTickInterval(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV1.NewSyntheticsTickIntervalFromValue(int64(val.(int)))
-	if err != nil {
-		errs = append(errs, err)
-	}
-	return
-}
-
-func validateSyntheticsDeviceIDs(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV1.NewSyntheticsDeviceIDFromValue(val.(string))
-	if err != nil {
-		errs = append(errs, err)
-	}
-	return
-}
-
-func validateSyntheticTestDetailsType(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV1.NewSyntheticsTestDetailsTypeFromValue(val.(string))
-	if err != nil {
-		errs = append(errs, err)
-	}
-	return
-}
-
-func validateSyntheticsTestDetailsSubType(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV1.NewSyntheticsTestDetailsSubTypeFromValue(val.(string))
-	if err != nil {
-		errs = append(errs, err)
-	}
-	return
-}
-
-func validateSyntheticsBrowserVariableType(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV1.NewSyntheticsBrowserVariableTypeFromValue(val.(string))
-	if err != nil {
-		errs = append(errs, err)
-	}
-	return
-}
-
-func validateSyntheticsTestPauseStatus(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV1.NewSyntheticsTestPauseStatusFromValue(val.(string))
-	if err != nil {
-		errs = append(errs, err)
-	}
-	return
-}
-
-func validateSyntheticsStepType(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV1.NewSyntheticsStepTypeFromValue(val.(string))
-	if err != nil {
-		errs = append(errs, err)
-	}
-	return
 }

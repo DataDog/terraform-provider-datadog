@@ -28,7 +28,7 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 						"status": {
 							Type:         schema.TypeString,
-							ValidateFunc: validateSecurityMonitoringRuleSeverity,
+							ValidateFunc: validateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
 							Required:     true,
 							Description:  "Status of the rule case to match.",
 						},

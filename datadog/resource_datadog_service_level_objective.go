@@ -49,7 +49,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 						"timeframe": {
 							Type:         schema.TypeString,
-							ValidateFunc: validateSLOTimeframe,
+							ValidateFunc: validateEnumValue(datadogV1.NewSLOTimeframeFromValue),
 							Required:     true,
 						},
 						"target": {
@@ -79,7 +79,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Type:         schema.TypeString,
 				Required:     true,
 				ForceNew:     true,
-				ValidateFunc: ValidateServiceLevelObjectiveTypeString,
+				ValidateFunc: validateEnumValue(datadogV1.NewSLOTypeFromValue),
 			},
 			"force_delete": {
 				Type:     schema.TypeBool,
@@ -149,22 +149,8 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 }
 
 // ValidateServiceLevelObjectiveTypeString is a ValidateFunc that ensures the SLO is of one of the supported types
-func ValidateServiceLevelObjectiveTypeString(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV1.NewSLOTypeFromValue(val.(string))
-	if err != nil {
-		errs = append(errs, err)
-	}
-	return
-}
 
 // ValidateServiceLevelObjectiveTypeString is a ValidateFunc that ensures the SLO is of one of the supported types
-func validateSLOTimeframe(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV1.NewSLOTimeframeFromValue(val.(string))
-	if err != nil {
-		errs = append(errs, err)
-	}
-	return
-}
 
 // Use CustomizeDiff to do monitor validation
 func resourceDatadogServiceLevelObjectiveCustomizeDiff(diff *schema.ResourceDiff, meta interface{}) error {

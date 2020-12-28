@@ -35,7 +35,7 @@ func resourceDatadogDashboardList() *schema.Resource {
 						"type": {
 							Type:         schema.TypeString,
 							Required:     true,
-							ValidateFunc: validateDashboardType,
+							ValidateFunc: validateEnumValue(datadogV2.NewDashboardTypeFromValue),
 							Description:  "The type of this dashboard",
 						},
 						"dash_id": {
@@ -242,12 +242,4 @@ func buildTerraformDashboardListItemsV2(completeItemListV2 datadogV2.DashboardLi
 		dashItemListV2 = append(dashItemListV2, dashItem)
 	}
 	return dashItemListV2, nil
-}
-
-func validateDashboardType(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV2.NewDashboardTypeFromValue(val.(string))
-	if err != nil {
-		errs = append(errs, err)
-	}
-	return
 }
