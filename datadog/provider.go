@@ -30,25 +30,21 @@ func Provider() terraform.ResourceProvider {
 	datadogProvider = &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"api_key": {
-				Description: "(Required unless validate is false) Datadog API key. This can also be set via the DD_API_KEY environment variable.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_API_KEY", "DD_API_KEY"}, nil),
 			},
 			"app_key": {
-				Description: " (Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_APP_KEY", "DD_APP_KEY"}, nil),
 			},
 			"api_url": {
-				Description: "The API Url. This can be also be set via the DD_HOST environment variable. Note that this URL must not end with the /api/ path. For example, https://api.datadoghq.com/ is a correct value, while https://api.datadoghq.com/api/ is not. And if you're working with \"EU\" version of Datadog, use https://api.datadoghq.eu/.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_HOST", "DD_HOST"}, nil),
 			},
 			"validate": {
-				Description: "Enables validation of the provided API and APP keys during provider initialization. Default is true. When false, api_key and app_keywon't be checked.",
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  true,
@@ -56,6 +52,7 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
+			"datadog_dashboard":                            resourceDatadogDashboard(),
 			"datadog_dashboard_list":                       resourceDatadogDashboardList(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
 			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
@@ -75,12 +72,14 @@ func Provider() terraform.ResourceProvider {
 			"datadog_metric_metadata":                      resourceDatadogMetricMetadata(),
 			"datadog_monitor":                              resourceDatadogMonitor(),
 			"datadog_role":                                 resourceDatadogRole(),
+			"datadog_screenboard":                          resourceDatadogScreenboard(),
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
 			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
 			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
 			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
 			"datadog_synthetics_global_variable":           resourceDatadogSyntheticsGlobalVariable(),
 			"datadog_synthetics_private_location":          resourceDatadogSyntheticsPrivateLocation(),
+			"datadog_timeboard":                            resourceDatadogTimeboard(),
 			"datadog_user":                                 resourceDatadogUser(),
 		},
 

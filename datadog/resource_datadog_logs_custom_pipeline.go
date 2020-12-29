@@ -88,28 +88,28 @@ var arithmeticProcessor = &schema.Schema{
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Description: "Your pipeline name.",
-				Type: schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"is_enabled": {
 				Description: "Boolean value to enable your pipeline.",
-				Type: schema.TypeBool,
-				Optional: true,
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 			"expression": {
 				Description: "Arithmetic operation between one or more log attributes.",
-				Type: schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"target": {
 				Description: "Name of the attribute that contains the result of the arithmetic operation.",
-				Type: schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"is_replace_missing": {
 				Description: "If true, it replaces all missing attributes of expression by 0, false skips the operation if an attribute is missing.",
-				Type: schema.TypeBool,
-				Optional: true,
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 		},
 	},
@@ -128,7 +128,7 @@ var attributeRemapper = &schema.Schema{
 			"target":      {Description: "Final attribute or tag name to remap the sources.", Type: schema.TypeString, Required: true},
 			"target_type": {Description: "Defines if the target is a log attribute or tag.", Type: schema.TypeString, Required: true},
 			"target_format": {
-				Description: "If the target_type of the remapper is attribute, try to cast the value to a new specific type. If the cast is not possible, the original type is kept. string, integer, or double are the possible types. If the target_type is tag, this parameter may not be specified.",
+				Description:  "If the target_type of the remapper is attribute, try to cast the value to a new specific type. If the cast is not possible, the original type is kept. string, integer, or double are the possible types. If the target_type is tag, this parameter may not be specified.",
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validation.StringInSlice([]string{"auto", "string", "integer", "double"}, false),
@@ -197,9 +197,9 @@ var grokParser = &schema.Schema{
 			"source":     {Description: "Name of the log attribute to parse.", Type: schema.TypeString, Required: true},
 			"samples": {
 				Description: "List of sample logs for this parser. It can save up to 5 samples. Each sample takes up to 5000 characters.",
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"grok": {
 				Type:     schema.TypeList,
@@ -228,9 +228,9 @@ var lookupProcessor = &schema.Schema{
 			"target":     {Description: "Name of the attribute that contains the result of the lookup.", Type: schema.TypeString, Required: true},
 			"lookup_table": {
 				Description: "List of entries of the lookup table using \"key,value\" format.",
-				Type:     schema.TypeList,
-				Required: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Type:        schema.TypeList,
+				Required:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"default_lookup": {Description: "Default lookup value to use if there is no entry in the lookup table for the value of the source attribute.", Type: schema.TypeString, Optional: true},
 		},
@@ -1136,7 +1136,7 @@ func getFilterSchema() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"query": {
-				Description: "Filter criteria of the category.",
+				Description:  "Filter criteria of the category.",
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validation.StringIsNotEmpty,

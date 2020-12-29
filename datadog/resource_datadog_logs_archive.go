@@ -22,8 +22,8 @@ func resourceDatadogLogsArchive() *schema.Resource {
 			"query": {Description: "The archive query/filter. Logs matching this query are included in the archive.", Type: schema.TypeString, Required: true},
 			"s3": {
 				Description: "Definition of an s3 archive.",
-				Type:     schema.TypeMap,
-				Optional: true,
+				Type:        schema.TypeMap,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"bucket":       {Description: "Name of your s3 bucket.", Type: schema.TypeString, Required: true},
@@ -37,8 +37,8 @@ func resourceDatadogLogsArchive() *schema.Resource {
 			},
 			"azure": {
 				Description: "Definition of an azure archive.",
-				Type:     schema.TypeMap,
-				Optional: true,
+				Type:        schema.TypeMap,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"container":       {Description: "The container where the archive will be stored.", Type: schema.TypeString, Required: true},
@@ -51,8 +51,8 @@ func resourceDatadogLogsArchive() *schema.Resource {
 			},
 			"gcs": {
 				Description: "Definition of an gcs archive.",
-				Type:     schema.TypeMap,
-				Optional: true,
+				Type:        schema.TypeMap,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"bucket":       {Description: "Name of your gcs bucket.", Type: schema.TypeString, Required: true},
@@ -64,17 +64,17 @@ func resourceDatadogLogsArchive() *schema.Resource {
 			},
 			"rehydration_tags": {
 				Description: "An array of tags to add to rehydrated logs from an archive.",
-				Type:     schema.TypeList,
-				Optional: true,
+				Type:        schema.TypeList,
+				Optional:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
 			"include_tags": {
 				Description: "To store the tags in the archive, set the value \"true\". If it is set to \"false\", the tags will be dropped when the logs are sent to the archive.",
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
 			},
 		},
 	}

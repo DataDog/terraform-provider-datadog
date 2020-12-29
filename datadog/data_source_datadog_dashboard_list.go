@@ -15,7 +15,7 @@ func dataSourceDatadogDashboardList() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Description: "A dashboard list name to limit the search.",
+				Description:  "A dashboard list name to limit the search.",
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validation.StringIsNotEmpty,

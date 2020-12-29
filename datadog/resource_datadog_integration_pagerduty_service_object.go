@@ -22,15 +22,15 @@ func resourceDatadogIntegrationPagerdutySO() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"service_name": {
 				Description: "Your Service name in PagerDuty.",
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
 			},
 			"service_key": {
 				Description: "Your Service name associated service key in PagerDuty. Note: Since the Datadog API never returns service keys, it is impossible to detect [drifts](https://www.hashicorp.com/blog/detecting-and-managing-drift-with-terraform?_ga=2.15990198.1091155358.1609189257-888022054.1605547463). The best way to solve a drift is to manually mark the Service Object resource with [terraform taint](https://www.terraform.io/docs/commands/taint.html?_ga=2.15990198.1091155358.1609189257-888022054.1605547463) to have it destroyed and recreated.",
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				Sensitive:   true,
 			},
 		},
 	}

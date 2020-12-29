@@ -11,27 +11,27 @@ import (
 var indexSchema = map[string]*schema.Schema{
 	"name": {
 		Description: "The name of the index.",
-		Type: schema.TypeString,
-		Required: true,
+		Type:        schema.TypeString,
+		Required:    true,
 	},
 	"filter": {
 		Description: "Logs filter",
-		Type:     schema.TypeList,
-		Required: true,
+		Type:        schema.TypeList,
+		Required:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"query": {
 					Description: "Logs filter criteria. Only logs matching this filter criteria are considered for this index.",
-					Type: schema.TypeString,
-					Required: true,
+					Type:        schema.TypeString,
+					Required:    true,
 				},
 			},
 		},
 	},
 	"exclusion_filter": {
 		Description: "List of exclusion filters.",
-		Type:     schema.TypeList,
-		Optional: true,
+		Type:        schema.TypeList,
+		Optional:    true,
 		Elem: &schema.Resource{
 			Schema: exclusionFilterSchema,
 		},
@@ -41,13 +41,13 @@ var indexSchema = map[string]*schema.Schema{
 var exclusionFilterSchema = map[string]*schema.Schema{
 	"name": {
 		Description: "The name of the exclusion filter.",
-		Type: schema.TypeString,
-		Optional: true,
+		Type:        schema.TypeString,
+		Optional:    true,
 	},
 	"is_enabled": {
 		Description: "A boolean stating if the exclusion is active or not.",
-		Type: schema.TypeBool,
-		Optional: true,
+		Type:        schema.TypeBool,
+		Optional:    true,
 	},
 	"filter": {
 		Type:     schema.TypeList,
@@ -56,13 +56,13 @@ var exclusionFilterSchema = map[string]*schema.Schema{
 			Schema: map[string]*schema.Schema{
 				"query": {
 					Description: "Only logs matching the filter criteria and the query of the parent index will be considered for this exclusion filter.",
-					Type: schema.TypeString,
-					Optional: true,
+					Type:        schema.TypeString,
+					Optional:    true,
 				},
 				"sample_rate": {
 					Description: "The fraction of logs excluded by the exclusion filter, when active.",
-					Type: schema.TypeFloat,
-					Optional: true,
+					Type:        schema.TypeFloat,
+					Optional:    true,
 				},
 			},
 		},

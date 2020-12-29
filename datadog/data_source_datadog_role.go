@@ -14,20 +14,20 @@ func dataSourceDatadogRole() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"filter": {
 				Description: "A string on which to filter the roles.",
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 
 			// Computed values
 			"name": {
 				Description: "Name of the role.",
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"user_count": {
 				Description: "Number of users assigned to this role.",
-				Type:     schema.TypeInt,
-				Computed: true,
+				Type:        schema.TypeInt,
+				Computed:    true,
 			},
 		},
 	}

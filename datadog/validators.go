@@ -10,7 +10,7 @@ import (
 func validateAggregatorMethod(v interface{}, k string) (ws []string, errors []error) {
 	value := v.(string)
 	validMethods := map[string]struct{}{
-		"avg":   {}, 
+		"avg":   {},
 		"max":   {},
 		"min":   {},
 		"sum":   {},

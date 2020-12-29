@@ -21,38 +21,38 @@ func resourceDatadogMetricMetadata() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"metric": {
 				Description: "The name of the metric.",
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"type": {
 				Description: "Type of the metric",
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"description": {
 				Description: "A description of the metric.",
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"short_name": {
 				Description: "A short name of the metric.",
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"unit": {
 				Description: "Primary unit of the metric such as 'byte' or 'operation'.",
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"per_unit": {
 				Description: "Per unit of the metric such as 'second' in 'bytes per second'.",
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"statsd_interval": {
 				Description: "If applicable, statsd flush interval in seconds for the metric.",
-				Type:     schema.TypeInt,
-				Optional: true,
+				Type:        schema.TypeInt,
+				Optional:    true,
 			},
 		},
 	}
