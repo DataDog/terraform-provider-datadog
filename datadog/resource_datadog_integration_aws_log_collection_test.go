@@ -3,12 +3,13 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"strings"
+	"testing"
+
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"strings"
-	"testing"
 )
 
 func testAccDatadogIntegrationAWSLogCollectionConfig(uniq string) string {

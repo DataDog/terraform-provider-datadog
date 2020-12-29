@@ -3,13 +3,14 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"strings"
+	"testing"
+
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"strconv"
-	"strings"
-	"testing"
 )
 
 func ArchiveOrderConfig() string {

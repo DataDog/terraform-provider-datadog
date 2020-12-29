@@ -98,6 +98,11 @@ Class | Method | HTTP request | Description
 *IncidentsApi* | [**GetIncident**](docs/IncidentsApi.md#getincident) | **Get** /api/v2/incidents/{incident_id} | Get the details of an incident
 *IncidentsApi* | [**ListIncidents**](docs/IncidentsApi.md#listincidents) | **Get** /api/v2/incidents | Get a list of incidents
 *IncidentsApi* | [**UpdateIncident**](docs/IncidentsApi.md#updateincident) | **Patch** /api/v2/incidents/{incident_id} | Update an existing incident
+*KeyManagementApi* | [**CreateAPIKey**](docs/KeyManagementApi.md#createapikey) | **Post** /api/v2/api_keys | Create an API key
+*KeyManagementApi* | [**DeleteAPIKey**](docs/KeyManagementApi.md#deleteapikey) | **Delete** /api/v2/api_keys/{api_key_id} | Delete an API key
+*KeyManagementApi* | [**GetAPIKey**](docs/KeyManagementApi.md#getapikey) | **Get** /api/v2/api_keys/{api_key_id} | Get API key
+*KeyManagementApi* | [**ListAPIKeys**](docs/KeyManagementApi.md#listapikeys) | **Get** /api/v2/api_keys | Get all API keys
+*KeyManagementApi* | [**UpdateAPIKey**](docs/KeyManagementApi.md#updateapikey) | **Patch** /api/v2/api_keys/{api_key_id} | Edit an API key
 *LogsApi* | [**AggregateLogs**](docs/LogsApi.md#aggregatelogs) | **Post** /api/v2/logs/analytics/aggregate | Aggregate events
 *LogsApi* | [**ListLogs**](docs/LogsApi.md#listlogs) | **Post** /api/v2/logs/events/search | Get a list of logs
 *LogsApi* | [**ListLogsGet**](docs/LogsApi.md#listlogsget) | **Get** /api/v2/logs/events | Get a quick list of logs
@@ -111,6 +116,11 @@ Class | Method | HTTP request | Description
 *LogsArchivesApi* | [**RemoveRoleFromArchive**](docs/LogsArchivesApi.md#removerolefromarchive) | **Delete** /api/v2/logs/config/archives/{archive_id}/readers | Revoke role from an archive
 *LogsArchivesApi* | [**UpdateLogsArchive**](docs/LogsArchivesApi.md#updatelogsarchive) | **Put** /api/v2/logs/config/archives/{archive_id} | Update an archive
 *LogsArchivesApi* | [**UpdateLogsArchiveOrder**](docs/LogsArchivesApi.md#updatelogsarchiveorder) | **Put** /api/v2/logs/config/archive-order | Update archive order
+*LogsMetricsApi* | [**CreateLogsMetric**](docs/LogsMetricsApi.md#createlogsmetric) | **Post** /api/v2/logs/config/metrics | Create a log-based metric
+*LogsMetricsApi* | [**DeleteLogsMetric**](docs/LogsMetricsApi.md#deletelogsmetric) | **Delete** /api/v2/logs/config/metrics/{metric_id} | Delete a log-based metric
+*LogsMetricsApi* | [**GetLogsMetric**](docs/LogsMetricsApi.md#getlogsmetric) | **Get** /api/v2/logs/config/metrics/{metric_id} | Get a log-based metric
+*LogsMetricsApi* | [**ListLogsMetrics**](docs/LogsMetricsApi.md#listlogsmetrics) | **Get** /api/v2/logs/config/metrics | Get all log-based metrics
+*LogsMetricsApi* | [**UpdateLogsMetric**](docs/LogsMetricsApi.md#updatelogsmetric) | **Patch** /api/v2/logs/config/metrics/{metric_id} | Update a log-based metric
 *ProcessesApi* | [**ListProcesses**](docs/ProcessesApi.md#listprocesses) | **Get** /api/v2/processes | Get all processes
 *RolesApi* | [**AddPermissionToRole**](docs/RolesApi.md#addpermissiontorole) | **Post** /api/v2/roles/{role_id}/permissions | Grant permission to a role
 *RolesApi* | [**AddUserToRole**](docs/RolesApi.md#addusertorole) | **Post** /api/v2/roles/{role_id}/users | Add a user to a role
@@ -145,6 +155,17 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [APIErrorResponse](docs/APIErrorResponse.md)
+ - [APIKeyCreateAttributes](docs/APIKeyCreateAttributes.md)
+ - [APIKeyCreateData](docs/APIKeyCreateData.md)
+ - [APIKeyCreateRequest](docs/APIKeyCreateRequest.md)
+ - [APIKeyRelationships](docs/APIKeyRelationships.md)
+ - [APIKeyResponse](docs/APIKeyResponse.md)
+ - [APIKeyResponseIncludedItem](docs/APIKeyResponseIncludedItem.md)
+ - [APIKeyUpdateAttributes](docs/APIKeyUpdateAttributes.md)
+ - [APIKeyUpdateData](docs/APIKeyUpdateData.md)
+ - [APIKeyUpdateRequest](docs/APIKeyUpdateRequest.md)
+ - [APIKeysResponse](docs/APIKeysResponse.md)
+ - [APIKeysType](docs/APIKeysType.md)
  - [Creator](docs/Creator.md)
  - [DashboardListAddItemsRequest](docs/DashboardListAddItemsRequest.md)
  - [DashboardListAddItemsResponse](docs/DashboardListAddItemsResponse.md)
@@ -157,6 +178,8 @@ Class | Method | HTTP request | Description
  - [DashboardListUpdateItemsRequest](docs/DashboardListUpdateItemsRequest.md)
  - [DashboardListUpdateItemsResponse](docs/DashboardListUpdateItemsResponse.md)
  - [DashboardType](docs/DashboardType.md)
+ - [FullAPIKey](docs/FullAPIKey.md)
+ - [FullAPIKeyAttributes](docs/FullAPIKeyAttributes.md)
  - [IncidentCreateAttributes](docs/IncidentCreateAttributes.md)
  - [IncidentCreateData](docs/IncidentCreateData.md)
  - [IncidentCreateRelationships](docs/IncidentCreateRelationships.md)
@@ -259,6 +282,25 @@ Class | Method | HTTP request | Description
  - [LogsListRequestPage](docs/LogsListRequestPage.md)
  - [LogsListResponse](docs/LogsListResponse.md)
  - [LogsListResponseLinks](docs/LogsListResponseLinks.md)
+ - [LogsMetricCompute](docs/LogsMetricCompute.md)
+ - [LogsMetricComputeAggregationType](docs/LogsMetricComputeAggregationType.md)
+ - [LogsMetricCreateAttributes](docs/LogsMetricCreateAttributes.md)
+ - [LogsMetricCreateData](docs/LogsMetricCreateData.md)
+ - [LogsMetricCreateRequest](docs/LogsMetricCreateRequest.md)
+ - [LogsMetricFilter](docs/LogsMetricFilter.md)
+ - [LogsMetricGroupBy](docs/LogsMetricGroupBy.md)
+ - [LogsMetricResponse](docs/LogsMetricResponse.md)
+ - [LogsMetricResponseAttributes](docs/LogsMetricResponseAttributes.md)
+ - [LogsMetricResponseCompute](docs/LogsMetricResponseCompute.md)
+ - [LogsMetricResponseComputeAggregationType](docs/LogsMetricResponseComputeAggregationType.md)
+ - [LogsMetricResponseData](docs/LogsMetricResponseData.md)
+ - [LogsMetricResponseFilter](docs/LogsMetricResponseFilter.md)
+ - [LogsMetricResponseGroupBy](docs/LogsMetricResponseGroupBy.md)
+ - [LogsMetricType](docs/LogsMetricType.md)
+ - [LogsMetricUpdateAttributes](docs/LogsMetricUpdateAttributes.md)
+ - [LogsMetricUpdateData](docs/LogsMetricUpdateData.md)
+ - [LogsMetricUpdateRequest](docs/LogsMetricUpdateRequest.md)
+ - [LogsMetricsResponse](docs/LogsMetricsResponse.md)
  - [LogsQueryFilter](docs/LogsQueryFilter.md)
  - [LogsQueryOptions](docs/LogsQueryOptions.md)
  - [LogsResponseMetadata](docs/LogsResponseMetadata.md)
@@ -270,6 +312,8 @@ Class | Method | HTTP request | Description
  - [OrganizationAttributes](docs/OrganizationAttributes.md)
  - [OrganizationsType](docs/OrganizationsType.md)
  - [Pagination](docs/Pagination.md)
+ - [PartialAPIKey](docs/PartialAPIKey.md)
+ - [PartialAPIKeyAttributes](docs/PartialAPIKeyAttributes.md)
  - [Permission](docs/Permission.md)
  - [PermissionAttributes](docs/PermissionAttributes.md)
  - [PermissionsResponse](docs/PermissionsResponse.md)

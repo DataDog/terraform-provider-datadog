@@ -2,8 +2,9 @@ package datadog
 
 import (
 	"fmt"
-	"github.com/jonboulle/clockwork"
 	"testing"
+
+	"github.com/jonboulle/clockwork"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
