@@ -1,15 +1,16 @@
 package datadog
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
+	"reflect"
+
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func validateAggregatorMethod(v interface{}, k string) (ws []string, errors []error) {
 	value := v.(string)
 	validMethods := map[string]struct{}{
-		"avg":   {},
+		"avg":   {}, 
 		"max":   {},
 		"min":   {},
 		"sum":   {},
@@ -23,13 +24,20 @@ func validateAggregatorMethod(v interface{}, k string) (ws []string, errors []er
 	return
 }
 
-func getMetadataFromJSON(jsonBytes []byte, unmarshalled interface{}) error {
-	decoder := json.NewDecoder(bytes.NewReader(jsonBytes))
-	// make sure we return errors on attributes that we don't expect in metadata
-	decoder.DisallowUnknownFields()
-	err := decoder.Decode(unmarshalled)
-	if err != nil {
-		return fmt.Errorf("failed to unmarshal metadata_json: %s", err)
+// validateEnumValue returns a validate func for an enum value. It takes the constructor with validation for the enum as an argument.
+// Such a constructor is for instance `datadogV1.NewWidgetLineWidthFromValue`
+func validateEnumValue(newEnumFunc interface{}) schema.SchemaValidateFunc {
+
+	// Get type of arg to convert int to int32/64 for instance
+	f := reflect.TypeOf(newEnumFunc)
+	argT := f.In(0)
+
+	return func(val interface{}, key string) (warns []string, errs []error) {
+		arg := reflect.ValueOf(val)
+		outs := reflect.ValueOf(newEnumFunc).Call([]reflect.Value{arg.Convert(argT)})
+		if err := outs[1].Interface(); err != nil {
+			errs = append(errs, err.(error))
+		}
+		return
 	}
-	return nil
 }

@@ -55,6 +55,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 							Description: "the time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Available options to choose from are: `7d`, `30d`, `90d`",
 							Type:     schema.TypeString,
 							Required: true,
+							ValidateFunc: validateEnumValue(datadogV1.NewSLOTimeframeFromValue),
 						},
 						"target": {
 							Description: "the objective's target `[0,100]`",
@@ -88,7 +89,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Type:         schema.TypeString,
 				Required:     true,
 				ForceNew:     true,
-				ValidateFunc: ValidateServiceLevelObjectiveTypeString,
+				ValidateFunc: validateEnumValue(datadogV1.NewSLOTypeFromValue),
 			},
 			"force_delete": {
 				Description: "A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. dashboards).",
@@ -162,17 +163,8 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 }
 
 // ValidateServiceLevelObjectiveTypeString is a ValidateFunc that ensures the SLO is of one of the supported types
-func ValidateServiceLevelObjectiveTypeString(v interface{}, k string) (ws []string, errors []error) {
-	switch datadogV1.SLOType(v.(string)) {
-	case datadogV1.SLOTYPE_MONITOR:
-		break
-	case datadogV1.SLOTYPE_METRIC:
-		break
-	default:
-		errors = append(errors, fmt.Errorf("invalid type %s specified for SLO", v.(string)))
-	}
-	return
-}
+
+// ValidateServiceLevelObjectiveTypeString is a ValidateFunc that ensures the SLO is of one of the supported types
 
 // Use CustomizeDiff to do monitor validation
 func resourceDatadogServiceLevelObjectiveCustomizeDiff(diff *schema.ResourceDiff, meta interface{}) error {

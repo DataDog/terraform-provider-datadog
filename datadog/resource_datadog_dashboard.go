@@ -54,7 +54,7 @@ func resourceDatadogDashboard() *schema.Resource {
 				Required:     true,
 				ForceNew:     true,
 				Description:  "The layout type of the dashboard, either 'free' or 'ordered'.",
-				ValidateFunc: validateDashboardLayoutType,
+				ValidateFunc: validateEnumValue(datadogV1.NewDashboardLayoutTypeFromValue),
 			},
 			"description": {
 				Type:        schema.TypeString,
@@ -1082,7 +1082,7 @@ func getGroupDefinitionSchema() map[string]*schema.Schema {
 			Type:         schema.TypeString,
 			Required:     true,
 			Description:  "The layout type of the group, only 'ordered' for now.",
-			ValidateFunc: validateGroupWidgetLayoutType,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetLayoutTypeFromValue),
 		},
 		"title": {
 			Type:        schema.TypeString,
@@ -1143,8 +1143,9 @@ func getAlertGraphDefinitionSchema() map[string]*schema.Schema {
 			Required: true,
 		},
 		"viz_type": {
-			Type:     schema.TypeString,
-			Required: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetVizTypeFromValue),
+			Required:     true,
 		},
 		"title": {
 			Type:     schema.TypeString,
@@ -1155,8 +1156,9 @@ func getAlertGraphDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"time": {
 			Type:     schema.TypeMap,
@@ -1229,8 +1231,9 @@ func getAlertValueDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"text_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"title": {
 			Type:     schema.TypeString,
@@ -1241,8 +1244,9 @@ func getAlertValueDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 	}
 }
@@ -1321,8 +1325,9 @@ func getChangeDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"time": {
 			Type:     schema.TypeMap,
@@ -1397,24 +1402,28 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 		"process_query":  getProcessQuerySchema(),
 		// Settings specific to Change requests
 		"change_type": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetChangeTypeFromValue),
+			Optional:     true,
 		},
 		"compare_to": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetCompareToFromValue),
+			Optional:     true,
 		},
 		"increase_good": {
 			Type:     schema.TypeBool,
 			Optional: true,
 		},
 		"order_by": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetOrderByFromValue),
+			Optional:     true,
 		},
 		"order_dir": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
+			Optional:     true,
 		},
 		"show_present": {
 			Type:     schema.TypeBool,
@@ -1538,8 +1547,9 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"legend_size": {
 			Type:         schema.TypeString,
@@ -1707,8 +1717,9 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 			Required: true,
 		},
 		"event_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetEventSizeFromValue),
+			Optional:     true,
 		},
 		"title": {
 			Type:     schema.TypeString,
@@ -1719,8 +1730,9 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"time": {
 			Type:     schema.TypeMap,
@@ -1807,8 +1819,9 @@ func getEventTimelineDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"time": {
 			Type:     schema.TypeMap,
@@ -1881,8 +1894,9 @@ func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 			Required: true,
 		},
 		"grouping": {
-			Type:     schema.TypeString,
-			Required: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetGroupingFromValue),
+			Required:     true,
 		},
 		"group": {
 			Type:     schema.TypeString,
@@ -1907,8 +1921,9 @@ func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"time": {
 			Type:     schema.TypeMap,
@@ -2015,8 +2030,9 @@ func getFreeTextDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"text_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 	}
 }
@@ -2085,8 +2101,9 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"event": {
 			Type:     schema.TypeList,
@@ -2308,8 +2325,9 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"node_type": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetNodeTypeFromValue),
+			Optional:     true,
 		},
 		"no_metric_hosts": {
 			Type:     schema.TypeBool,
@@ -2363,8 +2381,9 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"custom_link": {
 			Type:     schema.TypeList,
@@ -2588,12 +2607,14 @@ func getImageDefinitionSchema() map[string]*schema.Schema {
 			Required: true,
 		},
 		"sizing": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetImageSizingFromValue),
+			Optional:     true,
 		},
 		"margin": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMarginFromValue),
+			Optional:     true,
 		},
 	}
 }
@@ -2660,20 +2681,10 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"message_display": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "One of: ['inline', 'expanded-md', 'expanded-lg']",
-			ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-				value := val.(string)
-				switch value {
-				case "inline", "expanded-md", "expanded-lg":
-					break
-				default:
-					errs = append(errs, fmt.Errorf(
-						"%q contains an invalid value %q. Valid values are `inline`, `expanded-md`, or `expanded-lg`", key, value))
-				}
-				return
-			},
+			Type:         schema.TypeString,
+			Optional:     true,
+			Description:  "One of: ['inline', 'expanded-md', 'expanded-lg']",
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMessageDisplayFromValue),
 		},
 		"sort": {
 			Type:     schema.TypeList,
@@ -2692,8 +2703,9 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"time": {
 			Type:     schema.TypeMap,
@@ -2712,19 +2724,9 @@ func getWidgetFieldSortSchema() map[string]*schema.Schema {
 			Required: true,
 		},
 		"order": {
-			Type:     schema.TypeString,
-			Required: true,
-			ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-				value := val.(string)
-				switch value {
-				case "asc", "desc":
-					break
-				default:
-					errs = append(errs, fmt.Errorf(
-						"%q contains an invalid value %q. Valid values are `asc`, or `desc`", key, value))
-				}
-				return
-			},
+			Type:         schema.TypeString,
+			Required:     true,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
 		},
 	}
 }
@@ -2861,24 +2863,15 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Required: true,
 		},
 		"summary_type": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "One of: ['monitors', 'groups', 'combined']",
-			ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-				v := val.(string)
-				summaryTypes := []string{"monitors", "groups", "combined"}
-				for _, t := range summaryTypes {
-					if v == t {
-						return
-					}
-				}
-				errs = append(errs, fmt.Errorf("%q must be one of: %q, got: %q", key, summaryTypes, v))
-				return
-			},
+			Type:         schema.TypeString,
+			Optional:     true,
+			Description:  "One of: ['monitors', 'groups', 'combined']",
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSummaryTypeFromValue),
 		},
 		"sort": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMonitorSummarySortFromValue),
+			Optional:     true,
 		},
 		// The count param is deprecated
 		"count": {
@@ -2894,12 +2887,14 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Optional:   true,
 		},
 		"display_format": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMonitorSummaryDisplayFormatFromValue),
+			Optional:     true,
 		},
 		"color_preference": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetColorPreferenceFromValue),
+			Optional:     true,
 		},
 		"hide_zero_counts": {
 			Type:     schema.TypeBool,
@@ -2918,8 +2913,9 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 	}
 }
@@ -3027,8 +3023,9 @@ func getNoteDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"text_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"show_tick": {
 			Type:     schema.TypeBool,
@@ -3039,8 +3036,9 @@ func getNoteDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"tick_edge": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTickEdgeFromValue),
+			Optional:     true,
 		},
 	}
 }
@@ -3123,8 +3121,9 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"text_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"title": {
 			Type:     schema.TypeString,
@@ -3135,8 +3134,9 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"time": {
 			Type:     schema.TypeMap,
@@ -3242,8 +3242,9 @@ func getQueryValueRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"aggregator": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
+			Optional:     true,
 		},
 	}
 }
@@ -3340,8 +3341,9 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"time": {
 			Type:     schema.TypeMap,
@@ -3358,8 +3360,9 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"has_search_bar": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewTableWidgetHasSearchBarFromValue),
+			Optional:     true,
 		},
 	}
 }
@@ -3438,21 +3441,26 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"aggregator": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
+			Optional:     true,
 		},
 		"limit": {
 			Type:     schema.TypeInt,
 			Optional: true,
 		},
 		"order": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
+			Optional:     true,
 		},
 		"cell_display_mode": {
 			Type:     schema.TypeList,
 			Optional: true,
-			Elem:     &schema.Schema{Type: schema.TypeString},
+			Elem: &schema.Schema{
+				Type:         schema.TypeString,
+				ValidateFunc: validateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
+			},
 		},
 	}
 }
@@ -3626,8 +3634,9 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"time": {
 			Type:     schema.TypeMap,
@@ -3757,8 +3766,9 @@ func getScatterplotRequestSchema() map[string]*schema.Schema {
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Scatterplot requests
 		"aggregator": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
+			Optional:     true,
 		},
 	}
 }
@@ -3841,8 +3851,9 @@ func getServiceMapDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"custom_link": {
 			Type:     schema.TypeList,
@@ -3918,8 +3929,9 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"view_type": {
 			Type:     schema.TypeString,
@@ -3934,13 +3946,17 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"view_mode": {
-			Type:     schema.TypeString,
-			Required: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetViewModeFromValue),
+			Required:     true,
 		},
 		"time_windows": {
 			Type:     schema.TypeList,
 			Required: true,
-			Elem:     &schema.Schema{Type: schema.TypeString},
+			Elem: &schema.Schema{
+				Type:         schema.TypeString,
+				ValidateFunc: validateEnumValue(datadogV1.NewWidgetTimeWindowsFromValue),
+			},
 		},
 	}
 }
@@ -4066,8 +4082,9 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"show_legend": {
 			Type:     schema.TypeBool,
@@ -4206,12 +4223,14 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 						Optional: true,
 					},
 					"line_type": {
-						Type:     schema.TypeString,
-						Optional: true,
+						Type:         schema.TypeString,
+						ValidateFunc: validateEnumValue(datadogV1.NewWidgetLineTypeFromValue),
+						Optional:     true,
 					},
 					"line_width": {
-						Type:     schema.TypeString,
-						Optional: true,
+						Type:         schema.TypeString,
+						ValidateFunc: validateEnumValue(datadogV1.NewWidgetLineWidthFromValue),
+						Optional:     true,
 					},
 				},
 			},
@@ -4233,8 +4252,9 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"display_type": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetDisplayTypeFromValue),
+			Optional:     true,
 		},
 		"on_right_yaxis": {
 			Type:     schema.TypeBool,
@@ -4381,8 +4401,9 @@ func getToplistDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"time": {
 			Type:     schema.TypeMap,
@@ -4588,12 +4609,14 @@ func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"size_format": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSizeFormatFromValue),
+			Optional:     true,
 		},
 		"display_format": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetServiceSummaryDisplayFormatFromValue),
+			Optional:     true,
 		},
 		"title": {
 			Type:     schema.TypeString,
@@ -4604,8 +4627,9 @@ func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 		"title_align": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
 		},
 		"time": {
 			Type:     schema.TypeMap,
@@ -4713,16 +4737,18 @@ func buildTerraformTraceServiceDefinition(datadogDefinition datadogV1.ServiceSum
 func getWidgetConditionalFormatSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"comparator": {
-			Type:     schema.TypeString,
-			Required: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetComparatorFromValue),
+			Required:     true,
 		},
 		"value": {
 			Type:     schema.TypeFloat,
 			Required: true,
 		},
 		"palette": {
-			Type:     schema.TypeString,
-			Required: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetPaletteFromValue),
+			Required:     true,
 		},
 		"custom_bg_color": {
 			Type:     schema.TypeString,
@@ -4900,8 +4926,9 @@ func buildTerraformWidgetEvents(datadogWidgetEvents *[]datadogV1.WidgetEvent) *[
 func getWidgetTimeSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"live_span": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:         schema.TypeString,
+			ValidateFunc: validateEnumValue(datadogV1.NewWidgetLiveSpanFromValue),
+			Optional:     true,
 		},
 	}
 }
@@ -5041,8 +5068,9 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 											Required: true,
 										},
 										"order": {
-											Type:     schema.TypeString,
-											Required: true,
+											Type:         schema.TypeString,
+											ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
+											Required:     true,
 										},
 										"facet": {
 											Type:     schema.TypeString,
@@ -5328,8 +5356,9 @@ func getApmStatsQuerySchema() *schema.Schema {
 					Required: true,
 				},
 				"row_type": {
-					Type:     schema.TypeString,
-					Required: true,
+					Type:         schema.TypeString,
+					ValidateFunc: validateEnumValue(datadogV1.NewApmStatsQueryRowTypeFromValue),
+					Required:     true,
 				},
 				"resource": {
 					Type:     schema.TypeString,
@@ -5349,12 +5378,14 @@ func getApmStatsQuerySchema() *schema.Schema {
 								Optional: true,
 							},
 							"order": {
-								Type:     schema.TypeString,
-								Optional: true,
+								Type:         schema.TypeString,
+								ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
+								Optional:     true,
 							},
 							"cell_display_mode": {
-								Type:     schema.TypeString,
-								Optional: true,
+								Type:         schema.TypeString,
+								ValidateFunc: validateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
+								Optional:     true,
 							},
 						},
 					},
@@ -5622,28 +5653,6 @@ func buildTerraformHostmapRequestStyle(datadogStyle datadogV1.HostMapWidgetDefin
 }
 
 // Schema validation
-func validateDashboardLayoutType(val interface{}, key string) (warns []string, errs []error) {
-	value := val.(string)
-	switch value {
-	case "free", "ordered":
-		break
-	default:
-		errs = append(errs, fmt.Errorf(
-			"%q contains an invalid value %q. Valid values are `free` or `ordered`", key, value))
-	}
-	return
-}
-func validateGroupWidgetLayoutType(val interface{}, key string) (warns []string, errs []error) {
-	value := val.(string)
-	switch value {
-	case "ordered":
-		break
-	default:
-		errs = append(errs, fmt.Errorf(
-			"%q contains an invalid value %q. Only `ordered` is a valid value", key, value))
-	}
-	return
-}
 func validateTimeseriesWidgetLegendSize(val interface{}, key string) (warns []string, errs []error) {
 	value := val.(string)
 	switch value {
