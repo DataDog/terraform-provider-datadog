@@ -25,10 +25,12 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			// Common
 			"name": {
+				Description: "Name of Datadog service level objective",
 				Type:     schema.TypeString,
 				Required: true,
 			},
 			"description": {
+				Description: "A description of this service level objective.",
 				Type:             schema.TypeString,
 				Optional:         true,
 				StateFunc:        trimStateValue,
@@ -39,34 +41,41 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				// we order them explicitly in the read/create/update methods of this resource and using
 				// TypeSet makes Terraform ignore differences in order when creating a plan
 				Type:     schema.TypeSet,
+				Description: "A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API",
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"thresholds": {
+				Description: "A list of thresholds and targets that define the service level objectives from the provided SLIs.",
 				Type:     schema.TypeList,
 				Required: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"timeframe": {
+							Description: "the time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Available options to choose from are: `7d`, `30d`, `90d`",
 							Type:     schema.TypeString,
 							Required: true,
 						},
 						"target": {
+							Description: "the objective's target `[0,100]`",
 							Type:             schema.TypeFloat,
 							Required:         true,
 							DiffSuppressFunc: suppressDataDogFloatIntDiff,
 						},
 						"target_display": {
+							Description: "the string version to specify additional digits in the case of 99 but want 3 digits like 99.000 to display.",
 							Type:             schema.TypeString,
 							Optional:         true,
 							DiffSuppressFunc: suppressDataDogSLODisplayValueDiff,
 						},
 						"warning": {
+							Description: "the objective's warning value [0,100]. This must be > target value.",
 							Type:             schema.TypeFloat,
 							Optional:         true,
 							DiffSuppressFunc: suppressDataDogFloatIntDiff,
 						},
 						"warning_display": {
+							Description: "the string version to specify additional digits in the case of 99 but want 3 digits like 99.000 to display.",
 							Type:             schema.TypeString,
 							Optional:         true,
 							DiffSuppressFunc: suppressDataDogSLODisplayValueDiff,
@@ -75,12 +84,14 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				},
 			},
 			"type": {
+				Description: "The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object). Available options to choose from are: `metric` and `monitor`.",
 				Type:         schema.TypeString,
 				Required:     true,
 				ForceNew:     true,
 				ValidateFunc: ValidateServiceLevelObjectiveTypeString,
 			},
 			"force_delete": {
+				Description: "A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. dashboards).",
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
@@ -96,12 +107,14 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"numerator": {
+							Description: "the sum of all the `good` events",
 							Type:             schema.TypeString,
 							Required:         true,
 							StateFunc:        trimStateValue,
 							DiffSuppressFunc: diffTrimmedValues,
 						},
 						"denominator": {
+							Description: "the sum of the `total` events",
 							Type:             schema.TypeString,
 							Required:         true,
 							StateFunc:        trimStateValue,
@@ -136,6 +149,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Elem:          &schema.Schema{Type: schema.TypeString, MinItems: 1},
 			},
 			"validate": {
+				Description: "Whether to validate the SLO",
 				Type:     schema.TypeBool,
 				Optional: true,
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {

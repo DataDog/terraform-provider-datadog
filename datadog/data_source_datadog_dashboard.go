@@ -14,16 +14,19 @@ func dataSourceDatadogDashboard() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"name": {
+				Description: "The dashboard name to search for. Must only match one dashboard.",
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validation.StringIsNotEmpty,
 			},
 			// Computed values
 			"title": {
+				Description: "The name of the dashboard.",
 				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"url": {
+				Description: "The URL to a specific dashboard.",
 				Type:     schema.TypeString,
 				Computed: true,
 			},

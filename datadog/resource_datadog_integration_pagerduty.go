@@ -28,6 +28,7 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"individual_services": {
+				Description: "Boolean to specify whether or not individual service objects specified by [datadog_integration_pagerduty_service_object](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_pagerduty_service_object) resource are to be used. Mutually exclusive with services key.",
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
@@ -40,10 +41,12 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"service_name": {
+							Description: "Your Service name in PagerDuty.",
 							Type:     schema.TypeString,
 							Required: true,
 						},
 						"service_key": {
+							Description: "Your Service name associated service key in Pagerduty.",
 							Type:      schema.TypeString,
 							Required:  true,
 							Sensitive: true,
@@ -52,15 +55,18 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 				},
 			},
 			"subdomain": {
+				Description: "Your PagerDuty account’s personalized subdomain name.",
 				Type:     schema.TypeString,
 				Required: true,
 			},
 			"schedules": {
+				Description: "Array of your schedule URLs.",
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"api_token": {
+				Description: "Your PagerDuty API token.",
 				Type:      schema.TypeString,
 				Optional:  true,
 				Sensitive: true,

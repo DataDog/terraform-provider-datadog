@@ -17,19 +17,23 @@ func resourceDatadogSyntheticsPrivateLocation() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
+				Description: "Synthetics private location name.",
 				Type:     schema.TypeString,
 				Required: true,
 			},
 			"description": {
+				Description: "Description of the private location.",
 				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"tags": {
+				Description: "A list of tags to associate with your synthetics private location.",
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"config": {
+				Description: "Configuration skeleton for the private location. See installation instructions of the private location on how to use this configuration.",
 				Type:      schema.TypeString,
 				Computed:  true,
 				Sensitive: true,

@@ -33,34 +33,41 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"account_id": {
+				Description: "Your AWS Account ID without dashes.",
 				Type:     schema.TypeString,
 				Required: true,
 			},
 			"role_name": {
+				Description: "Your Datadog role delegation name.",
 				Type:     schema.TypeString,
 				Required: true,
 			},
 			"filter_tags": {
+				Description: "Array of EC2 tags (in the form key:value) defines a filter that Datadog use when collecting metrics from EC2. Wildcards, such as ? (for single characters) and * (for multiple characters) can also be used.\n\nOnly hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. Host matching a given tag can also be excluded by adding ! before the tag.\n\ne.x. env:production,instance-type:c1.*,!region:us-east-1",
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"host_tags": {
+				Description: "Array of tags (in the form key:value) to add to all hosts and metrics reporting through this integration.",
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"account_specific_namespace_rules": {
+				Description: "Enables or disables metric collection for specific AWS namespaces for this AWS account only. A list of namespaces can be found at the [available namespace rules API endpoint](https://docs.datadoghq.com/api/v1/aws-integration/#list-namespace-rules).",
 				Type:     schema.TypeMap,
 				Optional: true,
 				Elem:     schema.TypeBool,
 			},
 			"excluded_regions": {
+				Description: "An array of AWS regions to exclude from metrics collection.",
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"external_id": {
+				Description: "AWS External ID. **NOTE** This provider will not be able to detect changes made to the external_id field from outside Terraform.",
 				Type:     schema.TypeString,
 				Computed: true,
 			},

@@ -29,26 +29,31 @@ func resourceDatadogUser() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"disabled": {
+				Description: "Whether the user is disabled",
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
 			},
 			"email": {
+				Description: "Email address for user",
 				Type:     schema.TypeString,
 				Required: true,
 			},
 			"handle": {
+				Description: "The user handle, must be a valid email.",
 				Type:       schema.TypeString,
 				Optional:   true,
 				Deprecated: "This parameter is deprecated and will be removed from the next Major version",
 			},
 			"is_admin": {
+				Description: "Whether the user is an administrator. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.",
 				Type:       schema.TypeBool,
 				Computed:   true,
 				Optional:   true,
 				Deprecated: "This parameter is replaced by `roles` and will be removed from the next Major version",
 			},
 			"access_role": {
+				Description: "Role description for user. Can be st (standard user), adm (admin user) or ro (read-only user). Default is st. access_role is ignored for new users created with this resource. New users have to use the roles attribute.",
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "st",
@@ -57,20 +62,24 @@ func resourceDatadogUser() *schema.Resource {
 				},
 			},
 			"name": {
+				Description: "Name for user",
 				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"role": {
+				Description: "Role description for user. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.",
 				Type:       schema.TypeString,
 				Optional:   true,
 				Deprecated: "This parameter was removed from the API and has no effect",
 			},
 			"roles": {
+				Description: "A list a role IDs to assign to the user.",
 				Type:     schema.TypeSet,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"verified": {
+				Description: "Returns true if Datadog user is verified",
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
