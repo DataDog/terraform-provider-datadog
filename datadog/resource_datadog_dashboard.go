@@ -3748,7 +3748,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 						},
 					},
 					"y": {
-						Description: "The query used for the Y-Axis. Exactly one nested block is allowed with the structure below.
+						Description: "The query used for the Y-Axis. Exactly one nested block is allowed with the structure below.",
 						Type:        schema.TypeList,
 						Optional:    true,
 						Elem: &schema.Resource{
@@ -4448,7 +4448,7 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"display_type": {
-			Description: "How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.",
+			Description:  "How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetDisplayTypeFromValue),
 			Optional:     true,

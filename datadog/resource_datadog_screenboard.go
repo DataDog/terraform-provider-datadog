@@ -584,7 +584,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
 				"env": {
- 					Description: "Only for widgets of type `trace_service`. The environment to use.",
+					Description: "Only for widgets of type `trace_service`. The environment to use.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
