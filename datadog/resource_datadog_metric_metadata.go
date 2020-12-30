@@ -25,7 +25,7 @@ func resourceDatadogMetricMetadata() *schema.Resource {
 				Required:    true,
 			},
 			"type": {
-				Description: "Type of the metric",
+				Description: "Type of the metric.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
@@ -40,12 +40,12 @@ func resourceDatadogMetricMetadata() *schema.Resource {
 				Optional:    true,
 			},
 			"unit": {
-				Description: "Primary unit of the metric such as 'byte' or 'operation'.",
+				Description: "Primary unit of the metric such as `byte` or `operation`.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
 			"per_unit": {
-				Description: "Per unit of the metric such as 'second' in 'bytes per second'.",
+				Description: "Per unit of the metric such as `second` in `bytes per second`.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},

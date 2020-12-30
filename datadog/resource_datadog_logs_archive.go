@@ -50,12 +50,12 @@ func resourceDatadogLogsArchive() *schema.Resource {
 				},
 			},
 			"gcs": {
-				Description: "Definition of an gcs archive.",
+				Description: "Definition of a GCS archive.",
 				Type:        schema.TypeMap,
 				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"bucket":       {Description: "Name of your gcs bucket.", Type: schema.TypeString, Required: true},
+						"bucket":       {Description: "Name of your GCS bucket.", Type: schema.TypeString, Required: true},
 						"path":         {Description: "Path where the archive will be stored.", Type: schema.TypeString, Required: true},
 						"client_email": {Description: "Your client email.", Type: schema.TypeString, Required: true},
 						"project_id":   {Description: "Your project id.", Type: schema.TypeString, Required: true},
@@ -71,7 +71,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 				},
 			},
 			"include_tags": {
-				Description: "To store the tags in the archive, set the value \"true\". If it is set to \"false\", the tags will be dropped when the logs are sent to the archive.",
+				Description: "To store the tags in the archive, set the value `true`. If it is set to `false`, the tags will be dropped when the logs are sent to the archive.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     false,

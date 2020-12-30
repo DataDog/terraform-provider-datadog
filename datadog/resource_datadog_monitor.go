@@ -32,12 +32,12 @@ func resourceDatadogMonitor() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Description: "Name of Datadog monitor",
+				Description: "Name of Datadog monitor.",
 				Type:        schema.TypeString,
 				Required:    true,
 			},
 			"message": {
-				Description: "A message to include with notifications for this monitor.\n\nEmail notifications can be sent to specific users by using the same '@username' notation as events.",
+				Description: "A message to include with notifications for this monitor.\n\nEmail notifications can be sent to specific users by using the same `@username` notation as events.",
 				Type:        schema.TypeString,
 				Required:    true,
 				StateFunc: func(val interface{}) string {
@@ -45,7 +45,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"escalation_message": {
-				Description: "A message to include with a re-notification. Supports the '@username'\n\nnotification allowed elsewhere.",
+				Description: "A message to include with a re-notification. Supports the `@username` notification allowed elsewhere.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				StateFunc: func(val interface{}) string {
@@ -53,7 +53,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"query": {
-				Description: "The monitor query to notify on. Note this is not the same query you see in the UI and\n\nthe syntax is different depending on the monitor type , please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. Warning: terraform plan won't perform any validation of the query contents.",
+				Description: "The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. Warning: `terraform plan` won't perform any validation of the query contents.",
 				Type:        schema.TypeString,
 				Required:    true,
 				StateFunc: func(val interface{}) string {
@@ -84,7 +84,7 @@ func resourceDatadogMonitor() *schema.Resource {
 
 			// Options
 			"thresholds": {
-				Description: "TODO",
+				Description: "",
 				Type:        schema.TypeMap,
 				Optional:    true,
 				Elem: &schema.Resource{
@@ -118,18 +118,18 @@ func resourceDatadogMonitor() *schema.Resource {
 				DiffSuppressFunc: suppressDataDogFloatIntDiff,
 			},
 			"threshold_windows": {
-				Description: "A mapping containing recovery_window and trigger_window values, e.g. last_15m . Can only be used for, and are required for, anomaly monitors.",
+				Description: "A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors.",
 				Type:        schema.TypeMap,
 				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"recovery_window": {
-							Description: "describes how long an anomalous metric must be normal before the alert recovers.",
+							Description: "Describes how long an anomalous metric must be normal before the alert recovers.",
 							Type:        schema.TypeString,
 							Optional:    true,
 						},
 						"trigger_window": {
-							Description: "describes how long a metric must be anomalous before an alert triggers.",
+							Description: "Describes how long a metric must be anomalous before an alert triggers.",
 							Type:        schema.TypeString,
 							Optional:    true,
 						},
@@ -143,13 +143,13 @@ func resourceDatadogMonitor() *schema.Resource {
 				Default:     false,
 			},
 			"new_host_delay": {
-				Description: "Time (in seconds) to allow a host to boot and\n\napplications to fully start before starting the evaluation of monitor results. Should be a non negative integer. Defaults to 300.",
+				Description: "Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non negative integer. Defaults to `300`.",
 				Type:        schema.TypeInt,
 				Optional:    true,
 				Default:     300,
 			},
 			"evaluation_delay": {
-				Description: "only applies to metric alert) Time (in seconds) to delay evaluation, as a non-negative integer.\n\nFor example, if the value is set to 300 (5min), the timeframe is set to last_5m and the time is 7:00, the monitor will evaluate data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor will always have data during evaluation.",
+				Description: "(Only applies to metric alert) Time (in seconds) to delay evaluation, as a non-negative integer.\n\nFor example, if the value is set to `300` (5min), the `timeframe` is set to `last_5m` and the time is 7:00, the monitor will evaluate data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor will always have data during evaluation.",
 				Type:        schema.TypeInt,
 				Computed:    true,
 				Optional:    true,
@@ -175,35 +175,35 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional:    true,
 			},
 			"notify_audit": {
-				Description: "A boolean indicating whether tagged users will be notified on changes to this monitor. Defaults to false.",
+				Description: "A boolean indicating whether tagged users will be notified on changes to this monitor. Defaults to `false`.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
 			"timeout_h": {
-				Description: "The number of hours of the monitor not reporting data before it will automatically resolve from a triggered state. Defaults to false.",
+				Description: "The number of hours of the monitor not reporting data before it will automatically resolve from a triggered state. Defaults to `false`.",
 				Type:        schema.TypeInt,
 				Optional:    true,
 			},
 			"require_full_window": {
-				Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated.\n\nWe highly recommend you set this to False for sparse metrics, otherwise some evaluations will be skipped. Default: True for \"on average\", \"at all times\" and \"in total\" aggregation. False otherwise.",
+				Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated.\n\nWe highly recommend you set this to `false` for sparse metrics, otherwise some evaluations will be skipped. Default: `true` for `on average`, `at all times` and `in total` aggregation. `false` otherwise.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     true,
 			},
 			"locked": {
-				Description: "A boolean indicating whether changes to to this monitor should be restricted to the creator or admins. Defaults to False.",
+				Description: "A boolean indicating whether changes to to this monitor should be restricted to the creator or admins. Defaults to `false`.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
 			"silenced": {
-				Description: "Each scope will be muted until the given POSIX timestamp or forever if the value is 0. Use -1 if you want to unmute the scope. Deprecated The silenced parameter is being deprecated in favor of the downtime resource. This will be removed in the next major version of the Terraform Provider.",
+				Description: "Each scope will be muted until the given POSIX timestamp or forever if the value is `0`. Use `-1` if you want to unmute the scope. Deprecated: the silenced parameter is being deprecated in favor of the downtime resource. This will be removed in the next major version of the Terraform Provider.",
 				Type:        schema.TypeMap,
 				Optional:    true,
 				Elem:        schema.TypeInt,
 				Deprecated:  "use Downtime Resource instead",
 			},
 			"include_tags": {
-				Description: "A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to true.",
+				Description: "A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to `true`.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     true,
@@ -221,7 +221,7 @@ func resourceDatadogMonitor() *schema.Resource {
 			// if we did set it, it would be used for all types; we have to handle this manually
 			// throughout the code
 			"enable_logs_sample": {
-				Description: "A boolean indicating whether or not to include a list of log values which triggered the alert. Defaults to false. This is only used by log monitors. Defaults to true.",
+				Description: "A boolean indicating whether or not to include a list of log values which triggered the alert. This is only used by log monitors. Defaults to `false`.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
@@ -231,7 +231,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional:    true,
 			},
 			"validate": {
-				Description: "If set to false, skip the validation call done during plan.",
+				Description: "If set to `false`, skip the validation call done during plan.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {

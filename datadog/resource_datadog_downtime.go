@@ -102,37 +102,37 @@ func resourceDatadogDowntime() *schema.Resource {
 						"period": {
 							Type:        schema.TypeInt,
 							Optional:    true,
-							Description: "How often to repeat as an integer. For example to repeat every 3 days, select a type of days and a period of 3.",
+							Description: "How often to repeat as an integer. For example to repeat every 3 days, select a `type` of `days` and a `period` of `3`.",
 						},
 						"type": {
 							Type:         schema.TypeString,
 							Required:     true,
 							ValidateFunc: validateDatadogDowntimeRecurrenceType,
-							Description:  "days, weeks, months, or years",
+							Description:  "One of `days`, `weeks`, `months`, or `years`",
 						},
 						"until_date": {
 							Type:          schema.TypeInt,
 							Optional:      true,
 							ConflictsWith: []string{"recurrence.until_occurrences"},
-							Description:   "The date at which the recurrence should end as a POSIX timestamp. until_occurrences and until_date are mutually exclusive.",
+							Description:   "The date at which the recurrence should end as a POSIX timestamp. `until_occurrences` and `until_date` are mutually exclusive.",
 						},
 						"until_occurrences": {
 							Type:          schema.TypeInt,
 							Optional:      true,
 							ConflictsWith: []string{"recurrence.until_date"},
-							Description:   "How many times the downtime will be rescheduled. until_occurrences and until_date are mutually exclusive.",
+							Description:   "How many times the downtime will be rescheduled. `until_occurrences` and `until_date` are mutually exclusive.",
 						},
 						"week_days": {
 							Type:        schema.TypeList,
 							Optional:    true,
-							Description: "A list of week days to repeat on. Choose from: Mon, Tue, Wed, Thu, Fri, Sat or Sun. Only applicable when type is weeks. First letter must be capitalized.",
+							Description: "A list of week days to repeat on. Choose from: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat` or `Sun`. Only applicable when `type` is `weeks`. First letter must be capitalized.",
 							Elem: &schema.Schema{
 								Type:         schema.TypeString,
 								ValidateFunc: validateDatadogDowntimeRecurrenceWeekDays,
 							},
 						},
 						"rrule": {
-							Description:   "The RRULE standard for defining recurring events. For example, to have a recurring event on the first day of each month, use FREQ=MONTHLY;INTERVAL=1. Most common rrule options from the iCalendar Spec are supported. Attributes specifying the duration in RRULE are not supported (for example, DTSTART, DTEND, DURATION).",
+							Description:   "The RRULE standard for defining recurring events. For example, to have a recurring event on the first day of each month, use `FREQ=MONTHLY;INTERVAL=1`. Most common rrule options from the iCalendar Spec are supported. Attributes specifying the duration in RRULE are not supported (for example, `DTSTART`, `DTEND`, `DURATION`).",
 							Type:          schema.TypeString,
 							Optional:      true,
 							ConflictsWith: []string{"recurrence.period", "recurrence.until_date", "recurrence.until_occurrences", "recurrence.week_days"},

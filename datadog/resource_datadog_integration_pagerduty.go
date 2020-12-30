@@ -28,7 +28,7 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"individual_services": {
-				Description: "Boolean to specify whether or not individual service objects specified by [datadog_integration_pagerduty_service_object](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_pagerduty_service_object) resource are to be used. Mutually exclusive with services key.",
+				Description: "Boolean to specify whether or not individual service objects specified by [datadog_integration_pagerduty_service_object](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_pagerduty_service_object) resource are to be used. Mutually exclusive with `services` key.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},

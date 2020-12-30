@@ -36,13 +36,13 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"value": {
-				Description: "The value of the global variable.\n",
+				Description: "The value of the global variable.",
 				Type:        schema.TypeString,
 				Required:    true,
 				Sensitive:   true,
 			},
 			"secure": {
-				Description: "Sets the variable as secure, true or false.",
+				Description: "Sets the variable as secure. Defaults to `false`.",
 				Default:     false,
 				Type:        schema.TypeBool,
 				Optional:    true,

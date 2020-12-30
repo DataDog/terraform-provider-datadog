@@ -25,7 +25,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Required:    true,
 				},
 				"compute": {
-					Description: "Exactly one nested block is required with the following structure:",
+					Description: "Exactly one nested block is required with the structure below.",
 					Type:        schema.TypeList,
 					Required:    true,
 					MaxItems:    1,
@@ -50,7 +50,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 					},
 				},
 				"search": {
-					Description: "One nested block is allowed with the following structure:",
+					Description: "Exactly one nested block is allowed with the structure below.",
 					Type:        schema.TypeList,
 					Optional:    true,
 					MaxItems:    1,
@@ -65,7 +65,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 					},
 				},
 				"group_by": {
-					Description: "Multiple nested blocks are allowed with the following structure:",
+					Description: "Multiple nested blocks are allowed with the structure below.",
 					Type:        schema.TypeList,
 					Optional:    true,
 					Elem: &schema.Resource{
@@ -81,7 +81,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 								Optional:    true,
 							},
 							"sort": {
-								Description: "One nested block is allowed with the following structure:",
+								Description: "Exactly one nested block is allowed with the structure below.",
 								Type:        schema.TypeList,
 								Optional:    true,
 								MaxItems:    1,
@@ -157,13 +157,13 @@ func resourceDatadogTimeboard() *schema.Resource {
 				"apm_query":     apmOrLogQuery,
 				"process_query": processQuery,
 				"stacked": {
-					Description: "Boolean value to determine if this is this a stacked area graph. Default: false (line chart).",
+					Description: "Boolean value to determine if this is this a stacked area graph. Default: `false` (line chart).",
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Default:     false,
 				},
 				"type": {
-					Description: "Choose how to draw the graph. For example: \"line\", \"bars\" or \"area\". Default: \"line\".",
+					Description: "Choose how to draw the graph. For example: `line`, `bars` or `area`. Default: `line`.",
 					Type:        schema.TypeString,
 					Optional:    true,
 					Default:     "line",
@@ -180,7 +180,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Optional:    true,
 				},
 				"metadata_json": {
-					Description: "A JSON blob (preferrably created using [jsonencode](https://www.terraform.io/docs/configuration/functions/jsonencode.html?_ga=2.6381362.1091155358.1609189257-888022054.1605547463)) representing mapping of query expressions to alias names. Note that the query expressions in metadata_json will be ignored if they're not present in the query.",
+					Description: "A JSON blob (preferrably created using [jsonencode](https://www.terraform.io/docs/configuration/functions/jsonencode.html?_ga=2.6381362.1091155358.1609189257-888022054.1605547463)) representing mapping of query expressions to alias names. Note that the query expressions in `metadata_json` will be ignored if they're not present in the query.",
 					Type:        schema.TypeString,
 					Optional:    true,
 					// NOTE: this is using functions from resource_datadog_screenboard
@@ -263,18 +263,18 @@ func resourceDatadogTimeboard() *schema.Resource {
 	}
 
 	marker := &schema.Schema{
-		Description: "Nested block describing lines / ranges added to graph for formatting. The structure of this block is described below. Multiple marker blocks are allowed within a graph block.",
+		Description: "Nested block describing lines / ranges added to graph for formatting. The structure of this block is described below. Multiple `marker` blocks are allowed within a `graph` block.",
 		Type:        schema.TypeList,
 		Optional:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"type": {
-					Description: "How the marker lines will look. Possible values are {\"error\", \"warning\", \"info\", \"ok\"} {\"dashed\", \"solid\", \"bold\"}. Example: \"error dashed\".",
+					Description: "How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.",
 					Type:        schema.TypeString,
 					Required:    true,
 				},
 				"value": {
-					Description: "Mathematical expression describing the marker. Examples: \"y > 1\", \"-5 < y < 0\", \"y = 19\".",
+					Description: "Mathematical expression describing the marker. Examples: `y > 1`, `-5 < y < 0`, `y = 19`.",
 					Type:        schema.TypeString,
 					Required:    true,
 				},
@@ -307,14 +307,14 @@ func resourceDatadogTimeboard() *schema.Resource {
 					},
 				},
 				"viz": {
-					Description: "The type of visualization to use for the graph. Valid choices are \"change\", \"distribution\", \"heatmap\", \"hostmap\", \"query_value\", timeseries\", and \"toplist\".",
+					Description: "The type of visualization to use for the graph. Valid choices are `change`, `distribution`, `heatmap`, `hostmap`, `query_value`, `timeseries`, and `toplist`.",
 					Type:        schema.TypeString,
 					Required:    true,
 				},
 				"request": request,
 				"marker":  marker,
 				"yaxis": {
-					Description: "Nested block describing modifications to the yaxis rendering. The structure of this block is described below.",
+					Description: "Nested block describing modifications to the Y-axis rendering. The structure of this block is described below.",
 					Type:        schema.TypeMap,
 					Optional:    true,
 					// `include_zero` and `include_units` are bool but Terraform treats them as strings

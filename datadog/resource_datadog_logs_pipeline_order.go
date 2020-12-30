@@ -20,7 +20,7 @@ func resourceDatadogLogsPipelineOrder() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Description: "The name attribute in the resource datadog_logs_pipeline_order needs to be unique. It's recommended to use the same value as the resource NAME. No related field is available in [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/#get-pipeline-order).",
+				Description: "The name attribute in the resource `datadog_logs_pipeline_order` needs to be unique. It's recommended to use the same value as the resource name. No related field is available in [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/#get-pipeline-order).",
 				Type:        schema.TypeString,
 				Required:    true,
 			},

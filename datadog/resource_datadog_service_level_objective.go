@@ -52,31 +52,31 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"timeframe": {
-							Description:  "the time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Available options to choose from are: `7d`, `30d`, `90d`",
+							Description:  "The time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Available options to choose from are: `7d`, `30d`, `90d`.",
 							Type:         schema.TypeString,
 							Required:     true,
 							ValidateFunc: validateEnumValue(datadogV1.NewSLOTimeframeFromValue),
 						},
 						"target": {
-							Description:      "the objective's target `[0,100]`",
+							Description:      "The objective's target in`[0,100]`.",
 							Type:             schema.TypeFloat,
 							Required:         true,
 							DiffSuppressFunc: suppressDataDogFloatIntDiff,
 						},
 						"target_display": {
-							Description:      "the string version to specify additional digits in the case of 99 but want 3 digits like 99.000 to display.",
+							Description:      "A string representation of the target that indicates its precision. It uses trailing zeros to show significant decimal places (e.g. `98.00`).",
 							Type:             schema.TypeString,
 							Optional:         true,
 							DiffSuppressFunc: suppressDataDogSLODisplayValueDiff,
 						},
 						"warning": {
-							Description:      "the objective's warning value [0,100]. This must be > target value.",
+							Description:      "The objective's warning value in `[0,100]`. This must be greater than the target value.",
 							Type:             schema.TypeFloat,
 							Optional:         true,
 							DiffSuppressFunc: suppressDataDogFloatIntDiff,
 						},
 						"warning_display": {
-							Description:      "the string version to specify additional digits in the case of 99 but want 3 digits like 99.000 to display.",
+							Description:      "A string representation of the warning target (see the description of the target_display field for details).",
 							Type:             schema.TypeString,
 							Optional:         true,
 							DiffSuppressFunc: suppressDataDogSLODisplayValueDiff,
@@ -108,14 +108,14 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"numerator": {
-							Description:      "the sum of all the `good` events",
+							Description:      "The sum of all the `good` events.",
 							Type:             schema.TypeString,
 							Required:         true,
 							StateFunc:        trimStateValue,
 							DiffSuppressFunc: diffTrimmedValues,
 						},
 						"denominator": {
-							Description:      "the sum of the `total` events",
+							Description:      "The sum of the `total` events.",
 							Type:             schema.TypeString,
 							Required:         true,
 							StateFunc:        trimStateValue,
@@ -150,7 +150,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Elem:          &schema.Schema{Type: schema.TypeString, MinItems: 1},
 			},
 			"validate": {
-				Description: "Whether to validate the SLO",
+				Description: "Whether or not to validate the SLO.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {

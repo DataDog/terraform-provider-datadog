@@ -29,13 +29,13 @@ func resourceDatadogUser() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"disabled": {
-				Description: "Whether the user is disabled",
+				Description: "Whether the user is disabled.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     false,
 			},
 			"email": {
-				Description: "Email address for user",
+				Description: "Email address for user.",
 				Type:        schema.TypeString,
 				Required:    true,
 			},
@@ -53,7 +53,7 @@ func resourceDatadogUser() *schema.Resource {
 				Deprecated:  "This parameter is replaced by `roles` and will be removed from the next Major version",
 			},
 			"access_role": {
-				Description: "Role description for user. Can be st (standard user), adm (admin user) or ro (read-only user). Default is st. access_role is ignored for new users created with this resource. New users have to use the roles attribute.",
+				Description: "Role description for user. Can be `st` (standard user), `adm` (admin user) or `ro` (read-only user). Default is `st`. `access_role` is ignored for new users created with this resource. New users have to use the `roles` attribute.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "st",
@@ -62,7 +62,7 @@ func resourceDatadogUser() *schema.Resource {
 				},
 			},
 			"name": {
-				Description: "Name for user",
+				Description: "Name for user.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},

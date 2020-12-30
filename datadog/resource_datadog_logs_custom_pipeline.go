@@ -128,7 +128,7 @@ var attributeRemapper = &schema.Schema{
 			"target":      {Description: "Final attribute or tag name to remap the sources.", Type: schema.TypeString, Required: true},
 			"target_type": {Description: "Defines if the target is a log attribute or tag.", Type: schema.TypeString, Required: true},
 			"target_format": {
-				Description:  "If the target_type of the remapper is attribute, try to cast the value to a new specific type. If the cast is not possible, the original type is kept. string, integer, or double are the possible types. If the target_type is tag, this parameter may not be specified.",
+				Description:  "If the `target_type` of the remapper is `attribute`, try to cast the value to a new specific type. If the cast is not possible, the original type is kept. `string`, `integer`, or `double` are the possible types. If the `target_type` is `tag`, this parameter may not be specified.",
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validation.StringInSlice([]string{"auto", "string", "integer", "double"}, false),
@@ -227,7 +227,7 @@ var lookupProcessor = &schema.Schema{
 			"source":     {Description: "Name of the source attribute used to do the lookup.", Type: schema.TypeString, Required: true},
 			"target":     {Description: "Name of the attribute that contains the result of the lookup.", Type: schema.TypeString, Required: true},
 			"lookup_table": {
-				Description: "List of entries of the lookup table using \"key,value\" format.",
+				Description: "List of entries of the lookup table using `key,value` format.",
 				Type:        schema.TypeList,
 				Required:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
