@@ -324,7 +324,7 @@ func buildMonitorStruct(d BuiltResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	u.SetQuery(d.Get("query").(string))
 	u.SetName(d.Get("name").(string))
 	u.SetMessage(d.Get("message").(string))
-	m.SetPriority(int64(d.Get("priority").(int)))
+	u.SetPriority(int64(d.Get("priority").(int)))
 	u.SetOptions(o)
 
 	tags := make([]string, 0)

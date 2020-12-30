@@ -799,7 +799,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"id":26021069,"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Basic_float_int-local-1605874552","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"thresholds":{"critical":3,"critical_recovery":2,"warning":1,"warning_recovery":0.5},"timeout_h":60},"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 3","tags":["baz","foo:bar"],"type":"query alert"}
+      {"id":26021069,"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Basic_float_int-local-1605874552","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"thresholds":{"critical":3,"critical_recovery":2,"warning":1,"warning_recovery":0.5},"timeout_h":60},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 3","tags":["baz","foo:bar"],"type":"query alert"}
     form: {}
     headers:
       Accept:

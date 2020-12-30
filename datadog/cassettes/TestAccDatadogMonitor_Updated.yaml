@@ -685,7 +685,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"a different message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","options":{"escalation_message":"the situation has escalated! @pagerduty","evaluation_delay":800,"include_tags":false,"locked":true,"new_host_delay":900,"no_data_timeframe":20,"notify_audit":true,"notify_no_data":true,"renotify_interval":40,"require_full_window":false,"silenced":{"*":0},"thresholds":{"critical":3,"critical_recovery":2.5,"ok":0,"warning":1,"warning_recovery":0.5},"timeout_h":70},"priority":3,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} \u003e 3","tags":["baz:qux","quux"],"type":"query alert"}
+      {"message":"a different message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","options":{"escalation_message":"the situation has escalated! @pagerduty","evaluation_delay":800,"include_tags":false,"locked":true,"new_host_delay":900,"no_data_timeframe":20,"notify_audit":true,"notify_no_data":true,"renotify_interval":40,"require_full_window":false,"silenced":{"*":0},"thresholds":{"critical":3,"critical_recovery":2.5,"ok":0,"warning":1,"warning_recovery":0.5},"timeout_h":70},"priority":1,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} \u003e 3","tags":["baz:qux","quux"],"type":"query alert"}
     form: {}
     headers:
       Accept:
@@ -742,7 +742,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"a different message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","options":{"escalation_message":"the situation has escalated! @pagerduty","evaluation_delay":800,"include_tags":false,"locked":true,"new_host_delay":900,"no_data_timeframe":20,"notify_audit":true,"notify_no_data":true,"renotify_interval":40,"require_full_window":false,"silenced":{"*":0},"thresholds":{"critical":3,"critical_recovery":2.5,"ok":0,"warning":1,"warning_recovery":0.5},"timeout_h":70},"priority":3,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} \u003e 3","tags":["baz:qux","quux"],"type":"query alert"}
+      {"message":"a different message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","options":{"escalation_message":"the situation has escalated! @pagerduty","evaluation_delay":800,"include_tags":false,"locked":true,"new_host_delay":900,"no_data_timeframe":20,"notify_audit":true,"notify_no_data":true,"renotify_interval":40,"require_full_window":false,"silenced":{"*":0},"thresholds":{"critical":3,"critical_recovery":2.5,"ok":0,"warning":1,"warning_recovery":0.5},"timeout_h":70},"priority":1,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} \u003e 3","tags":["baz:qux","quux"],"type":"query alert"}
     form: {}
     headers:
       Accept:
@@ -799,7 +799,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"id":26021034,"message":"a different message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","options":{"escalation_message":"the situation has escalated! @pagerduty","evaluation_delay":800,"include_tags":false,"locked":true,"new_host_delay":900,"no_data_timeframe":20,"notify_audit":true,"notify_no_data":true,"renotify_interval":40,"require_full_window":false,"silenced":{"*":0},"thresholds":{"critical":3,"critical_recovery":2.5,"ok":0,"warning":1,"warning_recovery":0.5},"timeout_h":70},"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} \u003e 3","tags":["baz:qux","quux"],"type":"query alert"}
+      {"id":26021034,"message":"a different message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","options":{"escalation_message":"the situation has escalated! @pagerduty","evaluation_delay":800,"include_tags":false,"locked":true,"new_host_delay":900,"no_data_timeframe":20,"notify_audit":true,"notify_no_data":true,"renotify_interval":40,"require_full_window":false,"silenced":{"*":0},"thresholds":{"critical":3,"critical_recovery":2.5,"ok":0,"warning":1,"warning_recovery":0.5},"timeout_h":70},"priority":1,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} \u003e 3","tags":["baz:qux","quux"],"type":"query alert"}
     form: {}
     headers:
       Accept:
@@ -821,7 +821,7 @@ interactions:
     method: PUT
   response:
     body: '{"restricted_roles":["94172442-be03-11e9-a77a-3b7612558ac1"],"tags":["baz:qux","quux"],"deleted":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar}
-      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":3,"overall_state_modified":null,"overall_state":"No
+      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":1,"overall_state_modified":null,"overall_state":"No
       Data","type":"query alert","options":{"notify_audit":true,"locked":true,"timeout_h":70,"silenced":{"*":null},"include_tags":false,"no_data_timeframe":20,"new_host_delay":900,"require_full_window":false,"notify_no_data":true,"renotify_interval":40,"evaluation_delay":800,"escalation_message":"the
       situation has escalated! @pagerduty","thresholds":{"warning":1.0,"ok":0.0,"critical":3.0,"warning_recovery":0.5,"critical_recovery":2.5}}}'
     headers:
@@ -886,7 +886,7 @@ interactions:
     method: GET
   response:
     body: '{"restricted_roles":["94172442-be03-11e9-a77a-3b7612558ac1"],"tags":["baz:qux","quux"],"deleted":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar}
-      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":3,"overall_state_modified":null,"overall_state":"No
+      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":1,"overall_state_modified":null,"overall_state":"No
       Data","type":"query alert","options":{"notify_audit":true,"locked":true,"timeout_h":70,"silenced":{"*":null},"include_tags":false,"no_data_timeframe":20,"new_host_delay":900,"require_full_window":false,"notify_no_data":true,"renotify_interval":40,"evaluation_delay":800,"escalation_message":"the
       situation has escalated! @pagerduty","thresholds":{"warning":1.0,"ok":0.0,"critical":3.0,"warning_recovery":0.5,"critical_recovery":2.5}}}'
     headers:
@@ -951,7 +951,7 @@ interactions:
     method: GET
   response:
     body: '{"restricted_roles":["94172442-be03-11e9-a77a-3b7612558ac1"],"tags":["baz:qux","quux"],"deleted":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar}
-      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":3,"overall_state_modified":null,"overall_state":"No
+      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":1,"overall_state_modified":null,"overall_state":"No
       Data","type":"query alert","options":{"notify_audit":true,"locked":true,"timeout_h":70,"silenced":{"*":null},"include_tags":false,"no_data_timeframe":20,"new_host_delay":900,"require_full_window":false,"notify_no_data":true,"renotify_interval":40,"evaluation_delay":800,"escalation_message":"the
       situation has escalated! @pagerduty","thresholds":{"warning":1.0,"ok":0.0,"critical":3.0,"warning_recovery":0.5,"critical_recovery":2.5}}}'
     headers:
@@ -1012,7 +1012,7 @@ interactions:
     method: GET
   response:
     body: '{"restricted_roles":["94172442-be03-11e9-a77a-3b7612558ac1"],"tags":["baz:qux","quux"],"deleted":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar}
-      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":3,"overall_state_modified":null,"overall_state":"No
+      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":1,"overall_state_modified":null,"overall_state":"No
       Data","type":"query alert","options":{"notify_audit":true,"locked":true,"timeout_h":70,"silenced":{"*":null},"include_tags":false,"no_data_timeframe":20,"new_host_delay":900,"require_full_window":false,"notify_no_data":true,"renotify_interval":40,"evaluation_delay":800,"escalation_message":"the
       situation has escalated! @pagerduty","thresholds":{"warning":1.0,"ok":0.0,"critical":3.0,"warning_recovery":0.5,"critical_recovery":2.5}}}'
     headers:
@@ -1058,7 +1058,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"a different message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","options":{"escalation_message":"the situation has escalated! @pagerduty","evaluation_delay":800,"include_tags":false,"locked":true,"new_host_delay":900,"no_data_timeframe":20,"notify_audit":true,"notify_no_data":true,"renotify_interval":40,"require_full_window":false,"silenced":{"*":0},"thresholds":{"critical":3,"critical_recovery":2.5,"ok":0,"warning":1,"warning_recovery":0.5},"timeout_h":70},"priority":3,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} \u003e 3","tags":["baz:qux","quux"],"type":"query alert"}
+      {"message":"a different message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","options":{"escalation_message":"the situation has escalated! @pagerduty","evaluation_delay":800,"include_tags":false,"locked":true,"new_host_delay":900,"no_data_timeframe":20,"notify_audit":true,"notify_no_data":true,"renotify_interval":40,"require_full_window":false,"silenced":{"*":0},"thresholds":{"critical":3,"critical_recovery":2.5,"ok":0,"warning":1,"warning_recovery":0.5},"timeout_h":70},"priority":1,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} \u003e 3","tags":["baz:qux","quux"],"type":"query alert"}
     form: {}
     headers:
       Accept:
@@ -1134,7 +1134,7 @@ interactions:
     method: GET
   response:
     body: '{"restricted_roles":["94172442-be03-11e9-a77a-3b7612558ac1"],"tags":["baz:qux","quux"],"deleted":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar}
-      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":3,"overall_state_modified":null,"overall_state":"No
+      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":1,"overall_state_modified":null,"overall_state":"No
       Data","type":"query alert","options":{"notify_audit":true,"locked":true,"timeout_h":70,"silenced":{"*":null},"include_tags":false,"no_data_timeframe":20,"new_host_delay":900,"require_full_window":false,"notify_no_data":true,"renotify_interval":40,"evaluation_delay":800,"escalation_message":"the
       situation has escalated! @pagerduty","thresholds":{"warning":1.0,"ok":0.0,"critical":3.0,"warning_recovery":0.5,"critical_recovery":2.5}}}'
     headers:
@@ -1199,7 +1199,7 @@ interactions:
     method: GET
   response:
     body: '{"restricted_roles":["94172442-be03-11e9-a77a-3b7612558ac1"],"tags":["baz:qux","quux"],"deleted":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar}
-      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":3,"overall_state_modified":null,"overall_state":"No
+      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":1,"overall_state_modified":null,"overall_state":"No
       Data","type":"query alert","options":{"notify_audit":true,"locked":true,"timeout_h":70,"silenced":{"*":null},"include_tags":false,"no_data_timeframe":20,"new_host_delay":900,"require_full_window":false,"notify_no_data":true,"renotify_interval":40,"evaluation_delay":800,"escalation_message":"the
       situation has escalated! @pagerduty","thresholds":{"warning":1.0,"ok":0.0,"critical":3.0,"warning_recovery":0.5,"critical_recovery":2.5}}}'
     headers:
@@ -1245,7 +1245,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"a different message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","options":{"escalation_message":"the situation has escalated! @pagerduty","evaluation_delay":800,"include_tags":false,"locked":true,"new_host_delay":900,"no_data_timeframe":20,"notify_audit":true,"notify_no_data":true,"renotify_interval":40,"require_full_window":false,"silenced":{"*":0},"thresholds":{"critical":3,"critical_recovery":2.5,"ok":0,"warning":1,"warning_recovery":0.5},"timeout_h":70},"priority":3,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} \u003e 3","tags":["baz:qux","quux"],"type":"query alert"}
+      {"message":"a different message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","options":{"escalation_message":"the situation has escalated! @pagerduty","evaluation_delay":800,"include_tags":false,"locked":true,"new_host_delay":900,"no_data_timeframe":20,"notify_audit":true,"notify_no_data":true,"renotify_interval":40,"require_full_window":false,"silenced":{"*":0},"thresholds":{"critical":3,"critical_recovery":2.5,"ok":0,"warning":1,"warning_recovery":0.5},"timeout_h":70},"priority":1,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} \u003e 3","tags":["baz:qux","quux"],"type":"query alert"}
     form: {}
     headers:
       Accept:
@@ -1321,7 +1321,7 @@ interactions:
     method: GET
   response:
     body: '{"restricted_roles":["94172442-be03-11e9-a77a-3b7612558ac1"],"tags":["baz:qux","quux"],"deleted":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar}
-      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":3,"overall_state_modified":null,"overall_state":"No
+      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":1,"overall_state_modified":null,"overall_state":"No
       Data","type":"query alert","options":{"notify_audit":true,"locked":true,"timeout_h":70,"silenced":{"*":null},"include_tags":false,"no_data_timeframe":20,"new_host_delay":900,"require_full_window":false,"notify_no_data":true,"renotify_interval":40,"evaluation_delay":800,"escalation_message":"the
       situation has escalated! @pagerduty","thresholds":{"warning":1.0,"ok":0.0,"critical":3.0,"warning_recovery":0.5,"critical_recovery":2.5}}}'
     headers:
@@ -1443,7 +1443,7 @@ interactions:
     method: GET
   response:
     body: '{"restricted_roles":["94172442-be03-11e9-a77a-3b7612558ac1"],"tags":["baz:qux","quux"],"deleted":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar}
-      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":3,"overall_state_modified":null,"overall_state":"No
+      by {host} > 3","message":"a different message Notify: @hipchat-channel","id":26021034,"multi":true,"name":"tf-TestAccDatadogMonitor_Updated-local-1605874552-updated","created":"2020-11-20T12:15:54.863768+00:00","created_at":1605874554000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2020-11-20T12:15:57.325679+00:00","priority":1,"overall_state_modified":null,"overall_state":"No
       Data","type":"query alert","options":{"notify_audit":true,"locked":true,"timeout_h":70,"silenced":{"*":null},"include_tags":false,"no_data_timeframe":20,"new_host_delay":900,"require_full_window":false,"notify_no_data":true,"renotify_interval":40,"evaluation_delay":800,"escalation_message":"the
       situation has escalated! @pagerduty","thresholds":{"warning":1.0,"ok":0.0,"critical":3.0,"warning_recovery":0.5,"critical_recovery":2.5}}}'
     headers:

@@ -792,7 +792,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"id":26021065,"message":"test","name":"tf-TestAccDatadogMonitor_MuteUnmuteSpecificScopes-local-1605874552","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
+      {"id":26021065,"message":"test","name":"tf-TestAccDatadogMonitor_MuteUnmuteSpecificScopes-local-1605874552","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
@@ -923,7 +923,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"id":26021065,"message":"test","name":"tf-TestAccDatadogMonitor_MuteUnmuteSpecificScopes-local-1605874552","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"silenced":{"host:myserver":1605874552},"thresholds":{"critical":100}},"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
+      {"id":26021065,"message":"test","name":"tf-TestAccDatadogMonitor_MuteUnmuteSpecificScopes-local-1605874552","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"silenced":{"host:myserver":1605874552},"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
