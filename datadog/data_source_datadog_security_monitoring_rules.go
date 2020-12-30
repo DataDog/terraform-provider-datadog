@@ -45,13 +45,13 @@ func dataSourceDatadogSecurityMonitoringRules() *schema.Resource {
 
 			// Computed
 			"rule_ids": {
-				Description: "List of ids of the matched rules.",
+				Description: "List of IDs of the matched rules.",
 				Type:        schema.TypeList,
 				Computed:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"rules": {
-				Description: "List of rules",
+				Description: "List of rules.",
 				Type:        schema.TypeList,
 				Computed:    true,
 				Elem: &schema.Resource{

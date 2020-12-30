@@ -1148,7 +1148,7 @@ func getAlertGraphDefinitionSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"viz_type": {
-			Description:  "Type of visualization to use when displaying the widget. Either \"timeseries\" or \"toplist\".",
+			Description:  "Type of visualization to use when displaying the widget. Either `timeseries` or `toplist`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetVizTypeFromValue),
 			Required:     true,
@@ -1164,7 +1164,7 @@ func getAlertGraphDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\"",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -1234,7 +1234,7 @@ func getAlertValueDefinitionSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"precision": {
-			Description: "The precision to use when displaying the value. Use \"*\" for maximum precision.",
+			Description: "The precision to use when displaying the value. Use `*` for maximum precision.",
 			Type:        schema.TypeInt,
 			Optional:    true,
 		},
@@ -1260,7 +1260,7 @@ func getAlertValueDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\"",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -1345,7 +1345,7 @@ func getChangeDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -1359,7 +1359,7 @@ func getChangeDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"custom_link": {
-			Description: "Nested block describing a custom link. The structure of this block is described below.",
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -1425,13 +1425,13 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 		"process_query":  getProcessQuerySchema(),
 		// Settings specific to Change requests
 		"change_type": {
-			Description:  "Whether to show absolute or relative change. One of \"absolute\", \"relative\".",
+			Description:  "Whether to show absolute or relative change. One of `absolute`, `relative`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetChangeTypeFromValue),
 			Optional:     true,
 		},
 		"compare_to": {
-			Description:  "Choose from when to compare current data to. One of \"hour_before\", \"day_before\", \"week_before\" or \"month_before\".",
+			Description:  "Choose from when to compare current data to. One of `hour_before`, `day_before`, `week_before` or `month_before`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetCompareToFromValue),
 			Optional:     true,
@@ -1442,19 +1442,19 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"order_by": {
-			Description:  "One of \"change\", \"name\", \"present\" (present value) or \"past\" (past value).",
+			Description:  "One of `change`, `name`, `present` (present value) or `past` (past value).",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetOrderByFromValue),
 			Optional:     true,
 		},
 		"order_dir": {
-			Description:  "Either \"asc\" (ascending) or \"desc\" (descending).",
+			Description:  "Either `asc` (ascending) or `desc` (descending).",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
 			Optional:     true,
 		},
 		"show_present": {
-			Description: "If set to \"true\", displays current value.",
+			Description: "If set to `true`, displays current value.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
@@ -1579,7 +1579,7 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -1755,7 +1755,7 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"event_size": {
-			Description:  "The size of the events in the widget. Either \"s\" (small, title only) or \"l\" (large, full event).",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetEventSizeFromValue),
 			Optional:     true,
@@ -1771,7 +1771,7 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -1785,7 +1785,7 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"tags_execution": {
-			Description: "The execution method for multi-value filters. Can be either \"and\" or \"or\".",
+			Description: "The execution method for multi-value filters. Can be either `and` or `or`.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -1861,12 +1861,12 @@ func getEventTimelineDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.\n",
+			Description: "The size of the widget's title. Default is 16.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -1880,7 +1880,7 @@ func getEventTimelineDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"tags_execution": {
-			Description: "The execution method for multi-value filters. Can be either \"and\" or \"or\".",
+			Description: "The execution method for multi-value filters. Can be either `and` or `or`.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -1945,7 +1945,7 @@ func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"grouping": {
-			Description:  "Either \"check\" or \"cluster\", depending on whether the widget should use a single check or a cluster of checks.",
+			Description:  "Either `check` or `cluster`, depending on whether the widget should use a single check or a cluster of checks.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetGroupingFromValue),
 			Required:     true,
@@ -1956,7 +1956,7 @@ func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"group_by": {
-			Description: "When grouping = \"cluster\", indicates a list of tags to use for grouping.",
+			Description: "When `grouping = \"cluster\"`, indicates a list of tags to use for grouping.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem:        &schema.Schema{Type: schema.TypeString},
@@ -1978,7 +1978,7 @@ func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -2141,7 +2141,7 @@ func buildTerraformFreeTextDefinition(datadogDefinition datadogV1.FreeTextWidget
 func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:",
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -2149,7 +2149,7 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"yaxis": {
-			Description: "Nested block describing the Y-Axis Controls. The structure of this block is described below\n",
+			Description: "Nested block describing the Y-Axis Controls. The structure of this block is described below.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -2168,13 +2168,13 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"event": {
-			Description: "The definition of the event to overlay on the graph. Includes the following structure:",
+			Description: "The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -2201,7 +2201,7 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"custom_link": {
-			Description: "Nested block describing a custom link. The structure of this block is described below.",
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -2294,7 +2294,7 @@ func getHeatmapRequestSchema() map[string]*schema.Schema {
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Heatmap requests
 		"style": {
-			Description: "Style of the widget graph. One nested block is allowed with the following structure:",
+			Description: "Style of the widget graph. One nested block is allowed with the structure below.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -2375,7 +2375,7 @@ func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWi
 func getHostmapDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:",
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
@@ -2383,7 +2383,7 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"fill": {
-						Description: "The query used to fill the map. Exactly one nested block is allowed with the following structure:",
+						Description: "The query used to fill the map. Exactly one nested block is allowed with the structure below.",
 						Type:        schema.TypeList,
 						Optional:    true,
 						Elem: &schema.Resource{
@@ -2391,7 +2391,7 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 						},
 					},
 					"size": {
-						Description: "The query used to size the map. Exactly one nested block is allowed with the following structure:",
+						Description: "The query used to size the map. Exactly one nested block is allowed with the structure below.",
 						Type:        schema.TypeList,
 						Optional:    true,
 						Elem: &schema.Resource{
@@ -2402,7 +2402,7 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"node_type": {
-			Description:  "The type of node used. Either \"host\" or \"container\".",
+			Description:  "The type of node used. Either `host` or `container`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetNodeTypeFromValue),
 			Optional:     true,
@@ -2430,7 +2430,7 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		"style": {
-			Description: "Style of the widget graph. One nested block is allowed with the following structure:",
+			Description: "Style of the widget graph. One nested block is allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
@@ -2470,13 +2470,13 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"custom_link": {
-			Description: "Nested block describing a custom link. The structure of this block is described below.",
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -2700,13 +2700,13 @@ func getImageDefinitionSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"sizing": {
-			Description:  "The preferred method to adapt the dimensions of the image to those of the widget. One of \"center\" (center the image in the tile), \"zoom\" (zoom the image to cover the whole tile) or \"fit\" (fit the image dimensions to those of the tile).",
+			Description:  "The preferred method to adapt the dimensions of the image to those of the widget. One of `center` (center the image in the tile), `zoom` (zoom the image to cover the whole tile) or `fit` (fit the image dimensions to those of the tile).",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetImageSizingFromValue),
 			Optional:     true,
 		},
 		"margin": {
-			Description:  "The margins to use around the image. Either \"small\" or \"large\".",
+			Description:  "The margins to use around the image. Either `small` or `large`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMarginFromValue),
 			Optional:     true,
@@ -2755,9 +2755,9 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		"logset": {
-			Description: "ID of the logset to use. Deprecated Use indexes instead.",
+			Description: "ID of the logset to use. Deprecated Use `indexes` instead.",
 			Type:        schema.TypeString,
-			Deprecated:  "This parameter has been deprecated. Use 'indexes' instead",
+			Deprecated:  "This parameter has been deprecated. Use `indexes` instead.",
 			Optional:    true,
 		},
 		"query": {
@@ -2766,7 +2766,7 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"columns": {
-			Description: "Stringified list of columns to use. Example: \"[\"column1\",\"column2\",\"column3\"]\".",
+			Description: "Stringified list of columns to use. Example: `[\"column1\",\"column2\",\"column3\"]`.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem:        &schema.Schema{Type: schema.TypeString},
@@ -2788,7 +2788,7 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMessageDisplayFromValue),
 		},
 		"sort": {
-			Description: "The facet and order to sort the data based upon. Example: \"{\"column\": \"time\", \"order\": \"desc\"}\".",
+			Description: "The facet and order to sort the data based upon. Example: `{\"column\": \"time\", \"order\": \"desc\"}`.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -2807,7 +2807,7 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -2978,7 +2978,7 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSummaryTypeFromValue),
 		},
 		"sort": {
-			Description:  "The method to use to sort monitors. Example: \"status,asc\".",
+			Description:  "The method to use to sort monitors. Example: `status,asc`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMonitorSummarySortFromValue),
 			Optional:     true,
@@ -2987,7 +2987,7 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 		"count": {
 			Description: "The number of monitors to display.",
 			Type:        schema.TypeInt,
-			Deprecated:  "This parameter has been deprecated",
+			Deprecated:  "This parameter has been deprecated.",
 			Optional:    true,
 			Default:     50,
 		},
@@ -2995,17 +2995,17 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 		"start": {
 			Description: "The start of the list. Typically 0.",
 			Type:        schema.TypeInt,
-			Deprecated:  "This parameter has been deprecated",
+			Deprecated:  "This parameter has been deprecated.",
 			Optional:    true,
 		},
 		"display_format": {
-			Description:  "The display setting to use. One of \"counts\", \"list\", or \"countsAndList\".",
+			Description:  "The display setting to use. One of `counts`, `list`, or `countsAndList`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMonitorSummaryDisplayFormatFromValue),
 			Optional:     true,
 		},
 		"color_preference": {
-			Description:  "Whether to colorize text or background. One of \"text\", \"background\".",
+			Description:  "Whether to colorize text or background. One of `text`, `background`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetColorPreferenceFromValue),
 			Optional:     true,
@@ -3031,7 +3031,7 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -3145,7 +3145,7 @@ func getNoteDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"text_align": {
-			Description:  "How to align the text on the widget. Available values are: center, left, or right.",
+			Description:  "The alignment of the widget's text. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -3156,12 +3156,12 @@ func getNoteDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"tick_pos": {
-			Description: "When tick = true, string with a percent sign indicating the position of the tick. Example: use tick_pos = \"50%\" for centered alignment.",
+			Description: "When `tick = true`, string with a percent sign indicating the position of the tick. Example: use `tick_pos = \"50%\"` for centered alignment.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 		"tick_edge": {
-			Description:  "When tick = true, string indicating on which side of the widget the tick should be displayed. One of \"bottom\", \"top\", \"left\", \"right\".",
+			Description:  "When `tick = true`, string indicating on which side of the widget the tick should be displayed. One of `bottom`, `top`, `left`, `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTickEdgeFromValue),
 			Optional:     true,
@@ -3228,7 +3228,7 @@ func buildTerraformNoteDefinition(datadogDefinition datadogV1.NoteWidgetDefiniti
 func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of q, apm_query, log_query or process_query is required within the request block):",
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below(exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -3251,7 +3251,7 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"text_align": {
-			Description:  "The alignment of the text in the widget.",
+			Description:  "The alignment of the widget's text. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -3267,7 +3267,7 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -3281,7 +3281,7 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"custom_link": {
-			Description: "Nested block describing a custom link. The structure of this block is described below.",
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -3371,7 +3371,7 @@ func getQueryValueRequestSchema() map[string]*schema.Schema {
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to QueryValue requests
 		"conditional_formats": {
-			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple request blocks are allowed. The structure of this block is described below.",
+			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -3379,7 +3379,7 @@ func getQueryValueRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"aggregator": {
-			Description:  "The aggregator to use for time aggregation. One of avg, min, max, sum, last.",
+			Description:  "The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
 			Optional:     true,
@@ -3464,7 +3464,7 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of q, apm_query, log_query or process_query is required within the request block):",
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -3482,7 +3482,7 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -3496,7 +3496,7 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"custom_link": {
-			Description: "Nested block describing a custom link. The structure of this block is described below.",
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -3504,7 +3504,7 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"has_search_bar": {
-			Description:  "Controls the display of the search bar. One of \"auto\", \"always\", \"never\".",
+			Description:  "Controls the display of the search bar. One of `auto`, `always`, `never`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewTableWidgetHasSearchBarFromValue),
 			Optional:     true,
@@ -3575,7 +3575,7 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 		"apm_stats_query": getApmStatsQuerySchema(),
 		// Settings specific to QueryTable requests
 		"conditional_formats": {
-			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple request blocks are allowed. The structure of this block is described below.",
+			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -3588,7 +3588,7 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"aggregator": {
-			Description:  "The aggregator to use for time aggregation. One of avg, min, max, sum, last.",
+			Description:  "The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
 			Optional:     true,
@@ -3599,13 +3599,13 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"order": {
-			Description:  "The sort order for the rows. One of desc or asc.",
+			Description:  "The sort order for the rows. One of `desc` or `asc`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
 			Optional:     true,
 		},
 		"cell_display_mode": {
-			Description: "A list of display modes for each table cell. List items one of \"number\", \"bar\".",
+			Description: "A list of display modes for each table cell. List items one of `number`, `bar`.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Schema{
@@ -3732,7 +3732,7 @@ func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.Tab
 func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Exactly one request block is allowed with the following structure:",
+			Description: "Nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
@@ -3740,7 +3740,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"x": {
-						Description: "The query used for the X-Axis. Exactly one nested block is allowed with the following structure: - q: (Required) The metric query to use in the widget. - aggregator: (Optional) Aggregator used for the request. One of \"avg\", \"min\", \"max\", \"sum\", \"last\".",
+						Description: "The query used for the X-Axis. Exactly one nested block is allowed with the structure below.",
 						Type:        schema.TypeList,
 						Optional:    true,
 						Elem: &schema.Resource{
@@ -3748,7 +3748,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 						},
 					},
 					"y": {
-						Description: "The query used for the Y-Axis. Exactly one nested block is allowed with the following structure: - q: (Required) The metric query to use in the widget. - aggregator: (Optional) Aggregator used for the request. One of \"avg\", \"min\", \"max\", \"sum\", \"last\".",
+						Description: "The query used for the Y-Axis. Exactly one nested block is allowed with the structure below.
 						Type:        schema.TypeList,
 						Optional:    true,
 						Elem: &schema.Resource{
@@ -3759,7 +3759,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"xaxis": {
-			Description: "Nested block describing the X-Axis Controls. The structure of this block is described below",
+			Description: "Nested block describing the X-Axis Controls. Exactly one nested block is allowed with the structure below.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -3768,7 +3768,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"yaxis": {
-			Description: "Nested block describing the Y-Axis Controls. The structure of this block is described below",
+			Description: "Nested block describing the Y-Axis Controls. Exactly one nested block is allowed with the structure below.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -3793,7 +3793,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -3807,7 +3807,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"custom_link": {
-			Description: "Nested block describing a custom link. The structure of this block is described below.",
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4002,7 +4002,7 @@ func getServiceMapDefinitionSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"filters": {
-			Description: "Your environment and primary tag (or * if enabled for your account).",
+			Description: "Your environment and primary tag (or `*` if enabled for your account).",
 			Type:        schema.TypeList,
 			Required:    true,
 			Elem:        &schema.Schema{Type: schema.TypeString},
@@ -4018,13 +4018,13 @@ func getServiceMapDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"custom_link": {
-			Description: "Nested block describing a custom link. The structure of this block is described below.",
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4100,13 +4100,13 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"view_type": {
-			Description: "Type of view to use when displaying the widget. Only \"detail\" is currently supported.",
+			Description: "Type of view to use when displaying the widget. Only `detail` is currently supported.",
 			Type:        schema.TypeString,
 			Required:    true,
 		},
@@ -4121,13 +4121,13 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"view_mode": {
-			Description:  "View mode for the widget. One of \"overall\", \"component\", or \"both\".",
+			Description:  "View mode for the widget. One of `overall`, `component`, or `both`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetViewModeFromValue),
 			Required:     true,
 		},
 		"time_windows": {
-			Description: "List of time windows to display in the widget. Each value in the list must be one of \"7d\", \"30d\", \"90d\", \"week_to_date\", \"previous_week\", \"month_to_date\", or \"previous_month\".",
+			Description: "List of time windows to display in the widget. Each value in the list must be one of `7d`, `30d`, `90d`, `week_to_date`, `previous_week`, `month_to_date`, or `previous_month`.",
 			Type:        schema.TypeList,
 			Required:    true,
 			Elem: &schema.Schema{
@@ -4214,7 +4214,7 @@ func buildTerraformServiceLevelObjectiveDefinition(datadogDefinition datadogV1.S
 func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of q, apm_query, log_query or process_query is required within the request block):",
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4222,7 +4222,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"marker": {
-			Description: "Nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple marker blocks are allowed within a given tile_def block.",
+			Description: "Nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4230,7 +4230,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"event": {
-			Description: "The definition of the event to overlay on the graph. Includes the following structure:",
+			Description: "The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4247,7 +4247,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"right_yaxis": {
-			Description: "Nested block describing the right Y-Axis Controls. See the on_right_yaxis property for which request will use this axis. The structure of this block is described below",
+			Description: "Nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -4266,7 +4266,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -4291,7 +4291,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"custom_link": {
-			Description: "Nested block describing a custom link. The structure of this block is described below.",
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4402,7 +4402,7 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Timeseries requests
 		"style": {
-			Description: "Style of the widget graph. One nested block is allowed with the following structure:",
+			Description: "Style of the widget graph. Exactly one `style` block is allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
@@ -4414,13 +4414,13 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 						Optional:    true,
 					},
 					"line_type": {
-						Description:  "Type of lines displayed. Available values are: dashed, dotted, or solid.",
+						Description:  "Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.",
 						Type:         schema.TypeString,
 						ValidateFunc: validateEnumValue(datadogV1.NewWidgetLineTypeFromValue),
 						Optional:     true,
 					},
 					"line_width": {
-						Description:  "Width of line displayed. Available values are: normal, thick, or thin.",
+						Description:  "Width of line displayed. Available values are: `normal`, `thick`, or `thin`.",
 						Type:         schema.TypeString,
 						ValidateFunc: validateEnumValue(datadogV1.NewWidgetLineWidthFromValue),
 						Optional:     true,
@@ -4429,7 +4429,7 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"metadata": {
-			Description: "Used to define expression aliases. Multiple nested blocks are allowed with the following structure:",
+			Description: "Used to define expression aliases. Multiple `metadata` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4448,7 +4448,7 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"display_type": {
-			Description:  "How the marker lines will look. Possible values are {\"error\", \"warning\", \"info\", \"ok\"} {\"dashed\", \"solid\", \"bold\"}. Example: \"error dashed\".",
+			Description: "How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetDisplayTypeFromValue),
 			Optional:     true,
@@ -4584,7 +4584,7 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 func getToplistDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly only one of q, apm_query, log_query or process_query is required within the request block):",
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4602,7 +4602,7 @@ func getToplistDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -4616,7 +4616,7 @@ func getToplistDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"custom_link": {
-			Description: "Nested block describing a custom link. The structure of this block is described below.",
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4682,7 +4682,7 @@ func getToplistRequestSchema() map[string]*schema.Schema {
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Toplist requests
 		"conditional_formats": {
-			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple request blocks are allowed. The structure of this block is described below.",
+			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4824,13 +4824,13 @@ func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"size_format": {
-			Description:  "Size of the widget. Available values are: small, medium, or large.",
+			Description:  "Size of the widget. Available values are: `small`, `medium`, or `large`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSizeFormatFromValue),
 			Optional:     true,
 		},
 		"display_format": {
-			Description:  "Number of columns to display. Available values are: one_column, two_column, or three_column.",
+			Description:  "Number of columns to display. Available values are: `one_column`, `two_column`, or `three_column`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetServiceSummaryDisplayFormatFromValue),
 			Optional:     true,
@@ -4846,7 +4846,7 @@ func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of \"left\", \"center\", or \"right\".",
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -4958,7 +4958,7 @@ func buildTerraformTraceServiceDefinition(datadogDefinition datadogV1.ServiceSum
 func getWidgetConditionalFormatSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"comparator": {
-			Description:  "Comparator to apply from: One of >, >=, <, or <=.",
+			Description:  "Comparator to use. One of `>`, `>=`, `<`, or `<=`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetComparatorFromValue),
 			Required:     true,
@@ -4969,7 +4969,7 @@ func getWidgetConditionalFormatSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"palette": {
-			Description:  "Color palette to apply; One of blue, custom_bg, custom_image, custom_text, gray_on_white, grey, green, orange, red, red_on_white, white_on_gray, white_on_green, green_on_white, white_on_red, white_on_yellow, yellow_on_white, black_on_light_yellow, black_on_light_green or black_on_light_red",
+			Description:  "Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetPaletteFromValue),
 			Required:     true,
@@ -5160,7 +5160,7 @@ func buildTerraformWidgetEvents(datadogWidgetEvents *[]datadogV1.WidgetEvent) *[
 func getWidgetTimeSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"live_span": {
-			Description:  "The timeframe to use when displaying the widget. One of 10m, 30m, 1h, 4h, 1d, 2d, 1w.",
+			Description:  "The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetLiveSpanFromValue),
 			Optional:     true,
@@ -5186,12 +5186,12 @@ func buildTerraformWidgetTime(datadogWidgetTime datadogV1.WidgetTime) map[string
 func getWidgetMarkerSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"value": {
-			Description: "Mathematical expression describing the marker. Examples: y > 1, -5 < y < 0, y = 19.",
+			Description: "Mathematical expression describing the marker. Examples: `y > 1`, `-5 < y < 0`, `y = 19`.",
 			Type:        schema.TypeString,
 			Required:    true,
 		},
 		"display_type": {
-			Description: "How the marker lines will look. Possible values are {\"error\", \"warning\", \"info\", \"ok\"} {\"dashed\", \"solid\", \"bold\"}. Example: \"error dashed\".",
+			Description: "How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -5244,7 +5244,7 @@ func buildTerraformWidgetMarkers(datadogWidgetMarkers *[]datadogV1.WidgetMarker)
 // Metric Query
 func getMetricQuerySchema() *schema.Schema {
 	return &schema.Schema{
-		Description: "The metric query to use for this widget",
+		Description: "The metric query to use for this widget.",
 		Type:        schema.TypeString,
 		Optional:    true,
 	}
@@ -5253,37 +5253,37 @@ func getMetricQuerySchema() *schema.Schema {
 // APM, Log, Network or RUM Query
 func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 	return &schema.Schema{
-		Description: "The query to use for this widget",
+		Description: "The query to use for this widget.",
 		Type:        schema.TypeList,
 		Optional:    true,
 		MaxItems:    1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"index": {
-					Description: "Name of the index to query",
+					Description: "Name of the index to query.",
 					Type:        schema.TypeString,
 					Required:    true,
 				},
 				"compute": {
-					Description: "One of compute and multi_compute is required. The map has the following keys:",
+					Description: "One of `compute` or `multi_compute` is required. The map has the keys as below.",
 					Type:        schema.TypeMap,
 					Optional:    true,
 					Elem:        getComputeSchema(),
 				},
 				"multi_compute": {
-					Description: "One of compute and multi_compute is required. Multiple nested blocks are allowed with the following structure:",
+					Description: "One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below.",
 					Type:        schema.TypeList,
 					Optional:    true,
 					Elem:        getComputeSchema(),
 				},
 				"search": {
-					Description: "One map is allowed with the following key",
+					Description: "One map is allowed with the key below.",
 					Type:        schema.TypeMap,
 					Optional:    true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"query": {
-								Description: "Query to use",
+								Description: "Query to use.",
 								Type:        schema.TypeString,
 								Required:    true,
 							},
@@ -5291,13 +5291,13 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 					},
 				},
 				"group_by": {
-					Description: "Multiple nested blocks are allowed with the following structure:",
+					Description: "Multiple `group_by` blocks are allowed with the structure below.",
 					Type:        schema.TypeList,
 					Optional:    true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"facet": {
-								Description: "Facet name",
+								Description: "Facet name.",
 								Type:        schema.TypeString,
 								Optional:    true,
 							},
@@ -5307,7 +5307,7 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 								Optional:    true,
 							},
 							"sort": {
-								Description: "One map is allowed with the following keys:",
+								Description: "One map is allowed with the keys as below.",
 								Type:        schema.TypeMap,
 								Optional:    true,
 								Elem: &schema.Resource{
@@ -5324,7 +5324,7 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 											Required:     true,
 										},
 										"facet": {
-											Description: "Facet name",
+											Description: "Facet name.",
 											Type:        schema.TypeString,
 											Optional:    true,
 										},
@@ -5348,7 +5348,7 @@ func getComputeSchema() *schema.Resource {
 				Required:    true,
 			},
 			"facet": {
-				Description: "Facet name",
+				Description: "Facet name.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
@@ -5600,7 +5600,7 @@ func getApmStatsQuerySchema() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"service": {
-					Description: "Service Name",
+					Description: "Service name.",
 					Type:        schema.TypeString,
 					Required:    true,
 				},
@@ -5774,17 +5774,17 @@ func getWidgetAxisSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"scale": {
-			Description: "Specifies the scale type. One of \"linear\", \"log\", \"pow\", \"sqrt\".",
+			Description: "Specifies the scale type. One of `linear`, `log`, `pow`, `sqrt`.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 		"min": {
-			Description: "Specify the minimum value to show on y-axis.",
+			Description: "Specify the minimum value to show on the Y-axis.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 		"max": {
-			Description: "Specify the minimum value to show on y-axis.",
+			Description: "Specify the maximum value to show on the Y-axis.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},

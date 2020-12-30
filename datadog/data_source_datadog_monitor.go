@@ -49,12 +49,12 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				Computed:    true,
 			},
 			"query": {
-				Description: "Query of the monitor.\n",
+				Description: "Query of the monitor.",
 				Type:        schema.TypeString,
 				Computed:    true,
 			},
 			"type": {
-				Description: "Type of the monitor.\n",
+				Description: "Type of the monitor.",
 				Type:        schema.TypeString,
 				Computed:    true,
 			},
@@ -94,7 +94,7 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"threshold_windows": {
-				Description: "Mapping containing recovery_window and trigger_window values, e.g. last_15m. This is only used by anomaly monitors.",
+				Description: "Mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. This is only used by anomaly monitors.",
 				Type:        schema.TypeMap,
 				Computed:    true,
 				Elem: &schema.Resource{
