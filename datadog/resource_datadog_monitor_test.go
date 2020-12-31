@@ -292,7 +292,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.1520885421", "quux"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "priority", "3"),
+						"datadog_monitor.foo", "priority", "1"),
 				),
 			},
 			{
@@ -378,7 +378,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigUpdatedWithTagsRemoved(monitorNameUpdated),
+				Config: testAccCheckDatadogMonitorConfigUpdatedWithAttrsRemoved(monitorNameUpdated),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
@@ -425,6 +425,8 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 						"datadog_monitor.foo", "locked", "true"),
 					resource.TestCheckNoResourceAttr(
 						"datadog_monitor.foo", "tags.#"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "priority", "0"),
 				),
 			},
 			{
@@ -1082,7 +1084,7 @@ resource "datadog_monitor" "foo" {
   type = "query alert"
   message = "a different message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated! @pagerduty"
-  priority = 3
+  priority = 1
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} > 3"
 
@@ -1111,14 +1113,13 @@ resource "datadog_monitor" "foo" {
 }`, uniq)
 }
 
-func testAccCheckDatadogMonitorConfigUpdatedWithTagsRemoved(uniq string) string {
+func testAccCheckDatadogMonitorConfigUpdatedWithAttrsRemoved(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
   name = "%s"
   type = "query alert"
   message = "a different message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated! @pagerduty"
-  priority = 3
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} > 3"
 
