@@ -1,8 +1,6 @@
 package datadog
 
 import (
-	"fmt"
-
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -14,7 +12,6 @@ func resourceDatadogIntegrationAwsLogCollection() *schema.Resource {
 		Read:        resourceDatadogIntegrationAwsLogCollectionRead,
 		Update:      resourceDatadogIntegrationAwsLogCollectionUpdate,
 		Delete:      resourceDatadogIntegrationAwsLogCollectionDelete,
-		Exists:      resourceDatadogIntegrationAwsLogCollectionExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogIntegrationAwsLogCollectionImport,
 		},
@@ -34,28 +31,6 @@ func resourceDatadogIntegrationAwsLogCollection() *schema.Resource {
 			},
 		},
 	}
-}
-
-func resourceDatadogIntegrationAwsLogCollectionExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	// Exists - This is called to verify a resource still exists. It is called prior to Read,
-	// and lowers the burden of Read to be able to assume the resource exists.
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
-	if err != nil {
-		return false, translateClientError(err, "error getting aws integration log collection.")
-	}
-
-	accountID := d.Id()
-
-	for _, logCollection := range logCollections {
-		if logCollection.GetAccountId() == accountID {
-			return true, nil
-		}
-	}
-	return false, nil
 }
 
 func buildDatadogIntegrationAwsLogCollectionStruct(d *schema.ResourceData) *datadogV1.AWSLogsServicesRequest {
@@ -122,7 +97,9 @@ func resourceDatadogIntegrationAwsLogCollectionRead(d *schema.ResourceData, meta
 			return nil
 		}
 	}
-	return fmt.Errorf("error getting Amazon Web Services log collection: account_id=%s", accountID)
+
+	d.SetId("")
+	return nil
 }
 
 func resourceDatadogIntegrationAwsLogCollectionDelete(d *schema.ResourceData, meta interface{}) error {

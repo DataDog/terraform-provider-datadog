@@ -30,7 +30,6 @@ func resourceDatadogIntegrationAwsLambdaArn() *schema.Resource {
 		Create:      resourceDatadogIntegrationAwsLambdaArnCreate,
 		Read:        resourceDatadogIntegrationAwsLambdaArnRead,
 		Delete:      resourceDatadogIntegrationAwsLambdaArnDelete,
-		Exists:      resourceDatadogIntegrationAwsLambdaArnExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogIntegrationAwsLambdaArnImport,
 		},
@@ -50,35 +49,6 @@ func resourceDatadogIntegrationAwsLambdaArn() *schema.Resource {
 			},
 		},
 	}
-}
-
-func resourceDatadogIntegrationAwsLambdaArnExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	// Exists - This is called to verify a resource still exists. It is called prior to Read,
-	// and lowers the burden of Read to be able to assume the resource exists.
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
-	if err != nil {
-		return false, translateClientError(err, "error getting aws log integrations for datadog account.")
-	}
-
-	accountID, lambdaArn, err := accountAndLambdaArnFromID(d.Id())
-	if err != nil {
-		return false, translateClientError(err, fmt.Sprintf("error getting aws account ID and lambda ARN from id: %s", d.Id()))
-	}
-
-	for _, logCollection := range logCollections {
-		if logCollection.GetAccountId() == accountID {
-			for _, logCollectionLambdaArn := range logCollection.GetLambdas() {
-				if lambdaArn == logCollectionLambdaArn.GetArn() {
-					return true, nil
-				}
-			}
-		}
-	}
-	return false, nil
 }
 
 func resourceDatadogIntegrationAwsLambdaArnCreate(d *schema.ResourceData, meta interface{}) error {
@@ -122,7 +92,9 @@ func resourceDatadogIntegrationAwsLambdaArnRead(d *schema.ResourceData, meta int
 			}
 		}
 	}
-	return fmt.Errorf("error getting an AWS log Lambda: account_id=%s, lambda_arn=%s", accountID, lambdaArn)
+
+	d.SetId("")
+	return nil
 }
 
 func resourceDatadogIntegrationAwsLambdaArnDelete(d *schema.ResourceData, meta interface{}) error {

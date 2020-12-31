@@ -15,7 +15,6 @@ func resourceDatadogLogsArchiveOrder() *schema.Resource {
 		Update:      resourceDatadogLogsArchiveOrderUpdate,
 		Read:        resourceDatadogLogsArchiveOrderRead,
 		Delete:      resourceDatadogLogsArchiveOrderDelete,
-		Exists:      resourceDatadogLogsArchiveOrderExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -102,10 +101,6 @@ func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interfac
 // This function simply delete the archive order resource from terraform state.
 func resourceDatadogLogsArchiveOrderDelete(_ *schema.ResourceData, _ interface{}) error {
 	return nil
-}
-
-func resourceDatadogLogsArchiveOrderExists(_ *schema.ResourceData, _ interface{}) (bool, error) {
-	return true, nil
 }
 
 func getArchiveIds(d *schema.ResourceData) []string {

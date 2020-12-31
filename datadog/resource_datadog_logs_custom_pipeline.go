@@ -331,7 +331,6 @@ func resourceDatadogLogsCustomPipeline() *schema.Resource {
 		Update: resourceDatadogLogsPipelineUpdate,
 		Read:   resourceDatadogLogsPipelineRead,
 		Delete: resourceDatadogLogsPipelineDelete,
-		Exists: resourceDatadogLogsPipelineExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -361,8 +360,12 @@ func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) e
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	ddPipeline, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, d.Id()).Execute()
+	ddPipeline, httpresp, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, d.Id()).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 400 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "failed to get logs pipeline using Datadog API")
 	}
 	if err = d.Set("name", ddPipeline.GetName()); err != nil {
@@ -412,21 +415,6 @@ func resourceDatadogLogsPipelineDelete(d *schema.ResourceData, meta interface{})
 		return translateClientError(err, "error deleting logs pipeline")
 	}
 	return nil
-}
-
-func resourceDatadogLogsPipelineExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	if _, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, d.Id()).Execute(); err != nil {
-		// API returns 400 when the specific pipeline id doesn't exist through GET request.
-		if strings.Contains(err.Error(), "400 Bad Request") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error getting logs pipeline")
-	}
-	return true, nil
 }
 
 func buildTerraformProcessors(ddProcessors []datadogV1.LogsProcessor) ([]map[string]interface{}, error) {

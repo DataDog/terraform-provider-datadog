@@ -782,7 +782,6 @@ func resourceDatadogScreenboard() *schema.Resource {
 		Read:               resourceDatadogScreenboardRead,
 		Update:             resourceDatadogScreenboardUpdate,
 		Delete:             resourceDatadogScreenboardDelete,
-		Exists:             resourceDatadogScreenboardExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogScreenboardImport,
 		},
@@ -1866,6 +1865,10 @@ func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) er
 	client := providerConf.CommunityClient
 	screenboard, err := client.GetScreenboard(id)
 	if err != nil {
+		if strings.Contains(err.Error(), "404 Not Found") {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting screenboard")
 	}
 	log.Printf("[DataDog] screenboard: %v", pretty.Sprint(screenboard))
@@ -1957,20 +1960,4 @@ func resourceDatadogScreenboardImport(d *schema.ResourceData, meta interface{}) 
 		return nil, err
 	}
 	return []*schema.ResourceData{d}, nil
-}
-
-func resourceDatadogScreenboardExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	id, err := strconv.Atoi(d.Id())
-	if err != nil {
-		return false, err
-	}
-	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-	if _, err = client.GetScreenboard(id); err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking screenboard exists")
-	}
-	return true, nil
 }

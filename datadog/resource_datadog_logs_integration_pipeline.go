@@ -2,7 +2,6 @@ package datadog
 
 import (
 	"fmt"
-	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -15,7 +14,6 @@ func resourceDatadogLogsIntegrationPipeline() *schema.Resource {
 		Update:      resourceDatadogLogsIntegrationPipelineUpdate,
 		Read:        resourceDatadogLogsIntegrationPipelineRead,
 		Delete:      resourceDatadogLogsIntegrationPipelineDelete,
-		Exists:      resourceDatadogLogsIntegrationPipelineExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -37,9 +35,17 @@ func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta int
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
-	ddPipeline, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, d.Id()).Execute()
+	ddPipeline, httpresp, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, d.Id()).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 400 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting logs integration pipeline")
+	}
+	if !ddPipeline.GetIsReadOnly() {
+		d.SetId("")
+		return nil
 	}
 	if err := d.Set("is_enabled", ddPipeline.GetIsEnabled()); err != nil {
 		return err
@@ -63,19 +69,4 @@ func resourceDatadogLogsIntegrationPipelineUpdate(d *schema.ResourceData, meta i
 
 func resourceDatadogLogsIntegrationPipelineDelete(d *schema.ResourceData, meta interface{}) error {
 	return nil
-}
-
-func resourceDatadogLogsIntegrationPipelineExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-	ddPipeline, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, d.Id()).Execute()
-	if err != nil {
-		// API returns 400 when the specific pipeline id doesn't exist through GET request.
-		if strings.Contains(err.Error(), "400 Bad Request") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking logs integration pipeline exists")
-	}
-	return ddPipeline.GetIsReadOnly(), nil
 }

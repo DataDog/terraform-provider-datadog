@@ -25,7 +25,6 @@ func resourceDatadogMonitor() *schema.Resource {
 		Read:          resourceDatadogMonitorRead,
 		Update:        resourceDatadogMonitorUpdate,
 		Delete:        resourceDatadogMonitorDelete,
-		Exists:        resourceDatadogMonitorExists,
 		CustomizeDiff: resourceDatadogMonitorCustomizeDiff,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogMonitorImport,
@@ -366,28 +365,6 @@ func buildMonitorStruct(d BuiltResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	return m, u
 }
 
-func resourceDatadogMonitorExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	// Exists - This is called to verify a resource still exists. It is called prior to Read,
-	// and lowers the burden of Read to be able to assume the resource exists.
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	i, err := strconv.ParseInt(d.Id(), 10, 64)
-	if err != nil {
-		return false, err
-	}
-
-	if _, _, err = datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute(); err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking monitor exists")
-	}
-
-	return true, nil
-}
-
 // Use CustomizeDiff to do monitor validation
 func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interface{}) error {
 	if _, ok := diff.GetOk("query"); !ok {
@@ -453,8 +430,12 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 		return err
 	}
 
-	m, _, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
+	m, httpresp, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting monitor")
 	}
 

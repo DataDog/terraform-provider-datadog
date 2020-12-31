@@ -15,7 +15,6 @@ func resourceDatadogLogsPipelineOrder() *schema.Resource {
 		Update:      resourceDatadogLogsPipelineOrderUpdate,
 		Read:        resourceDatadogLogsPipelineOrderRead,
 		Delete:      resourceDatadogLogsPipelineOrderDelete,
-		Exists:      resourceDatadogLogsPipelineOrderExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -92,8 +91,4 @@ func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interfa
 func resourceDatadogLogsPipelineOrderDelete(d *schema.ResourceData, meta interface{}) error {
 
 	return nil
-}
-
-func resourceDatadogLogsPipelineOrderExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	return true, nil
 }
