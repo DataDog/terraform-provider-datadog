@@ -137,36 +137,8 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					},
 				},
 			},
-			"variable": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"example": {
-							Type:     schema.TypeString,
-							Optional: true,
-						},
-						"id": {
-							Type:     schema.TypeString,
-							Optional: true,
-						},
-						"name": {
-							Type:         schema.TypeString,
-							Required:     true,
-							ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
-						},
-						"pattern": {
-							Type:     schema.TypeString,
-							Optional: true,
-						},
-						"type": {
-							Type:         schema.TypeString,
-							Required:     true,
-							ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsBrowserVariableTypeFromValue),
-						},
-					},
-				},
-			},
+			"variable":         syntheticsBrowserVariableLegacy(),
+			"browser_variable": syntheticsBrowserVariable(),
 			"device_ids": {
 				Type:     schema.TypeList,
 				Optional: true,
@@ -476,6 +448,54 @@ func syntheticsTestStep() *schema.Schema {
 	}
 }
 
+func syntheticsBrowserVariableLegacy() *schema.Schema {
+	return &schema.Schema{
+		Type:          schema.TypeList,
+		Optional:      true,
+		ConflictsWith: []string{"browser_variable"},
+		Deprecated:    "This parameter is deprecated, please use `browser_variable`",
+		Elem:          syntheticsBrowserVariableElem(),
+	}
+}
+
+func syntheticsBrowserVariable() *schema.Schema {
+	return &schema.Schema{
+		Type:          schema.TypeList,
+		Optional:      true,
+		ConflictsWith: []string{"variable"},
+		Elem:          syntheticsBrowserVariableElem(),
+	}
+}
+
+func syntheticsBrowserVariableElem() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"example": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"id": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"name": {
+				Type:         schema.TypeString,
+				Required:     true,
+				ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
+			},
+			"pattern": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"type": {
+				Type:         schema.TypeString,
+				Required:     true,
+				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsBrowserVariableTypeFromValue),
+			},
+		},
+	}
+}
+
 func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -735,25 +755,31 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		}
 	}
 
-	if attr, ok := d.GetOk("variable"); ok && attr != nil {
-		for _, variable := range attr.([]interface{}) {
-			variableMap := variable.(map[string]interface{})
-			if v, ok := variableMap["type"]; ok {
-				variableType := datadogV1.SyntheticsBrowserVariableType(v.(string))
-				if v, ok := variableMap["name"]; ok {
-					variableName := v.(string)
-					newVariable := datadogV1.NewSyntheticsBrowserVariable(variableName, variableType)
-					if v, ok := variableMap["example"]; ok && v.(string) != "" {
-						newVariable.SetExample(v.(string))
-					}
-					if v, ok := variableMap["id"]; ok && v.(string) != "" {
-						newVariable.SetId(v.(string))
-					}
-					if v, ok := variableMap["pattern"]; ok && v.(string) != "" {
-						newVariable.SetPattern(v.(string))
-					}
-					config.SetVariables(append(config.GetVariables(), *newVariable))
+	var browserVariables []interface{}
+
+	if attr, ok := d.GetOk("browser_variable"); ok && attr != nil {
+		browserVariables = attr.([]interface{})
+	} else if attr, ok := d.GetOk("variable"); ok && attr != nil {
+		browserVariables = attr.([]interface{})
+	}
+
+	for _, variable := range browserVariables {
+		variableMap := variable.(map[string]interface{})
+		if v, ok := variableMap["type"]; ok {
+			variableType := datadogV1.SyntheticsBrowserVariableType(v.(string))
+			if v, ok := variableMap["name"]; ok {
+				variableName := v.(string)
+				newVariable := datadogV1.NewSyntheticsBrowserVariable(variableName, variableType)
+				if v, ok := variableMap["example"]; ok && v.(string) != "" {
+					newVariable.SetExample(v.(string))
 				}
+				if v, ok := variableMap["id"]; ok && v.(string) != "" {
+					newVariable.SetId(v.(string))
+				}
+				if v, ok := variableMap["pattern"]; ok && v.(string) != "" {
+					newVariable.SetPattern(v.(string))
+				}
+				config.SetVariables(append(config.GetVariables(), *newVariable))
 			}
 		}
 	}
@@ -1045,7 +1071,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 
 	actualVariables := config.GetVariables()
-	localVariables := make([]map[string]interface{}, len(actualVariables))
+	localBrowserVariables := make([]map[string]interface{}, len(actualVariables))
 	for i, variable := range actualVariables {
 		localVariable := make(map[string]interface{})
 		if v, ok := variable.GetTypeOk(); ok {
@@ -1063,10 +1089,18 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		if v, ok := variable.GetPatternOk(); ok {
 			localVariable["pattern"] = *v
 		}
-		localVariables[i] = localVariable
+		localBrowserVariables[i] = localVariable
 	}
-	if err := d.Set("variable", localVariables); err != nil {
-		return err
+
+	// If the existing state still uses variables, keep using that in the state to not generate useless diffs
+	if attr, ok := d.GetOk("variable"); ok && attr != nil && len(attr.([]interface{})) > 0 {
+		if err := d.Set("variable", localBrowserVariables); err != nil {
+			return err
+		}
+	} else {
+		if err := d.Set("browser_variable", localBrowserVariables); err != nil {
+			return err
+		}
 	}
 
 	d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds)
