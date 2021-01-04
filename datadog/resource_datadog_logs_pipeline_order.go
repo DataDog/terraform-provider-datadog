@@ -10,11 +10,12 @@ import (
 
 func resourceDatadogLogsPipelineOrder() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogLogsPipelineOrderCreate,
-		Update: resourceDatadogLogsPipelineOrderUpdate,
-		Read:   resourceDatadogLogsPipelineOrderRead,
-		Delete: resourceDatadogLogsPipelineOrderDelete,
-		Exists: resourceDatadogLogsPipelineOrderExists,
+		Description: "Provides a Datadog Logs Pipeline API resource, which is used to manage Datadog log pipelines order.",
+		Create:      resourceDatadogLogsPipelineOrderCreate,
+		Update:      resourceDatadogLogsPipelineOrderUpdate,
+		Read:        resourceDatadogLogsPipelineOrderRead,
+		Delete:      resourceDatadogLogsPipelineOrderDelete,
+		Exists:      resourceDatadogLogsPipelineOrderExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},

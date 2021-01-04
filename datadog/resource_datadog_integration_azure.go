@@ -10,10 +10,11 @@ import (
 
 func resourceDatadogIntegrationAzure() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogIntegrationAzureCreate,
-		Read:   resourceDatadogIntegrationAzureRead,
-		Update: resourceDatadogIntegrationAzureUpdate,
-		Delete: resourceDatadogIntegrationAzureDelete,
+		Description: "Provides a Datadog - Microsoft Azure integration resource. This can be used to create and manage the integrations.",
+		Create:      resourceDatadogIntegrationAzureCreate,
+		Read:        resourceDatadogIntegrationAzureRead,
+		Update:      resourceDatadogIntegrationAzureUpdate,
+		Delete:      resourceDatadogIntegrationAzureDelete,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogIntegrationAzureImport,
 		},

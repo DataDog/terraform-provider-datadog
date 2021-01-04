@@ -12,7 +12,8 @@ import (
 
 func dataSourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceDatadogMonitorsRead,
+		Description: "Use this data source to retrieve information about an existing monitor for use in other resources.",
+		Read:        dataSourceDatadogMonitorsRead,
 		Schema: map[string]*schema.Schema{
 			"name_filter": {
 				Description: "A monitor name to limit the search.",
@@ -156,7 +157,7 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				Computed:    true,
 			},
 			"include_tags": {
-				Description: "Whether or not notifications from the monitor automatically inserts its triggering tags into the title.\n",
+				Description: "Whether or not notifications from the monitor automatically inserts its triggering tags into the title.",
 				Type:        schema.TypeBool,
 				Computed:    true,
 			},

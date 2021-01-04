@@ -26,10 +26,11 @@ func buildDatadogIntegrationAwsLambdaArnStruct(d *schema.ResourceData) *datadogV
 
 func resourceDatadogIntegrationAwsLambdaArn() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogIntegrationAwsLambdaArnCreate,
-		Read:   resourceDatadogIntegrationAwsLambdaArnRead,
-		Delete: resourceDatadogIntegrationAwsLambdaArnDelete,
-		Exists: resourceDatadogIntegrationAwsLambdaArnExists,
+		Description: "Provides a Datadog - Amazon Web Services integration Lambda ARN resource. This can be used to create and manage the log collection Lambdas for an account.\n\nUpdate operations are currently not supported with datadog API so any change forces a new resource.",
+		Create:      resourceDatadogIntegrationAwsLambdaArnCreate,
+		Read:        resourceDatadogIntegrationAwsLambdaArnRead,
+		Delete:      resourceDatadogIntegrationAwsLambdaArnDelete,
+		Exists:      resourceDatadogIntegrationAwsLambdaArnExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogIntegrationAwsLambdaArnImport,
 		},

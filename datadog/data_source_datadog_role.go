@@ -9,7 +9,8 @@ import (
 
 func dataSourceDatadogRole() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceDatadogRoleRead,
+		Description: "Use this data source to retrieve information about an existing role for use in other resources.",
+		Read:        dataSourceDatadogRoleRead,
 
 		Schema: map[string]*schema.Schema{
 			"filter": {

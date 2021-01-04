@@ -6,7 +6,8 @@ import (
 
 func dataSourceDatadogIpRanges() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceDatadogIPRangesRead,
+		Description: "Use this data source to retrieve information about Datadog's IP addresses.",
+		Read:        dataSourceDatadogIPRangesRead,
 
 		// IP ranges are divided between ipv4 and ipv6
 		Schema: map[string]*schema.Schema{

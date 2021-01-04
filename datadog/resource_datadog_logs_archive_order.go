@@ -10,11 +10,12 @@ import (
 
 func resourceDatadogLogsArchiveOrder() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogLogsArchiveOrderCreate,
-		Update: resourceDatadogLogsArchiveOrderUpdate,
-		Read:   resourceDatadogLogsArchiveOrderRead,
-		Delete: resourceDatadogLogsArchiveOrderDelete,
-		Exists: resourceDatadogLogsArchiveOrderExists,
+		Description: "Provides a Datadog Logs Archive API resource, which is used to manage Datadog log archives order.",
+		Create:      resourceDatadogLogsArchiveOrderCreate,
+		Update:      resourceDatadogLogsArchiveOrderUpdate,
+		Read:        resourceDatadogLogsArchiveOrderRead,
+		Delete:      resourceDatadogLogsArchiveOrderDelete,
+		Exists:      resourceDatadogLogsArchiveOrderExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},

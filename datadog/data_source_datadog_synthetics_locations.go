@@ -6,7 +6,8 @@ import (
 
 func dataSourceDatadogSyntheticsLocations() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceDatadogSyntheticsLocationsRead,
+		Description: "Use this data source to retrieve Datadog's Synthetics Locations (to be used in Synthetics tests).",
+		Read:        dataSourceDatadogSyntheticsLocationsRead,
 
 		// Locations are a map of IDs to names
 		Schema: map[string]*schema.Schema{
