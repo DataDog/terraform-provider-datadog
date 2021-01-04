@@ -172,21 +172,21 @@ resource "datadog_synthetics_test" "test_browser" {
     })
   }
 
-  variable {
+  browser_variable {
     type    = "text"
     name    = "MY_PATTERN_VAR"
     pattern = "{{numeric(3)}}"
     example = "597"
   }
 
-  variable {
+  browser_variable {
     type    = "email"
     name    = "MY_EMAIL_VAR"
     pattern = "jd8-afe-ydv.{{ numeric(10) }}@synthetics.dtdg.co"
     example = "jd8-afe-ydv.4546132139@synthetics.dtdg.co"
   }
 
-  variable {
+  browser_variable {
     type = "global"
     name = "MY_GLOBAL_VAR"
     id   = "76636cd1-82e2-4aeb-9cfe-51366a8198a2"
@@ -267,11 +267,22 @@ The following arguments are supported:
     -   `params`: (Required) Parameters for the step as JSON string.
     -   `allow_failure`: (Optional) Determines if the step should be allowed to fail.
     -   `timeout`: (Optional) Used to override the default timeout of a step.
--   `variable`: (Optional) Array of variables used for the test.
+-   `variable`: (Optional) **Deprecated** Array of variables used for the test.
     -   `type`: (Required) Type of browser test variable. Allowed enum values: "element","email","global","text"
     -   `name`: (Required) Name of the variable.
     -   `example`: (Optional) Example for the variable.
     -   `id`: (Optional) ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type "global".
+    -   `pattern`: (Optional) Pattern of the variable.
+-   `browser_variable`: (Optional) Only for browser tests. Array of variables used for the test.
+    -   `type`: (Required) Type of browser test variable. Allowed enum values: "element","email","global","text"
+    -   `name`: (Required) Name of the variable.
+    -   `example`: (Optional) Example for the variable.
+    -   `id`: (Optional) ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type "global".
+    -   `pattern`: (Optional) Pattern of the variable.
+-   `config_variable`: (Optional) Only for api tests. Array of variables used for the test configuration.
+    -   `type`: (Required) Type of test variable. Allowed enum values: "text".
+    -   `name`: (Required) Name of the variable.
+    -   `example`: (Optional) Example for the variable.
     -   `pattern`: (Optional) Pattern of the variable.
 
 ## Attributes Reference
