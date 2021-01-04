@@ -16,6 +16,8 @@ import (
 type SecurityMonitoringRuleCreatePayload struct {
 	// Cases for generating signals.
 	Cases []SecurityMonitoringRuleCaseCreate `json:"cases"`
+	// Additional queries to filter matched events before they are processed.
+	Filters *[]SecurityMonitoringFilter `json:"filters,omitempty"`
 	// Whether the rule is enabled.
 	IsEnabled bool `json:"isEnabled"`
 	// Message for generated signals.
@@ -74,6 +76,38 @@ func (o *SecurityMonitoringRuleCreatePayload) GetCasesOk() (*[]SecurityMonitorin
 // SetCases sets field value
 func (o *SecurityMonitoringRuleCreatePayload) SetCases(v []SecurityMonitoringRuleCaseCreate) {
 	o.Cases = v
+}
+
+// GetFilters returns the Filters field value if set, zero value otherwise.
+func (o *SecurityMonitoringRuleCreatePayload) GetFilters() []SecurityMonitoringFilter {
+	if o == nil || o.Filters == nil {
+		var ret []SecurityMonitoringFilter
+		return ret
+	}
+	return *o.Filters
+}
+
+// GetFiltersOk returns a tuple with the Filters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringRuleCreatePayload) GetFiltersOk() (*[]SecurityMonitoringFilter, bool) {
+	if o == nil || o.Filters == nil {
+		return nil, false
+	}
+	return o.Filters, true
+}
+
+// HasFilters returns a boolean if a field has been set.
+func (o *SecurityMonitoringRuleCreatePayload) HasFilters() bool {
+	if o != nil && o.Filters != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetFilters gets a reference to the given []SecurityMonitoringFilter and assigns it to the Filters field.
+func (o *SecurityMonitoringRuleCreatePayload) SetFilters(v []SecurityMonitoringFilter) {
+	o.Filters = &v
 }
 
 // GetIsEnabled returns the IsEnabled field value
@@ -232,6 +266,9 @@ func (o SecurityMonitoringRuleCreatePayload) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["cases"] = o.Cases
+	}
+	if o.Filters != nil {
+		toSerialize["filters"] = o.Filters
 	}
 	if true {
 		toSerialize["isEnabled"] = o.IsEnabled

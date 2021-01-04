@@ -19,6 +19,8 @@ type UsageHostHour struct {
 	AgentHostCount *int64 `json:"agent_host_count,omitempty"`
 	// Contains the total number of hosts that reported via Alibaba integration (and were NOT running the Datadog Agent).
 	AlibabaHostCount *int64 `json:"alibaba_host_count,omitempty"`
+	// Contains the total number of Azure App Services hosts using APM.
+	ApmAzureAppServiceHostCount *int64 `json:"apm_azure_app_service_host_count,omitempty"`
 	// Shows the total number of hosts using APM during the hour, these are counted as billable (except during trial periods).
 	ApmHostCount *int64 `json:"apm_host_count,omitempty"`
 	// Contains the total number of hosts that reported via the AWS integration (and were NOT running the Datadog Agent).
@@ -33,6 +35,8 @@ type UsageHostHour struct {
 	HostCount *int64 `json:"host_count,omitempty"`
 	// The hour for the usage.
 	Hour *time.Time `json:"hour,omitempty"`
+	// Contains the total number of hosts that reported via the Azure App Services integration (and were NOT running the Datadog Agent).
+	InfraAzureAppService *int64 `json:"infra_azure_app_service,omitempty"`
 }
 
 // NewUsageHostHour instantiates a new UsageHostHour object
@@ -114,6 +118,38 @@ func (o *UsageHostHour) HasAlibabaHostCount() bool {
 // SetAlibabaHostCount gets a reference to the given int64 and assigns it to the AlibabaHostCount field.
 func (o *UsageHostHour) SetAlibabaHostCount(v int64) {
 	o.AlibabaHostCount = &v
+}
+
+// GetApmAzureAppServiceHostCount returns the ApmAzureAppServiceHostCount field value if set, zero value otherwise.
+func (o *UsageHostHour) GetApmAzureAppServiceHostCount() int64 {
+	if o == nil || o.ApmAzureAppServiceHostCount == nil {
+		var ret int64
+		return ret
+	}
+	return *o.ApmAzureAppServiceHostCount
+}
+
+// GetApmAzureAppServiceHostCountOk returns a tuple with the ApmAzureAppServiceHostCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageHostHour) GetApmAzureAppServiceHostCountOk() (*int64, bool) {
+	if o == nil || o.ApmAzureAppServiceHostCount == nil {
+		return nil, false
+	}
+	return o.ApmAzureAppServiceHostCount, true
+}
+
+// HasApmAzureAppServiceHostCount returns a boolean if a field has been set.
+func (o *UsageHostHour) HasApmAzureAppServiceHostCount() bool {
+	if o != nil && o.ApmAzureAppServiceHostCount != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetApmAzureAppServiceHostCount gets a reference to the given int64 and assigns it to the ApmAzureAppServiceHostCount field.
+func (o *UsageHostHour) SetApmAzureAppServiceHostCount(v int64) {
+	o.ApmAzureAppServiceHostCount = &v
 }
 
 // GetApmHostCount returns the ApmHostCount field value if set, zero value otherwise.
@@ -340,6 +376,38 @@ func (o *UsageHostHour) SetHour(v time.Time) {
 	o.Hour = &v
 }
 
+// GetInfraAzureAppService returns the InfraAzureAppService field value if set, zero value otherwise.
+func (o *UsageHostHour) GetInfraAzureAppService() int64 {
+	if o == nil || o.InfraAzureAppService == nil {
+		var ret int64
+		return ret
+	}
+	return *o.InfraAzureAppService
+}
+
+// GetInfraAzureAppServiceOk returns a tuple with the InfraAzureAppService field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageHostHour) GetInfraAzureAppServiceOk() (*int64, bool) {
+	if o == nil || o.InfraAzureAppService == nil {
+		return nil, false
+	}
+	return o.InfraAzureAppService, true
+}
+
+// HasInfraAzureAppService returns a boolean if a field has been set.
+func (o *UsageHostHour) HasInfraAzureAppService() bool {
+	if o != nil && o.InfraAzureAppService != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetInfraAzureAppService gets a reference to the given int64 and assigns it to the InfraAzureAppService field.
+func (o *UsageHostHour) SetInfraAzureAppService(v int64) {
+	o.InfraAzureAppService = &v
+}
+
 func (o UsageHostHour) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.AgentHostCount != nil {
@@ -347,6 +415,9 @@ func (o UsageHostHour) MarshalJSON() ([]byte, error) {
 	}
 	if o.AlibabaHostCount != nil {
 		toSerialize["alibaba_host_count"] = o.AlibabaHostCount
+	}
+	if o.ApmAzureAppServiceHostCount != nil {
+		toSerialize["apm_azure_app_service_host_count"] = o.ApmAzureAppServiceHostCount
 	}
 	if o.ApmHostCount != nil {
 		toSerialize["apm_host_count"] = o.ApmHostCount
@@ -368,6 +439,9 @@ func (o UsageHostHour) MarshalJSON() ([]byte, error) {
 	}
 	if o.Hour != nil {
 		toSerialize["hour"] = o.Hour
+	}
+	if o.InfraAzureAppService != nil {
+		toSerialize["infra_azure_app_service"] = o.InfraAzureAppService
 	}
 	return json.Marshal(toSerialize)
 }

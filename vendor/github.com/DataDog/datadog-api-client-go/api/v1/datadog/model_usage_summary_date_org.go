@@ -16,6 +16,8 @@ import (
 type UsageSummaryDateOrg struct {
 	// Shows the 99th percentile of all agent hosts over all hours in the current date for the given org.
 	AgentHostTop99p *int64 `json:"agent_host_top99p,omitempty"`
+	// Shows the 99th percentile of all Azure app services using APM over all hours in the current date for the given org.
+	ApmAzureAppServiceHostTop99p *int64 `json:"apm_azure_app_service_host_top99p,omitempty"`
 	// Shows the 99th percentile of all distinct APM hosts over all hours in the current date for the given org.
 	ApmHostTop99p *int64 `json:"apm_host_top99p,omitempty"`
 	// Shows the 99th percentile of all AWS hosts over all hours in the current date for the given org.
@@ -24,6 +26,8 @@ type UsageSummaryDateOrg struct {
 	AwsLambdaFuncCount *int64 `json:"aws_lambda_func_count,omitempty"`
 	// Shows the sum of all AWS Lambda invocations over all hours in the current date for the given org.
 	AwsLambdaInvocationsSum *int64 `json:"aws_lambda_invocations_sum,omitempty"`
+	// Shows the 99th percentile of all Azure app services over all hours in the current date for the given org.
+	AzureAppServiceTop99p *int64 `json:"azure_app_service_top99p,omitempty"`
 	// Shows the sum of all log bytes ingested over all hours in the current date for the given org.
 	BillableIngestedBytesSum *int64 `json:"billable_ingested_bytes_sum,omitempty"`
 	// Shows the average of all distinct containers over all hours in the current date for the given org.
@@ -48,6 +52,10 @@ type UsageSummaryDateOrg struct {
 	InfraHostTop99p *int64 `json:"infra_host_top99p,omitempty"`
 	// Shows the sum of all log bytes ingested over all hours in the current date for the given org.
 	IngestedEventsBytesSum *int64 `json:"ingested_events_bytes_sum,omitempty"`
+	// Shows the sum of all mobile RUM Sessions on Android over all hours in the current date for the given org.
+	MobileRumSessionCountAndroidSum *int64 `json:"mobile_rum_session_count_android_sum,omitempty"`
+	// Shows the sum of all mobile RUM Sessions on iOS over all hours in the current date for the given org.
+	MobileRumSessionCountIosSum *int64 `json:"mobile_rum_session_count_ios_sum,omitempty"`
 	// Shows the sum of all mobile RUM Sessions over all hours in the current date for the given org.
 	MobileRumSessionCountSum *int64 `json:"mobile_rum_session_count_sum,omitempty"`
 	// The organization name.
@@ -62,6 +70,8 @@ type UsageSummaryDateOrg struct {
 	PublicId *string `json:"public_id,omitempty"`
 	// Shows the sum of all browser RUM Sessions over all hours in the current date for the given org.
 	RumSessionCountSum *int64 `json:"rum_session_count_sum,omitempty"`
+	// Shows the sum of RUM Sessions (browser and mobile) over all hours in the current date for the given org.
+	RumTotalSessionCountSum *int64 `json:"rum_total_session_count_sum,omitempty"`
 	// Shows the sum of all Synthetic browser tests over all hours in the current date for the given org.
 	SyntheticsBrowserCheckCallsCountSum *int64 `json:"synthetics_browser_check_calls_count_sum,omitempty"`
 	// Shows the sum of all Synthetic API tests over all hours in the current date for the given org.
@@ -119,6 +129,38 @@ func (o *UsageSummaryDateOrg) HasAgentHostTop99p() bool {
 // SetAgentHostTop99p gets a reference to the given int64 and assigns it to the AgentHostTop99p field.
 func (o *UsageSummaryDateOrg) SetAgentHostTop99p(v int64) {
 	o.AgentHostTop99p = &v
+}
+
+// GetApmAzureAppServiceHostTop99p returns the ApmAzureAppServiceHostTop99p field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetApmAzureAppServiceHostTop99p() int64 {
+	if o == nil || o.ApmAzureAppServiceHostTop99p == nil {
+		var ret int64
+		return ret
+	}
+	return *o.ApmAzureAppServiceHostTop99p
+}
+
+// GetApmAzureAppServiceHostTop99pOk returns a tuple with the ApmAzureAppServiceHostTop99p field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetApmAzureAppServiceHostTop99pOk() (*int64, bool) {
+	if o == nil || o.ApmAzureAppServiceHostTop99p == nil {
+		return nil, false
+	}
+	return o.ApmAzureAppServiceHostTop99p, true
+}
+
+// HasApmAzureAppServiceHostTop99p returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasApmAzureAppServiceHostTop99p() bool {
+	if o != nil && o.ApmAzureAppServiceHostTop99p != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetApmAzureAppServiceHostTop99p gets a reference to the given int64 and assigns it to the ApmAzureAppServiceHostTop99p field.
+func (o *UsageSummaryDateOrg) SetApmAzureAppServiceHostTop99p(v int64) {
+	o.ApmAzureAppServiceHostTop99p = &v
 }
 
 // GetApmHostTop99p returns the ApmHostTop99p field value if set, zero value otherwise.
@@ -247,6 +289,38 @@ func (o *UsageSummaryDateOrg) HasAwsLambdaInvocationsSum() bool {
 // SetAwsLambdaInvocationsSum gets a reference to the given int64 and assigns it to the AwsLambdaInvocationsSum field.
 func (o *UsageSummaryDateOrg) SetAwsLambdaInvocationsSum(v int64) {
 	o.AwsLambdaInvocationsSum = &v
+}
+
+// GetAzureAppServiceTop99p returns the AzureAppServiceTop99p field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetAzureAppServiceTop99p() int64 {
+	if o == nil || o.AzureAppServiceTop99p == nil {
+		var ret int64
+		return ret
+	}
+	return *o.AzureAppServiceTop99p
+}
+
+// GetAzureAppServiceTop99pOk returns a tuple with the AzureAppServiceTop99p field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetAzureAppServiceTop99pOk() (*int64, bool) {
+	if o == nil || o.AzureAppServiceTop99p == nil {
+		return nil, false
+	}
+	return o.AzureAppServiceTop99p, true
+}
+
+// HasAzureAppServiceTop99p returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasAzureAppServiceTop99p() bool {
+	if o != nil && o.AzureAppServiceTop99p != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAzureAppServiceTop99p gets a reference to the given int64 and assigns it to the AzureAppServiceTop99p field.
+func (o *UsageSummaryDateOrg) SetAzureAppServiceTop99p(v int64) {
+	o.AzureAppServiceTop99p = &v
 }
 
 // GetBillableIngestedBytesSum returns the BillableIngestedBytesSum field value if set, zero value otherwise.
@@ -633,6 +707,70 @@ func (o *UsageSummaryDateOrg) SetIngestedEventsBytesSum(v int64) {
 	o.IngestedEventsBytesSum = &v
 }
 
+// GetMobileRumSessionCountAndroidSum returns the MobileRumSessionCountAndroidSum field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetMobileRumSessionCountAndroidSum() int64 {
+	if o == nil || o.MobileRumSessionCountAndroidSum == nil {
+		var ret int64
+		return ret
+	}
+	return *o.MobileRumSessionCountAndroidSum
+}
+
+// GetMobileRumSessionCountAndroidSumOk returns a tuple with the MobileRumSessionCountAndroidSum field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetMobileRumSessionCountAndroidSumOk() (*int64, bool) {
+	if o == nil || o.MobileRumSessionCountAndroidSum == nil {
+		return nil, false
+	}
+	return o.MobileRumSessionCountAndroidSum, true
+}
+
+// HasMobileRumSessionCountAndroidSum returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasMobileRumSessionCountAndroidSum() bool {
+	if o != nil && o.MobileRumSessionCountAndroidSum != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMobileRumSessionCountAndroidSum gets a reference to the given int64 and assigns it to the MobileRumSessionCountAndroidSum field.
+func (o *UsageSummaryDateOrg) SetMobileRumSessionCountAndroidSum(v int64) {
+	o.MobileRumSessionCountAndroidSum = &v
+}
+
+// GetMobileRumSessionCountIosSum returns the MobileRumSessionCountIosSum field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetMobileRumSessionCountIosSum() int64 {
+	if o == nil || o.MobileRumSessionCountIosSum == nil {
+		var ret int64
+		return ret
+	}
+	return *o.MobileRumSessionCountIosSum
+}
+
+// GetMobileRumSessionCountIosSumOk returns a tuple with the MobileRumSessionCountIosSum field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetMobileRumSessionCountIosSumOk() (*int64, bool) {
+	if o == nil || o.MobileRumSessionCountIosSum == nil {
+		return nil, false
+	}
+	return o.MobileRumSessionCountIosSum, true
+}
+
+// HasMobileRumSessionCountIosSum returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasMobileRumSessionCountIosSum() bool {
+	if o != nil && o.MobileRumSessionCountIosSum != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMobileRumSessionCountIosSum gets a reference to the given int64 and assigns it to the MobileRumSessionCountIosSum field.
+func (o *UsageSummaryDateOrg) SetMobileRumSessionCountIosSum(v int64) {
+	o.MobileRumSessionCountIosSum = &v
+}
+
 // GetMobileRumSessionCountSum returns the MobileRumSessionCountSum field value if set, zero value otherwise.
 func (o *UsageSummaryDateOrg) GetMobileRumSessionCountSum() int64 {
 	if o == nil || o.MobileRumSessionCountSum == nil {
@@ -857,6 +995,38 @@ func (o *UsageSummaryDateOrg) SetRumSessionCountSum(v int64) {
 	o.RumSessionCountSum = &v
 }
 
+// GetRumTotalSessionCountSum returns the RumTotalSessionCountSum field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetRumTotalSessionCountSum() int64 {
+	if o == nil || o.RumTotalSessionCountSum == nil {
+		var ret int64
+		return ret
+	}
+	return *o.RumTotalSessionCountSum
+}
+
+// GetRumTotalSessionCountSumOk returns a tuple with the RumTotalSessionCountSum field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetRumTotalSessionCountSumOk() (*int64, bool) {
+	if o == nil || o.RumTotalSessionCountSum == nil {
+		return nil, false
+	}
+	return o.RumTotalSessionCountSum, true
+}
+
+// HasRumTotalSessionCountSum returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasRumTotalSessionCountSum() bool {
+	if o != nil && o.RumTotalSessionCountSum != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRumTotalSessionCountSum gets a reference to the given int64 and assigns it to the RumTotalSessionCountSum field.
+func (o *UsageSummaryDateOrg) SetRumTotalSessionCountSum(v int64) {
+	o.RumTotalSessionCountSum = &v
+}
+
 // GetSyntheticsBrowserCheckCallsCountSum returns the SyntheticsBrowserCheckCallsCountSum field value if set, zero value otherwise.
 func (o *UsageSummaryDateOrg) GetSyntheticsBrowserCheckCallsCountSum() int64 {
 	if o == nil || o.SyntheticsBrowserCheckCallsCountSum == nil {
@@ -990,6 +1160,9 @@ func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 	if o.AgentHostTop99p != nil {
 		toSerialize["agent_host_top99p"] = o.AgentHostTop99p
 	}
+	if o.ApmAzureAppServiceHostTop99p != nil {
+		toSerialize["apm_azure_app_service_host_top99p"] = o.ApmAzureAppServiceHostTop99p
+	}
 	if o.ApmHostTop99p != nil {
 		toSerialize["apm_host_top99p"] = o.ApmHostTop99p
 	}
@@ -1001,6 +1174,9 @@ func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 	}
 	if o.AwsLambdaInvocationsSum != nil {
 		toSerialize["aws_lambda_invocations_sum"] = o.AwsLambdaInvocationsSum
+	}
+	if o.AzureAppServiceTop99p != nil {
+		toSerialize["azure_app_service_top99p"] = o.AzureAppServiceTop99p
 	}
 	if o.BillableIngestedBytesSum != nil {
 		toSerialize["billable_ingested_bytes_sum"] = o.BillableIngestedBytesSum
@@ -1038,6 +1214,12 @@ func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 	if o.IngestedEventsBytesSum != nil {
 		toSerialize["ingested_events_bytes_sum"] = o.IngestedEventsBytesSum
 	}
+	if o.MobileRumSessionCountAndroidSum != nil {
+		toSerialize["mobile_rum_session_count_android_sum"] = o.MobileRumSessionCountAndroidSum
+	}
+	if o.MobileRumSessionCountIosSum != nil {
+		toSerialize["mobile_rum_session_count_ios_sum"] = o.MobileRumSessionCountIosSum
+	}
 	if o.MobileRumSessionCountSum != nil {
 		toSerialize["mobile_rum_session_count_sum"] = o.MobileRumSessionCountSum
 	}
@@ -1058,6 +1240,9 @@ func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 	}
 	if o.RumSessionCountSum != nil {
 		toSerialize["rum_session_count_sum"] = o.RumSessionCountSum
+	}
+	if o.RumTotalSessionCountSum != nil {
+		toSerialize["rum_total_session_count_sum"] = o.RumTotalSessionCountSum
 	}
 	if o.SyntheticsBrowserCheckCallsCountSum != nil {
 		toSerialize["synthetics_browser_check_calls_count_sum"] = o.SyntheticsBrowserCheckCallsCountSum
