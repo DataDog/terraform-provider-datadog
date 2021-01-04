@@ -360,6 +360,8 @@ Class | Method | HTTP request | Description
  - [RolesResponse](docs/RolesResponse.md)
  - [RolesSort](docs/RolesSort.md)
  - [RolesType](docs/RolesType.md)
+ - [SecurityMonitoringFilter](docs/SecurityMonitoringFilter.md)
+ - [SecurityMonitoringFilterAction](docs/SecurityMonitoringFilterAction.md)
  - [SecurityMonitoringListRulesResponse](docs/SecurityMonitoringListRulesResponse.md)
  - [SecurityMonitoringRuleCase](docs/SecurityMonitoringRuleCase.md)
  - [SecurityMonitoringRuleCaseCreate](docs/SecurityMonitoringRuleCaseCreate.md)

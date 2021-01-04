@@ -509,6 +509,8 @@ Class | Method | HTTP request | Description
  - [SyntheticsCITestMetadataCi](docs/SyntheticsCITestMetadataCi.md)
  - [SyntheticsCITestMetadataGit](docs/SyntheticsCITestMetadataGit.md)
  - [SyntheticsCheckType](docs/SyntheticsCheckType.md)
+ - [SyntheticsConfigVariable](docs/SyntheticsConfigVariable.md)
+ - [SyntheticsConfigVariableType](docs/SyntheticsConfigVariableType.md)
  - [SyntheticsDeleteTestsPayload](docs/SyntheticsDeleteTestsPayload.md)
  - [SyntheticsDeleteTestsResponse](docs/SyntheticsDeleteTestsResponse.md)
  - [SyntheticsDeleteTestsResponseDeletedTests](docs/SyntheticsDeleteTestsResponseDeletedTests.md)
