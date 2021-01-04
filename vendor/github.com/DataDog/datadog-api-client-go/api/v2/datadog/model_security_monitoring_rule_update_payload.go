@@ -16,6 +16,8 @@ import (
 type SecurityMonitoringRuleUpdatePayload struct {
 	// Cases for generating signals.
 	Cases *[]SecurityMonitoringRuleCase `json:"cases,omitempty"`
+	// Additional queries to filter matched events before they are processed.
+	Filters *[]SecurityMonitoringFilter `json:"filters,omitempty"`
 	// Whether the rule is enabled.
 	IsEnabled *bool `json:"isEnabled,omitempty"`
 	// Message for generated signals.
@@ -76,6 +78,38 @@ func (o *SecurityMonitoringRuleUpdatePayload) HasCases() bool {
 // SetCases gets a reference to the given []SecurityMonitoringRuleCase and assigns it to the Cases field.
 func (o *SecurityMonitoringRuleUpdatePayload) SetCases(v []SecurityMonitoringRuleCase) {
 	o.Cases = &v
+}
+
+// GetFilters returns the Filters field value if set, zero value otherwise.
+func (o *SecurityMonitoringRuleUpdatePayload) GetFilters() []SecurityMonitoringFilter {
+	if o == nil || o.Filters == nil {
+		var ret []SecurityMonitoringFilter
+		return ret
+	}
+	return *o.Filters
+}
+
+// GetFiltersOk returns a tuple with the Filters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringRuleUpdatePayload) GetFiltersOk() (*[]SecurityMonitoringFilter, bool) {
+	if o == nil || o.Filters == nil {
+		return nil, false
+	}
+	return o.Filters, true
+}
+
+// HasFilters returns a boolean if a field has been set.
+func (o *SecurityMonitoringRuleUpdatePayload) HasFilters() bool {
+	if o != nil && o.Filters != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetFilters gets a reference to the given []SecurityMonitoringFilter and assigns it to the Filters field.
+func (o *SecurityMonitoringRuleUpdatePayload) SetFilters(v []SecurityMonitoringFilter) {
+	o.Filters = &v
 }
 
 // GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
@@ -274,6 +308,9 @@ func (o SecurityMonitoringRuleUpdatePayload) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Cases != nil {
 		toSerialize["cases"] = o.Cases
+	}
+	if o.Filters != nil {
+		toSerialize["filters"] = o.Filters
 	}
 	if o.IsEnabled != nil {
 		toSerialize["isEnabled"] = o.IsEnabled

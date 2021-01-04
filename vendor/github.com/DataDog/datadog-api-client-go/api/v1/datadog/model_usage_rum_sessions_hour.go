@@ -19,6 +19,10 @@ type UsageRumSessionsHour struct {
 	Hour *time.Time `json:"hour,omitempty"`
 	// Contains the number of RUM Sessions.
 	SessionCount *int64 `json:"session_count,omitempty"`
+	// Contains the number of mobile RUM Sessions on Android (data available beginning December 1, 2020).
+	SessionCountAndroid *int64 `json:"session_count_android,omitempty"`
+	// Contains the number of mobile RUM Sessions on iOS (data available beginning December 1, 2020).
+	SessionCountIos *int64 `json:"session_count_ios,omitempty"`
 }
 
 // NewUsageRumSessionsHour instantiates a new UsageRumSessionsHour object
@@ -102,6 +106,70 @@ func (o *UsageRumSessionsHour) SetSessionCount(v int64) {
 	o.SessionCount = &v
 }
 
+// GetSessionCountAndroid returns the SessionCountAndroid field value if set, zero value otherwise.
+func (o *UsageRumSessionsHour) GetSessionCountAndroid() int64 {
+	if o == nil || o.SessionCountAndroid == nil {
+		var ret int64
+		return ret
+	}
+	return *o.SessionCountAndroid
+}
+
+// GetSessionCountAndroidOk returns a tuple with the SessionCountAndroid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageRumSessionsHour) GetSessionCountAndroidOk() (*int64, bool) {
+	if o == nil || o.SessionCountAndroid == nil {
+		return nil, false
+	}
+	return o.SessionCountAndroid, true
+}
+
+// HasSessionCountAndroid returns a boolean if a field has been set.
+func (o *UsageRumSessionsHour) HasSessionCountAndroid() bool {
+	if o != nil && o.SessionCountAndroid != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSessionCountAndroid gets a reference to the given int64 and assigns it to the SessionCountAndroid field.
+func (o *UsageRumSessionsHour) SetSessionCountAndroid(v int64) {
+	o.SessionCountAndroid = &v
+}
+
+// GetSessionCountIos returns the SessionCountIos field value if set, zero value otherwise.
+func (o *UsageRumSessionsHour) GetSessionCountIos() int64 {
+	if o == nil || o.SessionCountIos == nil {
+		var ret int64
+		return ret
+	}
+	return *o.SessionCountIos
+}
+
+// GetSessionCountIosOk returns a tuple with the SessionCountIos field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageRumSessionsHour) GetSessionCountIosOk() (*int64, bool) {
+	if o == nil || o.SessionCountIos == nil {
+		return nil, false
+	}
+	return o.SessionCountIos, true
+}
+
+// HasSessionCountIos returns a boolean if a field has been set.
+func (o *UsageRumSessionsHour) HasSessionCountIos() bool {
+	if o != nil && o.SessionCountIos != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSessionCountIos gets a reference to the given int64 and assigns it to the SessionCountIos field.
+func (o *UsageRumSessionsHour) SetSessionCountIos(v int64) {
+	o.SessionCountIos = &v
+}
+
 func (o UsageRumSessionsHour) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Hour != nil {
@@ -109,6 +177,12 @@ func (o UsageRumSessionsHour) MarshalJSON() ([]byte, error) {
 	}
 	if o.SessionCount != nil {
 		toSerialize["session_count"] = o.SessionCount
+	}
+	if o.SessionCountAndroid != nil {
+		toSerialize["session_count_android"] = o.SessionCountAndroid
+	}
+	if o.SessionCountIos != nil {
+		toSerialize["session_count_ios"] = o.SessionCountIos
 	}
 	return json.Marshal(toSerialize)
 }
