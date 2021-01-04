@@ -26,10 +26,12 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			// Common
 			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Name of Datadog service level objective",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"description": {
+				Description:      "A description of this service level objective.",
 				Type:             schema.TypeString,
 				Optional:         true,
 				StateFunc:        trimStateValue,
@@ -39,36 +41,43 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
 				// we order them explicitly in the read/create/update methods of this resource and using
 				// TypeSet makes Terraform ignore differences in order when creating a plan
-				Type:     schema.TypeSet,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Type:        schema.TypeSet,
+				Description: "A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API",
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"thresholds": {
-				Type:     schema.TypeList,
-				Required: true,
+				Description: "A list of thresholds and targets that define the service level objectives from the provided SLIs.",
+				Type:        schema.TypeList,
+				Required:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"timeframe": {
+							Description:  "The time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Available options to choose from are: `7d`, `30d`, `90d`.",
 							Type:         schema.TypeString,
-							ValidateFunc: validateEnumValue(datadogV1.NewSLOTimeframeFromValue),
 							Required:     true,
+							ValidateFunc: validateEnumValue(datadogV1.NewSLOTimeframeFromValue),
 						},
 						"target": {
+							Description:      "The objective's target in`[0,100]`.",
 							Type:             schema.TypeFloat,
 							Required:         true,
 							DiffSuppressFunc: suppressDataDogFloatIntDiff,
 						},
 						"target_display": {
+							Description:      "A string representation of the target that indicates its precision. It uses trailing zeros to show significant decimal places (e.g. `98.00`).",
 							Type:             schema.TypeString,
 							Optional:         true,
 							DiffSuppressFunc: suppressDataDogSLODisplayValueDiff,
 						},
 						"warning": {
+							Description:      "The objective's warning value in `[0,100]`. This must be greater than the target value.",
 							Type:             schema.TypeFloat,
 							Optional:         true,
 							DiffSuppressFunc: suppressDataDogFloatIntDiff,
 						},
 						"warning_display": {
+							Description:      "A string representation of the warning target (see the description of the target_display field for details).",
 							Type:             schema.TypeString,
 							Optional:         true,
 							DiffSuppressFunc: suppressDataDogSLODisplayValueDiff,
@@ -77,14 +86,16 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				},
 			},
 			"type": {
+				Description:  "The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object). Available options to choose from are: `metric` and `monitor`.",
 				Type:         schema.TypeString,
 				Required:     true,
 				ForceNew:     true,
 				ValidateFunc: validateEnumValue(datadogV1.NewSLOTypeFromValue),
 			},
 			"force_delete": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Description: "A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. dashboards).",
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 
 			// Metric-Based SLO
@@ -98,12 +109,14 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"numerator": {
+							Description:      "The sum of all the `good` events.",
 							Type:             schema.TypeString,
 							Required:         true,
 							StateFunc:        trimStateValue,
 							DiffSuppressFunc: diffTrimmedValues,
 						},
 						"denominator": {
+							Description:      "The sum of the `total` events.",
 							Type:             schema.TypeString,
 							Required:         true,
 							StateFunc:        trimStateValue,
@@ -138,8 +151,9 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Elem:          &schema.Schema{Type: schema.TypeString, MinItems: 1},
 			},
 			"validate": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Description: "Whether or not to validate the SLO.",
+				Type:        schema.TypeBool,
+				Optional:    true,
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 					// This is never sent to the backend, so it should never generate a diff
 					return true

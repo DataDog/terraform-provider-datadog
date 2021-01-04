@@ -20,6 +20,8 @@ type SecurityMonitoringRuleResponse struct {
 	CreatedAt *int64 `json:"createdAt,omitempty"`
 	// User ID of the user who created the rule.
 	CreationAuthorId *int64 `json:"creationAuthorId,omitempty"`
+	// Additional queries to filter matched events before they are processed.
+	Filters *[]SecurityMonitoringFilter `json:"filters,omitempty"`
 	// The ID of the rule.
 	Id *string `json:"id,omitempty"`
 	// Whether the rule is included by default.
@@ -152,6 +154,38 @@ func (o *SecurityMonitoringRuleResponse) HasCreationAuthorId() bool {
 // SetCreationAuthorId gets a reference to the given int64 and assigns it to the CreationAuthorId field.
 func (o *SecurityMonitoringRuleResponse) SetCreationAuthorId(v int64) {
 	o.CreationAuthorId = &v
+}
+
+// GetFilters returns the Filters field value if set, zero value otherwise.
+func (o *SecurityMonitoringRuleResponse) GetFilters() []SecurityMonitoringFilter {
+	if o == nil || o.Filters == nil {
+		var ret []SecurityMonitoringFilter
+		return ret
+	}
+	return *o.Filters
+}
+
+// GetFiltersOk returns a tuple with the Filters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringRuleResponse) GetFiltersOk() (*[]SecurityMonitoringFilter, bool) {
+	if o == nil || o.Filters == nil {
+		return nil, false
+	}
+	return o.Filters, true
+}
+
+// HasFilters returns a boolean if a field has been set.
+func (o *SecurityMonitoringRuleResponse) HasFilters() bool {
+	if o != nil && o.Filters != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetFilters gets a reference to the given []SecurityMonitoringFilter and assigns it to the Filters field.
+func (o *SecurityMonitoringRuleResponse) SetFilters(v []SecurityMonitoringFilter) {
+	o.Filters = &v
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
@@ -484,6 +518,9 @@ func (o SecurityMonitoringRuleResponse) MarshalJSON() ([]byte, error) {
 	}
 	if o.CreationAuthorId != nil {
 		toSerialize["creationAuthorId"] = o.CreationAuthorId
+	}
+	if o.Filters != nil {
+		toSerialize["filters"] = o.Filters
 	}
 	if o.Id != nil {
 		toSerialize["id"] = o.Id

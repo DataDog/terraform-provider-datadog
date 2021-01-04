@@ -1003,20 +1003,24 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget) (map[string]interface{
 func getWidgetLayoutSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"x": {
-			Type:     schema.TypeFloat,
-			Required: true,
+			Description: "The position of the widget on the x (horizontal) axis. Should be greater or equal to 0.",
+			Type:        schema.TypeFloat,
+			Required:    true,
 		},
 		"y": {
-			Type:     schema.TypeFloat,
-			Required: true,
+			Description: "The position of the widget on the y (vertical) axis. Should be greater or equal to 0.",
+			Type:        schema.TypeFloat,
+			Required:    true,
 		},
 		"width": {
-			Type:     schema.TypeFloat,
-			Required: true,
+			Description: "The width of the widget.",
+			Type:        schema.TypeFloat,
+			Required:    true,
 		},
 		"height": {
-			Type:     schema.TypeFloat,
-			Required: true,
+			Description: "The height of the widget.",
+			Type:        schema.TypeFloat,
+			Required:    true,
 		},
 	}
 }
@@ -1140,30 +1144,36 @@ func buildTerraformGroupDefinition(datadogGroupDefinition datadogV1.GroupWidgetD
 func getAlertGraphDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"alert_id": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "The ID of the monitor used by the widget.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"viz_type": {
+			Description:  "Type of visualization to use when displaying the widget. Either `timeseries` or `toplist`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetVizTypeFromValue),
 			Required:     true,
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time": {
-			Type:     schema.TypeMap,
-			Optional: true,
+			Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
+			Type:        schema.TypeMap,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetTimeSchema(),
 			},
@@ -1220,31 +1230,38 @@ func buildTerraformAlertGraphDefinition(datadogDefinition datadogV1.AlertGraphWi
 func getAlertValueDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"alert_id": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "The ID of the monitor used by the widget.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"precision": {
-			Type:     schema.TypeInt,
-			Optional: true,
+			Description: "The precision to use when displaying the value. Use `*` for maximum precision.",
+			Type:        schema.TypeInt,
+			Optional:    true,
 		},
 		"unit": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The unit for the value displayed in the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"text_align": {
+			Description:  "The alignment of the text in the widget.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -1311,35 +1328,41 @@ func buildTerraformAlertValueDefinition(datadogDefinition datadogV1.AlertValueWi
 func getChangeDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getChangeRequestSchema(),
 			},
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time": {
-			Type:     schema.TypeMap,
-			Optional: true,
+			Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
+			Type:        schema.TypeMap,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetTimeSchema(),
 			},
 		},
 		"custom_link": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetCustomLinkSchema(),
 			},
@@ -1403,32 +1426,38 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 		"process_query":  getProcessQuerySchema(),
 		// Settings specific to Change requests
 		"change_type": {
+			Description:  "Whether to show absolute or relative change. One of `absolute`, `relative`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetChangeTypeFromValue),
 			Optional:     true,
 		},
 		"compare_to": {
+			Description:  "Choose from when to compare current data to. One of `hour_before`, `day_before`, `week_before` or `month_before`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetCompareToFromValue),
 			Optional:     true,
 		},
 		"increase_good": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Boolean indicating whether an increase in the value is good (thus displayed in green) or not (thus displayed in red).",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"order_by": {
+			Description:  "One of `change`, `name`, `present` (present value) or `past` (past value).",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetOrderByFromValue),
 			Optional:     true,
 		},
 		"order_dir": {
+			Description:  "Either `asc` (ascending) or `desc` (descending).",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
 			Optional:     true,
 		},
 		"show_present": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "If set to `true`, displays current value.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 	}
 }
@@ -1533,37 +1562,44 @@ func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidge
 func getDistributionDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getDistributionRequestSchema(),
 			},
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"legend_size": {
+			Description:  "The size of the legend displayed in the widget.",
 			Type:         schema.TypeString,
 			Optional:     true,
 			ValidateFunc: validateTimeseriesWidgetLegendSize,
 		},
 		"show_legend": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Whether or not to show the legend on this widget.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"time": {
-			Type:     schema.TypeMap,
-			Optional: true,
+			Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
+			Type:        schema.TypeMap,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetTimeSchema(),
 			},
@@ -1633,9 +1669,10 @@ func getDistributionRequestSchema() map[string]*schema.Schema {
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Distribution requests
 		"style": {
-			Type:     schema.TypeList,
-			MaxItems: 1,
-			Optional: true,
+			Description: "Style of the widget graph. One nested block is allowed with the following structure:",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetRequestStyle(),
 			},
@@ -1714,37 +1751,44 @@ func buildTerraformDistributionRequests(datadogDistributionRequests *[]datadogV1
 func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"query": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "The query to use in the widget.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"event_size": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetEventSizeFromValue),
 			Optional:     true,
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time": {
-			Type:     schema.TypeMap,
-			Optional: true,
+			Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
+			Type:        schema.TypeMap,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetTimeSchema(),
 			},
 		},
 		"tags_execution": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The execution method for multi-value filters. Can be either `and` or `or`.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }
@@ -1808,32 +1852,38 @@ func buildTerraformEventStreamDefinition(datadogDefinition datadogV1.EventStream
 func getEventTimelineDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"query": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "The query to use in the widget.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time": {
-			Type:     schema.TypeMap,
-			Optional: true,
+			Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
+			Type:        schema.TypeMap,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetTimeSchema(),
 			},
 		},
 		"tags_execution": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The execution method for multi-value filters. Can be either `and` or `or`.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }
@@ -1891,44 +1941,53 @@ func buildTerraformEventTimelineDefinition(datadogDefinition datadogV1.EventTime
 func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"check": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "The check to use in the widget.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"grouping": {
+			Description:  "Either `check` or `cluster`, depending on whether the widget should use a single check or a cluster of checks.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetGroupingFromValue),
 			Required:     true,
 		},
 		"group": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The check group to use in the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"group_by": {
-			Type:     schema.TypeList,
-			Optional: true,
-			Elem:     &schema.Schema{Type: schema.TypeString},
+			Description: "When `grouping = \"cluster\"`, indicates a list of tags to use for grouping.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		"tags": {
-			Type:     schema.TypeList,
-			Optional: true,
-			Elem:     &schema.Schema{Type: schema.TypeString},
+			Description: "List of tags to use in the widget.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time": {
-			Type:     schema.TypeMap,
-			Optional: true,
+			Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
+			Type:        schema.TypeMap,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetTimeSchema(),
 			},
@@ -2019,18 +2078,22 @@ func buildTerraformCheckStatusDefinition(datadogDefinition datadogV1.CheckStatus
 func getFreeTextDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"text": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "The text to display in the widget.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"color": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The color of the text in the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"font_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the text in the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"text_align": {
+			Description:  "The alignment of the text in the widget.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -2079,59 +2142,69 @@ func buildTerraformFreeTextDefinition(datadogDefinition datadogV1.FreeTextWidget
 func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getHeatmapRequestSchema(),
 			},
 		},
 		"yaxis": {
-			Type:     schema.TypeList,
-			MaxItems: 1,
-			Optional: true,
+			Description: "Nested block describing the Y-Axis Controls. The structure of this block is described below.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetAxisSchema(),
 			},
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"event": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetEventSchema(),
 			},
 		},
 		"show_legend": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Whether or not to show the legend on this widget.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"legend_size": {
+			Description:  "The size of the legend displayed in the widget.",
 			Type:         schema.TypeString,
 			Optional:     true,
 			ValidateFunc: validateTimeseriesWidgetLegendSize,
 		},
 		"time": {
-			Type:     schema.TypeMap,
-			Optional: true,
+			Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
+			Type:        schema.TypeMap,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetTimeSchema(),
 			},
 		},
 		"custom_link": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetCustomLinkSchema(),
 			},
@@ -2222,9 +2295,10 @@ func getHeatmapRequestSchema() map[string]*schema.Schema {
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Heatmap requests
 		"style": {
-			Type:     schema.TypeList,
-			MaxItems: 1,
-			Optional: true,
+			Description: "Style of the widget graph. One nested block is allowed with the structure below.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetRequestStyle(),
 			},
@@ -2302,22 +2376,25 @@ func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWi
 func getHostmapDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Type:     schema.TypeList,
-			Optional: true,
-			MaxItems: 1,
-			MinItems: 1,
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"fill": {
-						Type:     schema.TypeList,
-						Optional: true,
+						Description: "The query used to fill the map. Exactly one nested block is allowed with the structure below.",
+						Type:        schema.TypeList,
+						Optional:    true,
 						Elem: &schema.Resource{
 							Schema: getHostmapRequestSchema(),
 						},
 					},
 					"size": {
-						Type:     schema.TypeList,
-						Optional: true,
+						Description: "The query used to size the map. Exactly one nested block is allowed with the structure below.",
+						Type:        schema.TypeList,
+						Optional:    true,
 						Elem: &schema.Resource{
 							Schema: getHostmapRequestSchema(),
 						},
@@ -2326,69 +2403,83 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"node_type": {
+			Description:  "The type of node used. Either `host` or `container`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetNodeTypeFromValue),
 			Optional:     true,
 		},
 		"no_metric_hosts": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Boolean indicating whether to show nodes with no metrics.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"no_group_hosts": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Boolean indicating whether to show ungrouped nodes.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"group": {
-			Type:     schema.TypeList,
-			Optional: true,
-			Elem:     &schema.Schema{Type: schema.TypeString},
+			Description: "The list of tags to group nodes by.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		"scope": {
-			Type:     schema.TypeList,
-			Optional: true,
-			Elem:     &schema.Schema{Type: schema.TypeString},
+			Description: "The list of tags to filter nodes by.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		"style": {
-			Type:     schema.TypeList,
-			Optional: true,
-			MaxItems: 1,
+			Description: "Style of the widget graph. One nested block is allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"palette": {
-						Type:     schema.TypeString,
-						Optional: true,
+						Description: "Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.",
+						Type:        schema.TypeString,
+						Optional:    true,
 					},
 					"palette_flip": {
-						Type:     schema.TypeBool,
-						Optional: true,
+						Description: "Boolean indicating whether to flip the palette tones.",
+						Type:        schema.TypeBool,
+						Optional:    true,
 					},
 					"fill_min": {
-						Type:     schema.TypeString,
-						Optional: true,
+						Description: "Min value to use to color the map.",
+						Type:        schema.TypeString,
+						Optional:    true,
 					},
 					"fill_max": {
-						Type:     schema.TypeString,
-						Optional: true,
+						Description: "Max value to use to color the map.",
+						Type:        schema.TypeString,
+						Optional:    true,
 					},
 				},
 			},
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"custom_link": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetCustomLinkSchema(),
 			},
@@ -2577,8 +2668,9 @@ func buildTerraformHostmapRequest(datadogHostmapRequest *datadogV1.HostMapReques
 func getIframeDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"url": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "The URL to use as a data source for the widget.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 	}
 }
@@ -2604,15 +2696,18 @@ func buildTerraformIframeDefinition(datadogDefinition datadogV1.IFrameWidgetDefi
 func getImageDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"url": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "The URL to use as a data source for the widget.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"sizing": {
+			Description:  "The preferred method to adapt the dimensions of the image to those of the widget. One of `center` (center the image in the tile), `zoom` (zoom the image to cover the whole tile) or `fit` (fit the image dimensions to those of the tile).",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetImageSizingFromValue),
 			Optional:     true,
 		},
 		"margin": {
+			Description:  "The margins to use around the image. Either `small` or `large`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMarginFromValue),
 			Optional:     true,
@@ -2655,31 +2750,37 @@ func buildTerraformImageDefinition(datadogDefinition datadogV1.ImageWidgetDefini
 func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"indexes": {
-			Type:     schema.TypeList,
-			Optional: true,
-			Elem:     &schema.Schema{Type: schema.TypeString},
+			Description: "An array of index names to query in the stream.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		"logset": {
-			Type:       schema.TypeString,
-			Deprecated: "This parameter has been deprecated. Use 'indexes' instead",
-			Optional:   true,
+			Description: "ID of the logset to use. Deprecated Use `indexes` instead.",
+			Type:        schema.TypeString,
+			Deprecated:  "This parameter has been deprecated. Use `indexes` instead.",
+			Optional:    true,
 		},
 		"query": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The query to use in the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"columns": {
-			Type:     schema.TypeList,
-			Optional: true,
-			Elem:     &schema.Schema{Type: schema.TypeString},
+			Description: "Stringified list of columns to use. Example: `[\"column1\",\"column2\",\"column3\"]`.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		"show_date_column": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "If the date column should be displayed.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"show_message_column": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "If the message column should be displayed.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"message_display": {
 			Type:         schema.TypeString,
@@ -2688,29 +2789,34 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMessageDisplayFromValue),
 		},
 		"sort": {
-			Type:     schema.TypeList,
-			MaxItems: 1,
-			Optional: true,
+			Description: "The facet and order to sort the data based upon. Example: `{\"column\": \"time\", \"order\": \"desc\"}`.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetFieldSortSchema(),
 			},
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time": {
-			Type:     schema.TypeMap,
-			Optional: true,
+			Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
+			Type:        schema.TypeMap,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetTimeSchema(),
 			},
@@ -2721,10 +2827,12 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 func getWidgetFieldSortSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"column": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "Facet path for the column",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"order": {
+			Description:  "Widget sorting methods.",
 			Type:         schema.TypeString,
 			Required:     true,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
@@ -2860,8 +2968,9 @@ func buildTerraformWidgetFieldSort(datadogWidgetFieldSort datadogV1.WidgetFieldS
 func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"query": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "The query to use in the widget.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"summary_type": {
 			Type:         schema.TypeString,
@@ -2870,50 +2979,60 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSummaryTypeFromValue),
 		},
 		"sort": {
+			Description:  "The method to use to sort monitors. Example: `status,asc`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMonitorSummarySortFromValue),
 			Optional:     true,
 		},
 		// The count param is deprecated
 		"count": {
-			Type:       schema.TypeInt,
-			Deprecated: "This parameter has been deprecated",
-			Optional:   true,
-			Default:    50,
+			Description: "The number of monitors to display.",
+			Type:        schema.TypeInt,
+			Deprecated:  "This parameter has been deprecated.",
+			Optional:    true,
+			Default:     50,
 		},
 		// The start param is deprecated
 		"start": {
-			Type:       schema.TypeInt,
-			Deprecated: "This parameter has been deprecated",
-			Optional:   true,
+			Description: "The start of the list. Typically 0.",
+			Type:        schema.TypeInt,
+			Deprecated:  "This parameter has been deprecated.",
+			Optional:    true,
 		},
 		"display_format": {
+			Description:  "The display setting to use. One of `counts`, `list`, or `countsAndList`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMonitorSummaryDisplayFormatFromValue),
 			Optional:     true,
 		},
 		"color_preference": {
+			Description:  "Whether to colorize text or background. One of `text`, `background`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetColorPreferenceFromValue),
 			Optional:     true,
 		},
 		"hide_zero_counts": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Boolean indicating whether to hide empty categories.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"show_last_triggered": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Boolean indicating whether to show when monitors/groups last triggered.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
@@ -3011,32 +3130,39 @@ func buildTerraformManageStatusDefinition(datadogDefinition datadogV1.MonitorSum
 func getNoteDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"content": {
+			Description:  "Content of the note.",
 			Type:         schema.TypeString,
 			Required:     true,
 			ValidateFunc: validation.StringIsNotEmpty,
 		},
 		"background_color": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "Background color of the note.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"font_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "Size of the text.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"text_align": {
+			Description:  "The alignment of the widget's text. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"show_tick": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Whether to show a tick or not.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"tick_pos": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "When `tick = true`, string with a percent sign indicating the position of the tick. Example: use `tick_pos = \"50%\"` for centered alignment.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"tick_edge": {
+			Description:  "When `tick = true`, string indicating on which side of the widget the tick should be displayed. One of `bottom`, `top`, `left`, `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTickEdgeFromValue),
 			Optional:     true,
@@ -3103,52 +3229,62 @@ func buildTerraformNoteDefinition(datadogDefinition datadogV1.NoteWidgetDefiniti
 func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below(exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block).",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getQueryValueRequestSchema(),
 			},
 		},
 		"autoscale": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Boolean indicating whether to automatically scale the tile.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"custom_unit": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The unit for the value displayed in the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"precision": {
-			Type:     schema.TypeInt,
-			Optional: true,
+			Description: "The precision to use when displaying the tile.",
+			Type:        schema.TypeInt,
+			Optional:    true,
 		},
 		"text_align": {
+			Description:  "The alignment of the widget's text. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time": {
-			Type:     schema.TypeMap,
-			Optional: true,
+			Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
+			Type:        schema.TypeMap,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetTimeSchema(),
 			},
 		},
 		"custom_link": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetCustomLinkSchema(),
 			},
@@ -3236,13 +3372,15 @@ func getQueryValueRequestSchema() map[string]*schema.Schema {
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to QueryValue requests
 		"conditional_formats": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetConditionalFormatSchema(),
 			},
 		},
 		"aggregator": {
+			Description:  "The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
 			Optional:     true,
@@ -3327,40 +3465,47 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block).",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getQueryTableRequestSchema(),
 			},
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time": {
-			Type:     schema.TypeMap,
-			Optional: true,
+			Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
+			Type:        schema.TypeMap,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetTimeSchema(),
 			},
 		},
 		"custom_link": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetCustomLinkSchema(),
 			},
 		},
 		"has_search_bar": {
+			Description:  "Controls the display of the search bar. One of `auto`, `always`, `never`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewTableWidgetHasSearchBarFromValue),
 			Optional:     true,
@@ -3431,33 +3576,39 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 		"apm_stats_query": getApmStatsQuerySchema(),
 		// Settings specific to QueryTable requests
 		"conditional_formats": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetConditionalFormatSchema(),
 			},
 		},
 		"alias": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The alias for the column name. Default is the metric name.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"aggregator": {
+			Description:  "The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
 			Optional:     true,
 		},
 		"limit": {
-			Type:     schema.TypeInt,
-			Optional: true,
+			Description: "The number of lines to show in the table.",
+			Type:        schema.TypeInt,
+			Optional:    true,
 		},
 		"order": {
+			Description:  "The sort order for the rows. One of `desc` or `asc`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
 			Optional:     true,
 		},
 		"cell_display_mode": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "A list of display modes for each table cell. List items one of `number`, `bar`.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Schema{
 				Type:         schema.TypeString,
 				ValidateFunc: validateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
@@ -3582,22 +3733,25 @@ func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.Tab
 func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Type:     schema.TypeList,
-			Optional: true,
-			MaxItems: 1,
-			MinItems: 1,
+			Description: "Nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"x": {
-						Type:     schema.TypeList,
-						Optional: true,
+						Description: "The query used for the X-Axis. Exactly one nested block is allowed with the structure below.",
+						Type:        schema.TypeList,
+						Optional:    true,
 						Elem: &schema.Resource{
 							Schema: getScatterplotRequestSchema(),
 						},
 					},
 					"y": {
-						Type:     schema.TypeList,
-						Optional: true,
+						Description: "The query used for the Y-Axis. Exactly one nested block is allowed with the structure below.",
+						Type:        schema.TypeList,
+						Optional:    true,
 						Elem: &schema.Resource{
 							Schema: getScatterplotRequestSchema(),
 						},
@@ -3606,49 +3760,57 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"xaxis": {
-			Type:     schema.TypeList,
-			MaxItems: 1,
-			Optional: true,
+			Description: "Nested block describing the X-Axis Controls. Exactly one nested block is allowed with the structure below.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetAxisSchema(),
 			},
 		},
 		"yaxis": {
-			Type:     schema.TypeList,
-			MaxItems: 1,
-			Optional: true,
+			Description: "Nested block describing the Y-Axis Controls. Exactly one nested block is allowed with the structure below.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetAxisSchema(),
 			},
 		},
 		"color_by_groups": {
-			Type:     schema.TypeList,
-			Optional: true,
-			Elem:     &schema.Schema{Type: schema.TypeString},
+			Description: "List of groups used for colors.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time": {
-			Type:     schema.TypeMap,
-			Optional: true,
+			Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
+			Type:        schema.TypeMap,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetTimeSchema(),
 			},
 		},
 		"custom_link": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetCustomLinkSchema(),
 			},
@@ -3767,6 +3929,7 @@ func getScatterplotRequestSchema() map[string]*schema.Schema {
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Scatterplot requests
 		"aggregator": {
+			Description:  "Aggregator used for the request.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
 			Optional:     true,
@@ -3835,30 +3998,36 @@ func buildTerraformScatterplotRequest(datadogScatterplotRequest *datadogV1.Scatt
 func getServiceMapDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"service": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "The ID of the service you want to map.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"filters": {
-			Type:     schema.TypeList,
-			Required: true,
-			Elem:     &schema.Schema{Type: schema.TypeString},
+			Description: "Your environment and primary tag (or `*` if enabled for your account).",
+			Type:        schema.TypeList,
+			Required:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"custom_link": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetCustomLinkSchema(),
 			},
@@ -3922,38 +4091,46 @@ func buildTerraformServiceMapDefinition(datadogDefinition datadogV1.ServiceMapWi
 func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"view_type": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "Type of view to use when displaying the widget. Only `detail` is currently supported.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"slo_id": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "The ID of the service level objective used by the widget.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"show_error_budget": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Whether to show the error budget or not.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"view_mode": {
+			Description:  "View mode for the widget. One of `overall`, `component`, or `both`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetViewModeFromValue),
 			Required:     true,
 		},
 		"time_windows": {
-			Type:     schema.TypeList,
-			Required: true,
+			Description: "List of time windows to display in the widget. Each value in the list must be one of `7d`, `30d`, `90d`, `week_to_date`, `previous_week`, `month_to_date`, or `previous_month`.",
+			Type:        schema.TypeList,
+			Required:    true,
 			Elem: &schema.Schema{
 				Type:         schema.TypeString,
 				ValidateFunc: validateEnumValue(datadogV1.NewWidgetTimeWindowsFromValue),
@@ -4038,74 +4215,86 @@ func buildTerraformServiceLevelObjectiveDefinition(datadogDefinition datadogV1.S
 func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block).",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getTimeseriesRequestSchema(),
 			},
 		},
 		"marker": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetMarkerSchema(),
 			},
 		},
 		"event": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetEventSchema(),
 			},
 		},
 		"yaxis": {
-			Type:     schema.TypeList,
-			MaxItems: 1,
-			Optional: true,
+			Description: "Nested block describing the Y-Axis Controls. The structure of this block is described below",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetAxisSchema(),
 			},
 		},
 		"right_yaxis": {
-			Type:     schema.TypeList,
-			MaxItems: 1,
-			Optional: true,
+			Description: "Nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetAxisSchema(),
 			},
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"show_legend": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Whether or not to show the legend on this widget.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"legend_size": {
+			Description:  "The size of the legend displayed in the widget.",
 			Type:         schema.TypeString,
 			Optional:     true,
 			ValidateFunc: validateTimeseriesWidgetLegendSize,
 		},
 		"time": {
-			Type:     schema.TypeMap,
-			Optional: true,
+			Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
+			Type:        schema.TypeMap,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetTimeSchema(),
 			},
 		},
 		"custom_link": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetCustomLinkSchema(),
 			},
@@ -4214,21 +4403,25 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Timeseries requests
 		"style": {
-			Type:     schema.TypeList,
-			Optional: true,
-			MaxItems: 1,
+			Description: "Style of the widget graph. Exactly one `style` block is allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"palette": {
-						Type:     schema.TypeString,
-						Optional: true,
+						Description: "Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.",
+						Type:        schema.TypeString,
+						Optional:    true,
 					},
 					"line_type": {
+						Description:  "Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.",
 						Type:         schema.TypeString,
 						ValidateFunc: validateEnumValue(datadogV1.NewWidgetLineTypeFromValue),
 						Optional:     true,
 					},
 					"line_width": {
+						Description:  "Width of line displayed. Available values are: `normal`, `thick`, or `thin`.",
 						Type:         schema.TypeString,
 						ValidateFunc: validateEnumValue(datadogV1.NewWidgetLineWidthFromValue),
 						Optional:     true,
@@ -4237,29 +4430,34 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"metadata": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Used to define expression aliases. Multiple `metadata` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"expression": {
-						Type:     schema.TypeString,
-						Required: true,
+						Description: "Expression name.",
+						Type:        schema.TypeString,
+						Required:    true,
 					},
 					"alias_name": {
-						Type:     schema.TypeString,
-						Optional: true,
+						Description: "Expression alias.",
+						Type:        schema.TypeString,
+						Optional:    true,
 					},
 				},
 			},
 		},
 		"display_type": {
+			Description:  "How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetDisplayTypeFromValue),
 			Optional:     true,
 		},
 		"on_right_yaxis": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Boolean indicating whether the request will use the right or left Y-Axis.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 	}
 }
@@ -4387,35 +4585,41 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 func getToplistDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block).",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getToplistRequestSchema(),
 			},
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time": {
-			Type:     schema.TypeMap,
-			Optional: true,
+			Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
+			Type:        schema.TypeMap,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetTimeSchema(),
 			},
 		},
 		"custom_link": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetCustomLinkSchema(),
 			},
@@ -4479,16 +4683,18 @@ func getToplistRequestSchema() map[string]*schema.Schema {
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Toplist requests
 		"conditional_formats": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetConditionalFormatSchema(),
 			},
 		},
 		"style": {
-			Type:     schema.TypeList,
-			MaxItems: 1,
-			Optional: true,
+			Description: "Define request widget style.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetRequestStyle(),
 			},
@@ -4574,67 +4780,82 @@ func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWi
 func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"env": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "APM environment.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"service": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "APM service.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"span_name": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "APM span name",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"show_hits": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Whether to show the hits metrics or not",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"show_errors": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Whether to show the error metrics or not.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"show_latency": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Whether to show the latency metrics or not.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"show_breakdown": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Whether to show the latency breakdown or not.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"show_distribution": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Whether to show the latency distribution or not.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"show_resource_list": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Whether to show the resource list or not.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"size_format": {
+			Description:  "Size of the widget. Available values are: `small`, `medium`, or `large`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSizeFormatFromValue),
 			Optional:     true,
 		},
 		"display_format": {
+			Description:  "Number of columns to display. Available values are: `one_column`, `two_column`, or `three_column`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetServiceSummaryDisplayFormatFromValue),
 			Optional:     true,
 		},
 		"title": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_size": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time": {
-			Type:     schema.TypeMap,
-			Optional: true,
+			Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
+			Type:        schema.TypeMap,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getWidgetTimeSchema(),
 			},
@@ -4738,42 +4959,51 @@ func buildTerraformTraceServiceDefinition(datadogDefinition datadogV1.ServiceSum
 func getWidgetConditionalFormatSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"comparator": {
+			Description:  "Comparator to use. One of `>`, `>=`, `<`, or `<=`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetComparatorFromValue),
 			Required:     true,
 		},
 		"value": {
-			Type:     schema.TypeFloat,
-			Required: true,
+			Description: "Value for the comparator.",
+			Type:        schema.TypeFloat,
+			Required:    true,
 		},
 		"palette": {
+			Description:  "Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetPaletteFromValue),
 			Required:     true,
 		},
 		"custom_bg_color": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "Color palette to apply to the background, same values available as palette.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"custom_fg_color": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "Color palette to apply to the foreground, same values available as palette.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"image_url": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "Displays an image as the background.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"hide_value": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Setting this to True hides values.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"timeframe": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "Defines the displayed timeframe.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"metric": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "Metric from the request to correlate this conditional format with.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }
@@ -4845,12 +5075,14 @@ func buildTerraformWidgetConditionalFormat(datadogWidgetConditionalFormat *[]dat
 func getWidgetCustomLinkSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"label": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "The label for the custom link URL.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"link": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "The URL of the custom link.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 	}
 }
@@ -4884,12 +5116,14 @@ func buildTerraformWidgetCustomLinks(datadogWidgetCustomLinks *[]datadogV1.Widge
 func getWidgetEventSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"q": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "The event query to use in the widget.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"tags_execution": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The execution method for multi-value filters.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }
@@ -4927,6 +5161,7 @@ func buildTerraformWidgetEvents(datadogWidgetEvents *[]datadogV1.WidgetEvent) *[
 func getWidgetTimeSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"live_span": {
+			Description:  "The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`.",
 			Type:         schema.TypeString,
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetLiveSpanFromValue),
 			Optional:     true,
@@ -4952,16 +5187,19 @@ func buildTerraformWidgetTime(datadogWidgetTime datadogV1.WidgetTime) map[string
 func getWidgetMarkerSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"value": {
-			Type:     schema.TypeString,
-			Required: true,
+			Description: "Mathematical expression describing the marker. Examples: `y > 1`, `-5 < y < 0`, `y = 19`.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 		"display_type": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"label": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "A label for the line or range.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }
@@ -5007,75 +5245,89 @@ func buildTerraformWidgetMarkers(datadogWidgetMarkers *[]datadogV1.WidgetMarker)
 // Metric Query
 func getMetricQuerySchema() *schema.Schema {
 	return &schema.Schema{
-		Type:     schema.TypeString,
-		Optional: true,
+		Description: "The metric query to use for this widget.",
+		Type:        schema.TypeString,
+		Optional:    true,
 	}
 }
 
 // APM, Log, Network or RUM Query
 func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 	return &schema.Schema{
-		Type:     schema.TypeList,
-		Optional: true,
-		MaxItems: 1,
+		Description: "The query to use for this widget.",
+		Type:        schema.TypeList,
+		Optional:    true,
+		MaxItems:    1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"index": {
-					Type:     schema.TypeString,
-					Required: true,
+					Description: "Name of the index to query.",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
 				"compute": {
-					Type:     schema.TypeMap,
-					Optional: true,
-					Elem:     getComputeSchema(),
+					Description: "One of `compute` or `multi_compute` is required. The map has the keys as below.",
+					Type:        schema.TypeMap,
+					Optional:    true,
+					Elem:        getComputeSchema(),
 				},
 				"multi_compute": {
-					Type:     schema.TypeList,
-					Optional: true,
-					Elem:     getComputeSchema(),
+					Description: "One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem:        getComputeSchema(),
 				},
 				"search": {
-					Type:     schema.TypeMap,
-					Optional: true,
+					Description: "One map is allowed with the key below.",
+					Type:        schema.TypeMap,
+					Optional:    true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"query": {
-								Type:     schema.TypeString,
-								Required: true,
+								Description: "Query to use.",
+								Type:        schema.TypeString,
+								Required:    true,
 							},
 						},
 					},
 				},
 				"group_by": {
-					Type:     schema.TypeList,
-					Optional: true,
+					Description: "Multiple `group_by` blocks are allowed with the structure below.",
+					Type:        schema.TypeList,
+					Optional:    true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"facet": {
-								Type:     schema.TypeString,
-								Optional: true,
+								Description: "Facet name.",
+								Type:        schema.TypeString,
+								Optional:    true,
 							},
 							"limit": {
-								Type:     schema.TypeInt,
-								Optional: true,
+								Description: "Maximum number of items in the group.",
+								Type:        schema.TypeInt,
+								Optional:    true,
 							},
 							"sort": {
-								Type:     schema.TypeMap,
-								Optional: true,
+								Description: "One map is allowed with the keys as below.",
+								Type:        schema.TypeMap,
+								Optional:    true,
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"aggregation": {
-											Type:     schema.TypeString,
-											Required: true,
+											Description: "The aggregation method.",
+											Type:        schema.TypeString,
+											Required:    true,
 										},
 										"order": {
+											Description:  "Widget sorting methods.",
 											Type:         schema.TypeString,
 											ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
 											Required:     true,
 										},
 										"facet": {
-											Type:     schema.TypeString,
-											Optional: true,
+											Description: "Facet name.",
+											Type:        schema.TypeString,
+											Optional:    true,
 										},
 									},
 								},
@@ -5092,16 +5344,19 @@ func getComputeSchema() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"aggregation": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "The aggregation method.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"facet": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Facet name.",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"interval": {
-				Type:     schema.TypeInt,
-				Optional: true,
+				Description: "Define a time interval in seconds.",
+				Type:        schema.TypeInt,
+				Optional:    true,
 			},
 		},
 	}
@@ -5260,27 +5515,32 @@ func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition) map[
 // Process Query
 func getProcessQuerySchema() *schema.Schema {
 	return &schema.Schema{
-		Type:     schema.TypeList,
-		Optional: true,
-		MaxItems: 1,
+		Description: "The process query to use in the widget. The structure of this block is described below.",
+		Type:        schema.TypeList,
+		Optional:    true,
+		MaxItems:    1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"metric": {
-					Type:     schema.TypeString,
-					Required: true,
+					Description: "Your chosen metric.",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
 				"search_by": {
-					Type:     schema.TypeString,
-					Optional: true,
+					Description: "Your chosen search term.",
+					Type:        schema.TypeString,
+					Optional:    true,
 				},
 				"filter_by": {
-					Type:     schema.TypeList,
-					Optional: true,
-					Elem:     &schema.Schema{Type: schema.TypeString},
+					Description: "List of processes.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
 				"limit": {
-					Type:     schema.TypeInt,
-					Optional: true,
+					Description: "Max number of items in the filter list.",
+					Type:        schema.TypeInt,
+					Optional:    true,
 				},
 			},
 		},
@@ -5341,49 +5601,60 @@ func getApmStatsQuerySchema() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"service": {
-					Type:     schema.TypeString,
-					Required: true,
+					Description: "Service name.",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
 				"name": {
-					Type:     schema.TypeString,
-					Required: true,
+					Description: "Operation name associated with service.",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
 				"env": {
-					Type:     schema.TypeString,
-					Required: true,
+					Description: "Environment name.",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
 				"primary_tag": {
-					Type:     schema.TypeString,
-					Required: true,
+					Description: "The organization's host group name and value.",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
 				"row_type": {
+					Description:  "The level of detail for the request.",
 					Type:         schema.TypeString,
 					ValidateFunc: validateEnumValue(datadogV1.NewApmStatsQueryRowTypeFromValue),
 					Required:     true,
 				},
 				"resource": {
-					Type:     schema.TypeString,
-					Optional: true,
+					Description: "Resource name.",
+					Type:        schema.TypeString,
+					Optional:    true,
 				},
 				"columns": {
-					Type:     schema.TypeList,
-					Optional: true,
+					Description: "Column properties used by the front end for display.",
+					Type:        schema.TypeList,
+					Optional:    true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"name": {
-								Type:     schema.TypeString,
-								Required: true,
+								Description: "Column name.",
+								Type:        schema.TypeString,
+								Required:    true,
 							},
 							"alias": {
-								Type:     schema.TypeString,
-								Optional: true,
+								Description: "A user-assigned alias for the column.",
+								Type:        schema.TypeString,
+								Optional:    true,
 							},
 							"order": {
+								Description:  "Widget sorting methods.",
 								Type:         schema.TypeString,
 								ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
 								Optional:     true,
 							},
 							"cell_display_mode": {
+								Description:  "A list of display modes for each table cell.",
 								Type:         schema.TypeString,
 								ValidateFunc: validateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
 								Optional:     true,
@@ -5499,24 +5770,29 @@ func buildTerraformApmStatsQuery(datadogQuery datadogV1.ApmStatsQueryDefinition)
 func getWidgetAxisSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"label": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "The label of the axis to display on the graph.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"scale": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "Specifies the scale type. One of `linear`, `log`, `pow`, `sqrt`.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"min": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "Specify the minimum value to show on the Y-axis.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"max": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "Specify the maximum value to show on the Y-axis.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"include_zero": {
-			Type:     schema.TypeBool,
-			Optional: true,
+			Description: "Always include zero or fit the axis to the data range.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 	}
 }
@@ -5566,8 +5842,9 @@ func buildTerraformWidgetAxis(datadogWidgetAxis datadogV1.WidgetAxis) map[string
 func getWidgetRequestStyle() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"palette": {
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: "Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }

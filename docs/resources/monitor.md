@@ -22,7 +22,6 @@ resource "datadog_monitor" "foo" {
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4"
 
   thresholds = {
-    ok                = 0
     warning           = 2
     warning_recovery  = 1
     critical          = 4

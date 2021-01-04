@@ -27,13 +27,15 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"type": {
+				Description:  "Synthetics test type (`api` or `browser`).",
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
 			},
 			"subtype": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "When `type` is `api`, choose from `http`, `ssl`, `tcp` or `dns`. Defaults to `http`.",
+				Type:        schema.TypeString,
+				Optional:    true,
 				DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
 					if d.Get("type") == "api" && old == "http" && new == "" {
 						// defaults to http if type is api for retro-compatibility
@@ -45,35 +47,41 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			},
 			"request": syntheticsTestRequest(),
 			"request_headers": {
-				Type:     schema.TypeMap,
-				Optional: true,
+				Description: "Header name and value map.",
+				Type:        schema.TypeMap,
+				Optional:    true,
 			},
 			"request_query": {
-				Type:     schema.TypeMap,
-				Optional: true,
+				Description: "Query arguments name and value map.",
+				Type:        schema.TypeMap,
+				Optional:    true,
 			},
 			"request_basicauth": {
-				Type:     schema.TypeList,
-				Optional: true,
-				MaxItems: 1,
+				Description: "The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				MaxItems:    1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"username": {
-							Type:     schema.TypeString,
-							Required: true,
+							Description: "Username for authentication.",
+							Type:        schema.TypeString,
+							Required:    true,
 						},
 						"password": {
-							Type:      schema.TypeString,
-							Required:  true,
-							Sensitive: true,
+							Description: "Password for authentication.",
+							Type:        schema.TypeString,
+							Required:    true,
+							Sensitive:   true,
 						},
 					},
 				},
 			},
 			"request_client_certificate": {
-				Type:     schema.TypeList,
-				Optional: true,
-				MaxItems: 1,
+				Description: "Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				MaxItems:    1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"cert": syntheticsTestRequestClientCertificateItem(),
@@ -82,6 +90,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				},
 			},
 			"assertions": {
+				Description:   "List of assertions.",
 				Type:          schema.TypeList,
 				Optional:      true,
 				ConflictsWith: []string{"assertion"},
@@ -91,46 +100,55 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				},
 			},
 			"assertion": {
+				Description:   "Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below.",
 				Type:          schema.TypeList,
 				Optional:      true,
 				ConflictsWith: []string{"assertions"},
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"type": {
+							Description:  "Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation)).",
 							Type:         schema.TypeString,
 							ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue),
 							Required:     true,
 						},
 						"operator": {
+							Description:  "Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation)).",
 							Type:         schema.TypeString,
-							ValidateFunc: validateSyntheticsAssertionOperator,
 							Required:     true,
+							ValidateFunc: validateSyntheticsAssertionOperator,
 						},
 						"property": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Description: "If assertion type is `header`, this is the header name.",
+							Type:        schema.TypeString,
+							Optional:    true,
 						},
 						"target": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Description: "Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation) for details.",
+							Type:        schema.TypeString,
+							Optional:    true,
 						},
 						"targetjsonpath": {
-							Type:     schema.TypeList,
-							Optional: true,
-							MaxItems: 1,
+							Description: "Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below.",
+							Type:        schema.TypeList,
+							Optional:    true,
+							MaxItems:    1,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"operator": {
-										Type:     schema.TypeString,
-										Required: true,
+										Description: "The specific operator to use on the path.",
+										Type:        schema.TypeString,
+										Required:    true,
 									},
 									"jsonpath": {
-										Type:     schema.TypeString,
-										Required: true,
+										Description: "The JSON path to assert.",
+										Type:        schema.TypeString,
+										Required:    true,
 									},
 									"targetvalue": {
-										Type:     schema.TypeString,
-										Required: true,
+										Description: "Expected matching value.",
+										Type:        schema.TypeString,
+										Required:    true,
 									},
 								},
 							},
@@ -139,28 +157,34 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				},
 			},
 			"variable": {
-				Type:     schema.TypeList,
-				Optional: true,
+				Description: "Variables used for the test. Multiple `variable` blocks are allowed with the structure below.",
+				Type:        schema.TypeList,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"example": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Description: "Example for the variable.",
+							Type:        schema.TypeString,
+							Optional:    true,
 						},
 						"id": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Description: "ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type `global`.",
+							Type:        schema.TypeString,
+							Optional:    true,
 						},
 						"name": {
+							Description:  "Name of the variable.",
 							Type:         schema.TypeString,
 							Required:     true,
 							ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
 						},
 						"pattern": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Description: "Pattern of the variable.",
+							Type:        schema.TypeString,
+							Optional:    true,
 						},
 						"type": {
+							Description:  "Type of browser test variable. Allowed enum values: `element`, `email`, `global`, `text`.",
 							Type:         schema.TypeString,
 							Required:     true,
 							ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsBrowserVariableTypeFromValue),
@@ -169,16 +193,18 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				},
 			},
 			"device_ids": {
-				Type:     schema.TypeList,
-				Optional: true,
+				Description: "Array with the different device IDs used to run the test. Allowed enum values: `laptop_large`, `tablet`, `mobile_small` (only available for `browser` tests).",
+				Type:        schema.TypeList,
+				Optional:    true,
 				Elem: &schema.Schema{
 					Type:         schema.TypeString,
 					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsDeviceIDFromValue),
 				},
 			},
 			"locations": {
-				Type:     schema.TypeList,
-				Required: true,
+				Description: "Array of locations used to run the test. Refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#request) for available locations (e.g. `aws:eu-central-1`).",
+				Type:        schema.TypeList,
+				Required:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -186,27 +212,32 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			"options":      syntheticsTestOptions(),
 			"options_list": syntheticsTestOptionsList(),
 			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Name of Datadog synthetics test.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"message": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "",
+				Description: "A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     "",
 			},
 			"tags": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"status": {
+				Description:  "Define whether you want to start (`live`) or pause (`paused`) a Synthetic test. Allowed enum values: `live`, `paused`",
 				Type:         schema.TypeString,
-				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTestPauseStatusFromValue),
 				Required:     true,
+				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTestPauseStatusFromValue),
 			},
 			"monitor_id": {
-				Type:     schema.TypeInt,
-				Computed: true,
+				Description: "ID of the monitor associated with the Datadog synthetics test.",
+				Type:        schema.TypeInt,
+				Computed:    true,
 			},
 			"step": syntheticsTestStep(),
 		},
@@ -215,40 +246,48 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 
 func syntheticsTestRequest() *schema.Schema {
 	return &schema.Schema{
-		Type:     schema.TypeMap,
-		Required: true,
+		Description: "The synthetics test request. Required if `type = \"api\"` and `subtype = \"http\"`.",
+		Type:        schema.TypeMap,
+		Required:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"method": {
+					Description:  "The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.",
 					Type:         schema.TypeString,
-					ValidateFunc: validateEnumValue(datadogV1.NewHTTPMethodFromValue),
 					Optional:     true,
+					ValidateFunc: validateEnumValue(datadogV1.NewHTTPMethodFromValue),
 				},
 				"url": {
-					Type:     schema.TypeString,
-					Optional: true,
+					Description: "The URL to send the request to.",
+					Type:        schema.TypeString,
+					Optional:    true,
 				},
 				"body": {
-					Type:     schema.TypeString,
-					Optional: true,
+					Description: "The request body.",
+					Type:        schema.TypeString,
+					Optional:    true,
 				},
 				"timeout": {
-					Type:     schema.TypeInt,
-					Optional: true,
-					Default:  60,
+					Description: "Timeout in seconds for the test. Defaults to `60`.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+					Default:     60,
 				},
 				"host": {
-					Type:     schema.TypeString,
-					Optional: true,
+					Description: "Host name to perform the test with.",
+					Type:        schema.TypeString,
+					Optional:    true,
 				},
 				"port": {
-					Type:     schema.TypeInt,
-					Optional: true,
-					Default:  60,
+					Description: "Port to use when performing the test.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+					Default:     60,
 				},
 				"dns_server": {
-					Type:     schema.TypeString,
-					Optional: true,
+					Description: "DNS server to use for DNS tests (`subtype = \"dns\"`).",
+					Type:        schema.TypeString,
+					Optional:    true,
 				},
 			},
 		},
@@ -263,14 +302,16 @@ func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"content": {
-					Type:      schema.TypeString,
-					Required:  true,
-					Sensitive: true,
+					Description: "Content of the certificate.",
+					Type:        schema.TypeString,
+					Required:    true,
+					Sensitive:   true,
 				},
 				"filename": {
-					Type:     schema.TypeString,
-					Optional: true,
-					Default:  "Provided in Terraform config",
+					Description: "File name for the certificate.",
+					Type:        schema.TypeString,
+					Optional:    true,
+					Default:     "Provided in Terraform config",
 				},
 			},
 		},
@@ -382,30 +423,36 @@ func syntheticsTestOptionsList() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"allow_insecure": {
-					Type:     schema.TypeBool,
-					Optional: true,
+					Description: "Allows loading insecure content for an HTTP test.",
+					Type:        schema.TypeBool,
+					Optional:    true,
 				},
 				"follow_redirects": {
-					Type:     schema.TypeBool,
-					Optional: true,
+					Description: "For API HTTP test, whether or not the test should follow redirects.",
+					Type:        schema.TypeBool,
+					Optional:    true,
 				},
 				"tick_every": {
+					Description:  "How often the test should run (in seconds). Current possible values are `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` plus `60` for API tests or `300` for browser tests.",
 					Type:         schema.TypeInt,
-					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
 					Optional:     true,
+					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
 				},
 				"accept_self_signed": {
-					Type:     schema.TypeBool,
-					Optional: true,
+					Description: "For SSL test, whether or not the test should allow self signed certificates.",
+					Type:        schema.TypeBool,
+					Optional:    true,
 				},
 				"min_location_failed": {
-					Type:     schema.TypeInt,
-					Default:  1,
-					Optional: true,
+					Description: "Minimum number of locations in failure required to trigger an alert. Default is `1`.",
+					Type:        schema.TypeInt,
+					Default:     1,
+					Optional:    true,
 				},
 				"min_failure_duration": {
-					Type:     schema.TypeInt,
-					Optional: true,
+					Description: "Minimum amount of time in failure required to trigger an alert. Default is `0`.",
+					Type:        schema.TypeInt,
+					Optional:    true,
 				},
 				"monitor_options": {
 					Type:     schema.TypeList,
@@ -414,9 +461,10 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"renotify_interval": {
-								Type:     schema.TypeInt,
-								Default:  0,
-								Optional: true,
+								Description: "Specify a renotification frequency.",
+								Type:        schema.TypeInt,
+								Default:     0,
+								Optional:    true,
 							},
 						},
 					},
@@ -428,14 +476,16 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"count": {
-								Type:     schema.TypeInt,
-								Default:  0,
-								Optional: true,
+								Description: "Number of retries needed to consider a location as failed before sending a notification alert.",
+								Type:        schema.TypeInt,
+								Default:     0,
+								Optional:    true,
 							},
 							"interval": {
-								Type:     schema.TypeInt,
-								Default:  300,
-								Optional: true,
+								Description: "Interval between a failed test and the next retry in milliseconds.",
+								Type:        schema.TypeInt,
+								Default:     300,
+								Optional:    true,
 							},
 						},
 					},
@@ -447,30 +497,36 @@ func syntheticsTestOptionsList() *schema.Schema {
 
 func syntheticsTestStep() *schema.Schema {
 	return &schema.Schema{
-		Type:     schema.TypeList,
-		Optional: true,
+		Description: "Steps for browser tests.",
+		Type:        schema.TypeList,
+		Optional:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"name": {
-					Type:     schema.TypeString,
-					Required: true,
+					Description: "Name of the step.",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
 				"type": {
+					Description:  "Type of the step. Refer to [Datadog documentation](https://docs.datadoghq.com/api/v1/synthetics/#create-a-test) for the complete list of available types.",
 					Type:         schema.TypeString,
-					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsStepTypeFromValue),
 					Required:     true,
+					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsStepTypeFromValue),
 				},
 				"allow_failure": {
-					Type:     schema.TypeBool,
-					Optional: true,
+					Description: "Determines if the step should be allowed to fail.",
+					Type:        schema.TypeBool,
+					Optional:    true,
 				},
 				"timeout": {
-					Type:     schema.TypeInt,
-					Optional: true,
+					Description: "Used to override the default timeout of a step.",
+					Type:        schema.TypeInt,
+					Optional:    true,
 				},
 				"params": {
-					Type:     schema.TypeString,
-					Required: true,
+					Description: "Parameters for the step as JSON string.",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
 			},
 		},

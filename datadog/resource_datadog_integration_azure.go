@@ -21,21 +21,25 @@ func resourceDatadogIntegrationAzure() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"tenant_name": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Your Azure Active Directory ID.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"client_id": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Your Azure web application ID.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"client_secret": {
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
+				Description: "(Required for Initial Creation) Your Azure web application secret key.",
+				Type:        schema.TypeString,
+				Required:    true,
+				Sensitive:   true,
 			},
 			"host_filters": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure.\n\nLimit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.\n\ne.x. `env:production,deploymentgroup:red`",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 		},
 	}

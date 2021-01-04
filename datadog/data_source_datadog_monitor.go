@@ -14,7 +14,6 @@ func dataSourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about an existing monitor for use in other resources.",
 		Read:        dataSourceDatadogMonitorsRead,
-
 		Schema: map[string]*schema.Schema{
 			"name_filter": {
 				Description: "A monitor name to limit the search.",
@@ -41,7 +40,7 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				Computed:    true,
 			},
 			"message": {
-				Description: "Message included with notifications for this monitor.",
+				Description: "Message included with notifications for this monitor",
 				Type:        schema.TypeString,
 				Computed:    true,
 			},

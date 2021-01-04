@@ -16,8 +16,10 @@ import (
 type SyntheticsTestConfig struct {
 	// Array of assertions used for the test.
 	Assertions []SyntheticsAssertion `json:"assertions"`
-	Request    SyntheticsTestRequest `json:"request"`
-	// Array of variables used for the test.
+	// API tests only - array of variables used for the test.
+	ConfigVariables *[]SyntheticsConfigVariable `json:"configVariables,omitempty"`
+	Request         SyntheticsTestRequest       `json:"request"`
+	// Browser tests only - array of variables used for the test steps.
 	Variables *[]SyntheticsBrowserVariable `json:"variables,omitempty"`
 }
 
@@ -62,6 +64,38 @@ func (o *SyntheticsTestConfig) GetAssertionsOk() (*[]SyntheticsAssertion, bool) 
 // SetAssertions sets field value
 func (o *SyntheticsTestConfig) SetAssertions(v []SyntheticsAssertion) {
 	o.Assertions = v
+}
+
+// GetConfigVariables returns the ConfigVariables field value if set, zero value otherwise.
+func (o *SyntheticsTestConfig) GetConfigVariables() []SyntheticsConfigVariable {
+	if o == nil || o.ConfigVariables == nil {
+		var ret []SyntheticsConfigVariable
+		return ret
+	}
+	return *o.ConfigVariables
+}
+
+// GetConfigVariablesOk returns a tuple with the ConfigVariables field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsTestConfig) GetConfigVariablesOk() (*[]SyntheticsConfigVariable, bool) {
+	if o == nil || o.ConfigVariables == nil {
+		return nil, false
+	}
+	return o.ConfigVariables, true
+}
+
+// HasConfigVariables returns a boolean if a field has been set.
+func (o *SyntheticsTestConfig) HasConfigVariables() bool {
+	if o != nil && o.ConfigVariables != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetConfigVariables gets a reference to the given []SyntheticsConfigVariable and assigns it to the ConfigVariables field.
+func (o *SyntheticsTestConfig) SetConfigVariables(v []SyntheticsConfigVariable) {
+	o.ConfigVariables = &v
 }
 
 // GetRequest returns the Request field value
@@ -124,6 +158,9 @@ func (o SyntheticsTestConfig) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["assertions"] = o.Assertions
+	}
+	if o.ConfigVariables != nil {
+		toSerialize["configVariables"] = o.ConfigVariables
 	}
 	if true {
 		toSerialize["request"] = o.Request

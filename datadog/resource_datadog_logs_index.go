@@ -9,19 +9,29 @@ import (
 )
 
 var indexSchema = map[string]*schema.Schema{
-	"name": {Type: schema.TypeString, Required: true},
+	"name": {
+		Description: "The name of the index.",
+		Type:        schema.TypeString,
+		Required:    true,
+	},
 	"filter": {
-		Type:     schema.TypeList,
-		Required: true,
+		Description: "Logs filter",
+		Type:        schema.TypeList,
+		Required:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"query": {Type: schema.TypeString, Required: true},
+				"query": {
+					Description: "Logs filter criteria. Only logs matching this filter criteria are considered for this index.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
 			},
 		},
 	},
 	"exclusion_filter": {
-		Type:     schema.TypeList,
-		Optional: true,
+		Description: "List of exclusion filters.",
+		Type:        schema.TypeList,
+		Optional:    true,
 		Elem: &schema.Resource{
 			Schema: exclusionFilterSchema,
 		},
@@ -29,15 +39,31 @@ var indexSchema = map[string]*schema.Schema{
 }
 
 var exclusionFilterSchema = map[string]*schema.Schema{
-	"name":       {Type: schema.TypeString, Optional: true},
-	"is_enabled": {Type: schema.TypeBool, Optional: true},
+	"name": {
+		Description: "The name of the exclusion filter.",
+		Type:        schema.TypeString,
+		Optional:    true,
+	},
+	"is_enabled": {
+		Description: "A boolean stating if the exclusion is active or not.",
+		Type:        schema.TypeBool,
+		Optional:    true,
+	},
 	"filter": {
 		Type:     schema.TypeList,
 		Optional: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"query":       {Type: schema.TypeString, Optional: true},
-				"sample_rate": {Type: schema.TypeFloat, Optional: true},
+				"query": {
+					Description: "Only logs matching the filter criteria and the query of the parent index will be considered for this exclusion filter.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"sample_rate": {
+					Description: "The fraction of logs excluded by the exclusion filter, when active.",
+					Type:        schema.TypeFloat,
+					Optional:    true,
+				},
 			},
 		},
 	},

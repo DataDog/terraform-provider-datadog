@@ -20,7 +20,11 @@ func resourceDatadogLogsIntegrationPipeline() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
-			"is_enabled": {Type: schema.TypeBool, Optional: true},
+			"is_enabled": {
+				Description: "Boolean value to enable your pipeline.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+			},
 		},
 	}
 }
