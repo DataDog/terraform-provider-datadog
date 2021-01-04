@@ -9,11 +9,12 @@ import (
 
 func resourceDatadogMetricMetadata() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogMetricMetadataCreate,
-		Read:   resourceDatadogMetricMetadataRead,
-		Update: resourceDatadogMetricMetadataUpdate,
-		Delete: resourceDatadogMetricMetadataDelete,
-		Exists: resourceDatadogMetricMetadataExists,
+		Description: "Provides a Datadog metric_metadata resource. This can be used to manage a metric's metadata.",
+		Create:      resourceDatadogMetricMetadataCreate,
+		Read:        resourceDatadogMetricMetadataRead,
+		Update:      resourceDatadogMetricMetadataUpdate,
+		Delete:      resourceDatadogMetricMetadataDelete,
+		Exists:      resourceDatadogMetricMetadataExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogMetricMetadataImport,
 		},

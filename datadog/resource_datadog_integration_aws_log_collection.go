@@ -9,11 +9,12 @@ import (
 
 func resourceDatadogIntegrationAwsLogCollection() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogIntegrationAwsLogCollectionCreate,
-		Read:   resourceDatadogIntegrationAwsLogCollectionRead,
-		Update: resourceDatadogIntegrationAwsLogCollectionUpdate,
-		Delete: resourceDatadogIntegrationAwsLogCollectionDelete,
-		Exists: resourceDatadogIntegrationAwsLogCollectionExists,
+		Description: "Provides a Datadog - Amazon Web Services integration log collection resource. This can be used to manage which AWS services logs are collected from for an account.",
+		Create:      resourceDatadogIntegrationAwsLogCollectionCreate,
+		Read:        resourceDatadogIntegrationAwsLogCollectionRead,
+		Update:      resourceDatadogIntegrationAwsLogCollectionUpdate,
+		Delete:      resourceDatadogIntegrationAwsLogCollectionDelete,
+		Exists:      resourceDatadogIntegrationAwsLogCollectionExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogIntegrationAwsLogCollectionImport,
 		},

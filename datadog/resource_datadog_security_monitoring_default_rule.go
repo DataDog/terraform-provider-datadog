@@ -10,10 +10,11 @@ import (
 
 func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogSecurityMonitoringDefaultRuleCreate,
-		Read:   resourceDatadogSecurityMonitoringDefaultRuleRead,
-		Update: resourceDatadogSecurityMonitoringDefaultRuleUpdate,
-		Delete: resourceDatadogSecurityMonitoringDefaultRuleDelete,
+		Description: "Provides a Datadog Security Monitoring Rule API resource for default rules.",
+		Create:      resourceDatadogSecurityMonitoringDefaultRuleCreate,
+		Read:        resourceDatadogSecurityMonitoringDefaultRuleRead,
+		Update:      resourceDatadogSecurityMonitoringDefaultRuleUpdate,
+		Delete:      resourceDatadogSecurityMonitoringDefaultRuleDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},

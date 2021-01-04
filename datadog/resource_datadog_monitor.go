@@ -20,6 +20,7 @@ type BuiltResource interface {
 
 func resourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Provides a Datadog monitor resource. This can be used to create and manage Datadog monitors.",
 		Create:        resourceDatadogMonitorCreate,
 		Read:          resourceDatadogMonitorRead,
 		Update:        resourceDatadogMonitorUpdate,

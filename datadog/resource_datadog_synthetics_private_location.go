@@ -9,10 +9,11 @@ import (
 
 func resourceDatadogSyntheticsPrivateLocation() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogSyntheticsPrivateLocationCreate,
-		Read:   resourceDatadogSyntheticsPrivateLocationRead,
-		Update: resourceDatadogSyntheticsPrivateLocationUpdate,
-		Delete: resourceDatadogSyntheticsPrivateLocationDelete,
+		Description: "Provides a Datadog synthetics private location resource. This can be used to create and manage Datadog synthetics private locations.",
+		Create:      resourceDatadogSyntheticsPrivateLocationCreate,
+		Read:        resourceDatadogSyntheticsPrivateLocationRead,
+		Update:      resourceDatadogSyntheticsPrivateLocationUpdate,
+		Delete:      resourceDatadogSyntheticsPrivateLocationDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},

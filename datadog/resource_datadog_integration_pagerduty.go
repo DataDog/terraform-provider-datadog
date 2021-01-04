@@ -16,6 +16,7 @@ var integrationPdMutex = sync.Mutex{}
 
 func resourceDatadogIntegrationPagerduty() *schema.Resource {
 	return &schema.Resource{
+		Description:        "Provides a Datadog - PagerDuty resource. This can be used to create and manage Datadog - PagerDuty integration. This resource is deprecated and should only be used for legacy purposes.\n\n",
 		DeprecationMessage: "This resource is deprecated. You can use datadog_integration_pagerduty_service_object resources directly once the integration is activated",
 		Create:             resourceDatadogIntegrationPagerdutyCreate,
 		Read:               resourceDatadogIntegrationPagerdutyRead,

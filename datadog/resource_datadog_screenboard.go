@@ -776,6 +776,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 	}
 
 	return &schema.Resource{
+		Description:        "Provides a Datadog screenboard resource. This can be used to create and manage Datadog screenboards.",
 		DeprecationMessage: "This resource is deprecated. Instead use the Dashboard resource",
 		Create:             resourceDatadogScreenboardCreate,
 		Read:               resourceDatadogScreenboardRead,

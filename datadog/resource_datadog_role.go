@@ -15,11 +15,12 @@ var validPermissions map[string]string
 
 func resourceDatadogRole() *schema.Resource {
 	return &schema.Resource{
-		Exists: resourceDatadogRoleExists,
-		Create: resourceDatadogRoleCreate,
-		Read:   resourceDatadogRoleRead,
-		Update: resourceDatadogRoleUpdate,
-		Delete: resourceDatadogRoleDelete,
+		Description: "Provides a Datadog role resource. This can be used to create and manage Datadog roles.",
+		Exists:      resourceDatadogRoleExists,
+		Create:      resourceDatadogRoleCreate,
+		Read:        resourceDatadogRoleRead,
+		Update:      resourceDatadogRoleUpdate,
+		Delete:      resourceDatadogRoleDelete,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogRoleImport,
 		},

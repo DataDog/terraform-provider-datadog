@@ -6,7 +6,8 @@ import (
 
 func dataSourceDatadogPermissions() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceDatadogPermissionsRead,
+		Description: "Use this data source to retrieve the list of Datadog permissions by name and their corresponding ID, for use in the role resource.",
+		Read:        dataSourceDatadogPermissionsRead,
 
 		Schema: map[string]*schema.Schema{
 			// Computed values

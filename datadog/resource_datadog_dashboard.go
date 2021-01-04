@@ -15,11 +15,12 @@ import (
 
 func resourceDatadogDashboard() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogDashboardCreate,
-		Update: resourceDatadogDashboardUpdate,
-		Read:   resourceDatadogDashboardRead,
-		Delete: resourceDatadogDashboardDelete,
-		Exists: resourceDatadogDashboardExists,
+		Description: "Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.",
+		Create:      resourceDatadogDashboardCreate,
+		Update:      resourceDatadogDashboardUpdate,
+		Read:        resourceDatadogDashboardRead,
+		Delete:      resourceDatadogDashboardDelete,
+		Exists:      resourceDatadogDashboardExists,
 		CustomizeDiff: func(diff *schema.ResourceDiff, meta interface{}) error {
 			old, new := diff.GetChange("dashboard_lists")
 			if !old.(*schema.Set).Equal(new.(*schema.Set)) {
