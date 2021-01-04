@@ -57,9 +57,10 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"type": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:         schema.TypeString,
+				Required:     true,
+				ForceNew:     true,
+				ValidateFunc: validateEnumValue(datadogV1.NewMonitorTypeFromValue),
 				// Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
 					if (oldVal == "query alert" && newVal == "metric alert") ||
@@ -323,7 +324,7 @@ func buildMonitorStruct(d BuiltResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	u.SetQuery(d.Get("query").(string))
 	u.SetName(d.Get("name").(string))
 	u.SetMessage(d.Get("message").(string))
-	m.SetPriority(int64(d.Get("priority").(int)))
+	u.SetPriority(int64(d.Get("priority").(int)))
 	u.SetOptions(o)
 
 	tags := make([]string, 0)

@@ -15,10 +15,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 )
 
-var syntheticsTypes = []string{"api", "browser"}
-var syntheticsSubTypes = []string{"http", "ssl", "tcp", "dns"}
-var syntheticsVariableTypes = []string{"element", "email", "global", "text"}
-
 func resourceDatadogSyntheticsTest() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceDatadogSyntheticsTestCreate,
@@ -32,7 +28,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			"type": {
 				Type:         schema.TypeString,
 				Required:     true,
-				ValidateFunc: validation.StringInSlice(syntheticsTypes, false),
+				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
 			},
 			"subtype": {
 				Type:     schema.TypeString,
@@ -44,7 +40,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					}
 					return old == new
 				},
-				ValidateFunc: validation.StringInSlice(syntheticsSubTypes, false),
+				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTestDetailsSubTypeFromValue),
 			},
 			"request": syntheticsTestRequest(),
 			"request_headers": {
@@ -100,12 +96,14 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"type": {
-							Type:     schema.TypeString,
-							Required: true,
+							Type:         schema.TypeString,
+							ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue),
+							Required:     true,
 						},
 						"operator": {
-							Type:     schema.TypeString,
-							Required: true,
+							Type:         schema.TypeString,
+							ValidateFunc: validateSyntheticsAssertionOperator,
+							Required:     true,
 						},
 						"property": {
 							Type:     schema.TypeString,
@@ -164,7 +162,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 						"type": {
 							Type:         schema.TypeString,
 							Required:     true,
-							ValidateFunc: validation.StringInSlice(syntheticsVariableTypes, false),
+							ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsBrowserVariableTypeFromValue),
 						},
 					},
 				},
@@ -172,7 +170,10 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			"device_ids": {
 				Type:     schema.TypeList,
 				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Elem: &schema.Schema{
+					Type:         schema.TypeString,
+					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsDeviceIDFromValue),
+				},
 			},
 			"locations": {
 				Type:     schema.TypeList,
@@ -198,8 +199,9 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"status": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:         schema.TypeString,
+				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTestPauseStatusFromValue),
+				Required:     true,
 			},
 			"monitor_id": {
 				Type:     schema.TypeInt,
@@ -217,8 +219,9 @@ func syntheticsTestRequest() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"method": {
-					Type:     schema.TypeString,
-					Optional: true,
+					Type:         schema.TypeString,
+					ValidateFunc: validateEnumValue(datadogV1.NewHTTPMethodFromValue),
+					Optional:     true,
 				},
 				"url": {
 					Type:     schema.TypeString,
@@ -344,8 +347,9 @@ func syntheticsTestOptions() *schema.Schema {
 					Optional: true,
 				},
 				"tick_every": {
-					Type:     schema.TypeInt,
-					Required: true,
+					Type:         schema.TypeInt,
+					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
+					Required:     true,
 				},
 				"accept_self_signed": {
 					Type:     schema.TypeBool,
@@ -385,8 +389,9 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional: true,
 				},
 				"tick_every": {
-					Type:     schema.TypeInt,
-					Optional: true,
+					Type:         schema.TypeInt,
+					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
+					Optional:     true,
 				},
 				"accept_self_signed": {
 					Type:     schema.TypeBool,
@@ -450,8 +455,9 @@ func syntheticsTestStep() *schema.Schema {
 					Required: true,
 				},
 				"type": {
-					Type:     schema.TypeString,
-					Required: true,
+					Type:         schema.TypeString,
+					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsStepTypeFromValue),
+					Required:     true,
 				},
 				"allow_failure": {
 					Type:     schema.TypeBool,
@@ -733,21 +739,20 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		for _, variable := range attr.([]interface{}) {
 			variableMap := variable.(map[string]interface{})
 			if v, ok := variableMap["type"]; ok {
-				if variableType, err := convertToSyntheticsBrowserVariableType(v.(string)); err == nil {
-					if v, ok := variableMap["name"]; ok {
-						variableName := v.(string)
-						newVariable := datadogV1.NewSyntheticsBrowserVariable(variableName, variableType)
-						if v, ok := variableMap["example"]; ok && v.(string) != "" {
-							newVariable.SetExample(v.(string))
-						}
-						if v, ok := variableMap["id"]; ok && v.(string) != "" {
-							newVariable.SetId(v.(string))
-						}
-						if v, ok := variableMap["pattern"]; ok && v.(string) != "" {
-							newVariable.SetPattern(v.(string))
-						}
-						config.SetVariables(append(config.GetVariables(), *newVariable))
+				variableType := datadogV1.SyntheticsBrowserVariableType(v.(string))
+				if v, ok := variableMap["name"]; ok {
+					variableName := v.(string)
+					newVariable := datadogV1.NewSyntheticsBrowserVariable(variableName, variableType)
+					if v, ok := variableMap["example"]; ok && v.(string) != "" {
+						newVariable.SetExample(v.(string))
 					}
+					if v, ok := variableMap["id"]; ok && v.(string) != "" {
+						newVariable.SetId(v.(string))
+					}
+					if v, ok := variableMap["pattern"]; ok && v.(string) != "" {
+						newVariable.SetPattern(v.(string))
+					}
+					config.SetVariables(append(config.GetVariables(), *newVariable))
 				}
 			}
 		}
@@ -1182,23 +1187,19 @@ func convertToString(i interface{}) string {
 	}
 }
 
-func convertToSyntheticsBrowserVariableType(s string) (datadogV1.SyntheticsBrowserVariableType, error) {
-	switch s {
-	case "element":
-		return datadogV1.SYNTHETICSBROWSERVARIABLETYPE_ELEMENT, nil
-	case "email":
-		return datadogV1.SYNTHETICSBROWSERVARIABLETYPE_EMAIL, nil
-	case "global":
-		return datadogV1.SYNTHETICSBROWSERVARIABLETYPE_GLOBAL, nil
-	case "text":
-		return datadogV1.SYNTHETICSBROWSERVARIABLETYPE_TEXT, nil
-	default:
-		return "", fmt.Errorf("variable.type must be one of ['element', 'email', 'global', 'text'], got: %s", s)
-	}
-}
-
 func setFloatTargetValue(subTarget *datadogV1.SyntheticsAssertionJSONPathTargetTarget, value string) {
 	if floatValue, err := strconv.ParseFloat(value, 64); err == nil {
 		subTarget.SetTargetValue(floatValue)
 	}
+}
+
+func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []string, errs []error) {
+	_, err := datadogV1.NewSyntheticsAssertionOperatorFromValue(val.(string))
+	if err != nil {
+		_, err2 := datadogV1.NewSyntheticsAssertionJSONPathOperatorFromValue(val.(string))
+		if err2 != nil {
+			errs = append(errs, err, err2)
+		}
+	}
+	return
 }

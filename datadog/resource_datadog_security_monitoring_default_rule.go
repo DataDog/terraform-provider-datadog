@@ -3,6 +3,7 @@ package datadog
 import (
 	"errors"
 	"fmt"
+
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -26,9 +27,10 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"status": {
-							Type:        schema.TypeString,
-							Required:    true,
-							Description: "Status of the rule case to match.",
+							Type:         schema.TypeString,
+							ValidateFunc: validateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
+							Required:     true,
+							Description:  "Status of the rule case to match.",
 						},
 						"notifications": {
 							Type:        schema.TypeList,

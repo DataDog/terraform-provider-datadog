@@ -33,9 +33,10 @@ func resourceDatadogDashboardList() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"type": {
-							Type:        schema.TypeString,
-							Required:    true,
-							Description: "The type of this dashboard",
+							Type:         schema.TypeString,
+							Required:     true,
+							ValidateFunc: validateEnumValue(datadogV2.NewDashboardTypeFromValue),
+							Description:  "The type of this dashboard",
 						},
 						"dash_id": {
 							Type:        schema.TypeString,

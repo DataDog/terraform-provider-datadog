@@ -529,8 +529,6 @@ Class | Method | HTTP request | Description
  - [SyntheticsPrivateLocationSecrets](docs/SyntheticsPrivateLocationSecrets.md)
  - [SyntheticsPrivateLocationSecretsAuthentication](docs/SyntheticsPrivateLocationSecretsAuthentication.md)
  - [SyntheticsPrivateLocationSecretsConfigDecryption](docs/SyntheticsPrivateLocationSecretsConfigDecryption.md)
- - [SyntheticsResource](docs/SyntheticsResource.md)
- - [SyntheticsResourceType](docs/SyntheticsResourceType.md)
  - [SyntheticsSSLCertificate](docs/SyntheticsSSLCertificate.md)
  - [SyntheticsSSLCertificateIssuer](docs/SyntheticsSSLCertificateIssuer.md)
  - [SyntheticsSSLCertificateSubject](docs/SyntheticsSSLCertificateSubject.md)
