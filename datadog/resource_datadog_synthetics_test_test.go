@@ -445,6 +445,14 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 				"datadog_synthetics_test.foo", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "status", "paused"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.0.type", "text"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.0.name", "VARIABLE_NAME"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.0.pattern", "{{numeric(3)}}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.0.example", "123"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.foo", "monitor_id"),
 		),
@@ -508,6 +516,13 @@ resource "datadog_synthetics_test" "foo" {
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
+
+	config_variable {
+		type = "text"
+		name = "VARIABLE_NAME"
+		pattern = "{{numeric(3)}}"
+		example = "123"
+	}
 }`, uniq)
 }
 

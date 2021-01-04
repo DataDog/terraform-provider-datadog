@@ -15,6 +15,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 )
 
+var syntheticsConfigVariableTypes = []string{"text"}
+
 func resourceDatadogSyntheticsTest() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceDatadogSyntheticsTestCreate,
@@ -139,6 +141,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			},
 			"variable":         syntheticsBrowserVariableLegacy(),
 			"browser_variable": syntheticsBrowserVariable(),
+			"config_variable":  syntheticsConfigVariable(),
 			"device_ids": {
 				Type:     schema.TypeList,
 				Optional: true,
@@ -410,6 +413,35 @@ func syntheticsTestOptionsList() *schema.Schema {
 							},
 						},
 					},
+				},
+			},
+		},
+	}
+}
+
+func syntheticsConfigVariable() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"example": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"name": {
+					Type:         schema.TypeString,
+					Required:     true,
+					ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
+				},
+				"pattern": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"type": {
+					Type:         schema.TypeString,
+					Required:     true,
+					ValidateFunc: validation.StringInSlice(syntheticsConfigVariableTypes, false),
 				},
 			},
 		},
@@ -784,6 +816,24 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		}
 	}
 
+	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
+
+	if attr, ok := d.GetOk("config_variable"); ok && attr != nil {
+		for _, v := range attr.([]interface{}) {
+			variableMap := v.(map[string]interface{})
+			variable := datadogV1.SyntheticsConfigVariable{}
+
+			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
+			variable.SetName(variableMap["name"].(string))
+			variable.SetPattern(variableMap["pattern"].(string))
+			variable.SetExample(variableMap["example"].(string))
+
+			configVariables = append(configVariables, variable)
+		}
+	}
+
+	config.SetConfigVariables(configVariables)
+
 	options := datadogV1.NewSyntheticsTestOptions()
 
 	// use new options_list first, then fallback to legacy options
@@ -1101,6 +1151,29 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		if err := d.Set("browser_variable", localBrowserVariables); err != nil {
 			return err
 		}
+	}
+
+	configVariables := config.GetConfigVariables()
+	localConfigVariables := make([]map[string]interface{}, len(configVariables))
+	for i, configVariable := range configVariables {
+		localVariable := make(map[string]interface{})
+		if v, ok := configVariable.GetTypeOk(); ok {
+			localVariable["type"] = *v
+		}
+		if v, ok := configVariable.GetNameOk(); ok {
+			localVariable["name"] = *v
+		}
+		if v, ok := configVariable.GetExampleOk(); ok {
+			localVariable["example"] = *v
+		}
+		if v, ok := configVariable.GetPatternOk(); ok {
+			localVariable["pattern"] = *v
+		}
+		localConfigVariables[i] = localVariable
+	}
+
+	if err := d.Set("config_variable", localConfigVariables); err != nil {
+		return err
 	}
 
 	d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds)
