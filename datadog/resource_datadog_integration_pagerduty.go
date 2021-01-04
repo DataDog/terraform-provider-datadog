@@ -28,8 +28,9 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"individual_services": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Description: "Boolean to specify whether or not individual service objects specified by [datadog_integration_pagerduty_service_object](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_pagerduty_service_object) resource are to be used. Mutually exclusive with `services` key.",
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 			"services": {
 				ConflictsWith: []string{"individual_services"},
@@ -40,30 +41,35 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"service_name": {
-							Type:     schema.TypeString,
-							Required: true,
+							Description: "Your Service name in PagerDuty.",
+							Type:        schema.TypeString,
+							Required:    true,
 						},
 						"service_key": {
-							Type:      schema.TypeString,
-							Required:  true,
-							Sensitive: true,
+							Description: "Your Service name associated service key in Pagerduty.",
+							Type:        schema.TypeString,
+							Required:    true,
+							Sensitive:   true,
 						},
 					},
 				},
 			},
 			"subdomain": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Your PagerDuty account’s personalized subdomain name.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"schedules": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "Array of your schedule URLs.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"api_token": {
-				Type:      schema.TypeString,
-				Optional:  true,
-				Sensitive: true,
+				Description: "Your PagerDuty API token.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}

@@ -19,11 +19,16 @@ func resourceDatadogLogsPipelineOrder() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
-			"name": {Type: schema.TypeString, Required: true},
+			"name": {
+				Description: "The name attribute in the resource `datadog_logs_pipeline_order` needs to be unique. It's recommended to use the same value as the resource name. No related field is available in [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/#get-pipeline-order).",
+				Type:        schema.TypeString,
+				Required:    true,
+			},
 			"pipelines": {
-				Type:     schema.TypeList,
-				Required: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "The pipeline IDs list. The order of pipeline IDs in this attribute defines the overall pipeline order for logs.",
+				Type:        schema.TypeList,
+				Required:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 		},
 	}

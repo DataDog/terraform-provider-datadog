@@ -20,73 +20,87 @@ func resourceDatadogTimeboard() *schema.Resource {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"index": {
-					Type:     schema.TypeString,
-					Required: true,
+					Description: "",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
 				"compute": {
-					Type:     schema.TypeList,
-					Required: true,
-					MaxItems: 1,
+					Description: "Exactly one nested block is required with the structure below.",
+					Type:        schema.TypeList,
+					Required:    true,
+					MaxItems:    1,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"aggregation": {
-								Type:     schema.TypeString,
-								Required: true,
+								Description: "",
+								Type:        schema.TypeString,
+								Required:    true,
 							},
 							"facet": {
-								Type:     schema.TypeString,
-								Optional: true,
+								Description: "",
+								Type:        schema.TypeString,
+								Optional:    true,
 							},
 							"interval": {
-								Type:     schema.TypeInt,
-								Optional: true,
+								Description: "",
+								Type:        schema.TypeInt,
+								Optional:    true,
 							},
 						},
 					},
 				},
 				"search": {
-					Type:     schema.TypeList,
-					Optional: true,
-					MaxItems: 1,
+					Description: "Exactly one nested block is allowed with the structure below.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"query": {
-								Type:     schema.TypeString,
-								Required: true,
+								Description: "",
+								Type:        schema.TypeString,
+								Required:    true,
 							},
 						},
 					},
 				},
 				"group_by": {
-					Type:     schema.TypeList,
-					Optional: true,
+					Description: "Multiple nested blocks are allowed with the structure below.",
+					Type:        schema.TypeList,
+					Optional:    true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"facet": {
-								Type:     schema.TypeString,
-								Required: true,
+								Description: "",
+								Type:        schema.TypeString,
+								Required:    true,
 							},
 							"limit": {
-								Type:     schema.TypeInt,
-								Optional: true,
+								Description: "",
+								Type:        schema.TypeInt,
+								Optional:    true,
 							},
 							"sort": {
-								Type:     schema.TypeList,
-								Optional: true,
-								MaxItems: 1,
+								Description: "Exactly one nested block is allowed with the structure below.",
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"aggregation": {
-											Type:     schema.TypeString,
-											Required: true,
+											Description: "",
+											Type:        schema.TypeString,
+											Required:    true,
 										},
 										"order": {
-											Type:     schema.TypeString,
-											Required: true,
+											Description: "",
+											Type:        schema.TypeString,
+											Required:    true,
 										},
 										"facet": {
-											Type:     schema.TypeString,
-											Optional: true,
+											Description: "",
+											Type:        schema.TypeString,
+											Optional:    true,
 										},
 									},
 								},
@@ -105,21 +119,25 @@ func resourceDatadogTimeboard() *schema.Resource {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"metric": {
-					Type:     schema.TypeString,
-					Required: true,
+					Description: "",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
 				"search_by": {
-					Type:     schema.TypeString,
-					Optional: true,
+					Description: "",
+					Type:        schema.TypeString,
+					Optional:    true,
 				},
 				"filter_by": {
-					Type:     schema.TypeList,
-					Optional: true,
-					Elem:     &schema.Schema{Type: schema.TypeString},
+					Description: "",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
 				"limit": {
-					Type:     schema.TypeInt,
-					Optional: true,
+					Description: "",
+					Type:        schema.TypeInt,
+					Optional:    true,
 				},
 			},
 		},
@@ -131,34 +149,40 @@ func resourceDatadogTimeboard() *schema.Resource {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"q": {
-					Type:     schema.TypeString,
-					Optional: true,
+					Description: "The query of the request. Pro tip: Use the JSON tab inside the Datadog UI to help build you query strings.",
+					Type:        schema.TypeString,
+					Optional:    true,
 				},
 				"log_query":     apmOrLogQuery,
 				"apm_query":     apmOrLogQuery,
 				"process_query": processQuery,
 				"stacked": {
-					Type:     schema.TypeBool,
-					Optional: true,
-					Default:  false,
+					Description: "Boolean value to determine if this is this a stacked area graph. Default: `false` (line chart).",
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     false,
 				},
 				"type": {
-					Type:     schema.TypeString,
-					Optional: true,
-					Default:  "line",
+					Description: "Choose how to draw the graph. For example: `line`, `bars` or `area`. Default: `line`.",
+					Type:        schema.TypeString,
+					Optional:    true,
+					Default:     "line",
 				},
 				"aggregator": {
+					Description:  "The aggregation method used when the number of data points outnumbers the max that can be shown.",
 					Type:         schema.TypeString,
 					Optional:     true,
 					ValidateFunc: validateAggregatorMethod,
 				},
 				"style": {
-					Type:     schema.TypeMap,
-					Optional: true,
+					Description: "Nested block to customize the graph style.",
+					Type:        schema.TypeMap,
+					Optional:    true,
 				},
 				"metadata_json": {
-					Type:     schema.TypeString,
-					Optional: true,
+					Description: "A JSON blob (preferrably created using [jsonencode](https://www.terraform.io/docs/configuration/functions/jsonencode.html?_ga=2.6381362.1091155358.1609189257-888022054.1605547463)) representing mapping of query expressions to alias names. Note that the query expressions in `metadata_json` will be ignored if they're not present in the query.",
+					Type:        schema.TypeString,
+					Optional:    true,
 					// NOTE: this is using functions from resource_datadog_screenboard
 					// since the metadata attribute is the same for both of these boards
 					ValidateFunc: validateMetadataJSON,
@@ -239,21 +263,25 @@ func resourceDatadogTimeboard() *schema.Resource {
 	}
 
 	marker := &schema.Schema{
-		Type:     schema.TypeList,
-		Optional: true,
+		Description: "Nested block describing lines / ranges added to graph for formatting. The structure of this block is described below. Multiple `marker` blocks are allowed within a `graph` block.",
+		Type:        schema.TypeList,
+		Optional:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"type": {
-					Type:     schema.TypeString,
-					Required: true,
+					Description: "How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
 				"value": {
-					Type:     schema.TypeString,
-					Required: true,
+					Description: "Mathematical expression describing the marker. Examples: `y > 1`, `-5 < y < 0`, `y = 19`.",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
 				"label": {
-					Type:     schema.TypeString,
-					Optional: true,
+					Description: "A label for the line or range. **Warning**: when a label is enabled but left empty through the UI, the Datadog API returns a boolean value, not a string. This makes terraform plan fail with a JSON decoding error.",
+					Type:        schema.TypeString,
+					Optional:    true,
 				},
 			},
 		},
@@ -279,14 +307,16 @@ func resourceDatadogTimeboard() *schema.Resource {
 					},
 				},
 				"viz": {
-					Type:     schema.TypeString,
-					Required: true,
+					Description: "The type of visualization to use for the graph. Valid choices are `change`, `distribution`, `heatmap`, `hostmap`, `query_value`, `timeseries`, and `toplist`.",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
 				"request": request,
 				"marker":  marker,
 				"yaxis": {
-					Type:     schema.TypeMap,
-					Optional: true,
+					Description: "Nested block describing modifications to the Y-axis rendering. The structure of this block is described below.",
+					Type:        schema.TypeMap,
+					Optional:    true,
 					// `include_zero` and `include_units` are bool but Terraform treats them as strings
 					// as part of the `yaxis` map so we suppress the diff when
 					// value in the state and value from the api are the same
@@ -334,8 +364,9 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Description: "Use a custom unit (like 'users')",
 				},
 				"style": {
-					Type:     schema.TypeMap,
-					Optional: true,
+					Description: "Nested block describing hostmaps. The structure of this block is described below.",
+					Type:        schema.TypeMap,
+					Optional:    true,
 					// `palette_flip` is bool but Terraform treats it as a string
 					// as part of the `style` map so we suppress the diff when
 					// value in the state and value from the api are the same
@@ -437,9 +468,10 @@ func resourceDatadogTimeboard() *schema.Resource {
 				Description: "A description of the dashboard's content.",
 			},
 			"read_only": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
+				Description: "The read-only status of the timeboard. Default is false.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
 			},
 			"graph":             graph,
 			"template_variable": templateVariable,

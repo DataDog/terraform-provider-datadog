@@ -20,29 +20,35 @@ func resourceDatadogIntegrationGcp() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"project_id": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Your Google Cloud project ID found in your JSON service account key.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"private_key_id": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Your private key ID found in your JSON service account key.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"private_key": {
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
+				Description: "Your private key name found in your JSON service account key.",
+				Type:        schema.TypeString,
+				Required:    true,
+				Sensitive:   true,
 			},
 			"client_email": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Your email found in your JSON service account key.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"client_id": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Your ID found in your JSON service account key.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"host_filters": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 		},
 	}

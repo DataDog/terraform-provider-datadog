@@ -16,11 +16,16 @@ func resourceDatadogLogsIndexOrder() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
-			"name": {Type: schema.TypeString, Required: true},
+			"name": {
+				Description: "The unique name of the index order resource.",
+				Type:        schema.TypeString,
+				Required:    true,
+			},
 			"indexes": {
-				Type:     schema.TypeList,
-				Required: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "The index resource list. Logs are tested against the query filter of each index one by one following the order of the list.",
+				Type:        schema.TypeList,
+				Required:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 		},
 	}
