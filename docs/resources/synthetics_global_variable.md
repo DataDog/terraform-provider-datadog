@@ -24,15 +24,15 @@ resource "datadog_synthetics_global_variable" "test_variable" {
 
 ### Required
 
-- **name** (String, Required)
-- **value** (String, Required)
+- **name** (String) Synthetics global variable name.
+- **value** (String, Sensitive) The value of the global variable.
 
 ### Optional
 
-- **description** (String, Optional)
-- **id** (String, Optional) The ID of this resource.
-- **secure** (Boolean, Optional)
-- **tags** (List of String, Optional)
+- **description** (String) Description of the global variable.
+- **id** (String) The ID of this resource.
+- **secure** (Boolean) Sets the variable as secure. Defaults to `false`.
+- **tags** (List of String) A list of tags to associate with your synthetics global variable.
 
 ## Import
 

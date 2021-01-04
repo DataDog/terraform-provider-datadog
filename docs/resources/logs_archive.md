@@ -30,17 +30,17 @@ resource "datadog_logs_archive" "my_s3_archive" {
 
 ### Required
 
-- **name** (String, Required)
-- **query** (String, Required)
+- **name** (String) Your archive name.
+- **query** (String) The archive query/filter. Logs matching this query are included in the archive.
 
 ### Optional
 
-- **azure** (Map of String, Optional)
-- **gcs** (Map of String, Optional)
-- **id** (String, Optional) The ID of this resource.
-- **include_tags** (Boolean, Optional)
-- **rehydration_tags** (List of String, Optional)
-- **s3** (Map of String, Optional)
+- **azure** (Map of String) Definition of an azure archive.
+- **gcs** (Map of String) Definition of a GCS archive.
+- **id** (String) The ID of this resource.
+- **include_tags** (Boolean) To store the tags in the archive, set the value `true`. If it is set to `false`, the tags will be dropped when the logs are sent to the archive.
+- **rehydration_tags** (List of String) An array of tags to add to rehydrated logs from an archive.
+- **s3** (Map of String) Definition of an s3 archive.
 
 ## Import
 

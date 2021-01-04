@@ -24,8 +24,8 @@ resource "datadog_logs_archive_order" "sample_archive_order" {
 
 ### Optional
 
-- **archive_ids** (List of String, Optional)
-- **id** (String, Optional) The ID of this resource.
+- **archive_ids** (List of String) The archive IDs list. The order of archive IDs in this attribute defines the overall archive order for logs. If `archive_ids` is empty or not specified, it will import the actual archive order, and create the resource. Otherwise, it will try to update the order.
+- **id** (String) The ID of this resource.
 
 ## Import
 

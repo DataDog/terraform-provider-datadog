@@ -167,12 +167,12 @@ resource "datadog_logs_custom_pipeline" "sample_pipeline" {
 ### Required
 
 - **filter** (Block List, Min: 1) (see [below for nested schema](#nestedblock--filter))
-- **name** (String, Required)
+- **name** (String)
 
 ### Optional
 
-- **id** (String, Optional) The ID of this resource.
-- **is_enabled** (Boolean, Optional)
+- **id** (String) The ID of this resource.
+- **is_enabled** (Boolean)
 - **processor** (Block List) (see [below for nested schema](#nestedblock--processor))
 
 <a id="nestedblock--filter"></a>
@@ -180,7 +180,7 @@ resource "datadog_logs_custom_pipeline" "sample_pipeline" {
 
 Required:
 
-- **query** (String, Required)
+- **query** (String) Filter criteria of the category.
 
 
 <a id="nestedblock--processor"></a>
@@ -209,14 +209,14 @@ Optional:
 
 Required:
 
-- **expression** (String, Required)
-- **target** (String, Required)
+- **expression** (String) Arithmetic operation between one or more log attributes.
+- **target** (String) Name of the attribute that contains the result of the arithmetic operation.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **is_replace_missing** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) Boolean value to enable your pipeline.
+- **is_replace_missing** (Boolean) If true, it replaces all missing attributes of expression by 0, false skips the operation if an attribute is missing.
+- **name** (String) Your pipeline name.
 
 
 <a id="nestedblock--processor--attribute_remapper"></a>
@@ -224,18 +224,18 @@ Optional:
 
 Required:
 
-- **source_type** (String, Required)
-- **sources** (List of String, Required)
-- **target** (String, Required)
-- **target_type** (String, Required)
+- **source_type** (String) Defines where the sources are from (log attribute or tag).
+- **sources** (List of String) List of source attributes or tags.
+- **target** (String) Final attribute or tag name to remap the sources.
+- **target_type** (String) Defines if the target is a log attribute or tag.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
-- **override_on_conflict** (Boolean, Optional)
-- **preserve_source** (Boolean, Optional)
-- **target_format** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor
+- **override_on_conflict** (Boolean) Override the target element if already set.
+- **preserve_source** (Boolean) Remove or preserve the remapped source element.
+- **target_format** (String) If the `target_type` of the remapper is `attribute`, try to cast the value to a new specific type. If the cast is not possible, the original type is kept. `string`, `integer`, or `double` are the possible types. If the `target_type` is `tag`, this parameter may not be specified.
 
 
 <a id="nestedblock--processor--category_processor"></a>
@@ -243,13 +243,13 @@ Optional:
 
 Required:
 
-- **category** (Block List, Min: 1) (see [below for nested schema](#nestedblock--processor--category_processor--category))
-- **target** (String, Required)
+- **category** (Block List, Min: 1) List of filters to match or exclude a log with their corresponding name to assign a custom value to the log. (see [below for nested schema](#nestedblock--processor--category_processor--category))
+- **target** (String) Name of the target attribute whose value is defined by the matching category.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the category
 
 <a id="nestedblock--processor--category_processor--category"></a>
 ### Nested Schema for `processor.category_processor.category`
@@ -257,14 +257,14 @@ Optional:
 Required:
 
 - **filter** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--processor--category_processor--category--filter))
-- **name** (String, Required)
+- **name** (String)
 
 <a id="nestedblock--processor--category_processor--category--filter"></a>
 ### Nested Schema for `processor.category_processor.category.name`
 
 Required:
 
-- **query** (String, Required)
+- **query** (String) Filter criteria of the category.
 
 
 
@@ -274,12 +274,12 @@ Required:
 
 Required:
 
-- **sources** (List of String, Required)
+- **sources** (List of String) List of source attributes.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor.
 
 
 <a id="nestedblock--processor--geo_ip_parser"></a>
@@ -287,13 +287,13 @@ Optional:
 
 Required:
 
-- **sources** (List of String, Required)
-- **target** (String, Required)
+- **sources** (List of String) List of source attributes.
+- **target** (String) Name of the parent attribute that contains all the extracted details from the sources.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor.
 
 
 <a id="nestedblock--processor--grok_parser"></a>
@@ -302,21 +302,21 @@ Optional:
 Required:
 
 - **grok** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--processor--grok_parser--grok))
-- **source** (String, Required)
+- **source** (String) Name of the log attribute to parse.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
-- **samples** (List of String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor
+- **samples** (List of String) List of sample logs for this parser. It can save up to 5 samples. Each sample takes up to 5000 characters.
 
 <a id="nestedblock--processor--grok_parser--grok"></a>
 ### Nested Schema for `processor.grok_parser.grok`
 
 Required:
 
-- **match_rules** (String, Required)
-- **support_rules** (String, Required)
+- **match_rules** (String) Match rules for your grok parser.
+- **support_rules** (String) Support rules for your grok parser.
 
 
 
@@ -325,15 +325,15 @@ Required:
 
 Required:
 
-- **lookup_table** (List of String, Required)
-- **source** (String, Required)
-- **target** (String, Required)
+- **lookup_table** (List of String) List of entries of the lookup table using `key,value` format.
+- **source** (String) Name of the source attribute used to do the lookup.
+- **target** (String) Name of the attribute that contains the result of the lookup.
 
 Optional:
 
-- **default_lookup** (String, Optional)
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **default_lookup** (String) Default lookup value to use if there is no entry in the lookup table for the value of the source attribute.
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor
 
 
 <a id="nestedblock--processor--message_remapper"></a>
@@ -341,12 +341,12 @@ Optional:
 
 Required:
 
-- **sources** (List of String, Required)
+- **sources** (List of String) List of source attributes.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor.
 
 
 <a id="nestedblock--processor--pipeline"></a>
@@ -355,11 +355,11 @@ Optional:
 Required:
 
 - **filter** (Block List, Min: 1) (see [below for nested schema](#nestedblock--processor--pipeline--filter))
-- **name** (String, Required)
+- **name** (String)
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
+- **is_enabled** (Boolean)
 - **processor** (Block List) (see [below for nested schema](#nestedblock--processor--pipeline--processor))
 
 <a id="nestedblock--processor--pipeline--filter"></a>
@@ -367,7 +367,7 @@ Optional:
 
 Required:
 
-- **query** (String, Required)
+- **query** (String) Filter criteria of the category.
 
 
 <a id="nestedblock--processor--pipeline--processor"></a>
@@ -395,14 +395,14 @@ Optional:
 
 Required:
 
-- **expression** (String, Required)
-- **target** (String, Required)
+- **expression** (String) Arithmetic operation between one or more log attributes.
+- **target** (String) Name of the attribute that contains the result of the arithmetic operation.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **is_replace_missing** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) Boolean value to enable your pipeline.
+- **is_replace_missing** (Boolean) If true, it replaces all missing attributes of expression by 0, false skips the operation if an attribute is missing.
+- **name** (String) Your pipeline name.
 
 
 <a id="nestedblock--processor--pipeline--processor--attribute_remapper"></a>
@@ -410,18 +410,18 @@ Optional:
 
 Required:
 
-- **source_type** (String, Required)
-- **sources** (List of String, Required)
-- **target** (String, Required)
-- **target_type** (String, Required)
+- **source_type** (String) Defines where the sources are from (log attribute or tag).
+- **sources** (List of String) List of source attributes or tags.
+- **target** (String) Final attribute or tag name to remap the sources.
+- **target_type** (String) Defines if the target is a log attribute or tag.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
-- **override_on_conflict** (Boolean, Optional)
-- **preserve_source** (Boolean, Optional)
-- **target_format** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor
+- **override_on_conflict** (Boolean) Override the target element if already set.
+- **preserve_source** (Boolean) Remove or preserve the remapped source element.
+- **target_format** (String) If the `target_type` of the remapper is `attribute`, try to cast the value to a new specific type. If the cast is not possible, the original type is kept. `string`, `integer`, or `double` are the possible types. If the `target_type` is `tag`, this parameter may not be specified.
 
 
 <a id="nestedblock--processor--pipeline--processor--category_processor"></a>
@@ -429,13 +429,13 @@ Optional:
 
 Required:
 
-- **category** (Block List, Min: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--user_agent_parser--category))
-- **target** (String, Required)
+- **category** (Block List, Min: 1) List of filters to match or exclude a log with their corresponding name to assign a custom value to the log. (see [below for nested schema](#nestedblock--processor--pipeline--processor--user_agent_parser--category))
+- **target** (String) Name of the target attribute whose value is defined by the matching category.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the category
 
 <a id="nestedblock--processor--pipeline--processor--user_agent_parser--category"></a>
 ### Nested Schema for `processor.pipeline.processor.user_agent_parser.category`
@@ -443,14 +443,14 @@ Optional:
 Required:
 
 - **filter** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--user_agent_parser--category--filter))
-- **name** (String, Required)
+- **name** (String)
 
 <a id="nestedblock--processor--pipeline--processor--user_agent_parser--category--filter"></a>
 ### Nested Schema for `processor.pipeline.processor.user_agent_parser.category.name`
 
 Required:
 
-- **query** (String, Required)
+- **query** (String) Filter criteria of the category.
 
 
 
@@ -460,12 +460,12 @@ Required:
 
 Required:
 
-- **sources** (List of String, Required)
+- **sources** (List of String) List of source attributes.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor.
 
 
 <a id="nestedblock--processor--pipeline--processor--geo_ip_parser"></a>
@@ -473,13 +473,13 @@ Optional:
 
 Required:
 
-- **sources** (List of String, Required)
-- **target** (String, Required)
+- **sources** (List of String) List of source attributes.
+- **target** (String) Name of the parent attribute that contains all the extracted details from the sources.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor.
 
 
 <a id="nestedblock--processor--pipeline--processor--grok_parser"></a>
@@ -488,21 +488,21 @@ Optional:
 Required:
 
 - **grok** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--user_agent_parser--grok))
-- **source** (String, Required)
+- **source** (String) Name of the log attribute to parse.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
-- **samples** (List of String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor
+- **samples** (List of String) List of sample logs for this parser. It can save up to 5 samples. Each sample takes up to 5000 characters.
 
 <a id="nestedblock--processor--pipeline--processor--user_agent_parser--grok"></a>
 ### Nested Schema for `processor.pipeline.processor.user_agent_parser.grok`
 
 Required:
 
-- **match_rules** (String, Required)
-- **support_rules** (String, Required)
+- **match_rules** (String) Match rules for your grok parser.
+- **support_rules** (String) Support rules for your grok parser.
 
 
 
@@ -511,15 +511,15 @@ Required:
 
 Required:
 
-- **lookup_table** (List of String, Required)
-- **source** (String, Required)
-- **target** (String, Required)
+- **lookup_table** (List of String) List of entries of the lookup table using `key,value` format.
+- **source** (String) Name of the source attribute used to do the lookup.
+- **target** (String) Name of the attribute that contains the result of the lookup.
 
 Optional:
 
-- **default_lookup** (String, Optional)
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **default_lookup** (String) Default lookup value to use if there is no entry in the lookup table for the value of the source attribute.
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor
 
 
 <a id="nestedblock--processor--pipeline--processor--message_remapper"></a>
@@ -527,12 +527,12 @@ Optional:
 
 Required:
 
-- **sources** (List of String, Required)
+- **sources** (List of String) List of source attributes.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor.
 
 
 <a id="nestedblock--processor--pipeline--processor--service_remapper"></a>
@@ -540,12 +540,12 @@ Optional:
 
 Required:
 
-- **sources** (List of String, Required)
+- **sources** (List of String) List of source attributes.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor.
 
 
 <a id="nestedblock--processor--pipeline--processor--status_remapper"></a>
@@ -553,12 +553,12 @@ Optional:
 
 Required:
 
-- **sources** (List of String, Required)
+- **sources** (List of String) List of source attributes.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor.
 
 
 <a id="nestedblock--processor--pipeline--processor--string_builder_processor"></a>
@@ -566,14 +566,14 @@ Optional:
 
 Required:
 
-- **target** (String, Required)
-- **template** (String, Required)
+- **target** (String) The name of the attribute that contains the result of the template.
+- **template** (String) The formula with one or more attributes and raw text.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **is_replace_missing** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **is_replace_missing** (Boolean) If it replaces all missing attributes of template by an empty string.
+- **name** (String) The name of the processor.
 
 
 <a id="nestedblock--processor--pipeline--processor--trace_id_remapper"></a>
@@ -581,12 +581,12 @@ Optional:
 
 Required:
 
-- **sources** (List of String, Required)
+- **sources** (List of String) List of source attributes.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor.
 
 
 <a id="nestedblock--processor--pipeline--processor--url_parser"></a>
@@ -594,14 +594,14 @@ Optional:
 
 Required:
 
-- **sources** (List of String, Required)
-- **target** (String, Required)
+- **sources** (List of String) List of source attributes.
+- **target** (String) Name of the parent attribute that contains all the extracted details from the sources.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
-- **normalize_ending_slashes** (Boolean, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor
+- **normalize_ending_slashes** (Boolean) Normalize the ending slashes or not.
 
 
 <a id="nestedblock--processor--pipeline--processor--user_agent_parser"></a>
@@ -609,14 +609,14 @@ Optional:
 
 Required:
 
-- **sources** (List of String, Required)
-- **target** (String, Required)
+- **sources** (List of String) List of source attributes.
+- **target** (String) Name of the parent attribute that contains all the extracted details from the sources.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **is_encoded** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **is_encoded** (Boolean) If the source attribute is URL encoded or not.
+- **name** (String) Name of the processor
 
 
 
@@ -626,12 +626,12 @@ Optional:
 
 Required:
 
-- **sources** (List of String, Required)
+- **sources** (List of String) List of source attributes.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor.
 
 
 <a id="nestedblock--processor--status_remapper"></a>
@@ -639,12 +639,12 @@ Optional:
 
 Required:
 
-- **sources** (List of String, Required)
+- **sources** (List of String) List of source attributes.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor.
 
 
 <a id="nestedblock--processor--string_builder_processor"></a>
@@ -652,14 +652,14 @@ Optional:
 
 Required:
 
-- **target** (String, Required)
-- **template** (String, Required)
+- **target** (String) The name of the attribute that contains the result of the template.
+- **template** (String) The formula with one or more attributes and raw text.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **is_replace_missing** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **is_replace_missing** (Boolean) If it replaces all missing attributes of template by an empty string.
+- **name** (String) The name of the processor.
 
 
 <a id="nestedblock--processor--trace_id_remapper"></a>
@@ -667,12 +667,12 @@ Optional:
 
 Required:
 
-- **sources** (List of String, Required)
+- **sources** (List of String) List of source attributes.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor.
 
 
 <a id="nestedblock--processor--url_parser"></a>
@@ -680,14 +680,14 @@ Optional:
 
 Required:
 
-- **sources** (List of String, Required)
-- **target** (String, Required)
+- **sources** (List of String) List of source attributes.
+- **target** (String) Name of the parent attribute that contains all the extracted details from the sources.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
-- **normalize_ending_slashes** (Boolean, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **name** (String) Name of the processor
+- **normalize_ending_slashes** (Boolean) Normalize the ending slashes or not.
 
 
 <a id="nestedblock--processor--user_agent_parser"></a>
@@ -695,14 +695,14 @@ Optional:
 
 Required:
 
-- **sources** (List of String, Required)
-- **target** (String, Required)
+- **sources** (List of String) List of source attributes.
+- **target** (String) Name of the parent attribute that contains all the extracted details from the sources.
 
 Optional:
 
-- **is_enabled** (Boolean, Optional)
-- **is_encoded** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) If the processor is enabled or not.
+- **is_encoded** (Boolean) If the source attribute is URL encoded or not.
+- **name** (String) Name of the processor
 
 ## Import
 

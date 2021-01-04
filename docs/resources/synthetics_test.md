@@ -189,56 +189,56 @@ resource "datadog_synthetics_test" "test_browser" {
 
 ### Required
 
-- **locations** (List of String, Required)
-- **name** (String, Required)
-- **request** (Map of String, Required)
-- **status** (String, Required)
-- **type** (String, Required)
+- **locations** (List of String) Array of locations used to run the test. Refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#request) for available locations (e.g. `aws:eu-central-1`).
+- **name** (String) Name of Datadog synthetics test.
+- **request** (Map of String) The synthetics test request. Required if `type = "api"` and `subtype = "http"`.
+- **status** (String) Define whether you want to start (`live`) or pause (`paused`) a Synthetic test. Allowed enum values: `live`, `paused`
+- **type** (String) Synthetics test type (`api` or `browser`).
 
 ### Optional
 
-- **assertion** (Block List) (see [below for nested schema](#nestedblock--assertion))
-- **assertions** (List of Map of String, Optional, Deprecated)
-- **device_ids** (List of String, Optional)
-- **id** (String, Optional) The ID of this resource.
-- **message** (String, Optional)
-- **options** (Map of String, Optional, Deprecated)
+- **assertion** (Block List) Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--assertion))
+- **assertions** (List of Map of String, Deprecated) List of assertions.
+- **device_ids** (List of String) Array with the different device IDs used to run the test. Allowed enum values: `laptop_large`, `tablet`, `mobile_small` (only available for `browser` tests).
+- **id** (String) The ID of this resource.
+- **message** (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.
+- **options** (Map of String, Deprecated)
 - **options_list** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
-- **request_basicauth** (Block List, Max: 1) (see [below for nested schema](#nestedblock--request_basicauth))
-- **request_client_certificate** (Block List, Max: 1) (see [below for nested schema](#nestedblock--request_client_certificate))
-- **request_headers** (Map of String, Optional)
-- **request_query** (Map of String, Optional)
-- **step** (Block List) (see [below for nested schema](#nestedblock--step))
-- **subtype** (String, Optional)
-- **tags** (List of String, Optional)
-- **variable** (Block List) (see [below for nested schema](#nestedblock--variable))
+- **request_basicauth** (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
+- **request_client_certificate** (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
+- **request_headers** (Map of String) Header name and value map.
+- **request_query** (Map of String) Query arguments name and value map.
+- **step** (Block List) Steps for browser tests. (see [below for nested schema](#nestedblock--step))
+- **subtype** (String) When `type` is `api`, choose from `http`, `ssl`, `tcp` or `dns`. Defaults to `http`.
+- **tags** (List of String) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).
+- **variable** (Block List) Variables used for the test. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--variable))
 
 ### Read-only
 
-- **monitor_id** (Number, Read-only)
+- **monitor_id** (Number) ID of the monitor associated with the Datadog synthetics test.
 
 <a id="nestedblock--assertion"></a>
 ### Nested Schema for `assertion`
 
 Required:
 
-- **operator** (String, Required)
-- **type** (String, Required)
+- **operator** (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation)).
+- **type** (String) Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation)).
 
 Optional:
 
-- **property** (String, Optional)
-- **target** (String, Optional)
-- **targetjsonpath** (Block List, Max: 1) (see [below for nested schema](#nestedblock--assertion--targetjsonpath))
+- **property** (String) If assertion type is `header`, this is the header name.
+- **target** (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation) for details.
+- **targetjsonpath** (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonpath))
 
 <a id="nestedblock--assertion--targetjsonpath"></a>
 ### Nested Schema for `assertion.targetjsonpath`
 
 Required:
 
-- **jsonpath** (String, Required)
-- **operator** (String, Required)
-- **targetvalue** (String, Required)
+- **jsonpath** (String) The JSON path to assert.
+- **operator** (String) The specific operator to use on the path.
+- **targetvalue** (String) Expected matching value.
 
 
 
@@ -247,21 +247,21 @@ Required:
 
 Optional:
 
-- **accept_self_signed** (Boolean, Optional)
-- **allow_insecure** (Boolean, Optional)
-- **follow_redirects** (Boolean, Optional)
-- **min_failure_duration** (Number, Optional)
-- **min_location_failed** (Number, Optional)
+- **accept_self_signed** (Boolean) For SSL test, whether or not the test should allow self signed certificates.
+- **allow_insecure** (Boolean) Allows loading insecure content for an HTTP test.
+- **follow_redirects** (Boolean) For API HTTP test, whether or not the test should follow redirects.
+- **min_failure_duration** (Number) Minimum amount of time in failure required to trigger an alert. Default is `0`.
+- **min_location_failed** (Number) Minimum number of locations in failure required to trigger an alert. Default is `1`.
 - **monitor_options** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--monitor_options))
 - **retry** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--retry))
-- **tick_every** (Number, Optional)
+- **tick_every** (Number) How often the test should run (in seconds). Current possible values are `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` plus `60` for API tests or `300` for browser tests.
 
 <a id="nestedblock--options_list--monitor_options"></a>
 ### Nested Schema for `options_list.monitor_options`
 
 Optional:
 
-- **renotify_interval** (Number, Optional)
+- **renotify_interval** (Number) Specify a renotification frequency.
 
 
 <a id="nestedblock--options_list--retry"></a>
@@ -269,8 +269,8 @@ Optional:
 
 Optional:
 
-- **count** (Number, Optional)
-- **interval** (Number, Optional)
+- **count** (Number) Number of retries needed to consider a location as failed before sending a notification alert.
+- **interval** (Number) Interval between a failed test and the next retry in milliseconds.
 
 
 
@@ -279,8 +279,8 @@ Optional:
 
 Required:
 
-- **password** (String, Required)
-- **username** (String, Required)
+- **password** (String, Sensitive) Password for authentication.
+- **username** (String) Username for authentication.
 
 
 <a id="nestedblock--request_client_certificate"></a>
@@ -296,11 +296,11 @@ Required:
 
 Required:
 
-- **content** (String, Required)
+- **content** (String, Sensitive) Content of the certificate.
 
 Optional:
 
-- **filename** (String, Optional)
+- **filename** (String) File name for the certificate.
 
 
 <a id="nestedblock--request_client_certificate--key"></a>
@@ -308,11 +308,11 @@ Optional:
 
 Required:
 
-- **content** (String, Required)
+- **content** (String, Sensitive) Content of the certificate.
 
 Optional:
 
-- **filename** (String, Optional)
+- **filename** (String) File name for the certificate.
 
 
 
@@ -321,14 +321,14 @@ Optional:
 
 Required:
 
-- **name** (String, Required)
-- **params** (String, Required)
-- **type** (String, Required)
+- **name** (String) Name of the step.
+- **params** (String) Parameters for the step as JSON string.
+- **type** (String) Type of the step. Refer to [Datadog documentation](https://docs.datadoghq.com/api/v1/synthetics/#create-a-test) for the complete list of available types.
 
 Optional:
 
-- **allow_failure** (Boolean, Optional)
-- **timeout** (Number, Optional)
+- **allow_failure** (Boolean) Determines if the step should be allowed to fail.
+- **timeout** (Number) Used to override the default timeout of a step.
 
 
 <a id="nestedblock--variable"></a>
@@ -336,14 +336,14 @@ Optional:
 
 Required:
 
-- **name** (String, Required)
-- **type** (String, Required)
+- **name** (String) Name of the variable.
+- **type** (String) Type of browser test variable. Allowed enum values: `element`, `email`, `global`, `text`.
 
 Optional:
 
-- **example** (String, Optional)
-- **id** (String, Optional) The ID of this resource.
-- **pattern** (String, Optional)
+- **example** (String) Example for the variable.
+- **id** (String) ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type `global`.
+- **pattern** (String) Pattern of the variable.
 
 ## Import
 

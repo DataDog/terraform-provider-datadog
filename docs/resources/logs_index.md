@@ -42,20 +42,20 @@ resource "datadog_logs_index" "sample_index" {
 
 ### Required
 
-- **filter** (Block List, Min: 1) (see [below for nested schema](#nestedblock--filter))
-- **name** (String, Required)
+- **filter** (Block List, Min: 1) Logs filter (see [below for nested schema](#nestedblock--filter))
+- **name** (String) The name of the index.
 
 ### Optional
 
-- **exclusion_filter** (Block List) (see [below for nested schema](#nestedblock--exclusion_filter))
-- **id** (String, Optional) The ID of this resource.
+- **exclusion_filter** (Block List) List of exclusion filters. (see [below for nested schema](#nestedblock--exclusion_filter))
+- **id** (String) The ID of this resource.
 
 <a id="nestedblock--filter"></a>
 ### Nested Schema for `filter`
 
 Required:
 
-- **query** (String, Required)
+- **query** (String) Logs filter criteria. Only logs matching this filter criteria are considered for this index.
 
 
 <a id="nestedblock--exclusion_filter"></a>
@@ -64,16 +64,16 @@ Required:
 Optional:
 
 - **filter** (Block List) (see [below for nested schema](#nestedblock--exclusion_filter--filter))
-- **is_enabled** (Boolean, Optional)
-- **name** (String, Optional)
+- **is_enabled** (Boolean) A boolean stating if the exclusion is active or not.
+- **name** (String) The name of the exclusion filter.
 
 <a id="nestedblock--exclusion_filter--filter"></a>
 ### Nested Schema for `exclusion_filter.filter`
 
 Optional:
 
-- **query** (String, Optional)
-- **sample_rate** (Number, Optional)
+- **query** (String) Only logs matching the filter criteria and the query of the parent index will be considered for this exclusion filter.
+- **sample_rate** (Number) The fraction of logs excluded by the exclusion filter, when active.
 
 ## Import
 

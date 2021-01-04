@@ -29,22 +29,22 @@ resource "datadog_user" "foo" {
 
 ### Required
 
-- **email** (String, Required)
+- **email** (String) Email address for user.
 
 ### Optional
 
-- **access_role** (String, Optional)
-- **disabled** (Boolean, Optional)
-- **handle** (String, Optional, Deprecated)
-- **id** (String, Optional) The ID of this resource.
-- **is_admin** (Boolean, Optional, Deprecated)
-- **name** (String, Optional)
-- **role** (String, Optional, Deprecated)
-- **roles** (Set of String, Optional)
+- **access_role** (String) Role description for user. Can be `st` (standard user), `adm` (admin user) or `ro` (read-only user). Default is `st`. `access_role` is ignored for new users created with this resource. New users have to use the `roles` attribute.
+- **disabled** (Boolean) Whether the user is disabled.
+- **handle** (String, Deprecated) The user handle, must be a valid email.
+- **id** (String) The ID of this resource.
+- **is_admin** (Boolean, Deprecated) Whether the user is an administrator. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
+- **name** (String) Name for user.
+- **role** (String, Deprecated) Role description for user. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
+- **roles** (Set of String) A list a role IDs to assign to the user.
 
 ### Read-only
 
-- **verified** (Boolean, Read-only)
+- **verified** (Boolean) Returns true if Datadog user is verified
 
 ## Import
 

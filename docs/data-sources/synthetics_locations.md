@@ -24,10 +24,10 @@ resource "datadog_synthetics_test" "test_api" {
 
 ### Optional
 
-- **id** (String, Optional) The ID of this resource.
+- **id** (String) The ID of this resource.
 
 ### Read-only
 
-- **locations** (Map of String, Read-only) A map of available Synthetics location IDs to names for Synthetics tests.
+- **locations** (Map of String) A map of available Synthetics location IDs to names for Synthetics tests.
 
 

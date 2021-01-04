@@ -24,8 +24,8 @@ resource "datadog_logs_integration_pipeline" "python" {
 
 ### Optional
 
-- **id** (String, Optional) The ID of this resource.
-- **is_enabled** (Boolean, Optional)
+- **id** (String) The ID of this resource.
+- **is_enabled** (Boolean) Boolean value to enable your pipeline.
 
 ## Import
 

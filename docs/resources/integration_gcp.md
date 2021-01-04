@@ -27,16 +27,16 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
 
 ### Required
 
-- **client_email** (String, Required)
-- **client_id** (String, Required)
-- **private_key** (String, Required)
-- **private_key_id** (String, Required)
-- **project_id** (String, Required)
+- **client_email** (String) Your email found in your JSON service account key.
+- **client_id** (String) Your ID found in your JSON service account key.
+- **private_key** (String, Sensitive) Your private key name found in your JSON service account key.
+- **private_key_id** (String) Your private key ID found in your JSON service account key.
+- **project_id** (String) Your Google Cloud project ID found in your JSON service account key.
 
 ### Optional
 
-- **host_filters** (String, Optional)
-- **id** (String, Optional) The ID of this resource.
+- **host_filters** (String) Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.
+- **id** (String) The ID of this resource.
 
 ## Import
 

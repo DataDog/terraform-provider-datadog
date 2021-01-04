@@ -30,20 +30,24 @@ resource "datadog_integration_aws" "sandbox" {
 
 ### Required
 
-- **account_id** (String, Required)
-- **role_name** (String, Required)
+- **account_id** (String) Your AWS Account ID without dashes.
+- **role_name** (String) Your Datadog role delegation name.
 
 ### Optional
 
-- **account_specific_namespace_rules** (Map of Boolean, Optional)
-- **excluded_regions** (List of String, Optional)
-- **filter_tags** (List of String, Optional)
-- **host_tags** (List of String, Optional)
-- **id** (String, Optional) The ID of this resource.
+- **account_specific_namespace_rules** (Map of Boolean) Enables or disables metric collection for specific AWS namespaces for this AWS account only. A list of namespaces can be found at the [available namespace rules API endpoint](https://docs.datadoghq.com/api/v1/aws-integration/#list-namespace-rules).
+- **excluded_regions** (List of String) An array of AWS regions to exclude from metrics collection.
+- **filter_tags** (List of String) Array of EC2 tags (in the form key:value) defines a filter that Datadog use when collecting metrics from EC2. Wildcards, such as `?` (for single characters) and `*` (for multiple characters) can also be used.
+
+Only hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. Host matching a given tag can also be excluded by adding `!` before the tag.
+
+e.x. `env:production,instance-type:c1.*,!region:us-east-1`.
+- **host_tags** (List of String) Array of tags (in the form key:value) to add to all hosts and metrics reporting through this integration.
+- **id** (String) The ID of this resource.
 
 ### Read-only
 
-- **external_id** (String, Read-only)
+- **external_id** (String) AWS External ID. **NOTE** This provider will not be able to detect changes made to the `external_id` field from outside Terraform.
 
 ## Import
 

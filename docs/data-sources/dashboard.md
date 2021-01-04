@@ -21,15 +21,15 @@ data "datadog_dashboard" "test" {
 
 ### Required
 
-- **name** (String, Required) The dashboard name to search for. Must only match one dashboard.
+- **name** (String) The dashboard name to search for. Must only match one dashboard.
 
 ### Optional
 
-- **id** (String, Optional) The ID of this resource.
+- **id** (String) The ID of this resource.
 
 ### Read-only
 
-- **title** (String, Read-only) The name of the dashboard.
-- **url** (String, Read-only) The URL to a specific dashboard.
+- **title** (String) The name of the dashboard.
+- **url** (String) The URL to a specific dashboard.
 
 

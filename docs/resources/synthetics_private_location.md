@@ -23,17 +23,17 @@ resource "datadog_synthetics_private_location" "private_location" {
 
 ### Required
 
-- **name** (String, Required)
+- **name** (String) Synthetics private location name.
 
 ### Optional
 
-- **description** (String, Optional)
-- **id** (String, Optional) The ID of this resource.
-- **tags** (List of String, Optional)
+- **description** (String) Description of the private location.
+- **id** (String) The ID of this resource.
+- **tags** (List of String) A list of tags to associate with your synthetics private location.
 
 ### Read-only
 
-- **config** (String, Read-only)
+- **config** (String, Sensitive) Configuration skeleton for the private location. See installation instructions of the private location on how to use this configuration.
 
 ## Import
 

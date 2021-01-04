@@ -29,16 +29,16 @@ resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 ### Optional
 
 - **case** (Block List, Max: 5) Cases of the rule, this is used to update notifications. (see [below for nested schema](#nestedblock--case))
-- **enabled** (Boolean, Optional) Enable the rule.
-- **id** (String, Optional) The ID of this resource.
+- **enabled** (Boolean) Enable the rule.
+- **id** (String) The ID of this resource.
 
 <a id="nestedblock--case"></a>
 ### Nested Schema for `case`
 
 Required:
 
-- **notifications** (List of String, Required) Notification targets for each rule case.
-- **status** (String, Required) Status of the rule case to match.
+- **notifications** (List of String) Notification targets for each rule case.
+- **status** (String) Status of the rule case to match.
 
 ## Import
 

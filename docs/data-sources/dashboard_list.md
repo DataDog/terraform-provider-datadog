@@ -21,10 +21,10 @@ data "datadog_dashboard_list" "test" {
 
 ### Required
 
-- **name** (String, Required) A dashboard list name to limit the search.
+- **name** (String) A dashboard list name to limit the search.
 
 ### Optional
 
-- **id** (String, Optional) The ID of this resource.
+- **id** (String) The ID of this resource.
 
 

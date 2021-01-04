@@ -23,19 +23,21 @@ data "datadog_security_monitoring_rules" "test" {
 
 ### Optional
 
-- **default_only_filter** (Boolean, Optional) Limit the search to default rules
-- **id** (String, Optional) The ID of this resource.
-- **name_filter** (String, Optional) A rule name to limit the search
-- **tags_filter** (List of String, Optional) A list of tags to limit the search
-- **user_only_filter** (Boolean, Optional) Limit the search to user rules
+- **default_only_filter** (Boolean) Limit the search to default rules
+- **id** (String) The ID of this resource.
+- **name_filter** (String) A rule name to limit the search
+- **tags_filter** (List of String) A list of tags to limit the search
+- **user_only_filter** (Boolean) Limit the search to user rules
 
 ### Read-only
 
-- **rule_ids** (List of String, Read-only) List of ids of the matched rules.
-- **rules** (List of Object, Read-only) List of roles (see [below for nested schema](#nestedatt--rules))
+- **rule_ids** (List of String) List of IDs of the matched rules.
+- **rules** (List of Object) List of rules. (see [below for nested schema](#nestedatt--rules))
 
 <a id="nestedatt--rules"></a>
 ### Nested Schema for `rules`
+
+Read-only:
 
 - **case** (List of Object) (see [below for nested schema](#nestedobjatt--rules--case))
 - **enabled** (Boolean)
@@ -48,6 +50,8 @@ data "datadog_security_monitoring_rules" "test" {
 <a id="nestedobjatt--rules--case"></a>
 ### Nested Schema for `rules.case`
 
+Read-only:
+
 - **condition** (String)
 - **name** (String)
 - **notifications** (List of String)
@@ -57,6 +61,8 @@ data "datadog_security_monitoring_rules" "test" {
 <a id="nestedobjatt--rules--options"></a>
 ### Nested Schema for `rules.options`
 
+Read-only:
+
 - **evaluation_window** (Number)
 - **keep_alive** (Number)
 - **max_signal_duration** (Number)
@@ -64,6 +70,8 @@ data "datadog_security_monitoring_rules" "test" {
 
 <a id="nestedobjatt--rules--query"></a>
 ### Nested Schema for `rules.query`
+
+Read-only:
 
 - **aggregation** (String)
 - **distinct_fields** (List of String)

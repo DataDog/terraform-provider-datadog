@@ -160,14 +160,14 @@ resource "datadog_integration_pagerduty_service_object" "testing_bar" {
 
 ### Required
 
-- **subdomain** (String, Required)
+- **subdomain** (String) Your PagerDuty account’s personalized subdomain name.
 
 ### Optional
 
-- **api_token** (String, Optional)
-- **id** (String, Optional) The ID of this resource.
-- **individual_services** (Boolean, Optional)
-- **schedules** (List of String, Optional)
+- **api_token** (String, Sensitive) Your PagerDuty API token.
+- **id** (String) The ID of this resource.
+- **individual_services** (Boolean) Boolean to specify whether or not individual service objects specified by [datadog_integration_pagerduty_service_object](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_pagerduty_service_object) resource are to be used. Mutually exclusive with `services` key.
+- **schedules** (List of String) Array of your schedule URLs.
 - **services** (Block List, Deprecated) A list of service names and service keys. (see [below for nested schema](#nestedblock--services))
 
 <a id="nestedblock--services"></a>
@@ -175,7 +175,7 @@ resource "datadog_integration_pagerduty_service_object" "testing_bar" {
 
 Required:
 
-- **service_key** (String, Required)
-- **service_name** (String, Required)
+- **service_key** (String, Sensitive) Your Service name associated service key in Pagerduty.
+- **service_name** (String) Your Service name in PagerDuty.
 
 

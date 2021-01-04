@@ -78,20 +78,20 @@ resource "datadog_dashboard" "screen" {
 
 ### Required
 
-- **name** (String, Required) The name of the Dashboard List
+- **name** (String) The name of the Dashboard List
 
 ### Optional
 
 - **dash_item** (Block Set) A set of dashbaord items that belong to this list (see [below for nested schema](#nestedblock--dash_item))
-- **id** (String, Optional) The ID of this resource.
+- **id** (String) The ID of this resource.
 
 <a id="nestedblock--dash_item"></a>
 ### Nested Schema for `dash_item`
 
 Required:
 
-- **dash_id** (String, Required) The ID of the dashboard to add
-- **type** (String, Required) The type of this dashboard
+- **dash_id** (String) The ID of the dashboard to add
+- **type** (String) The type of this dashboard
 
 ## Import
 

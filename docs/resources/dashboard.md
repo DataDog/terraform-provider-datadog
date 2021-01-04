@@ -623,24 +623,24 @@ resource "datadog_dashboard" "free_dashboard" {
 
 ### Required
 
-- **layout_type** (String, Required) The layout type of the dashboard, either 'free' or 'ordered'.
-- **title** (String, Required) The title of the dashboard.
+- **layout_type** (String) The layout type of the dashboard, either 'free' or 'ordered'.
+- **title** (String) The title of the dashboard.
 - **widget** (Block List, Min: 1) The list of widgets to display on the dashboard. (see [below for nested schema](#nestedblock--widget))
 
 ### Optional
 
-- **dashboard_lists** (Set of Number, Optional) The list of dashboard lists this dashboard belongs to.
-- **description** (String, Optional) The description of the dashboard.
-- **id** (String, Optional) The ID of this resource.
-- **is_read_only** (Boolean, Optional) Whether this dashboard is read-only.
-- **notify_list** (List of String, Optional) The list of handles of users to notify when changes are made to this dashboard.
+- **dashboard_lists** (Set of Number) The list of dashboard lists this dashboard belongs to.
+- **description** (String) The description of the dashboard.
+- **id** (String) The ID of this resource.
+- **is_read_only** (Boolean) Whether this dashboard is read-only.
+- **notify_list** (List of String) The list of handles of users to notify when changes are made to this dashboard.
 - **template_variable** (Block List) The list of template variables for this dashboard. (see [below for nested schema](#nestedblock--template_variable))
 - **template_variable_preset** (Block List) The list of selectable template variable presets for this dashboard. (see [below for nested schema](#nestedblock--template_variable_preset))
-- **url** (String, Optional) The URL of the dashboard.
+- **url** (String) The URL of the dashboard.
 
 ### Read-only
 
-- **dashboard_lists_removed** (Set of Number, Read-only) The list of dashboard lists this dashboard should be removed from. Internal only.
+- **dashboard_lists_removed** (Set of Number) The list of dashboard lists this dashboard should be removed from. Internal only.
 
 <a id="nestedblock--widget"></a>
 ### Nested Schema for `widget`
@@ -660,7 +660,7 @@ Optional:
 - **hostmap_definition** (Block List, Max: 1) The definition for a Hostmap widget (see [below for nested schema](#nestedblock--widget--hostmap_definition))
 - **iframe_definition** (Block List, Max: 1) The definition for an Iframe widget (see [below for nested schema](#nestedblock--widget--iframe_definition))
 - **image_definition** (Block List, Max: 1) The definition for an Image widget (see [below for nested schema](#nestedblock--widget--image_definition))
-- **layout** (Map of String, Optional) The layout of the widget on a 'free' dashboard
+- **layout** (Map of String) The layout of the widget on a 'free' dashboard
 - **log_stream_definition** (Block List, Max: 1) The definition for an Log Stream widget (see [below for nested schema](#nestedblock--widget--log_stream_definition))
 - **manage_status_definition** (Block List, Max: 1) The definition for an Manage Status widget (see [below for nested schema](#nestedblock--widget--manage_status_definition))
 - **note_definition** (Block List, Max: 1) The definition for a Note widget (see [below for nested schema](#nestedblock--widget--note_definition))
@@ -678,15 +678,15 @@ Optional:
 
 Required:
 
-- **alert_id** (String, Required)
-- **viz_type** (String, Required)
+- **alert_id** (String) The ID of the monitor used by the widget.
+- **viz_type** (String) Type of visualization to use when displaying the widget. Either `timeseries` or `toplist`.
 
 Optional:
 
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 
 <a id="nestedblock--widget--alert_value_definition"></a>
@@ -694,16 +694,16 @@ Optional:
 
 Required:
 
-- **alert_id** (String, Required)
+- **alert_id** (String) The ID of the monitor used by the widget.
 
 Optional:
 
-- **precision** (Number, Optional)
-- **text_align** (String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
-- **unit** (String, Optional)
+- **precision** (Number) The precision to use when displaying the value. Use `*` for maximum precision.
+- **text_align** (String) The alignment of the text in the widget.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
+- **unit** (String) The unit for the value displayed in the widget.
 
 
 <a id="nestedblock--widget--change_definition"></a>
@@ -711,20 +711,20 @@ Optional:
 
 Optional:
 
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--change_definition--custom_link))
-- **request** (Block List) (see [below for nested schema](#nestedblock--widget--change_definition--request))
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--custom_link))
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure: (see [below for nested schema](#nestedblock--widget--change_definition--request))
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--change_definition--custom_link"></a>
 ### Nested Schema for `widget.change_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--change_definition--request"></a>
@@ -732,41 +732,41 @@ Required:
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query))
-- **change_type** (String, Optional)
-- **compare_to** (String, Optional)
-- **increase_good** (Boolean, Optional)
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query))
-- **order_by** (String, Optional)
-- **order_dir** (String, Optional)
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query))
-- **show_present** (Boolean, Optional)
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query))
+- **change_type** (String) Whether to show absolute or relative change. One of `absolute`, `relative`.
+- **compare_to** (String) Choose from when to compare current data to. One of `hour_before`, `day_before`, `week_before` or `month_before`.
+- **increase_good** (Boolean) Boolean indicating whether an increase in the value is good (thus displayed in green) or not (thus displayed in red).
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query))
+- **order_by** (String) One of `change`, `name`, `present` (present value) or `past` (past value).
+- **order_dir** (String) Either `asc` (ascending) or `desc` (descending).
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--change_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query))
+- **show_present** (Boolean) If set to `true`, displays current value.
 
 <a id="nestedblock--widget--change_definition--request--apm_query"></a>
 ### Nested Schema for `widget.change_definition.request.show_present`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--change_definition--request--show_present--group_by"></a>
 ### Nested Schema for `widget.change_definition.request.show_present.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--change_definition--request--show_present--multi_compute"></a>
@@ -774,12 +774,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -788,23 +788,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--change_definition--request--show_present--group_by"></a>
 ### Nested Schema for `widget.change_definition.request.show_present.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--change_definition--request--show_present--multi_compute"></a>
@@ -812,12 +812,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -826,13 +826,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--change_definition--request--rum_query"></a>
@@ -840,23 +840,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--change_definition--request--show_present--group_by"></a>
 ### Nested Schema for `widget.change_definition.request.show_present.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--change_definition--request--show_present--multi_compute"></a>
@@ -864,12 +864,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -878,23 +878,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--change_definition--request--show_present--group_by"></a>
 ### Nested Schema for `widget.change_definition.request.show_present.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--change_definition--request--show_present--multi_compute"></a>
@@ -902,12 +902,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -918,18 +918,18 @@ Optional:
 
 Required:
 
-- **check** (String, Required)
-- **grouping** (String, Required)
+- **check** (String) The check to use in the widget.
+- **grouping** (String) Either `check` or `cluster`, depending on whether the widget should use a single check or a cluster of checks.
 
 Optional:
 
-- **group** (String, Optional)
-- **group_by** (List of String, Optional)
-- **tags** (List of String, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **group** (String) The check group to use in the widget.
+- **group_by** (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
+- **tags** (List of String) List of tags to use in the widget.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 
 <a id="nestedblock--widget--distribution_definition"></a>
@@ -937,49 +937,49 @@ Optional:
 
 Optional:
 
-- **legend_size** (String, Optional)
-- **request** (Block List) (see [below for nested schema](#nestedblock--widget--distribution_definition--request))
-- **show_legend** (Boolean, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **legend_size** (String) The size of the legend displayed in the widget.
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure: (see [below for nested schema](#nestedblock--widget--distribution_definition--request))
+- **show_legend** (Boolean) Whether or not to show the legend on this widget.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--distribution_definition--request"></a>
 ### Nested Schema for `widget.distribution_definition.request`
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--security_query))
-- **style** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--security_query))
+- **style** (Block List, Max: 1) Style of the widget graph. One nested block is allowed with the following structure: (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style))
 
 <a id="nestedblock--widget--distribution_definition--request--apm_query"></a>
 ### Nested Schema for `widget.distribution_definition.request.style`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--distribution_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.distribution_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--distribution_definition--request--style--multi_compute"></a>
@@ -987,12 +987,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1001,23 +1001,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--distribution_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.distribution_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--distribution_definition--request--style--multi_compute"></a>
@@ -1025,12 +1025,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1039,13 +1039,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--distribution_definition--request--rum_query"></a>
@@ -1053,23 +1053,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--distribution_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.distribution_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--distribution_definition--request--style--multi_compute"></a>
@@ -1077,12 +1077,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1091,23 +1091,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--distribution_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.distribution_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--distribution_definition--request--style--multi_compute"></a>
@@ -1115,12 +1115,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1129,7 +1129,7 @@ Optional:
 
 Optional:
 
-- **palette** (String, Optional)
+- **palette** (String) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
 
@@ -1139,16 +1139,16 @@ Optional:
 
 Required:
 
-- **query** (String, Required)
+- **query** (String) The query to use in the widget.
 
 Optional:
 
-- **event_size** (String, Optional)
-- **tags_execution** (String, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **event_size** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **tags_execution** (String) The execution method for multi-value filters. Can be either `and` or `or`.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 
 <a id="nestedblock--widget--event_timeline_definition"></a>
@@ -1156,15 +1156,15 @@ Optional:
 
 Required:
 
-- **query** (String, Required)
+- **query** (String) The query to use in the widget.
 
 Optional:
 
-- **tags_execution** (String, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **tags_execution** (String) The execution method for multi-value filters. Can be either `and` or `or`.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 
 <a id="nestedblock--widget--free_text_definition"></a>
@@ -1172,13 +1172,13 @@ Optional:
 
 Required:
 
-- **text** (String, Required)
+- **text** (String) The text to display in the widget.
 
 Optional:
 
-- **color** (String, Optional)
-- **font_size** (String, Optional)
-- **text_align** (String, Optional)
+- **color** (String) The color of the text in the widget.
+- **font_size** (String) The size of the text in the widget.
+- **text_align** (String) The alignment of the text in the widget.
 
 
 <a id="nestedblock--widget--group_definition"></a>
@@ -1186,12 +1186,12 @@ Optional:
 
 Required:
 
-- **layout_type** (String, Required) The layout type of the group, only 'ordered' for now.
+- **layout_type** (String) The layout type of the group, only 'ordered' for now.
 - **widget** (Block List, Min: 1) The list of widgets in this group. (see [below for nested schema](#nestedblock--widget--group_definition--widget))
 
 Optional:
 
-- **title** (String, Optional) The title of the group.
+- **title** (String) The title of the group.
 
 <a id="nestedblock--widget--group_definition--widget"></a>
 ### Nested Schema for `widget.group_definition.widget`
@@ -1210,7 +1210,7 @@ Optional:
 - **hostmap_definition** (Block List, Max: 1) The definition for a Hostmap widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition))
 - **iframe_definition** (Block List, Max: 1) The definition for an Iframe widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--iframe_definition))
 - **image_definition** (Block List, Max: 1) The definition for an Image widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--image_definition))
-- **layout** (Map of String, Optional) The layout of the widget on a 'free' dashboard
+- **layout** (Map of String) The layout of the widget on a 'free' dashboard
 - **log_stream_definition** (Block List, Max: 1) The definition for an Log Stream widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition))
 - **manage_status_definition** (Block List, Max: 1) The definition for an Manage Status widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--manage_status_definition))
 - **note_definition** (Block List, Max: 1) The definition for a Note widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--note_definition))
@@ -1228,15 +1228,15 @@ Optional:
 
 Required:
 
-- **alert_id** (String, Required)
-- **viz_type** (String, Required)
+- **alert_id** (String) The ID of the monitor used by the widget.
+- **viz_type** (String) Type of visualization to use when displaying the widget. Either `timeseries` or `toplist`.
 
 Optional:
 
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 
 <a id="nestedblock--widget--group_definition--widget--alert_value_definition"></a>
@@ -1244,16 +1244,16 @@ Optional:
 
 Required:
 
-- **alert_id** (String, Required)
+- **alert_id** (String) The ID of the monitor used by the widget.
 
 Optional:
 
-- **precision** (Number, Optional)
-- **text_align** (String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
-- **unit** (String, Optional)
+- **precision** (Number) The precision to use when displaying the value. Use `*` for maximum precision.
+- **text_align** (String) The alignment of the text in the widget.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
+- **unit** (String) The unit for the value displayed in the widget.
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition"></a>
@@ -1261,20 +1261,20 @@ Optional:
 
 Optional:
 
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
-- **request** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure: (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--custom_link"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request"></a>
@@ -1282,41 +1282,41 @@ Required:
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query))
-- **change_type** (String, Optional)
-- **compare_to** (String, Optional)
-- **increase_good** (Boolean, Optional)
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query))
-- **order_by** (String, Optional)
-- **order_dir** (String, Optional)
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query))
-- **show_present** (Boolean, Optional)
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query))
+- **change_type** (String) Whether to show absolute or relative change. One of `absolute`, `relative`.
+- **compare_to** (String) Choose from when to compare current data to. One of `hour_before`, `day_before`, `week_before` or `month_before`.
+- **increase_good** (Boolean) Boolean indicating whether an increase in the value is good (thus displayed in green) or not (thus displayed in red).
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query))
+- **order_by** (String) One of `change`, `name`, `present` (present value) or `past` (past value).
+- **order_dir** (String) Either `asc` (ascending) or `desc` (descending).
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query))
+- **show_present** (Boolean) If set to `true`, displays current value.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.show_present`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.show_present.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--multi_compute"></a>
@@ -1324,12 +1324,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1338,23 +1338,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.show_present.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--multi_compute"></a>
@@ -1362,12 +1362,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1376,13 +1376,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query"></a>
@@ -1390,23 +1390,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.show_present.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--multi_compute"></a>
@@ -1414,12 +1414,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1428,23 +1428,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.show_present.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--show_present--multi_compute"></a>
@@ -1452,12 +1452,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1468,18 +1468,18 @@ Optional:
 
 Required:
 
-- **check** (String, Required)
-- **grouping** (String, Required)
+- **check** (String) The check to use in the widget.
+- **grouping** (String) Either `check` or `cluster`, depending on whether the widget should use a single check or a cluster of checks.
 
 Optional:
 
-- **group** (String, Optional)
-- **group_by** (List of String, Optional)
-- **tags** (List of String, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **group** (String) The check group to use in the widget.
+- **group_by** (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
+- **tags** (List of String) List of tags to use in the widget.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition"></a>
@@ -1487,49 +1487,49 @@ Optional:
 
 Optional:
 
-- **legend_size** (String, Optional)
-- **request** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
-- **show_legend** (Boolean, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **legend_size** (String) The size of the legend displayed in the widget.
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure: (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
+- **show_legend** (Boolean) Whether or not to show the legend on this widget.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request`
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query))
-- **style** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query))
+- **style** (Block List, Max: 1) Style of the widget graph. One nested block is allowed with the following structure: (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -1537,12 +1537,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1551,23 +1551,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -1575,12 +1575,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1589,13 +1589,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query"></a>
@@ -1603,23 +1603,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -1627,12 +1627,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1641,23 +1641,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -1665,12 +1665,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1679,7 +1679,7 @@ Optional:
 
 Optional:
 
-- **palette** (String, Optional)
+- **palette** (String) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
 
@@ -1689,16 +1689,16 @@ Optional:
 
 Required:
 
-- **query** (String, Required)
+- **query** (String) The query to use in the widget.
 
 Optional:
 
-- **event_size** (String, Optional)
-- **tags_execution** (String, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **event_size** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **tags_execution** (String) The execution method for multi-value filters. Can be either `and` or `or`.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 
 <a id="nestedblock--widget--group_definition--widget--event_timeline_definition"></a>
@@ -1706,15 +1706,15 @@ Optional:
 
 Required:
 
-- **query** (String, Required)
+- **query** (String) The query to use in the widget.
 
 Optional:
 
-- **tags_execution** (String, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **tags_execution** (String) The execution method for multi-value filters. Can be either `and` or `or`.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 
 <a id="nestedblock--widget--group_definition--widget--free_text_definition"></a>
@@ -1722,13 +1722,13 @@ Optional:
 
 Required:
 
-- **text** (String, Required)
+- **text** (String) The text to display in the widget.
 
 Optional:
 
-- **color** (String, Optional)
-- **font_size** (String, Optional)
-- **text_align** (String, Optional)
+- **color** (String) The color of the text in the widget.
+- **font_size** (String) The size of the text in the widget.
+- **text_align** (String) The alignment of the text in the widget.
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition"></a>
@@ -1736,24 +1736,24 @@ Optional:
 
 Optional:
 
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
-- **event** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--event))
-- **legend_size** (String, Optional)
-- **request** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
-- **show_legend** (Boolean, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
-- **yaxis** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--yaxis))
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
+- **event** (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--event))
+- **legend_size** (String) The size of the legend displayed in the widget.
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
+- **show_legend** (Boolean) Whether or not to show the legend on this widget.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
+- **yaxis** (Block List, Max: 1) Nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--yaxis))
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--custom_link"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--event"></a>
@@ -1761,11 +1761,11 @@ Required:
 
 Required:
 
-- **q** (String, Required)
+- **q** (String) The event query to use in the widget.
 
 Optional:
 
-- **tags_execution** (String, Optional)
+- **tags_execution** (String) The execution method for multi-value filters.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request"></a>
@@ -1773,36 +1773,36 @@ Optional:
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query))
-- **style** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query))
+- **style** (Block List, Max: 1) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -1810,12 +1810,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1824,23 +1824,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -1848,12 +1848,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1862,13 +1862,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query"></a>
@@ -1876,23 +1876,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -1900,12 +1900,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1914,23 +1914,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -1938,12 +1938,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -1952,7 +1952,7 @@ Optional:
 
 Optional:
 
-- **palette** (String, Optional)
+- **palette** (String) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
 
@@ -1961,11 +1961,11 @@ Optional:
 
 Optional:
 
-- **include_zero** (Boolean, Optional)
-- **label** (String, Optional)
-- **max** (String, Optional)
-- **min** (String, Optional)
-- **scale** (String, Optional)
+- **include_zero** (Boolean) Always include zero or fit the axis to the data range.
+- **label** (String) The label of the axis to display on the graph.
+- **max** (String) Specify the maximum value to show on the Y-axis.
+- **min** (String) Specify the minimum value to show on the Y-axis.
+- **scale** (String) Specifies the scale type. One of `linear`, `log`, `pow`, `sqrt`.
 
 
 
@@ -1974,25 +1974,25 @@ Optional:
 
 Optional:
 
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
-- **group** (List of String, Optional)
-- **no_group_hosts** (Boolean, Optional)
-- **no_metric_hosts** (Boolean, Optional)
-- **node_type** (String, Optional)
-- **request** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
-- **scope** (List of String, Optional)
-- **style** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--style))
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
+- **group** (List of String) The list of tags to group nodes by.
+- **no_group_hosts** (Boolean) Boolean indicating whether to show ungrouped nodes.
+- **no_metric_hosts** (Boolean) Boolean indicating whether to show nodes with no metrics.
+- **node_type** (String) The type of node used. Either `host` or `container`.
+- **request** (Block List, Max: 1) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
+- **scope** (List of String) The list of tags to filter nodes by.
+- **style** (Block List, Max: 1) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--style))
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--custom_link"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request"></a>
@@ -2000,43 +2000,43 @@ Required:
 
 Optional:
 
-- **fill** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--fill))
-- **size** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size))
+- **fill** (Block List) The query used to fill the map. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--fill))
+- **size** (Block List) The query used to size the map. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size))
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--fill"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.size`
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--apm_query))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.size.security_query`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.size.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute"></a>
@@ -2044,12 +2044,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2058,23 +2058,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.size.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute"></a>
@@ -2082,12 +2082,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2096,13 +2096,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--rum_query"></a>
@@ -2110,23 +2110,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.size.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute"></a>
@@ -2134,12 +2134,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2148,23 +2148,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.size.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute"></a>
@@ -2172,12 +2172,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2187,35 +2187,35 @@ Optional:
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--apm_query))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.size.security_query`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.size.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute"></a>
@@ -2223,12 +2223,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2237,23 +2237,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.size.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute"></a>
@@ -2261,12 +2261,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2275,13 +2275,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--rum_query"></a>
@@ -2289,23 +2289,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.size.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute"></a>
@@ -2313,12 +2313,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2327,23 +2327,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.size.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--size--security_query--multi_compute"></a>
@@ -2351,12 +2351,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2367,10 +2367,10 @@ Optional:
 
 Optional:
 
-- **fill_max** (String, Optional)
-- **fill_min** (String, Optional)
-- **palette** (String, Optional)
-- **palette_flip** (Boolean, Optional)
+- **fill_max** (String) Max value to use to color the map.
+- **fill_min** (String) Min value to use to color the map.
+- **palette** (String) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+- **palette_flip** (Boolean) Boolean indicating whether to flip the palette tones.
 
 
 
@@ -2379,7 +2379,7 @@ Optional:
 
 Required:
 
-- **url** (String, Required)
+- **url** (String) The URL to use as a data source for the widget.
 
 
 <a id="nestedblock--widget--group_definition--widget--image_definition"></a>
@@ -2387,12 +2387,12 @@ Required:
 
 Required:
 
-- **url** (String, Required)
+- **url** (String) The URL to use as a data source for the widget.
 
 Optional:
 
-- **margin** (String, Optional)
-- **sizing** (String, Optional)
+- **margin** (String) The margins to use around the image. Either `small` or `large`.
+- **sizing** (String) The preferred method to adapt the dimensions of the image to those of the widget. One of `center` (center the image in the tile), `zoom` (zoom the image to cover the whole tile) or `fit` (fit the image dimensions to those of the tile).
 
 
 <a id="nestedblock--widget--group_definition--widget--log_stream_definition"></a>
@@ -2400,26 +2400,26 @@ Optional:
 
 Optional:
 
-- **columns** (List of String, Optional)
-- **indexes** (List of String, Optional)
-- **logset** (String, Optional, Deprecated)
-- **message_display** (String, Optional) One of: ['inline', 'expanded-md', 'expanded-lg']
-- **query** (String, Optional)
-- **show_date_column** (Boolean, Optional)
-- **show_message_column** (Boolean, Optional)
-- **sort** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--sort))
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **columns** (List of String) Stringified list of columns to use. Example: `["column1","column2","column3"]`.
+- **indexes** (List of String) An array of index names to query in the stream.
+- **logset** (String, Deprecated) ID of the logset to use. Deprecated Use `indexes` instead.
+- **message_display** (String) One of: ['inline', 'expanded-md', 'expanded-lg']
+- **query** (String) The query to use in the widget.
+- **show_date_column** (Boolean) If the date column should be displayed.
+- **show_message_column** (Boolean) If the message column should be displayed.
+- **sort** (Block List, Max: 1) The facet and order to sort the data based upon. Example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--sort))
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--sort"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.sort`
 
 Required:
 
-- **column** (String, Required)
-- **order** (String, Required)
+- **column** (String) Facet path for the column
+- **order** (String) Widget sorting methods.
 
 
 
@@ -2428,21 +2428,21 @@ Required:
 
 Required:
 
-- **query** (String, Required)
+- **query** (String) The query to use in the widget.
 
 Optional:
 
-- **color_preference** (String, Optional)
-- **count** (Number, Optional, Deprecated)
-- **display_format** (String, Optional)
-- **hide_zero_counts** (Boolean, Optional)
-- **show_last_triggered** (Boolean, Optional)
-- **sort** (String, Optional)
-- **start** (Number, Optional, Deprecated)
-- **summary_type** (String, Optional) One of: ['monitors', 'groups', 'combined']
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **color_preference** (String) Whether to colorize text or background. One of `text`, `background`.
+- **count** (Number, Deprecated) The number of monitors to display.
+- **display_format** (String) The display setting to use. One of `counts`, `list`, or `countsAndList`.
+- **hide_zero_counts** (Boolean) Boolean indicating whether to hide empty categories.
+- **show_last_triggered** (Boolean) Boolean indicating whether to show when monitors/groups last triggered.
+- **sort** (String) The method to use to sort monitors. Example: `status,asc`.
+- **start** (Number, Deprecated) The start of the list. Typically 0.
+- **summary_type** (String) One of: ['monitors', 'groups', 'combined']
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 
 <a id="nestedblock--widget--group_definition--widget--note_definition"></a>
@@ -2450,16 +2450,16 @@ Optional:
 
 Required:
 
-- **content** (String, Required)
+- **content** (String) Content of the note.
 
 Optional:
 
-- **background_color** (String, Optional)
-- **font_size** (String, Optional)
-- **show_tick** (Boolean, Optional)
-- **text_align** (String, Optional)
-- **tick_edge** (String, Optional)
-- **tick_pos** (String, Optional)
+- **background_color** (String) Background color of the note.
+- **font_size** (String) Size of the text.
+- **show_tick** (Boolean) Whether to show a tick or not.
+- **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`.
+- **tick_edge** (String) When `tick = true`, string indicating on which side of the widget the tick should be displayed. One of `bottom`, `top`, `left`, `right`.
+- **tick_pos** (String) When `tick = true`, string with a percent sign indicating the position of the tick. Example: use `tick_pos = "50%"` for centered alignment.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition"></a>
@@ -2467,21 +2467,21 @@ Optional:
 
 Optional:
 
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
-- **has_search_bar** (String, Optional)
-- **request** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
+- **has_search_bar** (String) Controls the display of the search bar. One of `auto`, `always`, `never`.
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--custom_link"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request"></a>
@@ -2489,42 +2489,42 @@ Required:
 
 Optional:
 
-- **aggregator** (String, Optional)
-- **alias** (String, Optional)
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query))
+- **aggregator** (String) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
+- **alias** (String) The alias for the column name. Default is the metric name.
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query))
 - **apm_stats_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_stats_query))
-- **cell_display_mode** (List of String, Optional)
-- **conditional_formats** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--conditional_formats))
-- **limit** (Number, Optional)
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query))
-- **order** (String, Optional)
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query))
+- **cell_display_mode** (List of String) A list of display modes for each table cell. List items one of `number`, `bar`.
+- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--conditional_formats))
+- **limit** (Number) The number of lines to show in the table.
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query))
+- **order** (String) The sort order for the rows. One of `desc` or `asc`.
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.security_query`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute"></a>
@@ -2532,12 +2532,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2546,29 +2546,29 @@ Optional:
 
 Required:
 
-- **env** (String, Required)
-- **name** (String, Required)
-- **primary_tag** (String, Required)
-- **row_type** (String, Required)
-- **service** (String, Required)
+- **env** (String) Environment name.
+- **name** (String) Operation name associated with service.
+- **primary_tag** (String) The organization's host group name and value.
+- **row_type** (String) The level of detail for the request.
+- **service** (String) Service name.
 
 Optional:
 
-- **columns** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--columns))
-- **resource** (String, Optional)
+- **columns** (Block List) Column properties used by the front end for display. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--columns))
+- **resource** (String) Resource name.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--columns"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.security_query.resource`
 
 Required:
 
-- **name** (String, Required)
+- **name** (String) Column name.
 
 Optional:
 
-- **alias** (String, Optional)
-- **cell_display_mode** (String, Optional)
-- **order** (String, Optional)
+- **alias** (String) A user-assigned alias for the column.
+- **cell_display_mode** (String) A list of display modes for each table cell.
+- **order** (String) Widget sorting methods.
 
 
 
@@ -2577,18 +2577,18 @@ Optional:
 
 Required:
 
-- **comparator** (String, Required)
-- **palette** (String, Required)
-- **value** (Number, Required)
+- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`.
+- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.
+- **value** (Number) Value for the comparator.
 
 Optional:
 
-- **custom_bg_color** (String, Optional)
-- **custom_fg_color** (String, Optional)
-- **hide_value** (Boolean, Optional)
-- **image_url** (String, Optional)
-- **metric** (String, Optional)
-- **timeframe** (String, Optional)
+- **custom_bg_color** (String) Color palette to apply to the background, same values available as palette.
+- **custom_fg_color** (String) Color palette to apply to the foreground, same values available as palette.
+- **hide_value** (Boolean) Setting this to True hides values.
+- **image_url** (String) Displays an image as the background.
+- **metric** (String) Metric from the request to correlate this conditional format with.
+- **timeframe** (String) Defines the displayed timeframe.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query"></a>
@@ -2596,23 +2596,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute"></a>
@@ -2620,12 +2620,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2634,13 +2634,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query"></a>
@@ -2648,23 +2648,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute"></a>
@@ -2672,12 +2672,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2686,23 +2686,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute"></a>
@@ -2710,12 +2710,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2726,24 +2726,24 @@ Optional:
 
 Optional:
 
-- **autoscale** (Boolean, Optional)
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
-- **custom_unit** (String, Optional)
-- **precision** (Number, Optional)
-- **request** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
-- **text_align** (String, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **autoscale** (Boolean) Boolean indicating whether to automatically scale the tile.
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
+- **custom_unit** (String) The unit for the value displayed in the widget.
+- **precision** (Number) The precision to use when displaying the tile.
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below(exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
+- **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--custom_link"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request"></a>
@@ -2751,37 +2751,37 @@ Required:
 
 Optional:
 
-- **aggregator** (String, Optional)
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query))
-- **conditional_formats** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--conditional_formats))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query))
+- **aggregator** (String) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query))
+- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--conditional_formats))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.security_query`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute"></a>
@@ -2789,12 +2789,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2803,18 +2803,18 @@ Optional:
 
 Required:
 
-- **comparator** (String, Required)
-- **palette** (String, Required)
-- **value** (Number, Required)
+- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`.
+- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.
+- **value** (Number) Value for the comparator.
 
 Optional:
 
-- **custom_bg_color** (String, Optional)
-- **custom_fg_color** (String, Optional)
-- **hide_value** (Boolean, Optional)
-- **image_url** (String, Optional)
-- **metric** (String, Optional)
-- **timeframe** (String, Optional)
+- **custom_bg_color** (String) Color palette to apply to the background, same values available as palette.
+- **custom_fg_color** (String) Color palette to apply to the foreground, same values available as palette.
+- **hide_value** (Boolean) Setting this to True hides values.
+- **image_url** (String) Displays an image as the background.
+- **metric** (String) Metric from the request to correlate this conditional format with.
+- **timeframe** (String) Defines the displayed timeframe.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query"></a>
@@ -2822,23 +2822,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute"></a>
@@ -2846,12 +2846,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2860,13 +2860,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query"></a>
@@ -2874,23 +2874,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute"></a>
@@ -2898,12 +2898,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2912,23 +2912,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query--multi_compute"></a>
@@ -2936,12 +2936,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -2952,23 +2952,23 @@ Optional:
 
 Optional:
 
-- **color_by_groups** (List of String, Optional)
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
-- **request** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
-- **xaxis** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--xaxis))
-- **yaxis** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--yaxis))
+- **color_by_groups** (List of String) List of groups used for colors.
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
+- **request** (Block List, Max: 1) Nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
+- **xaxis** (Block List, Max: 1) Nested block describing the X-Axis Controls. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--xaxis))
+- **yaxis** (Block List, Max: 1) Nested block describing the Y-Axis Controls. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--yaxis))
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--custom_link"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request"></a>
@@ -2976,44 +2976,44 @@ Required:
 
 Optional:
 
-- **x** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--x))
-- **y** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y))
+- **x** (Block List) The query used for the X-Axis. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--x))
+- **y** (Block List) The query used for the Y-Axis. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y))
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--x"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.y`
 
 Optional:
 
-- **aggregator** (String, Optional)
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--apm_query))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query))
+- **aggregator** (String) Aggregator used for the request.
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.y.security_query`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.y.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute"></a>
@@ -3021,12 +3021,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3035,23 +3035,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.y.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute"></a>
@@ -3059,12 +3059,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3073,13 +3073,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--rum_query"></a>
@@ -3087,23 +3087,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.y.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute"></a>
@@ -3111,12 +3111,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3125,23 +3125,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.y.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute"></a>
@@ -3149,12 +3149,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3164,36 +3164,36 @@ Optional:
 
 Optional:
 
-- **aggregator** (String, Optional)
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--apm_query))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query))
+- **aggregator** (String) Aggregator used for the request.
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.y.security_query`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.y.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute"></a>
@@ -3201,12 +3201,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3215,23 +3215,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.y.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute"></a>
@@ -3239,12 +3239,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3253,13 +3253,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--rum_query"></a>
@@ -3267,23 +3267,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.y.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute"></a>
@@ -3291,12 +3291,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3305,23 +3305,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.y.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--y--security_query--multi_compute"></a>
@@ -3329,12 +3329,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3345,11 +3345,11 @@ Optional:
 
 Optional:
 
-- **include_zero** (Boolean, Optional)
-- **label** (String, Optional)
-- **max** (String, Optional)
-- **min** (String, Optional)
-- **scale** (String, Optional)
+- **include_zero** (Boolean) Always include zero or fit the axis to the data range.
+- **label** (String) The label of the axis to display on the graph.
+- **max** (String) Specify the maximum value to show on the Y-axis.
+- **min** (String) Specify the minimum value to show on the Y-axis.
+- **scale** (String) Specifies the scale type. One of `linear`, `log`, `pow`, `sqrt`.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--yaxis"></a>
@@ -3357,11 +3357,11 @@ Optional:
 
 Optional:
 
-- **include_zero** (Boolean, Optional)
-- **label** (String, Optional)
-- **max** (String, Optional)
-- **min** (String, Optional)
-- **scale** (String, Optional)
+- **include_zero** (Boolean) Always include zero or fit the axis to the data range.
+- **label** (String) The label of the axis to display on the graph.
+- **max** (String) Specify the maximum value to show on the Y-axis.
+- **min** (String) Specify the minimum value to show on the Y-axis.
+- **scale** (String) Specifies the scale type. One of `linear`, `log`, `pow`, `sqrt`.
 
 
 
@@ -3370,17 +3370,17 @@ Optional:
 
 Required:
 
-- **slo_id** (String, Required)
-- **time_windows** (List of String, Required)
-- **view_mode** (String, Required)
-- **view_type** (String, Required)
+- **slo_id** (String) The ID of the service level objective used by the widget.
+- **time_windows** (List of String) List of time windows to display in the widget. Each value in the list must be one of `7d`, `30d`, `90d`, `week_to_date`, `previous_week`, `month_to_date`, or `previous_month`.
+- **view_mode** (String) View mode for the widget. One of `overall`, `component`, or `both`.
+- **view_type** (String) Type of view to use when displaying the widget. Only `detail` is currently supported.
 
 Optional:
 
-- **show_error_budget** (Boolean, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **show_error_budget** (Boolean) Whether to show the error budget or not.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 
 <a id="nestedblock--widget--group_definition--widget--servicemap_definition"></a>
@@ -3388,23 +3388,23 @@ Optional:
 
 Required:
 
-- **filters** (List of String, Required)
-- **service** (String, Required)
+- **filters** (List of String) Your environment and primary tag (or `*` if enabled for your account).
+- **service** (String) The ID of the service you want to map.
 
 Optional:
 
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--custom_link"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 
@@ -3413,26 +3413,26 @@ Required:
 
 Optional:
 
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
-- **event** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--event))
-- **legend_size** (String, Optional)
-- **marker** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--marker))
-- **request** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
-- **right_yaxis** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--right_yaxis))
-- **show_legend** (Boolean, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
-- **yaxis** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--yaxis))
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
+- **event** (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--event))
+- **legend_size** (String) The size of the legend displayed in the widget.
+- **marker** (Block List) Nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--marker))
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
+- **right_yaxis** (Block List, Max: 1) Nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--right_yaxis))
+- **show_legend** (Boolean) Whether or not to show the legend on this widget.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
+- **yaxis** (Block List, Max: 1) Nested block describing the Y-Axis Controls. The structure of this block is described below (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--yaxis))
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--custom_link"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--event"></a>
@@ -3440,11 +3440,11 @@ Required:
 
 Required:
 
-- **q** (String, Required)
+- **q** (String) The event query to use in the widget.
 
 Optional:
 
-- **tags_execution** (String, Optional)
+- **tags_execution** (String) The execution method for multi-value filters.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--marker"></a>
@@ -3452,12 +3452,12 @@ Optional:
 
 Required:
 
-- **value** (String, Required)
+- **value** (String) Mathematical expression describing the marker. Examples: `y > 1`, `-5 < y < 0`, `y = 19`.
 
 Optional:
 
-- **display_type** (String, Optional)
-- **label** (String, Optional)
+- **display_type** (String) How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.
+- **label** (String) A label for the line or range.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request"></a>
@@ -3465,40 +3465,40 @@ Optional:
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query))
-- **display_type** (String, Optional)
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query))
-- **metadata** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--metadata))
-- **network_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--network_query))
-- **on_right_yaxis** (Boolean, Optional)
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query))
-- **style** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query))
+- **display_type** (String) How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query))
+- **metadata** (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--metadata))
+- **network_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--network_query))
+- **on_right_yaxis** (Boolean) Boolean indicating whether the request will use the right or left Y-Axis.
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query))
+- **style** (Block List, Max: 1) Style of the widget graph. Exactly one `style` block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -3506,12 +3506,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3520,23 +3520,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -3544,12 +3544,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3558,11 +3558,11 @@ Optional:
 
 Required:
 
-- **expression** (String, Required)
+- **expression** (String) Expression name.
 
 Optional:
 
-- **alias_name** (String, Optional)
+- **alias_name** (String) Expression alias.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--network_query"></a>
@@ -3570,23 +3570,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -3594,12 +3594,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3608,13 +3608,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query"></a>
@@ -3622,23 +3622,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -3646,12 +3646,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3660,23 +3660,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -3684,12 +3684,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3698,9 +3698,9 @@ Optional:
 
 Optional:
 
-- **line_type** (String, Optional)
-- **line_width** (String, Optional)
-- **palette** (String, Optional)
+- **line_type** (String) Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.
+- **line_width** (String) Width of line displayed. Available values are: `normal`, `thick`, or `thin`.
+- **palette** (String) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
 
@@ -3709,11 +3709,11 @@ Optional:
 
 Optional:
 
-- **include_zero** (Boolean, Optional)
-- **label** (String, Optional)
-- **max** (String, Optional)
-- **min** (String, Optional)
-- **scale** (String, Optional)
+- **include_zero** (Boolean) Always include zero or fit the axis to the data range.
+- **label** (String) The label of the axis to display on the graph.
+- **max** (String) Specify the maximum value to show on the Y-axis.
+- **min** (String) Specify the minimum value to show on the Y-axis.
+- **scale** (String) Specifies the scale type. One of `linear`, `log`, `pow`, `sqrt`.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--yaxis"></a>
@@ -3721,11 +3721,11 @@ Optional:
 
 Optional:
 
-- **include_zero** (Boolean, Optional)
-- **label** (String, Optional)
-- **max** (String, Optional)
-- **min** (String, Optional)
-- **scale** (String, Optional)
+- **include_zero** (Boolean) Always include zero or fit the axis to the data range.
+- **label** (String) The label of the axis to display on the graph.
+- **max** (String) Specify the maximum value to show on the Y-axis.
+- **min** (String) Specify the minimum value to show on the Y-axis.
+- **scale** (String) Specifies the scale type. One of `linear`, `log`, `pow`, `sqrt`.
 
 
 
@@ -3734,20 +3734,20 @@ Optional:
 
 Optional:
 
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
-- **request** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--custom_link))
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request))
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--custom_link"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request"></a>
@@ -3755,37 +3755,37 @@ Required:
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query))
-- **conditional_formats** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--conditional_formats))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query))
-- **style** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query))
+- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--conditional_formats))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--security_query))
+- **style** (Block List, Max: 1) Define request widget style. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -3793,12 +3793,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3807,18 +3807,18 @@ Optional:
 
 Required:
 
-- **comparator** (String, Required)
-- **palette** (String, Required)
-- **value** (Number, Required)
+- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`.
+- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.
+- **value** (Number) Value for the comparator.
 
 Optional:
 
-- **custom_bg_color** (String, Optional)
-- **custom_fg_color** (String, Optional)
-- **hide_value** (Boolean, Optional)
-- **image_url** (String, Optional)
-- **metric** (String, Optional)
-- **timeframe** (String, Optional)
+- **custom_bg_color** (String) Color palette to apply to the background, same values available as palette.
+- **custom_fg_color** (String) Color palette to apply to the foreground, same values available as palette.
+- **hide_value** (Boolean) Setting this to True hides values.
+- **image_url** (String) Displays an image as the background.
+- **metric** (String) Metric from the request to correlate this conditional format with.
+- **timeframe** (String) Defines the displayed timeframe.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--log_query"></a>
@@ -3826,23 +3826,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -3850,12 +3850,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3864,13 +3864,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--rum_query"></a>
@@ -3878,23 +3878,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -3902,12 +3902,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3916,23 +3916,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition.request.style.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition--request--style--multi_compute"></a>
@@ -3940,12 +3940,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -3954,7 +3954,7 @@ Optional:
 
 Optional:
 
-- **palette** (String, Optional)
+- **palette** (String) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
 
@@ -3964,24 +3964,24 @@ Optional:
 
 Required:
 
-- **env** (String, Required)
-- **service** (String, Required)
-- **span_name** (String, Required)
+- **env** (String) APM environment.
+- **service** (String) APM service.
+- **span_name** (String) APM span name
 
 Optional:
 
-- **display_format** (String, Optional)
-- **show_breakdown** (Boolean, Optional)
-- **show_distribution** (Boolean, Optional)
-- **show_errors** (Boolean, Optional)
-- **show_hits** (Boolean, Optional)
-- **show_latency** (Boolean, Optional)
-- **show_resource_list** (Boolean, Optional)
-- **size_format** (String, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **display_format** (String) Number of columns to display. Available values are: `one_column`, `two_column`, or `three_column`.
+- **show_breakdown** (Boolean) Whether to show the latency breakdown or not.
+- **show_distribution** (Boolean) Whether to show the latency distribution or not.
+- **show_errors** (Boolean) Whether to show the error metrics or not.
+- **show_hits** (Boolean) Whether to show the hits metrics or not
+- **show_latency** (Boolean) Whether to show the latency metrics or not.
+- **show_resource_list** (Boolean) Whether to show the resource list or not.
+- **size_format** (String) Size of the widget. Available values are: `small`, `medium`, or `large`.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 
 
@@ -3991,24 +3991,24 @@ Optional:
 
 Optional:
 
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--heatmap_definition--custom_link))
-- **event** (Block List) (see [below for nested schema](#nestedblock--widget--heatmap_definition--event))
-- **legend_size** (String, Optional)
-- **request** (Block List) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request))
-- **show_legend** (Boolean, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
-- **yaxis** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--yaxis))
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--custom_link))
+- **event** (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--event))
+- **legend_size** (String) The size of the legend displayed in the widget.
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request))
+- **show_legend** (Boolean) Whether or not to show the legend on this widget.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
+- **yaxis** (Block List, Max: 1) Nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--yaxis))
 
 <a id="nestedblock--widget--heatmap_definition--custom_link"></a>
 ### Nested Schema for `widget.heatmap_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--heatmap_definition--event"></a>
@@ -4016,11 +4016,11 @@ Required:
 
 Required:
 
-- **q** (String, Required)
+- **q** (String) The event query to use in the widget.
 
 Optional:
 
-- **tags_execution** (String, Optional)
+- **tags_execution** (String) The execution method for multi-value filters.
 
 
 <a id="nestedblock--widget--heatmap_definition--request"></a>
@@ -4028,36 +4028,36 @@ Optional:
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--security_query))
-- **style** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--security_query))
+- **style** (Block List, Max: 1) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style))
 
 <a id="nestedblock--widget--heatmap_definition--request--apm_query"></a>
 ### Nested Schema for `widget.heatmap_definition.request.style`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--heatmap_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.heatmap_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--heatmap_definition--request--style--multi_compute"></a>
@@ -4065,12 +4065,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4079,23 +4079,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--heatmap_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.heatmap_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--heatmap_definition--request--style--multi_compute"></a>
@@ -4103,12 +4103,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4117,13 +4117,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--heatmap_definition--request--rum_query"></a>
@@ -4131,23 +4131,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--heatmap_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.heatmap_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--heatmap_definition--request--style--multi_compute"></a>
@@ -4155,12 +4155,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4169,23 +4169,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--heatmap_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.heatmap_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--heatmap_definition--request--style--multi_compute"></a>
@@ -4193,12 +4193,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4207,7 +4207,7 @@ Optional:
 
 Optional:
 
-- **palette** (String, Optional)
+- **palette** (String) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
 
@@ -4216,11 +4216,11 @@ Optional:
 
 Optional:
 
-- **include_zero** (Boolean, Optional)
-- **label** (String, Optional)
-- **max** (String, Optional)
-- **min** (String, Optional)
-- **scale** (String, Optional)
+- **include_zero** (Boolean) Always include zero or fit the axis to the data range.
+- **label** (String) The label of the axis to display on the graph.
+- **max** (String) Specify the maximum value to show on the Y-axis.
+- **min** (String) Specify the minimum value to show on the Y-axis.
+- **scale** (String) Specifies the scale type. One of `linear`, `log`, `pow`, `sqrt`.
 
 
 
@@ -4229,25 +4229,25 @@ Optional:
 
 Optional:
 
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--custom_link))
-- **group** (List of String, Optional)
-- **no_group_hosts** (Boolean, Optional)
-- **no_metric_hosts** (Boolean, Optional)
-- **node_type** (String, Optional)
-- **request** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request))
-- **scope** (List of String, Optional)
-- **style** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--hostmap_definition--style))
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--custom_link))
+- **group** (List of String) The list of tags to group nodes by.
+- **no_group_hosts** (Boolean) Boolean indicating whether to show ungrouped nodes.
+- **no_metric_hosts** (Boolean) Boolean indicating whether to show nodes with no metrics.
+- **node_type** (String) The type of node used. Either `host` or `container`.
+- **request** (Block List, Max: 1) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request))
+- **scope** (List of String) The list of tags to filter nodes by.
+- **style** (Block List, Max: 1) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--style))
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--hostmap_definition--custom_link"></a>
 ### Nested Schema for `widget.hostmap_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--hostmap_definition--request"></a>
@@ -4255,43 +4255,43 @@ Required:
 
 Optional:
 
-- **fill** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill))
-- **size** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size))
+- **fill** (Block List) The query used to fill the map. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill))
+- **size** (Block List) The query used to size the map. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size))
 
 <a id="nestedblock--widget--hostmap_definition--request--fill"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size`
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query))
 
 <a id="nestedblock--widget--hostmap_definition--request--size--apm_query"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size.apm_query`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--apm_query--group_by"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size.apm_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--apm_query--multi_compute"></a>
@@ -4299,12 +4299,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4313,23 +4313,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--log_query--group_by"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size.log_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--log_query--multi_compute"></a>
@@ -4337,12 +4337,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4351,13 +4351,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--rum_query"></a>
@@ -4365,23 +4365,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--rum_query--group_by"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size.rum_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--rum_query--multi_compute"></a>
@@ -4389,12 +4389,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4403,23 +4403,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--security_query--group_by"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--security_query--multi_compute"></a>
@@ -4427,12 +4427,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4442,35 +4442,35 @@ Optional:
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query))
 
 <a id="nestedblock--widget--hostmap_definition--request--size--apm_query"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size.apm_query`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--apm_query--group_by"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size.apm_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--apm_query--multi_compute"></a>
@@ -4478,12 +4478,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4492,23 +4492,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--log_query--group_by"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size.log_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--log_query--multi_compute"></a>
@@ -4516,12 +4516,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4530,13 +4530,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--rum_query"></a>
@@ -4544,23 +4544,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--rum_query--group_by"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size.rum_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--rum_query--multi_compute"></a>
@@ -4568,12 +4568,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4582,23 +4582,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--security_query--group_by"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--security_query--multi_compute"></a>
@@ -4606,12 +4606,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4622,10 +4622,10 @@ Optional:
 
 Optional:
 
-- **fill_max** (String, Optional)
-- **fill_min** (String, Optional)
-- **palette** (String, Optional)
-- **palette_flip** (Boolean, Optional)
+- **fill_max** (String) Max value to use to color the map.
+- **fill_min** (String) Min value to use to color the map.
+- **palette** (String) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+- **palette_flip** (Boolean) Boolean indicating whether to flip the palette tones.
 
 
 
@@ -4634,7 +4634,7 @@ Optional:
 
 Required:
 
-- **url** (String, Required)
+- **url** (String) The URL to use as a data source for the widget.
 
 
 <a id="nestedblock--widget--image_definition"></a>
@@ -4642,12 +4642,12 @@ Required:
 
 Required:
 
-- **url** (String, Required)
+- **url** (String) The URL to use as a data source for the widget.
 
 Optional:
 
-- **margin** (String, Optional)
-- **sizing** (String, Optional)
+- **margin** (String) The margins to use around the image. Either `small` or `large`.
+- **sizing** (String) The preferred method to adapt the dimensions of the image to those of the widget. One of `center` (center the image in the tile), `zoom` (zoom the image to cover the whole tile) or `fit` (fit the image dimensions to those of the tile).
 
 
 <a id="nestedblock--widget--log_stream_definition"></a>
@@ -4655,26 +4655,26 @@ Optional:
 
 Optional:
 
-- **columns** (List of String, Optional)
-- **indexes** (List of String, Optional)
-- **logset** (String, Optional, Deprecated)
-- **message_display** (String, Optional) One of: ['inline', 'expanded-md', 'expanded-lg']
-- **query** (String, Optional)
-- **show_date_column** (Boolean, Optional)
-- **show_message_column** (Boolean, Optional)
-- **sort** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--log_stream_definition--sort))
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **columns** (List of String) Stringified list of columns to use. Example: `["column1","column2","column3"]`.
+- **indexes** (List of String) An array of index names to query in the stream.
+- **logset** (String, Deprecated) ID of the logset to use. Deprecated Use `indexes` instead.
+- **message_display** (String) One of: ['inline', 'expanded-md', 'expanded-lg']
+- **query** (String) The query to use in the widget.
+- **show_date_column** (Boolean) If the date column should be displayed.
+- **show_message_column** (Boolean) If the message column should be displayed.
+- **sort** (Block List, Max: 1) The facet and order to sort the data based upon. Example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--log_stream_definition--sort))
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--log_stream_definition--sort"></a>
 ### Nested Schema for `widget.log_stream_definition.sort`
 
 Required:
 
-- **column** (String, Required)
-- **order** (String, Required)
+- **column** (String) Facet path for the column
+- **order** (String) Widget sorting methods.
 
 
 
@@ -4683,21 +4683,21 @@ Required:
 
 Required:
 
-- **query** (String, Required)
+- **query** (String) The query to use in the widget.
 
 Optional:
 
-- **color_preference** (String, Optional)
-- **count** (Number, Optional, Deprecated)
-- **display_format** (String, Optional)
-- **hide_zero_counts** (Boolean, Optional)
-- **show_last_triggered** (Boolean, Optional)
-- **sort** (String, Optional)
-- **start** (Number, Optional, Deprecated)
-- **summary_type** (String, Optional) One of: ['monitors', 'groups', 'combined']
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **color_preference** (String) Whether to colorize text or background. One of `text`, `background`.
+- **count** (Number, Deprecated) The number of monitors to display.
+- **display_format** (String) The display setting to use. One of `counts`, `list`, or `countsAndList`.
+- **hide_zero_counts** (Boolean) Boolean indicating whether to hide empty categories.
+- **show_last_triggered** (Boolean) Boolean indicating whether to show when monitors/groups last triggered.
+- **sort** (String) The method to use to sort monitors. Example: `status,asc`.
+- **start** (Number, Deprecated) The start of the list. Typically 0.
+- **summary_type** (String) One of: ['monitors', 'groups', 'combined']
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 
 <a id="nestedblock--widget--note_definition"></a>
@@ -4705,16 +4705,16 @@ Optional:
 
 Required:
 
-- **content** (String, Required)
+- **content** (String) Content of the note.
 
 Optional:
 
-- **background_color** (String, Optional)
-- **font_size** (String, Optional)
-- **show_tick** (Boolean, Optional)
-- **text_align** (String, Optional)
-- **tick_edge** (String, Optional)
-- **tick_pos** (String, Optional)
+- **background_color** (String) Background color of the note.
+- **font_size** (String) Size of the text.
+- **show_tick** (Boolean) Whether to show a tick or not.
+- **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`.
+- **tick_edge** (String) When `tick = true`, string indicating on which side of the widget the tick should be displayed. One of `bottom`, `top`, `left`, `right`.
+- **tick_pos** (String) When `tick = true`, string with a percent sign indicating the position of the tick. Example: use `tick_pos = "50%"` for centered alignment.
 
 
 <a id="nestedblock--widget--query_table_definition"></a>
@@ -4722,21 +4722,21 @@ Optional:
 
 Optional:
 
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--custom_link))
-- **has_search_bar** (String, Optional)
-- **request** (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request))
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--custom_link))
+- **has_search_bar** (String) Controls the display of the search bar. One of `auto`, `always`, `never`.
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_table_definition--request))
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--query_table_definition--custom_link"></a>
 ### Nested Schema for `widget.query_table_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--query_table_definition--request"></a>
@@ -4744,42 +4744,42 @@ Required:
 
 Optional:
 
-- **aggregator** (String, Optional)
-- **alias** (String, Optional)
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query))
+- **aggregator** (String) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
+- **alias** (String) The alias for the column name. Default is the metric name.
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query))
 - **apm_stats_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_stats_query))
-- **cell_display_mode** (List of String, Optional)
-- **conditional_formats** (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--conditional_formats))
-- **limit** (Number, Optional)
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query))
-- **order** (String, Optional)
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query))
+- **cell_display_mode** (List of String) A list of display modes for each table cell. List items one of `number`, `bar`.
+- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--conditional_formats))
+- **limit** (Number) The number of lines to show in the table.
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query))
+- **order** (String) The sort order for the rows. One of `desc` or `asc`.
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query))
 
 <a id="nestedblock--widget--query_table_definition--request--apm_query"></a>
 ### Nested Schema for `widget.query_table_definition.request.security_query`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--query_table_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.query_table_definition.request.security_query.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--query_table_definition--request--security_query--multi_compute"></a>
@@ -4787,12 +4787,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4801,29 +4801,29 @@ Optional:
 
 Required:
 
-- **env** (String, Required)
-- **name** (String, Required)
-- **primary_tag** (String, Required)
-- **row_type** (String, Required)
-- **service** (String, Required)
+- **env** (String) Environment name.
+- **name** (String) Operation name associated with service.
+- **primary_tag** (String) The organization's host group name and value.
+- **row_type** (String) The level of detail for the request.
+- **service** (String) Service name.
 
 Optional:
 
-- **columns** (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--columns))
-- **resource** (String, Optional)
+- **columns** (Block List) Column properties used by the front end for display. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--columns))
+- **resource** (String) Resource name.
 
 <a id="nestedblock--widget--query_table_definition--request--security_query--columns"></a>
 ### Nested Schema for `widget.query_table_definition.request.security_query.columns`
 
 Required:
 
-- **name** (String, Required)
+- **name** (String) Column name.
 
 Optional:
 
-- **alias** (String, Optional)
-- **cell_display_mode** (String, Optional)
-- **order** (String, Optional)
+- **alias** (String) A user-assigned alias for the column.
+- **cell_display_mode** (String) A list of display modes for each table cell.
+- **order** (String) Widget sorting methods.
 
 
 
@@ -4832,18 +4832,18 @@ Optional:
 
 Required:
 
-- **comparator** (String, Required)
-- **palette** (String, Required)
-- **value** (Number, Required)
+- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`.
+- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.
+- **value** (Number) Value for the comparator.
 
 Optional:
 
-- **custom_bg_color** (String, Optional)
-- **custom_fg_color** (String, Optional)
-- **hide_value** (Boolean, Optional)
-- **image_url** (String, Optional)
-- **metric** (String, Optional)
-- **timeframe** (String, Optional)
+- **custom_bg_color** (String) Color palette to apply to the background, same values available as palette.
+- **custom_fg_color** (String) Color palette to apply to the foreground, same values available as palette.
+- **hide_value** (Boolean) Setting this to True hides values.
+- **image_url** (String) Displays an image as the background.
+- **metric** (String) Metric from the request to correlate this conditional format with.
+- **timeframe** (String) Defines the displayed timeframe.
 
 
 <a id="nestedblock--widget--query_table_definition--request--log_query"></a>
@@ -4851,23 +4851,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--query_table_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.query_table_definition.request.security_query.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--query_table_definition--request--security_query--multi_compute"></a>
@@ -4875,12 +4875,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4889,13 +4889,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--query_table_definition--request--rum_query"></a>
@@ -4903,23 +4903,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--query_table_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.query_table_definition.request.security_query.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--query_table_definition--request--security_query--multi_compute"></a>
@@ -4927,12 +4927,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4941,23 +4941,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--query_table_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.query_table_definition.request.security_query.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--query_table_definition--request--security_query--multi_compute"></a>
@@ -4965,12 +4965,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -4981,24 +4981,24 @@ Optional:
 
 Optional:
 
-- **autoscale** (Boolean, Optional)
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--custom_link))
-- **custom_unit** (String, Optional)
-- **precision** (Number, Optional)
-- **request** (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--request))
-- **text_align** (String, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **autoscale** (Boolean) Boolean indicating whether to automatically scale the tile.
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--custom_link))
+- **custom_unit** (String) The unit for the value displayed in the widget.
+- **precision** (Number) The precision to use when displaying the tile.
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below(exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_value_definition--request))
+- **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--query_value_definition--custom_link"></a>
 ### Nested Schema for `widget.query_value_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--query_value_definition--request"></a>
@@ -5006,37 +5006,37 @@ Required:
 
 Optional:
 
-- **aggregator** (String, Optional)
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query))
-- **conditional_formats** (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--conditional_formats))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query))
+- **aggregator** (String) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query))
+- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--conditional_formats))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query))
 
 <a id="nestedblock--widget--query_value_definition--request--apm_query"></a>
 ### Nested Schema for `widget.query_value_definition.request.security_query`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--query_value_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.query_value_definition.request.security_query.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--query_value_definition--request--security_query--multi_compute"></a>
@@ -5044,12 +5044,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5058,18 +5058,18 @@ Optional:
 
 Required:
 
-- **comparator** (String, Required)
-- **palette** (String, Required)
-- **value** (Number, Required)
+- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`.
+- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.
+- **value** (Number) Value for the comparator.
 
 Optional:
 
-- **custom_bg_color** (String, Optional)
-- **custom_fg_color** (String, Optional)
-- **hide_value** (Boolean, Optional)
-- **image_url** (String, Optional)
-- **metric** (String, Optional)
-- **timeframe** (String, Optional)
+- **custom_bg_color** (String) Color palette to apply to the background, same values available as palette.
+- **custom_fg_color** (String) Color palette to apply to the foreground, same values available as palette.
+- **hide_value** (Boolean) Setting this to True hides values.
+- **image_url** (String) Displays an image as the background.
+- **metric** (String) Metric from the request to correlate this conditional format with.
+- **timeframe** (String) Defines the displayed timeframe.
 
 
 <a id="nestedblock--widget--query_value_definition--request--log_query"></a>
@@ -5077,23 +5077,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--query_value_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.query_value_definition.request.security_query.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--query_value_definition--request--security_query--multi_compute"></a>
@@ -5101,12 +5101,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5115,13 +5115,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--query_value_definition--request--rum_query"></a>
@@ -5129,23 +5129,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--query_value_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.query_value_definition.request.security_query.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--query_value_definition--request--security_query--multi_compute"></a>
@@ -5153,12 +5153,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5167,23 +5167,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--query_value_definition--request--security_query--group_by"></a>
 ### Nested Schema for `widget.query_value_definition.request.security_query.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--query_value_definition--request--security_query--multi_compute"></a>
@@ -5191,12 +5191,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5207,23 +5207,23 @@ Optional:
 
 Optional:
 
-- **color_by_groups** (List of String, Optional)
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--custom_link))
-- **request** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request))
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
-- **xaxis** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--xaxis))
-- **yaxis** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--yaxis))
+- **color_by_groups** (List of String) List of groups used for colors.
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--custom_link))
+- **request** (Block List, Max: 1) Nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request))
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
+- **xaxis** (Block List, Max: 1) Nested block describing the X-Axis Controls. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--xaxis))
+- **yaxis** (Block List, Max: 1) Nested block describing the Y-Axis Controls. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--yaxis))
 
 <a id="nestedblock--widget--scatterplot_definition--custom_link"></a>
 ### Nested Schema for `widget.scatterplot_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request"></a>
@@ -5231,44 +5231,44 @@ Required:
 
 Optional:
 
-- **x** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x))
-- **y** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y))
+- **x** (Block List) The query used for the X-Axis. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x))
+- **y** (Block List) The query used for the Y-Axis. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y))
 
 <a id="nestedblock--widget--scatterplot_definition--request--x"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.y`
 
 Optional:
 
-- **aggregator** (String, Optional)
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query))
+- **aggregator** (String) Aggregator used for the request.
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query))
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--apm_query"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.y.apm_query`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--apm_query--group_by"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.y.apm_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--apm_query--multi_compute"></a>
@@ -5276,12 +5276,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5290,23 +5290,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--log_query--group_by"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.y.log_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--log_query--multi_compute"></a>
@@ -5314,12 +5314,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5328,13 +5328,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--rum_query"></a>
@@ -5342,23 +5342,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--rum_query--group_by"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.y.rum_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--rum_query--multi_compute"></a>
@@ -5366,12 +5366,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5380,23 +5380,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--security_query--group_by"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.y.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--security_query--multi_compute"></a>
@@ -5404,12 +5404,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5419,36 +5419,36 @@ Optional:
 
 Optional:
 
-- **aggregator** (String, Optional)
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query))
+- **aggregator** (String) Aggregator used for the request.
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query))
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--apm_query"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.y.apm_query`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--apm_query--group_by"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.y.apm_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--apm_query--multi_compute"></a>
@@ -5456,12 +5456,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5470,23 +5470,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--log_query--group_by"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.y.log_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--log_query--multi_compute"></a>
@@ -5494,12 +5494,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5508,13 +5508,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--rum_query"></a>
@@ -5522,23 +5522,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--rum_query--group_by"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.y.rum_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--rum_query--multi_compute"></a>
@@ -5546,12 +5546,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5560,23 +5560,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--security_query--group_by"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.y.security_query.search`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--security_query--multi_compute"></a>
@@ -5584,12 +5584,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5600,11 +5600,11 @@ Optional:
 
 Optional:
 
-- **include_zero** (Boolean, Optional)
-- **label** (String, Optional)
-- **max** (String, Optional)
-- **min** (String, Optional)
-- **scale** (String, Optional)
+- **include_zero** (Boolean) Always include zero or fit the axis to the data range.
+- **label** (String) The label of the axis to display on the graph.
+- **max** (String) Specify the maximum value to show on the Y-axis.
+- **min** (String) Specify the minimum value to show on the Y-axis.
+- **scale** (String) Specifies the scale type. One of `linear`, `log`, `pow`, `sqrt`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--yaxis"></a>
@@ -5612,11 +5612,11 @@ Optional:
 
 Optional:
 
-- **include_zero** (Boolean, Optional)
-- **label** (String, Optional)
-- **max** (String, Optional)
-- **min** (String, Optional)
-- **scale** (String, Optional)
+- **include_zero** (Boolean) Always include zero or fit the axis to the data range.
+- **label** (String) The label of the axis to display on the graph.
+- **max** (String) Specify the maximum value to show on the Y-axis.
+- **min** (String) Specify the minimum value to show on the Y-axis.
+- **scale** (String) Specifies the scale type. One of `linear`, `log`, `pow`, `sqrt`.
 
 
 
@@ -5625,17 +5625,17 @@ Optional:
 
 Required:
 
-- **slo_id** (String, Required)
-- **time_windows** (List of String, Required)
-- **view_mode** (String, Required)
-- **view_type** (String, Required)
+- **slo_id** (String) The ID of the service level objective used by the widget.
+- **time_windows** (List of String) List of time windows to display in the widget. Each value in the list must be one of `7d`, `30d`, `90d`, `week_to_date`, `previous_week`, `month_to_date`, or `previous_month`.
+- **view_mode** (String) View mode for the widget. One of `overall`, `component`, or `both`.
+- **view_type** (String) Type of view to use when displaying the widget. Only `detail` is currently supported.
 
 Optional:
 
-- **show_error_budget** (Boolean, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **show_error_budget** (Boolean) Whether to show the error budget or not.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 
 <a id="nestedblock--widget--servicemap_definition"></a>
@@ -5643,23 +5643,23 @@ Optional:
 
 Required:
 
-- **filters** (List of String, Required)
-- **service** (String, Required)
+- **filters** (List of String) Your environment and primary tag (or `*` if enabled for your account).
+- **service** (String) The ID of the service you want to map.
 
 Optional:
 
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--servicemap_definition--custom_link))
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--servicemap_definition--custom_link))
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--servicemap_definition--custom_link"></a>
 ### Nested Schema for `widget.servicemap_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 
@@ -5668,26 +5668,26 @@ Required:
 
 Optional:
 
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--custom_link))
-- **event** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--event))
-- **legend_size** (String, Optional)
-- **marker** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--marker))
-- **request** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request))
-- **right_yaxis** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--right_yaxis))
-- **show_legend** (Boolean, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
-- **yaxis** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--yaxis))
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--custom_link))
+- **event** (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--event))
+- **legend_size** (String) The size of the legend displayed in the widget.
+- **marker** (Block List) Nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--timeseries_definition--marker))
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--timeseries_definition--request))
+- **right_yaxis** (Block List, Max: 1) Nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--right_yaxis))
+- **show_legend** (Boolean) Whether or not to show the legend on this widget.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
+- **yaxis** (Block List, Max: 1) Nested block describing the Y-Axis Controls. The structure of this block is described below (see [below for nested schema](#nestedblock--widget--timeseries_definition--yaxis))
 
 <a id="nestedblock--widget--timeseries_definition--custom_link"></a>
 ### Nested Schema for `widget.timeseries_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--timeseries_definition--event"></a>
@@ -5695,11 +5695,11 @@ Required:
 
 Required:
 
-- **q** (String, Required)
+- **q** (String) The event query to use in the widget.
 
 Optional:
 
-- **tags_execution** (String, Optional)
+- **tags_execution** (String) The execution method for multi-value filters.
 
 
 <a id="nestedblock--widget--timeseries_definition--marker"></a>
@@ -5707,12 +5707,12 @@ Optional:
 
 Required:
 
-- **value** (String, Required)
+- **value** (String) Mathematical expression describing the marker. Examples: `y > 1`, `-5 < y < 0`, `y = 19`.
 
 Optional:
 
-- **display_type** (String, Optional)
-- **label** (String, Optional)
+- **display_type** (String) How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.
+- **label** (String) A label for the line or range.
 
 
 <a id="nestedblock--widget--timeseries_definition--request"></a>
@@ -5720,40 +5720,40 @@ Optional:
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query))
-- **display_type** (String, Optional)
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query))
-- **metadata** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--metadata))
-- **network_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query))
-- **on_right_yaxis** (Boolean, Optional)
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query))
-- **style** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query))
+- **display_type** (String) How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query))
+- **metadata** (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--metadata))
+- **network_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query))
+- **on_right_yaxis** (Boolean) Boolean indicating whether the request will use the right or left Y-Axis.
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query))
+- **style** (Block List, Max: 1) Style of the widget graph. Exactly one `style` block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style))
 
 <a id="nestedblock--widget--timeseries_definition--request--apm_query"></a>
 ### Nested Schema for `widget.timeseries_definition.request.style`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--timeseries_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.timeseries_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--style--multi_compute"></a>
@@ -5761,12 +5761,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5775,23 +5775,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--timeseries_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.timeseries_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--style--multi_compute"></a>
@@ -5799,12 +5799,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5813,11 +5813,11 @@ Optional:
 
 Required:
 
-- **expression** (String, Required)
+- **expression** (String) Expression name.
 
 Optional:
 
-- **alias_name** (String, Optional)
+- **alias_name** (String) Expression alias.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--network_query"></a>
@@ -5825,23 +5825,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--timeseries_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.timeseries_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--style--multi_compute"></a>
@@ -5849,12 +5849,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5863,13 +5863,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--rum_query"></a>
@@ -5877,23 +5877,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--timeseries_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.timeseries_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--style--multi_compute"></a>
@@ -5901,12 +5901,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5915,23 +5915,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--timeseries_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.timeseries_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--style--multi_compute"></a>
@@ -5939,12 +5939,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -5953,9 +5953,9 @@ Optional:
 
 Optional:
 
-- **line_type** (String, Optional)
-- **line_width** (String, Optional)
-- **palette** (String, Optional)
+- **line_type** (String) Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.
+- **line_width** (String) Width of line displayed. Available values are: `normal`, `thick`, or `thin`.
+- **palette** (String) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
 
@@ -5964,11 +5964,11 @@ Optional:
 
 Optional:
 
-- **include_zero** (Boolean, Optional)
-- **label** (String, Optional)
-- **max** (String, Optional)
-- **min** (String, Optional)
-- **scale** (String, Optional)
+- **include_zero** (Boolean) Always include zero or fit the axis to the data range.
+- **label** (String) The label of the axis to display on the graph.
+- **max** (String) Specify the maximum value to show on the Y-axis.
+- **min** (String) Specify the minimum value to show on the Y-axis.
+- **scale** (String) Specifies the scale type. One of `linear`, `log`, `pow`, `sqrt`.
 
 
 <a id="nestedblock--widget--timeseries_definition--yaxis"></a>
@@ -5976,11 +5976,11 @@ Optional:
 
 Optional:
 
-- **include_zero** (Boolean, Optional)
-- **label** (String, Optional)
-- **max** (String, Optional)
-- **min** (String, Optional)
-- **scale** (String, Optional)
+- **include_zero** (Boolean) Always include zero or fit the axis to the data range.
+- **label** (String) The label of the axis to display on the graph.
+- **max** (String) Specify the maximum value to show on the Y-axis.
+- **min** (String) Specify the minimum value to show on the Y-axis.
+- **scale** (String) Specifies the scale type. One of `linear`, `log`, `pow`, `sqrt`.
 
 
 
@@ -5989,20 +5989,20 @@ Optional:
 
 Optional:
 
-- **custom_link** (Block List) (see [below for nested schema](#nestedblock--widget--toplist_definition--custom_link))
-- **request** (Block List) (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--custom_link))
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--toplist_definition--custom_link"></a>
 ### Nested Schema for `widget.toplist_definition.custom_link`
 
 Required:
 
-- **label** (String, Required)
-- **link** (String, Required)
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--toplist_definition--request"></a>
@@ -6010,37 +6010,37 @@ Required:
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query))
-- **conditional_formats** (Block List) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--conditional_formats))
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query))
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--process_query))
-- **q** (String, Optional)
-- **rum_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query))
-- **style** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query))
+- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--conditional_formats))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query))
+- **style** (Block List, Max: 1) Define request widget style. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style))
 
 <a id="nestedblock--widget--toplist_definition--request--apm_query"></a>
 ### Nested Schema for `widget.toplist_definition.request.style`
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--toplist_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.toplist_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--toplist_definition--request--style--multi_compute"></a>
@@ -6048,12 +6048,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -6062,18 +6062,18 @@ Optional:
 
 Required:
 
-- **comparator** (String, Required)
-- **palette** (String, Required)
-- **value** (Number, Required)
+- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`.
+- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.
+- **value** (Number) Value for the comparator.
 
 Optional:
 
-- **custom_bg_color** (String, Optional)
-- **custom_fg_color** (String, Optional)
-- **hide_value** (Boolean, Optional)
-- **image_url** (String, Optional)
-- **metric** (String, Optional)
-- **timeframe** (String, Optional)
+- **custom_bg_color** (String) Color palette to apply to the background, same values available as palette.
+- **custom_fg_color** (String) Color palette to apply to the foreground, same values available as palette.
+- **hide_value** (Boolean) Setting this to True hides values.
+- **image_url** (String) Displays an image as the background.
+- **metric** (String) Metric from the request to correlate this conditional format with.
+- **timeframe** (String) Defines the displayed timeframe.
 
 
 <a id="nestedblock--widget--toplist_definition--request--log_query"></a>
@@ -6081,23 +6081,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--toplist_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.toplist_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--toplist_definition--request--style--multi_compute"></a>
@@ -6105,12 +6105,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -6119,13 +6119,13 @@ Optional:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String) Your chosen metric.
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String) List of processes.
+- **limit** (Number) Max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
 
 
 <a id="nestedblock--widget--toplist_definition--request--rum_query"></a>
@@ -6133,23 +6133,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--toplist_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.toplist_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--toplist_definition--request--style--multi_compute"></a>
@@ -6157,12 +6157,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -6171,23 +6171,23 @@ Optional:
 
 Required:
 
-- **index** (String, Required)
+- **index** (String) Name of the index to query.
 
 Optional:
 
-- **compute** (Map of String, Optional)
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by))
-- **multi_compute** (Block List) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--multi_compute))
-- **search** (Map of String, Optional)
+- **compute** (Map of String) One of `compute` or `multi_compute` is required. The map has the keys as below.
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by))
+- **multi_compute** (Block List) One of `compute` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--multi_compute))
+- **search** (Map of String) One map is allowed with the key below.
 
 <a id="nestedblock--widget--toplist_definition--request--style--group_by"></a>
 ### Nested Schema for `widget.toplist_definition.request.style.group_by`
 
 Optional:
 
-- **facet** (String, Optional)
-- **limit** (Number, Optional)
-- **sort** (Map of String, Optional)
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String) One map is allowed with the keys as below.
 
 
 <a id="nestedblock--widget--toplist_definition--request--style--multi_compute"></a>
@@ -6195,12 +6195,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String) The aggregation method.
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
 
 
 
@@ -6209,7 +6209,7 @@ Optional:
 
 Optional:
 
-- **palette** (String, Optional)
+- **palette** (String) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
 
@@ -6219,24 +6219,24 @@ Optional:
 
 Required:
 
-- **env** (String, Required)
-- **service** (String, Required)
-- **span_name** (String, Required)
+- **env** (String) APM environment.
+- **service** (String) APM service.
+- **span_name** (String) APM span name
 
 Optional:
 
-- **display_format** (String, Optional)
-- **show_breakdown** (Boolean, Optional)
-- **show_distribution** (Boolean, Optional)
-- **show_errors** (Boolean, Optional)
-- **show_hits** (Boolean, Optional)
-- **show_latency** (Boolean, Optional)
-- **show_resource_list** (Boolean, Optional)
-- **size_format** (String, Optional)
-- **time** (Map of String, Optional)
-- **title** (String, Optional)
-- **title_align** (String, Optional)
-- **title_size** (String, Optional)
+- **display_format** (String) Number of columns to display. Available values are: `one_column`, `two_column`, or `three_column`.
+- **show_breakdown** (Boolean) Whether to show the latency breakdown or not.
+- **show_distribution** (Boolean) Whether to show the latency distribution or not.
+- **show_errors** (Boolean) Whether to show the error metrics or not.
+- **show_hits** (Boolean) Whether to show the hits metrics or not
+- **show_latency** (Boolean) Whether to show the latency metrics or not.
+- **show_resource_list** (Boolean) Whether to show the resource list or not.
+- **size_format** (String) Size of the widget. Available values are: `small`, `medium`, or `large`.
+- **time** (Map of String) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
 
 
 
@@ -6245,12 +6245,12 @@ Optional:
 
 Required:
 
-- **name** (String, Required) The name of the variable.
+- **name** (String) The name of the variable.
 
 Optional:
 
-- **default** (String, Optional) The default value for the template variable on dashboard load.
-- **prefix** (String, Optional) The tag prefix associated with the variable. Only tags with this prefix will appear in the variable dropdown.
+- **default** (String) The default value for the template variable on dashboard load.
+- **prefix** (String) The tag prefix associated with the variable. Only tags with this prefix will appear in the variable dropdown.
 
 
 <a id="nestedblock--template_variable_preset"></a>
@@ -6258,7 +6258,7 @@ Optional:
 
 Required:
 
-- **name** (String, Required) The name of the preset.
+- **name** (String) The name of the preset.
 - **template_variable** (Block List, Min: 1) The template variable names and assumed values under the given preset (see [below for nested schema](#nestedblock--template_variable_preset--template_variable))
 
 <a id="nestedblock--template_variable_preset--template_variable"></a>
@@ -6266,8 +6266,8 @@ Required:
 
 Required:
 
-- **name** (String, Required) The name of the template variable
-- **value** (String, Required) The value that should be assumed by the template variable in this preset
+- **name** (String) The name of the template variable
+- **value** (String) The value that should be assumed by the template variable in this preset
 
 ## Import
 

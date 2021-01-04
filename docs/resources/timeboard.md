@@ -132,14 +132,14 @@ resource "datadog_timeboard" "redis" {
 
 ### Required
 
-- **description** (String, Required) A description of the dashboard's content.
+- **description** (String) A description of the dashboard's content.
 - **graph** (Block List, Min: 1) A list of graph definitions. (see [below for nested schema](#nestedblock--graph))
-- **title** (String, Required) The name of the dashboard.
+- **title** (String) The name of the dashboard.
 
 ### Optional
 
-- **id** (String, Optional) The ID of this resource.
-- **read_only** (Boolean, Optional)
+- **id** (String) The ID of this resource.
+- **read_only** (Boolean) The read-only status of the timeboard. Default is false.
 - **template_variable** (Block List) A list of template variables for using Dashboard templating. (see [below for nested schema](#nestedblock--template_variable))
 
 <a id="nestedblock--graph"></a>
@@ -148,71 +148,71 @@ resource "datadog_timeboard" "redis" {
 Required:
 
 - **request** (Block List, Min: 1) (see [below for nested schema](#nestedblock--graph--request))
-- **title** (String, Required) The name of the graph.
-- **viz** (String, Required)
+- **title** (String) The name of the graph.
+- **viz** (String) The type of visualization to use for the graph. Valid choices are `change`, `distribution`, `heatmap`, `hostmap`, `query_value`, `timeseries`, and `toplist`.
 
 Optional:
 
-- **autoscale** (Boolean, Optional) Automatically scale graphs
-- **custom_unit** (String, Optional) Use a custom unit (like 'users')
-- **events** (List of String, Optional) Filter for events to be overlayed on the graph.
-- **group** (List of String, Optional) A list of groupings for hostmap type graphs.
-- **include_no_metric_hosts** (Boolean, Optional) Include hosts without metrics in hostmap graphs
-- **include_ungrouped_hosts** (Boolean, Optional) Include ungrouped hosts in hostmap graphs
-- **marker** (Block List) (see [below for nested schema](#nestedblock--graph--marker))
-- **node_type** (String, Optional) Type of nodes to show in hostmap graphs (either 'host' or 'container').
-- **precision** (String, Optional) How many digits to show
-- **scope** (List of String, Optional) A list of scope filters for hostmap type graphs.
-- **style** (Map of String, Optional)
-- **text_align** (String, Optional) How to align text
-- **yaxis** (Map of String, Optional)
+- **autoscale** (Boolean) Automatically scale graphs
+- **custom_unit** (String) Use a custom unit (like 'users')
+- **events** (List of String) Filter for events to be overlayed on the graph.
+- **group** (List of String) A list of groupings for hostmap type graphs.
+- **include_no_metric_hosts** (Boolean) Include hosts without metrics in hostmap graphs
+- **include_ungrouped_hosts** (Boolean) Include ungrouped hosts in hostmap graphs
+- **marker** (Block List) Nested block describing lines / ranges added to graph for formatting. The structure of this block is described below. Multiple `marker` blocks are allowed within a `graph` block. (see [below for nested schema](#nestedblock--graph--marker))
+- **node_type** (String) Type of nodes to show in hostmap graphs (either 'host' or 'container').
+- **precision** (String) How many digits to show
+- **scope** (List of String) A list of scope filters for hostmap type graphs.
+- **style** (Map of String) Nested block describing hostmaps. The structure of this block is described below.
+- **text_align** (String) How to align text
+- **yaxis** (Map of String) Nested block describing modifications to the Y-axis rendering. The structure of this block is described below.
 
 <a id="nestedblock--graph--request"></a>
 ### Nested Schema for `graph.request`
 
 Optional:
 
-- **aggregator** (String, Optional)
+- **aggregator** (String) The aggregation method used when the number of data points outnumbers the max that can be shown.
 - **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--graph--request--apm_query))
-- **change_type** (String, Optional) Type of change for change graphs.
-- **compare_to** (String, Optional) The time period to compare change against in change graphs.
+- **change_type** (String) Type of change for change graphs.
+- **compare_to** (String) The time period to compare change against in change graphs.
 - **conditional_format** (Block List) A list of conditional formatting rules. (see [below for nested schema](#nestedblock--graph--request--conditional_format))
-- **extra_col** (String, Optional) If set to 'present', this will include the present values in change graphs.
-- **increase_good** (Boolean, Optional) Decides whether to represent increases as good or bad in change graphs.
+- **extra_col** (String) If set to 'present', this will include the present values in change graphs.
+- **increase_good** (Boolean) Decides whether to represent increases as good or bad in change graphs.
 - **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--graph--request--log_query))
-- **metadata_json** (String, Optional)
-- **order_by** (String, Optional) The field a change graph will be ordered by.
-- **order_direction** (String, Optional) Sort change graph in ascending or descending order.
+- **metadata_json** (String) A JSON blob (preferrably created using [jsonencode](https://www.terraform.io/docs/configuration/functions/jsonencode.html?_ga=2.6381362.1091155358.1609189257-888022054.1605547463)) representing mapping of query expressions to alias names. Note that the query expressions in `metadata_json` will be ignored if they're not present in the query.
+- **order_by** (String) The field a change graph will be ordered by.
+- **order_direction** (String) Sort change graph in ascending or descending order.
 - **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--graph--request--process_query))
-- **q** (String, Optional)
-- **stacked** (Boolean, Optional)
-- **style** (Map of String, Optional)
-- **type** (String, Optional)
+- **q** (String) The query of the request. Pro tip: Use the JSON tab inside the Datadog UI to help build you query strings.
+- **stacked** (Boolean) Boolean value to determine if this is this a stacked area graph. Default: `false` (line chart).
+- **style** (Map of String) Nested block to customize the graph style.
+- **type** (String) Choose how to draw the graph. For example: `line`, `bars` or `area`. Default: `line`.
 
 <a id="nestedblock--graph--request--apm_query"></a>
 ### Nested Schema for `graph.request.apm_query`
 
 Required:
 
-- **compute** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--graph--request--apm_query--compute))
-- **index** (String, Required)
+- **compute** (Block List, Min: 1, Max: 1) Exactly one nested block is required with the structure below. (see [below for nested schema](#nestedblock--graph--request--apm_query--compute))
+- **index** (String)
 
 Optional:
 
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--graph--request--apm_query--group_by))
-- **search** (Block List, Max: 1) (see [below for nested schema](#nestedblock--graph--request--apm_query--search))
+- **group_by** (Block List) Multiple nested blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--graph--request--apm_query--group_by))
+- **search** (Block List, Max: 1) Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--graph--request--apm_query--search))
 
 <a id="nestedblock--graph--request--apm_query--compute"></a>
 ### Nested Schema for `graph.request.apm_query.search`
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String)
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String)
+- **interval** (Number)
 
 
 <a id="nestedblock--graph--request--apm_query--group_by"></a>
@@ -220,24 +220,24 @@ Optional:
 
 Required:
 
-- **facet** (String, Required)
+- **facet** (String)
 
 Optional:
 
-- **limit** (Number, Optional)
-- **sort** (Block List, Max: 1) (see [below for nested schema](#nestedblock--graph--request--apm_query--search--sort))
+- **limit** (Number)
+- **sort** (Block List, Max: 1) Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--graph--request--apm_query--search--sort))
 
 <a id="nestedblock--graph--request--apm_query--search--sort"></a>
 ### Nested Schema for `graph.request.apm_query.search.sort`
 
 Required:
 
-- **aggregation** (String, Required)
-- **order** (String, Required)
+- **aggregation** (String)
+- **order** (String)
 
 Optional:
 
-- **facet** (String, Optional)
+- **facet** (String)
 
 
 
@@ -246,7 +246,7 @@ Optional:
 
 Required:
 
-- **query** (String, Required)
+- **query** (String)
 
 
 
@@ -255,14 +255,14 @@ Required:
 
 Required:
 
-- **comparator** (String, Required) Comparator (<, >, etc)
+- **comparator** (String) Comparator (<, >, etc)
 
 Optional:
 
-- **custom_bg_color** (String, Optional) Custom background color (e.g., #205081)
-- **custom_fg_color** (String, Optional) Custom foreground color (e.g., #59afe1)
-- **palette** (String, Optional) The palette to use if this condition is met.
-- **value** (String, Optional) Value that is threshold for conditional format
+- **custom_bg_color** (String) Custom background color (e.g., #205081)
+- **custom_fg_color** (String) Custom foreground color (e.g., #59afe1)
+- **palette** (String) The palette to use if this condition is met.
+- **value** (String) Value that is threshold for conditional format
 
 
 <a id="nestedblock--graph--request--log_query"></a>
@@ -270,25 +270,25 @@ Optional:
 
 Required:
 
-- **compute** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--graph--request--log_query--compute))
-- **index** (String, Required)
+- **compute** (Block List, Min: 1, Max: 1) Exactly one nested block is required with the structure below. (see [below for nested schema](#nestedblock--graph--request--log_query--compute))
+- **index** (String)
 
 Optional:
 
-- **group_by** (Block List) (see [below for nested schema](#nestedblock--graph--request--log_query--group_by))
-- **search** (Block List, Max: 1) (see [below for nested schema](#nestedblock--graph--request--log_query--search))
+- **group_by** (Block List) Multiple nested blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--graph--request--log_query--group_by))
+- **search** (Block List, Max: 1) Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--graph--request--log_query--search))
 
 <a id="nestedblock--graph--request--log_query--compute"></a>
 ### Nested Schema for `graph.request.log_query.search`
 
 Required:
 
-- **aggregation** (String, Required)
+- **aggregation** (String)
 
 Optional:
 
-- **facet** (String, Optional)
-- **interval** (Number, Optional)
+- **facet** (String)
+- **interval** (Number)
 
 
 <a id="nestedblock--graph--request--log_query--group_by"></a>
@@ -296,24 +296,24 @@ Optional:
 
 Required:
 
-- **facet** (String, Required)
+- **facet** (String)
 
 Optional:
 
-- **limit** (Number, Optional)
-- **sort** (Block List, Max: 1) (see [below for nested schema](#nestedblock--graph--request--log_query--search--sort))
+- **limit** (Number)
+- **sort** (Block List, Max: 1) Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--graph--request--log_query--search--sort))
 
 <a id="nestedblock--graph--request--log_query--search--sort"></a>
 ### Nested Schema for `graph.request.log_query.search.sort`
 
 Required:
 
-- **aggregation** (String, Required)
-- **order** (String, Required)
+- **aggregation** (String)
+- **order** (String)
 
 Optional:
 
-- **facet** (String, Optional)
+- **facet** (String)
 
 
 
@@ -322,7 +322,7 @@ Optional:
 
 Required:
 
-- **query** (String, Required)
+- **query** (String)
 
 
 
@@ -331,13 +331,13 @@ Required:
 
 Required:
 
-- **metric** (String, Required)
+- **metric** (String)
 
 Optional:
 
-- **filter_by** (List of String, Optional)
-- **limit** (Number, Optional)
-- **search_by** (String, Optional)
+- **filter_by** (List of String)
+- **limit** (Number)
+- **search_by** (String)
 
 
 
@@ -346,12 +346,12 @@ Optional:
 
 Required:
 
-- **type** (String, Required)
-- **value** (String, Required)
+- **type** (String) How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.
+- **value** (String) Mathematical expression describing the marker. Examples: `y > 1`, `-5 < y < 0`, `y = 19`.
 
 Optional:
 
-- **label** (String, Optional)
+- **label** (String) A label for the line or range. **Warning**: when a label is enabled but left empty through the UI, the Datadog API returns a boolean value, not a string. This makes terraform plan fail with a JSON decoding error.
 
 
 
@@ -360,12 +360,12 @@ Optional:
 
 Required:
 
-- **name** (String, Required) The name of the variable.
+- **name** (String) The name of the variable.
 
 Optional:
 
-- **default** (String, Optional) The default value for the template variable on dashboard load.
-- **prefix** (String, Optional) The tag prefix associated with the variable. Only tags with this prefix will appear in the variable dropdown.
+- **default** (String) The default value for the template variable on dashboard load.
+- **prefix** (String) The tag prefix associated with the variable. Only tags with this prefix will appear in the variable dropdown.
 
 ## Import
 
