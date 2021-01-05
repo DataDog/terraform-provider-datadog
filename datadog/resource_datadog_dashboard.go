@@ -136,7 +136,7 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 		}
 
 		// We only log the error, as failing to update the list shouldn't fail dashboard creation
-		updateDashboarLists(d, providerConf, *dashboard.Id)
+		updateDashboardLists(d, providerConf, *dashboard.Id)
 
 		return resource.NonRetryableError(loadDatadogDashboard(d, getDashboard))
 	})
@@ -155,12 +155,12 @@ func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) er
 		return translateClientError(err, "error updating dashboard")
 	}
 
-	updateDashboarLists(d, providerConf, *dashboard.Id)
+	updateDashboardLists(d, providerConf, *dashboard.Id)
 
 	return resourceDatadogDashboardRead(d, meta)
 }
 
-func updateDashboarLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardId string) {
+func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardId string) {
 	dashTypeString := "custom_screenboard"
 	if d.Get("layout_type").(string) == "ordered" {
 		dashTypeString = "custom_timeboard"
