@@ -441,7 +441,7 @@ func syntheticsConfigVariable() *schema.Schema {
 				"type": {
 					Type:         schema.TypeString,
 					Required:     true,
-					ValidateFunc: validation.StringInSlice(syntheticsConfigVariableTypes, false),
+					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsConfigVariableTypeFromValue),
 				},
 			},
 		},
