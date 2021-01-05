@@ -11,13 +11,13 @@ interactions:
       - GetMonitor
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.8 (go go1.13.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4439851054064923952"
+      - "8087173541833959355"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "1337265499812096207"
+      - "6782738516688967426"
     url: https://api.datadoghq.com/api/v1/monitor/2
     method: GET
   response:
@@ -32,9 +32,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 25 Sep 2020 21:18:06 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:53:58 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -44,7 +42,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3093372"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -54,7 +52,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "2999"
       X-Ratelimit-Reset:
-      - "4"
+      - "2"
     status: 404 Not Found
     code: 404
     duration: ""

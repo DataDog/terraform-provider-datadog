@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1607002307","options":{"evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"","query":"does not really match much"}]}
+      {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1609425877","options":{"evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"","query":"does not really match much"}]}
     form: {}
     headers:
       Accept:
@@ -14,20 +14,20 @@ interactions:
       - CreateSecurityMonitoringRule
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.5; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3215133646867290881"
+      - "5217897418680996082"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8032888456999119024"
+      - "1417090361113894262"
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules
     method: POST
   response:
     body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1607002307336,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1609426439235,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a
-      > 0"}],"type":"threshold","id":"3zd-df2-wto","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1607002307"}'
+      > 0"}],"type":"log_detection","id":"7as-ojx-fjd","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1609425877"}'
     headers:
       Cache-Control:
       - no-cache
@@ -40,13 +40,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Thu, 03 Dec 2020 13:31:47 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:53:59 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 10-Dec-2020 13:31:47 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:59 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -55,9 +53,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - /0aUVUH/0B08LSgkH1j961ejfqRhimJkYAixzpnRf5lscmOFHWjl/leOQ3Mnfn7R
+      - HPVlkUpFXGYcqD93XIv+Hev5A7X2V4P4zD5qLStQWMHCrtOXDwFh+ruPewqnpfPS
       X-Dd-Version:
-      - "35.3469467"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -73,20 +71,20 @@ interactions:
       - GetSecurityMonitoringRule
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.5; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "8084210264646127067"
+      - "2412893235454454336"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8032888456999119024"
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/3zd-df2-wto
+      - "1417090361113894262"
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7as-ojx-fjd
     method: GET
   response:
     body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1607002307336,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1609426439235,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a
-      > 0"}],"type":"threshold","id":"3zd-df2-wto","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1607002307"}'
+      > 0"}],"type":"log_detection","id":"7as-ojx-fjd","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1609425877"}'
     headers:
       Cache-Control:
       - no-cache
@@ -99,13 +97,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Thu, 03 Dec 2020 13:31:47 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:53:59 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 10-Dec-2020 13:31:47 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:59 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -114,9 +110,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - bOYRvpIMaDWtEAFc77xh4cYKoSxr/zmllvfW+/1TUFo7Zbru0n5QEX4LCoKiS3Mv
+      - 0EJutvpOrBJC63ni/O57leUa99Oey4n8MQPI1nQqGf8zcU0cRqWsvs49QUsgOTGg
       X-Dd-Version:
-      - "35.3469467"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -132,20 +128,20 @@ interactions:
       - GetSecurityMonitoringRule
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.5; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "732802340774676684"
+      - "3548259913186228352"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8032888456999119024"
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/3zd-df2-wto
+      - "1417090361113894262"
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7as-ojx-fjd
     method: GET
   response:
     body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1607002307336,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1609426439235,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a
-      > 0"}],"type":"threshold","id":"3zd-df2-wto","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1607002307"}'
+      > 0"}],"type":"log_detection","id":"7as-ojx-fjd","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1609425877"}'
     headers:
       Cache-Control:
       - no-cache
@@ -158,13 +154,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Thu, 03 Dec 2020 13:31:48 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:53:59 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 10-Dec-2020 13:31:48 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:59 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -173,9 +167,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - FELlv8T8VRoaBxHjLbAG9Fvj68G6pP0FZF7JKMI72/5H4OtG/s8AVYiF1c9f4D6g
+      - hw3ZauSSamfHLo55DFwif1/mO6RiYSc0/libBchlIMnyWX9rK7JgS3Pek5rkz683
       X-Dd-Version:
-      - "35.3469467"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -191,20 +185,20 @@ interactions:
       - GetSecurityMonitoringRule
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.5; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "5883732543975395761"
+      - "4446969577253683620"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8032888456999119024"
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/3zd-df2-wto
+      - "1417090361113894262"
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7as-ojx-fjd
     method: GET
   response:
     body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered","options":{"evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1607002307336,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
+      rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1609426439235,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does
       not really match much","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a
-      > 0"}],"type":"threshold","id":"3zd-df2-wto","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1607002307"}'
+      > 0"}],"type":"log_detection","id":"7as-ojx-fjd","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1609425877"}'
     headers:
       Cache-Control:
       - no-cache
@@ -217,13 +211,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Thu, 03 Dec 2020 13:31:48 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:53:59 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 10-Dec-2020 13:31:48 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:59 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -232,9 +224,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Dx/lglfFHSSR55lZZXPJOntjJp7qb35tIKm/SqO1nkg0n+U6yMAlHYP22LPWSHfP
+      - RCObiQ2dtM/JQUOdAbTQmIrpsZR5eT9bZEwE14hAfjq3x8DBTBCy/8ina/nQCRGE
       X-Dd-Version:
-      - "35.3469467"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -242,7 +234,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1607002307 - updated","options":{"evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["service"],"metric":"@network.bytes_read","name":"first_updated","query":"does not really match much (updated)"}],"tags":["u:tomato","i:tomato"]}
+      {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1609425877 - updated","options":{"evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["service"],"metric":"@network.bytes_read","name":"first_updated","query":"does not really match much (updated)"}],"tags":["u:tomato","i:tomato"]}
     form: {}
     headers:
       Accept:
@@ -253,21 +245,21 @@ interactions:
       - UpdateSecurityMonitoringRule
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.5; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "1732626300797988383"
+      - "1490299516526975782"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8032888456999119024"
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/3zd-df2-wto
+      - "1417090361113894262"
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7as-ojx-fjd
     method: PUT
   response:
     body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered (updated)","options":{"evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"createdAt":1607002307336,"filters":[],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["service"],"query":"does
+      rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"createdAt":1609426439235,"filters":[],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["service"],"query":"does
       not really match much (updated)","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high
       case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning
-      case (updated)","condition":"first_updated > 0"}],"type":"threshold","id":"3zd-df2-wto","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1607002307
+      case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"7as-ojx-fjd","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1609425877
       - updated"}'
     headers:
       Cache-Control:
@@ -281,13 +273,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Thu, 03 Dec 2020 13:31:48 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:54:00 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 10-Dec-2020 13:31:48 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:54:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -296,9 +286,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - E8kYJH6Hb74I4gS4d8oTnZBbKR38RfM4isuhSW09hK2ARkJHcJxE0DNPxSd582jS
+      - 0e2Tq/aa08wSuRoWDdF6eCwF8GPYPPLmf3Lxvgc5OscTNyr8D4p+ksnId5WnGnR4
       X-Dd-Version:
-      - "35.3469467"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -314,21 +304,21 @@ interactions:
       - GetSecurityMonitoringRule
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.5; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "187347553082536992"
+      - "3945530118712936572"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8032888456999119024"
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/3zd-df2-wto
+      - "1417090361113894262"
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7as-ojx-fjd
     method: GET
   response:
     body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered (updated)","options":{"evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"createdAt":1607002307336,"filters":[],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["service"],"query":"does
+      rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"createdAt":1609426439235,"filters":[],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["service"],"query":"does
       not really match much (updated)","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high
       case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning
-      case (updated)","condition":"first_updated > 0"}],"type":"threshold","id":"3zd-df2-wto","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1607002307
+      case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"7as-ojx-fjd","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1609425877
       - updated"}'
     headers:
       Cache-Control:
@@ -342,13 +332,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Thu, 03 Dec 2020 13:31:49 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:54:00 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 10-Dec-2020 13:31:49 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:54:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -357,9 +345,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - ks6TYG2WFSBr2qT+ZTFJB8BB7VWuwPmODDq52A4JjLzCAAitR8HQc9JBq+LHjJu4
+      - 1yK3PnBzCoxF/WGKEJeJqS2Jb9mutr3xDuvLdPbJCfX1HVDqeCXkaWYDO6wQpQhO
       X-Dd-Version:
-      - "35.3469467"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -375,21 +363,21 @@ interactions:
       - GetSecurityMonitoringRule
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.5; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "2258338870204288858"
+      - "7944636509161401006"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8032888456999119024"
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/3zd-df2-wto
+      - "1417090361113894262"
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7as-ojx-fjd
     method: GET
   response:
     body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered (updated)","options":{"evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"createdAt":1607002307336,"filters":[],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["service"],"query":"does
+      rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"createdAt":1609426439235,"filters":[],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["service"],"query":"does
       not really match much (updated)","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high
       case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning
-      case (updated)","condition":"first_updated > 0"}],"type":"threshold","id":"3zd-df2-wto","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1607002307
+      case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"7as-ojx-fjd","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1609425877
       - updated"}'
     headers:
       Cache-Control:
@@ -403,13 +391,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Thu, 03 Dec 2020 13:31:49 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:54:00 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 10-Dec-2020 13:31:49 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:54:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -418,9 +404,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - RquGBod+QwJwo5jKyeuGJHvfWvWfZ0hMpUnxtqqEEEpqySzsuyt8sx6iN5riB0bK
+      - IEUzjgpnyUrp74lH2dqPweGXNQU7es3CY44HHPIdy7aSNeimMebMvcKCoCgyWWVx
       X-Dd-Version:
-      - "35.3469467"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -436,21 +422,21 @@ interactions:
       - GetSecurityMonitoringRule
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.5; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "730424452579154965"
+      - "4857567579368183119"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8032888456999119024"
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/3zd-df2-wto
+      - "1417090361113894262"
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7as-ojx-fjd
     method: GET
   response:
     body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance
-      rule triggered (updated)","options":{"evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"createdAt":1607002307336,"filters":[],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["service"],"query":"does
+      rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"createdAt":1609426439235,"filters":[],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["service"],"query":"does
       not really match much (updated)","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high
       case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning
-      case (updated)","condition":"first_updated > 0"}],"type":"threshold","id":"3zd-df2-wto","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1607002307
+      case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"7as-ojx-fjd","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1609425877
       - updated"}'
     headers:
       Cache-Control:
@@ -464,13 +450,11 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Thu, 03 Dec 2020 13:31:49 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:54:00 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 10-Dec-2020 13:31:49 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:54:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -479,9 +463,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - VfsOYTBPajdIURjGpWdSf1qbyO21kEmlCNna/tfODfKKzbp6OFbIz8G+Qerctd6m
+      - d31ebXSBBNIfMRbwTUSeNjY3IxejCQxGK8GB7MdTMNs7w40n94in+BXmkLo5BsFJ
       X-Dd-Version:
-      - "35.3469467"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -497,14 +481,14 @@ interactions:
       - DeleteSecurityMonitoringRule
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.5; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "784242315533577525"
+      - "5982211465856420374"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8032888456999119024"
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/3zd-df2-wto
+      - "1417090361113894262"
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7as-ojx-fjd
     method: DELETE
   response:
     body: ""
@@ -520,22 +504,20 @@ interactions:
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Date:
-      - Thu, 03 Dec 2020 13:31:49 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:54:00 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 10-Dec-2020 13:31:49 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:54:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - V26KHlc/RfdWahgILvghYzp00rgLN6YCNAgg+V0KrlqUWK5TouaimNqGpGYzd/eX
+      - TFCg6TPxHCdpQyTTnaGFjBa5vzZnKeyQ4F7e1flYSnImhl2xBoRKXVAV7LhvPUlL
       X-Dd-Version:
-      - "35.3469467"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -551,17 +533,17 @@ interactions:
       - GetSecurityMonitoringRule
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.5; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "7182038471687132589"
+      - "3829037321398979908"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8032888456999119024"
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/3zd-df2-wto
+      - "1417090361113894262"
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7as-ojx-fjd
     method: GET
   response:
-    body: '{"errors":["Threat detection rule not found: 3zd-df2-wto"]}'
+    body: '{"errors":["Threat detection rule not found: 7as-ojx-fjd"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -572,9 +554,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 03 Dec 2020 13:31:50 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:54:01 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -584,7 +564,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3469467"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found

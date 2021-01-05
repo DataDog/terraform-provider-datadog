@@ -11,20 +11,20 @@ interactions:
       - ListPermissions
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "4776416262837454408"
+      - "6024397912720733839"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8052966640934693994"
+      - "3376077997733178363"
     url: https://api.datadoghq.com/api/v2/permissions
     method: GET
   response:
     body: '{"data":[{"type":"permissions","id":"984a2bd4-d3b4-11e8-a1ff-a7f660d43029","attributes":{"name":"admin","display_name":"Privileged
       Access","description":"This permission gives you the ability to view and edit
       everything in your Datadog organization that does not have an explicitly defined
-      permission. This includes billing and usage, user, key, and organization management.
+      permission. This includes billing and usage, key, and organization management.
       This permission is inclusive of all Standard access permissions.","created":"2018-10-19T15:35:23.734317+00:00","group_name":"General","display_type":"other","restricted":false}},{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987","attributes":{"name":"standard","display_name":"Standard
       Access","description":"This permission gives you the ability to view and edit
       components in your Datadog organization that do not have explicitly defined
@@ -77,9 +77,27 @@ interactions:
       Access","display_type":"other","restricted":false}},{"type":"permissions","id":"9de604d8-e707-11ea-aa2d-93f1a783b3a3","attributes":{"name":"user_access_manage","display_name":"Access
       Management","description":"Grants the permission to disable users, manage user
       roles and SAML-to-role mappings.","created":"2020-08-25T19:17:28.810412+00:00","group_name":"User
-      Access","display_type":"other","restricted":false}},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e","attributes":{"name":"logs_write_historical_view","display_name":"Logs
-      Historical View","description":"The capability to rehydrate logs from Archives.","created":"2020-09-16T08:38:44.242076+00:00","group_name":"Logs","display_type":"write","restricted":false}},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39","attributes":{"name":"logs_write_facets","display_name":"Logs
-      Facets","description":"The capability to create or edit logs facets.","created":"2020-10-14T12:40:20.271908+00:00","group_name":"Logs","display_type":"write","restricted":false}}]}'
+      Access","display_type":"other","restricted":false}},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee","attributes":{"name":"user_app_keys","display_name":"User
+      Application Keys","description":"The ability to view and manage Application
+      Keys owned by the user.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"API
+      and Application Keys","display_type":"other","restricted":false}},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e","attributes":{"name":"org_app_keys_read","display_name":"Organization
+      Application Keys","description":"The ability to view Application Keys owned
+      by all users in the organization.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"API
+      and Application Keys","display_type":"read","restricted":false}},{"type":"permissions","id":"46a301dc-ec5c-11ea-aa9f-13b33f8f46ea","attributes":{"name":"org_app_keys_write","display_name":"Organization
+      Application Keys","description":"The ability to manage Application Keys owned
+      by all users in the organization.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"API
+      and Application Keys","display_type":"write","restricted":false}},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e","attributes":{"name":"logs_write_historical_view","display_name":"Logs
+      Historical View","description":"The capability to rehydrate logs from Archives.","created":"2020-09-16T08:38:44.242076+00:00","group_name":"Logs","display_type":"write","restricted":false}},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d","attributes":{"name":"api_keys_read","display_name":"API
+      Keys","description":"The ability to list and retrive the key values of all API
+      Keys in your organization.","created":"2020-09-17T20:20:23.279769+00:00","group_name":"API
+      and Application Keys","display_type":"read","restricted":false}},{"type":"permissions","id":"3e4d4d28-f923-11ea-adbc-e3565938c12e","attributes":{"name":"api_keys_write","display_name":"API
+      Keys","description":"The ability to create, rename, and revoke API Keys for
+      your organization.","created":"2020-09-17T20:20:35.264430+00:00","group_name":"API
+      and Application Keys","display_type":"write","restricted":false}},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39","attributes":{"name":"logs_write_facets","display_name":"Logs
+      Facets","description":"The capability to create or edit logs facets.","created":"2020-10-14T12:40:20.271908+00:00","group_name":"Logs","display_type":"write","restricted":false}},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625","attributes":{"name":"integrations_api","display_name":"Integrations
+      API Access","description":"The ability to use the Integrations APIs to configure
+      Integrations that the user has access to. This permission does not restrict
+      or grant access to Integrations.","created":"2020-11-16T19:43:23.198568+00:00","group_name":"Integrations","display_type":"other","restricted":false}}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -90,13 +108,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 19 Nov 2020 09:30:32 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:53:42 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 26-Nov-2020 09:30:32 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:42 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -105,9 +121,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - R1+MRQNzRD0HfjBgLVIjclr4gto/LBUvaJZAn2oF8rsW7iHushLxjdvt+30jZQLP
+      - 4XEHrKCjPbSbs1iu1F78+tH4eaIPZCq+IGDoHN/GQcOsLq6w3Zzz7ZK1RqpTUzFS
       X-Dd-Version:
-      - "35.3396572"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -123,20 +139,20 @@ interactions:
       - ListPermissions
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "8192579837165334527"
+      - "2667713457864101850"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8052966640934693994"
+      - "3376077997733178363"
     url: https://api.datadoghq.com/api/v2/permissions
     method: GET
   response:
     body: '{"data":[{"type":"permissions","id":"984a2bd4-d3b4-11e8-a1ff-a7f660d43029","attributes":{"name":"admin","display_name":"Privileged
       Access","description":"This permission gives you the ability to view and edit
       everything in your Datadog organization that does not have an explicitly defined
-      permission. This includes billing and usage, user, key, and organization management.
+      permission. This includes billing and usage, key, and organization management.
       This permission is inclusive of all Standard access permissions.","created":"2018-10-19T15:35:23.734317+00:00","group_name":"General","display_type":"other","restricted":false}},{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987","attributes":{"name":"standard","display_name":"Standard
       Access","description":"This permission gives you the ability to view and edit
       components in your Datadog organization that do not have explicitly defined
@@ -189,9 +205,27 @@ interactions:
       Access","display_type":"other","restricted":false}},{"type":"permissions","id":"9de604d8-e707-11ea-aa2d-93f1a783b3a3","attributes":{"name":"user_access_manage","display_name":"Access
       Management","description":"Grants the permission to disable users, manage user
       roles and SAML-to-role mappings.","created":"2020-08-25T19:17:28.810412+00:00","group_name":"User
-      Access","display_type":"other","restricted":false}},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e","attributes":{"name":"logs_write_historical_view","display_name":"Logs
-      Historical View","description":"The capability to rehydrate logs from Archives.","created":"2020-09-16T08:38:44.242076+00:00","group_name":"Logs","display_type":"write","restricted":false}},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39","attributes":{"name":"logs_write_facets","display_name":"Logs
-      Facets","description":"The capability to create or edit logs facets.","created":"2020-10-14T12:40:20.271908+00:00","group_name":"Logs","display_type":"write","restricted":false}}]}'
+      Access","display_type":"other","restricted":false}},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee","attributes":{"name":"user_app_keys","display_name":"User
+      Application Keys","description":"The ability to view and manage Application
+      Keys owned by the user.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"API
+      and Application Keys","display_type":"other","restricted":false}},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e","attributes":{"name":"org_app_keys_read","display_name":"Organization
+      Application Keys","description":"The ability to view Application Keys owned
+      by all users in the organization.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"API
+      and Application Keys","display_type":"read","restricted":false}},{"type":"permissions","id":"46a301dc-ec5c-11ea-aa9f-13b33f8f46ea","attributes":{"name":"org_app_keys_write","display_name":"Organization
+      Application Keys","description":"The ability to manage Application Keys owned
+      by all users in the organization.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"API
+      and Application Keys","display_type":"write","restricted":false}},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e","attributes":{"name":"logs_write_historical_view","display_name":"Logs
+      Historical View","description":"The capability to rehydrate logs from Archives.","created":"2020-09-16T08:38:44.242076+00:00","group_name":"Logs","display_type":"write","restricted":false}},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d","attributes":{"name":"api_keys_read","display_name":"API
+      Keys","description":"The ability to list and retrive the key values of all API
+      Keys in your organization.","created":"2020-09-17T20:20:23.279769+00:00","group_name":"API
+      and Application Keys","display_type":"read","restricted":false}},{"type":"permissions","id":"3e4d4d28-f923-11ea-adbc-e3565938c12e","attributes":{"name":"api_keys_write","display_name":"API
+      Keys","description":"The ability to create, rename, and revoke API Keys for
+      your organization.","created":"2020-09-17T20:20:35.264430+00:00","group_name":"API
+      and Application Keys","display_type":"write","restricted":false}},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39","attributes":{"name":"logs_write_facets","display_name":"Logs
+      Facets","description":"The capability to create or edit logs facets.","created":"2020-10-14T12:40:20.271908+00:00","group_name":"Logs","display_type":"write","restricted":false}},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625","attributes":{"name":"integrations_api","display_name":"Integrations
+      API Access","description":"The ability to use the Integrations APIs to configure
+      Integrations that the user has access to. This permission does not restrict
+      or grant access to Integrations.","created":"2020-11-16T19:43:23.198568+00:00","group_name":"Integrations","display_type":"other","restricted":false}}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -202,13 +236,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 19 Nov 2020 09:30:32 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:53:42 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 26-Nov-2020 09:30:32 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:42 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -217,9 +249,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Eb2J7DZKGMCxUULFPVCE5N014uh3tvnvHgnaA7NVroaoqvWd6z7v+RZklq5100Rp
+      - KZy0Z61AelGSMiW0wwPuJyNwjEfJ0APCpzGlt7XM1KaE6e4cHzuLEBcvgVZz4sZ0
       X-Dd-Version:
-      - "35.3396572"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -235,20 +267,20 @@ interactions:
       - ListPermissions
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "9104662185889084902"
+      - "231221993591260030"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8052966640934693994"
+      - "3376077997733178363"
     url: https://api.datadoghq.com/api/v2/permissions
     method: GET
   response:
     body: '{"data":[{"type":"permissions","id":"984a2bd4-d3b4-11e8-a1ff-a7f660d43029","attributes":{"name":"admin","display_name":"Privileged
       Access","description":"This permission gives you the ability to view and edit
       everything in your Datadog organization that does not have an explicitly defined
-      permission. This includes billing and usage, user, key, and organization management.
+      permission. This includes billing and usage, key, and organization management.
       This permission is inclusive of all Standard access permissions.","created":"2018-10-19T15:35:23.734317+00:00","group_name":"General","display_type":"other","restricted":false}},{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987","attributes":{"name":"standard","display_name":"Standard
       Access","description":"This permission gives you the ability to view and edit
       components in your Datadog organization that do not have explicitly defined
@@ -301,9 +333,27 @@ interactions:
       Access","display_type":"other","restricted":false}},{"type":"permissions","id":"9de604d8-e707-11ea-aa2d-93f1a783b3a3","attributes":{"name":"user_access_manage","display_name":"Access
       Management","description":"Grants the permission to disable users, manage user
       roles and SAML-to-role mappings.","created":"2020-08-25T19:17:28.810412+00:00","group_name":"User
-      Access","display_type":"other","restricted":false}},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e","attributes":{"name":"logs_write_historical_view","display_name":"Logs
-      Historical View","description":"The capability to rehydrate logs from Archives.","created":"2020-09-16T08:38:44.242076+00:00","group_name":"Logs","display_type":"write","restricted":false}},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39","attributes":{"name":"logs_write_facets","display_name":"Logs
-      Facets","description":"The capability to create or edit logs facets.","created":"2020-10-14T12:40:20.271908+00:00","group_name":"Logs","display_type":"write","restricted":false}}]}'
+      Access","display_type":"other","restricted":false}},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee","attributes":{"name":"user_app_keys","display_name":"User
+      Application Keys","description":"The ability to view and manage Application
+      Keys owned by the user.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"API
+      and Application Keys","display_type":"other","restricted":false}},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e","attributes":{"name":"org_app_keys_read","display_name":"Organization
+      Application Keys","description":"The ability to view Application Keys owned
+      by all users in the organization.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"API
+      and Application Keys","display_type":"read","restricted":false}},{"type":"permissions","id":"46a301dc-ec5c-11ea-aa9f-13b33f8f46ea","attributes":{"name":"org_app_keys_write","display_name":"Organization
+      Application Keys","description":"The ability to manage Application Keys owned
+      by all users in the organization.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"API
+      and Application Keys","display_type":"write","restricted":false}},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e","attributes":{"name":"logs_write_historical_view","display_name":"Logs
+      Historical View","description":"The capability to rehydrate logs from Archives.","created":"2020-09-16T08:38:44.242076+00:00","group_name":"Logs","display_type":"write","restricted":false}},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d","attributes":{"name":"api_keys_read","display_name":"API
+      Keys","description":"The ability to list and retrive the key values of all API
+      Keys in your organization.","created":"2020-09-17T20:20:23.279769+00:00","group_name":"API
+      and Application Keys","display_type":"read","restricted":false}},{"type":"permissions","id":"3e4d4d28-f923-11ea-adbc-e3565938c12e","attributes":{"name":"api_keys_write","display_name":"API
+      Keys","description":"The ability to create, rename, and revoke API Keys for
+      your organization.","created":"2020-09-17T20:20:35.264430+00:00","group_name":"API
+      and Application Keys","display_type":"write","restricted":false}},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39","attributes":{"name":"logs_write_facets","display_name":"Logs
+      Facets","description":"The capability to create or edit logs facets.","created":"2020-10-14T12:40:20.271908+00:00","group_name":"Logs","display_type":"write","restricted":false}},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625","attributes":{"name":"integrations_api","display_name":"Integrations
+      API Access","description":"The ability to use the Integrations APIs to configure
+      Integrations that the user has access to. This permission does not restrict
+      or grant access to Integrations.","created":"2020-11-16T19:43:23.198568+00:00","group_name":"Integrations","display_type":"other","restricted":false}}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -314,13 +364,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 19 Nov 2020 09:30:32 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:53:42 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 26-Nov-2020 09:30:32 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:42 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -329,9 +377,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - H6YNJZe2hxg7AD4MytxnK6WTGV3v238t6qy6wX4rqFlv+Cb0Gp+GU8J41gMZvmVb
+      - S3b0DxD0Dj5WAUZxeWLcfeyJnb4pDpoMTeVMKMtMeWrqyA+3FtLrxJp7rQHsEke0
       X-Dd-Version:
-      - "35.3396572"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -347,20 +395,20 @@ interactions:
       - ListPermissions
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3116721045257256292"
+      - "8837955561080745"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "8052966640934693994"
+      - "3376077997733178363"
     url: https://api.datadoghq.com/api/v2/permissions
     method: GET
   response:
     body: '{"data":[{"type":"permissions","id":"984a2bd4-d3b4-11e8-a1ff-a7f660d43029","attributes":{"name":"admin","display_name":"Privileged
       Access","description":"This permission gives you the ability to view and edit
       everything in your Datadog organization that does not have an explicitly defined
-      permission. This includes billing and usage, user, key, and organization management.
+      permission. This includes billing and usage, key, and organization management.
       This permission is inclusive of all Standard access permissions.","created":"2018-10-19T15:35:23.734317+00:00","group_name":"General","display_type":"other","restricted":false}},{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987","attributes":{"name":"standard","display_name":"Standard
       Access","description":"This permission gives you the ability to view and edit
       components in your Datadog organization that do not have explicitly defined
@@ -413,9 +461,27 @@ interactions:
       Access","display_type":"other","restricted":false}},{"type":"permissions","id":"9de604d8-e707-11ea-aa2d-93f1a783b3a3","attributes":{"name":"user_access_manage","display_name":"Access
       Management","description":"Grants the permission to disable users, manage user
       roles and SAML-to-role mappings.","created":"2020-08-25T19:17:28.810412+00:00","group_name":"User
-      Access","display_type":"other","restricted":false}},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e","attributes":{"name":"logs_write_historical_view","display_name":"Logs
-      Historical View","description":"The capability to rehydrate logs from Archives.","created":"2020-09-16T08:38:44.242076+00:00","group_name":"Logs","display_type":"write","restricted":false}},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39","attributes":{"name":"logs_write_facets","display_name":"Logs
-      Facets","description":"The capability to create or edit logs facets.","created":"2020-10-14T12:40:20.271908+00:00","group_name":"Logs","display_type":"write","restricted":false}}]}'
+      Access","display_type":"other","restricted":false}},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee","attributes":{"name":"user_app_keys","display_name":"User
+      Application Keys","description":"The ability to view and manage Application
+      Keys owned by the user.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"API
+      and Application Keys","display_type":"other","restricted":false}},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e","attributes":{"name":"org_app_keys_read","display_name":"Organization
+      Application Keys","description":"The ability to view Application Keys owned
+      by all users in the organization.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"API
+      and Application Keys","display_type":"read","restricted":false}},{"type":"permissions","id":"46a301dc-ec5c-11ea-aa9f-13b33f8f46ea","attributes":{"name":"org_app_keys_write","display_name":"Organization
+      Application Keys","description":"The ability to manage Application Keys owned
+      by all users in the organization.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"API
+      and Application Keys","display_type":"write","restricted":false}},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e","attributes":{"name":"logs_write_historical_view","display_name":"Logs
+      Historical View","description":"The capability to rehydrate logs from Archives.","created":"2020-09-16T08:38:44.242076+00:00","group_name":"Logs","display_type":"write","restricted":false}},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d","attributes":{"name":"api_keys_read","display_name":"API
+      Keys","description":"The ability to list and retrive the key values of all API
+      Keys in your organization.","created":"2020-09-17T20:20:23.279769+00:00","group_name":"API
+      and Application Keys","display_type":"read","restricted":false}},{"type":"permissions","id":"3e4d4d28-f923-11ea-adbc-e3565938c12e","attributes":{"name":"api_keys_write","display_name":"API
+      Keys","description":"The ability to create, rename, and revoke API Keys for
+      your organization.","created":"2020-09-17T20:20:35.264430+00:00","group_name":"API
+      and Application Keys","display_type":"write","restricted":false}},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39","attributes":{"name":"logs_write_facets","display_name":"Logs
+      Facets","description":"The capability to create or edit logs facets.","created":"2020-10-14T12:40:20.271908+00:00","group_name":"Logs","display_type":"write","restricted":false}},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625","attributes":{"name":"integrations_api","display_name":"Integrations
+      API Access","description":"The ability to use the Integrations APIs to configure
+      Integrations that the user has access to. This permission does not restrict
+      or grant access to Integrations.","created":"2020-11-16T19:43:23.198568+00:00","group_name":"Integrations","display_type":"other","restricted":false}}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -426,13 +492,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 19 Nov 2020 09:30:32 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:53:42 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 26-Nov-2020 09:30:32 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:42 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -441,9 +505,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - yh6YON+7jbeDMg7CO+AYyoesqWeq0Iw5xzcOjFKKupoYHnh4eyLWds2GSgfB/+lP
+      - rbGMi63XY6ETkPw9boG8yUDqogZ/1IN0Hh4Igu952urF41BH1CFuhykimklaERoh
       X-Dd-Version:
-      - "35.3396572"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

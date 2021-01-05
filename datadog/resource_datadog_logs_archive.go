@@ -14,7 +14,6 @@ func resourceDatadogLogsArchive() *schema.Resource {
 		Update:      resourceDatadogLogsArchiveUpdate,
 		Read:        resourceDatadogLogsArchiveRead,
 		Delete:      resourceDatadogLogsArchiveDelete,
-		Exists:      resourceDatadogLogsArchiveExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -103,9 +102,17 @@ func resourceDatadogLogsArchiveRead(d *schema.ResourceData, meta interface{}) er
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
-	ddArchive, _, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, d.Id()).Execute()
+	ddArchive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, d.Id()).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "failed to get logs archive using Datadog API")
+	}
+	if !ddArchive.HasData() {
+		d.SetId("")
+		return nil
 	}
 	if err = d.Set("name", ddArchive.Data.Attributes.Name); err != nil {
 		return err
@@ -158,21 +165,6 @@ func resourceDatadogLogsArchiveDelete(d *schema.ResourceData, meta interface{}) 
 		return translateClientError(err, "error deleting logs archive")
 	}
 	return nil
-}
-
-func resourceDatadogLogsArchiveExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
-	ddArchive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, d.Id()).Execute()
-	if err != nil {
-		// API returns 404 when the specific archive id doesn't exist.
-		if httpresp != nil && httpresp.StatusCode == 404 {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking if logs archive exists")
-	}
-	return ddArchive.HasData(), nil
 }
 
 //Model to map

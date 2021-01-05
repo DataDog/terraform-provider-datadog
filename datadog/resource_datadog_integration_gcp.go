@@ -1,8 +1,6 @@
 package datadog
 
 import (
-	"fmt"
-
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -14,7 +12,6 @@ func resourceDatadogIntegrationGcp() *schema.Resource {
 		Read:        resourceDatadogIntegrationGcpRead,
 		Update:      resourceDatadogIntegrationGcpUpdate,
 		Delete:      resourceDatadogIntegrationGcpDelete,
-		Exists:      resourceDatadogIntegrationGcpExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogIntegrationGcpImport,
 		},
@@ -53,26 +50,6 @@ func resourceDatadogIntegrationGcp() *schema.Resource {
 			},
 		},
 	}
-}
-
-func resourceDatadogIntegrationGcpExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	// Exists - This is called to verify a resource still exists. It is called prior to Read,
-	// and lowers the burden of Read to be able to assume the resource exists.
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	integrations, _, err := datadogClientV1.GCPIntegrationApi.ListGCPIntegration(authV1).Execute()
-	if err != nil {
-		return false, translateClientError(err, "error checking GCP integration exists")
-	}
-	projectID := d.Id()
-	for _, integration := range integrations {
-		if integration.GetProjectId() == projectID {
-			return true, nil
-		}
-	}
-	return false, nil
 }
 
 const (
@@ -132,7 +109,8 @@ func resourceDatadogIntegrationGcpRead(d *schema.ResourceData, meta interface{})
 			return nil
 		}
 	}
-	return fmt.Errorf("error getting a Google Cloud Platform integration: project_id=%s", projectID)
+	d.SetId("")
+	return nil
 }
 
 func resourceDatadogIntegrationGcpUpdate(d *schema.ResourceData, meta interface{}) error {

@@ -16,7 +16,6 @@ var validPermissions map[string]string
 func resourceDatadogRole() *schema.Resource {
 	return &schema.Resource{
 		Description: "Provides a Datadog role resource. This can be used to create and manage Datadog roles.",
-		Exists:      resourceDatadogRoleExists,
 		Create:      resourceDatadogRoleCreate,
 		Read:        resourceDatadogRoleRead,
 		Update:      resourceDatadogRoleUpdate,
@@ -108,19 +107,6 @@ func getRolePermissionSchema() *schema.Resource {
 	}
 }
 
-func resourceDatadogRoleExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	client := meta.(*ProviderConfiguration).DatadogClientV2
-	auth := meta.(*ProviderConfiguration).AuthV2
-	_, httpresp, err := client.RolesApi.GetRole(auth, d.Id()).Execute()
-	if err != nil {
-		if httpresp.StatusCode == 404 {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking if role exists")
-	}
-	return true, nil
-}
-
 func resourceDatadogRoleCreate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*ProviderConfiguration).DatadogClientV2
 	auth := meta.(*ProviderConfiguration).AuthV2
@@ -141,8 +127,12 @@ func resourceDatadogRoleRead(d *schema.ResourceData, meta interface{}) error {
 	auth := meta.(*ProviderConfiguration).AuthV2
 
 	// Get the role
-	resp, _, err := client.RolesApi.GetRole(auth, d.Id()).Execute()
+	resp, httpresp, err := client.RolesApi.GetRole(auth, d.Id()).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting role")
 	}
 	roleData := resp.GetData()

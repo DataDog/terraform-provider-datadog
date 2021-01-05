@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"strconv"
-	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -20,7 +19,6 @@ func resourceDatadogDashboard() *schema.Resource {
 		Update:      resourceDatadogDashboardUpdate,
 		Read:        resourceDatadogDashboardRead,
 		Delete:      resourceDatadogDashboardDelete,
-		Exists:      resourceDatadogDashboardExists,
 		CustomizeDiff: func(diff *schema.ResourceDiff, meta interface{}) error {
 			old, new := diff.GetChange("dashboard_lists")
 			if !old.(*schema.Set).Equal(new.(*schema.Set)) {
@@ -247,8 +245,12 @@ func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) erro
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	id := d.Id()
-	dashboard, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, id).Execute()
+	dashboard, httpresp, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, id).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting dashboard")
 	}
 
@@ -271,20 +273,6 @@ func resourceDatadogDashboardImport(d *schema.ResourceData, meta interface{}) ([
 		return nil, err
 	}
 	return []*schema.ResourceData{d}, nil
-}
-
-func resourceDatadogDashboardExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-	id := d.Id()
-	if _, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, id).Execute(); err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking dashboard exists")
-	}
-	return true, nil
 }
 
 func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error) {

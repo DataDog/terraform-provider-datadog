@@ -3,7 +3,6 @@ package datadog
 import (
 	"fmt"
 	"strconv"
-	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -17,7 +16,6 @@ func resourceDatadogDashboardList() *schema.Resource {
 		Update:      resourceDatadogDashboardListUpdate,
 		Read:        resourceDatadogDashboardListRead,
 		Delete:      resourceDatadogDashboardListDelete,
-		Exists:      resourceDatadogDashboardListExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogDashboardListImport,
 		},
@@ -144,8 +142,12 @@ func resourceDatadogDashboardListRead(d *schema.ResourceData, meta interface{}) 
 	id, err := strconv.ParseInt(d.Id(), 10, 64)
 
 	//Read the overall Dashboard List object
-	dashList, _, err := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, id).Execute()
+	dashList, httpresp, err := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, id).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting dashboard list")
 	}
 	d.Set("name", dashList.GetName())
@@ -177,22 +179,6 @@ func resourceDatadogDashboardListDelete(d *schema.ResourceData, meta interface{}
 		return translateClientError(err, "error deleting dashboard list")
 	}
 	return nil
-}
-
-func resourceDatadogDashboardListExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	id, _ := strconv.ParseInt(d.Id(), 10, 64)
-	// Only check existence of the overall Dash List, not its sub items
-	if _, _, err := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, id).Execute(); err != nil {
-		if strings.Contains(strings.ToLower(err.Error()), "not found") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking dashboard list exists")
-	}
-	return true, nil
 }
 
 func resourceDatadogDashboardListImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
