@@ -4,11 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -17,6 +20,8 @@ type BuiltResource interface {
 	Get(string) interface{}
 	GetOk(string) (interface{}, bool)
 }
+
+var retryTimeout = time.Minute
 
 func resourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
@@ -29,7 +34,6 @@ func resourceDatadogMonitor() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogMonitorImport,
 		},
-
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Description: "Name of Datadog monitor.",
@@ -384,10 +388,16 @@ func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interfa
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
-	if _, _, err := datadogClientV1.MonitorsApi.ValidateMonitor(authV1).Body(*m).Execute(); err != nil {
-		return translateClientError(err, "error validating monitor")
-	}
-	return nil
+	return resource.Retry(retryTimeout, func() *resource.RetryError {
+		_, httpresp, err := datadogClientV1.MonitorsApi.ValidateMonitor(authV1).Body(*m).Execute()
+		if err != nil {
+			if httpresp != nil && httpresp.StatusCode == 502 {
+				return resource.RetryableError(translateClientError(err, "error validating monitor, retrying"))
+			}
+			return resource.NonRetryableError(translateClientError(err, "error validating monitor"))
+		}
+		return nil
+	})
 }
 
 func getUnmutedScopes(d *schema.ResourceData) []string {
@@ -429,14 +439,26 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	if err != nil {
 		return err
 	}
-
-	m, httpresp, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
-	if err != nil {
-		if httpresp != nil && httpresp.StatusCode == 404 {
-			d.SetId("")
-			return nil
+	var (
+		m        datadogV1.Monitor
+		httpresp *http.Response
+	)
+	if err = resource.Retry(d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
+		m, httpresp, err = datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
+		if err != nil {
+			if httpresp != nil {
+				if httpresp.StatusCode == 404 {
+					d.SetId("")
+					return nil
+				} else if httpresp.StatusCode == 502 {
+					return resource.RetryableError(translateClientError(err, "error getting monitor, retrying"))
+				}
+			}
+			return resource.NonRetryableError(translateClientError(err, "error getting monitor"))
 		}
-		return translateClientError(err, "error getting monitor")
+		return nil
+	}); err != nil {
+		return err
 	}
 
 	thresholds := make(map[string]string)
