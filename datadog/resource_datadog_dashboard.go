@@ -540,6 +540,11 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getWidgetLayoutSchema(),
 			},
 		},
+		"id": {
+			Type:        schema.TypeInt,
+			Computed:    true,
+			Description: "The ID of the widget.",
+		},
 		// A widget should implement exactly one of the following definitions
 		"alert_graph_definition": {
 			Type:        schema.TypeList,
@@ -903,6 +908,7 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget) (map[string]interface{
 	if v, ok := datadogWidget.GetLayoutOk(); ok {
 		terraformWidget["layout"] = buildTerraformWidgetLayout(*v)
 	}
+	terraformWidget["id"] = datadogWidget.GetId()
 
 	// Build definition
 	widgetDefinition := datadogWidget.GetDefinition()
