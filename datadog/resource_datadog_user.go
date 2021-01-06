@@ -80,7 +80,7 @@ func resourceDatadogUser() *schema.Resource {
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"send_user_invitation": {
-				Description: "Whether or not to send an invitation email to the new user.",
+				Description: "Whether an invitation email should be sent when the user is created.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     true,
