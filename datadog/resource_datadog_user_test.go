@@ -76,8 +76,6 @@ func TestAccDatadogUser_Invitation(t *testing.T) {
 						"datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "verified", "false"),
-					resource.TestCheckResourceAttrSet(
-						"datadog_user.foo", "user_invitation_id"),
 				),
 			},
 		},
