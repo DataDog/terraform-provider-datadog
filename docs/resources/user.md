@@ -43,6 +43,7 @@ The following attributes are exported:
 -   `disabled`: Returns true if Datadog user is disabled (NOTE: Datadog does not actually delete users so this will be true for those as well)
 -   `id`: ID of the Datadog user
 -   `verified`: Returns true if Datadog user is verified
+-   `user_invitation_id`: The ID of the user invitation that was sent when creating the user.
 
 ## Import
 
