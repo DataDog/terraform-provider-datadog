@@ -16,10 +16,10 @@ var integrationPdMutex = sync.Mutex{}
 
 func resourceDatadogIntegrationPagerduty() *schema.Resource {
 	return &schema.Resource{
+		Description:        "Provides a Datadog - PagerDuty resource. This can be used to create and manage Datadog - PagerDuty integration. This resource is deprecated and should only be used for legacy purposes.\n\n",
 		DeprecationMessage: "This resource is deprecated. You can use datadog_integration_pagerduty_service_object resources directly once the integration is activated",
 		Create:             resourceDatadogIntegrationPagerdutyCreate,
 		Read:               resourceDatadogIntegrationPagerdutyRead,
-		Exists:             resourceDatadogIntegrationPagerdutyExists,
 		Update:             resourceDatadogIntegrationPagerdutyUpdate,
 		Delete:             resourceDatadogIntegrationPagerdutyDelete,
 		Importer: &schema.ResourceImporter{
@@ -28,8 +28,9 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"individual_services": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Description: "Boolean to specify whether or not individual service objects specified by [datadog_integration_pagerduty_service_object](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_pagerduty_service_object) resource are to be used. Mutually exclusive with `services` key.",
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 			"services": {
 				ConflictsWith: []string{"individual_services"},
@@ -40,30 +41,35 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"service_name": {
-							Type:     schema.TypeString,
-							Required: true,
+							Description: "Your Service name in PagerDuty.",
+							Type:        schema.TypeString,
+							Required:    true,
 						},
 						"service_key": {
-							Type:      schema.TypeString,
-							Required:  true,
-							Sensitive: true,
+							Description: "Your Service name associated service key in Pagerduty.",
+							Type:        schema.TypeString,
+							Required:    true,
+							Sensitive:   true,
 						},
 					},
 				},
 			},
 			"subdomain": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Your PagerDuty account’s personalized subdomain name.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"schedules": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "Array of your schedule URLs.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"api_token": {
-				Type:      schema.TypeString,
-				Optional:  true,
-				Sensitive: true,
+				Description: "Your PagerDuty API token.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -134,6 +140,10 @@ func resourceDatadogIntegrationPagerdutyRead(d *schema.ResourceData, meta interf
 
 	pd, err := client.GetIntegrationPD()
 	if err != nil {
+		if strings.Contains(err.Error(), "404 Not Found") {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting PagerDuty integration")
 	}
 
@@ -154,21 +164,6 @@ func resourceDatadogIntegrationPagerdutyRead(d *schema.ResourceData, meta interf
 	d.Set("schedules", pd.Schedules)
 
 	return nil
-}
-
-func resourceDatadogIntegrationPagerdutyExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-
-	_, err := client.GetIntegrationPD()
-	if err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error getting PagerDuty integration")
-	}
-
-	return true, nil
 }
 
 func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta interface{}) error {

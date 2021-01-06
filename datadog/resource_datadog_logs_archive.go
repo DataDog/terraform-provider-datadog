@@ -9,67 +9,72 @@ import (
 
 func resourceDatadogLogsArchive() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogLogsArchiveCreate,
-		Update: resourceDatadogLogsArchiveUpdate,
-		Read:   resourceDatadogLogsArchiveRead,
-		Delete: resourceDatadogLogsArchiveDelete,
-		Exists: resourceDatadogLogsArchiveExists,
+		Description: "Provides a Datadog Logs Archive API resource, which is used to create and manage Datadog logs archives.",
+		Create:      resourceDatadogLogsArchiveCreate,
+		Update:      resourceDatadogLogsArchiveUpdate,
+		Read:        resourceDatadogLogsArchiveRead,
+		Delete:      resourceDatadogLogsArchiveDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
-			"name":  {Type: schema.TypeString, Required: true},
-			"query": {Type: schema.TypeString, Required: true},
+			"name":  {Description: "Your archive name.", Type: schema.TypeString, Required: true},
+			"query": {Description: "The archive query/filter. Logs matching this query are included in the archive.", Type: schema.TypeString, Required: true},
 			"s3": {
-				Type:     schema.TypeMap,
-				Optional: true,
+				Description: "Definition of an s3 archive.",
+				Type:        schema.TypeMap,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"bucket":       {Type: schema.TypeString, Required: true},
-						"path":         {Type: schema.TypeString, Required: true},
-						"client_email": {Type: schema.TypeString, Required: true},
-						"project_id":   {Type: schema.TypeString, Required: true},
-						"account_id":   {Type: schema.TypeString, Required: true},
-						"role_name":    {Type: schema.TypeString, Required: true},
+						"bucket":       {Description: "Name of your s3 bucket.", Type: schema.TypeString, Required: true},
+						"path":         {Description: "Path where the archive will be stored.", Type: schema.TypeString, Required: true},
+						"client_email": {Description: "", Type: schema.TypeString, Required: true},
+						"project_id":   {Description: "", Type: schema.TypeString, Required: true},
+						"account_id":   {Description: "Your AWS account id.", Type: schema.TypeString, Required: true},
+						"role_name":    {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
 					},
 				},
 			},
 			"azure": {
-				Type:     schema.TypeMap,
-				Optional: true,
+				Description: "Definition of an azure archive.",
+				Type:        schema.TypeMap,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"container":       {Type: schema.TypeString, Required: true},
-						"client_id":       {Type: schema.TypeString, Required: true},
-						"tenant_id":       {Type: schema.TypeString, Required: true},
-						"storage_account": {Type: schema.TypeString, Required: true},
-						"path":            {Type: schema.TypeString, Optional: true},
+						"container":       {Description: "The container where the archive will be stored.", Type: schema.TypeString, Required: true},
+						"client_id":       {Description: "Your client id.", Type: schema.TypeString, Required: true},
+						"tenant_id":       {Description: "Your tenant id.", Type: schema.TypeString, Required: true},
+						"storage_account": {Description: "The associated storage account.", Type: schema.TypeString, Required: true},
+						"path":            {Description: "The path where the archive will be stored.", Type: schema.TypeString, Optional: true},
 					},
 				},
 			},
 			"gcs": {
-				Type:     schema.TypeMap,
-				Optional: true,
+				Description: "Definition of a GCS archive.",
+				Type:        schema.TypeMap,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"bucket":       {Type: schema.TypeString, Required: true},
-						"path":         {Type: schema.TypeString, Required: true},
-						"client_email": {Type: schema.TypeString, Required: true},
-						"project_id":   {Type: schema.TypeString, Required: true},
+						"bucket":       {Description: "Name of your GCS bucket.", Type: schema.TypeString, Required: true},
+						"path":         {Description: "Path where the archive will be stored.", Type: schema.TypeString, Required: true},
+						"client_email": {Description: "Your client email.", Type: schema.TypeString, Required: true},
+						"project_id":   {Description: "Your project id.", Type: schema.TypeString, Required: true},
 					},
 				},
 			},
 			"rehydration_tags": {
-				Type:     schema.TypeList,
-				Optional: true,
+				Description: "An array of tags to add to rehydrated logs from an archive.",
+				Type:        schema.TypeList,
+				Optional:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
 			},
 			"include_tags": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
+				Description: "To store the tags in the archive, set the value `true`. If it is set to `false`, the tags will be dropped when the logs are sent to the archive.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
 			},
 		},
 	}
@@ -97,9 +102,17 @@ func resourceDatadogLogsArchiveRead(d *schema.ResourceData, meta interface{}) er
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
-	ddArchive, _, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, d.Id()).Execute()
+	ddArchive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, d.Id()).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "failed to get logs archive using Datadog API")
+	}
+	if !ddArchive.HasData() {
+		d.SetId("")
+		return nil
 	}
 	if err = d.Set("name", ddArchive.Data.Attributes.Name); err != nil {
 		return err
@@ -152,21 +165,6 @@ func resourceDatadogLogsArchiveDelete(d *schema.ResourceData, meta interface{}) 
 		return translateClientError(err, "error deleting logs archive")
 	}
 	return nil
-}
-
-func resourceDatadogLogsArchiveExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
-	ddArchive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, d.Id()).Execute()
-	if err != nil {
-		// API returns 404 when the specific archive id doesn't exist.
-		if httpresp != nil && httpresp.StatusCode == 404 {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking if logs archive exists")
-	}
-	return ddArchive.HasData(), nil
 }
 
 //Model to map

@@ -9,19 +9,29 @@ import (
 )
 
 var indexSchema = map[string]*schema.Schema{
-	"name": {Type: schema.TypeString, Required: true},
+	"name": {
+		Description: "The name of the index.",
+		Type:        schema.TypeString,
+		Required:    true,
+	},
 	"filter": {
-		Type:     schema.TypeList,
-		Required: true,
+		Description: "Logs filter",
+		Type:        schema.TypeList,
+		Required:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"query": {Type: schema.TypeString, Required: true},
+				"query": {
+					Description: "Logs filter criteria. Only logs matching this filter criteria are considered for this index.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
 			},
 		},
 	},
 	"exclusion_filter": {
-		Type:     schema.TypeList,
-		Optional: true,
+		Description: "List of exclusion filters.",
+		Type:        schema.TypeList,
+		Optional:    true,
 		Elem: &schema.Resource{
 			Schema: exclusionFilterSchema,
 		},
@@ -29,15 +39,31 @@ var indexSchema = map[string]*schema.Schema{
 }
 
 var exclusionFilterSchema = map[string]*schema.Schema{
-	"name":       {Type: schema.TypeString, Optional: true},
-	"is_enabled": {Type: schema.TypeBool, Optional: true},
+	"name": {
+		Description: "The name of the exclusion filter.",
+		Type:        schema.TypeString,
+		Optional:    true,
+	},
+	"is_enabled": {
+		Description: "A boolean stating if the exclusion is active or not.",
+		Type:        schema.TypeBool,
+		Optional:    true,
+	},
 	"filter": {
 		Type:     schema.TypeList,
 		Optional: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"query":       {Type: schema.TypeString, Optional: true},
-				"sample_rate": {Type: schema.TypeFloat, Optional: true},
+				"query": {
+					Description: "Only logs matching the filter criteria and the query of the parent index will be considered for this exclusion filter.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"sample_rate": {
+					Description: "The fraction of logs excluded by the exclusion filter, when active.",
+					Type:        schema.TypeFloat,
+					Optional:    true,
+				},
 			},
 		},
 	},
@@ -45,11 +71,11 @@ var exclusionFilterSchema = map[string]*schema.Schema{
 
 func resourceDatadogLogsIndex() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogLogsIndexCreate,
-		Update: resourceDatadogLogsIndexUpdate,
-		Read:   resourceDatadogLogsIndexRead,
-		Delete: resourceDatadogLogsIndexDelete,
-		Exists: resourceDatadogLogsIndexExists,
+		Description: "Provides a Datadog Logs Index API resource. This can be used to create and manage Datadog logs indexes.",
+		Create:      resourceDatadogLogsIndexCreate,
+		Update:      resourceDatadogLogsIndexUpdate,
+		Read:        resourceDatadogLogsIndexRead,
+		Delete:      resourceDatadogLogsIndexDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -72,8 +98,12 @@ func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) erro
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	ddIndex, _, err := datadogClientV1.LogsIndexesApi.GetLogsIndex(authV1, d.Id()).Execute()
+	ddIndex, httpresp, err := datadogClientV1.LogsIndexesApi.GetLogsIndex(authV1, d.Id()).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting logs index")
 	}
 	if err = d.Set("name", ddIndex.GetName()); err != nil {
@@ -110,19 +140,6 @@ func resourceDatadogLogsIndexUpdate(d *schema.ResourceData, meta interface{}) er
 
 func resourceDatadogLogsIndexDelete(d *schema.ResourceData, meta interface{}) error {
 	return nil
-}
-
-func resourceDatadogLogsIndexExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-
-	if _, err := client.GetLogsIndex(d.Id()); err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking logs index exists")
-	}
-	return true, nil
 }
 
 func buildDatadogIndex(d *schema.ResourceData) (*datadogV1.LogsIndexUpdateRequest, error) {

@@ -1,71 +1,55 @@
 package datadog
 
 import (
-	"fmt"
-
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourceDatadogIntegrationGcp() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogIntegrationGcpCreate,
-		Read:   resourceDatadogIntegrationGcpRead,
-		Update: resourceDatadogIntegrationGcpUpdate,
-		Delete: resourceDatadogIntegrationGcpDelete,
-		Exists: resourceDatadogIntegrationGcpExists,
+		Description: "Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
+		Create:      resourceDatadogIntegrationGcpCreate,
+		Read:        resourceDatadogIntegrationGcpRead,
+		Update:      resourceDatadogIntegrationGcpUpdate,
+		Delete:      resourceDatadogIntegrationGcpDelete,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogIntegrationGcpImport,
 		},
 
 		Schema: map[string]*schema.Schema{
 			"project_id": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Your Google Cloud project ID found in your JSON service account key.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"private_key_id": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Your private key ID found in your JSON service account key.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"private_key": {
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
+				Description: "Your private key name found in your JSON service account key.",
+				Type:        schema.TypeString,
+				Required:    true,
+				Sensitive:   true,
 			},
 			"client_email": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Your email found in your JSON service account key.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"client_id": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Your ID found in your JSON service account key.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"host_filters": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 		},
 	}
-}
-
-func resourceDatadogIntegrationGcpExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	// Exists - This is called to verify a resource still exists. It is called prior to Read,
-	// and lowers the burden of Read to be able to assume the resource exists.
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	integrations, _, err := datadogClientV1.GCPIntegrationApi.ListGCPIntegration(authV1).Execute()
-	if err != nil {
-		return false, translateClientError(err, "error checking GCP integration exists")
-	}
-	projectID := d.Id()
-	for _, integration := range integrations {
-		if integration.GetProjectId() == projectID {
-			return true, nil
-		}
-	}
-	return false, nil
 }
 
 const (
@@ -125,7 +109,8 @@ func resourceDatadogIntegrationGcpRead(d *schema.ResourceData, meta interface{})
 			return nil
 		}
 	}
-	return fmt.Errorf("error getting a Google Cloud Platform integration: project_id=%s", projectID)
+	d.SetId("")
+	return nil
 }
 
 func resourceDatadogIntegrationGcpUpdate(d *schema.ResourceData, meta interface{}) error {

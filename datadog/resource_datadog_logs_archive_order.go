@@ -10,20 +10,21 @@ import (
 
 func resourceDatadogLogsArchiveOrder() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogLogsArchiveOrderCreate,
-		Update: resourceDatadogLogsArchiveOrderUpdate,
-		Read:   resourceDatadogLogsArchiveOrderRead,
-		Delete: resourceDatadogLogsArchiveOrderDelete,
-		Exists: resourceDatadogLogsArchiveOrderExists,
+		Description: "Provides a Datadog Logs Archive API resource, which is used to manage Datadog log archives order.",
+		Create:      resourceDatadogLogsArchiveOrderCreate,
+		Update:      resourceDatadogLogsArchiveOrderUpdate,
+		Read:        resourceDatadogLogsArchiveOrderRead,
+		Delete:      resourceDatadogLogsArchiveOrderDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
 			"archive_ids": {
-				Type:     schema.TypeList,
-				Computed: true,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "The archive IDs list. The order of archive IDs in this attribute defines the overall archive order for logs. If `archive_ids` is empty or not specified, it will import the actual archive order, and create the resource. Otherwise, it will try to update the order.",
+				Type:        schema.TypeList,
+				Computed:    true,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 		},
 	}
@@ -100,10 +101,6 @@ func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interfac
 // This function simply delete the archive order resource from terraform state.
 func resourceDatadogLogsArchiveOrderDelete(_ *schema.ResourceData, _ interface{}) error {
 	return nil
-}
-
-func resourceDatadogLogsArchiveOrderExists(_ *schema.ResourceData, _ interface{}) (bool, error) {
-	return true, nil
 }
 
 func getArchiveIds(d *schema.ResourceData) []string {

@@ -19,11 +19,11 @@ import (
 
 func resourceDatadogDowntime() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogDowntimeCreate,
-		Read:   resourceDatadogDowntimeRead,
-		Update: resourceDatadogDowntimeUpdate,
-		Delete: resourceDatadogDowntimeDelete,
-		Exists: resourceDatadogDowntimeExists,
+		Description: "Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.",
+		Create:      resourceDatadogDowntimeCreate,
+		Read:        resourceDatadogDowntimeRead,
+		Update:      resourceDatadogDowntimeUpdate,
+		Delete:      resourceDatadogDowntimeDelete,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogDowntimeImport,
 		},
@@ -59,6 +59,7 @@ func resourceDatadogDowntime() *schema.Resource {
 				ValidateFunc:  validation.IsRFC3339Time,
 				ConflictsWith: []string{"start"},
 				Optional:      true,
+				Description:   "String representing date and time to start the downtime in RFC3339 format.",
 			},
 			"end": {
 				Type:     schema.TypeInt,
@@ -74,6 +75,7 @@ func resourceDatadogDowntime() *schema.Resource {
 				ValidateFunc:  validation.IsRFC3339Time,
 				ConflictsWith: []string{"end"},
 				Optional:      true,
+				Description:   "String representing date and time to end the downtime in RFC3339 format.",
 			},
 			"timezone": {
 				Type:         schema.TypeString,
@@ -98,33 +100,39 @@ func resourceDatadogDowntime() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"period": {
-							Type:     schema.TypeInt,
-							Optional: true,
+							Type:        schema.TypeInt,
+							Optional:    true,
+							Description: "How often to repeat as an integer. For example to repeat every 3 days, select a `type` of `days` and a `period` of `3`.",
 						},
 						"type": {
 							Type:         schema.TypeString,
 							Required:     true,
 							ValidateFunc: validateDatadogDowntimeRecurrenceType,
+							Description:  "One of `days`, `weeks`, `months`, or `years`",
 						},
 						"until_date": {
 							Type:          schema.TypeInt,
 							Optional:      true,
 							ConflictsWith: []string{"recurrence.until_occurrences"},
+							Description:   "The date at which the recurrence should end as a POSIX timestamp. `until_occurrences` and `until_date` are mutually exclusive.",
 						},
 						"until_occurrences": {
 							Type:          schema.TypeInt,
 							Optional:      true,
 							ConflictsWith: []string{"recurrence.until_date"},
+							Description:   "How many times the downtime will be rescheduled. `until_occurrences` and `until_date` are mutually exclusive.",
 						},
 						"week_days": {
-							Type:     schema.TypeList,
-							Optional: true,
+							Type:        schema.TypeList,
+							Optional:    true,
+							Description: "A list of week days to repeat on. Choose from: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat` or `Sun`. Only applicable when `type` is `weeks`. First letter must be capitalized.",
 							Elem: &schema.Schema{
 								Type:         schema.TypeString,
 								ValidateFunc: validateDatadogDowntimeRecurrenceWeekDays,
 							},
 						},
 						"rrule": {
+							Description:   "The RRULE standard for defining recurring events. For example, to have a recurring event on the first day of each month, use `FREQ=MONTHLY;INTERVAL=1`. Most common rrule options from the iCalendar Spec are supported. Attributes specifying the duration in RRULE are not supported (for example, `DTSTART`, `DTEND`, `DURATION`).",
 							Type:          schema.TypeString,
 							Optional:      true,
 							ConflictsWith: []string{"recurrence.period", "recurrence.until_date", "recurrence.until_occurrences", "recurrence.week_days"},
@@ -303,35 +311,6 @@ func buildDowntimeStruct(authV1 context.Context, d *schema.ResourceData, client 
 	return &dt, nil
 }
 
-func resourceDatadogDowntimeExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	// Exists - This is called to verify a resource still exists. It is called prior to Read,
-	// and lowers the burden of Read to be able to assume the resource exists.
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	id, err := strconv.ParseInt(d.Id(), 10, 64)
-	if err != nil {
-		return false, err
-	}
-
-	downtime, _, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, id).Execute()
-	if err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking downtime exists")
-	}
-
-	if t, ok := downtime.GetCanceledOk(); ok && t != nil {
-		// when the Downtime is deleted via UI, it is in fact still returned through API, it's just "canceled"
-		// in this case, we need to consider it deleted, as canceled downtimes can't be used again
-		return false, nil
-	}
-
-	return true, nil
-}
-
 func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -361,9 +340,18 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 		return err
 	}
 
-	dt, _, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, id).Execute()
+	dt, httpresp, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, id).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting downtime")
+	}
+
+	if canceled, ok := dt.GetCanceledOk(); ok && canceled != nil {
+		d.SetId("")
+		return nil
 	}
 
 	log.Printf("[DEBUG] downtime: %v", dt)

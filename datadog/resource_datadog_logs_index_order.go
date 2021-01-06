@@ -7,20 +7,25 @@ import (
 
 func resourceDatadogLogsIndexOrder() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogLogsIndexOrderCreate,
-		Update: resourceDatadogLogsIndexOrderUpdate,
-		Read:   resourceDatadogLogsIndexOrderRead,
-		Delete: resourceDatadogLogsIndexOrderDelete,
-		Exists: resourceDatadogLogsIndexOrderExists,
+		Description: "Provides a Datadog Logs Index API resource. This can be used to manage the order of Datadog logs indexes.",
+		Create:      resourceDatadogLogsIndexOrderCreate,
+		Update:      resourceDatadogLogsIndexOrderUpdate,
+		Read:        resourceDatadogLogsIndexOrderRead,
+		Delete:      resourceDatadogLogsIndexOrderDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
-			"name": {Type: schema.TypeString, Required: true},
+			"name": {
+				Description: "The unique name of the index order resource.",
+				Type:        schema.TypeString,
+				Required:    true,
+			},
 			"indexes": {
-				Type:     schema.TypeList,
-				Required: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "The index resource list. Logs are tested against the query filter of each index one by one following the order of the list.",
+				Type:        schema.TypeList,
+				Required:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 		},
 	}
@@ -68,8 +73,4 @@ func resourceDatadogLogsIndexOrderRead(d *schema.ResourceData, meta interface{})
 
 func resourceDatadogLogsIndexOrderDelete(d *schema.ResourceData, meta interface{}) error {
 	return nil
-}
-
-func resourceDatadogLogsIndexOrderExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	return true, nil
 }

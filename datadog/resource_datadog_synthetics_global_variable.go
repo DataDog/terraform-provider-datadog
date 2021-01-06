@@ -10,37 +10,43 @@ import (
 
 func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogSyntheticsGlobalVariableCreate,
-		Read:   resourceDatadogSyntheticsGlobalVariableRead,
-		Update: resourceDatadogSyntheticsGlobalVariableUpdate,
-		Delete: resourceDatadogSyntheticsGlobalVariableDelete,
+		Description: "Provides a Datadog synthetics global variable resource. This can be used to create and manage Datadog synthetics global variables.",
+		Create:      resourceDatadogSyntheticsGlobalVariableCreate,
+		Read:        resourceDatadogSyntheticsGlobalVariableRead,
+		Update:      resourceDatadogSyntheticsGlobalVariableUpdate,
+		Delete:      resourceDatadogSyntheticsGlobalVariableDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
+				Description:  "Synthetics global variable name.",
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
 			},
 			"description": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Description of the global variable.",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"tags": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "A list of tags to associate with your synthetics global variable.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"value": {
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
+				Description: "The value of the global variable.",
+				Type:        schema.TypeString,
+				Required:    true,
+				Sensitive:   true,
 			},
 			"secure": {
-				Default:  false,
-				Type:     schema.TypeBool,
-				Optional: true,
+				Description: "Sets the variable as secure. Defaults to `false`.",
+				Default:     false,
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 		},
 	}

@@ -1,58 +1,36 @@
 package datadog
 
 import (
-	"fmt"
-
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourceDatadogIntegrationAwsLogCollection() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogIntegrationAwsLogCollectionCreate,
-		Read:   resourceDatadogIntegrationAwsLogCollectionRead,
-		Update: resourceDatadogIntegrationAwsLogCollectionUpdate,
-		Delete: resourceDatadogIntegrationAwsLogCollectionDelete,
-		Exists: resourceDatadogIntegrationAwsLogCollectionExists,
+		Description: "Provides a Datadog - Amazon Web Services integration log collection resource. This can be used to manage which AWS services logs are collected from for an account.",
+		Create:      resourceDatadogIntegrationAwsLogCollectionCreate,
+		Read:        resourceDatadogIntegrationAwsLogCollectionRead,
+		Update:      resourceDatadogIntegrationAwsLogCollectionUpdate,
+		Delete:      resourceDatadogIntegrationAwsLogCollectionDelete,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogIntegrationAwsLogCollectionImport,
 		},
 
 		Schema: map[string]*schema.Schema{
 			"account_id": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Description: "Your AWS Account ID without dashes.",
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
 			},
 			"services": {
-				Type:     schema.TypeList,
-				Required: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "A list of services to collect logs from. See the [api docs](https://docs.datadoghq.com/api/v1/aws-logs-integration/#get-list-of-aws-log-ready-services) for more details on which services are supported.",
+				Type:        schema.TypeList,
+				Required:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 		},
 	}
-}
-
-func resourceDatadogIntegrationAwsLogCollectionExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	// Exists - This is called to verify a resource still exists. It is called prior to Read,
-	// and lowers the burden of Read to be able to assume the resource exists.
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
-	if err != nil {
-		return false, translateClientError(err, "error getting aws integration log collection.")
-	}
-
-	accountID := d.Id()
-
-	for _, logCollection := range logCollections {
-		if logCollection.GetAccountId() == accountID {
-			return true, nil
-		}
-	}
-	return false, nil
 }
 
 func buildDatadogIntegrationAwsLogCollectionStruct(d *schema.ResourceData) *datadogV1.AWSLogsServicesRequest {
@@ -119,7 +97,9 @@ func resourceDatadogIntegrationAwsLogCollectionRead(d *schema.ResourceData, meta
 			return nil
 		}
 	}
-	return fmt.Errorf("error getting Amazon Web Services log collection: account_id=%s", accountID)
+
+	d.SetId("")
+	return nil
 }
 
 func resourceDatadogIntegrationAwsLogCollectionDelete(d *schema.ResourceData, meta interface{}) error {

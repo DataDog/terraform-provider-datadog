@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"a secure global variable","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1606130033","tags":["foo:bar","baz"],"value":{"secure":true,"value":"variable-secure-value"}}
+      {"description":"a secure global variable","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1609425877","tags":["foo:bar","baz"],"value":{"secure":true,"value":"variable-secure-value"}}
     form: {}
     headers:
       Accept:
@@ -14,17 +14,17 @@ interactions:
       - CreateGlobalVariable
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "6651921517648596718"
+      - "7575130527513556800"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "7652819193922499617"
+      - "2677314254668142464"
     url: https://api.datadoghq.com/api/v1/synthetics/variables
     method: POST
   response:
-    body: '{"parse_test_extracted_at":null,"description":"a secure global variable","tags":["foo:bar","baz"],"parse_test_public_id":null,"value":{"secure":true},"id":"582758e2-bc3b-4eff-aeb9-96a6dd46aef2","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1606130033","parse_test_name":null,"type":"variable"}'
+    body: '{"parse_test_extracted_at":null,"description":"a secure global variable","tags":["foo:bar","baz"],"parse_test_public_id":null,"value":{"secure":true},"id":"822b32f9-ffd0-456c-8002-669b40bef243","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1609425877","parse_test_name":null,"type":"variable"}'
     headers:
       Cache-Control:
       - no-cache
@@ -35,13 +35,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 23 Nov 2020 11:13:55 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:53:53 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 30-Nov-2020 11:13:54 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:53 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -50,9 +48,313 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - F+MB1uJtICegWSQGMRxkng/mFaS+IzSp7MVdNCMxEuNz7Df8CVcsilcdpPZyVGTp
+      - weu815+ZWWbGQq5tr1Pbgn9tz03CIxMGqv8+DypizfBZ1wZXms1G/y6kUb21vi3s
       X-Dd-Version:
-      - "35.3415514"
+      - "35.3622023"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "120"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "119"
+      X-Ratelimit-Reset:
+      - "7"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetGlobalVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "495205796256471496"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2677314254668142464"
+    url: https://api.datadoghq.com/api/v1/synthetics/variables/822b32f9-ffd0-456c-8002-669b40bef243
+    method: GET
+  response:
+    body: '{"parse_test_extracted_at":null,"description":"a secure global variable","tags":["foo:bar","baz"],"parse_test_public_id":null,"value":{"secure":true},"id":"822b32f9-ffd0-456c-8002-669b40bef243","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1609425877","created_at":"2020-12-31T14:53:53.699973+00:00","modified_at":"2020-12-31T14:53:53.699973+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 31 Dec 2020 14:53:53 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:53 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 2yLQyeuXdHKf2qhVlcnhVSRUgzA6Krta0LEltrGESIMHoX7HWgb/dSrVA+a76Sm3
+      X-Dd-Version:
+      - "35.3622023"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "120"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "119"
+      X-Ratelimit-Reset:
+      - "7"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetGlobalVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "46360654334306098"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2677314254668142464"
+    url: https://api.datadoghq.com/api/v1/synthetics/variables/822b32f9-ffd0-456c-8002-669b40bef243
+    method: GET
+  response:
+    body: '{"parse_test_extracted_at":null,"description":"a secure global variable","tags":["foo:bar","baz"],"parse_test_public_id":null,"value":{"secure":true},"id":"822b32f9-ffd0-456c-8002-669b40bef243","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1609425877","created_at":"2020-12-31T14:53:53.699973+00:00","modified_at":"2020-12-31T14:53:53.699973+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 31 Dec 2020 14:53:53 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:53 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - H6mGk0NVWFFYd9VUP8vVAv2c5S84SY5SnfwDRAyGeGOpnNeKpu2AiMB1a9R6+y9D
+      X-Dd-Version:
+      - "35.3622023"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "120"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "118"
+      X-Ratelimit-Reset:
+      - "7"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetGlobalVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "5595884530213863935"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2677314254668142464"
+    url: https://api.datadoghq.com/api/v1/synthetics/variables/822b32f9-ffd0-456c-8002-669b40bef243
+    method: GET
+  response:
+    body: '{"parse_test_extracted_at":null,"description":"a secure global variable","tags":["foo:bar","baz"],"parse_test_public_id":null,"value":{"secure":true},"id":"822b32f9-ffd0-456c-8002-669b40bef243","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1609425877","created_at":"2020-12-31T14:53:53.699973+00:00","modified_at":"2020-12-31T14:53:53.699973+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 31 Dec 2020 14:53:54 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:54 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - /0aUVUH/0B08LSgkH1j961ejfqRhimJkYAixzpnRf5lscmOFHWjl/leOQ3Mnfn7R
+      X-Dd-Version:
+      - "35.3622023"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "120"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "117"
+      X-Ratelimit-Reset:
+      - "6"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetGlobalVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "3010619519377318537"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2677314254668142464"
+    url: https://api.datadoghq.com/api/v1/synthetics/variables/822b32f9-ffd0-456c-8002-669b40bef243
+    method: GET
+  response:
+    body: '{"parse_test_extracted_at":null,"description":"a secure global variable","tags":["foo:bar","baz"],"parse_test_public_id":null,"value":{"secure":true},"id":"822b32f9-ffd0-456c-8002-669b40bef243","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1609425877","created_at":"2020-12-31T14:53:53.699973+00:00","modified_at":"2020-12-31T14:53:53.699973+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 31 Dec 2020 14:53:54 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:54 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - NVdxML/FOEgLJzsz37XLTVVLcoGTHoJzcuGu2ZwX+JAXQfJkO87pOpfJK6E0a8TN
+      X-Dd-Version:
+      - "35.3622023"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "120"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "115"
+      X-Ratelimit-Reset:
+      - "6"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"description":"an updated secure global variable","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1609425877_UPDATED","tags":["foo:bar","baz","env:test"],"value":{"secure":true,"value":"variable-secure-value-updated"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - EditGlobalVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "3034751824428837362"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2677314254668142464"
+    url: https://api.datadoghq.com/api/v1/synthetics/variables/822b32f9-ffd0-456c-8002-669b40bef243
+    method: PUT
+  response:
+    body: '{"parse_test_extracted_at":null,"description":"an updated secure global
+      variable","tags":["foo:bar","baz","env:test"],"parse_test_public_id":null,"value":{"secure":true},"id":"822b32f9-ffd0-456c-8002-669b40bef243","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1609425877_UPDATED","parse_test_name":null,"type":"variable"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 31 Dec 2020 14:53:54 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:54 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - Y6ZYLlUGSo9onPx7tECTs9qKsJvUoKKo+zN3XxQavBYvUrN/iKRS46jBfxaojr0T
+      X-Dd-Version:
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -76,17 +378,18 @@ interactions:
       - GetGlobalVariable
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "7319370717959256025"
+      - "348926898866063792"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "7652819193922499617"
-    url: https://api.datadoghq.com/api/v1/synthetics/variables/582758e2-bc3b-4eff-aeb9-96a6dd46aef2
+      - "2677314254668142464"
+    url: https://api.datadoghq.com/api/v1/synthetics/variables/822b32f9-ffd0-456c-8002-669b40bef243
     method: GET
   response:
-    body: '{"parse_test_extracted_at":null,"description":"a secure global variable","tags":["foo:bar","baz"],"parse_test_public_id":null,"value":{"secure":true},"id":"582758e2-bc3b-4eff-aeb9-96a6dd46aef2","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1606130033","created_at":"2020-11-23T11:13:54.399494+00:00","modified_at":"2020-11-23T11:13:54.399494+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
+    body: '{"parse_test_extracted_at":null,"description":"an updated secure global
+      variable","tags":["foo:bar","baz","env:test"],"parse_test_public_id":null,"value":{"secure":true},"id":"822b32f9-ffd0-456c-8002-669b40bef243","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1609425877_UPDATED","created_at":"2020-12-31T14:53:53.699973+00:00","modified_at":"2020-12-31T14:53:54.647388+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
     headers:
       Cache-Control:
       - no-cache
@@ -97,13 +400,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 23 Nov 2020 11:13:55 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:53:54 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 30-Nov-2020 11:13:55 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:54 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -112,133 +413,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - s0LsNvQsMm21RUzMLDODd6jiqqojzRfEoHLrnASSfK5zaa+QnpY16tmznkR4zVSs
+      - lgQawiZEOFHj/SKplEcqOwzaMI6OQtdSQ9dotiTxYUar2ksXhijPkw9yrBoSKHNa
       X-Dd-Version:
-      - "35.3415514"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "120"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "114"
-      X-Ratelimit-Reset:
-      - "5"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetGlobalVariable
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "4929326586656662371"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7652819193922499617"
-    url: https://api.datadoghq.com/api/v1/synthetics/variables/582758e2-bc3b-4eff-aeb9-96a6dd46aef2
-    method: GET
-  response:
-    body: '{"parse_test_extracted_at":null,"description":"a secure global variable","tags":["foo:bar","baz"],"parse_test_public_id":null,"value":{"secure":true},"id":"582758e2-bc3b-4eff-aeb9-96a6dd46aef2","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1606130033","created_at":"2020-11-23T11:13:54.399494+00:00","modified_at":"2020-11-23T11:13:54.399494+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 23 Nov 2020 11:13:55 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 30-Nov-2020 11:13:55 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 35J49GdWRZ44BXWQv5M8k5DMOKDsnUL/+b8VnKl01OT828ngNdfZvXJ9jRXKLHFA
-      X-Dd-Version:
-      - "35.3415514"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "120"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "113"
-      X-Ratelimit-Reset:
-      - "5"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetGlobalVariable
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "2451451326135529497"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7652819193922499617"
-    url: https://api.datadoghq.com/api/v1/synthetics/variables/582758e2-bc3b-4eff-aeb9-96a6dd46aef2
-    method: GET
-  response:
-    body: '{"parse_test_extracted_at":null,"description":"a secure global variable","tags":["foo:bar","baz"],"parse_test_public_id":null,"value":{"secure":true},"id":"582758e2-bc3b-4eff-aeb9-96a6dd46aef2","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1606130033","created_at":"2020-11-23T11:13:54.399494+00:00","modified_at":"2020-11-23T11:13:54.399494+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 23 Nov 2020 11:13:55 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 30-Nov-2020 11:13:55 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 92/tpeRQ0by9nn7WsSPyVyXsoLNu8gimYih2BuL6sJV2amfIFPaN8R5eGATyWG3E
-      X-Dd-Version:
-      - "35.3415514"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -248,6 +425,128 @@ interactions:
       X-Ratelimit-Remaining:
       - "112"
       X-Ratelimit-Reset:
+      - "6"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetGlobalVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "5443914919724265083"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2677314254668142464"
+    url: https://api.datadoghq.com/api/v1/synthetics/variables/822b32f9-ffd0-456c-8002-669b40bef243
+    method: GET
+  response:
+    body: '{"parse_test_extracted_at":null,"description":"an updated secure global
+      variable","tags":["foo:bar","baz","env:test"],"parse_test_public_id":null,"value":{"secure":true},"id":"822b32f9-ffd0-456c-8002-669b40bef243","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1609425877_UPDATED","created_at":"2020-12-31T14:53:53.699973+00:00","modified_at":"2020-12-31T14:53:54.647388+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 31 Dec 2020 14:53:54 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:54 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - Eb2J7DZKGMCxUULFPVCE5N014uh3tvnvHgnaA7NVroaoqvWd6z7v+RZklq5100Rp
+      X-Dd-Version:
+      - "35.3622023"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "120"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "110"
+      X-Ratelimit-Reset:
+      - "6"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetGlobalVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
+      X-Datadog-Parent-Id:
+      - "2889721720105524542"
+      X-Datadog-Sampling-Priority:
+      - "1"
+      X-Datadog-Trace-Id:
+      - "2677314254668142464"
+    url: https://api.datadoghq.com/api/v1/synthetics/variables/822b32f9-ffd0-456c-8002-669b40bef243
+    method: GET
+  response:
+    body: '{"parse_test_extracted_at":null,"description":"an updated secure global
+      variable","tags":["foo:bar","baz","env:test"],"parse_test_public_id":null,"value":{"secure":true},"id":"822b32f9-ffd0-456c-8002-669b40bef243","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1609425877_UPDATED","created_at":"2020-12-31T14:53:53.699973+00:00","modified_at":"2020-12-31T14:53:54.647388+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 31 Dec 2020 14:53:55 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:55 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 8uM7lo6fgdRC0R8G89u29ss3GmR5rKsxJfYvyjSE9oa+oPL40dVup+1mn/0Ku0bY
+      X-Dd-Version:
+      - "35.3622023"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "120"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "109"
+      X-Ratelimit-Reset:
       - "5"
     status: 200 OK
     code: 200
@@ -262,17 +561,18 @@ interactions:
       - GetGlobalVariable
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3011066993608962453"
+      - "3078373578618475924"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "7652819193922499617"
-    url: https://api.datadoghq.com/api/v1/synthetics/variables/582758e2-bc3b-4eff-aeb9-96a6dd46aef2
+      - "2677314254668142464"
+    url: https://api.datadoghq.com/api/v1/synthetics/variables/822b32f9-ffd0-456c-8002-669b40bef243
     method: GET
   response:
-    body: '{"parse_test_extracted_at":null,"description":"a secure global variable","tags":["foo:bar","baz"],"parse_test_public_id":null,"value":{"secure":true},"id":"582758e2-bc3b-4eff-aeb9-96a6dd46aef2","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1606130033","created_at":"2020-11-23T11:13:54.399494+00:00","modified_at":"2020-11-23T11:13:54.399494+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
+    body: '{"parse_test_extracted_at":null,"description":"an updated secure global
+      variable","tags":["foo:bar","baz","env:test"],"parse_test_public_id":null,"value":{"secure":true},"id":"822b32f9-ffd0-456c-8002-669b40bef243","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1609425877_UPDATED","created_at":"2020-12-31T14:53:53.699973+00:00","modified_at":"2020-12-31T14:53:54.647388+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
     headers:
       Cache-Control:
       - no-cache
@@ -283,13 +583,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 23 Nov 2020 11:13:55 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:53:55 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 30-Nov-2020 11:13:55 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:55 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -298,9 +596,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - amxMFAqiSVjNyNv9bH0oCnBEjAVk4yOIMrMQTyRWQ0WFa2JUcjQXHejBMO8Fj7RQ
+      - cLmbdqkoXAogp+jvJYjDem2Ccuhd9u5QaFds8gBIEk61c952eYE473HKvGYqQTh2
       X-Dd-Version:
-      - "35.3415514"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -308,65 +606,59 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "111"
+      - "107"
       X-Ratelimit-Reset:
       - "5"
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: |
-      {"description":"an updated secure global variable","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1606130033_UPDATED","tags":["foo:bar","baz","env:test"],"value":{"secure":true,"value":"variable-secure-value-updated"}}
+    body: ""
     form: {}
     headers:
       Accept:
       - application/json
-      Content-Type:
-      - application/json
       Dd-Operation-Id:
-      - EditGlobalVariable
+      - DeleteGlobalVariable
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "3219229678624038482"
+      - "2804127115730868269"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "7652819193922499617"
-    url: https://api.datadoghq.com/api/v1/synthetics/variables/582758e2-bc3b-4eff-aeb9-96a6dd46aef2
-    method: PUT
+      - "2677314254668142464"
+    url: https://api.datadoghq.com/api/v1/synthetics/variables/822b32f9-ffd0-456c-8002-669b40bef243
+    method: DELETE
   response:
-    body: '{"parse_test_extracted_at":null,"description":"an updated secure global
-      variable","tags":["foo:bar","baz","env:test"],"parse_test_public_id":null,"value":{"secure":true},"id":"582758e2-bc3b-4eff-aeb9-96a6dd46aef2","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1606130033_UPDATED","parse_test_name":null,"type":"variable"}'
+    body: "null"
     headers:
       Cache-Control:
       - no-cache
       Connection:
       - keep-alive
+      Content-Length:
+      - "4"
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
       Date:
-      - Mon, 23 Nov 2020 11:13:56 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:53:55 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 30-Nov-2020 11:13:55 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:55 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
-      Vary:
-      - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - RQNZxTpzmnYtqewiwDnwjOIeDPnPlPWTnfmCTuKeHAaJNSGMGGndPJBReO57sp0w
+      - 91aMs4Xd/NaPhGMoIvSvdd0mjw6sy0ZqzVUdTt9hqt35qwhu0snxCQESFXt90Pzi
       X-Dd-Version:
-      - "35.3415514"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -390,328 +682,14 @@ interactions:
       - GetGlobalVariable
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
+        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
       X-Datadog-Parent-Id:
-      - "5408708384247461606"
+      - "4833022616021122946"
       X-Datadog-Sampling-Priority:
       - "1"
       X-Datadog-Trace-Id:
-      - "7652819193922499617"
-    url: https://api.datadoghq.com/api/v1/synthetics/variables/582758e2-bc3b-4eff-aeb9-96a6dd46aef2
-    method: GET
-  response:
-    body: '{"parse_test_extracted_at":null,"description":"an updated secure global
-      variable","tags":["foo:bar","baz","env:test"],"parse_test_public_id":null,"value":{"secure":true},"id":"582758e2-bc3b-4eff-aeb9-96a6dd46aef2","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1606130033_UPDATED","created_at":"2020-11-23T11:13:54.399494+00:00","modified_at":"2020-11-23T11:13:56.767001+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 23 Nov 2020 11:13:56 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 30-Nov-2020 11:13:56 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - Rk64tCoF3V07+a4szeABxTtZIJ+mXpZWikk4VsgNuvqwu3MpGXqLHxCVHOt9N39v
-      X-Dd-Version:
-      - "35.3415514"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "120"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "110"
-      X-Ratelimit-Reset:
-      - "4"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetGlobalVariable
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "7243583985542919353"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7652819193922499617"
-    url: https://api.datadoghq.com/api/v1/synthetics/variables/582758e2-bc3b-4eff-aeb9-96a6dd46aef2
-    method: GET
-  response:
-    body: '{"parse_test_extracted_at":null,"description":"an updated secure global
-      variable","tags":["foo:bar","baz","env:test"],"parse_test_public_id":null,"value":{"secure":true},"id":"582758e2-bc3b-4eff-aeb9-96a6dd46aef2","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1606130033_UPDATED","created_at":"2020-11-23T11:13:54.399494+00:00","modified_at":"2020-11-23T11:13:56.767001+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 23 Nov 2020 11:13:57 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 30-Nov-2020 11:13:57 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - IEUzjgpnyUrp74lH2dqPweGXNQU7es3CY44HHPIdy7aSNeimMebMvcKCoCgyWWVx
-      X-Dd-Version:
-      - "35.3415514"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "120"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "109"
-      X-Ratelimit-Reset:
-      - "3"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetGlobalVariable
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "6463590213843766574"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7652819193922499617"
-    url: https://api.datadoghq.com/api/v1/synthetics/variables/582758e2-bc3b-4eff-aeb9-96a6dd46aef2
-    method: GET
-  response:
-    body: '{"parse_test_extracted_at":null,"description":"an updated secure global
-      variable","tags":["foo:bar","baz","env:test"],"parse_test_public_id":null,"value":{"secure":true},"id":"582758e2-bc3b-4eff-aeb9-96a6dd46aef2","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1606130033_UPDATED","created_at":"2020-11-23T11:13:54.399494+00:00","modified_at":"2020-11-23T11:13:56.767001+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 23 Nov 2020 11:13:57 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 30-Nov-2020 11:13:57 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - uJ83xA1OCfjNbetv+4JhF+oFizEHF56t3Lja6jtB8P5etMWBi14GRkWSrGetOvyr
-      X-Dd-Version:
-      - "35.3415514"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "120"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "108"
-      X-Ratelimit-Reset:
-      - "3"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetGlobalVariable
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "6533345055044409761"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7652819193922499617"
-    url: https://api.datadoghq.com/api/v1/synthetics/variables/582758e2-bc3b-4eff-aeb9-96a6dd46aef2
-    method: GET
-  response:
-    body: '{"parse_test_extracted_at":null,"description":"an updated secure global
-      variable","tags":["foo:bar","baz","env:test"],"parse_test_public_id":null,"value":{"secure":true},"id":"582758e2-bc3b-4eff-aeb9-96a6dd46aef2","parse_test_options":null,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLESECURE_UPDATED_LOCAL_1606130033_UPDATED","created_at":"2020-11-23T11:13:54.399494+00:00","modified_at":"2020-11-23T11:13:56.767001+00:00","created_by":1445416,"parse_test_name":null,"type":"variable"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 23 Nov 2020 11:13:57 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 30-Nov-2020 11:13:57 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - pv0z9DOVfESVNK6d1tOJ7YfC31qHNEzJNjdRZStq3qVP6piD/gWCa9pwKd90Upzy
-      X-Dd-Version:
-      - "35.3415514"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "120"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "107"
-      X-Ratelimit-Reset:
-      - "3"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - DeleteGlobalVariable
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "1741401275577016910"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7652819193922499617"
-    url: https://api.datadoghq.com/api/v1/synthetics/variables/582758e2-bc3b-4eff-aeb9-96a6dd46aef2
-    method: DELETE
-  response:
-    body: "null"
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "4"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 23 Nov 2020 11:13:57 GMT
-      Dd-Pool:
-      - dogweb
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 30-Nov-2020 11:13:57 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - R1+MRQNzRD0HfjBgLVIjclr4gto/LBUvaJZAn2oF8rsW7iHushLxjdvt+30jZQLP
-      X-Dd-Version:
-      - "35.3415514"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "120"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "118"
-      X-Ratelimit-Reset:
-      - "3"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetGlobalVariable
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.3; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "5962807078966229877"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7652819193922499617"
-    url: https://api.datadoghq.com/api/v1/synthetics/variables/582758e2-bc3b-4eff-aeb9-96a6dd46aef2
+      - "2677314254668142464"
+    url: https://api.datadoghq.com/api/v1/synthetics/variables/822b32f9-ffd0-456c-8002-669b40bef243
     method: GET
   response:
     body: '{"errors": ["Synthetics variable not found"]}'
@@ -725,9 +703,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 23 Nov 2020 11:13:57 GMT
-      Dd-Pool:
-      - dogweb
+      - Thu, 31 Dec 2020 14:53:55 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -737,7 +713,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3415514"
+      - "35.3622023"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -745,9 +721,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "106"
+      - "104"
       X-Ratelimit-Reset:
-      - "3"
+      - "5"
     status: 404 Not Found
     code: 404
     duration: ""
