@@ -20,7 +20,6 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 		DeprecationMessage: "This resource is deprecated. You can use datadog_integration_pagerduty_service_object resources directly once the integration is activated",
 		Create:             resourceDatadogIntegrationPagerdutyCreate,
 		Read:               resourceDatadogIntegrationPagerdutyRead,
-		Exists:             resourceDatadogIntegrationPagerdutyExists,
 		Update:             resourceDatadogIntegrationPagerdutyUpdate,
 		Delete:             resourceDatadogIntegrationPagerdutyDelete,
 		Importer: &schema.ResourceImporter{
@@ -141,6 +140,10 @@ func resourceDatadogIntegrationPagerdutyRead(d *schema.ResourceData, meta interf
 
 	pd, err := client.GetIntegrationPD()
 	if err != nil {
+		if strings.Contains(err.Error(), "404 Not Found") {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting PagerDuty integration")
 	}
 
@@ -161,21 +164,6 @@ func resourceDatadogIntegrationPagerdutyRead(d *schema.ResourceData, meta interf
 	d.Set("schedules", pd.Schedules)
 
 	return nil
-}
-
-func resourceDatadogIntegrationPagerdutyExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-
-	_, err := client.GetIntegrationPD()
-	if err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error getting PagerDuty integration")
-	}
-
-	return true, nil
 }
 
 func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta interface{}) error {

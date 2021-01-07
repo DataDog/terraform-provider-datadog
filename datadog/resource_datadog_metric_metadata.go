@@ -1,8 +1,6 @@
 package datadog
 
 import (
-	"strings"
-
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -14,7 +12,6 @@ func resourceDatadogMetricMetadata() *schema.Resource {
 		Read:        resourceDatadogMetricMetadataRead,
 		Update:      resourceDatadogMetricMetadataUpdate,
 		Delete:      resourceDatadogMetricMetadataDelete,
-		Exists:      resourceDatadogMetricMetadataExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogMetricMetadataImport,
 		},
@@ -70,25 +67,6 @@ func buildMetricMetadataStruct(d *schema.ResourceData) (string, *datadogV1.Metri
 	}
 }
 
-func resourceDatadogMetricMetadataExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	// Exists - This is called to verify a resource still exists. It is called prior to Read,
-	// and lowers the burden of Read to be able to assume the resource exists.
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	id, _ := buildMetricMetadataStruct(d)
-
-	if _, _, err := datadogClientV1.MetricsApi.GetMetricMetadata(authV1, id).Execute(); err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking metric metadata exists")
-	}
-
-	return true, nil
-}
-
 func resourceDatadogMetricMetadataCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -112,8 +90,12 @@ func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{})
 
 	id, _ := buildMetricMetadataStruct(d)
 
-	m, _, err := datadogClientV1.MetricsApi.GetMetricMetadata(authV1, id).Execute()
+	m, httpresp, err := datadogClientV1.MetricsApi.GetMetricMetadata(authV1, id).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting metric metadata")
 	}
 

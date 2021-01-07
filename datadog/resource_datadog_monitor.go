@@ -4,11 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -18,6 +21,8 @@ type BuiltResource interface {
 	GetOk(string) (interface{}, bool)
 }
 
+var retryTimeout = time.Minute
+
 func resourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog monitor resource. This can be used to create and manage Datadog monitors.",
@@ -25,12 +30,10 @@ func resourceDatadogMonitor() *schema.Resource {
 		Read:          resourceDatadogMonitorRead,
 		Update:        resourceDatadogMonitorUpdate,
 		Delete:        resourceDatadogMonitorDelete,
-		Exists:        resourceDatadogMonitorExists,
 		CustomizeDiff: resourceDatadogMonitorCustomizeDiff,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogMonitorImport,
 		},
-
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Description: "Name of Datadog monitor.",
@@ -366,28 +369,6 @@ func buildMonitorStruct(d BuiltResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	return m, u
 }
 
-func resourceDatadogMonitorExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	// Exists - This is called to verify a resource still exists. It is called prior to Read,
-	// and lowers the burden of Read to be able to assume the resource exists.
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	i, err := strconv.ParseInt(d.Id(), 10, 64)
-	if err != nil {
-		return false, err
-	}
-
-	if _, _, err = datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute(); err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking monitor exists")
-	}
-
-	return true, nil
-}
-
 // Use CustomizeDiff to do monitor validation
 func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interface{}) error {
 	if _, ok := diff.GetOk("query"); !ok {
@@ -407,10 +388,16 @@ func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interfa
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
-	if _, _, err := datadogClientV1.MonitorsApi.ValidateMonitor(authV1).Body(*m).Execute(); err != nil {
-		return translateClientError(err, "error validating monitor")
-	}
-	return nil
+	return resource.Retry(retryTimeout, func() *resource.RetryError {
+		_, httpresp, err := datadogClientV1.MonitorsApi.ValidateMonitor(authV1).Body(*m).Execute()
+		if err != nil {
+			if httpresp != nil && httpresp.StatusCode == 502 {
+				return resource.RetryableError(translateClientError(err, "error validating monitor, retrying"))
+			}
+			return resource.NonRetryableError(translateClientError(err, "error validating monitor"))
+		}
+		return nil
+	})
 }
 
 func getUnmutedScopes(d *schema.ResourceData) []string {
@@ -452,10 +439,26 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	if err != nil {
 		return err
 	}
-
-	m, _, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
-	if err != nil {
-		return translateClientError(err, "error getting monitor")
+	var (
+		m        datadogV1.Monitor
+		httpresp *http.Response
+	)
+	if err = resource.Retry(d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
+		m, httpresp, err = datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
+		if err != nil {
+			if httpresp != nil {
+				if httpresp.StatusCode == 404 {
+					d.SetId("")
+					return nil
+				} else if httpresp.StatusCode == 502 {
+					return resource.RetryableError(translateClientError(err, "error getting monitor, retrying"))
+				}
+			}
+			return resource.NonRetryableError(translateClientError(err, "error getting monitor"))
+		}
+		return nil
+	}); err != nil {
+		return err
 	}
 
 	thresholds := make(map[string]string)

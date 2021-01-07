@@ -55,6 +55,64 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 	})
 }
 
+func TestAccDatadogUser_Invitation(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	username := strings.ToLower(uniqueEntityName(clock, t)) + "@example.com"
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogUserConfigRequired(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "name", "Test User"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "verified", "false"),
+					resource.TestCheckResourceAttrSet(
+						"datadog_user.foo", "user_invitation_id"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogUser_NoInvitation(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	username := strings.ToLower(uniqueEntityName(clock, t)) + "@example.com"
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogUserConfigRequiredNoInvitation(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "name", "Test User"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "verified", "false"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_user.foo", "user_invitation_id"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogUser_Existing(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	username := strings.ToLower(uniqueEntityName(clock, t)) + "@example.com"
@@ -224,6 +282,16 @@ func testAccCheckDatadogUserConfigRequired(uniq string) string {
 resource "datadog_user" "foo" {
   email     = "%s"
   name      = "Test User"
+  send_user_invitation = true
+}`, uniq)
+}
+
+func testAccCheckDatadogUserConfigRequiredNoInvitation(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_user" "foo" {
+  email     = "%s"
+  name      = "Test User"
+  send_user_invitation = false
 }`, uniq)
 }
 

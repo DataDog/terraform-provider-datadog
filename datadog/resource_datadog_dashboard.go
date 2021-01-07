@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"strconv"
-	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -20,7 +19,6 @@ func resourceDatadogDashboard() *schema.Resource {
 		Update:      resourceDatadogDashboardUpdate,
 		Read:        resourceDatadogDashboardRead,
 		Delete:      resourceDatadogDashboardDelete,
-		Exists:      resourceDatadogDashboardExists,
 		CustomizeDiff: func(diff *schema.ResourceDiff, meta interface{}) error {
 			old, new := diff.GetChange("dashboard_lists")
 			if !old.(*schema.Set).Equal(new.(*schema.Set)) {
@@ -136,7 +134,7 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 		}
 
 		// We only log the error, as failing to update the list shouldn't fail dashboard creation
-		updateDashboarLists(d, providerConf, *dashboard.Id)
+		updateDashboardLists(d, providerConf, *dashboard.Id)
 
 		return resource.NonRetryableError(loadDatadogDashboard(d, getDashboard))
 	})
@@ -155,12 +153,12 @@ func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) er
 		return translateClientError(err, "error updating dashboard")
 	}
 
-	updateDashboarLists(d, providerConf, *dashboard.Id)
+	updateDashboardLists(d, providerConf, *dashboard.Id)
 
 	return resourceDatadogDashboardRead(d, meta)
 }
 
-func updateDashboarLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardId string) {
+func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardId string) {
 	dashTypeString := "custom_screenboard"
 	if d.Get("layout_type").(string) == "ordered" {
 		dashTypeString = "custom_timeboard"
@@ -247,8 +245,12 @@ func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) erro
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	id := d.Id()
-	dashboard, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, id).Execute()
+	dashboard, httpresp, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, id).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting dashboard")
 	}
 
@@ -271,20 +273,6 @@ func resourceDatadogDashboardImport(d *schema.ResourceData, meta interface{}) ([
 		return nil, err
 	}
 	return []*schema.ResourceData{d}, nil
-}
-
-func resourceDatadogDashboardExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-	id := d.Id()
-	if _, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, id).Execute(); err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking dashboard exists")
-	}
-	return true, nil
 }
 
 func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error) {
@@ -1328,7 +1316,7 @@ func buildTerraformAlertValueDefinition(datadogDefinition datadogV1.AlertValueWi
 func getChangeDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:",
+			Description: "Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -1562,7 +1550,7 @@ func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidge
 func getDistributionDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:",
+			Description: "Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -1664,12 +1652,12 @@ func getDistributionRequestSchema() map[string]*schema.Schema {
 		"q":              getMetricQuerySchema(),
 		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"process_query":  getProcessQuerySchema(),
 		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
 		// Settings specific to Distribution requests
 		"style": {
-			Description: "Style of the widget graph. One nested block is allowed with the following structure:",
+			Description: "Style of the widget graph. One nested block is allowed with the structure below.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -2142,7 +2130,7 @@ func buildTerraformFreeTextDefinition(datadogDefinition datadogV1.FreeTextWidget
 func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below.",
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -2290,9 +2278,9 @@ func getHeatmapRequestSchema() map[string]*schema.Schema {
 		"q":              getMetricQuerySchema(),
 		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"process_query":  getProcessQuerySchema(),
 		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"process_query":  getProcessQuerySchema(),
 		// Settings specific to Heatmap requests
 		"style": {
 			Description: "Style of the widget graph. One nested block is allowed with the structure below.",
@@ -2384,7 +2372,7 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"fill": {
-						Description: "The query used to fill the map. Exactly one nested block is allowed with the structure below.",
+						Description: "The query used to fill the map. Exactly one nested block is allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 						Type:        schema.TypeList,
 						Optional:    true,
 						Elem: &schema.Resource{
@@ -2392,7 +2380,7 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 						},
 					},
 					"size": {
-						Description: "The query used to size the map. Exactly one nested block is allowed with the structure below.",
+						Description: "The query used to size the map. Exactly one nested block is allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 						Type:        schema.TypeList,
 						Optional:    true,
 						Elem: &schema.Resource{
@@ -3229,7 +3217,7 @@ func buildTerraformNoteDefinition(datadogDefinition datadogV1.NoteWidgetDefiniti
 func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below(exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block).",
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -3465,7 +3453,7 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block).",
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -3741,7 +3729,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"x": {
-						Description: "The query used for the X-Axis. Exactly one nested block is allowed with the structure below.",
+						Description: "The query used for the X-Axis. Exactly one nested block is allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block).",
 						Type:        schema.TypeList,
 						Optional:    true,
 						Elem: &schema.Resource{
@@ -3749,7 +3737,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 						},
 					},
 					"y": {
-						Description: "The query used for the Y-Axis. Exactly one nested block is allowed with the structure below.",
+						Description: "The query used for the Y-Axis. Exactly one nested block is allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block).",
 						Type:        schema.TypeList,
 						Optional:    true,
 						Elem: &schema.Resource{
@@ -4215,7 +4203,7 @@ func buildTerraformServiceLevelObjectiveDefinition(datadogDefinition datadogV1.S
 func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block).",
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4585,7 +4573,7 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 func getToplistDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the `request` block).",
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{

@@ -27,7 +27,7 @@ func TestDatadogUser_import(t *testing.T) {
 				ResourceName:            resourceName,
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"access_role"},
+				ImportStateVerifyIgnore: []string{"access_role", "user_invitation_id", "send_user_invitation"},
 			},
 		},
 	})

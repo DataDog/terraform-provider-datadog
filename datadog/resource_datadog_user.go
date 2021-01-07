@@ -79,9 +79,24 @@ func resourceDatadogUser() *schema.Resource {
 				Optional:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			"verified": {
-				Description: "Returns true if Datadog user is verified",
+			"send_user_invitation": {
+				Description: "Whether an invitation email should be sent when the user is created.",
 				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     true,
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// This is only used on create, so don't generate diff when the resource already exists
+					return d.Id() != ""
+				},
+			},
+			"verified": {
+				Description: "Returns true if Datadog user is verified.",
+				Type:        schema.TypeBool,
+				Computed:    true,
+			},
+			"user_invitation_id": {
+				Description: "The ID of the user invitation that was sent when creating the user.",
+				Type:        schema.TypeString,
 				Computed:    true,
 			},
 		},
@@ -155,6 +170,7 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 	authV2 := providerConf.AuthV2
 
 	userRequest := buildDatadogUserV2Struct(d, providerConf)
+	var userID string
 
 	// Datadog does not actually delete users, so CreateUser might return a 409.
 	// We ignore that case and proceed, likely re-enabling the user.
@@ -174,19 +190,54 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 		if len(responseData) != 1 {
 			return fmt.Errorf("could not find single user with email %s", email)
 		}
-		userId := responseData[0].GetId()
-		userRequest := buildDatadogUserV2UpdateStruct(d, userId)
+		userID = responseData[0].GetId()
+		userRequest := buildDatadogUserV2UpdateStruct(d, userID)
 
-		if _, _, err = datadogClientV2.UsersApi.UpdateUser(authV2, userId).Body(*userRequest).Execute(); err != nil {
+		if _, _, err = datadogClientV2.UsersApi.UpdateUser(authV2, userID).Body(*userRequest).Execute(); err != nil {
 			return translateClientError(err, "error updating user")
 		}
-		d.SetId(userId)
 	} else {
 		userData := createResponse.GetData()
-		d.SetId(userData.GetId())
+		userID = userData.GetId()
 	}
 
+	// Send invitation email to newly created users
+	if d.Get("send_user_invitation").(bool) {
+		if err := sendUserInvitation(userID, d, meta); err != nil {
+			return err
+		}
+	}
+
+	d.SetId(userID)
 	return resourceDatadogUserRead(d, meta)
+}
+
+func sendUserInvitation(userID string, d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
+
+	userInviteRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
+	userInviteRelationData.SetId(userID)
+	userInviteUserRelation := datadogV2.NewRelationshipToUserWithDefaults()
+	userInviteUserRelation.SetData(*userInviteRelationData)
+	userInviteRelationships := datadogV2.NewUserInvitationRelationshipsWithDefaults()
+	userInviteRelationships.SetUser(*userInviteUserRelation)
+	userInviteData := datadogV2.NewUserInvitationDataWithDefaults()
+	userInviteData.SetRelationships(*userInviteRelationships)
+	userInvite := []datadogV2.UserInvitationData{*userInviteData}
+	body := *datadogV2.NewUserInvitationsRequestWithDefaults()
+	body.SetData(userInvite)
+
+	res, _, err := datadogClientV2.UsersApi.SendInvitations(authV2).Body(body).Execute()
+	if err != nil {
+		return translateClientError(err, "error sending user invitation")
+	}
+	if err := d.Set("user_invitation_id", res.GetData()[0].GetId()); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {

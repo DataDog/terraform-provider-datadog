@@ -17,7 +17,6 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 		Read:          resourceDatadogServiceLevelObjectiveRead,
 		Update:        resourceDatadogServiceLevelObjectiveUpdate,
 		Delete:        resourceDatadogServiceLevelObjectiveDelete,
-		Exists:        resourceDatadogServiceLevelObjectiveExists,
 		CustomizeDiff: resourceDatadogServiceLevelObjectiveCustomizeDiff,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogServiceLevelObjectiveImport,
@@ -347,31 +346,17 @@ func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta int
 	return resourceDatadogServiceLevelObjectiveRead(d, meta)
 }
 
-func resourceDatadogServiceLevelObjectiveExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	// Exists - This is called to verify a resource still exists. It is called prior to Read,
-	// and lowers the burden of Read to be able to assume the resource exists.
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	if _, _, err := datadogClientV1.ServiceLevelObjectivesApi.GetSLO(authV1, d.Id()).Execute(); err != nil {
-		errStr := strings.ToLower(err.Error())
-		if strings.Contains(errStr, "not found") || strings.Contains(errStr, "no slo specified") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking service level objective exists")
-	}
-
-	return true, nil
-}
-
 func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	sloResp, _, err := datadogClientV1.ServiceLevelObjectivesApi.GetSLO(authV1, d.Id()).Execute()
+	sloResp, httpresp, err := datadogClientV1.ServiceLevelObjectivesApi.GetSLO(authV1, d.Id()).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting service level objective")
 	}
 	slo := sloResp.GetData()

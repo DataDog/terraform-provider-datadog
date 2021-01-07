@@ -27,7 +27,6 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 		Read:               resourceDatadogIntegrationAwsRead,
 		Update:             resourceDatadogIntegrationAwsUpdate,
 		Delete:             resourceDatadogIntegrationAwsDelete,
-		Exists:             resourceDatadogIntegrationAwsExists,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogIntegrationAwsImport,
 		},
@@ -74,29 +73,6 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 			},
 		},
 	}
-}
-
-func resourceDatadogIntegrationAwsExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	// Exists - This is called to verify a resource still exists. It is called prior to Read,
-	// and lowers the burden of Read to be able to assume the resource exists.
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(authV1).Execute()
-	if err != nil {
-		return false, translateClientError(err, "error checking AWS integration exists")
-	}
-	accountID, roleName, err := accountAndRoleFromID(d.Id())
-	if err != nil {
-		return false, err
-	}
-	for _, integration := range integrations.GetAccounts() {
-		if integration.GetAccountId() == accountID && integration.GetRoleName() == roleName {
-			return true, nil
-		}
-	}
-	return false, nil
 }
 
 func buildDatadogIntegrationAwsStruct(d *schema.ResourceData, accountID string, roleName string) *datadogV1.AWSAccount {
@@ -178,6 +154,7 @@ func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{})
 	if err != nil {
 		return translateClientError(err, "error getting AWS integration")
 	}
+
 	for _, integration := range integrations.GetAccounts() {
 		if integration.GetAccountId() == accountID && integration.GetRoleName() == roleName {
 			d.Set("account_id", integration.GetAccountId())
@@ -189,7 +166,9 @@ func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{})
 			return nil
 		}
 	}
-	return fmt.Errorf("error getting a Amazon Web Services integration: account_id=%s, role_name=%s", accountID, roleName)
+
+	d.SetId("")
+	return nil
 }
 
 func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{}) error {

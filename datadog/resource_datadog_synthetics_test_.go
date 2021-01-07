@@ -15,6 +15,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 )
 
+var syntheticsConfigVariableTypes = []string{"text"}
+
 func resourceDatadogSyntheticsTest() *schema.Resource {
 	return &schema.Resource{
 		Description: "Provides a Datadog synthetics test resource. This can be used to create and manage Datadog synthetics test.",
@@ -156,42 +158,9 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					},
 				},
 			},
-			"variable": {
-				Description: "Variables used for the test. Multiple `variable` blocks are allowed with the structure below.",
-				Type:        schema.TypeList,
-				Optional:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"example": {
-							Description: "Example for the variable.",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
-						"id": {
-							Description: "ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type `global`.",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
-						"name": {
-							Description:  "Name of the variable.",
-							Type:         schema.TypeString,
-							Required:     true,
-							ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
-						},
-						"pattern": {
-							Description: "Pattern of the variable.",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
-						"type": {
-							Description:  "Type of browser test variable. Allowed enum values: `element`, `email`, `global`, `text`.",
-							Type:         schema.TypeString,
-							Required:     true,
-							ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsBrowserVariableTypeFromValue),
-						},
-					},
-				},
-			},
+			"variable":         syntheticsBrowserVariableLegacy(),
+			"browser_variable": syntheticsBrowserVariable(),
+			"config_variable":  syntheticsConfigVariable(),
 			"device_ids": {
 				Description: "Array with the different device IDs used to run the test. Allowed enum values: `laptop_large`, `tablet`, `mobile_small` (only available for `browser` tests).",
 				Type:        schema.TypeList,
@@ -533,6 +502,95 @@ func syntheticsTestStep() *schema.Schema {
 	}
 }
 
+func syntheticsBrowserVariableLegacy() *schema.Schema {
+	return &schema.Schema{
+		Type:          schema.TypeList,
+		Description:   "Variables used for a browser test steps. Multiple `browser_variable` blocks are allowed with the structure below.",
+		Optional:      true,
+		ConflictsWith: []string{"browser_variable"},
+		Deprecated:    "This parameter is deprecated, please use `browser_variable`",
+		Elem:          syntheticsBrowserVariableElem(),
+	}
+}
+
+func syntheticsBrowserVariable() *schema.Schema {
+	return &schema.Schema{
+		Description:   "Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below.",
+		Type:          schema.TypeList,
+		Optional:      true,
+		ConflictsWith: []string{"variable"},
+		Elem:          syntheticsBrowserVariableElem(),
+	}
+}
+
+func syntheticsBrowserVariableElem() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"example": {
+				Description: "Example for the variable.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"id": {
+				Description: "ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type `global`.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"name": {
+				Description:  "Name of the variable.",
+				Type:         schema.TypeString,
+				Required:     true,
+				ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
+			},
+			"pattern": {
+				Description: "Pattern of the variable.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"type": {
+				Description:  "Type of browser test variable. Allowed enum values: `element`, `email`, `global`, `javascript`, `text`.",
+				Type:         schema.TypeString,
+				Required:     true,
+				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsBrowserVariableTypeFromValue),
+			},
+		},
+	}
+}
+
+func syntheticsConfigVariable() *schema.Schema {
+	return &schema.Schema{
+		Description: "Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below.",
+		Type:        schema.TypeList,
+		Optional:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"example": {
+					Description: "Example for the variable.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"name": {
+					Description:  "Name of the variable.",
+					Type:         schema.TypeString,
+					Required:     true,
+					ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
+				},
+				"pattern": {
+					Description: "Pattern of the variable.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"type": {
+					Description:  "Type of test configuration variable. Allowed enum values: `text`.",
+					Type:         schema.TypeString,
+					Required:     true,
+					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsConfigVariableTypeFromValue),
+				},
+			},
+		},
+	}
+}
+
 func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -792,28 +850,52 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		}
 	}
 
-	if attr, ok := d.GetOk("variable"); ok && attr != nil {
-		for _, variable := range attr.([]interface{}) {
-			variableMap := variable.(map[string]interface{})
-			if v, ok := variableMap["type"]; ok {
-				variableType := datadogV1.SyntheticsBrowserVariableType(v.(string))
-				if v, ok := variableMap["name"]; ok {
-					variableName := v.(string)
-					newVariable := datadogV1.NewSyntheticsBrowserVariable(variableName, variableType)
-					if v, ok := variableMap["example"]; ok && v.(string) != "" {
-						newVariable.SetExample(v.(string))
-					}
-					if v, ok := variableMap["id"]; ok && v.(string) != "" {
-						newVariable.SetId(v.(string))
-					}
-					if v, ok := variableMap["pattern"]; ok && v.(string) != "" {
-						newVariable.SetPattern(v.(string))
-					}
-					config.SetVariables(append(config.GetVariables(), *newVariable))
+	var browserVariables []interface{}
+
+	if attr, ok := d.GetOk("browser_variable"); ok && attr != nil {
+		browserVariables = attr.([]interface{})
+	} else if attr, ok := d.GetOk("variable"); ok && attr != nil {
+		browserVariables = attr.([]interface{})
+	}
+
+	for _, variable := range browserVariables {
+		variableMap := variable.(map[string]interface{})
+		if v, ok := variableMap["type"]; ok {
+			variableType := datadogV1.SyntheticsBrowserVariableType(v.(string))
+			if v, ok := variableMap["name"]; ok {
+				variableName := v.(string)
+				newVariable := datadogV1.NewSyntheticsBrowserVariable(variableName, variableType)
+				if v, ok := variableMap["example"]; ok && v.(string) != "" {
+					newVariable.SetExample(v.(string))
 				}
+				if v, ok := variableMap["id"]; ok && v.(string) != "" {
+					newVariable.SetId(v.(string))
+				}
+				if v, ok := variableMap["pattern"]; ok && v.(string) != "" {
+					newVariable.SetPattern(v.(string))
+				}
+				config.SetVariables(append(config.GetVariables(), *newVariable))
 			}
 		}
 	}
+
+	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
+
+	if attr, ok := d.GetOk("config_variable"); ok && attr != nil {
+		for _, v := range attr.([]interface{}) {
+			variableMap := v.(map[string]interface{})
+			variable := datadogV1.SyntheticsConfigVariable{}
+
+			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
+			variable.SetName(variableMap["name"].(string))
+			variable.SetPattern(variableMap["pattern"].(string))
+			variable.SetExample(variableMap["example"].(string))
+
+			configVariables = append(configVariables, variable)
+		}
+	}
+
+	config.SetConfigVariables(configVariables)
 
 	options := datadogV1.NewSyntheticsTestOptions()
 
@@ -1102,7 +1184,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 
 	actualVariables := config.GetVariables()
-	localVariables := make([]map[string]interface{}, len(actualVariables))
+	localBrowserVariables := make([]map[string]interface{}, len(actualVariables))
 	for i, variable := range actualVariables {
 		localVariable := make(map[string]interface{})
 		if v, ok := variable.GetTypeOk(); ok {
@@ -1120,9 +1202,40 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		if v, ok := variable.GetPatternOk(); ok {
 			localVariable["pattern"] = *v
 		}
-		localVariables[i] = localVariable
+		localBrowserVariables[i] = localVariable
 	}
-	if err := d.Set("variable", localVariables); err != nil {
+
+	// If the existing state still uses variables, keep using that in the state to not generate useless diffs
+	if attr, ok := d.GetOk("variable"); ok && attr != nil && len(attr.([]interface{})) > 0 {
+		if err := d.Set("variable", localBrowserVariables); err != nil {
+			return err
+		}
+	} else {
+		if err := d.Set("browser_variable", localBrowserVariables); err != nil {
+			return err
+		}
+	}
+
+	configVariables := config.GetConfigVariables()
+	localConfigVariables := make([]map[string]interface{}, len(configVariables))
+	for i, configVariable := range configVariables {
+		localVariable := make(map[string]interface{})
+		if v, ok := configVariable.GetTypeOk(); ok {
+			localVariable["type"] = *v
+		}
+		if v, ok := configVariable.GetNameOk(); ok {
+			localVariable["name"] = *v
+		}
+		if v, ok := configVariable.GetExampleOk(); ok {
+			localVariable["example"] = *v
+		}
+		if v, ok := configVariable.GetPatternOk(); ok {
+			localVariable["pattern"] = *v
+		}
+		localConfigVariables[i] = localVariable
+	}
+
+	if err := d.Set("config_variable", localConfigVariables); err != nil {
 		return err
 	}
 

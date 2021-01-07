@@ -76,7 +76,6 @@ func resourceDatadogLogsIndex() *schema.Resource {
 		Update:      resourceDatadogLogsIndexUpdate,
 		Read:        resourceDatadogLogsIndexRead,
 		Delete:      resourceDatadogLogsIndexDelete,
-		Exists:      resourceDatadogLogsIndexExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -99,8 +98,12 @@ func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) erro
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	ddIndex, _, err := datadogClientV1.LogsIndexesApi.GetLogsIndex(authV1, d.Id()).Execute()
+	ddIndex, httpresp, err := datadogClientV1.LogsIndexesApi.GetLogsIndex(authV1, d.Id()).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting logs index")
 	}
 	if err = d.Set("name", ddIndex.GetName()); err != nil {
@@ -137,19 +140,6 @@ func resourceDatadogLogsIndexUpdate(d *schema.ResourceData, meta interface{}) er
 
 func resourceDatadogLogsIndexDelete(d *schema.ResourceData, meta interface{}) error {
 	return nil
-}
-
-func resourceDatadogLogsIndexExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-
-	if _, err := client.GetLogsIndex(d.Id()); err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking logs index exists")
-	}
-	return true, nil
 }
 
 func buildDatadogIndex(d *schema.ResourceData) (*datadogV1.LogsIndexUpdateRequest, error) {
