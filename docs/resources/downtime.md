@@ -1,18 +1,14 @@
 ---
-page_title: "datadog_downtime Resource - terraform-provider-datadog"
-subcategory: ""
-description: |-
-  Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.
+page_title: "datadog_downtime"
 ---
 
-# Resource `datadog_downtime`
+# datadog_downtime Resource
 
 Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.
 
-## Example Usage
+## Example: downtime for a specific monitor
 
-```terraform
-# Example: downtime for a specific monitor
+```hcl
 # Create a new daily 1700-0900 Datadog downtime for a specific monitor id
 resource "datadog_downtime" "foo" {
   scope = ["*"]
@@ -25,8 +21,11 @@ resource "datadog_downtime" "foo" {
     period = 1
   }
 }
+```
 
-# Example: downtime for all monitors
+## Example: downtime for all monitors
+
+```hcl
 # Create a new daily 1700-0900 Datadog downtime for all monitors
 resource "datadog_downtime" "foo" {
   scope = ["*"]
@@ -40,46 +39,41 @@ resource "datadog_downtime" "foo" {
 }
 ```
 
-## Schema
+## Argument Reference
 
-### Required
+The following arguments are supported:
 
-- **scope** (List of String) specify the group scope to which this downtime applies. For everything use '*'
+-   `scope`: (Required) The scope(s) to which the downtime applies, e.g. host:app2. Provide multiple scopes as a comma-separated list, e.g. env:dev,env:prod. The resulting downtime applies to sources that matches ALL provided scopes (i.e. env:dev AND env:prod), NOT any of them.
+-   `active`: (Optional) A flag indicating if the downtime is active now.
+-   `disabled`: (Optional) A flag indicating if the downtime was disabled.
+-   `start`: (Optional) POSIX timestamp to start the downtime.
+-   `start_date`: (Optional) String representing date and time to start the downtime in RFC3339 format.
+-   `end`: (Optional) POSIX timestamp to end the downtime.
+-   `end_date`: (Optional) String representing date and time to end the downtime in RFC3339 format.
+-   `timezone` (Optional) The timezone for the downtime, default UTC. It must be a valid IANA Time Zone.
+-   `recurrence`: (Optional) A dictionary to configure the downtime to be recurring.
+    -   `type`: days, weeks, months, or years
+    -   `period`: How often to repeat as an integer. For example to repeat every 3 days, select a type of days and a period of 3.
+    -   `week_days`: (Optional) A list of week days to repeat on. Choose from: Mon, Tue, Wed, Thu, Fri, Sat or Sun. Only applicable when type is weeks. First letter must be capitalized.
+    -   `until_occurrences`: (Optional) How many times the downtime will be rescheduled. `until_occurrences` and `until_date` are mutually exclusive.
+    -   `until_date`: (Optional) The date at which the recurrence should end as a POSIX timestamp. `until_occurrences` and `until_date` are mutually exclusive.
+    -   `rrule`: (Optional) The `RRULE` standard for defining recurring events. For example, to have a recurring event on the first day of each month, use `FREQ=MONTHLY;INTERVAL=1`. Most common `rrule` options from the [iCalendar Spec](https://tools.ietf.org/html/rfc5545) are supported. Attributes specifying the duration in `RRULE` are not supported (for example, `DTSTART`, `DTEND`, `DURATION`).
+-   `message`: (Optional) A message to include with notifications for this downtime.
+-   `monitor_tags`: (Optional) A list of monitor tags to match. The resulting downtime applies to monitors that match **all** provided monitor tags. This option conflicts with `monitor_id` as it will match all monitors that match these tags.
+-   `monitor_id`: (Optional) Reference to which monitor this downtime is applied. When scheduling downtime for a given monitor, datadog changes `silenced` property of the monitor to match the `end` POSIX timestamp. **Note:** this will effectively change the `silenced` attribute of the referenced monitor. If that monitor is also tracked by Terraform and you don't want it to be unmuted on the next `terraform apply`, see [details](monitor#silencing-by-hand-and-by-downtimes) in the monitor resource documentation. This option also conflicts with `monitor_tags` use none or one or the other.
 
-### Optional
+## Attributes Reference
 
-- **active** (Boolean) When true indicates this downtime is being actively applied
-- **disabled** (Boolean) When true indicates this downtime is not being applied
-- **end** (Number) Optionally specify an end date when this downtime should expire
-- **end_date** (String) String representing date and time to end the downtime in RFC3339 format.
-- **id** (String) The ID of this resource.
-- **message** (String) An optional message to provide when creating the downtime, can include notification handles
-- **monitor_id** (Number) When specified, this downtime will only apply to this monitor
-- **monitor_tags** (Set of String) A list of monitor tags (up to 25), i.e. tags that are applied directly to monitors to which the downtime applies
-- **recurrence** (Block List, Max: 1) Optional recurring schedule for this downtime (see [below for nested schema](#nestedblock--recurrence))
-- **start** (Number) Specify when this downtime should start
-- **start_date** (String) String representing date and time to start the downtime in RFC3339 format.
-- **timezone** (String) The timezone for the downtime, default UTC
+The following attributes are exported:
 
-<a id="nestedblock--recurrence"></a>
-### Nested Schema for `recurrence`
-
-Required:
-
-- **type** (String) One of `days`, `weeks`, `months`, or `years`
-
-Optional:
-
-- **period** (Number) How often to repeat as an integer. For example to repeat every 3 days, select a `type` of `days` and a `period` of `3`.
-- **rrule** (String) The RRULE standard for defining recurring events. For example, to have a recurring event on the first day of each month, use `FREQ=MONTHLY;INTERVAL=1`. Most common rrule options from the iCalendar Spec are supported. Attributes specifying the duration in RRULE are not supported (for example, `DTSTART`, `DTEND`, `DURATION`).
-- **until_date** (Number) The date at which the recurrence should end as a POSIX timestamp. `until_occurrences` and `until_date` are mutually exclusive.
-- **until_occurrences** (Number) How many times the downtime will be rescheduled. `until_occurrences` and `until_date` are mutually exclusive.
-- **week_days** (List of String) A list of week days to repeat on. Choose from: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat` or `Sun`. Only applicable when `type` is `weeks`. First letter must be capitalized.
+-   `id`: ID of the Datadog downtime. On updates this can sometime change based on API logic. For recurring downtimes it would be recommended to `ignore_changes` on this field.
+-   `active`: If true this indicates the downtime is currently active.
+-   `disabled`: If true this indicates the downtime is currently disabled.
 
 ## Import
 
-Import is supported using the following syntax:
+Downtimes can be imported using their numeric ID, e.g.
 
-```shell
-terraform import datadog_downtime.bytes_received_localhost 2081
+```
+$ terraform import datadog_downtime.bytes_received_localhost 2081
 ```

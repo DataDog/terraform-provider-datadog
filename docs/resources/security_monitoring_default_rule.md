@@ -1,17 +1,14 @@
----
-page_title: "datadog_security_monitoring_default_rule Resource - terraform-provider-datadog"
-subcategory: ""
-description: |-
-  Provides a Datadog Security Monitoring Rule API resource for default rules.
----
+## page_title: "datadog_security_monitoring_default_rule"
 
-# Resource `datadog_security_monitoring_default_rule`
+# datadog_security_monitoring_default_rule Resource
 
-Provides a Datadog Security Monitoring Rule API resource for default rules.
+Provides a Datadog [Security Monitoring Rule API](https://docs.datadoghq.com/api/v2/security-monitoring/) resource for default rules.
 
 ## Example Usage
 
-```terraform
+Enable a default rule and configure it's notifications.
+
+```hcl
 resource "datadog_security_monitoring_default_rule" "adefaultrule" {
     rule_id = "ojo-qef-3g3"
     enabled = true
@@ -24,30 +21,24 @@ resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 }
 ```
 
-## Schema
+## Argument Reference
 
-### Optional
+The following arguments are supported:
 
-- **case** (Block List, Max: 5) Cases of the rule, this is used to update notifications. (see [below for nested schema](#nestedblock--case))
-- **enabled** (Boolean) Enable the rule.
-- **id** (String) The ID of this resource.
+-   `enabled`: (Optional, default = True) Whether the default rule is enabled.
+-   `case`: (Optional) Change the notifications of a case.
+    -   `status`: Severity of the case.
+    -   `notifications`: Notification targets for the case.
 
-<a id="nestedblock--case"></a>
-### Nested Schema for `case`
+## Importing
 
-Required:
+Default rules need to be imported using their ID before applying.
 
-- **notifications** (List of String) Notification targets for each rule case.
-- **status** (String) Status of the rule case to match.
-
-## Import
-
-Import is supported using the following syntax:
-
-```shell
-# Default rules need to be imported using their ID before applying.
+```hcl
 resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 }
+```
 
+```
 terraform import datadog_security_monitoring_default_rule.adefaultrule m0o-hto-lkb
 ```

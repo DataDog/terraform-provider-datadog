@@ -1,17 +1,14 @@
 ---
-page_title: "datadog_integration_azure Resource - terraform-provider-datadog"
-subcategory: ""
-description: |-
-  Provides a Datadog - Microsoft Azure integration resource. This can be used to create and manage the integrations.
+page_title: "datadog_integration_azure"
 ---
 
-# Resource `datadog_integration_azure`
+# datadog_integration_azure Resource
 
 Provides a Datadog - Microsoft Azure integration resource. This can be used to create and manage the integrations.
 
 ## Example Usage
 
-```terraform
+```hcl
 # Create a new Datadog - Microsoft Azure integration
 resource "datadog_integration_azure" "sandbox" {
     tenant_name = "<azure_tenant_name>"
@@ -21,29 +18,27 @@ resource "datadog_integration_azure" "sandbox" {
 }
 ```
 
-## Schema
+## Argument Reference
 
-### Required
+The following arguments are supported:
 
-- **client_id** (String) Your Azure web application ID.
-- **client_secret** (String, Sensitive) (Required for Initial Creation) Your Azure web application secret key.
-- **tenant_name** (String) Your Azure Active Directory ID.
+-   `tenant_name`: (Required) Your Azure Active Directory ID.
+-   `client_id`: (Required) Your Azure web application ID.
+-   `client_secret`: (Required for Initial Creation) Your Azure web application secret key.
+-   `host_filters`: (Optional) String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure.
 
-### Optional
+    Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.
 
-- **host_filters** (String) String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure.
+    e.x. `env:production,deploymentgroup:red`
 
-Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.
+### See also
 
-e.x. `env:production,deploymentgroup:red`
-- **id** (String) The ID of this resource.
+-   [Datadog API Reference > Integrations > Azure](https://docs.datadoghq.com/integrations/azure/)
 
 ## Import
 
-Import is supported using the following syntax:
+Microsoft Azure integrations can be imported using their `tenant name` and `client id` separated with a colon (`:`).
 
-```shell
-# Microsoft Azure integrations can be imported using their `tenant name` and `client` id separated with a colon (`:`).
-
-terraform import datadog_integration_azure.sandbox ${tenant_name}:${client_id}
+```
+$ terraform import datadog_integration_azure.sandbox ${tenant_name}:${client_id}
 ```

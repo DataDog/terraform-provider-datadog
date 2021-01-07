@@ -1,36 +1,27 @@
 ---
-page_title: "datadog_logs_integration_pipeline Resource - terraform-provider-datadog"
-subcategory: ""
-description: |-
-  Provides a Datadog Logs Pipeline API resource to manage the integrations.
-  Integration pipelines are the pipelines that are automatically installed for your organization when sending the logs with specific sources. You don't need to maintain or update these types of pipelines. Keeping them as resources, however, allows you to manage the order of your pipelines by referencing them in your datadoglogspipelineorder resource. If you don't need the pipelineorder feature, this resource declaration can be omitted.
+page_title: "datadog_logs_integration_pipeline"
 ---
 
-# Resource `datadog_logs_integration_pipeline`
+# datadog_logs_integration_pipeline Resource
 
-Provides a Datadog Logs Pipeline API resource to manage the integrations.
+Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/) resource to manage the [integrations](https://docs.datadoghq.com/logs/log_collection/?tab=tcpussite).
 
-Integration pipelines are the pipelines that are automatically installed for your organization when sending the logs with specific sources. You don't need to maintain or update these types of pipelines. Keeping them as resources, however, allows you to manage the order of your pipelines by referencing them in your datadog_logs_pipeline_order resource. If you don't need the pipeline_order feature, this resource declaration can be omitted.
+Integration pipelines are the pipelines that are automatically installed for your organization when sending the logs with specific sources. You don't need to maintain or update these types of pipelines. Keeping them as resources, however, allows you to manage the order of your pipelines by referencing them in your [datadog_logs_pipeline_order](logs_pipeline_order.html#datadog_logs_pipeline_order) resource. If you don't need the `pipeline_order` feature, this resource declaration can be omitted.
 
 ## Example Usage
 
-```terraform
+```hcl
 resource "datadog_logs_integration_pipeline" "python" {
     is_enabled = true
 }
 ```
 
-## Schema
+## Argument Reference
 
-### Optional
+-   `is_enabled`: (Required) Boolean value to enable your pipeline.
 
-- **id** (String) The ID of this resource.
-- **is_enabled** (Boolean) Boolean value to enable your pipeline.
+`is_enabled` is the only value that can be modified for integration pipeline.
 
 ## Import
 
-Import is supported using the following syntax:
-
-```shell
-terraform import <resource.name> <pipelineID>
-```
+`terraform import <resource.name> <pipelineID>`

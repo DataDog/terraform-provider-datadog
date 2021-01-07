@@ -1,9 +1,5 @@
-
 ---
-subcategory: ""
-page_title: "Monitor Resource Examples"
-description: |-
-    Monitor Resource Examples
+page_title: "datadog_monitor Resource Examples"
 ---
 
 ## Monitor Resource Examples
@@ -12,7 +8,7 @@ This page lists examples of how to create different Datadog monitor types within
 
 ## Watchdog Monitors
 
-```terraform
+```
 resource "datadog_monitor" "watchdog_monitor" {
   name               = "Watchdog Monitor TF"
   type               = "event alert"
@@ -34,7 +30,7 @@ resource "datadog_monitor" "watchdog_monitor" {
 
 ## Anomaly Monitors
 
-```terraform
+```
 resource "datadog_monitor" "cpu_anomalous" {
   name = "Anomalous CPU usage"
   type = "query alert"
@@ -56,7 +52,7 @@ resource "datadog_monitor" "cpu_anomalous" {
 
 ## Process Monitors
 
-```terraform
+```
 resource "datadog_monitor" "process_alert_example" {
   name = "Process Alert Monitor"
   type = "process alert"

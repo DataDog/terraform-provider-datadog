@@ -1,17 +1,16 @@
 ---
-page_title: "datadog_timeboard Resource - terraform-provider-datadog"
-subcategory: ""
-description: |-
-  Provides a Datadog timeboard resource. This can be used to create and manage Datadog timeboards.
+page_title: "datadog_timeboard"
 ---
 
-# Resource `datadog_timeboard`
+# datadog_timeboard Resource
 
 Provides a Datadog timeboard resource. This can be used to create and manage Datadog timeboards.
 
+~> **Note:**This resource is outdated. Use the new [`datadog_dashboard`](dashboard.html) resource instead.
+
 ## Example Usage
 
-```terraform
+```hcl
 # Create a new Datadog timeboard
 resource "datadog_timeboard" "redis" {
   title       = "Redis Timeboard (created via Terraform)"
@@ -128,250 +127,220 @@ resource "datadog_timeboard" "redis" {
 }
 ```
 
-## Schema
+## Argument Reference
+
+The following arguments are supported:
+
+-   `title`: (Required) The name of the dashboard.
+-   `description`: (Required) A description of the dashboard's content.
+-   `read_only`: (Optional) The read-only status of the timeboard. Default is false.
+-   `graph`: (Required) Nested block describing a graph definition. The structure of this block is described below. Multiple graph blocks are allowed within a datadog_timeboard resource.
+-   `template_variable`: (Optional) Nested block describing a template variable. The structure of this block is described below. Multiple template_variable blocks are allowed within a datadog_timeboard resource.
+
+### Nested `graph` blocks
+
+Nested `graph` blocks have the following structure:
+
+-   `title`: (Required) The name of the graph.
+-   `viz`: (Required) The type of visualization to use for the graph. Valid choices are "change", "distribution", "heatmap", "hostmap", "query_value", timeseries", and "toplist".
+-   `request`: Nested block describing a graph definition request (a metric query to plot on the graph). The structure of this block is described below. Multiple request blocks are allowed within a graph block.
+-   `events`: (Optional) A list of event filter strings. Note that, while supported by the Datadog API, the Datadog UI does not (currently) support multiple event filters very well, so use at your own risk.
+-   `autoscale`: (Optional) Boolean that determines whether to autoscale graphs.
+-   `precision`: (Optional) Number of digits displayed, use `*` for full precision.
+-   `custom_unit`: (Optional) Display a custom unit on the graph (such as 'hertz')
+-   `text_align`: (Optional) How to align text in the graph, can be one of 'left', 'center', or 'right'.
+-   `style`: (Optional) Nested block describing hostmaps. The structure of this block is described below.
+-   `group`: (Optional) List of groups for hostmaps (shown as 'group by' in the UI).
+-   `include_no_metric_hosts`: (Optional) If set to true, will display hosts on hostmap that have no reported metrics.
+-   `include_ungrouped_hosts`: (Optional) If set to true, will display hosts without groups on hostmaps.
+-   `node_type`: (Optional) What nodes to display in a hostmap. Can be one of 'host' (default) or 'container'.
+-   `scope`: (Optional) List of scopes for hostmaps (shown as 'filter by' in the UI).
+-   `yaxis`: (Optional) Nested block describing modifications to the yaxis rendering. The structure of this block is described below.
+-   `marker`: (Optional) Nested block describing lines / ranges added to graph for formatting. The structure of this block is described below. Multiple marker blocks are allowed within a graph block.
+
+### Nested `graph` `marker` blocks
+
+Nested `graph` `marker` blocks have the following structure:
+
+-   `type`: (Required) How the marker lines will look. Possible values are {"error", "warning", "info", "ok"} {"dashed", "solid", "bold"}. Example: "error dashed".
+-   `value`: (Required) Mathematical expression describing the marker. Examples: "y > 1", "-5 < y < 0", "y = 19".
+-   `label`: (Optional) A label for the line or range. **Warning:** when a label is enabled but left empty through the UI, the Datadog API returns a boolean value, not a string. This makes `terraform plan` fail with a JSON decoding error.
+
+### Nested `graph` `yaxis` block
+
+-   `min`: (Optional) Minimum bound for the graph's yaxis, a string.
+-   `max`: (Optional) Maximum bound for the graph's yaxis, a string.
+-   `scale`: (Optional) How to scale the yaxis. Possible values are: "linear", "log", "sqrt", "pow##" (eg. pow2, pow0.5, 2 is used if only "pow" was provided). Default: "linear".
+
+### Nested `graph` `request` blocks
+
+Nested `graph` `request` blocks have the following structure (exactly only one of `q`, `apm_query`, `log_query` or `process_query` is required within the request block):
+
+-   `q`: (Optional) The query of the request. Pro tip: Use the JSON tab inside the Datadog UI to help build you query strings.
+-   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](timeboard.html#nested-graph-request-apm_query-and-log_query-blocks).
+-   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](timeboard.html#nested-graph-request-apm_query-and-log_query-blocks).
+-   `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](timeboard.html#nested-graph-request-process_query-blocks).
+-   `aggregator`: (Optional) The aggregation method used when the number of data points outnumbers the max that can be shown.
+-   `stacked`: (Optional) Boolean value to determine if this is this a stacked area graph. Default: false (line chart).
+-   `type`: (Optional) Choose how to draw the graph. For example: "line", "bars" or "area". Default: "line".
+-   `style`: (Optional) Nested block to customize the graph style.
+-   `conditional_format`: (Optional) Nested block to customize the graph style if certain conditions are met. Currently only applies to `Query Value` and `Top List` type graphs.
+-   `extra_col`: (Optional, only for graphs of visualization "change") If set to "present", displays current value. Can be left empty otherwise.
+-   `metadata_json`: (Optional) A JSON blob (preferrably created using [jsonencode](https://www.terraform.io/docs/configuration/functions/jsonencode.html)) representing mapping of query expressions to alias names. Note that the query expressions in `metadata_json` will be ignored if they're not present in the query. For example, this is how you define `metadata_json` with Terraform >= 0.12:
 
-### Required
+    ```
+    metadata_json = jsonencode({
+      "avg:redis.info.latency_ms{$host}": {
+        "alias": "Redis latency"
+      }
+    })
+    ```
 
-- **description** (String) A description of the dashboard's content.
-- **graph** (Block List, Min: 1) A list of graph definitions. (see [below for nested schema](#nestedblock--graph))
-- **title** (String) The name of the dashboard.
+    And here's how you define `metadata_json` with Terraform < 0.12:
 
-### Optional
+    ```
+    variable "my_metadata" {
+      default = {
+        "avg:redis.info.latency_ms{$host}" = {
+          "alias": "Redis latency"
+        }
+      }
+    }
 
-- **id** (String) The ID of this resource.
-- **read_only** (Boolean) The read-only status of the timeboard. Default is false.
-- **template_variable** (Block List) A list of template variables for using Dashboard templating. (see [below for nested schema](#nestedblock--template_variable))
+    resource "datadog_timeboard" "SomeTimeboard" {
+      ...
+          metadata_json = "${jsonencode(var.my_metadata)}"
+    }
+    ```
 
-<a id="nestedblock--graph"></a>
-### Nested Schema for `graph`
+    Note that this has to be a JSON blob because of [limitations](https://github.com/hashicorp/terraform/issues/6215) of Terraform's handling complex nested structures. This is also why the key is called `metadata_json` even though it sets `metadata` attribute on the API call.
 
-Required:
+### Nested `graph` `style` block
 
-- **request** (Block List, Min: 1) (see [below for nested schema](#nestedblock--graph--request))
-- **title** (String) The name of the graph.
-- **viz** (String) The type of visualization to use for the graph. Valid choices are `change`, `distribution`, `heatmap`, `hostmap`, `query_value`, `timeseries`, and `toplist`.
+The nested `style` block is used specifically for styling `hostmap` graphs, and has the following structure:
 
-Optional:
+-   `fill_max`: (Optional) Maximum value for the hostmap fill query.
+-   `fill_min`: (Optional) Minimum value for the hostmap fill query.
+-   `palette`: (Optional) Spectrum of colors to use when styling a hostmap. For example: "green_to_orange", "yellow_to_green", "YlOrRd", or "hostmap_blues". Default: "green_to_orange".
+-   `palette_flip`: (Optional) Flip how the hostmap is rendered. For example, with the default palette, low values are represented as green, with high values as orange. If palette_flip is "true", then low values will be orange, and high values will be green.
 
-- **autoscale** (Boolean) Automatically scale graphs
-- **custom_unit** (String) Use a custom unit (like 'users')
-- **events** (List of String) Filter for events to be overlayed on the graph.
-- **group** (List of String) A list of groupings for hostmap type graphs.
-- **include_no_metric_hosts** (Boolean) Include hosts without metrics in hostmap graphs
-- **include_ungrouped_hosts** (Boolean) Include ungrouped hosts in hostmap graphs
-- **marker** (Block List) Nested block describing lines / ranges added to graph for formatting. The structure of this block is described below. Multiple `marker` blocks are allowed within a `graph` block. (see [below for nested schema](#nestedblock--graph--marker))
-- **node_type** (String) Type of nodes to show in hostmap graphs (either 'host' or 'container').
-- **precision** (String) How many digits to show
-- **scope** (List of String) A list of scope filters for hostmap type graphs.
-- **style** (Map of String) Nested block describing hostmaps. The structure of this block is described below.
-- **text_align** (String) How to align text
-- **yaxis** (Map of String) Nested block describing modifications to the Y-axis rendering. The structure of this block is described below.
+### Nested `graph` `request` `style` block
 
-<a id="nestedblock--graph--request"></a>
-### Nested Schema for `graph.request`
+The nested `style` blocks has the following structure:
 
-Optional:
+-   `palette`: (Optional) Color of the line drawn. For example: "classic", "cool", "warm", "purple", "orange" or "gray". Default: "classic".
+-   `width`: (Optional) Line width. Possible values: "thin", "normal", "thick". Default: "normal".
+-   `type`: (Optional) Type of line drawn. Possible values: "dashed", "solid", "dotted". Default: "solid".
 
-- **aggregator** (String) The aggregation method used when the number of data points outnumbers the max that can be shown.
-- **apm_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--graph--request--apm_query))
-- **change_type** (String) Type of change for change graphs.
-- **compare_to** (String) The time period to compare change against in change graphs.
-- **conditional_format** (Block List) A list of conditional formatting rules. (see [below for nested schema](#nestedblock--graph--request--conditional_format))
-- **extra_col** (String) If set to 'present', this will include the present values in change graphs.
-- **increase_good** (Boolean) Decides whether to represent increases as good or bad in change graphs.
-- **log_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--graph--request--log_query))
-- **metadata_json** (String) A JSON blob (preferrably created using [jsonencode](https://www.terraform.io/docs/configuration/functions/jsonencode.html?_ga=2.6381362.1091155358.1609189257-888022054.1605547463)) representing mapping of query expressions to alias names. Note that the query expressions in `metadata_json` will be ignored if they're not present in the query.
-- **order_by** (String) The field a change graph will be ordered by.
-- **order_direction** (String) Sort change graph in ascending or descending order.
-- **process_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--graph--request--process_query))
-- **q** (String) The query of the request. Pro tip: Use the JSON tab inside the Datadog UI to help build you query strings.
-- **stacked** (Boolean) Boolean value to determine if this is this a stacked area graph. Default: `false` (line chart).
-- **style** (Map of String) Nested block to customize the graph style.
-- **type** (String) Choose how to draw the graph. For example: `line`, `bars` or `area`. Default: `line`.
+### Nested `graph` `request` `apm_query` and `log_query` blocks
 
-<a id="nestedblock--graph--request--apm_query"></a>
-### Nested Schema for `graph.request.apm_query`
+Nested `apm_query` and `log_query` blocks have the following structure (Visit the [ Graph Primer](https://docs.datadoghq.com/graphing/) for more information about these values):
 
-Required:
+-   `index`: (Required)
+-   `compute`: (Required). Exactly one nested block is required with the following structure:
+    -   `aggregation`: (Required)
+    -   `facet`: (Optional)
+    -   `interval`: (Optional)
+-   `search`: (Optional). One nested block is allowed with the following structure:
+    -   `query`: (Optional)
+-   `group_by`: (Optional). Multiple nested blocks are allowed with the following structure:
+    -   `facet`: (Optional)
+    -   `limit`: (Optional)
+    -   `sort`: (Optional). One nested block is allowed with the following structure:
+        -   `aggregation`: (Optional)
+        -   `order`: (Optional)
+        -   `facet`: (Optional)
 
-- **compute** (Block List, Min: 1, Max: 1) Exactly one nested block is required with the structure below. (see [below for nested schema](#nestedblock--graph--request--apm_query--compute))
-- **index** (String)
+### Nested `graph` `request` `process_query` blocks
 
-Optional:
+Nested `process_query` blocks have the following structure (Visit the [ Graph Primer](https://docs.datadoghq.com/graphing/) for more information about these values):
 
-- **group_by** (Block List) Multiple nested blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--graph--request--apm_query--group_by))
-- **search** (Block List, Max: 1) Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--graph--request--apm_query--search))
+-   `metric`: (Required)
+-   `search_by`: (Required)
+-   `filter_by`: (Required)
+-   `limit`: (Required)
 
-<a id="nestedblock--graph--request--apm_query--compute"></a>
-### Nested Schema for `graph.request.apm_query.search`
+### Nested `graph` `request` `conditional_format` block
 
-Required:
+The nested `conditional_format` blocks has the following structure:
 
-- **aggregation** (String)
+-   `palette`: (Optional) Color scheme to be used if the condition is met. For example: "red_on_white", "white_on_red", "yellow_on_white", "white_on_yellow", "green_on_white", "white_on_green", "gray_on_white", "white_on_gray", "custom_text", "custom_bg", "custom_image".
+-   `comparator`: (Required) Comparison operator. Example: ">", "<".
+-   `value`: (Optional) Value that is the threshold for the conditional format.
+-   `custom_fg_color`: (Optional) Used when `palette` is set to `custom_text`. Set the color of the text to a custom web color, such as "#205081".
+-   `custom_bg_color`: (Optional) Used when `palette` is set to `custom_bg`. Set the color of the background to a custom web color, such as "#205081".
 
-Optional:
+### Nested `template_variable` blocks
 
-- **facet** (String)
-- **interval** (Number)
+Nested `template_variable` blocks have the following structure:
 
+-   `name`: (Required) The variable name. Can be referenced as \$name in `graph` `request` `q` query strings.
+-   `prefix`: (Optional) The tag group. Default: no tag group.
+-   `default`: (Optional) The default tag. Default: "\*" (match all).
 
-<a id="nestedblock--graph--request--apm_query--group_by"></a>
-### Nested Schema for `graph.request.apm_query.search`
+## Attributes Reference
 
-Required:
+The following attributes are exported:
 
-- **facet** (String)
-
-Optional:
-
-- **limit** (Number)
-- **sort** (Block List, Max: 1) Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--graph--request--apm_query--search--sort))
-
-<a id="nestedblock--graph--request--apm_query--search--sort"></a>
-### Nested Schema for `graph.request.apm_query.search.sort`
-
-Required:
-
-- **aggregation** (String)
-- **order** (String)
-
-Optional:
-
-- **facet** (String)
-
-
-
-<a id="nestedblock--graph--request--apm_query--search"></a>
-### Nested Schema for `graph.request.apm_query.search`
-
-Required:
-
-- **query** (String)
-
-
-
-<a id="nestedblock--graph--request--conditional_format"></a>
-### Nested Schema for `graph.request.conditional_format`
-
-Required:
-
-- **comparator** (String) Comparator (<, >, etc)
-
-Optional:
-
-- **custom_bg_color** (String) Custom background color (e.g., #205081)
-- **custom_fg_color** (String) Custom foreground color (e.g., #59afe1)
-- **palette** (String) The palette to use if this condition is met.
-- **value** (String) Value that is threshold for conditional format
-
-
-<a id="nestedblock--graph--request--log_query"></a>
-### Nested Schema for `graph.request.log_query`
-
-Required:
-
-- **compute** (Block List, Min: 1, Max: 1) Exactly one nested block is required with the structure below. (see [below for nested schema](#nestedblock--graph--request--log_query--compute))
-- **index** (String)
-
-Optional:
-
-- **group_by** (Block List) Multiple nested blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--graph--request--log_query--group_by))
-- **search** (Block List, Max: 1) Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--graph--request--log_query--search))
-
-<a id="nestedblock--graph--request--log_query--compute"></a>
-### Nested Schema for `graph.request.log_query.search`
-
-Required:
-
-- **aggregation** (String)
-
-Optional:
-
-- **facet** (String)
-- **interval** (Number)
-
-
-<a id="nestedblock--graph--request--log_query--group_by"></a>
-### Nested Schema for `graph.request.log_query.search`
-
-Required:
-
-- **facet** (String)
-
-Optional:
-
-- **limit** (Number)
-- **sort** (Block List, Max: 1) Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--graph--request--log_query--search--sort))
-
-<a id="nestedblock--graph--request--log_query--search--sort"></a>
-### Nested Schema for `graph.request.log_query.search.sort`
-
-Required:
-
-- **aggregation** (String)
-- **order** (String)
-
-Optional:
-
-- **facet** (String)
-
-
-
-<a id="nestedblock--graph--request--log_query--search"></a>
-### Nested Schema for `graph.request.log_query.search`
-
-Required:
-
-- **query** (String)
-
-
-
-<a id="nestedblock--graph--request--process_query"></a>
-### Nested Schema for `graph.request.process_query`
-
-Required:
-
-- **metric** (String)
-
-Optional:
-
-- **filter_by** (List of String)
-- **limit** (Number)
-- **search_by** (String)
-
-
-
-<a id="nestedblock--graph--marker"></a>
-### Nested Schema for `graph.marker`
-
-Required:
-
-- **type** (String) How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.
-- **value** (String) Mathematical expression describing the marker. Examples: `y > 1`, `-5 < y < 0`, `y = 19`.
-
-Optional:
-
-- **label** (String) A label for the line or range. **Warning**: when a label is enabled but left empty through the UI, the Datadog API returns a boolean value, not a string. This makes terraform plan fail with a JSON decoding error.
-
-
-
-<a id="nestedblock--template_variable"></a>
-### Nested Schema for `template_variable`
-
-Required:
-
-- **name** (String) The name of the variable.
-
-Optional:
-
-- **default** (String) The default value for the template variable on dashboard load.
-- **prefix** (String) The tag prefix associated with the variable. Only tags with this prefix will appear in the variable dropdown.
+-   `id`: The unique ID of this timeboard in your Datadog account. The web interface URL to this timeboard can be generated by appending this ID to `https://app.datadoghq.com/dash/`
 
 ## Import
 
-Import is supported using the following syntax:
+Timeboards can be imported using their numeric ID, e.g.
 
-```shell
-# Timeboards can be imported using their numeric ID, e.g.
-terraform import datadog_timeboard.my_service_timeboard 2081
+```
+$ terraform import datadog_timeboard.my_service_timeboard 2081
+```
+
+## Dynamic Timeboards
+
+Since Terraform 0.12, it's possible to create timeboard graphs dynamically based on contents of a list/map variable. This can be achieved by using the [dynamic blocks](https://www.terraform.io/docs/configuration/expressions.html#dynamic-blocks) feature. For example:
+
+```
+variable "my_list" {
+  default = ["First", "Second", "Third"]
+}
+
+variable "my_map" {
+  default = {
+    "First" = "value1"
+    "Second" = "value2"
+  }
+}
+
+# Create a timeboard with "First", "Second" and "Third" timeseries graphs
+resource "datadog_timeboard" "my_timeboard" {
+  title       = "My Timeboard"
+  description = "My Description"
+  read_only   = true
+
+  dynamic "graph" {
+    for_each = var.my_list
+    content {
+      title = "${graph.value}"
+      viz = "timeseries"
+      request {
+        q = "anomalies(sum:mycount{adapter:${graph.value}}.as_count().rollup(sum, 3600), 'robust', 4, direction='below')"
+      }
+    }
+  }
+}
+
+# Create a timeboard with "First" and "Second" timeseries graphs, use map keys as titles and map values as adapter names
+resource "datadog_timeboard" "my_timeboard_map" {
+  title       = "My Timeboard From Map"
+  description = "My Description"
+  read_only   = true
+
+  dynamic "graph" {
+    for_each = var.my_map
+    content {
+      title = "${graph.key}"
+      viz = "timeseries"
+      request {
+        q = "anomalies(sum:mycount{adapter:${graph.value}}.as_count().rollup(sum, 3600), 'robust', 4, direction='below')"
+      }
+    }
+  }
+}
 ```

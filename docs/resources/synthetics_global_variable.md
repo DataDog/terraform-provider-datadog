@@ -1,17 +1,14 @@
 ---
-page_title: "datadog_synthetics_global_variable Resource - terraform-provider-datadog"
-subcategory: ""
-description: |-
-  Provides a Datadog synthetics global variable resource. This can be used to create and manage Datadog synthetics global variables.
+page_title: "datadog_synthetics_global_variable"
 ---
 
-# Resource `datadog_synthetics_global_variable`
+# datadog_synthetics_global_variable Resource
 
 Provides a Datadog synthetics global variable resource. This can be used to create and manage Datadog synthetics global variables.
 
 ## Example Usage
 
-```terraform
+```hcl
 resource "datadog_synthetics_global_variable" "test_variable" {
     name = "EXAMPLE_VARIABLE"
     description = "Description of the variable"
@@ -20,25 +17,20 @@ resource "datadog_synthetics_global_variable" "test_variable" {
 }
 ```
 
-## Schema
+## Argument Reference
 
-### Required
+The following arguments are supported:
 
-- **name** (String) Synthetics global variable name.
-- **value** (String, Sensitive) The value of the global variable.
-
-### Optional
-
-- **description** (String) Description of the global variable.
-- **id** (String) The ID of this resource.
-- **secure** (Boolean) Sets the variable as secure. Defaults to `false`.
-- **tags** (List of String) A list of tags to associate with your synthetics global variable.
+-   `name`: (Required) Synthetics global variable name.
+-   `description`: (Optional) Description of the global variable.
+-   `tags`: (Required) A list of tags to associate with your synthetics global variable.
+-   `value`: (Required) The value of the global variable.
+-   `secure`: (Optional) Sets the variable as secure, true or false.
 
 ## Import
 
-Import is supported using the following syntax:
+Synthetics global variables can be imported using their string ID, e.g.
 
-```shell
-# Synthetics global variables can be imported using their string ID, e.g.
-terraform import datadog_synthetics_global_variable.fizz abcde123-fghi-456-jkl-mnopqrstuv
+```
+$ terraform import datadog_synthetics_global_variable.fizz abcde123-fghi-456-jkl-mnopqrstuv
 ```

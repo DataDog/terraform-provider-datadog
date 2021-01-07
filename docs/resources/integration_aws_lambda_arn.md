@@ -1,12 +1,8 @@
 ---
-page_title: "datadog_integration_aws_lambda_arn Resource - terraform-provider-datadog"
-subcategory: ""
-description: |-
-  Provides a Datadog - Amazon Web Services integration Lambda ARN resource. This can be used to create and manage the log collection Lambdas for an account.
-  Update operations are currently not supported with datadog API so any change forces a new resource.
+page_title: "datadog_integration_aws_lambda_arn"
 ---
 
-# Resource `datadog_integration_aws_lambda_arn`
+# datadog_integration_aws_lambda_arn Resource
 
 Provides a Datadog - Amazon Web Services integration Lambda ARN resource. This can be used to create and manage the log collection Lambdas for an account.
 
@@ -14,23 +10,35 @@ Update operations are currently not supported with datadog API so any change for
 
 ## Example Usage
 
-```terraform
+```hcl
 # Create a new Datadog - Amazon Web Services integration Lambda ARN
+
 resource "datadog_integration_aws_lambda_arn" "main_collector" {
   account_id = "1234567890"
   lambda_arn = "arn:aws:lambda:us-east-1:1234567890:function:datadog-forwarder-Forwarder"
 }
 ```
 
-## Schema
+## Argument Reference
 
-### Required
+The following arguments are supported:
 
-- **account_id** (String) Your AWS Account ID without dashes.
-- **lambda_arn** (String) The ARN of the Datadog forwarder Lambda.
+-   `account_id`: (Required) Your AWS Account ID without dashes.
+-   `lambda_arn`: (Required) The ARN of the Datadog forwarder Lambda.
 
-### Optional
+### See also
 
-- **id** (String) The ID of this resource.
+-   [Datadog API Reference > Integrations > AWS](https://docs.datadoghq.com/api/v1/aws-integration/)
+-   [Datadog log forwarder](https://github.com/DataDog/datadog-serverless-functions/tree/master/aws/logs_monitoring)
 
+## Attributes Reference
 
+All provided arguments are exported.
+
+## Import
+
+Amazon Web Services Lambda ARN integrations can be imported using their `account_id` and `lambda_arn` separated with a space (` `).
+
+```
+$ terraform import datadog_integration_aws_lambda_arn.test "1234567890 arn:aws:lambda:us-east-1:1234567890:function:datadog-forwarder-Forwarder"
+```

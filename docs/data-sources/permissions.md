@@ -1,28 +1,17 @@
 ---
-page_title: "datadog_permissions Data Source - terraform-provider-datadog"
-subcategory: ""
-description: |-
-  Use this data source to retrieve the list of Datadog permissions by name and their corresponding ID, for use in the role resource.
+page_title: "datadog_role"
 ---
 
-# Data Source `datadog_permissions`
+# datadog_permissions Data Source
 
 Use this data source to retrieve the list of Datadog permissions by name and their corresponding ID, for use in the role resource.
 
 ## Example Usage
 
-```terraform
+```
 data "datadog_permissions" "permissions" {}
 ```
 
-## Schema
+## Attributes Reference
 
-### Optional
-
-- **id** (String) The ID of this resource.
-
-### Read-only
-
-- **permissions** (Map of String) Map of permissions names to their corresponding ID.
-
-
+-   `permissions`: Map of permissions names to their corresponding ID.

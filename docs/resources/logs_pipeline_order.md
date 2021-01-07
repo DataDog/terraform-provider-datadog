@@ -1,17 +1,14 @@
 ---
-page_title: "datadog_logs_pipeline_order Resource - terraform-provider-datadog"
-subcategory: ""
-description: |-
-  Provides a Datadog Logs Pipeline API resource, which is used to manage Datadog log pipelines order.
+page_title: "datadog_logs_pipeline_order"
 ---
 
-# Resource `datadog_logs_pipeline_order`
+# datadog_logs_pipeline_order Resource
 
-Provides a Datadog Logs Pipeline API resource, which is used to manage Datadog log pipelines order.
+Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/) resource, which is used to manage Datadog log pipelines order.
 
 ## Example Usage
 
-```terraform
+```hcl
 resource "datadog_logs_pipeline_order" "sample_pipeline_order" {
     name = "sample_pipeline_order"
     depends_on = [
@@ -25,23 +22,21 @@ resource "datadog_logs_pipeline_order" "sample_pipeline_order" {
 }
 ```
 
-## Schema
+## Argument Reference
 
-### Required
+The following arguments are supported:
 
-- **name** (String) The name attribute in the resource `datadog_logs_pipeline_order` needs to be unique. It's recommended to use the same value as the resource name. No related field is available in [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/#get-pipeline-order).
-- **pipelines** (List of String) The pipeline IDs list. The order of pipeline IDs in this attribute defines the overall pipeline order for logs.
+-   `name`: (Required) The name attribute in the resource `datadog_logs_pipeline_order` needs to be unique. It's recommended to use the same value as the resource `NAME`. No related field is available in [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/#get-pipeline-order).
+-   `pipelines`: (Required) The pipeline IDs list. The order of pipeline IDs in this attribute defines the overall pipeline order for logs.
 
-### Optional
+## Attributes Reference
 
-- **id** (String) The ID of this resource.
+-   `pipelines`: The `pipelines` list contains the IDs of resources created and imported by the [datadog_logs_custom_pipeline](logs_custom_pipeline.html#datadog_logs_custom_pipeline) and [datadog_logs_integration_pipeline](logs_integration_pipeline.html#datadog_logs_integration_pipeline). Updating the order of pipelines in this list reflects the application order of the pipelines. You cannot delete or create pipeline by deleting or adding IDs to this list.
 
 ## Import
 
-Import is supported using the following syntax:
+There must be at most one `datadog_logs_pipeline_order` resource. Pipeline order creation is not supported from logs config API. You can import the `datadog_logs_pipeline_order` or create a pipeline order (which is actually doing the update operation).
 
-```shell
-# There must be at most one datadog_logs_pipeline_order resource. Pipeline order creation is not supported from logs config API. You can import the datadog_logs_pipeline_order or create a pipeline order (which is actually doing the update operation).
-
+```
 terraform import <datadog_logs_pipeline_order.name> <name>
 ```

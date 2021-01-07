@@ -1,20 +1,18 @@
 ---
-page_title: "datadog_integration_pagerduty Resource - terraform-provider-datadog"
-subcategory: ""
-description: |-
-  Provides a Datadog - PagerDuty resource. This can be used to create and manage Datadog - PagerDuty integration. This resource is deprecated and should only be used for legacy purposes.
+page_title: "datadog_integration_pagerduty"
 ---
 
-# Resource `datadog_integration_pagerduty`
+# datadog_integration_pagerduty Resource
 
 Provides a Datadog - PagerDuty resource. This can be used to create and manage Datadog - PagerDuty integration. This resource is deprecated and should only be used for legacy purposes.
 
 ## Example Usage
 
-```terraform
-# Note: Until terraform-provider-datadog version 2.1.0, service objects under the services key were specified inside the datadog_integration_pagerduty resource. This was incompatible with multi-configuration-file setups, where users wanted to have individual service objects controlled from different Terraform configuration files. The recommended approach now is specifying service objects as individual resources using datadog_integration_pagerduty_service_object and adding individual_services = true to the datadog_integration_pagerduty object.
+_Note:_ Until terraform-provider-datadog version 2.1.0, service objects under the `services` key were specified inside the `datadog_integration_pagerduty` resource. This was incompatible with multi-configuration-file setups, where users wanted to have individual service objects controlled from different Terraform configuration files. The recommended approach now is specifying service objects as individual resources using [datadog_integration_pagerduty_service_object](integration_pagerduty_service_object) and adding `individual_services = true` to the `datadog_integration_pagerduty` object.
 
-# Services as Individual Resources
+### Services as Individual Resources
+
+```
 resource "datadog_integration_pagerduty" "pd" {
   individual_services = true
   schedules = [
@@ -38,12 +36,13 @@ resource "datadog_integration_pagerduty_service_object" "testing_bar" {
   service_name = "testing_bar"
   service_key  = "54321098765432109876"
 }
+```
 
+### Inline Services
 
+With Terraform < 0.12.0 (terraform-provider-datadog < 1.9.0):
 
-
-# Inline Services
-# With Terraform < 0.12.0 (terraform-provider-datadog < 1.9.0):
+```
 # Create a new Datadog - PagerDuty integration
 resource "datadog_integration_pagerduty" "pd" {
   services = [
@@ -63,8 +62,11 @@ resource "datadog_integration_pagerduty" "pd" {
   subdomain = "ddog"
   api_token = "38457822378273432587234242874"
 }
+```
 
-# With Terraform >= 0.12.0 (terraform-provider-datadog >= 1.9.0):
+With Terraform >= 0.12.0 (terraform-provider-datadog >= 1.9.0):
+
+```
 locals {
   pd_services = {
     testing_foo = "9876543210123456789"
@@ -87,14 +89,13 @@ resource "datadog_integration_pagerduty" "pd" {
   subdomain = "ddog"
   api_token = "38457822378273432587234242874"
 }
+```
 
+### Migrating from Inline Services to Individual Resources
 
+Migrating from usage of inline services to individual resources is very simple. The following example shows how to convert an existing inline services configuration to configuration using individual resources. Doing analogous change and running `terraform apply` after every step is all that's necessary to migrate.
 
-
-
-
-# Migrating from Inline Services to Individual Resources
-# Migrating from usage of inline services to individual resources is very simple. The following example shows how to convert an existing inline services configuration to configuration using individual resources. Doing analogous change and running terraform apply after every step is all that's necessary to migrate.
+```
 # First step - this is what the configuration looked like initially
 
 locals {
@@ -119,6 +120,9 @@ resource "datadog_integration_pagerduty" "pd" {
   subdomain = "ddog"
   api_token = "38457822378273432587234242874"
 }
+```
+
+```
 # Second step - this will remove the inline-defined service objects
 # Note that during this step, `individual_services` must not be defined
 resource "datadog_integration_pagerduty" "pd" {
@@ -130,6 +134,9 @@ resource "datadog_integration_pagerduty" "pd" {
   subdomain = "ddog"
   api_token = "38457822378273432587234242874"
 }
+```
+
+```
 # Third step - this will reintroduce the service objects as individual resources
 
 resource "datadog_integration_pagerduty" "pd" {
@@ -156,26 +163,19 @@ resource "datadog_integration_pagerduty_service_object" "testing_bar" {
 }
 ```
 
-## Schema
+## Argument Reference
 
-### Required
+The following arguments are supported:
 
-- **subdomain** (String) Your PagerDuty account’s personalized subdomain name.
+-   `individual_services`: (Optional) Boolean to specify whether or not individual service objects specified by [datadog_integration_pagerduty_service_object](integration_pagerduty_service_object) resource are to be used. Mutually exclusive with `services` key.
+-   `services`: (Optional) Array of PagerDuty service objects. **Deprecated** The `services` list is now deprecated in favour of [datadog_integration_pagerduty_service_object](integration_pagerduty_service_object) resource. Note that `individual_services` must be set to `true` to ignore the `service` attribute and use individual services properly.
+    -   `service_name`: (Required) Your Service name in PagerDuty.
+    -   `service_key`: (Required) Your Service name associated service key in Pagerduty.
+-   `schedules`: (Optional) Array of your schedule URLs.
+-   `subdomain`: (Required) Your PagerDuty account’s personalized subdomain name.
+-   `api_token`: (Optional) Your PagerDuty API token.
 
-### Optional
+### See also
 
-- **api_token** (String, Sensitive) Your PagerDuty API token.
-- **id** (String) The ID of this resource.
-- **individual_services** (Boolean) Boolean to specify whether or not individual service objects specified by [datadog_integration_pagerduty_service_object](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_pagerduty_service_object) resource are to be used. Mutually exclusive with `services` key.
-- **schedules** (List of String) Array of your schedule URLs.
-- **services** (Block List, Deprecated) A list of service names and service keys. (see [below for nested schema](#nestedblock--services))
-
-<a id="nestedblock--services"></a>
-### Nested Schema for `services`
-
-Required:
-
-- **service_key** (String, Sensitive) Your Service name associated service key in Pagerduty.
-- **service_name** (String) Your Service name in PagerDuty.
-
-
+-   [PagerDuty Integration Guide](https://www.pagerduty.com/docs/guides/datadog-integration-guide/)
+-   [Datadog API Reference > Integrations > PagerDuty](https://docs.datadoghq.com/api/v1/pagerduty-integration/)

@@ -1,35 +1,25 @@
 ---
-page_title: "datadog_dashboard Data Source - terraform-provider-datadog"
-subcategory: ""
-description: |-
-  Use this data source to retrieve information about an existing dashboard, for use in other resources. In particular, it can be used in a monitor message to link to a specific dashboard.
+page_title: "datadog_dashboard"
 ---
 
-# Data Source `datadog_dashboard`
+# datadog_dashboard Data Source
 
 Use this data source to retrieve information about an existing dashboard, for use in other resources. In particular, it can be used in a monitor message to link to a specific dashboard.
 
 ## Example Usage
 
-```terraform
+```
 data "datadog_dashboard" "test" {
   name = "My super dashboard"
 }
 ```
 
-## Schema
+## Argument Reference
 
-### Required
+-   `name`: (Required) The dashboard name to search for. Must only match one dashboard.
 
-- **name** (String) The dashboard name to search for. Must only match one dashboard.
+## Attributes Reference
 
-### Optional
-
-- **id** (String) The ID of this resource.
-
-### Read-only
-
-- **title** (String) The name of the dashboard.
-- **url** (String) The URL to a specific dashboard.
-
-
+-   `id`: ID of the Datadog dashboard.
+-   `title`: The name of the dashboard.
+-   `url`: The URL to a specific dashboard.

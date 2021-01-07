@@ -1,8 +1,5 @@
 ---
-layout: ""
 page_title: "Provider: Datadog"
-description: |-
-  The Datadog provider allows you to interact with the Datadog API.
 ---
 
 # Datadog Provider
@@ -15,9 +12,9 @@ Use the navigation to the left to read about the available resources.
 
 ## Example Usage
 
-```terraform
-# Terraform 0.13+ uses the Terraform Registry:
+Terraform 0.13+ uses the Terraform Registry:
 
+```hcl
 terraform {
   required_providers {
     datadog = {
@@ -43,11 +40,11 @@ resource "datadog_dashboard" "default" {
   # ...
 }
 
+```
 
+Terraform 0.12- can be specified as:
 
-
-# Terraform 0.12- can be specified as:
-
+```hcl
 # Configure the Datadog provider
 provider "datadog" {
   api_key = "${var.datadog_api_key}"
@@ -65,11 +62,11 @@ resource "datadog_dashboard" "default" {
 }
 ```
 
-## Schema
+## Argument Reference
 
-### Optional
+The following arguments are supported:
 
-- **api_key** (String) (Required unless validate is false) Datadog API key. This can also be set via the DD_API_KEY environment variable.
-- **api_url** (String) The API Url. This can be also be set via the DD_HOST environment variable. Note that this URL must not end with the /api/ path. For example, https://api.datadoghq.com/ is a correct value, while https://api.datadoghq.com/api/ is not. And if you're working with "EU" version of Datadog, use https://api.datadoghq.eu/.
-- **app_key** (String) (Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.
-- **validate** (Boolean) Enables validation of the provided API and APP keys during provider initialization. Default is true. When false, api_key and app_keywon't be checked.
+-   `api_key`: (Required unless `validate` is false) Datadog API key. This can also be set via the `DD_API_KEY` environment variable.
+-   `app_key`: (Required unless `validate` is false) Datadog APP key. This can also be set via the `DD_APP_KEY` environment variable.
+-   `api_url`: (Optional) The API Url. This can be also be set via the `DD_HOST` environment variable. Note that this URL must not end with the `/api/` path. For example, `https://api.datadoghq.com/` is a correct value, while `https://api.datadoghq.com/api/` is not. And if you're working with "EU" version of Datadog, use `https://api.datadoghq.eu/`.
+-   `validate`: (Optional) Enables validation of the provided API and APP keys during provider initialization. Default is true. When false, `api_key` and `app_key`won't be checked.

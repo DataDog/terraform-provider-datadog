@@ -1,17 +1,14 @@
 ---
-page_title: "datadog_role Resource - terraform-provider-datadog"
-subcategory: ""
-description: |-
-  Provides a Datadog role resource. This can be used to create and manage Datadog roles.
+page_title: "datadog_role"
 ---
 
-# Resource `datadog_role`
+# datadog_role Resource
 
 Provides a Datadog role resource. This can be used to create and manage Datadog roles.
 
 ## Example Usage
 
-```terraform
+```hcl
 # Source the permissions
 data "datadog_permissions" "bar" {}
 
@@ -27,37 +24,23 @@ resource "datadog_role" "foo" {
 }
 ```
 
-## Schema
+## Argument Reference
 
-### Required
+The following arguments are supported:
 
-- **name** (String) Name of the role.
+-   `name`: (Required) The name of the role to create.
+-   `permission`: (Optional) Blocks containing permission ID to grant to the role.
 
-### Optional
+## Attributes Reference
 
-- **id** (String) The ID of this resource.
-- **permission** (Block Set) Set of objects containing the permission ID and the name of the permissions granted to this role. (see [below for nested schema](#nestedblock--permission))
+The following attributes are exported:
 
-### Read-only
-
-- **user_count** (Number) Number of users that have this role.
-
-<a id="nestedblock--permission"></a>
-### Nested Schema for `permission`
-
-Required:
-
-- **id** (String) ID of the permission to assign.
-
-Read-only:
-
-- **name** (String) Name of the permission.
+-   `user_count`: The number of users that have this role.
 
 ## Import
 
-Import is supported using the following syntax:
+Roles can be imported using their ID, e.g.
 
-```shell
-# Roles can be imported using their ID, e.g.
-terraform import datadog_role.example_role 000000-0000-0000-0000-000000000000
+```
+$ terraform import datadog_role.example_role 000000-0000-0000-0000-000000000000
 ```
