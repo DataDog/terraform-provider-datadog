@@ -662,10 +662,10 @@ Nested `widget` blocks have the following structure:
     -   `change_definition`: The definition for a Change widget. Exactly one nested block is allowed with the following structure:
         -   `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block):
             -   `q`: (Optional) The metric query to use in the widget.
-            -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+            -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
             -   `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             -   `change_type`: (Optional) Whether to show absolute or relative change. One of "absolute", "relative".
             -   `compare_to`: (Optional) Choose from when to compare current data to. One of "hour_before", "day_before", "week_before" or "month_before".
@@ -692,10 +692,10 @@ Nested `widget` blocks have the following structure:
     -   `distribution_definition`: The definition for a Distribution widget. Exactly one nested block is allowed with the following structure:
         -   `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block):
             -   `q`: (Optional) The metric query to use in the widget.
-            -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+            -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
             -   `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             -   `style`: (Optional) Style of the widget graph. One nested block is allowed with the following structure:
                 -   `palette`: (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
@@ -728,10 +728,10 @@ Nested `widget` blocks have the following structure:
     -   `heatmap_definition`: The definition for a Heatmap widget. Exactly one nested block is allowed with the following structure (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block):
         -   `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
             -   `q`: (Optional) The metric query to use in the widget.
-            -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+            -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
             -   `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             -   `style`: (Optional) Style of the widget graph. One nested block is allowed with the following structure:
                 -   `palette`: (Optional) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
@@ -750,17 +750,17 @@ Nested `widget` blocks have the following structure:
         -   `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure:
             -   `fill`: (Optional) The query used to fill the map. Exactly one nested block is allowed with the following structure (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the block):
                 -   `q`: (Optional) The metric query to use in the widget.
-                -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-                -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-                -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-                -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+                -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+                -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+                -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+                -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
                 -   `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             -   `size`: (Optional) The query used to size the map. Exactly one nested block is allowed with the following structure (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the block):
                 -   `q`: (Optional) The metric query to use in the widget.
-                -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-                -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-                -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-                -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+                -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+                -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+                -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+                -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
                 -   `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
         -   `node_type`: (Optional) The type of node used. Either "host" or "container".
         -   `no_metric_hosts`: (Optional) Boolean indicating whether to show nodes with no metrics.
@@ -817,10 +817,10 @@ Nested `widget` blocks have the following structure:
     -   `query_value_definition`: The definition for a Query Value widget. Exactly one nested block is allowed with the following structure:
         -   `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block):
             -   `q`: (Optional) The metric query to use in the widget.
-            -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+            -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
             -   `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             -   `conditional_formats`: (Optional) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple blocks are allowed. The structure of this block is described [below](dashboard.html#nested-widget-conditional_formats-blocks).
             -   `aggregator`: (Optional) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
@@ -836,8 +836,8 @@ Nested `widget` blocks have the following structure:
     -   `query_table_definition`: The definition for a Query Table widget. Exactly one nested block is allowed with the following structure:
         -   `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the request block):
             -   `q`: (Optional) The metric query to use in the widget
-            -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+            -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
             -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             -   `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
@@ -858,16 +858,16 @@ Nested `widget` blocks have the following structure:
         -   `request`: (Required) Nested block describing the request to use when displaying the widget. Exactly one request block is allowed with the following structure:
             -   `x`: (Optional) The query used for the X-Axis. Exactly one nested block is allowed with the following structure (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block):
                 -   `q`: (Optioonal) The metric query to use in the widget.
-                -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-                -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+                -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+                -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
                 -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
                 -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
                 -   `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
                 -   `aggregator`: (Optional) Aggregator used for the request. One of "avg", "min", "max", "sum", "last".
             -   `y`: (Optional) The query used for the Y-Axis. Exactly one nested block is allowed with the following structure (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block):
                 -   `q`: (Optional) The metric query to use in the widget.
-                -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-                -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+                -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+                -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
                 -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
                 -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
                 -   `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
@@ -899,10 +899,10 @@ Nested `widget` blocks have the following structure:
     -   `timeseries_definition`: The definition for a Timeseries widget. Exactly one nested block is allowed with the following structure:
         -   `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the request block):
             -   `q`: (Optional) The metric query to use in the widget.
-            -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `network_query`: (Optional) The network query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+            -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `network_query`: (Optional) The network query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
+            -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
             -   `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             -   `display_type`: (Optional) Type of display to use for the request. Available values are: `area`, `bars`, or `line`.
@@ -930,9 +930,9 @@ Nested `widget` blocks have the following structure:
     -   `toplist_definition`: The definition for a Toplist widget. Exactly one nested block is allowed with the following structure:
         -   `request`: (Required) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the following structure (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block):
             -   `q`: (Optional) The metric query to use in the widget.
-            -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+            -   `apm_query`: (Optional) The APM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
             -   `log_query`: (Optional) The log query to use in the widget. The structure of this block is described [below](dashboard.html#ested-apm_query-log_query-network_query-and-rum_query-blocks).
-            -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-and-rum_query-blocks).
+            -   `rum_query`: (Optional) The RUM query to use in the widget. The structure of this block is described [below](dashboard.html#nested-apm_query-log_query-network_query-rum_query-and-security_query-blocks).
             -   `security_query`: (Optional) The security query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             -   `process_query`: (Optional) The process query to use in the widget. The structure of this block is described [below](dashboard.html#nested-process_query-blocks).
             -   `conditional_formats`: (Optional) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple blocks are allowed. The structure of this block is described [below](dashboard.html#nested-widget-conditional_formats-blocks).
