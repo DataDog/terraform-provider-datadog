@@ -4,18 +4,20 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"log"
 	"sort"
 	"strings"
+
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 )
 
 func dataSourceDatadogSecurityMonitoringRules() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceDatadogSecurityMonitoringRulesRead,
+		Description: "Use this data source to retrieve information about existing security monitoring rules for use in other resources.",
+		Read:        dataSourceDatadogSecurityMonitoringRulesRead,
 
 		Schema: map[string]*schema.Schema{
 			// Filters
@@ -44,13 +46,15 @@ func dataSourceDatadogSecurityMonitoringRules() *schema.Resource {
 
 			// Computed
 			"rule_ids": {
-				Type:     schema.TypeList,
-				Computed: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "List of IDs of the matched rules.",
+				Type:        schema.TypeList,
+				Computed:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"rules": {
-				Type:     schema.TypeList,
-				Computed: true,
+				Description: "List of rules.",
+				Type:        schema.TypeList,
+				Computed:    true,
 				Elem: &schema.Resource{
 					Schema: datadogSecurityMonitoringRuleSchema(),
 				},

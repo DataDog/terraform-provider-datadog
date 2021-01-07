@@ -151,7 +151,7 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 				ResourceName:            "datadog_synthetics_test.bar",
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"options_list"},
+				ImportStateVerifyIgnore: []string{"options_list", "browser_variable", "variable"},
 			},
 		},
 	})
@@ -358,6 +358,21 @@ func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsBrowserTestBrowserVariables_Basic(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsBrowserTestBrowserVariablesStep(accProvider, clock, t),
+		},
+	})
+}
+
 func createSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(clock, t)
 	return resource.TestStep{
@@ -430,6 +445,14 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 				"datadog_synthetics_test.foo", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "status", "paused"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.0.type", "text"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.0.name", "VARIABLE_NAME"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.0.pattern", "{{numeric(3)}}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.0.example", "123"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.foo", "monitor_id"),
 		),
@@ -493,6 +516,13 @@ resource "datadog_synthetics_test" "foo" {
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
+
+	config_variable {
+		type = "text"
+		name = "VARIABLE_NAME"
+		pattern = "{{numeric(3)}}"
+		example = "123"
+	}
 }`, uniq)
 }
 
@@ -1765,6 +1795,115 @@ resource "datadog_synthetics_test" "bar" {
 		pattern = "{{numeric(4)}}"
 		example = "5970"
 	}
+}`, uniq)
+}
+
+func createSyntheticsBrowserTestBrowserVariablesStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(clock, t)
+	return resource.TestStep{
+		Config: createSyntheticsBrowserTestBrowserVariablesConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "type", "browser"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.method", "GET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.url", "https://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "device_ids.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "device_ids.0", "laptop_large"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertions.#", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.retry.0.count", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.retry.0.interval", "300"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.0.name", "first step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.0.type", "assertCurrentUrl"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "step.0.params", "{\"check\":\"contains\",\"value\":\"content\"}"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.bar", "monitor_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.0.type", "text"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.0.name", "MY_PATTERN_VAR"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.0.pattern", "{{numeric(3)}}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.0.example", "597"),
+		),
+	}
+}
+
+func createSyntheticsBrowserTestBrowserVariablesConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+       type = "browser"
+
+       request = {
+               method = "GET"
+               url = "https://www.datadoghq.com"
+       }
+
+       device_ids = [ "laptop_large" ]
+       locations = [ "aws:eu-central-1" ]
+       options_list {
+               tick_every = 900
+               min_failure_duration = 0
+               min_location_failed = 1
+
+               retry {
+                       count = 2
+                       interval = 300
+               }
+       }
+
+       name = "%s"
+       message = "Notify @datadog.user"
+       tags = ["foo:bar"]
+
+       status = "paused"
+
+       step {
+           name = "first step"
+           type = "assertCurrentUrl"
+           params = jsonencode({
+               "check": "contains",
+               "value": "content"
+           })
+       }
+
+       browser_variable {
+               type = "text"
+               name = "MY_PATTERN_VAR"
+               pattern = "{{numeric(3)}}"
+               example = "597"
+       }
 }`, uniq)
 }
 

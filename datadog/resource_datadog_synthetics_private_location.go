@@ -2,37 +2,43 @@ package datadog
 
 import (
 	"encoding/json"
+
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourceDatadogSyntheticsPrivateLocation() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogSyntheticsPrivateLocationCreate,
-		Read:   resourceDatadogSyntheticsPrivateLocationRead,
-		Update: resourceDatadogSyntheticsPrivateLocationUpdate,
-		Delete: resourceDatadogSyntheticsPrivateLocationDelete,
+		Description: "Provides a Datadog synthetics private location resource. This can be used to create and manage Datadog synthetics private locations.",
+		Create:      resourceDatadogSyntheticsPrivateLocationCreate,
+		Read:        resourceDatadogSyntheticsPrivateLocationRead,
+		Update:      resourceDatadogSyntheticsPrivateLocationUpdate,
+		Delete:      resourceDatadogSyntheticsPrivateLocationDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Synthetics private location name.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"description": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Description of the private location.",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"tags": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "A list of tags to associate with your synthetics private location.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"config": {
-				Type:      schema.TypeString,
-				Computed:  true,
-				Sensitive: true,
+				Description: "Configuration skeleton for the private location. See installation instructions of the private location on how to use this configuration.",
+				Type:        schema.TypeString,
+				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}

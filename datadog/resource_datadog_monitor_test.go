@@ -292,7 +292,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.1520885421", "quux"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "priority", "3"),
+						"datadog_monitor.foo", "priority", "1"),
 				),
 			},
 			{
@@ -378,7 +378,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigUpdatedWithTagsRemoved(monitorNameUpdated),
+				Config: testAccCheckDatadogMonitorConfigUpdatedWithAttrsRemoved(monitorNameUpdated),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
 					resource.TestCheckResourceAttr(
@@ -425,6 +425,8 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 						"datadog_monitor.foo", "locked", "true"),
 					resource.TestCheckNoResourceAttr(
 						"datadog_monitor.foo", "tags.#"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "priority", "0"),
 				),
 			},
 			{
@@ -652,39 +654,6 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 	})
 }
 
-func TestAccDatadogMonitor_MuteUnmuteSpecificScopes(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccCheckDatadogMonitorConfigMuteSpecificScopes(monitorName),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "silenced.%", "1"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "silenced.host:myserver", "0"),
-				),
-			},
-			{
-				Config: testAccCheckDatadogMonitorConfigUnmuteSpecificScopes(monitorName),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
-					resource.TestCheckNoResourceAttr(
-						"datadog_monitor.foo", "silenced"),
-				),
-			},
-		},
-	})
-}
-
 func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
@@ -734,49 +703,6 @@ func testAccCheckDatadogMonitorExists(accProvider *schema.Provider, n string) re
 	}
 }
 
-func TestAccDatadogMonitor_SilencedRemove(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccCheckDatadogMonitorSilenceZero(monitorName),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", monitorName),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "type", "query alert"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "silenced.*", "0"),
-				),
-			},
-			{
-				Config: testAccCheckDatadogMonitorSilenceUnmute(monitorName),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", monitorName),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "type", "query alert"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "silenced.*", "-1"),
-				),
-			},
-		},
-	})
-}
-
 func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
@@ -806,49 +732,6 @@ func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
 			},
 			{
 				Config:             testAccCheckDatadogMonitorSilenceZero(monitorName),
-				ExpectNonEmptyPlan: false,
-			},
-		},
-	})
-}
-
-func TestAccDatadogMonitor_SilencedUpdatePastTimestamp(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccCheckDatadogMonitorSilenceZero(monitorName),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", monitorName),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "type", "query alert"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "silenced.*", "0"),
-				),
-			},
-			{
-				Config: testAccCheckDatadogMonitorSilencePastTimestamp(monitorName),
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "silenced.*", "1559759717",
-					),
-				),
-			},
-			{
-				Config:             testAccCheckDatadogMonitorSilencePastTimestamp(monitorName),
 				ExpectNonEmptyPlan: false,
 			},
 		},
@@ -897,36 +780,6 @@ resource "datadog_monitor" "foo" {
 
 	silenced = {
     "*" = 0
-  }
-}`, uniq)
-}
-
-func testAccCheckDatadogMonitorSilenceUnmute(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_monitor" "foo" {
-	name = "%s"
-	type = "query alert"
-	message = "some message Notify: @hipchat-channel"
-
-	query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
-
-	silenced = {
-    "*" = -1
-  }
-}`, uniq)
-}
-
-func testAccCheckDatadogMonitorSilencePastTimestamp(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_monitor" "foo" {
-	name = "%s"
-	type = "query alert"
-	message = "some message Notify: @hipchat-channel"
-
-	query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
-
-	silenced = {
-    "*" = 1559759717
   }
 }`, uniq)
 }
@@ -1082,7 +935,7 @@ resource "datadog_monitor" "foo" {
   type = "query alert"
   message = "a different message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated! @pagerduty"
-  priority = 3
+  priority = 1
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} > 3"
 
@@ -1111,14 +964,13 @@ resource "datadog_monitor" "foo" {
 }`, uniq)
 }
 
-func testAccCheckDatadogMonitorConfigUpdatedWithTagsRemoved(uniq string) string {
+func testAccCheckDatadogMonitorConfigUpdatedWithAttrsRemoved(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
   name = "%s"
   type = "query alert"
   message = "a different message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated! @pagerduty"
-  priority = 3
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:bar,host:bar} by {host} > 3"
 
@@ -1281,40 +1133,6 @@ resource "datadog_monitor" "foo" {
 		recovery_window = "last_5m"
 		trigger_window = "last_5m"
 	}
-}`, uniq)
-}
-
-func testAccCheckDatadogMonitorConfigMuteSpecificScopes(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_monitor" "foo" {
-    name = "%s"
-    type = "metric alert"
-    message = "test"
-
-    query = "avg(last_5m):max:system.load.1{*} by {host} > 100"
-
-    thresholds = {
-        critical = 100
-    }
-
-    silenced = {
-      "host:myserver" = 0
-    }
-}`, uniq)
-}
-
-func testAccCheckDatadogMonitorConfigUnmuteSpecificScopes(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_monitor" "foo" {
-    name = "%s"
-    type = "metric alert"
-    message = "test"
-
-    query = "avg(last_5m):max:system.load.1{*} by {host} > 100"
-
-    thresholds = {
-        critical = 100
-    }
 }`, uniq)
 }
 

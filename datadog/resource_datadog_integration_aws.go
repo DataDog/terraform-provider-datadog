@@ -22,73 +22,57 @@ func accountAndRoleFromID(id string) (string, string, error) {
 
 func resourceDatadogIntegrationAws() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogIntegrationAwsCreate,
-		Read:   resourceDatadogIntegrationAwsRead,
-		Update: resourceDatadogIntegrationAwsUpdate,
-		Delete: resourceDatadogIntegrationAwsDelete,
-		Exists: resourceDatadogIntegrationAwsExists,
+		Description: "Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.\n\n",
+		Create:      resourceDatadogIntegrationAwsCreate,
+		Read:        resourceDatadogIntegrationAwsRead,
+		Update:      resourceDatadogIntegrationAwsUpdate,
+		Delete:      resourceDatadogIntegrationAwsDelete,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogIntegrationAwsImport,
 		},
 
 		Schema: map[string]*schema.Schema{
 			"account_id": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Your AWS Account ID without dashes.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"role_name": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Your Datadog role delegation name.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"filter_tags": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "Array of EC2 tags (in the form key:value) defines a filter that Datadog use when collecting metrics from EC2. Wildcards, such as `?` (for single characters) and `*` (for multiple characters) can also be used.\n\nOnly hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. Host matching a given tag can also be excluded by adding `!` before the tag.\n\ne.x. `env:production,instance-type:c1.*,!region:us-east-1`.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"host_tags": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "Array of tags (in the form key:value) to add to all hosts and metrics reporting through this integration.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"account_specific_namespace_rules": {
-				Type:     schema.TypeMap,
-				Optional: true,
-				Elem:     schema.TypeBool,
+				Description: "Enables or disables metric collection for specific AWS namespaces for this AWS account only. A list of namespaces can be found at the [available namespace rules API endpoint](https://docs.datadoghq.com/api/v1/aws-integration/#list-namespace-rules).",
+				Type:        schema.TypeMap,
+				Optional:    true,
+				Elem:        schema.TypeBool,
 			},
 			"excluded_regions": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "An array of AWS regions to exclude from metrics collection.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"external_id": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Description: "AWS External ID. **NOTE** This provider will not be able to detect changes made to the `external_id` field from outside Terraform.",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 		},
 	}
-}
-
-func resourceDatadogIntegrationAwsExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	// Exists - This is called to verify a resource still exists. It is called prior to Read,
-	// and lowers the burden of Read to be able to assume the resource exists.
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(authV1).Execute()
-	if err != nil {
-		return false, translateClientError(err, "error checking AWS integration exists")
-	}
-	accountID, roleName, err := accountAndRoleFromID(d.Id())
-	if err != nil {
-		return false, err
-	}
-	for _, integration := range integrations.GetAccounts() {
-		if integration.GetAccountId() == accountID && integration.GetRoleName() == roleName {
-			return true, nil
-		}
-	}
-	return false, nil
 }
 
 func buildDatadogIntegrationAwsStruct(d *schema.ResourceData, accountID string, roleName string) *datadogV1.AWSAccount {
@@ -170,6 +154,7 @@ func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{})
 	if err != nil {
 		return translateClientError(err, "error getting AWS integration")
 	}
+
 	for _, integration := range integrations.GetAccounts() {
 		if integration.GetAccountId() == accountID && integration.GetRoleName() == roleName {
 			d.Set("account_id", integration.GetAccountId())
@@ -181,7 +166,9 @@ func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{})
 			return nil
 		}
 	}
-	return fmt.Errorf("error getting a Amazon Web Services integration: account_id=%s, role_name=%s", accountID, roleName)
+
+	d.SetId("")
+	return nil
 }
 
 func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{}) error {

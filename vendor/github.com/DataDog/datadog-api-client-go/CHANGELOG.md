@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 1.0.0-beta.13 / 2021-01-06
+
+* [Added] Added filters to rule endpoints in security monitoring API. See [#632](https://github.com/DataDog/datadog-api-client-go/pull/632).
+* [Added] Add Azure app services fields to usage v1 endpoints. See [#631](https://github.com/DataDog/datadog-api-client-go/pull/631).
+* [Added] Add mobile RUM OS types usage fields. See [#629](https://github.com/DataDog/datadog-api-client-go/pull/629).
+* [Added] Add config variables for synthetics API tests. See [#628](https://github.com/DataDog/datadog-api-client-go/pull/628).
+* [Added] Add endpoints for the public API of Logs2Metrics. See [#626](https://github.com/DataDog/datadog-api-client-go/pull/626).
+* [Added] Add endpoints for API Keys v2. See [#620](https://github.com/DataDog/datadog-api-client-go/pull/620).
+* [Added] Add utils to validate and create valid enums. See [#617](https://github.com/DataDog/datadog-api-client-go/pull/617).
+* [Added] Add javascript value to synthetics browser variable types. See [#616](https://github.com/DataDog/datadog-api-client-go/pull/616).
+* [Added] Add synthetics assertion operator. See [#609](https://github.com/DataDog/datadog-api-client-go/pull/609).
+* [Added] Application keys v2 API. See [#605](https://github.com/DataDog/datadog-api-client-go/pull/605).
+* [Fixed] Redact auth methods from debug logs. See [#618](https://github.com/DataDog/datadog-api-client-go/pull/618).
+* [Removed] Remove Synthetic resources property. See [#622](https://github.com/DataDog/datadog-api-client-go/pull/622).
+
 ## 1.0.0-beta.12 / 2020-12-07
 
 * [Added] Mark Usage Attribution endpoint as public beta. See [#592](https://github.com/DataDog/datadog-api-client-go/pull/592).

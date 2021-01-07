@@ -10,20 +10,25 @@ import (
 
 func resourceDatadogLogsPipelineOrder() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogLogsPipelineOrderCreate,
-		Update: resourceDatadogLogsPipelineOrderUpdate,
-		Read:   resourceDatadogLogsPipelineOrderRead,
-		Delete: resourceDatadogLogsPipelineOrderDelete,
-		Exists: resourceDatadogLogsPipelineOrderExists,
+		Description: "Provides a Datadog Logs Pipeline API resource, which is used to manage Datadog log pipelines order.",
+		Create:      resourceDatadogLogsPipelineOrderCreate,
+		Update:      resourceDatadogLogsPipelineOrderUpdate,
+		Read:        resourceDatadogLogsPipelineOrderRead,
+		Delete:      resourceDatadogLogsPipelineOrderDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
-			"name": {Type: schema.TypeString, Required: true},
+			"name": {
+				Description: "The name attribute in the resource `datadog_logs_pipeline_order` needs to be unique. It's recommended to use the same value as the resource name. No related field is available in [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/#get-pipeline-order).",
+				Type:        schema.TypeString,
+				Required:    true,
+			},
 			"pipelines": {
-				Type:     schema.TypeList,
-				Required: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "The pipeline IDs list. The order of pipeline IDs in this attribute defines the overall pipeline order for logs.",
+				Type:        schema.TypeList,
+				Required:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 		},
 	}
@@ -86,8 +91,4 @@ func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interfa
 func resourceDatadogLogsPipelineOrderDelete(d *schema.ResourceData, meta interface{}) error {
 
 	return nil
-}
-
-func resourceDatadogLogsPipelineOrderExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	return true, nil
 }

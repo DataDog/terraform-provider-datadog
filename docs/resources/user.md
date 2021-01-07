@@ -30,6 +30,7 @@ The following arguments are supported:
 -   `name`: (Optional) Name for user
 -   `roles`: (Optional) A list a role IDs to assign to the user.
 -   `disabled`: (Optional) Whether the user is disabled
+-   `send_user_invitation`: (Optional) Whether an invitation email should be sent when the user is created. Defaults to `true`.
 -   `handle`: (Deprecated) The user handle, must be a valid email.
 -   `is_admin`: (Deprecated) (Optional) Whether the user is an administrator. **Warning**: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
 -   `role`: (Deprecated) Role description for user. **Warning**: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
@@ -42,6 +43,7 @@ The following attributes are exported:
 -   `disabled`: Returns true if Datadog user is disabled (NOTE: Datadog does not actually delete users so this will be true for those as well)
 -   `id`: ID of the Datadog user
 -   `verified`: Returns true if Datadog user is verified
+-   `user_invitation_id`: The ID of the user invitation that was sent when creating the user.
 
 ## Import
 

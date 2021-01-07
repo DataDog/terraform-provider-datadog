@@ -1,8 +1,6 @@
 package datadog
 
 import (
-	"strings"
-
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -11,24 +9,26 @@ const maskedSecret = "*****"
 
 func resourceDatadogIntegrationPagerdutySO() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogIntegrationPagerdutySOCreate,
-		Read:   resourceDatadogIntegrationPagerdutySORead,
-		Exists: resourceDatadogIntegrationPagerdutySOExists,
-		Update: resourceDatadogIntegrationPagerdutySOUpdate,
-		Delete: resourceDatadogIntegrationPagerdutySODelete,
+		Description: "Provides access to individual Service Objects of Datadog - PagerDuty integrations. Note that the Datadog - PagerDuty integration must be activated in the Datadog UI in order for this resource to be usable.",
+		Create:      resourceDatadogIntegrationPagerdutySOCreate,
+		Read:        resourceDatadogIntegrationPagerdutySORead,
+		Update:      resourceDatadogIntegrationPagerdutySOUpdate,
+		Delete:      resourceDatadogIntegrationPagerdutySODelete,
 		// since the API never returns service_key, it's impossible to meaningfully import resources
 		Importer: nil,
 
 		Schema: map[string]*schema.Schema{
 			"service_name": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Description: "Your Service name in PagerDuty.",
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
 			},
 			"service_key": {
-				Type:      schema.TypeString,
-				Required:  true,
-				Sensitive: true,
+				Description: "Your Service name associated service key in PagerDuty. Note: Since the Datadog API never returns service keys, it is impossible to detect [drifts](https://www.hashicorp.com/blog/detecting-and-managing-drift-with-terraform?_ga=2.15990198.1091155358.1609189257-888022054.1605547463). The best way to solve a drift is to manually mark the Service Object resource with [terraform taint](https://www.terraform.io/docs/commands/taint.html?_ga=2.15990198.1091155358.1609189257-888022054.1605547463) to have it destroyed and recreated.",
+				Type:        schema.TypeString,
+				Required:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -78,8 +78,12 @@ func resourceDatadogIntegrationPagerdutySORead(d *schema.ResourceData, meta inte
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	so, _, err := datadogClientV1.PagerDutyIntegrationApi.GetPagerDutyIntegrationService(authV1, d.Id()).Execute()
+	so, httpresp, err := datadogClientV1.PagerDutyIntegrationApi.GetPagerDutyIntegrationService(authV1, d.Id()).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting PagerDuty integration service")
 	}
 
@@ -91,22 +95,6 @@ func resourceDatadogIntegrationPagerdutySORead(d *schema.ResourceData, meta inte
 	}
 
 	return nil
-}
-
-func resourceDatadogIntegrationPagerdutySOExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	_, _, err := datadogClientV1.PagerDutyIntegrationApi.GetPagerDutyIntegrationService(authV1, d.Id()).Execute()
-	if err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking PagerDuty integration service exists")
-	}
-
-	return true, nil
 }
 
 func resourceDatadogIntegrationPagerdutySOUpdate(d *schema.ResourceData, meta interface{}) error {

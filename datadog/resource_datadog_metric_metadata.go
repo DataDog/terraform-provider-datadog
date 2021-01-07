@@ -1,51 +1,56 @@
 package datadog
 
 import (
-	"strings"
-
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourceDatadogMetricMetadata() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogMetricMetadataCreate,
-		Read:   resourceDatadogMetricMetadataRead,
-		Update: resourceDatadogMetricMetadataUpdate,
-		Delete: resourceDatadogMetricMetadataDelete,
-		Exists: resourceDatadogMetricMetadataExists,
+		Description: "Provides a Datadog metric_metadata resource. This can be used to manage a metric's metadata.",
+		Create:      resourceDatadogMetricMetadataCreate,
+		Read:        resourceDatadogMetricMetadataRead,
+		Update:      resourceDatadogMetricMetadataUpdate,
+		Delete:      resourceDatadogMetricMetadataDelete,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogMetricMetadataImport,
 		},
 
 		Schema: map[string]*schema.Schema{
 			"metric": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "The name of the metric.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"type": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Type of the metric.",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"description": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "A description of the metric.",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"short_name": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "A short name of the metric.",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"unit": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Primary unit of the metric such as `byte` or `operation`.",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"per_unit": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Description: "Per unit of the metric such as `second` in `bytes per second`.",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"statsd_interval": {
-				Type:     schema.TypeInt,
-				Optional: true,
+				Description: "If applicable, statsd flush interval in seconds for the metric.",
+				Type:        schema.TypeInt,
+				Optional:    true,
 			},
 		},
 	}
@@ -60,25 +65,6 @@ func buildMetricMetadataStruct(d *schema.ResourceData) (string, *datadogV1.Metri
 		PerUnit:        datadogV1.PtrString(d.Get("per_unit").(string)),
 		StatsdInterval: datadogV1.PtrInt64(int64(d.Get("statsd_interval").(int))),
 	}
-}
-
-func resourceDatadogMetricMetadataExists(d *schema.ResourceData, meta interface{}) (b bool, e error) {
-	// Exists - This is called to verify a resource still exists. It is called prior to Read,
-	// and lowers the burden of Read to be able to assume the resource exists.
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	id, _ := buildMetricMetadataStruct(d)
-
-	if _, _, err := datadogClientV1.MetricsApi.GetMetricMetadata(authV1, id).Execute(); err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error checking metric metadata exists")
-	}
-
-	return true, nil
 }
 
 func resourceDatadogMetricMetadataCreate(d *schema.ResourceData, meta interface{}) error {
@@ -104,8 +90,12 @@ func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{})
 
 	id, _ := buildMetricMetadataStruct(d)
 
-	m, _, err := datadogClientV1.MetricsApi.GetMetricMetadata(authV1, id).Execute()
+	m, httpresp, err := datadogClientV1.MetricsApi.GetMetricMetadata(authV1, id).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "error getting metric metadata")
 	}
 

@@ -85,12 +85,33 @@ var arithmeticProcessor = &schema.Schema{
 	MaxItems: 1,
 	Optional: true,
 	Elem: &schema.Resource{
+		Description: "Provides a Datadog Logs Pipeline API resource, which is used to create and manage Datadog logs custom pipelines.",
 		Schema: map[string]*schema.Schema{
-			"name":               {Type: schema.TypeString, Optional: true},
-			"is_enabled":         {Type: schema.TypeBool, Optional: true},
-			"expression":         {Type: schema.TypeString, Required: true},
-			"target":             {Type: schema.TypeString, Required: true},
-			"is_replace_missing": {Type: schema.TypeBool, Optional: true},
+			"name": {
+				Description: "Your pipeline name.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"is_enabled": {
+				Description: "Boolean value to enable your pipeline.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+			},
+			"expression": {
+				Description: "Arithmetic operation between one or more log attributes.",
+				Type:        schema.TypeString,
+				Required:    true,
+			},
+			"target": {
+				Description: "Name of the attribute that contains the result of the arithmetic operation.",
+				Type:        schema.TypeString,
+				Required:    true,
+			},
+			"is_replace_missing": {
+				Description: "If true, it replaces all missing attributes of expression by 0, false skips the operation if an attribute is missing.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+			},
 		},
 	},
 }
@@ -101,19 +122,20 @@ var attributeRemapper = &schema.Schema{
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name":        {Type: schema.TypeString, Optional: true},
-			"is_enabled":  {Type: schema.TypeBool, Optional: true},
-			"sources":     {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
-			"source_type": {Type: schema.TypeString, Required: true},
-			"target":      {Type: schema.TypeString, Required: true},
-			"target_type": {Type: schema.TypeString, Required: true},
+			"name":        {Description: "Name of the processor", Type: schema.TypeString, Optional: true},
+			"is_enabled":  {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
+			"sources":     {Description: "List of source attributes or tags.", Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
+			"source_type": {Description: "Defines where the sources are from (log attribute or tag).", Type: schema.TypeString, Required: true},
+			"target":      {Description: "Final attribute or tag name to remap the sources.", Type: schema.TypeString, Required: true},
+			"target_type": {Description: "Defines if the target is a log attribute or tag.", Type: schema.TypeString, Required: true},
 			"target_format": {
+				Description:  "If the `target_type` of the remapper is `attribute`, try to cast the value to a new specific type. If the cast is not possible, the original type is kept. `string`, `integer`, or `double` are the possible types. If the `target_type` is `tag`, this parameter may not be specified.",
 				Type:         schema.TypeString,
 				Optional:     true,
 				ValidateFunc: validation.StringInSlice([]string{"auto", "string", "integer", "double"}, false),
 			},
-			"preserve_source":      {Type: schema.TypeBool, Optional: true},
-			"override_on_conflict": {Type: schema.TypeBool, Optional: true},
+			"preserve_source":      {Description: "Remove or preserve the remapped source element.", Type: schema.TypeBool, Optional: true},
+			"override_on_conflict": {Description: "Override the target element if already set.", Type: schema.TypeBool, Optional: true},
 		},
 	},
 }
@@ -124,10 +146,10 @@ var categoryProcessor = &schema.Schema{
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name":       {Type: schema.TypeString, Optional: true},
-			"is_enabled": {Type: schema.TypeBool, Optional: true},
-			"target":     {Type: schema.TypeString, Required: true},
-			"category": {Type: schema.TypeList, Required: true, Elem: &schema.Resource{
+			"name":       {Description: "Name of the category", Type: schema.TypeString, Optional: true},
+			"is_enabled": {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
+			"target":     {Description: "Name of the target attribute whose value is defined by the matching category.", Type: schema.TypeString, Required: true},
+			"category": {Description: "List of filters to match or exclude a log with their corresponding name to assign a custom value to the log.", Type: schema.TypeList, Required: true, Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"filter": {
 						Type:     schema.TypeList,
@@ -157,10 +179,10 @@ var geoIPParser = &schema.Schema{
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name":       {Type: schema.TypeString, Optional: true},
-			"is_enabled": {Type: schema.TypeBool, Optional: true},
-			"sources":    {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
-			"target":     {Type: schema.TypeString, Required: true},
+			"name":       {Description: "Name of the processor.", Type: schema.TypeString, Optional: true},
+			"is_enabled": {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
+			"sources":    {Description: "List of source attributes.", Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
+			"target":     {Description: "Name of the parent attribute that contains all the extracted details from the sources.", Type: schema.TypeString, Required: true},
 		},
 	},
 }
@@ -171,13 +193,14 @@ var grokParser = &schema.Schema{
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name":       {Type: schema.TypeString, Optional: true},
-			"is_enabled": {Type: schema.TypeBool, Optional: true},
-			"source":     {Type: schema.TypeString, Required: true},
+			"name":       {Description: "Name of the processor", Type: schema.TypeString, Optional: true},
+			"is_enabled": {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
+			"source":     {Description: "Name of the log attribute to parse.", Type: schema.TypeString, Required: true},
 			"samples": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "List of sample logs for this parser. It can save up to 5 samples. Each sample takes up to 5000 characters.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"grok": {
 				Type:     schema.TypeList,
@@ -185,8 +208,8 @@ var grokParser = &schema.Schema{
 				Required: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"support_rules": {Type: schema.TypeString, Required: true},
-						"match_rules":   {Type: schema.TypeString, Required: true},
+						"support_rules": {Description: "Support rules for your grok parser.", Type: schema.TypeString, Required: true},
+						"match_rules":   {Description: "Match rules for your grok parser.", Type: schema.TypeString, Required: true},
 					},
 				},
 			},
@@ -200,16 +223,17 @@ var lookupProcessor = &schema.Schema{
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name":       {Type: schema.TypeString, Optional: true},
-			"is_enabled": {Type: schema.TypeBool, Optional: true},
-			"source":     {Type: schema.TypeString, Required: true},
-			"target":     {Type: schema.TypeString, Required: true},
+			"name":       {Description: "Name of the processor", Type: schema.TypeString, Optional: true},
+			"is_enabled": {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
+			"source":     {Description: "Name of the source attribute used to do the lookup.", Type: schema.TypeString, Required: true},
+			"target":     {Description: "Name of the attribute that contains the result of the lookup.", Type: schema.TypeString, Required: true},
 			"lookup_table": {
-				Type:     schema.TypeList,
-				Required: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "List of entries of the lookup table using `key,value` format.",
+				Type:        schema.TypeList,
+				Required:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			"default_lookup": {Type: schema.TypeString, Optional: true},
+			"default_lookup": {Description: "Default lookup value to use if there is no entry in the lookup table for the value of the source attribute.", Type: schema.TypeString, Optional: true},
 		},
 	},
 }
@@ -247,11 +271,11 @@ var stringBuilderProcessor = &schema.Schema{
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name":               {Type: schema.TypeString, Optional: true},
-			"is_enabled":         {Type: schema.TypeBool, Optional: true},
-			"template":           {Type: schema.TypeString, Required: true},
-			"target":             {Type: schema.TypeString, Required: true},
-			"is_replace_missing": {Type: schema.TypeBool, Optional: true},
+			"name":               {Description: "The name of the processor.", Type: schema.TypeString, Optional: true},
+			"is_enabled":         {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
+			"template":           {Description: "The formula with one or more attributes and raw text.", Type: schema.TypeString, Required: true},
+			"target":             {Description: "The name of the attribute that contains the result of the template.", Type: schema.TypeString, Required: true},
+			"is_replace_missing": {Description: "If it replaces all missing attributes of template by an empty string.", Type: schema.TypeBool, Optional: true},
 		},
 	},
 }
@@ -266,9 +290,9 @@ var traceIDRemapper = &schema.Schema{
 }
 
 var sourceRemapper = map[string]*schema.Schema{
-	"name":       {Type: schema.TypeString, Optional: true},
-	"is_enabled": {Type: schema.TypeBool, Optional: true},
-	"sources":    {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
+	"name":       {Description: "Name of the processor.", Type: schema.TypeString, Optional: true},
+	"is_enabled": {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
+	"sources":    {Description: "List of source attributes.", Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
 }
 
 var urlParser = &schema.Schema{
@@ -277,11 +301,11 @@ var urlParser = &schema.Schema{
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name":                     {Type: schema.TypeString, Optional: true},
-			"is_enabled":               {Type: schema.TypeBool, Optional: true},
-			"sources":                  {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
-			"target":                   {Type: schema.TypeString, Required: true},
-			"normalize_ending_slashes": {Type: schema.TypeBool, Optional: true},
+			"name":                     {Description: "Name of the processor", Type: schema.TypeString, Optional: true},
+			"is_enabled":               {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
+			"sources":                  {Description: "List of source attributes.", Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
+			"target":                   {Description: "Name of the parent attribute that contains all the extracted details from the sources.", Type: schema.TypeString, Required: true},
+			"normalize_ending_slashes": {Description: "Normalize the ending slashes or not.", Type: schema.TypeBool, Optional: true},
 		},
 	},
 }
@@ -292,11 +316,11 @@ var userAgentParser = &schema.Schema{
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"name":       {Type: schema.TypeString, Optional: true},
-			"is_enabled": {Type: schema.TypeBool, Optional: true},
-			"sources":    {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
-			"target":     {Type: schema.TypeString, Required: true},
-			"is_encoded": {Type: schema.TypeBool, Optional: true},
+			"name":       {Description: "Name of the processor", Type: schema.TypeString, Optional: true},
+			"is_enabled": {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
+			"sources":    {Description: "List of source attributes.", Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
+			"target":     {Description: "Name of the parent attribute that contains all the extracted details from the sources.", Type: schema.TypeString, Required: true},
+			"is_encoded": {Description: "If the source attribute is URL encoded or not.", Type: schema.TypeBool, Optional: true},
 		},
 	},
 }
@@ -307,7 +331,6 @@ func resourceDatadogLogsCustomPipeline() *schema.Resource {
 		Update: resourceDatadogLogsPipelineUpdate,
 		Read:   resourceDatadogLogsPipelineRead,
 		Delete: resourceDatadogLogsPipelineDelete,
-		Exists: resourceDatadogLogsPipelineExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -337,8 +360,12 @@ func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) e
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	ddPipeline, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, d.Id()).Execute()
+	ddPipeline, httpresp, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, d.Id()).Execute()
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 400 {
+			d.SetId("")
+			return nil
+		}
 		return translateClientError(err, "failed to get logs pipeline using Datadog API")
 	}
 	if err = d.Set("name", ddPipeline.GetName()); err != nil {
@@ -388,21 +415,6 @@ func resourceDatadogLogsPipelineDelete(d *schema.ResourceData, meta interface{})
 		return translateClientError(err, "error deleting logs pipeline")
 	}
 	return nil
-}
-
-func resourceDatadogLogsPipelineExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	if _, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, d.Id()).Execute(); err != nil {
-		// API returns 400 when the specific pipeline id doesn't exist through GET request.
-		if strings.Contains(err.Error(), "400 Bad Request") {
-			return false, nil
-		}
-		return false, translateClientError(err, "error getting logs pipeline")
-	}
-	return true, nil
 }
 
 func buildTerraformProcessors(ddProcessors []datadogV1.LogsProcessor) ([]map[string]interface{}, error) {
@@ -1113,6 +1125,7 @@ func getFilterSchema() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"query": {
+				Description:  "Filter criteria of the category.",
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validation.StringIsNotEmpty,

@@ -2,9 +2,10 @@ package datadog
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	"testing"
 )
 
 const tfSecurityDefaultRuleName = "datadog_security_monitoring_default_rule.acceptance_test"
