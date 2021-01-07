@@ -79,7 +79,7 @@ func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
 				ImportState:             true,
 				ImportStateVerify:       true,
 				ImportStateVerifyIgnore: []string{"enabled"},
-				Check: testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
+				Check:                   testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
 			},
 		},
 	})
