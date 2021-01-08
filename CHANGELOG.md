@@ -1,3 +1,10 @@
+## 2.19.1 (January 8, 2021)
+
+BUGFIXES:
+
+-   `datadog_monitor`: Handle 404 properly with retry ([#824](https://github.com/DataDog/terraform-provider-datadog/pull/824)).
+-   `datadog_integration_aws`: Remove incorrect deprecation warning ([#820](https://github.com/DataDog/terraform-provider-datadog/pull/820)).
+
 ## 2.19.0 (January 7, 2021)
 
 FEATURES:
