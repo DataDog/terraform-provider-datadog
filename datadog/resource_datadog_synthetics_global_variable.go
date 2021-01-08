@@ -48,6 +48,43 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
+			"parse_test_id": {
+				Description: "Id of the Synthetics test to use for a variable from test",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"parse_test_options": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"type": {
+							Type:         schema.TypeString,
+							Required:     true,
+							ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsGlobalVariableParseTestOptionsTypeFromValue),
+						},
+						"parser": {
+							Type:     schema.TypeList,
+							Required: true,
+							MaxItems: 1,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"type": {
+										Type:         schema.TypeString,
+										Required:     true,
+										ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsGlobalVariableParserTypeFromValue),
+									},
+									"value": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -144,6 +181,21 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 
 	syntheticsGlobalVariable.SetValue(syntheticsGlobalVariableValue)
 
+	if parseTestId, ok := d.GetOk("parse_test_id"); ok {
+		if _, ok := d.GetOk("parse_test_options.0"); ok {
+			syntheticsGlobalVariable.SetParseTestPublicId(parseTestId.(string))
+
+			parseTestOptions := datadogV1.SyntheticsGlobalVariableParseTestOptions{}
+			parseTestOptions.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(d.Get("parse_test_options.0.type").(string)))
+			parser := datadogV1.SyntheticsGlobalVariableParseTestOptionsParser{}
+			parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(d.Get("parse_test_options.0.parser.0.type").(string)))
+			parser.SetValue(d.Get("parse_test_options.0.parser.0.type").(string))
+			parseTestOptions.SetParser(parser)
+
+			syntheticsGlobalVariable.SetParseTestOptions(parseTestOptions)
+		}
+	}
+
 	return syntheticsGlobalVariable
 }
 
@@ -164,6 +216,27 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 	d.Set("secure", syntheticsGlobalVariableValue.GetSecure())
 
 	d.Set("tags", syntheticsGlobalVariable.Tags)
+
+	if syntheticsGlobalVariable.HasParseTestPublicId() {
+		d.Set("parse_test_id", syntheticsGlobalVariable.GetParseTestPublicId())
+
+		localParseTestOptions := make(map[string]interface{})
+		localParser := make(map[string]string)
+
+		parseTestOptions := syntheticsGlobalVariable.GetParseTestOptions()
+		parser := parseTestOptions.GetParser()
+
+		if v, ok := parser.GetTypeOk(); ok {
+			localParser["type"] = string(*v)
+		}
+
+		localParser["value"] = parser.GetValue()
+
+		localParseTestOptions["type"] = parseTestOptions.GetType()
+		localParseTestOptions["parser"] = localParser
+
+		d.Set("parse_test_options", localParseTestOptions)
+	}
 
 	return nil
 }
