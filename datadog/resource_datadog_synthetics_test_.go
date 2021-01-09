@@ -8,6 +8,7 @@ import (
 	"log"
 	_nethttp "net/http"
 	"regexp"
+	"sort"
 	"strconv"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
@@ -1011,6 +1012,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		for _, s := range attr.([]interface{}) {
 			locations = append(locations, s.(string))
 		}
+		sort.Strings(locations)
 		syntheticsTest.SetLocations(locations)
 	}
 
