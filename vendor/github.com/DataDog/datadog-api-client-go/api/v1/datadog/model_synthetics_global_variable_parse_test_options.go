@@ -14,6 +14,8 @@ import (
 
 // SyntheticsGlobalVariableParseTestOptions Parser options to use for retrieving a Synthetics global variable from a Synthetics Test. Used in conjunction with `parse_test_public_id`.
 type SyntheticsGlobalVariableParseTestOptions struct {
+	// When type is `http_header`, name of the header to use to extract the value.
+	Field  *string                                        `json:"field,omitempty"`
 	Parser SyntheticsGlobalVariableParseTestOptionsParser `json:"parser"`
 	Type   SyntheticsGlobalVariableParseTestOptionsType   `json:"type"`
 }
@@ -35,6 +37,38 @@ func NewSyntheticsGlobalVariableParseTestOptions(parser SyntheticsGlobalVariable
 func NewSyntheticsGlobalVariableParseTestOptionsWithDefaults() *SyntheticsGlobalVariableParseTestOptions {
 	this := SyntheticsGlobalVariableParseTestOptions{}
 	return &this
+}
+
+// GetField returns the Field field value if set, zero value otherwise.
+func (o *SyntheticsGlobalVariableParseTestOptions) GetField() string {
+	if o == nil || o.Field == nil {
+		var ret string
+		return ret
+	}
+	return *o.Field
+}
+
+// GetFieldOk returns a tuple with the Field field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsGlobalVariableParseTestOptions) GetFieldOk() (*string, bool) {
+	if o == nil || o.Field == nil {
+		return nil, false
+	}
+	return o.Field, true
+}
+
+// HasField returns a boolean if a field has been set.
+func (o *SyntheticsGlobalVariableParseTestOptions) HasField() bool {
+	if o != nil && o.Field != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetField gets a reference to the given string and assigns it to the Field field.
+func (o *SyntheticsGlobalVariableParseTestOptions) SetField(v string) {
+	o.Field = &v
 }
 
 // GetParser returns the Parser field value
@@ -87,6 +121,9 @@ func (o *SyntheticsGlobalVariableParseTestOptions) SetType(v SyntheticsGlobalVar
 
 func (o SyntheticsGlobalVariableParseTestOptions) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.Field != nil {
+		toSerialize["field"] = o.Field
+	}
 	if true {
 		toSerialize["parser"] = o.Parser
 	}
