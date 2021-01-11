@@ -15,8 +15,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 )
 
-var syntheticsConfigVariableTypes = []string{"text"}
-
 func resourceDatadogSyntheticsTest() *schema.Resource {
 	return &schema.Resource{
 		Description: "Provides a Datadog synthetics test resource. This can be used to create and manage Datadog synthetics test.",
