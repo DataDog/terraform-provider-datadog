@@ -21,21 +21,25 @@ func resourceDatadogLogsMetric() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 
 			"compute": {
-				Type:        schema.TypeMap,
+				Type:        schema.TypeList,
 				Required:    true,
+				ForceNew:    true,
 				Description: "The compute rule to compute the log-based metric. This field can't be updated after creation.",
+				MaxItems:    1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 
 						"aggregation_type": {
 							Type:        schema.TypeString,
 							Required:    true,
+							ForceNew:    true,
 							Description: "The type of aggregation to use. This field can't be updated after creation.",
 						},
 
 						"path": {
 							Type:        schema.TypeString,
 							Optional:    true,
+							ForceNew:    true,
 							Description: "The path to the value the log-based metric will aggregate on (only used if the aggregation type is a \"distribution\"). This field can't be updated after creation.",
 						},
 					},
@@ -43,9 +47,10 @@ func resourceDatadogLogsMetric() *schema.Resource {
 			},
 
 			"filter": {
-				Type:        schema.TypeMap,
+				Type:        schema.TypeList,
 				Required:    true,
 				Description: "The log-based metric filter. Logs matching this filter will be aggregated in this metric.",
+				MaxItems:    1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 
@@ -83,6 +88,7 @@ func resourceDatadogLogsMetric() *schema.Resource {
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
+				ForceNew:    true,
 				Description: "The name of the log-based metric. This field can't be updated after creation.",
 			},
 		},
@@ -118,7 +124,7 @@ func buildDatadogLogsMetric(d *schema.ResourceData) (*datadogV2.LogsMetricCreate
 }
 
 func getCompute(d *schema.ResourceData) (*datadogV2.LogsMetricCompute, error) {
-	resourceCompute := d.Get("compute").(map[string]interface{})
+	resourceCompute := d.Get("compute").([]interface{})[0].(map[string]interface{})
 	compute := datadogV2.NewLogsMetricComputeWithDefaults()
 
 	if aggregationType, ok := resourceCompute["aggregation_type"]; ok {
@@ -137,7 +143,7 @@ func getCompute(d *schema.ResourceData) (*datadogV2.LogsMetricCompute, error) {
 }
 
 func getFilter(d *schema.ResourceData) (*datadogV2.LogsMetricFilter, error) {
-	resourceFilter := d.Get("filter").(map[string]interface{})
+	resourceFilter := d.Get("filter").([]interface{})[0].(map[string]interface{})
 	filter := datadogV2.NewLogsMetricFilterWithDefaults()
 
 	if query, ok := resourceFilter["query"]; ok {
@@ -219,14 +225,14 @@ func resourceDatadogLogsMetricRead(d *schema.ResourceData, meta interface{}) err
 			if v, ok := computeDDModel.GetPathOk(); ok {
 				computeMap["path"] = *v
 			}
-			d.Set("compute", computeMap)
+			d.Set("compute", []map[string]interface{}{computeMap})
 		}
 		if filterDDModel, ok := ddAttributes.GetFilterOk(); ok {
 			filterMap := map[string]interface{}{}
 			if v, ok := filterDDModel.GetQueryOk(); ok {
 				filterMap["query"] = *v
 			}
-			d.Set("filter", filterMap)
+			d.Set("filter", []map[string]interface{}{filterMap})
 		}
 		if groupByArray, ok := ddAttributes.GetGroupByOk(); ok {
 			mapAttributesArray := make([]map[string]interface{}, 0)

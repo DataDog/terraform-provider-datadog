@@ -26,11 +26,15 @@ func TestAccDatadogLogsMetric_Basic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogLogsMetricExists(accProvider, "datadog_logs_metric.testing_logs_metric"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_metric.testing_logs_metric", "compute.aggregation_type", "distribution"),
+						"datadog_logs_metric.testing_logs_metric", "compute.#", "1"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_metric.testing_logs_metric", "compute.path", "@duration"),
+						"datadog_logs_metric.testing_logs_metric", "compute.0.aggregation_type", "distribution"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_metric.testing_logs_metric", "filter.query", "service:test"),
+						"datadog_logs_metric.testing_logs_metric", "compute.0.path", "@duration"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "filter.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "filter.0.query", "service:test"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_metric.testing_logs_metric", "group_by.#", "2"),
 					resource.TestCheckResourceAttr(
@@ -49,11 +53,11 @@ func testAccCheckDatadogLogsMetricConfig_Basic(uniq string) string {
 	return fmt.Sprintf(`
         resource "datadog_logs_metric" "testing_logs_metric" {
 			name = "%s"
-			compute = {
+			compute {
 				aggregation_type = "distribution"
 				path             = "@duration"
 			}
-			filter = {
+			filter {
 				query = "service:test"
 			}
 			group_by {
