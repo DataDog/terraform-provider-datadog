@@ -29,6 +29,7 @@ The following arguments are supported:
 -   `parse_test_id`: (Optional) ID of the Synthetics test to use a source of the global variable value.
 -   `parse_test_options`: (Optional) Options to extract a value from a Synthetics test.
     -   `type`: (Required) Defines the source to use to extract the value. Allowed enum values: "http_body", "http_header".
+    -   `field`: (Optional) Required when type=http_header. Defines the header to use to extract the value.
     -   `parser`: (Required) Options to define how the value is extracted.
         -   `type`: (Required) Type of parser to extract the value. Allowed enum values: "raw", "json_path", "regex".
         -   `value`: (Optional) Value for the parser to use, required for type "json_path" or "regex".

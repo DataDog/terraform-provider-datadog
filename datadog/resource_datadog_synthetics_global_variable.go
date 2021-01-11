@@ -59,6 +59,10 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 				MaxItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
+						"field": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
 						"type": {
 							Type:         schema.TypeString,
 							Required:     true,
@@ -187,9 +191,18 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 
 			parseTestOptions := datadogV1.SyntheticsGlobalVariableParseTestOptions{}
 			parseTestOptions.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(d.Get("parse_test_options.0.type").(string)))
+
+			if field, ok := d.GetOk("parse_test_options.0.field"); ok {
+				parseTestOptions.SetField(field.(string))
+			}
+
 			parser := datadogV1.SyntheticsGlobalVariableParseTestOptionsParser{}
 			parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(d.Get("parse_test_options.0.parser.0.type").(string)))
-			parser.SetValue(d.Get("parse_test_options.0.parser.0.type").(string))
+
+			if value, ok := d.GetOk("parse_test_options.0.parser.0.value"); ok {
+				parser.SetValue(value.(string))
+			}
+
 			parseTestOptions.SetParser(parser)
 
 			syntheticsGlobalVariable.SetParseTestOptions(parseTestOptions)
@@ -233,6 +246,9 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 		localParser["value"] = parser.GetValue()
 
 		localParseTestOptions["type"] = parseTestOptions.GetType()
+		if v, ok := parseTestOptions.GetFieldOk(); ok {
+			localParseTestOptions["field"] = string(*v)
+		}
 		localParseTestOptions["parser"] = localParser
 
 		d.Set("parse_test_options", localParseTestOptions)

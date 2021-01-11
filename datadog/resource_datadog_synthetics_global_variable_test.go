@@ -275,7 +275,7 @@ func createSyntheticsGlobalVariableFromTestStep(accProvider *schema.Provider, cl
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_global_variable.foo", "parse_test_id"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_global_variable.foo", "parse_test_options.0.type", "http_body"),
+				"datadog_synthetics_global_variable.foo", "parse_test_options.0.type", "http_header"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_global_variable.foo", "parse_test_options.0.parser.0.type", "regex"),
 			resource.TestCheckResourceAttr(
@@ -332,7 +332,8 @@ resource "datadog_synthetics_global_variable" "foo" {
        value = ""
        parse_test_id = datadog_synthetics_test.bar.id
        parse_test_options {
-               type = "http_body"
+               type = "http_header"
+               field = "content-type"
                parser {
                        type = "regex"
                        value = ".*"
