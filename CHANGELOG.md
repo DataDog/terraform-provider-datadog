@@ -1,42 +1,68 @@
+## 2.19.1 (January 8, 2021)
+
+BUGFIXES:
+
+-   `datadog_monitor`: Handle 404 properly with retry ([#824](https://github.com/DataDog/terraform-provider-datadog/pull/824)).
+-   `datadog_integration_aws`: Remove incorrect deprecation warning ([#820](https://github.com/DataDog/terraform-provider-datadog/pull/820)).
+
+## 2.19.0 (January 7, 2021)
+
+FEATURES:
+
+-   `datadog_synthetics_test`: Add support for config variables ([#807](https://github.com/DataDog/terraform-provider-datadog/pull/807)).
+
+BUGFIXES:
+
+-   `datadog_user`: Add ability to send user invitations in v2 API ([#814](https://github.com/DataDog/terraform-provider-datadog/pull/814)).
+-   `datadog_monitor`: Fix updating priorities. ([#804](https://github.com/DataDog/terraform-provider-datadog/pull/804)).
+-   `datadog_monitor`: Add retry on 502 for get and validate ([#816](https://github.com/DataDog/terraform-provider-datadog/pull/816)).
+-   `datadog_synthetics_test`: Fix error when setting status code assertion with regex ([#784](https://github.com/DataDog/terraform-provider-datadog/pull/784)).
+-   `datadog_logs_index_order`: Enable `UpdateLogsIndexOrder` operation ([#790](https://github.com/DataDog/terraform-provider-datadog/pull/790)).
+-   Validate enum values ([#794](https://github.com/DataDog/terraform-provider-datadog/pull/794)).
+
+NOTES:
+
+-   Remove deprecated `ExistsFunc` usage ([#805](https://github.com/DataDog/terraform-provider-datadog/pull/805)).
+
 ## 2.18.1 (December 9, 2020)
 
 BUGFIXES:
 
--   `datadog_user`: Automatically upgrade users when `roles` is set ([#778](https://github.com/DataDog/terraform-provider-datadog/pull/778)
--   `datadog_dashboard`: Add ForceNew to `layout_type` dashboard attribute ([#774](https://github.com/DataDog/terraform-provider-datadog/pull/774)
+-   `datadog_user`: Automatically upgrade users when `roles` is set ([#778](https://github.com/DataDog/terraform-provider-datadog/pull/778)).
+-   `datadog_dashboard`: Add ForceNew to `layout_type` dashboard attribute ([#774](https://github.com/DataDog/terraform-provider-datadog/pull/774)).
 
 ## 2.18.0 (December 8, 2020)
 
 IMPROVEMENTS:
 
--   `datadog_synthetics_private_location`: Add support for synthetics private locations ([#761](https://github.com/DataDog/terraform-provider-datadog/pull/761))
--   `datadog_security_monitoring_rule`: Add support for security monitoring rules ([#763](https://github.com/DataDog/terraform-provider-datadog/pull/763))
+-   `datadog_synthetics_private_location`: Add support for synthetics private locations ([#761](https://github.com/DataDog/terraform-provider-datadog/pull/761)).
+-   `datadog_security_monitoring_rule`: Add support for security monitoring rules ([#763](https://github.com/DataDog/terraform-provider-datadog/pull/763)).
 
 FEATURES:
 
--   `datadog_service_level_objective`: Add `force_delete` attribute, to manage deletion in dashboard references ([#771](https://github.com/DataDog/terraform-provider-datadog/pull/771))
--   `datadog_synthetics_global_variable`: Add support for secure global variables ([#758](https://github.com/DataDog/terraform-provider-datadog/pull/758))
+-   `datadog_service_level_objective`: Add `force_delete` attribute, to manage deletion in dashboard references ([#771](https://github.com/DataDog/terraform-provider-datadog/pull/771)).
+-   `datadog_synthetics_global_variable`: Add support for secure global variables ([#758](https://github.com/DataDog/terraform-provider-datadog/pull/758)).
 
 BUGFIXES:
 
--   `datadog_synthetics_test`: Handle numbers in `targetvalue` for synthetics assertions ([#766](https://github.com/DataDog/terraform-provider-datadog/pull/766))
+-   `datadog_synthetics_test`: Handle numbers in `targetvalue` for synthetics assertions ([#766](https://github.com/DataDog/terraform-provider-datadog/pull/766)).
 
 NOTES:
 
--   `datadog_user`: Use v2 API. This deprecates several v1 only attributes ([#752](https://github.com/DataDog/terraform-provider-datadog/pull/752))
+-   `datadog_user`: Use v2 API. This deprecates several v1 only attributes ([#752](https://github.com/DataDog/terraform-provider-datadog/pull/752)).
 
 ## 2.17.0 (November 24, 2020)
 
 FEATURES:
 
 -   `datadog_role`: Add role datasource ([#751](https://github.com/DataDog/terraform-provider-datadog/pull/751))
--   `datadog_role`: Add roles resource and permissions datasource ([#753](https://github.com/DataDog/terraform-provider-datadog/pull/753))
+-   `datadog_role`: Add roles resource and permissions datasource ([#753](https://github.com/DataDog/terraform-provider-datadog/pull/753)).
 
 BUGFIXES:
 
--   `datadog_dashboard`: Handle multiple dashboards correctly in the datasource ([#759](https://github.com/DataDog/terraform-provider-datadog/pull/759))
--   `datadog_synthetics_test`: Set client certificate content as sensitive ([#750](https://github.com/DataDog/terraform-provider-datadog/pull/750))
--   `datadog_monitor`: Fix monitor `no_data_timeframe` import ([#748](https://github.com/DataDog/terraform-provider-datadog/pull/748))
+-   `datadog_dashboard`: Handle multiple dashboards correctly in the datasource ([#759](https://github.com/DataDog/terraform-provider-datadog/pull/759)).
+-   `datadog_synthetics_test`: Set client certificate content as sensitive ([#750](https://github.com/DataDog/terraform-provider-datadog/pull/750)).
+-   `datadog_monitor`: Fix monitor `no_data_timeframe` import ([#748](https://github.com/DataDog/terraform-provider-datadog/pull/748)).
 
 ## 2.16.0 (November 9, 2020)
 
@@ -61,14 +87,14 @@ BUGFIXES:
 
 NOTES:
 
--   `provider`: Replace 4d63.com/tz with time/tzdata. It means go 1.15 is required now to build the provider ([#728](https://github.com/DataDog/terraform-provider-datadog/pull/728)
+-   `provider`: Replace 4d63.com/tz with time/tzdata. It means go 1.15 is required now to build the provider ([#728](https://github.com/DataDog/terraform-provider-datadog/pull/728)).
 
 ## 2.14.0 (October 27, 2020)
 
 FEATURES:
 
--   `datadog_logs_archive_order`: Add a new resource to reorder logs archives ([#694](https://github.com/DataDog/terraform-provider-datadog/pull/694))
--   `datadog_synthetics_global_variable`: Add a new resource to support global variables in synthetics tests ([#675](https://github.com/DataDog/terraform-provider-datadog/pull/675))
+-   `datadog_logs_archive_order`: Add a new resource to reorder logs archives ([#694](https://github.com/DataDog/terraform-provider-datadog/pull/694)).
+-   `datadog_synthetics_global_variable`: Add a new resource to support global variables in synthetics tests ([#675](https://github.com/DataDog/terraform-provider-datadog/pull/675)).
 
 IMPROVEMENTS:
 
@@ -79,7 +105,7 @@ IMPROVEMENTS:
 -   `datadog_logs_archive`: Add `rehydration_tags` property ([#705](https://github.com/DataDog/terraform-provider-datadog/pull/705)).
 -   `datadog_logs_archive`: Add `include_tags` property ([#715](https://github.com/DataDog/terraform-provider-datadog/pull/715)).
 -   `datadog_logs_custom_pipeline`: Add `target_format` property to the Logs attribute remapper ([#682](https://github.com/DataDog/terraform-provider-datadog/pull/682)).
--   `datadog_service_level_objective`: Add validate option ([#672](https://github.com/DataDog/terraform-provider-datadog/pull/672))
+-   `datadog_service_level_objective`: Add validate option ([#672](https://github.com/DataDog/terraform-provider-datadog/pull/672)).
 -   `datadog_synthetics_test`: Add support for DNS tests ([#673](https://github.com/DataDog/terraform-provider-datadog/pull/673)).
 -   `datadog_synthetics_test`: Add support for global variables ([#691](https://github.com/DataDog/terraform-provider-datadog/pull/691)).
 -   `datadog_synthetics_test`: Add support for `dns_server` and `request_client_certificate` properties ([#711](https://github.com/DataDog/terraform-provider-datadog/pull/711)).
@@ -94,32 +120,32 @@ BUGFIXES:
 
 FEATURES:
 
--   `datadog_dashboard_list`: Add a new datasource for dashboard lists ([#657](https://github.com/DataDog/terraform-provider-datadog/pull/657))
--   `datadog_synthetics_locations`: Add a new datasource for locations ([#309](https://github.com/DataDog/terraform-provider-datadog/pull/309))
+-   `datadog_dashboard_list`: Add a new datasource for dashboard lists ([#657](https://github.com/DataDog/terraform-provider-datadog/pull/657)).
+-   `datadog_synthetics_locations`: Add a new datasource for locations ([#309](https://github.com/DataDog/terraform-provider-datadog/pull/309)).
 
 IMPROVEMENTS:
 
 -   `datadog_dashboard`: A new `dashboard_lists` attribute allows adding dashboard to dashboard lists in the resource itself ([#654](https://github.com/DataDog/terraform-provider-datadog/pull/654)).
--   `datadog_dashboard`: Add support for `multi_compute` attribute ([#629](https://github.com/DataDog/terraform-provider-datadog/pull/629))
--   `datadog_dashboard`: Add support for `metric` in `conditional_formats` ([#617](https://github.com/DataDog/terraform-provider-datadog/pull/617))
--   `datadog_dashboard`: Add support for `rum_query` and `security_query` widget requests ([#416](https://github.com/DataDog/terraform-provider-datadog/pull/416))
--   `datadog_monitor`: Monitors are now validated during plan ([#639](https://github.com/DataDog/terraform-provider-datadog/pull/639))
--   `datadog_downtime`: Add support for recurrent rules ([#610](https://github.com/DataDog/terraform-provider-datadog/pull/610))
--   `datadog_synthetics_test`: Add support for steps for browser tests ([#638](https://github.com/DataDog/terraform-provider-datadog/pull/638))
--   `datadog_synthetics_test`: Add subtype TCP test support for API tests ([#632](https://github.com/DataDog/terraform-provider-datadog/pull/632))
--   `datadog_synthetics_test`: Add retry and monitor options ([#636](https://github.com/DataDog/terraform-provider-datadog/pull/636))
+-   `datadog_dashboard`: Add support for `multi_compute` attribute ([#629](https://github.com/DataDog/terraform-provider-datadog/pull/629)).
+-   `datadog_dashboard`: Add support for `metric` in `conditional_formats` ([#617](https://github.com/DataDog/terraform-provider-datadog/pull/617)).
+-   `datadog_dashboard`: Add support for `rum_query` and `security_query` widget requests ([#416](https://github.com/DataDog/terraform-provider-datadog/pull/416)).
+-   `datadog_monitor`: Monitors are now validated during plan ([#639](https://github.com/DataDog/terraform-provider-datadog/pull/639)).
+-   `datadog_downtime`: Add support for recurrent rules ([#610](https://github.com/DataDog/terraform-provider-datadog/pull/610)).
+-   `datadog_synthetics_test`: Add support for steps for browser tests ([#638](https://github.com/DataDog/terraform-provider-datadog/pull/638)).
+-   `datadog_synthetics_test`: Add subtype TCP test support for API tests ([#632](https://github.com/DataDog/terraform-provider-datadog/pull/632)).
+-   `datadog_synthetics_test`: Add retry and monitor options ([#636](https://github.com/DataDog/terraform-provider-datadog/pull/636)).
 
 BUGFIXES:
 
--   `datadog_dashboard`: Prevent nil pointer dereference with template variables without prefix ([#630](https://github.com/DataDog/terraform-provider-datadog/pull/630))
--   `datadog_dashboard`: Don't allow empty content in note widgets ([#607](https://github.com/DataDog/terraform-provider-datadog/pull/607))
--   `datadog_downtime`: Ignore useless diff on start attribute ([#597](https://github.com/DataDog/terraform-provider-datadog/pull/597))
--   `datadog_logs_custom_pipeline`: Don't allow empty pipeline filter ([#605](https://github.com/DataDog/terraform-provider-datadog/pull/605))
--   `provider`: Completely skip creds validation when validate is false ([#641](https://github.com/DataDog/terraform-provider-datadog/pull/641))
+-   `datadog_dashboard`: Prevent nil pointer dereference with template variables without prefix ([#630](https://github.com/DataDog/terraform-provider-datadog/pull/630)).
+-   `datadog_dashboard`: Don't allow empty content in note widgets ([#607](https://github.com/DataDog/terraform-provider-datadog/pull/607)).
+-   `datadog_downtime`: Ignore useless diff on start attribute ([#597](https://github.com/DataDog/terraform-provider-datadog/pull/597)).
+-   `datadog_logs_custom_pipeline`: Don't allow empty pipeline filter ([#605](https://github.com/DataDog/terraform-provider-datadog/pull/605)).
+-   `provider`: Completely skip creds validation when validate is false ([#641](https://github.com/DataDog/terraform-provider-datadog/pull/641)).
 
 NOTES:
 
--   `datadog_synthetics_test`: The `options` attribute has been deprecated by `options_list` ([#624](https://github.com/DataDog/terraform-provider-datadog/pull/624)
+-   `datadog_synthetics_test`: The `options` attribute has been deprecated by `options_list` ([#624](https://github.com/DataDog/terraform-provider-datadog/pull/624)).
 
 ## 2.12.1 (July 23, 2020)
 
@@ -129,44 +155,44 @@ This release doesn't contain any user-facing changes. It's done as a required pa
 
 FEATURES:
 
--   `datadog_monitor`: Add new datasource for monitors ([#569](https://github.com/DataDog/terraform-provider-datadog/issues/569)), ([#585](https://github.com/DataDog/terraform-provider-datadog/issues/585))
+-   `datadog_monitor`: Add new datasource for monitors ([#569](https://github.com/DataDog/terraform-provider-datadog/issues/569)), ([#585](https://github.com/DataDog/terraform-provider-datadog/issues/585)).
 
 IMPROVEMENTS:
 
--   `datadog_synthetics_test`: Enable usage of `validatesJSONPath` operator ([#571](https://github.com/DataDog/terraform-provider-datadog/issues/571))
--   `datadog_synthetics_test`: Allow usage of the new assertion format ([#571](https://github.com/DataDog/terraform-provider-datadog/issues/571)), ([#582](https://github.com/DataDog/terraform-provider-datadog/issues/582))
--   `datadog_synthetics_test`: Add support for `basicAuth` and `query` ([#586](https://github.com/DataDog/terraform-provider-datadog/issues/586))
+-   `datadog_synthetics_test`: Enable usage of `validatesJSONPath` operator ([#571](https://github.com/DataDog/terraform-provider-datadog/issues/571)).
+-   `datadog_synthetics_test`: Allow usage of the new assertion format ([#571](https://github.com/DataDog/terraform-provider-datadog/issues/571)), ([#582](https://github.com/DataDog/terraform-provider-datadog/issues/582)).
+-   `datadog_synthetics_test`: Add support for `basicAuth` and `query` ([#586](https://github.com/DataDog/terraform-provider-datadog/issues/586)).
 
 BUGFIXES:
 
--   `datadog_downtime`: Replace `time.LoadLocation` by tz.LoadLocation from `4d63.com/tz` package ([#560](https://github.com/DataDog/terraform-provider-datadog/issues/560))
--   `datadog_downtime`: Use `TypeSet` for monitor tags to avoid unnecessary diffs ([#540](https://github.com/DataDog/terraform-provider-datadog/issues/540))
--   `provider`: Respect the debug setting in the new Go Datadog client ([#580](https://github.com/DataDog/terraform-provider-datadog/issues/580))
+-   `datadog_downtime`: Replace `time.LoadLocation` by tz.LoadLocation from `4d63.com/tz` package ([#560](https://github.com/DataDog/terraform-provider-datadog/issues/560)).
+-   `datadog_downtime`: Use `TypeSet` for monitor tags to avoid unnecessary diffs ([#540](https://github.com/DataDog/terraform-provider-datadog/issues/540)).
+-   `provider`: Respect the debug setting in the new Go Datadog client ([#580](https://github.com/DataDog/terraform-provider-datadog/issues/580)).
 
 NOTES:
 
--   `datadog_integration_pagerduty`: This resource is deprecated. You can use `datadog_integration_pagerduty_service_object` resources directly once the integration is activated ([#584](https://github.com/DataDog/terraform-provider-datadog/issues/584))
+-   `datadog_integration_pagerduty`: This resource is deprecated. You can use `datadog_integration_pagerduty_service_object` resources directly once the integration is activated ([#584](https://github.com/DataDog/terraform-provider-datadog/issues/584)).
 
 ## 2.11.0 (June 29, 2020)
 
 FEATURES:
 
--   `datadog_logs_archive`: Add `datadog_logs_archive` resource ([#544](https://github.com/DataDog/terraform-provider-datadog/pull/544))
--   `datadog_integration_azure`: Add `datadog_integration_azure` resource ([#556](https://github.com/DataDog/terraform-provider-datadog/pull/556))
+-   `datadog_logs_archive`: Add `datadog_logs_archive` resource ([#544](https://github.com/DataDog/terraform-provider-datadog/pull/544)).
+-   `datadog_integration_azure`: Add `datadog_integration_azure` resource ([#556](https://github.com/DataDog/terraform-provider-datadog/pull/556)).
 
 ## 2.10.0 (June 26, 2020)
 
 FEATURES:
 
--   `datadog_integration_aws`: Add `excluded_regions` parameter ([#549](https://github.com/DataDog/terraform-provider-datadog/pull/549))
--   `datadog_dashboard`: Add `ServiceMap` widget to dashboard ([#550](https://github.com/DataDog/terraform-provider-datadog/pull/550))
--   `datadog_dashboard`: Add `show_legend` and `legend_size` fields to Distribution widget ([#551](https://github.com/DataDog/terraform-provider-datadog/pull/551))
--   `datadog_dashboard`: Add `network_query` and `rum_query` to timeseries widget ([#555](https://github.com/DataDog/terraform-provider-datadog/pull/555))
--   `datadog_dashboard`: Add `event`, `legend_size` and `show_legend` fields to heatmap widget ([#554](https://github.com/DataDog/terraform-provider-datadog/pull/554))
+-   `datadog_integration_aws`: Add `excluded_regions` parameter ([#549](https://github.com/DataDog/terraform-provider-datadog/pull/549)).
+-   `datadog_dashboard`: Add `ServiceMap` widget to dashboard ([#550](https://github.com/DataDog/terraform-provider-datadog/pull/550)).
+-   `datadog_dashboard`: Add `show_legend` and `legend_size` fields to Distribution widget ([#551](https://github.com/DataDog/terraform-provider-datadog/pull/551)).
+-   `datadog_dashboard`: Add `network_query` and `rum_query` to timeseries widget ([#555](https://github.com/DataDog/terraform-provider-datadog/pull/555)).
+-   `datadog_dashboard`: Add `event`, `legend_size` and `show_legend` fields to heatmap widget ([#554](https://github.com/DataDog/terraform-provider-datadog/pull/554)).
 
 IMPROVEMENTS:
 
--   `datadog_dashboard`: Add readonly url field to dashboard ([#558](https://github.com/DataDog/terraform-provider-datadog/pull/558))
+-   `datadog_dashboard`: Add readonly url field to dashboard ([#558](https://github.com/DataDog/terraform-provider-datadog/pull/558)).
 
 ## 2.9.0 (June 22, 2020)
 
