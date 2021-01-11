@@ -9,6 +9,7 @@
 package datadog
 
 import (
+	"bytes"
 	_context "context"
 	_fmt "fmt"
 	_ioutil "io/ioutil"
@@ -145,6 +146,7 @@ func (a *LogsIndexesApiService) GetLogsIndexExecute(r ApiGetLogsIndexRequest) (L
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -303,6 +305,7 @@ func (a *LogsIndexesApiService) GetLogsIndexOrderExecute(r ApiGetLogsIndexOrderR
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -452,6 +455,7 @@ func (a *LogsIndexesApiService) ListLogIndexesExecute(r ApiListLogIndexesRequest
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -619,6 +623,7 @@ func (a *LogsIndexesApiService) UpdateLogsIndexExecute(r ApiUpdateLogsIndexReque
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -799,6 +804,7 @@ func (a *LogsIndexesApiService) UpdateLogsIndexOrderExecute(r ApiUpdateLogsIndex
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
