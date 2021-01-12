@@ -18,7 +18,7 @@ resource "datadog_monitor" "foo" {
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4"
 
-  thresholds = {
+  monitor_thresholds = {
     warning           = 2
     warning_recovery  = 1
     critical          = 4
@@ -45,7 +45,7 @@ resource "datadog_monitor" "foo" {
 
 The following arguments are supported:
 
--   `type`: (Required) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) page. The available options are below. **Note**: The monitor type cannot be changed after a monitor is created.
+*   `type`: (Required) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) page. The available options are below. **Note**: The monitor type cannot be changed after a monitor is created.
     -   `metric alert`
     -   `service check`
     -   `event alert`
@@ -57,26 +57,26 @@ The following arguments are supported:
     -   `synthetics alert`
     -   `trace-analytics alert`
     -   `slo alert`
--   `name`: (Required) Name of Datadog monitor
--   `query`: (Required) The monitor query to notify on. Note this is not the same query you see in the UI and
+*   `name`: (Required) Name of Datadog monitor
+*   `query`: (Required) The monitor query to notify on. Note this is not the same query you see in the UI and
 
     the syntax is different depending on the monitor `type` , please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. **Warning:** `terraform plan` won't perform any validation of the query contents.
 
--   `message`: (Required) A message to include with notifications for this monitor.
+*   `message`: (Required) A message to include with notifications for this monitor.
 
     Email notifications can be sent to specific users by using the same '@username' notation as events.
 
--   `escalation_message`: (Optional) A message to include with a re-notification. Supports the '@username'
+*   `escalation_message`: (Optional) A message to include with a re-notification. Supports the '@username'
 
     notification allowed elsewhere.
 
--   `thresholds`: (Optional)
+*   `monitor_thresholds`: (Optional)
 
     -   Metric alerts:
 
-    A dictionary of thresholds by threshold type. Currently we have four threshold types for metric alerts: critical, critical recovery, warning, and warning recovery. Critical is defined in the query, but can also be specified in this option. Warning and recovery thresholds can only be specified using the thresholds option. Example usage:
+    List of one element containing the threshold definitions. Currently we have four threshold types for metric alerts: critical, critical recovery, warning, and warning recovery. Critical is defined in the query, but can also be specified in this option. Warning and recovery thresholds can only be specified using the thresholds option. Example usage:
 
-          thresholds = {
+          monitor_thresholds {
               critical          = 90
               critical_recovery = 85
               warning           = 80
@@ -87,14 +87,16 @@ The following arguments are supported:
 
     -   Service checks:
 
-    A dictionary of thresholds by status. Because service checks can have multiple thresholds, we don't define them directly in the query. Default values:
+    List of one element containing the threshold definitions. Because service checks can have multiple thresholds, we don't define them directly in the query. Default values:
 
-          thresholds = {
+          monitor_thresholds {
               ok       = 1
               critical = 1
               warning  = 1
               unknown  = 1
           }
+
+*   `thresholds`: (Deprecated, Optional) A dictionary of thresholds by threshold type. Use `monitor_thresholds` instead.
 
 *   `notify_no_data` (Optional) A boolean indicating whether this monitor will notify when data stops reporting. Defaults
 
@@ -136,9 +138,10 @@ The following arguments are supported:
 *   `locked` (Optional) A boolean indicating whether changes to to this monitor should be restricted to the creator or admins. Defaults to False.
 *   `tags` (Optional) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
 *   `force_delete` (Optional) A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).
-*   `threshold_windows` (Optional) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors.
+*   `monitor_threshold_windows` (Optional) A list of one element containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors.
     -   `recovery_window` describes how long an anomalous metric must be normal before the alert recovers.
     -   `trigger_window` describes how long a metric must be anomalous before an alert triggers.
+*   `threshold_windows` (Deprecated, Optional) A dictionary defining the threshold windows for an anomaly monitor. Use `monitor_threshold_windows` instead.
 *   `validate` (Optional) If set to false, skip the validation call done during `plan` .
 *   `priority` (Optional) Integer from 1 (high) to 5 (low) indicating alert severity.
 *   `silenced` (Optional) Each scope will be muted until the given POSIX timestamp or forever if the value is 0. Use `-1` if you want to unmute the scope. **Deprecated** The `silenced` parameter is being deprecated in favor of the downtime resource. This will be removed in the next major version of the Terraform Provider.
