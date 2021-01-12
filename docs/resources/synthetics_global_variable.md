@@ -34,7 +34,6 @@ The following arguments are supported:
         -   `type`: (Required) Type of parser to extract the value. Allowed enum values: "raw", "json_path", "regex".
         -   `value`: (Optional) Value for the parser to use, required for type "json_path" or "regex".
 
-
 ## Import
 
 Synthetics global variables can be imported using their string ID, e.g.
