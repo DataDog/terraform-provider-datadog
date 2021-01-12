@@ -287,58 +287,56 @@ func createSyntheticsGlobalVariableFromTestStep(accProvider *schema.Provider, cl
 func createSyntheticsGlobalVariableFromTestConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_synthetics_test" "bar" {
-       type = "api"
-       subtype = "http"
+	type = "api"
+	subtype = "http"
 
-       request = {
-               method = "GET"
-               url = "https://www.datadoghq.com"
-               timeout = 30
-       }
+	request = {
+		method = "GET"
+		url = "https://www.datadoghq.com"
+		timeout = 30
+	}
 
-       assertions = [
-               {
-                       type = "header"
-                       property = "content-type"
-                       operator = "contains"
-                       target = "application/json"
-               },
-       ]
+	assertion {
+		type = "header"
+		property = "content-type"
+		operator = "contains"
+		target = "application/json"
+	}
 
-       locations = [ "aws:eu-central-1" ]
+	locations = [ "aws:eu-central-1" ]
 
-	   options_list {
-	       tick_every = 60
-           follow_redirects = true
-           min_failure_duration = 0
-           min_location_failed = 1
+	options_list {
+		tick_every = 60
+		follow_redirects = true
+		min_failure_duration = 0
+		min_location_failed = 1
 
-           monitor_options {
-               renotify_interval = 100
-           }
-	   }
+		monitor_options {
+			renotify_interval = 100
+		}
+	}
 
-       name = "%[1]s"
-       message = ""
-       tags = []
+	name = "%[1]s"
+	message = ""
+	tags = []
 
-       status = "paused"
+	status = "paused"
 }
 
 resource "datadog_synthetics_global_variable" "foo" {
-       name = "%[1]s"
-       description = "a global variable from http test"
-       tags = ["foo:bar", "baz"]
-       value = ""
-       parse_test_id = datadog_synthetics_test.bar.id
-       parse_test_options {
-               type = "http_header"
-               field = "content-type"
-               parser {
-                       type = "regex"
-                       value = ".*"
-               }
-       }
+	name = "%[1]s"
+	description = "a global variable from http test"
+	tags = ["foo:bar", "baz"]
+	value = ""
+	parse_test_id = datadog_synthetics_test.bar.id
+	parse_test_options {
+		type = "http_header"
+		field = "content-type"
+		parser {
+			type = "regex"
+			value = ".*"
+		}
+	}
 }`, uniq)
 }
 

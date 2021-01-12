@@ -49,21 +49,24 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 				Optional:    true,
 			},
 			"parse_test_id": {
-				Description: "Id of the Synthetics test to use for a variable from test",
+				Description: "Id of the Synthetics test to use for a variable from test.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
 			"parse_test_options": {
+				Description: "ID of the Synthetics test to use a source of the global variable value.",
 				Type:     schema.TypeList,
 				Optional: true,
 				MaxItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"field": {
+							Description: "Required when type = `http_header`. Defines the header to use to extract the value",
 							Type:     schema.TypeString,
 							Optional: true,
 						},
 						"type": {
+							Description: "Defines the source to use to extract the value. Allowed enum values: `http_body`, `http_header`.",
 							Type:         schema.TypeString,
 							Required:     true,
 							ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsGlobalVariableParseTestOptionsTypeFromValue),
@@ -75,11 +78,13 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"type": {
+										Description: "Type of parser to extract the value. Allowed enum values: `raw`, `json_path`, `regex`",
 										Type:         schema.TypeString,
 										Required:     true,
 										ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsGlobalVariableParserTypeFromValue),
 									},
 									"value": {
+										Description: "Value for the parser to use, required for type `json_path` or `regex`.",
 										Type:     schema.TypeString,
 										Optional: true,
 									},
