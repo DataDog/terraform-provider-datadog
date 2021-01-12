@@ -26,7 +26,7 @@ cd -
 
 golint ./...
 go clean -testcache
-gotestsum --format short-verbose --rerun-fails --raw-command -- ./run-go-tests.sh
+gotestsum --format short-verbose --rerun-fails --rerun-fails-max-failures=20000 --raw-command -- ./run-go-tests.sh
 RESULT+=$?
 go mod tidy
 exit $RESULT

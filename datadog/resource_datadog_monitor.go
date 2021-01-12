@@ -461,6 +461,10 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 		return err
 	}
 
+	if d.Id() == "" {
+		return nil
+	}
+
 	thresholds := make(map[string]string)
 
 	if v, ok := m.Options.Thresholds.GetOkOk(); ok {
