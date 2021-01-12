@@ -132,28 +132,34 @@ func resourceDatadogMonitor() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"ok": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:         schema.TypeString,
+							ValidateFunc: validateFloatString,
+							Optional:     true,
 						},
 						"warning": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:         schema.TypeString,
+							ValidateFunc: validateFloatString,
+							Optional:     true,
 						},
 						"critical": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:         schema.TypeString,
+							ValidateFunc: validateFloatString,
+							Optional:     true,
 						},
 						"unknown": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:         schema.TypeString,
+							ValidateFunc: validateFloatString,
+							Optional:     true,
 						},
 						"warning_recovery": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:         schema.TypeString,
+							ValidateFunc: validateFloatString,
+							Optional:     true,
 						},
 						"critical_recovery": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Type:         schema.TypeString,
+							ValidateFunc: validateFloatString,
+							Optional:     true,
 						},
 					},
 				},
