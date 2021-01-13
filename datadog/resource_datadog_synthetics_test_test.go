@@ -529,7 +529,8 @@ resource "datadog_synthetics_test" "foo" {
 func createSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(clock, t)
 	return resource.TestStep{
-		Config: createSyntheticsAPITestConfigNewAssertionsOptions(testName),
+		Config:             createSyntheticsAPITestConfigNewAssertionsOptions(testName),
+		ExpectNonEmptyPlan: true,
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -551,11 +552,11 @@ func createSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_basicauth.0.password", "secret"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.content", "content-certificate"),
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.content", ""),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.filename", "Provided in Terraform config"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.content", "content-key"),
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.content", ""),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
 			resource.TestCheckResourceAttr(
@@ -859,7 +860,8 @@ resource "datadog_synthetics_test" "foo" {
 func updateSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(clock, t) + "updated"
 	return resource.TestStep{
-		Config: updateSyntheticsAPITestConfigNewAssertionsOptions(testName),
+		ExpectNonEmptyPlan: true,
+		Config:             updateSyntheticsAPITestConfigNewAssertionsOptions(testName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -872,6 +874,14 @@ func updateSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 				"datadog_synthetics_test.bar", "request.url", "https://docs.datadoghq.com"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request.timeout", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.content", ""),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.filename", "Provided in Terraform config"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.content", ""),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key-updated"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -930,6 +940,16 @@ resource "datadog_synthetics_test" "bar" {
 		method = "GET"
 		url = "https://docs.datadoghq.com"
 		timeout = 60
+	}
+
+	request_client_certificate {
+		cert {
+			content = "content-certificate-updated"
+		}
+		key {
+			content = "content-key-updated"
+			filename = "key-updated"
+		}
 	}
 
 	assertion {

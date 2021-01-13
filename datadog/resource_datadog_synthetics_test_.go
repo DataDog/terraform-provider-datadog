@@ -1106,15 +1106,11 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		key := clientCertificate.GetKey()
 		localCertificate["key"][0]["filename"] = key.GetFilename()
 
-		// the content of the certificate and the key are write-only
-		// so we need to get them from the config since they will
-		// not be in the api response
-		if configCertificateContent, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
-			localCertificate["cert"][0]["content"] = configCertificateContent.(string)
-		}
-		if configKeyContent, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
-			localCertificate["key"][0]["content"] = configKeyContent.(string)
-		}
+		// make sure the content of the certificate is not set in the state file
+		// the field is write-only (not returned by the API) so it will generate
+		// some useless diff when planning
+		localCertificate["cert"][0]["content"] = ""
+		localCertificate["key"][0]["content"] = ""
 
 		d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate})
 	}
