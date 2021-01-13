@@ -19,7 +19,10 @@ type SyntheticsGlobalVariable struct {
 	// Unique identifier of the global variable.
 	Id *string `json:"id,omitempty"`
 	// Name of the global variable.
-	Name string `json:"name"`
+	Name             string                                    `json:"name"`
+	ParseTestOptions *SyntheticsGlobalVariableParseTestOptions `json:"parse_test_options,omitempty"`
+	// A Synthetic test ID to use as a test to generate the variable value.
+	ParseTestPublicId *string `json:"parse_test_public_id,omitempty"`
 	// Tags of the global variable.
 	Tags  []string                      `json:"tags"`
 	Value SyntheticsGlobalVariableValue `json:"value"`
@@ -126,6 +129,70 @@ func (o *SyntheticsGlobalVariable) SetName(v string) {
 	o.Name = v
 }
 
+// GetParseTestOptions returns the ParseTestOptions field value if set, zero value otherwise.
+func (o *SyntheticsGlobalVariable) GetParseTestOptions() SyntheticsGlobalVariableParseTestOptions {
+	if o == nil || o.ParseTestOptions == nil {
+		var ret SyntheticsGlobalVariableParseTestOptions
+		return ret
+	}
+	return *o.ParseTestOptions
+}
+
+// GetParseTestOptionsOk returns a tuple with the ParseTestOptions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsGlobalVariable) GetParseTestOptionsOk() (*SyntheticsGlobalVariableParseTestOptions, bool) {
+	if o == nil || o.ParseTestOptions == nil {
+		return nil, false
+	}
+	return o.ParseTestOptions, true
+}
+
+// HasParseTestOptions returns a boolean if a field has been set.
+func (o *SyntheticsGlobalVariable) HasParseTestOptions() bool {
+	if o != nil && o.ParseTestOptions != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetParseTestOptions gets a reference to the given SyntheticsGlobalVariableParseTestOptions and assigns it to the ParseTestOptions field.
+func (o *SyntheticsGlobalVariable) SetParseTestOptions(v SyntheticsGlobalVariableParseTestOptions) {
+	o.ParseTestOptions = &v
+}
+
+// GetParseTestPublicId returns the ParseTestPublicId field value if set, zero value otherwise.
+func (o *SyntheticsGlobalVariable) GetParseTestPublicId() string {
+	if o == nil || o.ParseTestPublicId == nil {
+		var ret string
+		return ret
+	}
+	return *o.ParseTestPublicId
+}
+
+// GetParseTestPublicIdOk returns a tuple with the ParseTestPublicId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsGlobalVariable) GetParseTestPublicIdOk() (*string, bool) {
+	if o == nil || o.ParseTestPublicId == nil {
+		return nil, false
+	}
+	return o.ParseTestPublicId, true
+}
+
+// HasParseTestPublicId returns a boolean if a field has been set.
+func (o *SyntheticsGlobalVariable) HasParseTestPublicId() bool {
+	if o != nil && o.ParseTestPublicId != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetParseTestPublicId gets a reference to the given string and assigns it to the ParseTestPublicId field.
+func (o *SyntheticsGlobalVariable) SetParseTestPublicId(v string) {
+	o.ParseTestPublicId = &v
+}
+
 // GetTags returns the Tags field value
 func (o *SyntheticsGlobalVariable) GetTags() []string {
 	if o == nil {
@@ -184,6 +251,12 @@ func (o SyntheticsGlobalVariable) MarshalJSON() ([]byte, error) {
 	}
 	if true {
 		toSerialize["name"] = o.Name
+	}
+	if o.ParseTestOptions != nil {
+		toSerialize["parse_test_options"] = o.ParseTestOptions
+	}
+	if o.ParseTestPublicId != nil {
+		toSerialize["parse_test_public_id"] = o.ParseTestPublicId
 	}
 	if true {
 		toSerialize["tags"] = o.Tags
