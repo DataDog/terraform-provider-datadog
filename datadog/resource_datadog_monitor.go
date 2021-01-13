@@ -601,7 +601,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 	if _, ok := d.GetOk("thresholds"); ok {
 		d.Set("thresholds", thresholds)
-	} else if _, ok := d.GetOk("thresholds"); ok {
+	} else if len(thresholds) > 0 { // Only set if there are values in the map to avoid diff
 		if err := d.Set("monitor_thresholds", []interface{}{thresholds}); err != nil {
 			return err
 		}
@@ -609,7 +609,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 	if _, ok := d.GetOk("threshold_windows"); ok {
 		d.Set("threshold_windows", thresholdWindows)
-	} else if _, ok := d.GetOk("monitor_threshold_windows"); ok {
+	} else if len(thresholdWindows) > 0 { // Only set if there are values in the map to avoid diff
 		if err := d.Set("monitor_threshold_windows", []interface{}{thresholdWindows}); err != nil {
 			return err
 		}
