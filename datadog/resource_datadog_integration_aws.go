@@ -22,11 +22,11 @@ func accountAndRoleFromID(id string) (string, string, error) {
 
 func resourceDatadogIntegrationAws() *schema.Resource {
 	return &schema.Resource{
-		DeprecationMessage: "Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.\n\n",
-		Create:             resourceDatadogIntegrationAwsCreate,
-		Read:               resourceDatadogIntegrationAwsRead,
-		Update:             resourceDatadogIntegrationAwsUpdate,
-		Delete:             resourceDatadogIntegrationAwsDelete,
+		Description: "Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.\n\n",
+		Create:      resourceDatadogIntegrationAwsCreate,
+		Read:        resourceDatadogIntegrationAwsRead,
+		Update:      resourceDatadogIntegrationAwsUpdate,
+		Delete:      resourceDatadogIntegrationAwsDelete,
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogIntegrationAwsImport,
 		},
