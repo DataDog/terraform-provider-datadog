@@ -1186,6 +1186,11 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 	asserts = append(asserts, fmt.Sprintf("title = %s", dbName))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
+	checks := testCheckResourceAttrs("datadog_dashboard.ordered_dashboard", checkDashboardExists(accProvider), asserts)
+	for i := 0; i < 16; i++ {
+		checks = append(checks, resource.TestCheckResourceAttrSet(
+			"datadog_dashboard.ordered_dashboard", fmt.Sprintf("widget.%d.id", i)))
+	}
 
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -1194,9 +1199,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: datadogOrderedDashboardConfig(dbName),
-				Check: resource.ComposeTestCheckFunc(
-					testCheckResourceAttrs("datadog_dashboard.ordered_dashboard", checkDashboardExists(accProvider), asserts)...,
-				),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
@@ -1209,6 +1212,11 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 	asserts = append(asserts, fmt.Sprintf("title = %s", dbName))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
+	checks := testCheckResourceAttrs("datadog_dashboard.free_dashboard", checkDashboardExists(accProvider), asserts)
+	for i := 0; i < 8; i++ {
+		checks = append(checks, resource.TestCheckResourceAttrSet(
+			"datadog_dashboard.free_dashboard", fmt.Sprintf("widget.%d.id", i)))
+	}
 
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -1217,9 +1225,7 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: datadogFreeDashboardConfig(dbName),
-				Check: resource.ComposeTestCheckFunc(
-					testCheckResourceAttrs("datadog_dashboard.free_dashboard", checkDashboardExists(accProvider), asserts)...,
-				),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
