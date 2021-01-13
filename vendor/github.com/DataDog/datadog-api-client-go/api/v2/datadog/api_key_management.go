@@ -9,6 +9,7 @@
 package datadog
 
 import (
+	"bytes"
 	_context "context"
 	_ioutil "io/ioutil"
 	_nethttp "net/http"
@@ -143,6 +144,7 @@ func (a *KeyManagementApiService) CreateAPIKeyExecute(r ApiCreateAPIKeyRequest) 
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -305,6 +307,7 @@ func (a *KeyManagementApiService) CreateCurrentUserApplicationKeyExecute(r ApiCr
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -458,6 +461,7 @@ func (a *KeyManagementApiService) DeleteAPIKeyExecute(r ApiDeleteAPIKeyRequest) 
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -602,6 +606,7 @@ func (a *KeyManagementApiService) DeleteApplicationKeyExecute(r ApiDeleteApplica
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -746,6 +751,7 @@ func (a *KeyManagementApiService) DeleteCurrentUserApplicationKeyExecute(r ApiDe
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -901,6 +907,7 @@ func (a *KeyManagementApiService) GetAPIKeyExecute(r ApiGetAPIKeyRequest) (APIKe
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1056,6 +1063,7 @@ func (a *KeyManagementApiService) GetCurrentUserApplicationKeyExecute(r ApiGetCu
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1104,7 +1112,7 @@ type ApiListAPIKeysRequest struct {
 	ApiService            *KeyManagementApiService
 	pageSize              *int64
 	pageNumber            *int64
-	sort                  *string
+	sort                  *APIKeysSort
 	filter                *string
 	filterCreatedAtStart  *string
 	filterCreatedAtEnd    *string
@@ -1121,7 +1129,7 @@ func (r ApiListAPIKeysRequest) PageNumber(pageNumber int64) ApiListAPIKeysReques
 	r.pageNumber = &pageNumber
 	return r
 }
-func (r ApiListAPIKeysRequest) Sort(sort string) ApiListAPIKeysRequest {
+func (r ApiListAPIKeysRequest) Sort(sort APIKeysSort) ApiListAPIKeysRequest {
 	r.sort = &sort
 	return r
 }
@@ -1280,6 +1288,7 @@ func (a *KeyManagementApiService) ListAPIKeysExecute(r ApiListAPIKeysRequest) (A
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1328,7 +1337,7 @@ type ApiListApplicationKeysRequest struct {
 	ApiService           *KeyManagementApiService
 	pageSize             *int64
 	pageNumber           *int64
-	sort                 *string
+	sort                 *ApplicationKeysSort
 	filter               *string
 	filterCreatedAtStart *string
 	filterCreatedAtEnd   *string
@@ -1342,7 +1351,7 @@ func (r ApiListApplicationKeysRequest) PageNumber(pageNumber int64) ApiListAppli
 	r.pageNumber = &pageNumber
 	return r
 }
-func (r ApiListApplicationKeysRequest) Sort(sort string) ApiListApplicationKeysRequest {
+func (r ApiListApplicationKeysRequest) Sort(sort ApplicationKeysSort) ApiListApplicationKeysRequest {
 	r.sort = &sort
 	return r
 }
@@ -1480,6 +1489,7 @@ func (a *KeyManagementApiService) ListApplicationKeysExecute(r ApiListApplicatio
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1538,7 +1548,7 @@ type ApiListCurrentUserApplicationKeysRequest struct {
 	ApiService           *KeyManagementApiService
 	pageSize             *int64
 	pageNumber           *int64
-	sort                 *string
+	sort                 *ApplicationKeysSort
 	filter               *string
 	filterCreatedAtStart *string
 	filterCreatedAtEnd   *string
@@ -1552,7 +1562,7 @@ func (r ApiListCurrentUserApplicationKeysRequest) PageNumber(pageNumber int64) A
 	r.pageNumber = &pageNumber
 	return r
 }
-func (r ApiListCurrentUserApplicationKeysRequest) Sort(sort string) ApiListCurrentUserApplicationKeysRequest {
+func (r ApiListCurrentUserApplicationKeysRequest) Sort(sort ApplicationKeysSort) ApiListCurrentUserApplicationKeysRequest {
 	r.sort = &sort
 	return r
 }
@@ -1690,6 +1700,7 @@ func (a *KeyManagementApiService) ListCurrentUserApplicationKeysExecute(r ApiLis
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1866,6 +1877,7 @@ func (a *KeyManagementApiService) UpdateAPIKeyExecute(r ApiUpdateAPIKeyRequest) 
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2042,6 +2054,7 @@ func (a *KeyManagementApiService) UpdateApplicationKeyExecute(r ApiUpdateApplica
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2218,6 +2231,7 @@ func (a *KeyManagementApiService) UpdateCurrentUserApplicationKeyExecute(r ApiUp
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
