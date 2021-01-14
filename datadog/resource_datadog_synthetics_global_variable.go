@@ -48,6 +48,52 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
+			"parse_test_id": {
+				Description: "Id of the Synthetics test to use for a variable from test.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"parse_test_options": {
+				Description: "ID of the Synthetics test to use a source of the global variable value.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				MaxItems:    1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"field": {
+							Description: "Required when type = `http_header`. Defines the header to use to extract the value",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+						"type": {
+							Description:  "Defines the source to use to extract the value. Allowed enum values: `http_body`, `http_header`.",
+							Type:         schema.TypeString,
+							Required:     true,
+							ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsGlobalVariableParseTestOptionsTypeFromValue),
+						},
+						"parser": {
+							Type:     schema.TypeList,
+							Required: true,
+							MaxItems: 1,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"type": {
+										Description:  "Type of parser to extract the value. Allowed enum values: `raw`, `json_path`, `regex`",
+										Type:         schema.TypeString,
+										Required:     true,
+										ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsGlobalVariableParserTypeFromValue),
+									},
+									"value": {
+										Description: "Value for the parser to use, required for type `json_path` or `regex`.",
+										Type:        schema.TypeString,
+										Optional:    true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -144,6 +190,30 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 
 	syntheticsGlobalVariable.SetValue(syntheticsGlobalVariableValue)
 
+	if parseTestId, ok := d.GetOk("parse_test_id"); ok {
+		if _, ok := d.GetOk("parse_test_options.0"); ok {
+			syntheticsGlobalVariable.SetParseTestPublicId(parseTestId.(string))
+
+			parseTestOptions := datadogV1.SyntheticsGlobalVariableParseTestOptions{}
+			parseTestOptions.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(d.Get("parse_test_options.0.type").(string)))
+
+			if field, ok := d.GetOk("parse_test_options.0.field"); ok {
+				parseTestOptions.SetField(field.(string))
+			}
+
+			parser := datadogV1.SyntheticsGlobalVariableParseTestOptionsParser{}
+			parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(d.Get("parse_test_options.0.parser.0.type").(string)))
+
+			if value, ok := d.GetOk("parse_test_options.0.parser.0.value"); ok {
+				parser.SetValue(value.(string))
+			}
+
+			parseTestOptions.SetParser(parser)
+
+			syntheticsGlobalVariable.SetParseTestOptions(parseTestOptions)
+		}
+	}
+
 	return syntheticsGlobalVariable
 }
 
@@ -164,6 +234,30 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 	d.Set("secure", syntheticsGlobalVariableValue.GetSecure())
 
 	d.Set("tags", syntheticsGlobalVariable.Tags)
+
+	if syntheticsGlobalVariable.HasParseTestPublicId() {
+		d.Set("parse_test_id", syntheticsGlobalVariable.GetParseTestPublicId())
+
+		localParseTestOptions := make(map[string]interface{})
+		localParser := make(map[string]string)
+
+		parseTestOptions := syntheticsGlobalVariable.GetParseTestOptions()
+		parser := parseTestOptions.GetParser()
+
+		if v, ok := parser.GetTypeOk(); ok {
+			localParser["type"] = string(*v)
+		}
+
+		localParser["value"] = parser.GetValue()
+
+		localParseTestOptions["type"] = parseTestOptions.GetType()
+		if v, ok := parseTestOptions.GetFieldOk(); ok {
+			localParseTestOptions["field"] = string(*v)
+		}
+		localParseTestOptions["parser"] = localParser
+
+		d.Set("parse_test_options", localParseTestOptions)
+	}
 
 	return nil
 }

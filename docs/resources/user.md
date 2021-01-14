@@ -33,7 +33,7 @@ resource "datadog_user" "foo" {
 
 ### Optional
 
-- **access_role** (String) Role description for user. Can be `st` (standard user), `adm` (admin user) or `ro` (read-only user). Default is `st`. `access_role` is ignored for new users created with this resource. New users have to use the `roles` attribute.
+- **access_role** (String, Deprecated) Role description for user. Can be `st` (standard user), `adm` (admin user) or `ro` (read-only user). Default is `st`. `access_role` is ignored for new users created with this resource. New users have to use the `roles` attribute.
 - **disabled** (Boolean) Whether the user is disabled.
 - **handle** (String, Deprecated) The user handle, must be a valid email.
 - **id** (String) The ID of this resource.

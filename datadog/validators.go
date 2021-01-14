@@ -3,9 +3,15 @@ package datadog
 import (
 	"fmt"
 	"reflect"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 )
+
+func validateFloatString(v interface{}, k string) (ws []string, errors []error) {
+	return validation.StringMatch(regexp.MustCompile("\\d*(\\.\\d*)?"), "value must be a float")(v, k)
+}
 
 func validateAggregatorMethod(v interface{}, k string) (ws []string, errors []error) {
 	value := v.(string)

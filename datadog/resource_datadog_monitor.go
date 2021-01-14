@@ -88,9 +88,11 @@ func resourceDatadogMonitor() *schema.Resource {
 
 			// Options
 			"thresholds": {
-				Description: "",
-				Type:        schema.TypeMap,
-				Optional:    true,
+				Description:   "Alert thresholds of the monitor.",
+				Deprecated:    "Define `monitor_thresholds` list with one element instead.",
+				ConflictsWith: []string{"monitor_thresholds"},
+				Type:          schema.TypeMap,
+				Optional:      true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"ok": {
@@ -121,10 +123,75 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 				DiffSuppressFunc: suppressDataDogFloatIntDiff,
 			},
+			"monitor_thresholds": {
+				Description:   "Alert thresholds of the monitor.",
+				Type:          schema.TypeList,
+				ConflictsWith: []string{"thresholds"},
+				MaxItems:      1,
+				Optional:      true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"ok": {
+							Type:         schema.TypeString,
+							ValidateFunc: validateFloatString,
+							Optional:     true,
+						},
+						"warning": {
+							Type:         schema.TypeString,
+							ValidateFunc: validateFloatString,
+							Optional:     true,
+						},
+						"critical": {
+							Type:         schema.TypeString,
+							ValidateFunc: validateFloatString,
+							Optional:     true,
+						},
+						"unknown": {
+							Type:         schema.TypeString,
+							ValidateFunc: validateFloatString,
+							Optional:     true,
+						},
+						"warning_recovery": {
+							Type:         schema.TypeString,
+							ValidateFunc: validateFloatString,
+							Optional:     true,
+						},
+						"critical_recovery": {
+							Type:         schema.TypeString,
+							ValidateFunc: validateFloatString,
+							Optional:     true,
+						},
+					},
+				},
+				DiffSuppressFunc: suppressDataDogFloatIntDiff,
+			},
 			"threshold_windows": {
-				Description: "A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors.",
-				Type:        schema.TypeMap,
-				Optional:    true,
+				Description:   "A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. Can only be used for, and are required for, anomaly monitors.",
+				Deprecated:    "Define `monitor_threshold_windows` list with one element instead.",
+				ConflictsWith: []string{"monitor_threshold_windows"},
+				Type:          schema.TypeMap,
+				Optional:      true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"recovery_window": {
+							Description: "Describes how long an anomalous metric must be normal before the alert recovers.",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+						"trigger_window": {
+							Description: "Describes how long a metric must be anomalous before an alert triggers.",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+					},
+				},
+			},
+			"monitor_threshold_windows": {
+				Description:   "A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors.",
+				Type:          schema.TypeList,
+				ConflictsWith: []string{"threshold_windows"},
+				MaxItems:      1,
+				Optional:      true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"recovery_window": {
@@ -189,7 +256,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional:    true,
 			},
 			"require_full_window": {
-				Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated.\n\nWe highly recommend you set this to `false` for sparse metrics, otherwise some evaluations will be skipped. Default: `true` for `on average`, `at all times` and `in total` aggregation. `false` otherwise.",
+				Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated.\n\nWe highly recommend you set this to `false` for s metrics, otherwise some evaluations will be skipped. Default: `true` for `on average`, `at all times` and `in total` aggregation. `false` otherwise.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     true,
@@ -251,38 +318,60 @@ func buildMonitorStruct(d BuiltResource) (*datadogV1.Monitor, *datadogV1.Monitor
 
 	var thresholds datadogV1.MonitorThresholds
 
-	if r, ok := d.GetOk("thresholds.ok"); ok {
+	if r, ok := d.GetOk("monitor_thresholds.0.ok"); ok {
+		v, _ := json.Number(r.(string)).Float64()
+		thresholds.SetOk(v)
+	} else if r, ok := d.GetOk("thresholds.ok"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetOk(v)
 	}
-	if r, ok := d.GetOk("thresholds.warning"); ok {
+	if r, ok := d.GetOk("monitor_thresholds.0.warning"); ok {
+		v, _ := json.Number(r.(string)).Float64()
+		thresholds.SetWarning(v)
+	} else if r, ok := d.GetOk("thresholds.warning"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetWarning(v)
 	}
-	if r, ok := d.GetOk("thresholds.unknown"); ok {
+	if r, ok := d.GetOk("monitor_thresholds.0.unknown"); ok {
+		v, _ := json.Number(r.(string)).Float64()
+		thresholds.SetUnknown(v)
+	} else if r, ok := d.GetOk("thresholds.unknown"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetUnknown(v)
 	}
-	if r, ok := d.GetOk("thresholds.critical"); ok {
+	if r, ok := d.GetOk("monitor_thresholds.0.critical"); ok {
+		v, _ := json.Number(r.(string)).Float64()
+		thresholds.SetCritical(v)
+	} else if r, ok := d.GetOk("thresholds.critical"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetCritical(v)
 	}
-	if r, ok := d.GetOk("thresholds.warning_recovery"); ok {
+	if r, ok := d.GetOk("monitor_thresholds.0.warning_recovery"); ok {
+		v, _ := json.Number(r.(string)).Float64()
+		thresholds.SetWarningRecovery(v)
+	} else if r, ok := d.GetOk("thresholds.warning_recovery"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetWarningRecovery(v)
 	}
-	if r, ok := d.GetOk("thresholds.critical_recovery"); ok {
+	if r, ok := d.GetOk("monitor_thresholds.0.critical_recovery"); ok {
+		v, _ := json.Number(r.(string)).Float64()
+		thresholds.SetCriticalRecovery(v)
+	} else if r, ok := d.GetOk("thresholds.critical_recovery"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetCriticalRecovery(v)
 	}
 
 	var thresholdWindows datadogV1.MonitorThresholdWindowOptions
 
-	if r, ok := d.GetOk("threshold_windows.recovery_window"); ok {
+	if r, ok := d.GetOk("monitor_threshold_windows.0.recovery_window"); ok {
+		thresholdWindows.SetRecoveryWindow(r.(string))
+	} else if r, ok := d.GetOk("threshold_windows.recovery_window"); ok {
 		thresholdWindows.SetRecoveryWindow(r.(string))
 	}
 
-	if r, ok := d.GetOk("threshold_windows.trigger_window"); ok {
+	if r, ok := d.GetOk("monitor_threshold_windows.0.trigger_window"); ok {
+		thresholdWindows.SetTriggerWindow(r.(string))
+	} else if r, ok := d.GetOk("threshold_windows.trigger_window"); ok {
 		thresholdWindows.SetTriggerWindow(r.(string))
 	}
 
@@ -509,8 +598,22 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("type", m.GetType())
 	d.Set("priority", m.GetPriority())
 
-	d.Set("thresholds", thresholds)
-	d.Set("threshold_windows", thresholdWindows)
+	// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
+	if _, ok := d.GetOk("thresholds"); ok {
+		d.Set("thresholds", thresholds)
+	} else if len(thresholds) > 0 { // Only set if there are values in the map to avoid diff
+		if err := d.Set("monitor_thresholds", []interface{}{thresholds}); err != nil {
+			return err
+		}
+	}
+	// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
+	if _, ok := d.GetOk("threshold_windows"); ok {
+		d.Set("threshold_windows", thresholdWindows)
+	} else if len(thresholdWindows) > 0 { // Only set if there are values in the map to avoid diff
+		if err := d.Set("monitor_threshold_windows", []interface{}{thresholdWindows}); err != nil {
+			return err
+		}
+	}
 
 	d.Set("new_host_delay", m.Options.GetNewHostDelay())
 	d.Set("evaluation_delay", m.Options.GetEvaluationDelay())
