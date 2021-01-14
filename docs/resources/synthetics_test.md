@@ -211,7 +211,6 @@ The following arguments are supported:
 -   `request`: (Required) if type=api and subtype=ssl or subtype=tcp or subtype=dns
     -   `host`: (Required) host name
     -   `port`: (Required) port number
-    -   `timeout`: (Optional) For type=api, any value between 0 and 60 (Default = 60)
     -   `dns_server`: (Optional) For subtype=dns, DNS server to use
 -   `request`: (Required) if type=browser
     -   `method`: (Required) no-op, use GET
