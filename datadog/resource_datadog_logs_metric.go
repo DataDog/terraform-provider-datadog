@@ -174,7 +174,7 @@ func resourceDatadogLogsMetricCreate(d *schema.ResourceData, meta interface{}) e
 
 	resultLogsMetricCreateData, err := buildDatadogLogsMetric(d)
 	if err != nil {
-		return translateClientError(err, "error creating LogsMetric")
+		return translateClientError(err, "error building LogsMetric object")
 	}
 
 	ddObject := datadogV2.NewLogsMetricCreateRequestWithDefaults()
@@ -281,6 +281,9 @@ func resourceDatadogLogsMetricUpdate(d *schema.ResourceData, meta interface{}) e
 	auth := providerConf.AuthV2
 
 	resultLogsMetricUpdateData, err := buildDatadogLogsMetricUpdate(d)
+	if err != nil {
+		return translateClientError(err, "error building LogsMetric object")
+	}
 
 	ddObject := datadogV2.NewLogsMetricUpdateRequestWithDefaults()
 	ddObject.SetData(*resultLogsMetricUpdateData)
