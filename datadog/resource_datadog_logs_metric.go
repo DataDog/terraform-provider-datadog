@@ -1,8 +1,6 @@
 package datadog
 
 import (
-	"fmt"
-
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -30,10 +28,11 @@ func resourceDatadogLogsMetric() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 
 						"aggregation_type": {
-							Type:        schema.TypeString,
-							Required:    true,
-							ForceNew:    true,
-							Description: "The type of aggregation to use. This field can't be updated after creation.",
+							Type:         schema.TypeString,
+							Required:     true,
+							ForceNew:     true,
+							ValidateFunc: validateEnumValue(datadogV2.NewLogsMetricComputeAggregationTypeFromValue),
+							Description:  "The type of aggregation to use. This field can't be updated after creation.",
 						},
 
 						"path": {
@@ -128,11 +127,7 @@ func getCompute(d *schema.ResourceData) (*datadogV2.LogsMetricCompute, error) {
 	compute := datadogV2.NewLogsMetricComputeWithDefaults()
 
 	if aggregationType, ok := resourceCompute["aggregation_type"]; ok {
-		v, err := datadogV2.NewLogsMetricComputeAggregationTypeFromValue(aggregationType.(string))
-		if err != nil {
-			return nil, fmt.Errorf("aggregation_type '%s' is invalid", aggregationType.(string))
-		}
-		compute.SetAggregationType(*v)
+		compute.SetAggregationType(datadogV2.LogsMetricComputeAggregationType(aggregationType.(string)))
 	}
 
 	if path, ok := resourceCompute["path"]; ok {
