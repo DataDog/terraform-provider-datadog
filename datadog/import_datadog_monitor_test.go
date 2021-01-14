@@ -89,7 +89,7 @@ resource "datadog_monitor" "foo" {
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2.5"
 
-  thresholds = {
+  monitor_thresholds {
     ok = 1.5
     warning           = 2.3
     warning_recovery  = 2.2
@@ -120,7 +120,7 @@ resource "datadog_monitor" "foo" {
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2.5"
 
-  thresholds = {
+  monitor_thresholds {
     ok = 1.5
     warning           = 2.3
     critical          = 2.5
@@ -149,7 +149,7 @@ resource "datadog_monitor" "foo" {
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2.5"
 
-  thresholds = {
+  monitor_thresholds {
     ok = 1.5
     warning           = 2.3
     warning_recovery  = 2.2

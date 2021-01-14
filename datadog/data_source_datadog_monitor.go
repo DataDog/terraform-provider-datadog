@@ -63,6 +63,7 @@ func dataSourceDatadogMonitor() *schema.Resource {
 			// Options
 			"thresholds": {
 				Description: "Alert thresholds of the monitor.",
+				Deprecated:  "Define `monitor_thresholds` list with one element instead.",
 				Type:        schema.TypeMap,
 				Computed:    true,
 				Elem: &schema.Resource{
@@ -94,9 +95,62 @@ func dataSourceDatadogMonitor() *schema.Resource {
 					},
 				},
 			},
+			"monitor_thresholds": {
+				Description: "Alert thresholds of the monitor.",
+				Type:        schema.TypeList,
+				Computed:    true,
+				MaxItems:    1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"ok": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"warning": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"critical": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"unknown": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"warning_recovery": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"critical_recovery": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
+			},
 			"threshold_windows": {
 				Description: "Mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. This is only used by anomaly monitors.",
+				Deprecated:  "Define `monitor_threshold_windows` list with one element instead.",
 				Type:        schema.TypeMap,
+				Computed:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"recovery_window": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"trigger_window": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
+			},
+			"monitor_threshold_windows": {
+				Description: "Mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. This is only used by anomaly monitors.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
 				Computed:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -252,7 +306,13 @@ func dataSourceDatadogMonitorsRead(d *schema.ResourceData, meta interface{}) err
 	d.Set("type", m.GetType())
 
 	d.Set("thresholds", thresholds)
+	if err := d.Set("monitor_thresholds", []interface{}{thresholds}); err != nil {
+		return err
+	}
 	d.Set("threshold_windows", thresholdWindows)
+	if err := d.Set("monitor_threshold_windows", []interface{}{thresholdWindows}); err != nil {
+		return err
+	}
 
 	d.Set("new_host_delay", m.Options.GetNewHostDelay())
 	d.Set("evaluation_delay", m.Options.GetEvaluationDelay())
