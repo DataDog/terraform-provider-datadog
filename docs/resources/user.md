@@ -1,14 +1,17 @@
 ---
-page_title: "datadog_user"
+page_title: "datadog_user Resource - terraform-provider-datadog"
+subcategory: ""
+description: |-
+  Provides a Datadog user resource. This can be used to create and manage Datadog users.
 ---
 
-# datadog_user Resource
+# Resource `datadog_user`
 
 Provides a Datadog user resource. This can be used to create and manage Datadog users.
 
 ## Example Usage
 
-```hcl
+```terraform
 # Source a role
 data "datadog_role" "ro_role" {
   filter = "Datadog Read Only Role"
@@ -22,33 +25,34 @@ resource "datadog_user" "foo" {
 }
 ```
 
-## Argument Reference
+## Schema
 
-The following arguments are supported:
+### Required
 
--   `email`: (Required) Email address for user
--   `name`: (Optional) Name for user
--   `roles`: (Optional) A list a role IDs to assign to the user.
--   `disabled`: (Optional) Whether the user is disabled
--   `send_user_invitation`: (Optional) Whether an invitation email should be sent when the user is created. Defaults to `true`.
--   `handle`: (Deprecated) The user handle, must be a valid email.
--   `is_admin`: (Deprecated) (Optional) Whether the user is an administrator. **Warning**: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
--   `role`: (Deprecated) Role description for user. **Warning**: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
--   `access_role`: (Deprecated) Role description for user. Can be `st` (standard user), `adm` (admin user) or `ro` (read-only user). Default is `st`. `access_role` is ignored for new users created with this resource. New users have to use the `roles` attribute.
+- **email** (String) Email address for user.
 
-## Attributes Reference
+### Optional
 
-The following attributes are exported:
+- **access_role** (String, Deprecated) Role description for user. Can be `st` (standard user), `adm` (admin user) or `ro` (read-only user). Default is `st`. `access_role` is ignored for new users created with this resource. New users have to use the `roles` attribute.
+- **disabled** (Boolean) Whether the user is disabled.
+- **handle** (String, Deprecated) The user handle, must be a valid email.
+- **id** (String) The ID of this resource.
+- **is_admin** (Boolean, Deprecated) Whether the user is an administrator. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
+- **name** (String) Name for user.
+- **role** (String, Deprecated) Role description for user. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
+- **roles** (Set of String) A list a role IDs to assign to the user.
+- **send_user_invitation** (Boolean) Whether an invitation email should be sent when the user is created.
 
--   `disabled`: Returns true if Datadog user is disabled (NOTE: Datadog does not actually delete users so this will be true for those as well)
--   `id`: ID of the Datadog user
--   `verified`: Returns true if Datadog user is verified
--   `user_invitation_id`: The ID of the user invitation that was sent when creating the user.
+### Read-only
+
+- **user_invitation_id** (String) The ID of the user invitation that was sent when creating the user.
+- **verified** (Boolean) Returns true if Datadog user is verified.
 
 ## Import
 
-users can be imported using their ID, e.g.
+Import is supported using the following syntax:
 
-```
-$ terraform import datadog_user.example_user 6f1b44c0-30b2-11eb-86bc-279f7c1ebaa4
+```shell
+# users can be imported using their ID, e.g.
+terraform import datadog_user.example_user 6f1b44c0-30b2-11eb-86bc-279f7c1ebaa4
 ```

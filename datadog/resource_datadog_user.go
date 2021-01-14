@@ -54,6 +54,7 @@ func resourceDatadogUser() *schema.Resource {
 				Deprecated:  "This parameter is replaced by `roles` and will be removed from the next Major version",
 			},
 			"access_role": {
+				Deprecated:  "This parameter is replaced by `roles` and will be removed from the next Major version",
 				Description: "Role description for user. Can be `st` (standard user), `adm` (admin user) or `ro` (read-only user). Default is `st`. `access_role` is ignored for new users created with this resource. New users have to use the `roles` attribute.",
 				Type:        schema.TypeString,
 				Optional:    true,
