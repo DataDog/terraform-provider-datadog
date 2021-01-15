@@ -23,6 +23,14 @@ type UsageLogsHour struct {
 	IndexedEventsCount *int64 `json:"indexed_events_count,omitempty"`
 	// Contains the number of log bytes ingested.
 	IngestedEventsBytes *int64 `json:"ingested_events_bytes,omitempty"`
+	// Contains the number of live log events indexed (data available as of December 1, 2020).
+	LogsLiveIndexedCount *int64 `json:"logs_live_indexed_count,omitempty"`
+	// Contains the number of live log bytes ingested (data available as of December 1, 2020).
+	LogsLiveIngestedBytes *int64 `json:"logs_live_ingested_bytes,omitempty"`
+	// Contains the number of rehydrated log events indexed (data available as of December 1, 2020).
+	LogsRehydratedIndexedCount *int64 `json:"logs_rehydrated_indexed_count,omitempty"`
+	// Contains the number of rehydrated log bytes ingested (data available as of December 1, 2020).
+	LogsRehydratedIngestedBytes *int64 `json:"logs_rehydrated_ingested_bytes,omitempty"`
 }
 
 // NewUsageLogsHour instantiates a new UsageLogsHour object
@@ -170,6 +178,134 @@ func (o *UsageLogsHour) SetIngestedEventsBytes(v int64) {
 	o.IngestedEventsBytes = &v
 }
 
+// GetLogsLiveIndexedCount returns the LogsLiveIndexedCount field value if set, zero value otherwise.
+func (o *UsageLogsHour) GetLogsLiveIndexedCount() int64 {
+	if o == nil || o.LogsLiveIndexedCount == nil {
+		var ret int64
+		return ret
+	}
+	return *o.LogsLiveIndexedCount
+}
+
+// GetLogsLiveIndexedCountOk returns a tuple with the LogsLiveIndexedCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageLogsHour) GetLogsLiveIndexedCountOk() (*int64, bool) {
+	if o == nil || o.LogsLiveIndexedCount == nil {
+		return nil, false
+	}
+	return o.LogsLiveIndexedCount, true
+}
+
+// HasLogsLiveIndexedCount returns a boolean if a field has been set.
+func (o *UsageLogsHour) HasLogsLiveIndexedCount() bool {
+	if o != nil && o.LogsLiveIndexedCount != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetLogsLiveIndexedCount gets a reference to the given int64 and assigns it to the LogsLiveIndexedCount field.
+func (o *UsageLogsHour) SetLogsLiveIndexedCount(v int64) {
+	o.LogsLiveIndexedCount = &v
+}
+
+// GetLogsLiveIngestedBytes returns the LogsLiveIngestedBytes field value if set, zero value otherwise.
+func (o *UsageLogsHour) GetLogsLiveIngestedBytes() int64 {
+	if o == nil || o.LogsLiveIngestedBytes == nil {
+		var ret int64
+		return ret
+	}
+	return *o.LogsLiveIngestedBytes
+}
+
+// GetLogsLiveIngestedBytesOk returns a tuple with the LogsLiveIngestedBytes field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageLogsHour) GetLogsLiveIngestedBytesOk() (*int64, bool) {
+	if o == nil || o.LogsLiveIngestedBytes == nil {
+		return nil, false
+	}
+	return o.LogsLiveIngestedBytes, true
+}
+
+// HasLogsLiveIngestedBytes returns a boolean if a field has been set.
+func (o *UsageLogsHour) HasLogsLiveIngestedBytes() bool {
+	if o != nil && o.LogsLiveIngestedBytes != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetLogsLiveIngestedBytes gets a reference to the given int64 and assigns it to the LogsLiveIngestedBytes field.
+func (o *UsageLogsHour) SetLogsLiveIngestedBytes(v int64) {
+	o.LogsLiveIngestedBytes = &v
+}
+
+// GetLogsRehydratedIndexedCount returns the LogsRehydratedIndexedCount field value if set, zero value otherwise.
+func (o *UsageLogsHour) GetLogsRehydratedIndexedCount() int64 {
+	if o == nil || o.LogsRehydratedIndexedCount == nil {
+		var ret int64
+		return ret
+	}
+	return *o.LogsRehydratedIndexedCount
+}
+
+// GetLogsRehydratedIndexedCountOk returns a tuple with the LogsRehydratedIndexedCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageLogsHour) GetLogsRehydratedIndexedCountOk() (*int64, bool) {
+	if o == nil || o.LogsRehydratedIndexedCount == nil {
+		return nil, false
+	}
+	return o.LogsRehydratedIndexedCount, true
+}
+
+// HasLogsRehydratedIndexedCount returns a boolean if a field has been set.
+func (o *UsageLogsHour) HasLogsRehydratedIndexedCount() bool {
+	if o != nil && o.LogsRehydratedIndexedCount != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetLogsRehydratedIndexedCount gets a reference to the given int64 and assigns it to the LogsRehydratedIndexedCount field.
+func (o *UsageLogsHour) SetLogsRehydratedIndexedCount(v int64) {
+	o.LogsRehydratedIndexedCount = &v
+}
+
+// GetLogsRehydratedIngestedBytes returns the LogsRehydratedIngestedBytes field value if set, zero value otherwise.
+func (o *UsageLogsHour) GetLogsRehydratedIngestedBytes() int64 {
+	if o == nil || o.LogsRehydratedIngestedBytes == nil {
+		var ret int64
+		return ret
+	}
+	return *o.LogsRehydratedIngestedBytes
+}
+
+// GetLogsRehydratedIngestedBytesOk returns a tuple with the LogsRehydratedIngestedBytes field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageLogsHour) GetLogsRehydratedIngestedBytesOk() (*int64, bool) {
+	if o == nil || o.LogsRehydratedIngestedBytes == nil {
+		return nil, false
+	}
+	return o.LogsRehydratedIngestedBytes, true
+}
+
+// HasLogsRehydratedIngestedBytes returns a boolean if a field has been set.
+func (o *UsageLogsHour) HasLogsRehydratedIngestedBytes() bool {
+	if o != nil && o.LogsRehydratedIngestedBytes != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetLogsRehydratedIngestedBytes gets a reference to the given int64 and assigns it to the LogsRehydratedIngestedBytes field.
+func (o *UsageLogsHour) SetLogsRehydratedIngestedBytes(v int64) {
+	o.LogsRehydratedIngestedBytes = &v
+}
+
 func (o UsageLogsHour) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.BillableIngestedBytes != nil {
@@ -183,6 +319,18 @@ func (o UsageLogsHour) MarshalJSON() ([]byte, error) {
 	}
 	if o.IngestedEventsBytes != nil {
 		toSerialize["ingested_events_bytes"] = o.IngestedEventsBytes
+	}
+	if o.LogsLiveIndexedCount != nil {
+		toSerialize["logs_live_indexed_count"] = o.LogsLiveIndexedCount
+	}
+	if o.LogsLiveIngestedBytes != nil {
+		toSerialize["logs_live_ingested_bytes"] = o.LogsLiveIngestedBytes
+	}
+	if o.LogsRehydratedIndexedCount != nil {
+		toSerialize["logs_rehydrated_indexed_count"] = o.LogsRehydratedIndexedCount
+	}
+	if o.LogsRehydratedIngestedBytes != nil {
+		toSerialize["logs_rehydrated_ingested_bytes"] = o.LogsRehydratedIngestedBytes
 	}
 	return json.Marshal(toSerialize)
 }

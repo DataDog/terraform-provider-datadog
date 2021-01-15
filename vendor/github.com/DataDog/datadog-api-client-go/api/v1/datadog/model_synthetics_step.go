@@ -21,7 +21,7 @@ type SyntheticsStep struct {
 	// The parameters of the step.
 	Params *interface{} `json:"params,omitempty"`
 	// The time before declaring a step failed.
-	Timeout *float32            `json:"timeout,omitempty"`
+	Timeout *int64              `json:"timeout,omitempty"`
 	Type    *SyntheticsStepType `json:"type,omitempty"`
 }
 
@@ -139,9 +139,9 @@ func (o *SyntheticsStep) SetParams(v interface{}) {
 }
 
 // GetTimeout returns the Timeout field value if set, zero value otherwise.
-func (o *SyntheticsStep) GetTimeout() float32 {
+func (o *SyntheticsStep) GetTimeout() int64 {
 	if o == nil || o.Timeout == nil {
-		var ret float32
+		var ret int64
 		return ret
 	}
 	return *o.Timeout
@@ -149,7 +149,7 @@ func (o *SyntheticsStep) GetTimeout() float32 {
 
 // GetTimeoutOk returns a tuple with the Timeout field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SyntheticsStep) GetTimeoutOk() (*float32, bool) {
+func (o *SyntheticsStep) GetTimeoutOk() (*int64, bool) {
 	if o == nil || o.Timeout == nil {
 		return nil, false
 	}
@@ -165,8 +165,8 @@ func (o *SyntheticsStep) HasTimeout() bool {
 	return false
 }
 
-// SetTimeout gets a reference to the given float32 and assigns it to the Timeout field.
-func (o *SyntheticsStep) SetTimeout(v float32) {
+// SetTimeout gets a reference to the given int64 and assigns it to the Timeout field.
+func (o *SyntheticsStep) SetTimeout(v int64) {
 	o.Timeout = &v
 }
 

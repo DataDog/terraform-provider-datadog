@@ -9,7 +9,6 @@
 package datadog
 
 import (
-	"bytes"
 	_context "context"
 	_fmt "fmt"
 	_ioutil "io/ioutil"
@@ -153,7 +152,6 @@ func (a *IncidentTeamsApiService) CreateIncidentTeamExecute(r ApiCreateIncidentT
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -334,7 +332,6 @@ func (a *IncidentTeamsApiService) DeleteIncidentTeamExecute(r ApiDeleteIncidentT
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -393,10 +390,10 @@ type ApiGetIncidentTeamRequest struct {
 	ctx        _context.Context
 	ApiService *IncidentTeamsApiService
 	teamId     string
-	include    *string
+	include    *IncidentRelatedObject
 }
 
-func (r ApiGetIncidentTeamRequest) Include(include string) ApiGetIncidentTeamRequest {
+func (r ApiGetIncidentTeamRequest) Include(include IncidentRelatedObject) ApiGetIncidentTeamRequest {
 	r.include = &include
 	return r
 }
@@ -518,7 +515,6 @@ func (a *IncidentTeamsApiService) GetIncidentTeamExecute(r ApiGetIncidentTeamReq
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -585,13 +581,13 @@ func (a *IncidentTeamsApiService) GetIncidentTeamExecute(r ApiGetIncidentTeamReq
 type ApiListIncidentTeamsRequest struct {
 	ctx        _context.Context
 	ApiService *IncidentTeamsApiService
-	include    *string
+	include    *IncidentRelatedObject
 	pageSize   *int64
 	pageOffset *int64
 	filter     *string
 }
 
-func (r ApiListIncidentTeamsRequest) Include(include string) ApiListIncidentTeamsRequest {
+func (r ApiListIncidentTeamsRequest) Include(include IncidentRelatedObject) ApiListIncidentTeamsRequest {
 	r.include = &include
 	return r
 }
@@ -730,7 +726,6 @@ func (a *IncidentTeamsApiService) ListIncidentTeamsExecute(r ApiListIncidentTeam
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -924,7 +919,6 @@ func (a *IncidentTeamsApiService) UpdateIncidentTeamExecute(r ApiUpdateIncidentT
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
