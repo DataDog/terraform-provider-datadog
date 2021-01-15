@@ -55,7 +55,7 @@ func checkDatasourceAttrs(accProvider *schema.Provider, uniq string) resource.Te
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "type", "query alert"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "query", fmt.Sprintf("avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:%s} by {host} > 2", uniq)),
+			"data.datadog_monitor.foo", "query", fmt.Sprintf("avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:%s} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1", uniq)),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "notify_no_data", "false"),
 		resource.TestCheckResourceAttr(
@@ -65,13 +65,21 @@ func checkDatasourceAttrs(accProvider *schema.Provider, uniq string) resource.Te
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "renotify_interval", "60"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "thresholds.warning", "1"),
+			"data.datadog_monitor.foo", "thresholds.warning", "0.5"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "thresholds.warning_recovery", "0.5"),
+			"data.datadog_monitor.foo", "monitor_thresholds.0.warning", "0.5"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "thresholds.critical", "2"),
+			"data.datadog_monitor.foo", "thresholds.warning_recovery", "0.3"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "thresholds.critical_recovery", "1.5"),
+			"data.datadog_monitor.foo", "monitor_thresholds.0.warning_recovery", "0.3"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_monitor.foo", "thresholds.critical", "1"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_monitor.foo", "monitor_thresholds.0.critical", "1"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_monitor.foo", "thresholds.critical_recovery", "0.7"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_monitor.foo", "monitor_thresholds.0.critical_recovery", "0.7"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "require_full_window", "true"),
 		resource.TestCheckResourceAttr(
@@ -91,18 +99,23 @@ func testAccMonitorConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
   name = "%s"
-  type = "query alert"
+  type = "metric alert"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
 
-  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:%s} by {host} > 2"
+  query = "avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:%s} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1"
 
   thresholds = {
-	warning = "1.0"
-	critical = "2.0"
-	warning_recovery = "0.5"
-	critical_recovery = "1.5"
+	warning = "0.5"
+	critical = "1.0"
+	warning_recovery = "0.3"
+	critical_recovery = "0.7"
   }
+
+	threshold_windows = {
+		trigger_window = "last_15m"
+		recovery_window = "last_15m"
+	}
 
   renotify_interval = 60
 

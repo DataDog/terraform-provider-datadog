@@ -629,15 +629,15 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.ok", "0"),
+						"datadog_monitor.foo", "monitor_thresholds.0.ok", "0"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning", "0.5"),
+						"datadog_monitor.foo", "monitor_thresholds.0.warning", "0.5"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.warning_recovery", "0.25"),
+						"datadog_monitor.foo", "monitor_thresholds.0.warning_recovery", "0.25"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical", "1"),
+						"datadog_monitor.foo", "monitor_thresholds.0.critical", "1"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "thresholds.critical_recovery", "0.5"),
+						"datadog_monitor.foo", "monitor_thresholds.0.critical_recovery", "0.5"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_audit", "false"),
 					resource.TestCheckResourceAttr(
@@ -645,9 +645,9 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "include_tags", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "threshold_windows.recovery_window", "last_5m"),
+						"datadog_monitor.foo", "monitor_threshold_windows.0.recovery_window", "last_5m"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "threshold_windows.trigger_window", "last_5m"),
+						"datadog_monitor.foo", "monitor_threshold_windows.0.trigger_window", "last_5m"),
 				),
 			},
 		},
@@ -1114,12 +1114,12 @@ resource "datadog_monitor" "foo" {
 	message = "some message Notify: @hipchat-channel"
 	escalation_message = "the situation has escalated @pagerduty"
 	query = "avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 3, direction='above', alert_window='last_5m', interval=20, count_default_zero='true') >= 1"
-	thresholds = {
-	  ok = "0.0"
-	  warning = "0.5"
-	  warning_recovery = "0.25"
-	  critical = "1.0"
-	  critical_recovery = "0.5"
+	monitor_thresholds {
+		ok = 0
+		warning = 0.5
+		warning_recovery = 0.25
+		critical = 1
+		critical_recovery = 0.5
 	}
 
 	notify_no_data = false
@@ -1129,7 +1129,7 @@ resource "datadog_monitor" "foo" {
 	timeout_h = 60
 	include_tags = true
 
-	threshold_windows = {
+	monitor_threshold_windows {
 		recovery_window = "last_5m"
 		trigger_window = "last_5m"
 	}
