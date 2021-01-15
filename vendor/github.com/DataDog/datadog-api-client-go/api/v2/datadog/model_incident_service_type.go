@@ -13,7 +13,7 @@ import (
 	"fmt"
 )
 
-// IncidentServiceType Incident Service resource type.
+// IncidentServiceType Incident service resource type.
 type IncidentServiceType string
 
 // List of IncidentServiceType

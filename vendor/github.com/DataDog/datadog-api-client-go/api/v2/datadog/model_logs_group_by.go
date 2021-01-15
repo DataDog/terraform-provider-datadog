@@ -18,7 +18,7 @@ type LogsGroupBy struct {
 	Facet     string                `json:"facet"`
 	Histogram *LogsGroupByHistogram `json:"histogram,omitempty"`
 	// The maximum buckets to return for this group by
-	Limit   *int32              `json:"limit,omitempty"`
+	Limit   *int64              `json:"limit,omitempty"`
 	Missing *LogsGroupByMissing `json:"missing,omitempty"`
 	Sort    *LogsAggregateSort  `json:"sort,omitempty"`
 	Total   *LogsGroupByTotal   `json:"total,omitempty"`
@@ -31,7 +31,7 @@ type LogsGroupBy struct {
 func NewLogsGroupBy(facet string) *LogsGroupBy {
 	this := LogsGroupBy{}
 	this.Facet = facet
-	var limit int32 = 10
+	var limit int64 = 10
 	this.Limit = &limit
 	return &this
 }
@@ -41,7 +41,7 @@ func NewLogsGroupBy(facet string) *LogsGroupBy {
 // but it doesn't guarantee that properties required by API are set
 func NewLogsGroupByWithDefaults() *LogsGroupBy {
 	this := LogsGroupBy{}
-	var limit int32 = 10
+	var limit int64 = 10
 	this.Limit = &limit
 	return &this
 }
@@ -103,9 +103,9 @@ func (o *LogsGroupBy) SetHistogram(v LogsGroupByHistogram) {
 }
 
 // GetLimit returns the Limit field value if set, zero value otherwise.
-func (o *LogsGroupBy) GetLimit() int32 {
+func (o *LogsGroupBy) GetLimit() int64 {
 	if o == nil || o.Limit == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Limit
@@ -113,7 +113,7 @@ func (o *LogsGroupBy) GetLimit() int32 {
 
 // GetLimitOk returns a tuple with the Limit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LogsGroupBy) GetLimitOk() (*int32, bool) {
+func (o *LogsGroupBy) GetLimitOk() (*int64, bool) {
 	if o == nil || o.Limit == nil {
 		return nil, false
 	}
@@ -129,8 +129,8 @@ func (o *LogsGroupBy) HasLimit() bool {
 	return false
 }
 
-// SetLimit gets a reference to the given int32 and assigns it to the Limit field.
-func (o *LogsGroupBy) SetLimit(v int32) {
+// SetLimit gets a reference to the given int64 and assigns it to the Limit field.
+func (o *LogsGroupBy) SetLimit(v int64) {
 	o.Limit = &v
 }
 

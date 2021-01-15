@@ -17,8 +17,8 @@ datadog/*datadog_integration_pagerduty*   @DataDog/integrations-tools-and-librar
 docs/resources/integration_pagerduty*     @DataDog/integrations-tools-and-libraries @DataDog/web-integrations
 datadog/*datadog_ip_ranges*               @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
 docs/data-sources/ip_ranges*              @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
-datadog/*datadog_logs*                    @DataDog/integrations-tools-and-libraries @DataDog/logs-intake
-docs/resources/logs*                      @DataDog/integrations-tools-and-libraries @DataDog/logs-intake
+datadog/*datadog_logs*                    @DataDog/integrations-tools-and-libraries @DataDog/logs-backend @DataDog/logs-app
+docs/resources/logs*                      @DataDog/integrations-tools-and-libraries @DataDog/logs-backend @DataDog/logs-app
 datadog/*datadog_metric*                  @DataDog/integrations-tools-and-libraries @DataDog/metrics-intake @DataDog/metrics-query
 docs/resources/metric*                    @DataDog/integrations-tools-and-libraries @DataDog/metrics-intake @DataDog/metrics-query
 datadog/*datadog_monitor*                 @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
