@@ -15,7 +15,7 @@ import (
 // LogsResponseMetadata The metadata associated with a request
 type LogsResponseMetadata struct {
 	// The time elapsed in milliseconds
-	Elapsed *int32                    `json:"elapsed,omitempty"`
+	Elapsed *int64                    `json:"elapsed,omitempty"`
 	Page    *LogsResponseMetadataPage `json:"page,omitempty"`
 	// The identifier of the request
 	RequestId *string                      `json:"request_id,omitempty"`
@@ -42,9 +42,9 @@ func NewLogsResponseMetadataWithDefaults() *LogsResponseMetadata {
 }
 
 // GetElapsed returns the Elapsed field value if set, zero value otherwise.
-func (o *LogsResponseMetadata) GetElapsed() int32 {
+func (o *LogsResponseMetadata) GetElapsed() int64 {
 	if o == nil || o.Elapsed == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Elapsed
@@ -52,7 +52,7 @@ func (o *LogsResponseMetadata) GetElapsed() int32 {
 
 // GetElapsedOk returns a tuple with the Elapsed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LogsResponseMetadata) GetElapsedOk() (*int32, bool) {
+func (o *LogsResponseMetadata) GetElapsedOk() (*int64, bool) {
 	if o == nil || o.Elapsed == nil {
 		return nil, false
 	}
@@ -68,8 +68,8 @@ func (o *LogsResponseMetadata) HasElapsed() bool {
 	return false
 }
 
-// SetElapsed gets a reference to the given int32 and assigns it to the Elapsed field.
-func (o *LogsResponseMetadata) SetElapsed(v int32) {
+// SetElapsed gets a reference to the given int64 and assigns it to the Elapsed field.
+func (o *LogsResponseMetadata) SetElapsed(v int64) {
 	o.Elapsed = &v
 }
 

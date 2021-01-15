@@ -9,7 +9,6 @@
 package datadog
 
 import (
-	"bytes"
 	_context "context"
 	_ioutil "io/ioutil"
 	_nethttp "net/http"
@@ -144,7 +143,6 @@ func (a *PagerDutyIntegrationApiService) CreatePagerDutyIntegrationServiceExecut
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -298,7 +296,6 @@ func (a *PagerDutyIntegrationApiService) DeletePagerDutyIntegrationServiceExecut
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -445,7 +442,6 @@ func (a *PagerDutyIntegrationApiService) GetPagerDutyIntegrationServiceExecute(r
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -610,7 +606,6 @@ func (a *PagerDutyIntegrationApiService) UpdatePagerDutyIntegrationServiceExecut
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}

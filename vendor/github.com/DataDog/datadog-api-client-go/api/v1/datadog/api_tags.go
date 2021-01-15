@@ -9,7 +9,6 @@
 package datadog
 
 import (
-	"bytes"
 	_context "context"
 	_ioutil "io/ioutil"
 	_nethttp "net/http"
@@ -157,7 +156,6 @@ func (a *TagsApiService) CreateHostTagsExecute(r ApiCreateHostTagsRequest) (Host
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -321,7 +319,6 @@ func (a *TagsApiService) DeleteHostTagsExecute(r ApiDeleteHostTagsRequest) (*_ne
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -477,7 +474,6 @@ func (a *TagsApiService) GetHostTagsExecute(r ApiGetHostTagsRequest) (HostTags, 
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -638,7 +634,6 @@ func (a *TagsApiService) ListHostTagsExecute(r ApiListHostTagsRequest) (TagToHos
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -814,7 +809,6 @@ func (a *TagsApiService) UpdateHostTagsExecute(r ApiUpdateHostTagsRequest) (Host
 
 	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = _ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
