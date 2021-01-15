@@ -130,7 +130,8 @@ func getCompute(d *schema.ResourceData) (*datadogV2.LogsMetricCompute, error) {
 		compute.SetAggregationType(datadogV2.LogsMetricComputeAggregationType(aggregationType.(string)))
 	}
 
-	if path, ok := resourceCompute["path"]; ok {
+	path, ok := resourceCompute["path"]
+	if ok && path != "" {
 		compute.SetPath(path.(string))
 	}
 
