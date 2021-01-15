@@ -3,6 +3,7 @@
 package datadog
 
 import (
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -273,6 +274,9 @@ func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 					Type:        schema.TypeString,
 					Required:    true,
 					Sensitive:   true,
+					StateFunc: func(val interface{}) string {
+						return convertToSha256(val.(string))
+					},
 				},
 				"filename": {
 					Description: "File name for the certificate.",
@@ -1106,11 +1110,15 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		key := clientCertificate.GetKey()
 		localCertificate["key"][0]["filename"] = key.GetFilename()
 
-		// make sure the content of the certificate is not set in the state file
-		// the field is write-only (not returned by the API) so it will generate
-		// some useless diff when planning
-		localCertificate["cert"][0]["content"] = ""
-		localCertificate["key"][0]["content"] = ""
+		// the content of client certificate is write-only so it will not be returned by the API.
+		// To avoid useless diff but also prevent storing the value in clear in the state
+		// we store a hash of the value.
+		if configCertificateContent, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
+			localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent.(string))
+		}
+		if configKeyContent, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
+			localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent.(string))
+		}
 
 		d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate})
 	}
@@ -1366,4 +1374,25 @@ func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []s
 		}
 	}
 	return
+}
+
+func convertToSha256(content string) string {
+	data := []byte(content)
+	hash := sha256.Sum256(data)
+	return fmt.Sprintf("%x", hash[:])
+}
+
+// get the sha256 of a client certificate content
+// in some case where Terraform compares the state value
+// we already get the hashed value so we don't need to
+// hash it again
+func getCertificateStateValue(content string) string {
+	contentBytes := []byte(content)
+
+	// hacky way to detect if the value is already a sha256 hash
+	if len(contentBytes) == 64 {
+		return content
+	}
+
+	return convertToSha256(content)
 }
