@@ -551,11 +551,11 @@ func createSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_basicauth.0.password", "secret"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.content", "content-certificate"),
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.content", convertToSha256("content-certificate")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.filename", "Provided in Terraform config"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.content", "content-key"),
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.content", convertToSha256("content-key")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
 			resource.TestCheckResourceAttr(
@@ -873,6 +873,14 @@ func updateSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request.timeout", "60"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.content", convertToSha256("content-certificate-updated")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.filename", "Provided in Terraform config"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.content", convertToSha256("content-key-updated")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key-updated"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.type", "body"),
@@ -930,6 +938,16 @@ resource "datadog_synthetics_test" "bar" {
 		method = "GET"
 		url = "https://docs.datadoghq.com"
 		timeout = 60
+	}
+
+	request_client_certificate {
+		cert {
+			content = "content-certificate-updated"
+		}
+		key {
+			content = "content-key-updated"
+			filename = "key-updated"
+		}
 	}
 
 	assertion {
