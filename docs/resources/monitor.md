@@ -53,7 +53,7 @@ resource "datadog_monitor" "foo" {
 Email notifications can be sent to specific users by using the same `@username` notation as events.
 - **name** (String) Name of Datadog monitor.
 - **query** (String) The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. Warning: `terraform plan` won't perform any validation of the query contents.
-- **type** (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). The available options are below. Note: The monitor type cannot be changed after a monitor is created.
+- **type** (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created.
 
 ### Optional
 
