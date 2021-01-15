@@ -213,6 +213,7 @@ Class | Method | HTTP request | Description
  - [IncidentFieldAttributesValueType](docs/IncidentFieldAttributesValueType.md)
  - [IncidentIntegrationMetadataType](docs/IncidentIntegrationMetadataType.md)
  - [IncidentPostmortemType](docs/IncidentPostmortemType.md)
+ - [IncidentRelatedObject](docs/IncidentRelatedObject.md)
  - [IncidentResponse](docs/IncidentResponse.md)
  - [IncidentResponseAttributes](docs/IncidentResponseAttributes.md)
  - [IncidentResponseData](docs/IncidentResponseData.md)
