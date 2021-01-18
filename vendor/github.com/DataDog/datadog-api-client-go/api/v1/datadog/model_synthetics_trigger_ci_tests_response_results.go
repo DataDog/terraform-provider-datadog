@@ -16,7 +16,7 @@ import (
 type SyntheticsTriggerCITestsResponseResults struct {
 	Device *SyntheticsDeviceID `json:"device,omitempty"`
 	// The location ID of the test run.
-	Location *float32 `json:"location,omitempty"`
+	Location *int64 `json:"location,omitempty"`
 	// The public ID of the Synthetics test.
 	PublicId *string `json:"public_id,omitempty"`
 	// ID of the result.
@@ -73,9 +73,9 @@ func (o *SyntheticsTriggerCITestsResponseResults) SetDevice(v SyntheticsDeviceID
 }
 
 // GetLocation returns the Location field value if set, zero value otherwise.
-func (o *SyntheticsTriggerCITestsResponseResults) GetLocation() float32 {
+func (o *SyntheticsTriggerCITestsResponseResults) GetLocation() int64 {
 	if o == nil || o.Location == nil {
-		var ret float32
+		var ret int64
 		return ret
 	}
 	return *o.Location
@@ -83,7 +83,7 @@ func (o *SyntheticsTriggerCITestsResponseResults) GetLocation() float32 {
 
 // GetLocationOk returns a tuple with the Location field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SyntheticsTriggerCITestsResponseResults) GetLocationOk() (*float32, bool) {
+func (o *SyntheticsTriggerCITestsResponseResults) GetLocationOk() (*int64, bool) {
 	if o == nil || o.Location == nil {
 		return nil, false
 	}
@@ -99,8 +99,8 @@ func (o *SyntheticsTriggerCITestsResponseResults) HasLocation() bool {
 	return false
 }
 
-// SetLocation gets a reference to the given float32 and assigns it to the Location field.
-func (o *SyntheticsTriggerCITestsResponseResults) SetLocation(v float32) {
+// SetLocation gets a reference to the given int64 and assigns it to the Location field.
+func (o *SyntheticsTriggerCITestsResponseResults) SetLocation(v int64) {
 	o.Location = &v
 }
 

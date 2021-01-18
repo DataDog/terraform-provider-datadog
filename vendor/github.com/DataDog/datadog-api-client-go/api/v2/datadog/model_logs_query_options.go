@@ -15,7 +15,7 @@ import (
 // LogsQueryOptions Global query options that are used during the query. Note: You should only supply timezone or time offset but not both otherwise the query will fail.
 type LogsQueryOptions struct {
 	// The time offset (in seconds) to apply to the query.
-	TimeOffset *int32 `json:"timeOffset,omitempty"`
+	TimeOffset *int64 `json:"timeOffset,omitempty"`
 	// The timezone can be specified both as an offset, for example: \"UTC+03:00\".
 	Timezone *string `json:"timezone,omitempty"`
 }
@@ -42,9 +42,9 @@ func NewLogsQueryOptionsWithDefaults() *LogsQueryOptions {
 }
 
 // GetTimeOffset returns the TimeOffset field value if set, zero value otherwise.
-func (o *LogsQueryOptions) GetTimeOffset() int32 {
+func (o *LogsQueryOptions) GetTimeOffset() int64 {
 	if o == nil || o.TimeOffset == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.TimeOffset
@@ -52,7 +52,7 @@ func (o *LogsQueryOptions) GetTimeOffset() int32 {
 
 // GetTimeOffsetOk returns a tuple with the TimeOffset field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LogsQueryOptions) GetTimeOffsetOk() (*int32, bool) {
+func (o *LogsQueryOptions) GetTimeOffsetOk() (*int64, bool) {
 	if o == nil || o.TimeOffset == nil {
 		return nil, false
 	}
@@ -68,8 +68,8 @@ func (o *LogsQueryOptions) HasTimeOffset() bool {
 	return false
 }
 
-// SetTimeOffset gets a reference to the given int32 and assigns it to the TimeOffset field.
-func (o *LogsQueryOptions) SetTimeOffset(v int32) {
+// SetTimeOffset gets a reference to the given int64 and assigns it to the TimeOffset field.
+func (o *LogsQueryOptions) SetTimeOffset(v int64) {
 	o.TimeOffset = &v
 }
 

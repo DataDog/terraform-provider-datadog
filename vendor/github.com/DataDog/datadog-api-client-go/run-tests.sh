@@ -25,8 +25,15 @@ GO111MODULE=on go get -u gotest.tools/gotestsum
 cd -
 
 golint ./...
+go mod tidy
 go clean -testcache
 gotestsum --format short-verbose --rerun-fails --rerun-fails-max-failures=20000 --raw-command -- ./run-go-tests.sh
 RESULT+=$?
-go mod tidy
+
+# Always run integration-only scenarios
+set -e
+if [ "$RECORD" != "none" -a -n $DD_TEST_CLIENT_API_KEY -a -n $DD_TEST_CLIENT_APP_KEY ]; then
+  BDD_TAGS="@integration-only" RECORD=none gotestsum --format short-verbose --rerun-fails --rerun-fails-max-failures=20000 --raw-command -- ./run-go-tests.sh
+fi
+
 exit $RESULT
