@@ -15,7 +15,7 @@ import (
 // SyntheticsTriggerCITestsResponseLocations Synthetics location.
 type SyntheticsTriggerCITestsResponseLocations struct {
 	// Unique identifier of the location.
-	Id *float32 `json:"id,omitempty"`
+	Id *int64 `json:"id,omitempty"`
 	// Name of the location.
 	Name *string `json:"name,omitempty"`
 }
@@ -38,9 +38,9 @@ func NewSyntheticsTriggerCITestsResponseLocationsWithDefaults() *SyntheticsTrigg
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
-func (o *SyntheticsTriggerCITestsResponseLocations) GetId() float32 {
+func (o *SyntheticsTriggerCITestsResponseLocations) GetId() int64 {
 	if o == nil || o.Id == nil {
-		var ret float32
+		var ret int64
 		return ret
 	}
 	return *o.Id
@@ -48,7 +48,7 @@ func (o *SyntheticsTriggerCITestsResponseLocations) GetId() float32 {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SyntheticsTriggerCITestsResponseLocations) GetIdOk() (*float32, bool) {
+func (o *SyntheticsTriggerCITestsResponseLocations) GetIdOk() (*int64, bool) {
 	if o == nil || o.Id == nil {
 		return nil, false
 	}
@@ -64,8 +64,8 @@ func (o *SyntheticsTriggerCITestsResponseLocations) HasId() bool {
 	return false
 }
 
-// SetId gets a reference to the given float32 and assigns it to the Id field.
-func (o *SyntheticsTriggerCITestsResponseLocations) SetId(v float32) {
+// SetId gets a reference to the given int64 and assigns it to the Id field.
+func (o *SyntheticsTriggerCITestsResponseLocations) SetId(v int64) {
 	o.Id = &v
 }
 

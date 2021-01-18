@@ -93,14 +93,14 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     message = "acceptance rule triggered"
     enabled = false
 
-    query { 
+    query {
         name = "first"
         query = "does not really match much"
         aggregation = "count"
         group_by_fields = ["host"]
     }
 
-    query { 
+    query {
         name = "second"
         query = "does not really match much either"
         aggregation = "cardinality"
@@ -196,7 +196,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     message = "acceptance rule triggered (updated)"
     enabled = true
 
-    query { 
+    query {
         name = "first_updated"
         query = "does not really match much (updated)"
         aggregation = "cardinality"
@@ -283,7 +283,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s - updated"
     message = "acceptance rule triggered (updated)"
 
-    query { 
+    query {
         name = "first_updated"
         query = "does not really match much (updated)"
         aggregation = "cardinality"
@@ -370,7 +370,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s"
     message = "acceptance rule triggered"
 
-    query { 
+    query {
         query = "does not really match much"
         aggregation = "count"
         group_by_fields = ["host"]
