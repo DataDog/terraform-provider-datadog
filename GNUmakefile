@@ -74,10 +74,9 @@ update-go-client:
 	echo "Updating the Zorkian client to ${ZORKIAN_VERSION} and the API Client to ${API_CLIENT_VERSION}"
 	go get github.com/zorkian/go-datadog-api@$(ZORKIAN_VERSION)
 	go get github.com/DataDog/datadog-api-client-go@${API_CLIENT_VERSION}
-	go mod vendor
 	go mod tidy
 
 get-test-deps:
-	gotestsum --version || (cd `mktemp -d`;	GO111MODULE=auto GOFLAGS='' go get -u gotest.tools/gotestsum; cd -)
+	gotestsum --version || (cd `mktemp -d`;	GO111MODULE=off GOFLAGS='' go get -u gotest.tools/gotestsum; cd -)
 
 .PHONY: build test testacc cassettes vet fmt fmtcheck errcheck test-compile get-test-deps
