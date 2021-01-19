@@ -67,7 +67,7 @@ Required:
 Required:
 
 - **path** (String, Required) The path to the value the log-based metric will be aggregated over.
-- **tag_name** (String, Required) Eventual name of the tag that gets created. By default, the path attribute is used as the tag name.
+- **tag_name** (String, Required) Name of the tag that gets created.
 
 ## Import
 
