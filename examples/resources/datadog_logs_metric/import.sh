@@ -1,0 +1,1 @@
+terraform import datadog_logs_metric.testing_logs_metric testing.logs.metric
