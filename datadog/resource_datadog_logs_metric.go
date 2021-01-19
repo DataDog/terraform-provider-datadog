@@ -78,7 +78,7 @@ func resourceDatadogLogsMetric() *schema.Resource {
 						"tag_name": {
 							Type:        schema.TypeString,
 							Required:    true,
-							Description: "Eventual name of the tag that gets created. By default, the path attribute is used as the tag name.",
+							Description: "Name of the tag that gets created.",
 						},
 					},
 				},

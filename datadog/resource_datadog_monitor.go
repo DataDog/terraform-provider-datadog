@@ -65,7 +65,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"type": {
-				Description:  "The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). The available options are below. Note: The monitor type cannot be changed after a monitor is created.",
+				Description:  "The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created.",
 				Type:         schema.TypeString,
 				Required:     true,
 				ForceNew:     true,
