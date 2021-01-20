@@ -29,24 +29,24 @@ resource "datadog_user" "foo" {
 
 ### Required
 
-- **email** (String) Email address for user.
+- **email** (String, Required) Email address for user.
 
 ### Optional
 
-- **access_role** (String, Deprecated) Role description for user. Can be `st` (standard user), `adm` (admin user) or `ro` (read-only user). Default is `st`. `access_role` is ignored for new users created with this resource. New users have to use the `roles` attribute.
-- **disabled** (Boolean) Whether the user is disabled.
-- **handle** (String, Deprecated) The user handle, must be a valid email.
-- **id** (String) The ID of this resource.
-- **is_admin** (Boolean, Deprecated) Whether the user is an administrator. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
-- **name** (String) Name for user.
-- **role** (String, Deprecated) Role description for user. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
-- **roles** (Set of String) A list a role IDs to assign to the user.
-- **send_user_invitation** (Boolean) Whether an invitation email should be sent when the user is created.
+- **access_role** (String, Optional, Deprecated) Role description for user. Can be `st` (standard user), `adm` (admin user) or `ro` (read-only user). Default is `st`. `access_role` is ignored for new users created with this resource. New users have to use the `roles` attribute.
+- **disabled** (Boolean, Optional) Whether the user is disabled.
+- **handle** (String, Optional, Deprecated) The user handle, must be a valid email.
+- **id** (String, Optional) The ID of this resource.
+- **is_admin** (Boolean, Optional, Deprecated) Whether the user is an administrator. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
+- **name** (String, Optional) Name for user.
+- **role** (String, Optional, Deprecated) Role description for user. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
+- **roles** (Set of String, Optional) A list a role IDs to assign to the user.
+- **send_user_invitation** (Boolean, Optional) Whether an invitation email should be sent when the user is created.
 
 ### Read-only
 
-- **user_invitation_id** (String) The ID of the user invitation that was sent when creating the user.
-- **verified** (Boolean) Returns true if Datadog user is verified.
+- **user_invitation_id** (String, Read-only) The ID of the user invitation that was sent when creating the user.
+- **verified** (Boolean, Read-only) Returns `true` if the user is verified.
 
 ## Import
 

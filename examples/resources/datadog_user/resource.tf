@@ -5,7 +5,7 @@ data "datadog_role" "ro_role" {
 
 # Create a new Datadog user
 resource "datadog_user" "foo" {
-  email  = "new@example.com"
+  email = "new@example.com"
 
   roles = [data.datadog_role.ro_role.id]
 }
