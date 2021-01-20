@@ -207,7 +207,8 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Type:        schema.TypeInt,
 				Computed:    true,
 			},
-			"step": syntheticsTestStep(),
+			"step":         syntheticsTestBrowserStep(false),
+			"browser_step": syntheticsTestBrowserStep(true),
 		},
 	}
 }
@@ -466,7 +467,19 @@ func syntheticsTestOptionsList() *schema.Schema {
 	}
 }
 
-func syntheticsTestStep() *schema.Schema {
+func syntheticsTestBrowserStep(detailedParams bool) *schema.Schema {
+	var paramsSchema schema.Schema
+
+	if detailedParams {
+		paramsSchema = syntheticsBrowserStepParams()
+	} else {
+		paramsSchema = schema.Schema{
+			Description: "Parameters for the step as JSON string.",
+			Type:        schema.TypeString,
+			Required:    true,
+		}
+	}
+
 	return &schema.Schema{
 		Description: "Steps for browser tests.",
 		Type:        schema.TypeList,
@@ -494,10 +507,130 @@ func syntheticsTestStep() *schema.Schema {
 					Type:        schema.TypeInt,
 					Optional:    true,
 				},
-				"params": {
-					Description: "Parameters for the step as JSON string.",
+				"params": &paramsSchema,
+			},
+		},
+	}
+}
+
+func syntheticsBrowserStepParams() schema.Schema {
+	return schema.Schema{
+		Description: "Parameters for the step.",
+		Type:        schema.TypeList,
+		MaxItems:    1,
+		Required:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"attribute": {
+					Description: `Name of the attribute to use for an "assert attribute" step.`,
 					Type:        schema.TypeString,
-					Required:    true,
+					Optional:    true,
+				},
+				"check": {
+					Description:  "Check type to use for an assertion step.",
+					Type:         schema.TypeString,
+					Optional:     true,
+					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsCheckTypeFromValue),
+				},
+				"click_type": {
+					Description:  `Type of click to use for a "click" step.`,
+					Type:         schema.TypeString,
+					Optional:     true,
+					ValidateFunc: validation.StringInSlice([]string{"contextual", "double", "primary"}, false),
+				},
+				"code": {
+					Description: "Javascript code to use for the step.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"delay": {
+					Description: `Delay between each key stroke for a "type test" step.`,
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"element": {
+					Description: "Element to use for the step, json encoded string.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"email": {
+					Description: `Details of the email for an "assert email" step.`,
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"file": {
+					Description: `For an "assert download" step.`,
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"files": {
+					Description: `Details of the files for an "upload files" step, json encoded string.`,
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"modifiers": {
+					Description: `Modifier to use for a "press key" step.`,
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem: &schema.Schema{
+						Type:         schema.TypeString,
+						ValidateFunc: validation.StringInSlice([]string{"Alt", "Control", "meta", "Shift"}, false),
+					},
+				},
+				"playing_tab_id": {
+					Description: "ID of the tab to play the subtest.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"request": {
+					Description: "Request for an API step.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"subtest_public_id": {
+					Description: "ID of the Synthetics test to use as subtest.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"value": {
+					Description: "Value of the step.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"variable": {
+					Description: "Details of the variable to extract.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"name": {
+								Description: "Name of the extracted variable.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+							"example": {
+								Default:     "Example of the extracted variable.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+						},
+					},
+					Optional: true,
+				},
+				"with_click": {
+					Description: `For "file upload" steps.`,
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"x": {
+					Description: `X coordinates for a "scroll step".`,
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"y": {
+					Description: `Y coordinates for a "scroll step".`,
+					Type:        schema.TypeInt,
+					Optional:    true,
 				},
 			},
 		},
@@ -1054,6 +1187,37 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		syntheticsTest.SetSteps(steps)
 	}
 
+	if attr, ok := d.GetOk("browser_step"); ok && syntheticsTest.GetType() == "browser" {
+		steps := []datadogV1.SyntheticsStep{}
+
+		for _, s := range attr.([]interface{}) {
+			step := datadogV1.SyntheticsStep{}
+			stepMap := s.(map[string]interface{})
+
+			step.SetName(stepMap["name"].(string))
+			step.SetType(datadogV1.SyntheticsStepType(stepMap["type"].(string)))
+			step.SetAllowFailure(stepMap["allow_failure"].(bool))
+			step.SetTimeout(float32(stepMap["timeout"].(int)))
+
+			params := make(map[string]interface{})
+			stepParams := stepMap["params"].([]interface{})[0]
+			stepTypeParams := getParamsKeysForStepType(step.GetType())
+
+			for _, key := range stepTypeParams {
+				if stepParams.(map[string]interface{})[key] != "" {
+					convertedValue := convertStepParamsValueForConfig(step.GetType(), key, stepParams.(map[string]interface{})[key])
+					params[convertStepParamsKey(key)] = convertedValue
+				}
+			}
+
+			step.SetParams(params)
+
+			steps = append(steps, step)
+		}
+
+		syntheticsTest.SetSteps(steps)
+	}
+
 	return syntheticsTest
 }
 
@@ -1311,6 +1475,12 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		steps := syntheticsTest.GetSteps()
 		var localSteps []map[string]interface{}
 
+		useLegacyStep := false
+
+		if attr, ok := d.GetOk("step"); ok && attr != nil && len(attr.([]interface{})) > 0 {
+			useLegacyStep = true
+		}
+
 		for _, step := range steps {
 			localStep := make(map[string]interface{})
 			localStep["name"] = step.GetName()
@@ -1321,12 +1491,34 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 				localStep["allow_failure"] = allowFailure
 			}
 
-			localStep["params"] = convertToString(step.GetParams().(interface{}))
+			if useLegacyStep {
+				localStep["params"] = convertToString(step.GetParams().(interface{}))
+			} else {
+				localParams := make(map[string]interface{})
+				params := step.GetParams()
+				paramsMap := params.(map[string]interface{})
+
+				for key, value := range paramsMap {
+					localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
+				}
+
+				localStep["params"] = []interface{}{localParams}
+			}
 
 			localSteps = append(localSteps, localStep)
 		}
 
-		d.Set("step", localSteps)
+		// If the existing state still uses step, keep using that in the state to not generate useless diffs
+		if useLegacyStep {
+			if err := d.Set("step", localSteps); err != nil {
+				return err
+			}
+		} else {
+			if err := d.Set("browser_step", localSteps); err != nil {
+				return err
+			}
+		}
+
 	}
 
 	d.Set("name", syntheticsTest.GetName())
@@ -1395,4 +1587,154 @@ func getCertificateStateValue(content string) string {
 	}
 
 	return convertToSha256(content)
+}
+
+func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
+	switch stepType {
+	case datadogV1.SYNTHETICSSTEPTYPE_ASSERT_CURRENT_URL:
+		return []string{"check", "value"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_ASSERT_ELEMENT_ATTRIBUTE:
+		return []string{"attribute", "check", "element", "value"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_ASSERT_ELEMENT_CONTENT:
+		return []string{"check", "element", "value"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_ASSERT_ELEMENT_PRESENT:
+		return []string{"element"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_ASSERT_EMAIL:
+		return []string{"email"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_ASSERT_FILE_DOWNLOAD:
+		return []string{"file"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_ASSERT_FROM_JAVASCRIPT:
+		return []string{"code", "element"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_ASSERT_PAGE_CONTAINS:
+		return []string{"value"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_ASSERT_PAGE_LACKS:
+		return []string{"value"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_CLICK:
+		return []string{"click_type", "element"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_EXTRACT_FROM_JAVASCRIPT:
+		return []string{"code", "element", "variable"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_EXTRACT_VARIABLE:
+		return []string{"element", "variable"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_GO_TO_EMAIL_LINK:
+		return []string{"value"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_GO_TO_URL:
+		return []string{"value"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_HOVER:
+		return []string{"element"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_PLAY_SUB_TEST:
+		return []string{"playing_tab_id", "subtest_public_id"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_PRESS_KEY:
+		return []string{"modifiers", "value"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_REFRESH:
+		return []string{}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_RUN_API_TEST:
+		return []string{"request"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_SCROLL:
+		return []string{"element", "x", "y"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_SELECT_OPTION:
+		return []string{"element", "value"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_TYPE_TEXT:
+		return []string{"delay", "element", "value"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_UPLOAD_FILES:
+		return []string{"element", "files", "with_click"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_WAIT:
+		return []string{"value"}
+	}
+
+	return []string{}
+}
+
+func convertStepParamsValueForConfig(stepType datadogV1.SyntheticsStepType, key string, value interface{}) interface{} {
+	switch key {
+	case "element", "email", "file", "request":
+		result := make(map[string]interface{})
+		getMetadataFromJSON([]byte(value.(string)), &result)
+		return result
+
+	case "playing_tab_id":
+		result, _ := strconv.Atoi(value.(string))
+		return result
+
+	case "value":
+		if stepType == datadogV1.SYNTHETICSSTEPTYPE_WAIT {
+			result, _ := strconv.Atoi(value.(string))
+			return result
+		}
+
+		return value
+
+	case "variable":
+		return value.([]interface{})[0]
+	}
+
+	return value
+}
+
+func convertStepParamsValueForState(key string, value interface{}) interface{} {
+	switch key {
+	case "element", "email", "file", "request":
+		result, _ := json.Marshal(value)
+		return string(result)
+
+	case "playing_tab_id", "value":
+		return convertToString(value)
+
+	case "variable":
+		return []interface{}{value}
+	}
+
+	return value
+}
+
+func convertStepParamsKey(key string) string {
+	switch key {
+	case "click_type":
+		return "clickType"
+
+	case "clickType":
+		return "click_type"
+
+	case "playing_tab_id":
+		return "playingTabId"
+
+	case "playingTabId":
+		return "playing_tab_id"
+
+	case "subtest_public_id":
+		return "subtestPublicId"
+
+	case "subtestPublicId":
+		return "subtest_public_id"
+
+	case "with_click":
+		return "withClick"
+
+	case "withClick":
+		return "with_click"
+	}
+
+	return key
 }
