@@ -3,7 +3,7 @@ resource "datadog_monitor" "cpu_anomalous" {
   type    = "query alert"
   message = "CPU utilization is outside normal bounds"
   query   = "avg(last_4h):anomalies(ewma_20(avg:system.cpu.system{env:prod,service:website}.as_rate()), 'robust', 3, direction='below', alert_window='last_30m', interval=60, count_default_zero='true', seasonality='weekly') >= 1"
-  monitor_thresholdsthresholds {
+  monitor_thresholds {
     critical          = 1.0
     critical_recovery = 0.0
   }
