@@ -609,9 +609,9 @@ func syntheticsBrowserStepParams() schema.Schema {
 								Optional:    true,
 							},
 							"example": {
-								Default:     "Example of the extracted variable.",
-								Type:        schema.TypeString,
-								Optional:    true,
+								Default:  "Example of the extracted variable.",
+								Type:     schema.TypeString,
+								Optional: true,
 							},
 						},
 					},
