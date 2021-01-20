@@ -1,62 +1,88 @@
 ---
-page_title: "datadog_logs_archive"
+page_title: "datadog_logs_archive Resource - terraform-provider-datadog"
+subcategory: ""
+description: |-
+  Provides a Datadog Logs Archive API resource, which is used to create and manage Datadog logs archives.
 ---
 
-# datadog_logs_archive Resource
+# Resource `datadog_logs_archive`
 
-Provides a Datadog [Logs Archive API](https://docs.datadoghq.com/api/v2/logs-archives/) resource, which is used to create and manage Datadog logs archives.
+Provides a Datadog Logs Archive API resource, which is used to create and manage Datadog logs archives.
 
 ## Example Usage
 
-Create a Datadog logs archive:
-
-```hcl
+```terraform
 resource "datadog_logs_archive" "my_s3_archive" {
-  name  = "my s3 archive"
-  query = "service:myservice"
-  s3_archive {
-    bucket     = "my-bucket"
-    path       = "/path/foo"
-    account_id = "001234567888"
-    role_name  = "my-role-name"
-  }
+    name  = "my s3 archive"
+    query = "service:myservice"
+    s3_archive {
+        bucket     = "my-bucket"
+        path       = "/path/foo"
+        account_id = "001234567888"
+        role_name  = "my-role-name"
+    }
 }
 ```
 
-## Argument Reference
+## Schema
 
-The following arguments are supported:
+### Required
 
--   `name`: (Required) Your archive name.
--   `query`: (Required) The archive query/filter. Logs matching this query are included in the archive.
--   `s3_archive`: (Optional) Definition of an s3 archive. List of one element with the structure below.
-    -   `bucket`: (Required) Name of your s3 bucket.
-    -   `path`: (Optional, default = "") Path where the archive will be stored.
-    -   `account_id`: (Required) Your AWS account id.
-    -   `role_name`: (Required) Your AWS role name.
--   `gcs_archive`: (Optional) Definition of an gcs archive. List of one element with the structure below.
-    -   `bucket`: (Required) Name of your gcs bucket.
-    -   `path`: (Optional, default = "") Path where the archive will be stored.
-    -   `client_email`: (Required) Your client email.
-    -   `project_id`: (Required) Your project id.
--   `azure_archive`: (Optional) Definition of an azure archive. List of one element with the structure below.
-    -   `container`: (Required) The container where the archive will be stored.
-    -   `path`: (Optional, default = "") The path where the archive will be stored.
-    -   `tenant_id`: (Required) Your tenant id.
-    -   `client_id`: (Required) Your client id.
-    -   `storage_account`: (Required) The associated storage account.
--   `s3`: (Deprecated, Optional) Definition of an s3 archive. Use `s3_archive` instead.
--   `gcs`: (Deprecated, Optional) Definition of an gcs archive. Use `gcs_archive` instead.
--   `azure`: (Deprecated, Optional) Definition of an azure archive. Use `azure_archive` instead.
--   `rehydration_tags`: (Optional) An array of tags to add to rehydrated logs from an archive.
--   `include_tags`: (Optional, default=false) To store the tags in the archive, set the value "true". If it is set to "false", the tags will be dropped when the logs are sent to the archive.
+- **name** (String, Required) Your archive name.
+- **query** (String, Required) The archive query/filter. Logs matching this query are included in the archive.
 
-An archive definition must have one (and only one) of the three possible types defined: s3, gcs, azure.
+### Optional
+
+- **azure** (Map of String, Optional, Deprecated) Definition of an azure archive.
+- **azure_archive** (Block List, Max: 1) Definition of an azure archive. (see [below for nested schema](#nestedblock--azure_archive))
+- **gcs** (Map of String, Optional, Deprecated) Definition of a GCS archive.
+- **gcs_archive** (Block List, Max: 1) Definition of a GCS archive. (see [below for nested schema](#nestedblock--gcs_archive))
+- **id** (String, Optional) The ID of this resource.
+- **include_tags** (Boolean, Optional) To store the tags in the archive, set the value `true`. If it is set to `false`, the tags will be dropped when the logs are sent to the archive.
+- **rehydration_tags** (List of String, Optional) An array of tags to add to rehydrated logs from an archive.
+- **s3** (Map of String, Optional, Deprecated) Definition of an s3 archive.
+- **s3_archive** (Block List, Max: 1) Definition of an s3 archive. (see [below for nested schema](#nestedblock--s3_archive))
+
+<a id="nestedblock--azure_archive"></a>
+### Nested Schema for `azure_archive`
+
+Required:
+
+- **client_id** (String, Required) Your client id.
+- **container** (String, Required) The container where the archive will be stored.
+- **storage_account** (String, Required) The associated storage account.
+- **tenant_id** (String, Required) Your tenant id.
+
+Optional:
+
+- **path** (String, Optional) The path where the archive will be stored.
+
+
+<a id="nestedblock--gcs_archive"></a>
+### Nested Schema for `gcs_archive`
+
+Required:
+
+- **bucket** (String, Required) Name of your GCS bucket.
+- **client_email** (String, Required) Your client email.
+- **path** (String, Required) Path where the archive will be stored.
+- **project_id** (String, Required) Your project id.
+
+
+<a id="nestedblock--s3_archive"></a>
+### Nested Schema for `s3_archive`
+
+Required:
+
+- **account_id** (String, Required) Your AWS account id.
+- **bucket** (String, Required) Name of your s3 bucket.
+- **path** (String, Required) Path where the archive will be stored.
+- **role_name** (String, Required) Your AWS role name
 
 ## Import
 
-Logs archives can be imported using their public string ID, e.g.
+Import is supported using the following syntax:
 
-```
-$ terraform import datadog_logs_archive.my_s3_archive 1Aabc2_dfQPLnXy3HlfK4hi
+```shell
+terraform import datadog_logs_archive.my_s3_archive 1Aabc2_dfQPLnXy3HlfK4hi
 ```
