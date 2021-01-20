@@ -1,3 +1,24 @@
+## 2.20.0 (January 20, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_logs_metrics`: Add new resource ([#823](https://github.com/Datadog/terraform-provider-datadog/pull/823)).
+
+FEATURES:
+
+-   `datadog_dashboard`: Store dashboard widget IDs ([#815](https://github.com/Datadog/terraform-provider-datadog/pull/815)).
+-   `datadog_synthetics_test`: Add support for global variables from test ([#831](https://github.com/Datadog/terraform-provider-datadog/pull/831)).
+
+BUGFIXES:
+
+-   `datadog_synthetics_test`: Store SHA 256 hash of certificates in state instead of the actual cert ([#835](https://github.com/Datadog/terraform-provider-datadog/pull/835)).
+
+NOTES:
+
+-   `datadog_user`: Deprecate `access_role` field ([#834](https://github.com/Datadog/terraform-provider-datadog/pull/834)).
+-   `datadog_monitor`: Provide alternative to TypeMap complex fields ([#833](https://github.com/Datadog/terraform-provider-datadog/pull/833)).
+-   `datadog_logs_archive`: Provide alternative to TypeMap complex fields ([#838](https://github.com/Datadog/terraform-provider-datadog/pull/838)).
+
 ## 2.19.1 (January 8, 2021)
 
 BUGFIXES:
@@ -257,7 +278,7 @@ NOTES:
     -   `datadog_dashboard_list`: Migrate Dashboard_list resource to use Datadog Go client ([#479](https://github.com/DataDog/terraform-provider-datadog/issues/479))
     -   `datadog_integration_aws_log_collection`: Migrate aws_log_collection resource to use Datadog Go client ([#501](https://github.com/DataDog/terraform-provider-datadog/issues/501))
     -   `datadog_logs_custom_pipeline`: Migrate Logs custom pipeline resource to utilize Datadog Go client ([#495](https://github.com/DataDog/terraform-provider-datadog/issues/495))
-    -   `datadog_synthetics_test_`: Migrate synthetics resource to utilize Datadog Go Client ([#499](https://github.com/DataDog/terraform-provider-datadog/issues/499))
+    -   `datadog_synthetics_test`: Migrate synthetics resource to utilize Datadog Go Client ([#499](https://github.com/DataDog/terraform-provider-datadog/issues/499))
     -   `datadog_integration_aws_log_collection`, `datadog_integration_aws_lambda_arn`: Migrate AWS logs to use the Datadog Go Client ([#497](https://github.com/DataDog/terraform-provider-datadog/issues/497))
     -   `datadog_dashboard`: Migrate dashboard resource to use Datadog Go client ([#489](https://github.com/DataDog/terraform-provider-datadog/issues/489))
 -   `datadog_screenboard` and `datadog_timeboard` resources are deprecated and should be converted to `datadog_dashboard` resources.
