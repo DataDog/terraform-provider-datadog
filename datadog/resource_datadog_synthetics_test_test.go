@@ -384,7 +384,6 @@ func TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic(t *testing.T
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStepNewBrowserStep(accProvider, clock, t),
-			// updateSyntheticsBrowserTestStepNewBrowserStep(accProvider, clock, t),
 		},
 	})
 }
