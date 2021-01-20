@@ -214,6 +214,22 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 	}
 }`, uniq)
 }
+func pipelineConfigWithEmptyFilterQuery(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_logs_custom_pipeline" "empty_filter_query_pipeline" {
+	name = "%s"
+	is_enabled = "true"
+	filter {
+      query = ""
+    }
+	processor {
+		status_remapper {
+			is_enabled = true
+			sources = ["redis.severity"]
+		}
+	}
+}`, uniq)
+}
 
 func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 	rec := initRecorder(t)
@@ -287,6 +303,34 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.7.lookup_processor.0.lookup_table.#", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.8.lookup_processor.0.lookup_table.#", "2"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogLogsPipelineEmptyFilterQuery(t *testing.T) {
+	rec := initRecorder(t)
+	accProviders, clock, cleanup := testAccProviders(t, rec)
+	pipelineName := uniqueEntityName(clock, t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckPipelineDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: pipelineConfigWithEmptyFilterQuery(pipelineName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckPipelineExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.empty_filter_query_pipeline", "name", pipelineName),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.empty_filter_query_pipeline", "is_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.empty_filter_query_pipeline", "filter.0.query", ""),
 				),
 			},
 		},
