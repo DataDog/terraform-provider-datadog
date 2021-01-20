@@ -1,14 +1,30 @@
 ---
-page_title: "datadog_monitor Resource Examples"
+subcategory: ""
+page_title: "Monitor Resource Examples"
+description: |-
+    Monitor Resource Examples
 ---
 
-## Monitor Resource Examples
+### Monitor Resource Examples
 
 This page lists examples of how to create different Datadog monitor types within Terraform. This list is non exhaustive and will be updated over time to provide more examples.
 
+## Composite Monitors
+
+You can compose monitors of all types in order to define more specific alert conditions (see the [doc](https://docs.datadoghq.com/monitors/monitor_types/composite/)). You just need to reuse the ID of your `datadog_monitor` resources. You can also compose any monitor with a `datadog_synthetics_test` by passing the computed `monitor_id` attribute in the query.
+
+```terraform
+resource "datadog_monitor" "bar" {
+  name = "Composite Monitor"
+  type = "composite"
+  message = "This is a message"
+  query = "${datadog_monitor.foo.id} || ${datadog_synthetics_test.foo.monitor_id}"
+}
+```
+
 ## Watchdog Monitors
 
-```
+```terraform
 resource "datadog_monitor" "watchdog_monitor" {
   name               = "Watchdog Monitor TF"
   type               = "event alert"
@@ -30,7 +46,7 @@ resource "datadog_monitor" "watchdog_monitor" {
 
 ## Anomaly Monitors
 
-```
+```terraform
 resource "datadog_monitor" "cpu_anomalous" {
   name = "Anomalous CPU usage"
   type = "query alert"
@@ -52,7 +68,7 @@ resource "datadog_monitor" "cpu_anomalous" {
 
 ## Process Monitors
 
-```
+```terraform
 resource "datadog_monitor" "process_alert_example" {
   name = "Process Alert Monitor"
   type = "process alert"

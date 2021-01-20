@@ -1176,7 +1176,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 			step.SetName(stepMap["name"].(string))
 			step.SetType(datadogV1.SyntheticsStepType(stepMap["type"].(string)))
 			step.SetAllowFailure(stepMap["allow_failure"].(bool))
-			step.SetTimeout(float32(stepMap["timeout"].(int)))
+			step.SetTimeout(int64(stepMap["timeout"].(int)))
 			params := make(map[string]interface{})
 			getMetadataFromJSON([]byte(stepMap["params"].(string)), &params)
 			step.SetParams(params)
