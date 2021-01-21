@@ -220,8 +220,8 @@ resource "datadog_logs_custom_pipeline" "empty_filter_query_pipeline" {
 	name = "%s"
 	is_enabled = "true"
 	filter {
-      query = ""
-    }
+		query = ""
+	}
 	processor {
 		status_remapper {
 			is_enabled = true
