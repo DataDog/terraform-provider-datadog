@@ -22,9 +22,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			alert_id = "895605"
 			viz_type = "timeseries"
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 		}
 	}
 	widget {
@@ -48,9 +46,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				show_present = true
 			}
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 		}
 	}
 	widget {
@@ -62,9 +58,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				}
 			}
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 		}
 	}
 	widget {
@@ -74,9 +68,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			group_by = ["account", "cluster"]
 			tags = ["account:demo", "cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"]
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 		}
 	}
 	widget {
@@ -94,9 +86,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				scale = "sqrt"
 			}
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 		}
 	}
 	widget {
@@ -157,9 +147,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			precision = "4"
 			text_align = "right"
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 		}
 	}
 	widget {
@@ -190,9 +178,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				scale = "log"
 			}
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 		}
 	}
 	widget {
@@ -213,18 +199,16 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			request {
 				log_query {
 					index = "mcnulty"
-					compute = {
+					compute_query {
 						aggregation = "count"
 						facet = "@duration"
 						interval = 5000
 					}
-					search = {
-						query = "status:info"
-					}
+					search_query = "status:info"
 					group_by {
 						facet = "host"
 						limit = 10
-						sort = {
+						sort_query {
 							aggregation = "avg"
 							order = "desc"
 							facet = "@duration"
@@ -236,18 +220,16 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			request {
 				apm_query {
 					index = "apm-search"
-					compute = {
+					compute_query {
 						aggregation = "count"
 						facet = "@duration"
 						interval = 5000
 					}
-					search = {
-						query = "type:web"
-					}
+					search_query = "type:web"
 					group_by {
 						facet = "resource_name"
 						limit = 50
-						sort = {
+						sort_query {
 							aggregation = "avg"
 							order = "desc"
 							facet = "@string_query.interval"
@@ -268,12 +250,10 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			request {
 				security_query {
 					index = "signal"
-					compute = {
+					compute_query {
 						aggregation = "count"
 					}
-					search = {
-						query = "status:(high OR critical)"
-					}
+					search_query = "status:(high OR critical)"
 					group_by {
 						facet = "status"
 					}
@@ -283,12 +263,10 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			request {
 				rum_query {
 					index = "rum"
-					compute = {
+					compute_query {
 						aggregation = "count"
 					}
-					search = {
-						query = "status:info"
-					}
+					search_query = "status:info"
 					group_by {
 						facet = "service"
 					}
@@ -308,9 +286,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			title = "Widget Title"
 			show_legend = true
 			legend_size = "2"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 			event {
 				q = "sources:test tags:1"
 			}
@@ -363,9 +339,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 					alert_id = "123"
 					viz_type = "toplist"
 					title = "Alert Graph"
-					time = {
-						live_span = "1h"
-					}
+					live_span = "1h"
 				}
 			}
 		}
@@ -398,9 +372,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				}
 			}
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 		}
 	}
 	widget {
@@ -464,9 +436,7 @@ resource "datadog_dashboard" "simple_dashboard" {
 			alert_id = "895605"
 			viz_type = "timeseries"
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 		}
 	}
 	template_variable {
@@ -516,11 +486,9 @@ resource "datadog_dashboard" "free_dashboard" {
 			title = "Widget Title"
 			title_size = 16
 			title_align = "left"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 		}
-		layout = {
+		widget_layout {
 			height = 43
 			width = 32
 			x = 5
@@ -533,11 +501,9 @@ resource "datadog_dashboard" "free_dashboard" {
 			title = "Widget Title"
 			title_size = 16
 			title_align = "left"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 		}
-		layout = {
+		widget_layout {
 			height = 9
 			width = 65
 			x = 42
@@ -551,7 +517,7 @@ resource "datadog_dashboard" "free_dashboard" {
 			font_size = "88"
 			text_align = "left"
 		}
-		layout = {
+		widget_layout {
 			height = 20
 			width = 30
 			x = 42
@@ -562,7 +528,7 @@ resource "datadog_dashboard" "free_dashboard" {
 		iframe_definition {
 			url = "http://google.com"
 		}
-		layout = {
+		widget_layout {
 			height = 46
 			width = 39
 			x = 111
@@ -575,7 +541,7 @@ resource "datadog_dashboard" "free_dashboard" {
 			sizing = "fit"
 			margin = "small"
 		}
-		layout = {
+		widget_layout {
 			height = 20
 			width = 30
 			x = 77
@@ -595,7 +561,7 @@ resource "datadog_dashboard" "free_dashboard" {
 				order = "desc"
 			}
 		}
-		layout = {
+		widget_layout {
 			height = 36
 			width = 32
 			x = 5
@@ -617,7 +583,7 @@ resource "datadog_dashboard" "free_dashboard" {
 			title_size = 16
 			title_align = "left"
 		}
-		layout = {
+		widget_layout {
 			height = 40
 			width = 30
 			x = 112
@@ -640,11 +606,9 @@ resource "datadog_dashboard" "free_dashboard" {
 			title = "alerting-cassandra #env:datad0g.com"
 			title_align = "center"
 			title_size = "13"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 		}
-		layout = {
+		widget_layout {
 			height = 38
 			width = 67
 			x = 40
@@ -696,11 +660,9 @@ resource "datadog_dashboard" "simple_dashboard" {
 			alert_id = "895605"
 			viz_type = "timeseries"
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 		}
-		layout = {
+		widget_layout {
 			height = 43
 			width = 32
 			x = 5
@@ -750,7 +712,7 @@ var datadogSimpleOrderedDashboardAsserts = []string{
 	"widget.0.alert_graph_definition.0.alert_id = 895605",
 	"widget.0.alert_graph_definition.0.viz_type = timeseries",
 	"widget.0.alert_graph_definition.0.title = Widget Title",
-	"widget.0.alert_graph_definition.0.time.live_span = 1h",
+	"widget.0.alert_graph_definition.0.live_span = 1h",
 	// Template Variables
 	"template_variable.# = 2",
 	"template_variable.0.name = var_1",
@@ -782,11 +744,11 @@ var datadogSimpleFreeDashboardAsserts = []string{
 	"widget.0.alert_graph_definition.0.alert_id = 895605",
 	"widget.0.alert_graph_definition.0.viz_type = timeseries",
 	"widget.0.alert_graph_definition.0.title = Widget Title",
-	"widget.0.alert_graph_definition.0.time.live_span = 1h",
-	"widget.0.layout.height = 43",
-	"widget.0.layout.width = 32",
-	"widget.0.layout.x = 5",
-	"widget.0.layout.y = 5",
+	"widget.0.alert_graph_definition.0.live_span = 1h",
+	"widget.0.widget_layout.0.height = 43",
+	"widget.0.widget_layout.0.width = 32",
+	"widget.0.widget_layout.0.x = 5",
+	"widget.0.widget_layout.0.y = 5",
 	// Template Variables
 	"template_variable.# = 2",
 	"template_variable.0.name = var_1",
@@ -818,7 +780,7 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.0.alert_graph_definition.0.alert_id = 895605",
 	"widget.0.alert_graph_definition.0.viz_type = timeseries",
 	"widget.0.alert_graph_definition.0.title = Widget Title",
-	"widget.0.alert_graph_definition.0.time.live_span = 1h",
+	"widget.0.alert_graph_definition.0.live_span = 1h",
 	// Alert Value widget
 	"widget.1.alert_value_definition.0.alert_id = 895605",
 	"widget.1.alert_value_definition.0.precision = 3",
@@ -834,12 +796,12 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.2.change_definition.0.request.0.order_dir = desc",
 	"widget.2.change_definition.0.request.0.show_present = true",
 	"widget.2.change_definition.0.title = Widget Title",
-	"widget.2.change_definition.0.time.live_span = 1h",
+	"widget.2.change_definition.0.live_span = 1h",
 	// Distribution widget
 	"widget.3.distribution_definition.0.request.0.q = avg:system.load.1{env:staging} by {account}",
 	"widget.3.distribution_definition.0.request.0.style.0.palette = warm",
 	"widget.3.distribution_definition.0.title = Widget Title",
-	"widget.3.distribution_definition.0.time.live_span = 1h",
+	"widget.3.distribution_definition.0.live_span = 1h",
 	// Check Status widget
 	"widget.4.check_status_definition.0.check = aws.ecs.agent_connected",
 	"widget.4.check_status_definition.0.grouping = cluster",
@@ -850,7 +812,7 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.4.check_status_definition.0.tags.0 = account:demo",
 	"widget.4.check_status_definition.0.tags.1 = cluster:awseb-ruthebdog-env-8-dn3m6u3gvk",
 	"widget.4.check_status_definition.0.title = Widget Title",
-	"widget.4.check_status_definition.0.time.live_span = 1h",
+	"widget.4.check_status_definition.0.live_span = 1h",
 	// Heatmap widget
 	"widget.5.heatmap_definition.0.request.0.q = avg:system.load.1{env:staging} by {account}",
 	"widget.5.heatmap_definition.0.request.0.style.0.palette = warm",
@@ -859,7 +821,7 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.5.heatmap_definition.0.yaxis.0.include_zero = true",
 	"widget.5.heatmap_definition.0.yaxis.0.scale = sqrt",
 	"widget.5.heatmap_definition.0.title = Widget Title",
-	"widget.5.heatmap_definition.0.time.live_span = 1h",
+	"widget.5.heatmap_definition.0.live_span = 1h",
 	// Hostmap widget
 	"widget.6.hostmap_definition.0.request.0.fill.0.q = avg:system.load.1{*} by {host}",
 	"widget.6.hostmap_definition.0.request.0.size.0.q = avg:memcache.uptime{*} by {host}",
@@ -899,7 +861,7 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.8.query_value_definition.0.custom_unit = xx",
 	"widget.8.query_value_definition.0.precision = 4",
 	"widget.8.query_value_definition.0.title = Widget Title",
-	"widget.8.query_value_definition.0.time.live_span = 1h",
+	"widget.8.query_value_definition.0.live_span = 1h",
 	// Scatterplot widget
 	"widget.9.scatterplot_definition.0.request.0.x.0.q = avg:system.cpu.user{*} by {service, account}",
 	"widget.9.scatterplot_definition.0.request.0.x.0.aggregator = max",
@@ -919,7 +881,7 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.9.scatterplot_definition.0.yaxis.0.min = 5",
 	"widget.9.scatterplot_definition.0.yaxis.0.scale = log",
 	"widget.9.scatterplot_definition.0.title = Widget Title",
-	"widget.9.scatterplot_definition.0.time.live_span = 1h",
+	"widget.9.scatterplot_definition.0.live_span = 1h",
 	// Timeseries widget
 	"widget.10.timeseries_definition.0.request.0.q = avg:system.cpu.user{app:general} by {env}",
 	"widget.10.timeseries_definition.0.request.0.display_type = line",
@@ -929,28 +891,28 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.10.timeseries_definition.0.request.0.metadata.0.expression = avg:system.cpu.user{app:general} by {env}",
 	"widget.10.timeseries_definition.0.request.0.metadata.0.alias_name = Alpha",
 	"widget.10.timeseries_definition.0.request.1.log_query.0.index = mcnulty",
-	"widget.10.timeseries_definition.0.request.1.log_query.0.compute.aggregation = count",
-	"widget.10.timeseries_definition.0.request.1.log_query.0.compute.facet = @duration",
-	"widget.10.timeseries_definition.0.request.1.log_query.0.compute.interval = 5000",
-	"widget.10.timeseries_definition.0.request.1.log_query.0.search.query = status:info",
+	"widget.10.timeseries_definition.0.request.1.log_query.0.compute_query.0.aggregation = count",
+	"widget.10.timeseries_definition.0.request.1.log_query.0.compute_query.0.facet = @duration",
+	"widget.10.timeseries_definition.0.request.1.log_query.0.compute_query.0.interval = 5000",
+	"widget.10.timeseries_definition.0.request.1.log_query.0.search_query = status:info",
 	"widget.10.timeseries_definition.0.request.1.log_query.0.group_by.# = 1",
 	"widget.10.timeseries_definition.0.request.1.log_query.0.group_by.0.facet = host",
 	"widget.10.timeseries_definition.0.request.1.log_query.0.group_by.0.limit = 10",
-	"widget.10.timeseries_definition.0.request.1.log_query.0.group_by.0.sort.aggregation = avg",
-	"widget.10.timeseries_definition.0.request.1.log_query.0.group_by.0.sort.facet = @duration",
-	"widget.10.timeseries_definition.0.request.1.log_query.0.group_by.0.sort.order = desc",
+	"widget.10.timeseries_definition.0.request.1.log_query.0.group_by.0.sort_query.0.aggregation = avg",
+	"widget.10.timeseries_definition.0.request.1.log_query.0.group_by.0.sort_query.0.facet = @duration",
+	"widget.10.timeseries_definition.0.request.1.log_query.0.group_by.0.sort_query.0.order = desc",
 	"widget.10.timeseries_definition.0.request.1.display_type = area",
 	"widget.10.timeseries_definition.0.request.2.apm_query.0.index = apm-search",
-	"widget.10.timeseries_definition.0.request.2.apm_query.0.compute.aggregation = count",
-	"widget.10.timeseries_definition.0.request.2.apm_query.0.compute.facet = @duration",
-	"widget.10.timeseries_definition.0.request.2.apm_query.0.compute.interval = 5000",
-	"widget.10.timeseries_definition.0.request.2.apm_query.0.search.query = type:web",
+	"widget.10.timeseries_definition.0.request.2.apm_query.0.compute_query.0.aggregation = count",
+	"widget.10.timeseries_definition.0.request.2.apm_query.0.compute_query.0.facet = @duration",
+	"widget.10.timeseries_definition.0.request.2.apm_query.0.compute_query.0.interval = 5000",
+	"widget.10.timeseries_definition.0.request.2.apm_query.0.search_query = type:web",
 	"widget.10.timeseries_definition.0.request.2.apm_query.0.group_by.# = 1",
 	"widget.10.timeseries_definition.0.request.2.apm_query.0.group_by.0.facet = resource_name",
 	"widget.10.timeseries_definition.0.request.2.apm_query.0.group_by.0.limit = 50",
-	"widget.10.timeseries_definition.0.request.2.apm_query.0.group_by.0.sort.aggregation = avg",
-	"widget.10.timeseries_definition.0.request.2.apm_query.0.group_by.0.sort.facet = @string_query.interval",
-	"widget.10.timeseries_definition.0.request.2.apm_query.0.group_by.0.sort.order = desc",
+	"widget.10.timeseries_definition.0.request.2.apm_query.0.group_by.0.sort_query.0.aggregation = avg",
+	"widget.10.timeseries_definition.0.request.2.apm_query.0.group_by.0.sort_query.0.facet = @string_query.interval",
+	"widget.10.timeseries_definition.0.request.2.apm_query.0.group_by.0.sort_query.0.order = desc",
 	"widget.10.timeseries_definition.0.request.2.display_type = bars",
 	"widget.10.timeseries_definition.0.request.3.process_query.0.metric = process.stat.cpu.total_pct",
 	"widget.10.timeseries_definition.0.request.3.process_query.0.search_by = error",
@@ -959,13 +921,13 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.10.timeseries_definition.0.request.3.process_query.0.limit = 50",
 	"widget.10.timeseries_definition.0.request.3.display_type = area",
 	"widget.10.timeseries_definition.0.request.4.security_query.0.index = signal",
-	"widget.10.timeseries_definition.0.request.4.security_query.0.compute.aggregation = count",
-	"widget.10.timeseries_definition.0.request.4.security_query.0.search.query = status:(high OR critical)",
+	"widget.10.timeseries_definition.0.request.4.security_query.0.compute_query.0.aggregation = count",
+	"widget.10.timeseries_definition.0.request.4.security_query.0.search_query = status:(high OR critical)",
 	"widget.10.timeseries_definition.0.request.4.security_query.0.group_by.0.facet = status",
 	"widget.10.timeseries_definition.0.request.4.display_type = bars",
 	"widget.10.timeseries_definition.0.request.5.rum_query.0.index = rum",
-	"widget.10.timeseries_definition.0.request.5.rum_query.0.compute.aggregation = count",
-	"widget.10.timeseries_definition.0.request.5.rum_query.0.search.query = status:info",
+	"widget.10.timeseries_definition.0.request.5.rum_query.0.compute_query.0.aggregation = count",
+	"widget.10.timeseries_definition.0.request.5.rum_query.0.search_query = status:info",
 	"widget.10.timeseries_definition.0.request.5.rum_query.0.group_by.0.facet = service",
 	"widget.10.timeseries_definition.0.request.5.display_type = bars",
 	"widget.10.timeseries_definition.0.marker.# = 2",
@@ -978,7 +940,7 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.10.timeseries_definition.0.title = Widget Title",
 	"widget.10.timeseries_definition.0.show_legend = true",
 	"widget.10.timeseries_definition.0.legend_size = 2",
-	"widget.10.timeseries_definition.0.time.live_span = 1h",
+	"widget.10.timeseries_definition.0.live_span = 1h",
 	"widget.10.timeseries_definition.0.event.0.q = sources:test tags:1",
 	"widget.10.timeseries_definition.0.event.1.q = sources:test tags:2",
 	"widget.10.timeseries_definition.0.yaxis.0.scale = log",
@@ -1010,7 +972,7 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.12.group_definition.0.widget.1.alert_graph_definition.0.alert_id = 123",
 	"widget.12.group_definition.0.widget.1.alert_graph_definition.0.viz_type = toplist",
 	"widget.12.group_definition.0.widget.1.alert_graph_definition.0.title = Alert Graph",
-	"widget.12.group_definition.0.widget.1.alert_graph_definition.0.time.live_span = 1h",
+	"widget.12.group_definition.0.widget.1.alert_graph_definition.0.live_span = 1h",
 	// Service Level Objective widget
 	"widget.13.service_level_objective_definition.0.title = Widget Title",
 	"widget.13.service_level_objective_definition.0.view_type = detail",
@@ -1032,7 +994,7 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.14.query_table_definition.0.request.0.aggregator = sum",
 	"widget.14.query_table_definition.0.request.0.limit = 10",
 	"widget.14.query_table_definition.0.title = Widget Title",
-	"widget.14.query_table_definition.0.time.live_span = 1h",
+	"widget.14.query_table_definition.0.live_span = 1h",
 	"widget.15.query_table_definition.0.request.0.apm_stats_query.0.service = foo",
 	"widget.15.query_table_definition.0.request.0.apm_stats_query.0.name = bar",
 	"widget.15.query_table_definition.0.request.0.apm_stats_query.0.env = staging",
@@ -1075,40 +1037,40 @@ var datadogFreeDashboardAsserts = []string{
 	"widget.0.event_stream_definition.0.title = Widget Title",
 	"widget.0.event_stream_definition.0.title_size = 16",
 	"widget.0.event_stream_definition.0.title_align = left",
-	"widget.0.event_stream_definition.0.time.live_span = 1h",
-	"widget.0.layout.height = 43",
-	"widget.0.layout.width = 32",
-	"widget.0.layout.x = 5",
-	"widget.0.layout.y = 5",
+	"widget.0.event_stream_definition.0.live_span = 1h",
+	"widget.0.widget_layout.0.height = 43",
+	"widget.0.widget_layout.0.width = 32",
+	"widget.0.widget_layout.0.x = 5",
+	"widget.0.widget_layout.0.y = 5",
 	// Event Timeline widget
 	"widget.1.event_timeline_definition.0.query = *",
 	"widget.1.event_timeline_definition.0.title = Widget Title",
 	"widget.1.event_timeline_definition.0.title_align = left",
 	"widget.1.event_timeline_definition.0.title_size = 16",
-	"widget.1.event_timeline_definition.0.time.live_span = 1h",
-	"widget.1.layout.height = 9",
-	"widget.1.layout.width = 65",
-	"widget.1.layout.x = 42",
-	"widget.1.layout.y = 73",
+	"widget.1.event_timeline_definition.0.live_span = 1h",
+	"widget.1.widget_layout.0.height = 9",
+	"widget.1.widget_layout.0.width = 65",
+	"widget.1.widget_layout.0.x = 42",
+	"widget.1.widget_layout.0.y = 73",
 	// Free Text widget
 	"widget.2.free_text_definition.0.text = free text content",
 	"widget.2.free_text_definition.0.color = #d00",
 	"widget.2.free_text_definition.0.font_size = 88",
 	"widget.2.free_text_definition.0.text_align = left",
-	"widget.2.layout.height = 20",
-	"widget.2.layout.width = 30",
-	"widget.2.layout.x = 42",
-	"widget.2.layout.y = 5",
+	"widget.2.widget_layout.0.height = 20",
+	"widget.2.widget_layout.0.width = 30",
+	"widget.2.widget_layout.0.x = 42",
+	"widget.2.widget_layout.0.y = 5",
 	// Iframe widget
 	"widget.3.iframe_definition.0.url = http://google.com",
 	// Image widget
 	"widget.4.image_definition.0.url = https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350",
 	"widget.4.image_definition.0.sizing = fit",
 	"widget.4.image_definition.0.margin = small",
-	"widget.4.layout.height = 20",
-	"widget.4.layout.width = 30",
-	"widget.4.layout.x = 77",
-	"widget.4.layout.y = 7",
+	"widget.4.widget_layout.0.height = 20",
+	"widget.4.widget_layout.0.width = 30",
+	"widget.4.widget_layout.0.x = 77",
+	"widget.4.widget_layout.0.y = 7",
 	// Log Stream widget
 	"widget.5.log_stream_definition.0.logset = 19",
 	"widget.5.log_stream_definition.0.query = error",
@@ -1119,12 +1081,12 @@ var datadogFreeDashboardAsserts = []string{
 	"widget.5.log_stream_definition.0.show_date_column = true",
 	"widget.5.log_stream_definition.0.show_message_column = true",
 	"widget.5.log_stream_definition.0.message_display = expanded-md",
-	"widget.5.log_stream_definition.0.sort.0.column = time",
-	"widget.5.log_stream_definition.0.sort.0.order = desc",
-	"widget.5.layout.height = 36",
-	"widget.5.layout.width = 32",
-	"widget.5.layout.x = 5",
-	"widget.5.layout.y = 51",
+	"widget.5.log_stream_definition.0.sort_query.0.0.column = time",
+	"widget.5.log_stream_definition.0.sort_query.0.0.order = desc",
+	"widget.5.widget_layout.0.height = 36",
+	"widget.5.widget_layout.0.width = 32",
+	"widget.5.widget_layout.0.x = 5",
+	"widget.5.widget_layout.0.y = 51",
 	// Manage Status widget
 	"widget.6.manage_status_definition.0.color_preference = text",
 	"widget.6.manage_status_definition.0.count = 50",
@@ -1138,10 +1100,10 @@ var datadogFreeDashboardAsserts = []string{
 	"widget.6.manage_status_definition.0.title = Widget Title",
 	"widget.6.manage_status_definition.0.title_align = left",
 	"widget.6.manage_status_definition.0.title_size = 16",
-	"widget.6.layout.height = 40",
-	"widget.6.layout.width = 30",
-	"widget.6.layout.x = 112",
-	"widget.6.layout.y = 55",
+	"widget.6.widget_layout.0.height = 40",
+	"widget.6.widget_layout.0.width = 30",
+	"widget.6.widget_layout.0.x = 112",
+	"widget.6.widget_layout.0.y = 55",
 	// Trace Service widget
 	"widget.7.trace_service_definition.0.display_format = three_column",
 	"widget.7.trace_service_definition.0.env = datad0g.com",
@@ -1157,7 +1119,7 @@ var datadogFreeDashboardAsserts = []string{
 	"widget.7.trace_service_definition.0.title = alerting-cassandra #env:datad0g.com",
 	"widget.7.trace_service_definition.0.title_align = center",
 	"widget.7.trace_service_definition.0.title_size = 13",
-	"widget.7.trace_service_definition.0.time.live_span = 1h",
+	"widget.7.trace_service_definition.0.live_span = 1h",
 	// Template Variables
 	"template_variable.# = 2",
 	"template_variable.0.default = aws",
