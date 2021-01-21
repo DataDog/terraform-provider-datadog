@@ -46,7 +46,7 @@ import (
 //    "layout_type": "free"
 //}
 
-const datadogDashboardManageStatusConfig = `
+const datadogDashboardManageStatusConfigDeprecated = `
 resource "datadog_dashboard" "manage_status_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
@@ -78,7 +78,7 @@ resource "datadog_dashboard" "manage_status_dashboard" {
 }
 `
 
-var datadogDashboardManageStatusAsserts = []string{
+var datadogDashboardManageStatusAssertsDeprecated = []string{
 	"widget.0.manage_status_definition.0.color_preference = background",
 	"widget.0.layout.x = 5",
 	"widget.0.layout.height = 43",
@@ -89,6 +89,65 @@ var datadogDashboardManageStatusAsserts = []string{
 	"widget.0.layout.width = 32",
 	"widget.0.manage_status_definition.0.hide_zero_counts = true",
 	"widget.0.layout.y = 5",
+	"widget.0.manage_status_definition.0.summary_type = combined",
+	"widget.0.manage_status_definition.0.show_last_triggered = true",
+	"widget.0.manage_status_definition.0.title =",
+	"widget.0.manage_status_definition.0.title_size = 20",
+	"widget.0.manage_status_definition.0.sort = triggered,desc",
+	"widget.0.manage_status_definition.0.title_align = center",
+	"widget.0.manage_status_definition.0.start = 0",
+	"widget.0.manage_status_definition.0.count = 50",
+	"title = {{uniq}}",
+	"widget.0.manage_status_definition.0.query = env:prod group_status:alert",
+}
+
+func TestAccDatadogDashboardManageStatusDeprecated(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardManageStatusConfigDeprecated, "datadog_dashboard.manage_status_dashboard", datadogDashboardManageStatusAssertsDeprecated)
+}
+
+const datadogDashboardManageStatusConfig = `
+resource "datadog_dashboard" "manage_status_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "free"
+	is_read_only  = "true"
+
+	widget {
+		manage_status_definition {
+			sort = "triggered,desc"
+			count = "50"
+			title_size = "20"
+			title = ""
+			title_align = "center"
+			hide_zero_counts = true
+			start = "0"
+			summary_type = "combined"
+			color_preference = "background"
+			query = "env:prod group_status:alert"
+			show_last_triggered = true
+			display_format = "countsAndList"
+		}
+		widget_layout {
+			height = 43
+			width = 32
+			x = 5
+			y = 5
+		}
+	}
+}
+`
+
+var datadogDashboardManageStatusAsserts = []string{
+	"widget.0.manage_status_definition.0.color_preference = background",
+	"widget.0.widget_layout.0.x = 5",
+	"widget.0.widget_layout.0.height = 43",
+	"layout_type = free",
+	"is_read_only = true",
+	"widget.0.manage_status_definition.0.display_format = countsAndList",
+	"description = Created using the Datadog provider in Terraform",
+	"widget.0.widget_layout.0.width = 32",
+	"widget.0.manage_status_definition.0.hide_zero_counts = true",
+	"widget.0.widget_layout.0.y = 5",
 	"widget.0.manage_status_definition.0.summary_type = combined",
 	"widget.0.manage_status_definition.0.show_last_triggered = true",
 	"widget.0.manage_status_definition.0.title =",
