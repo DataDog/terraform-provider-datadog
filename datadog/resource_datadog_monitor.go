@@ -257,7 +257,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional:    true,
 			},
 			"timeout_h": {
-				Description: "The number of hours of the monitor not reporting data before it will automatically resolve from a triggered state. Defaults to `false`.",
+				Description: "The number of hours of the monitor not reporting data before it will automatically resolve from a triggered state.",
 				Type:        schema.TypeInt,
 				Optional:    true,
 			},
