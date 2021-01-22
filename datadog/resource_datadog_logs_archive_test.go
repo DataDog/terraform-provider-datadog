@@ -13,7 +13,11 @@ import (
 
 //Test
 // create: OK azure
-func archiveAzureConfigForCreation(uniq string) string {
+func archiveAzureConfigForCreation(uniq string, deprecatedMap bool) string {
+	destType := "azure_archive"
+	if deprecatedMap {
+		destType = "azure ="
+	}
 	return fmt.Sprintf(`
 resource "datadog_integration_azure" "an_azure_integration" {
   tenant_name   = "%s"
@@ -25,7 +29,7 @@ resource "datadog_logs_archive" "my_azure_archive" {
   depends_on = ["datadog_integration_azure.an_azure_integration"]
   name  = "my first azure archive"
   query = "service:toto"
-  azure = {
+  %s {
     container 		= "my-container"
     tenant_id 		= "%s"
     client_id       = "testc7f6-1234-5678-9101-3fcbf464test"
@@ -33,10 +37,10 @@ resource "datadog_logs_archive" "my_azure_archive" {
     path            = "/path/blou"
   }
 }
-`, uniq, uniq)
+`, uniq, destType, uniq)
 }
 
-func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
+func TestAccDatadogLogsArchiveAzure_basicDeprecated(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	tenantName := uniqueEntityName(clock, t)
 	defer cleanup(t)
@@ -48,8 +52,9 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 		CheckDestroy: testAccCheckArchiveAndIntegrationAzureDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: archiveAzureConfigForCreation(tenantName),
+				Config: archiveAzureConfigForCreation(tenantName, true),
 				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_azure_archive", "azure_archive"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_azure_archive", "name", "my first azure archive"),
 					resource.TestCheckResourceAttr(
@@ -72,8 +77,49 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	tenantName := uniqueEntityName(clock, t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckArchiveAndIntegrationAzureDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: archiveAzureConfigForCreation(tenantName, false),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_azure_archive", "azure"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "name", "my first azure archive"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "query", "service:toto"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "azure_archive.0.container", "my-container"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "azure_archive.0.client_id", "testc7f6-1234-5678-9101-3fcbf464test"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "azure_archive.0.tenant_id", tenantName),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "azure_archive.0.storage_account", "storageAccount"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "azure_archive.0.path", "/path/blou"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "include_tags", "false"),
+				),
+			},
+		},
+	})
+}
+
 // create: Ok gcs
-func archiveGCSConfigForCreation(uniq string) string {
+func archiveGCSConfigForCreation(uniq string, deprecatedMap bool) string {
+	destType := "gcs_archive"
+	if deprecatedMap {
+		destType = "gcs ="
+	}
 	return fmt.Sprintf(`
 resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
   project_id     = "%s"
@@ -88,16 +134,16 @@ resource "datadog_logs_archive" "my_gcs_archive" {
   depends_on = ["datadog_integration_gcp.awesome_gcp_project_integration"]
   name       = "my first gcs archive"
   query      = "service:tata"
-  gcs        = {
+  %s {
     bucket 		 = "dd-logs-test-datadog-api-client-go"
 	path 	     = "/path/blah"
 	client_email = "%s@awesome-project-id.iam.gserviceaccount.com"
 	project_id   = "%s"
   }
-}`, uniq, uniq, uniq, uniq)
+}`, uniq, uniq, destType, uniq, uniq)
 }
 
-func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
+func TestAccDatadogLogsArchiveGCS_basicDeprecated(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	client := uniqueEntityName(clock, t)
 	defer cleanup(t)
@@ -109,8 +155,9 @@ func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 		CheckDestroy: testAccCheckArchiveAndIntegrationGCSDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: archiveGCSConfigForCreation(client),
+				Config: archiveGCSConfigForCreation(client, true),
 				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_gcs_archive", "gcs_archive"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_gcs_archive", "name", "my first gcs archive"),
 					resource.TestCheckResourceAttr(
@@ -131,8 +178,47 @@ func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	client := uniqueEntityName(clock, t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckArchiveAndIntegrationGCSDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: archiveGCSConfigForCreation(client, false),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_gcs_archive", "gcs"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "name", "my first gcs archive"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "query", "service:tata"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "gcs_archive.0.bucket", "dd-logs-test-datadog-api-client-go"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "gcs_archive.0.client_email", fmt.Sprintf("%s@awesome-project-id.iam.gserviceaccount.com", client)),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "gcs_archive.0.project_id", client),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "gcs_archive.0.path", "/path/blah"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "include_tags", "false"),
+				),
+			},
+		},
+	})
+}
+
 // create: Ok s3
-func archiveS3ConfigForCreation(uniq string) string {
+func archiveS3ConfigForCreation(uniq string, deprecatedMap bool) string {
+	destType := "s3_archive"
+	if deprecatedMap {
+		destType = "s3 ="
+	}
 	return fmt.Sprintf(`
 resource "datadog_integration_aws" "account" {
   account_id         = "%s"
@@ -143,7 +229,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
   depends_on = ["datadog_integration_aws.account"]
   name = "my first s3 archive"
   query = "service:tutu"
-  s3 = {
+  %s {
     bucket 		 = "my-bucket"
     path 		 = "/path/foo"
     account_id   = "%s"
@@ -151,10 +237,10 @@ resource "datadog_logs_archive" "my_s3_archive" {
   }
   rehydration_tags = ["team:intake", "team:app"]
   include_tags = true
-}`, uniq, uniq)
+}`, uniq, destType, uniq)
 }
 
-func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
+func TestAccDatadogLogsArchiveS3_basicDeprecated(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	accountID := uniqueAWSAccountID(clock, t)
 	defer cleanup(t)
@@ -166,8 +252,9 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 		CheckDestroy: testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: archiveS3ConfigForCreation(accountID),
+				Config: archiveS3ConfigForCreation(accountID, true),
 				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_s3_archive", "s3_archive"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "name", "my first s3 archive"),
 					resource.TestCheckResourceAttr(
@@ -192,6 +279,45 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	accountID := uniqueAWSAccountID(clock, t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: archiveS3ConfigForCreation(accountID, false),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_s3_archive", "s3"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "name", "my first s3 archive"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "query", "service:tutu"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.bucket", "my-bucket"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.account_id", accountID),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.role_name", "testacc-datadog-integration-role"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.path", "/path/foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "rehydration_tags.0", "team:intake"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "rehydration_tags.1", "team:app"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "include_tags", "true"),
+				),
+			},
+		},
+	})
+}
+
 // update: OK
 func archiveS3ConfigForUpdate(uniq string) string {
 	return fmt.Sprintf(`
@@ -204,7 +330,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
   depends_on = ["datadog_integration_aws.account"]
   name       = "my first s3 archive after update"
   query      = "service:tutu"
-  s3 = {
+  s3_archive {
   	bucket 		 = "my-bucket"
 	path 		 = "/path/foo"
 	account_id   = "%s"
@@ -225,21 +351,39 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 		CheckDestroy: testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: archiveS3ConfigForCreation(accountID),
+				Config: archiveS3ConfigForCreation(accountID, true),
 				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_s3_archive", "s3_archive"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "name", "my first s3 archive"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3.bucket", "my-bucket"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3.account_id", accountID),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3.role_name", "testacc-datadog-integration-role"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3.path", "/path/foo"),
 				),
 			},
 			{
 				Config: archiveS3ConfigForUpdate(accountID),
 				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_s3_archive", "s3"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "name", "my first s3 archive after update"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "rehydration_tags.#", "0"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "include_tags", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.bucket", "my-bucket"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.account_id", accountID),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.role_name", "testacc-datadog-integration-role"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.path", "/path/foo"),
 				),
 			},
 		},

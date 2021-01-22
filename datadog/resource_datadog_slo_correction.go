@@ -45,16 +45,60 @@ func resourceDatadogSloCorrection() *schema.Resource {
 			},
 			"timezone": {
 				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Timezone of the timestamps provided",
+				Optional:    true,
+				Default:     "UTC",
+				Description: "The timezone to display in the UI for the correction times (defaults to \"UTC\")",
 			},
 		},
 	}
 }
 
 func buildDatadogSloCorrection(d *schema.ResourceData) (*datadogV1.SLOCorrectionCreateRequest, error) {
-	k := NewResourceDataKey(d, "")
+	// k := NewResourceDataKey(d, "")
 	result := datadogV1.NewSLOCorrectionCreateRequestWithDefaults()
+
+	// type hardcoded to 'correction' in Data
+	// only need to set attributes
+	createData := datadogV1.NewSLOCorrectionCreateRequestDataWithDefaults()
+	attributes := datadogV1.NewSLOCorrectionCreateRequestAttributesWithDefaults()
+	attributes.SetCategory(d.Get("category").(datadogV1.SLOCorrectionCategory))
+	attributes.SetStart(d.Get("start").(int64))
+	attributes.SetEnd(d.Get("end").(int64))
+	attributes.SetSloId(d.Get("slo_id").(string))
+
+	if timezone, ok := d.GetOk("timezone"); ok {
+		attributes.SetDescription(timezone.(string))
+	}
+
+	if description, ok := d.GetOk("description"); ok {
+		attributes.SetDescription(description.(string))
+	}
+	createData.SetAttributes(*attributes)
+	result.SetData(*createData)
+	return result, nil
+}
+
+func buildDatadogSloCorrectionUpdate(d *schema.ResourceData) (*datadogV1.SLOCorrectionUpdateRequest, error) {
+	result := datadogV1.NewSLOCorrectionUpdateRequestWithDefaults()
+	updateData := datadogV1.NewSLOCorrectionUpdateRequestDataWithDefaults()
+	attributes := datadogV1.NewSLOCorrectionUpdateRequestAttributesWithDefaults()
+	if description, ok := d.GetOk("description"); ok {
+		attributes.SetDescription(description.(string))
+	}
+	if timezone, ok := d.GetOk("timezone"); ok {
+		attributes.SetDescription(timezone.(string))
+	}
+	if start, ok := d.GetOk("start"); ok {
+		attributes.SetStart(start.(int64))
+	}
+	if end, ok := d.GetOk("end"); ok {
+		attributes.SetEnd(end.(int64))
+	}
+	if category, ok := d.GetOk("category"); ok {
+		attributes.SetCategory(category.(datadogV1.SLOCorrectionCategory))
+	}
+	updateData.SetAttributes(*attributes)
+	result.SetData(*updateData)
 	return result, nil
 }
 
@@ -69,9 +113,8 @@ func resourceDatadogSloCorrectionCreate(d *schema.ResourceData, meta interface{}
 	if err != nil {
 		return translateClientError(err, "error creating SloCorrection")
 	}
-	// FIXME: no property found that looks like an Id for model SloCorrection
-	// you need to manually add code that would call `d.SetId(<the-actual-id>)` to store
-	// the Id in the state properly
+	sloCorrection := response.GetData()
+	d.SetId(sloCorrection.GetId())
 
 	return resourceDatadogSloCorrectionRead(d, meta)
 }
@@ -84,8 +127,8 @@ func resourceDatadogSloCorrectionRead(d *schema.ResourceData, meta interface{}) 
 
 	id := d.Id()
 
-	resource, httpResp, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.GetSLOCorrection(auth, id).Execute()
-
+	_, httpResp, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.GetSLOCorrection(auth, id).Execute()
+	// sloCorrection := resource.GetData()
 	if err != nil {
 		if httpResp.StatusCode == 404 {
 			// this condition takes on the job of the deprecated Exists handlers
@@ -103,7 +146,7 @@ func resourceDatadogSloCorrectionUpdate(d *schema.ResourceData, meta interface{}
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
 
-	ddObject, err := buildDatadogSloCorrection(d)
+	ddObject, err := buildDatadogSloCorrectionUpdate(d)
 	id := d.Id()
 
 	_, _, err = datadogClient.ServiceLevelObjectiveCorrectionsApi.UpdateSLOCorrection(auth, id).Body(*ddObject).Execute()

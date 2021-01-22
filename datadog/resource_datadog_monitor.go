@@ -57,7 +57,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"query": {
-				Description: "The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. Warning: `terraform plan` won't perform any validation of the query contents.",
+				Description: "The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.",
 				Type:        schema.TypeString,
 				Required:    true,
 				StateFunc: func(val interface{}) string {
@@ -65,7 +65,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"type": {
-				Description:  "The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). The available options are below. Note: The monitor type cannot be changed after a monitor is created.",
+				Description:  "The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created.",
 				Type:         schema.TypeString,
 				Required:     true,
 				ForceNew:     true,
@@ -81,7 +81,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"priority": {
-				Description: "",
+				Description: "Integer from 1 (high) to 5 (low) indicating alert severity.",
 				Type:        schema.TypeInt,
 				Optional:    true,
 			},
@@ -132,31 +132,37 @@ func resourceDatadogMonitor() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"ok": {
+							Description:  "The monitor `OK` threshold. Must be a number.",
 							Type:         schema.TypeString,
 							ValidateFunc: validateFloatString,
 							Optional:     true,
 						},
 						"warning": {
+							Description:  "The monitor `WARNING` threshold. Must be a number.",
 							Type:         schema.TypeString,
 							ValidateFunc: validateFloatString,
 							Optional:     true,
 						},
 						"critical": {
+							Description:  "The monitor `CRITICAL` recovery threshold. Must be a number.",
 							Type:         schema.TypeString,
 							ValidateFunc: validateFloatString,
 							Optional:     true,
 						},
 						"unknown": {
+							Description:  "The monitor `UNKNOWN` threshold. Must be a number.",
 							Type:         schema.TypeString,
 							ValidateFunc: validateFloatString,
 							Optional:     true,
 						},
 						"warning_recovery": {
+							Description:  "The monitor `WARNING` recovery threshold. Must be a number.",
 							Type:         schema.TypeString,
 							ValidateFunc: validateFloatString,
 							Optional:     true,
 						},
 						"critical_recovery": {
+							Description:  "The monitor `CRITICAL` recovery threshold. Must be a number.",
 							Type:         schema.TypeString,
 							ValidateFunc: validateFloatString,
 							Optional:     true,
@@ -208,7 +214,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"notify_no_data": {
-				Description: "A boolean indicating whether this monitor will notify when data stops reporting. Defaults to false.",
+				Description: "A boolean indicating whether this monitor will notify when data stops reporting. Defaults to `false`.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     false,
@@ -251,12 +257,12 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional:    true,
 			},
 			"timeout_h": {
-				Description: "The number of hours of the monitor not reporting data before it will automatically resolve from a triggered state. Defaults to `false`.",
+				Description: "The number of hours of the monitor not reporting data before it will automatically resolve from a triggered state.",
 				Type:        schema.TypeInt,
 				Optional:    true,
 			},
 			"require_full_window": {
-				Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated.\n\nWe highly recommend you set this to `false` for s metrics, otherwise some evaluations will be skipped. Default: `true` for `on average`, `at all times` and `in total` aggregation. `false` otherwise.",
+				Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated.\n\nWe highly recommend you set this to `false` for sparse metrics, otherwise some evaluations will be skipped. Default: `true` for `on average`, `at all times` and `in total` aggregation. `false` otherwise.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     true,

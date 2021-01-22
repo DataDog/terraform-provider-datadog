@@ -48,4 +48,3 @@ jobs:
                 DD_ENV: prod
                 DD_SERVICE: terraform-provider-datadog
                 DD_TAGS: "team:integration-tools-and-libraries,build.requested_by:$(Build.RequestedForId),build.attempt:$(System.StageAttempt),pull_request.number:$(System.PullRequest.PullRequestNumber)"
-                GOFLAGS: "-mod=vendor"
