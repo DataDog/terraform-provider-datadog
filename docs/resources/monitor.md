@@ -83,7 +83,7 @@ We highly recommend you set this to `false` for sparse metrics, otherwise some e
 - **tags** (Set of String, Optional) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
 - **threshold_windows** (Map of String, Optional, Deprecated) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. Can only be used for, and are required for, anomaly monitors.
 - **thresholds** (Map of String, Optional, Deprecated) Alert thresholds of the monitor.
-- **timeout_h** (Number, Optional) The number of hours of the monitor not reporting data before it will automatically resolve from a triggered state. Defaults to `false`.
+- **timeout_h** (Number, Optional) The number of hours of the monitor not reporting data before it will automatically resolve from a triggered state.
 - **validate** (Boolean, Optional) If set to `false`, skip the validation call done during plan.
 
 <a id="nestedblock--monitor_threshold_windows"></a>
