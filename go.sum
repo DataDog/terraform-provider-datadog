@@ -37,6 +37,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/DataDog/datadog-api-client-go v1.0.0-beta.13.0.20210115171905-69e9326f02b2 h1:w/oz5uzYPjfcKvo4gYbohBuv6+TDInUWujqKMm7e2n0=
 github.com/DataDog/datadog-api-client-go v1.0.0-beta.13.0.20210115171905-69e9326f02b2/go.mod h1:/bMeu+q33QzX2JuO5PkGkhU1VYOXIXKEPF6Ck4yR06M=
+github.com/DataDog/datadog-api-client-go v1.0.0-beta.14 h1:NbJeCxYBhThksWgk6Z9QpaFc/z2k0mcs7ZVnCRREeZU=
+github.com/DataDog/datadog-api-client-go v1.0.0-beta.14/go.mod h1:/bMeu+q33QzX2JuO5PkGkhU1VYOXIXKEPF6Ck4yR06M=
 github.com/DataDog/datadog-go v3.6.0+incompatible h1:ILg7c5Y1KvZFDOaVS0higGmJ5Fal5O1KQrkrT9j6dSM=
 github.com/DataDog/datadog-go v3.6.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/agext/levenshtein v1.2.1/go.mod h1:JEDfjyjHDjOF/1e4FlBE/PkbqA9OfWu2ki2W0IB5558=
