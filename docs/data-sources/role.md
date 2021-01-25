@@ -1,26 +1,35 @@
 ---
-page_title: "datadog_role"
+page_title: "datadog_role Data Source - terraform-provider-datadog"
+subcategory: ""
+description: |-
+  Use this data source to retrieve information about an existing role for use in other resources.
 ---
 
-# datadog_role Data Source
+# Data Source `datadog_role`
 
 Use this data source to retrieve information about an existing role for use in other resources.
 
 ## Example Usage
 
-```
+```terraform
 data "datadog_role" "test" {
   filter = "Datadog Standard Role"
 }
 ```
 
-## Argument Reference
+## Schema
 
--   `filter`: (Required) A string on which to filter the roles.
+### Required
 
-~> **NOTE:** If more or less than a single match is returned by the search, Terraform will fail. Ensure that your search is specific enough to return a single role.
+- **filter** (String) A string on which to filter the roles.
 
-## Attributes Reference
+### Optional
 
--   `name`: Name of the role.
--   `user_count`: Number of users assigned to this role.
+- **id** (String) The ID of this resource.
+
+### Read-only
+
+- **name** (String) Name of the role.
+- **user_count** (Number) Number of users assigned to this role.
+
+
