@@ -253,6 +253,11 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				display_type = "line"
 				on_right_yaxis = "true"
 
+				metadata {
+					// See https://github.com/DataDog/terraform-provider-datadog/issues/861
+					expression = ""
+				}
+
 			}
 			request {
 				style {
@@ -474,7 +479,7 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.request.0.style.0.line_width = thin",
 	"widget.0.timeseries_definition.0.request.0.style.0.line_type = solid",
 	"widget.0.timeseries_definition.0.request.0.process_query.# = 0",
-	"widget.0.timeseries_definition.0.request.0.metadata.# = 0",
+	"widget.0.timeseries_definition.0.request.0.metadata.# = 1",
 	"widget.0.timeseries_definition.0.request.0.log_query.# = 0",
 	"widget.0.timeseries_definition.0.request.0.display_type = line",
 	"widget.0.timeseries_definition.0.request.0.style.# = 1",
