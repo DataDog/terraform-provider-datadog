@@ -121,7 +121,7 @@ func testAccCheckDatadogSloCorrectionConfig(uniq string) string {
 			category = "Scheduled Maintenance"
 			description = "test correction on slo %s"
 			end = 1735718600
-			slo_id = "datadog_service_level_objective.foo.id"
+			slo_id = datadog_service_level_objective.foo.id
 			start = 1735707000
 			timezone = "UTC"
         }

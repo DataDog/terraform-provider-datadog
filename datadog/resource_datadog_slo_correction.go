@@ -60,9 +60,10 @@ func buildDatadogSloCorrection(d *schema.ResourceData) (*datadogV1.SLOCorrection
 	// only need to set attributes
 	createData := datadogV1.NewSLOCorrectionCreateRequestDataWithDefaults()
 	attributes := datadogV1.NewSLOCorrectionCreateRequestAttributesWithDefaults()
-	attributes.SetCategory(d.Get("category").(datadogV1.SLOCorrectionCategory))
-	attributes.SetStart(d.Get("start").(int64))
-	attributes.SetEnd(d.Get("end").(int64))
+	correctionCategory := datadogV1.SLOCorrectionCategory(d.Get("category").(string))
+	attributes.SetCategory(correctionCategory)
+	attributes.SetStart(int64(d.Get("start").(int)))
+	attributes.SetEnd(int64(d.Get("end").(int)))
 	attributes.SetSloId(d.Get("slo_id").(string))
 
 	if timezone, ok := d.GetOk("timezone"); ok {
@@ -88,13 +89,13 @@ func buildDatadogSloCorrectionUpdate(d *schema.ResourceData) (*datadogV1.SLOCorr
 		attributes.SetDescription(timezone.(string))
 	}
 	if start, ok := d.GetOk("start"); ok {
-		attributes.SetStart(start.(int64))
+		attributes.SetStart(int64(start.(int)))
 	}
 	if end, ok := d.GetOk("end"); ok {
-		attributes.SetEnd(end.(int64))
+		attributes.SetEnd(int64(end.(int)))
 	}
 	if category, ok := d.GetOk("category"); ok {
-		attributes.SetCategory(category.(datadogV1.SLOCorrectionCategory))
+		attributes.SetCategory(datadogV1.SLOCorrectionCategory(category.(string)))
 	}
 	updateData.SetAttributes(*attributes)
 	result.SetData(*updateData)
