@@ -480,7 +480,7 @@ func syntheticsTestBrowserStep(detailedParams bool) *schema.Schema {
 		}
 	}
 
-	return &schema.Schema{
+	browserStepSchema := schema.Schema{
 		Description: "Steps for browser tests.",
 		Type:        schema.TypeList,
 		Optional:    true,
@@ -511,6 +511,13 @@ func syntheticsTestBrowserStep(detailedParams bool) *schema.Schema {
 			},
 		},
 	}
+
+	if detailedParams == false {
+		browserStepSchema.ConflictsWith = []string{"browser_step"}
+		browserStepSchema.Deprecated = "This parameter is deprecated, please use `browser_step`"
+	}
+
+	return &browserStepSchema
 }
 
 func syntheticsBrowserStepParams() schema.Schema {
