@@ -4491,7 +4491,10 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 		if terraformMetadataList, ok := terraformRequest["metadata"].([]interface{}); ok && len(terraformMetadataList) > 0 {
 			datadogMetadataList := make([]datadogV1.TimeseriesWidgetRequestMetadata, len(terraformMetadataList))
 			for i, m := range terraformMetadataList {
-				metadata := m.(map[string]interface{})
+				metadata, ok := m.(map[string]interface{})
+				if !ok {
+					continue
+				}
 				// Expression
 				datadogMetadata := datadogV1.NewTimeseriesWidgetRequestMetadata(metadata["expression"].(string))
 				// AliasName

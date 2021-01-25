@@ -418,7 +418,7 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.foo", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.allow_insecure", "true"),
 			resource.TestCheckResourceAttr(
@@ -619,7 +619,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "60"),
 			resource.TestCheckResourceAttr(
@@ -773,7 +773,7 @@ func updateSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.foo", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
@@ -897,7 +897,7 @@ func updateSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
@@ -1006,7 +1006,7 @@ func createSyntheticsSSLTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.ssl", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options.tick_every", "60"),
 			resource.TestCheckResourceAttr(
@@ -1083,7 +1083,7 @@ func createSyntheticsSSLMissingTagsAttributeTestStep(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.ssl", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options.tick_every", "60"),
 			resource.TestCheckResourceAttr(
@@ -1159,7 +1159,7 @@ func updateSyntheticsSSLTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.ssl", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options.tick_every", "60"),
 			resource.TestCheckResourceAttr(
@@ -1243,7 +1243,7 @@ func createSyntheticsTCPTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.tcp", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "options_list.0.tick_every", "60"),
 			// Make sure the legacy attribute isn't set anymore
@@ -1321,7 +1321,7 @@ func updateSyntheticsTCPTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.tcp", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "options_list.0.tick_every", "300"),
 			resource.TestCheckResourceAttr(
@@ -1401,7 +1401,7 @@ func createSyntheticsDNSTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.dns", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.dns", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "options_list.0.tick_every", "60"),
 			resource.TestCheckResourceAttr(
@@ -1480,7 +1480,7 @@ func updateSyntheticsDNSTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.dns", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.dns", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "options_list.0.tick_every", "300"),
 			resource.TestCheckResourceAttr(
@@ -1567,7 +1567,7 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
@@ -1702,7 +1702,7 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "1800"),
 			resource.TestCheckResourceAttr(
@@ -1837,7 +1837,7 @@ func createSyntheticsBrowserTestBrowserVariablesStep(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
