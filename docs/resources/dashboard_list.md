@@ -91,7 +91,7 @@ resource "datadog_dashboard" "screen" {
 Required:
 
 - **dash_id** (String) The ID of the dashboard to add
-- **type** (String) The type of this dashboard
+- **type** (String) The type of this dashboard. Available options are: `custom_timeboard`, `custom_screenboard`, `integration_screenboard`, `integration_timeboard`, and `host_timeboard`
 
 ## Import
 
