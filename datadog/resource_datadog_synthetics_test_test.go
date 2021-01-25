@@ -417,7 +417,7 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 				"datadog_synthetics_test.foo", "assertions.3.target", "terraform"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "locations.#", "1"),
-			CheckResourceAttr(
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.allow_insecure", "true"),
