@@ -171,7 +171,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			},
 			"locations": {
 				Description: "Array of locations used to run the test. Refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#request) for available locations (e.g. `aws:eu-central-1`).",
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Required:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
@@ -1010,7 +1010,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 
 	if attr, ok := d.GetOk("locations"); ok {
 		var locations []string
-		for _, s := range attr.([]interface{}) {
+		for _, s := range attr.(*schema.Set).List() {
 			locations = append(locations, s.(string))
 		}
 		syntheticsTest.SetLocations(locations)
