@@ -91,7 +91,7 @@ func resourceDatadogUser() *schema.Resource {
 				},
 			},
 			"verified": {
-				Description: "Returns true if Datadog user is verified.",
+				Description: "Returns `true` if the user is verified.",
 				Type:        schema.TypeBool,
 				Computed:    true,
 			},
