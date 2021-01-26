@@ -58,7 +58,6 @@ func resourceDatadogUser() *schema.Resource {
 				Description: "Role description for user. Can be `st` (standard user), `adm` (admin user) or `ro` (read-only user). Default is `st`. `access_role` is ignored for new users created with this resource. New users have to use the `roles` attribute.",
 				Type:        schema.TypeString,
 				Optional:    true,
-				Default:     "st",
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
 					return (d.Get("roles").(*schema.Set)).Len() > 0
 				},
