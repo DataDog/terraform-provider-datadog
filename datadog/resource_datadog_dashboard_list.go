@@ -28,7 +28,7 @@ func resourceDatadogDashboardList() *schema.Resource {
 			"dash_item": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "A set of dashbaord items that belong to this list",
+				Description: "A set of dashboard items that belong to this list",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"type": {

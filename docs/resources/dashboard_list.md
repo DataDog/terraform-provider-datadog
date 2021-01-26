@@ -14,63 +14,63 @@ Provides a Datadog dashboard_list resource. This can be used to create and manag
 ```terraform
 # Create a new Dashboard List with two Dashboards
 resource "datadog_dashboard_list" "new_list" {
-    depends_on = [
-        "datadog_dashboard.screen",
-        "datadog_dashboard.time"
-    ]
+  depends_on = [
+    "datadog_dashboard.screen",
+    "datadog_dashboard.time"
+  ]
 
-    name = "Terraform Created List"
-    dash_item {
-        type = "custom_timeboard"
-        dash_id = "${datadog_dashboard.time.id}"
-    }
-    dash_item {
-        type = "custom_screenboard"
-        dash_id = "${datadog_dashboard.screen.id}"
-    }
+  name = "Terraform Created List"
+  dash_item {
+    type    = "custom_timeboard"
+    dash_id = "${datadog_dashboard.time.id}"
+  }
+  dash_item {
+    type    = "custom_screenboard"
+    dash_id = "${datadog_dashboard.screen.id}"
+  }
 }
 
 resource "datadog_dashboard" "time" {
-    title         = "TF Test Layout Dashboard"
-    description   = "Created using the Datadog provider in Terraform"
-    layout_type   = "ordered"
-    is_read_only  = true
-    widget {
-        alert_graph_definition {
-          alert_id = "1234"
-          viz_type = "timeseries"
-          title = "Widget Title"
-          time = {
-            live_span = "1h"
-          }
-        }
+  title        = "TF Test Layout Dashboard"
+  description  = "Created using the Datadog provider in Terraform"
+  layout_type  = "ordered"
+  is_read_only = true
+  widget {
+    alert_graph_definition {
+      alert_id = "1234"
+      viz_type = "timeseries"
+      title    = "Widget Title"
+      time = {
+        live_span = "1h"
       }
+    }
+  }
 
 }
 
 resource "datadog_dashboard" "screen" {
-    title         = "TF Test Free Layout Dashboard"
-    description   = "Created using the Datadog provider in Terraform"
-    layout_type   = "free"
-    is_read_only  = false
-    widget {
-        event_stream_definition {
-          query = "*"
-          event_size = "l"
-          title = "Widget Title"
-          title_size = 16
-          title_align = "left"
-          time = {
-            live_span = "1h"
-          }
-        }
-        layout = {
-          height = 43
-          width = 32
-          x = 5
-          y = 5
-        }
+  title        = "TF Test Free Layout Dashboard"
+  description  = "Created using the Datadog provider in Terraform"
+  layout_type  = "free"
+  is_read_only = false
+  widget {
+    event_stream_definition {
+      query       = "*"
+      event_size  = "l"
+      title       = "Widget Title"
+      title_size  = 16
+      title_align = "left"
+      time = {
+        live_span = "1h"
       }
+    }
+    layout = {
+      height = 43
+      width  = 32
+      x      = 5
+      y      = 5
+    }
+  }
 }
 ```
 
@@ -82,7 +82,7 @@ resource "datadog_dashboard" "screen" {
 
 ### Optional
 
-- **dash_item** (Block Set) A set of dashbaord items that belong to this list (see [below for nested schema](#nestedblock--dash_item))
+- **dash_item** (Block Set) A set of dashboard items that belong to this list (see [below for nested schema](#nestedblock--dash_item))
 - **id** (String) The ID of this resource.
 
 <a id="nestedblock--dash_item"></a>
