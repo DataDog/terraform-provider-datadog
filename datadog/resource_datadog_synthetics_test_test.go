@@ -151,7 +151,7 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 				ResourceName:            "datadog_synthetics_test.bar",
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"options_list", "browser_variable", "variable"},
+				ImportStateVerifyIgnore: []string{"options_list", "browser_variable", "variable", "browser_step", "step"},
 			},
 		},
 	})
@@ -373,6 +373,21 @@ func TestAccDatadogSyntheticsBrowserTestBrowserVariables_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsBrowserTestStepNewBrowserStep(accProvider, clock, t),
+		},
+	})
+}
+
 func createSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(clock, t)
 	return resource.TestStep{
@@ -418,7 +433,7 @@ func createSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.foo", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options.allow_insecure", "true"),
 			resource.TestCheckResourceAttr(
@@ -619,7 +634,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "60"),
 			resource.TestCheckResourceAttr(
@@ -773,7 +788,7 @@ func updateSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.foo", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
@@ -897,7 +912,7 @@ func updateSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
@@ -1006,7 +1021,7 @@ func createSyntheticsSSLTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.ssl", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options.tick_every", "60"),
 			resource.TestCheckResourceAttr(
@@ -1083,7 +1098,7 @@ func createSyntheticsSSLMissingTagsAttributeTestStep(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.ssl", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options.tick_every", "60"),
 			resource.TestCheckResourceAttr(
@@ -1159,7 +1174,7 @@ func updateSyntheticsSSLTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.ssl", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options.tick_every", "60"),
 			resource.TestCheckResourceAttr(
@@ -1243,7 +1258,7 @@ func createSyntheticsTCPTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.tcp", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "options_list.0.tick_every", "60"),
 			// Make sure the legacy attribute isn't set anymore
@@ -1321,7 +1336,7 @@ func updateSyntheticsTCPTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.tcp", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "options_list.0.tick_every", "300"),
 			resource.TestCheckResourceAttr(
@@ -1401,7 +1416,7 @@ func createSyntheticsDNSTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.dns", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.dns", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "options_list.0.tick_every", "60"),
 			resource.TestCheckResourceAttr(
@@ -1480,7 +1495,7 @@ func updateSyntheticsDNSTestStep(accProvider *schema.Provider, clock clockwork.F
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.dns", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.dns", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "options_list.0.tick_every", "300"),
 			resource.TestCheckResourceAttr(
@@ -1567,7 +1582,7 @@ func createSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
@@ -1702,7 +1717,7 @@ func updateSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwo
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "1800"),
 			resource.TestCheckResourceAttr(
@@ -1837,7 +1852,7 @@ func createSyntheticsBrowserTestBrowserVariablesStep(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
@@ -1922,6 +1937,261 @@ resource "datadog_synthetics_test" "bar" {
                pattern = "{{numeric(3)}}"
                example = "597"
        }
+}`, uniq)
+}
+
+func createSyntheticsBrowserTestStepNewBrowserStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(clock, t)
+	return resource.TestStep{
+		Config: createSyntheticsBrowserTestNewBrowserStepConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "type", "browser"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.method", "GET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.url", "https://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.body", "this is a body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request.timeout", "30"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_headers.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_headers.Accept", "application/json"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_headers.X-Datadog-Trace-ID", "123456789"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "device_ids.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "device_ids.0", "laptop_large"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "device_ids.1", "mobile_small"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertions.#", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.retry.0.count", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.retry.0.interval", "300"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "100"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.#", "6"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.name", "first step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.type", "assertCurrentUrl"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.params.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.params.0.check", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.params.0.value", "content"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.name", "scroll step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.type", "scroll"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.params.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.params.0.x", "100"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.params.0.y", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.2.name", "api step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.2.type", "runApiTest"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.2.params.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.2.params.0.request", "{\"config\":{\"assertions\":[],\"request\":{\"method\":\"GET\",\"url\":\"https://example.com\"}},\"options\":{},\"subtype\":\"http\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.3.name", "subtest"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.3.type", "playSubTest"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.3.params.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.3.params.0.playing_tab_id", "0"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.bar", "browser_step.3.params.0.subtest_public_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.4.name", "wait step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.4.type", "wait"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.4.params.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.4.params.0.value", "100"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.5.name", "extract variable step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.5.type", "extractFromJavascript"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.5.params.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.5.params.0.code", "return 123"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.bar", "monitor_id"),
+		),
+	}
+}
+
+func createSyntheticsBrowserTestNewBrowserStepConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "subtest" {
+	type = "browser"
+
+	request = {
+		method = "GET"
+		url = "https://www.datadoghq.com"
+	}
+
+	device_ids = [ "laptop_large" ]
+	locations = [ "aws:eu-central-1" ]
+	options_list {
+		tick_every = 900
+		min_failure_duration = 0
+		min_location_failed = 1
+
+		retry {
+			count = 2
+			interval = 300
+		}
+
+		monitor_options {
+			renotify_interval = 100
+		}
+	}
+
+	name = "%[1]s-subtest"
+	message = ""
+	tags = []
+
+	status = "paused"
+}
+
+resource "datadog_synthetics_test" "bar" {
+	type = "browser"
+
+	request = {
+		method = "GET"
+		url = "https://www.datadoghq.com"
+		body = "this is a body"
+		timeout = 30
+	}
+	request_headers = {
+		Accept = "application/json"
+		X-Datadog-Trace-ID = "123456789"
+	}
+
+	device_ids = [ "laptop_large", "mobile_small" ]
+	locations = [ "aws:eu-central-1" ]
+	options_list {
+		tick_every = 900
+		min_failure_duration = 0
+		min_location_failed = 1
+
+		retry {
+			count = 2
+			interval = 300
+		}
+
+		monitor_options {
+			renotify_interval = 100
+		}
+	}
+
+	name = "%[1]s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+
+	status = "paused"
+
+	browser_step {
+	    name = "first step"
+	    type = "assertCurrentUrl"
+	    params {
+	    	check = "contains"
+	    	value = "content"
+	    }
+	}
+
+	browser_step {
+	    name = "scroll step"
+	    type = "scroll"
+	    params {
+	    	x = 100
+	    	y = 200
+	    }
+	}
+
+	browser_step {
+		name = "api step"
+		type = "runApiTest"
+		params {
+			request = jsonencode({
+				"config": {
+					"assertions": [],
+					"request": {
+						"method": "GET",
+						"url": "https://example.com"
+					}
+				},
+				"options": {}
+        		"subtype": "http",
+      		})
+		}
+	}
+
+	browser_step {
+		name = "subtest"
+		type = "playSubTest"
+		params {
+			playing_tab_id = 0
+			subtest_public_id = datadog_synthetics_test.subtest.id
+		}
+	}
+
+	browser_step {
+		name = "wait step"
+		type = "wait"
+		params {
+			value = "100"
+		}
+	}
+
+	browser_step {
+		name = "extract variable step"
+		type = "extractFromJavascript"
+		params {
+			code = "return 123"
+			variable {
+				name = "VAR_FROM_JS"
+			}
+		}
+	}
 }`, uniq)
 }
 
