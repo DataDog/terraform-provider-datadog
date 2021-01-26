@@ -1227,7 +1227,7 @@ func getDeprecatedTimeSchema() *schema.Schema {
 		Optional:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"live_span": getWidgetNestedLiveSpanSchema(),
+				"live_span": getWidgetLiveSpanSchema(),
 			},
 		},
 	}
@@ -5308,16 +5308,7 @@ func buildTerraformWidgetEvents(datadogWidgetEvents *[]datadogV1.WidgetEvent) *[
 
 func getWidgetLiveSpanSchema() *schema.Schema {
 	return &schema.Schema{
-		Description:  "The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`.",
-		Type:         schema.TypeString,
-		ValidateFunc: validateEnumValue(datadogV1.NewWidgetLiveSpanFromValue),
-		Optional:     true,
-	}
-}
-
-func getWidgetNestedLiveSpanSchema() *schema.Schema {
-	return &schema.Schema{
-		Description:  "The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`.",
+		Description:  "The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.",
 		Type:         schema.TypeString,
 		ValidateFunc: validateEnumValue(datadogV1.NewWidgetLiveSpanFromValue),
 		Optional:     true,
