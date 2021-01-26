@@ -47,7 +47,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTestDetailsSubTypeFromValue),
 			},
 			"request": {
-				Description:   "The synthetics test request. Required if `type = \"api\"` and `subtype = \"http\"`.",
+				Description:   "The synthetics test request. Required if `type = \"api\"`.",
 				Deprecated:    "Define `request_definition` list with one element instead.",
 				ConflictsWith: []string{"request_definition"},
 				Type:          schema.TypeMap,
@@ -55,7 +55,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Elem:          syntheticsTestRequest(),
 			},
 			"request_definition": {
-				Description:   "The synthetics test request. Required if `type = \"api\"` and `subtype = \"http\"`.",
+				Description:   "The synthetics test request. Required if `type = \"api\"`.",
 				ConflictsWith: []string{"request"},
 				Type:          schema.TypeList,
 				MaxItems:      1,
