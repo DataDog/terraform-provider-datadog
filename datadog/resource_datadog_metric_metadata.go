@@ -88,7 +88,7 @@ func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{})
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	id, _ := buildMetricMetadataStruct(d)
+	id := d.Id()
 
 	m, httpresp, err := datadogClientV1.MetricsApi.GetMetricMetadata(authV1, id).Execute()
 	if err != nil {
