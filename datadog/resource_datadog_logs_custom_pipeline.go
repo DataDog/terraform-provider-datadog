@@ -342,7 +342,6 @@ func resourceDatadogLogsPipelineCreate(d *schema.ResourceData, meta interface{})
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
-
 	ddPipeline, err := buildDatadogPipeline(d)
 	if err != nil {
 		return err
@@ -675,7 +674,7 @@ func buildDatadogPipeline(d *schema.ResourceData) (*datadogV1.LogsPipeline, erro
 	if tfFilter := d.Get("filter").([]interface{}); len(tfFilter) > 0 {
 		filter, ok := tfFilter[0].(map[string]interface{})
 		if !ok {
-			return nil, fmt.Errorf("Couldn't build filter, is query empty?")
+			filter = make(map[string]interface{})
 		}
 		ddPipeline.SetFilter(buildDatadogFilter(filter))
 	}
@@ -1078,9 +1077,11 @@ func buildDatadogDateRemapperProcessor(tfProcessor map[string]interface{}) *data
 
 func buildDatadogFilter(tfFilter map[string]interface{}) datadogV1.LogsFilter {
 	ddFilter := datadogV1.LogsFilter{}
+	var query string
 	if tfQuery, exists := tfFilter["query"].(string); exists {
-		ddFilter.SetQuery(tfQuery)
+		query = tfQuery
 	}
+	ddFilter.SetQuery(query)
 	return ddFilter
 }
 
@@ -1125,10 +1126,9 @@ func getFilterSchema() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"query": {
-				Description:  "Filter criteria of the category.",
-				Type:         schema.TypeString,
-				Required:     true,
-				ValidateFunc: validation.StringIsNotEmpty,
+				Description: "Filter criteria of the category.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 		},
 	}
