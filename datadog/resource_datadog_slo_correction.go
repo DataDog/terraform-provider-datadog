@@ -53,11 +53,9 @@ func resourceDatadogSloCorrection() *schema.Resource {
 }
 
 func buildDatadogSloCorrection(d *schema.ResourceData) (*datadogV1.SLOCorrectionCreateRequest, error) {
-	// k := NewResourceDataKey(d, "")
 	result := datadogV1.NewSLOCorrectionCreateRequestWithDefaults()
-
-	// type hardcoded to 'correction' in Data
-	// only need to set attributes
+	// `type` is hardcoded to 'correction' in Data
+	// only need to set `attributes` here
 	createData := datadogV1.NewSLOCorrectionCreateRequestDataWithDefaults()
 	attributes := datadogV1.NewSLOCorrectionCreateRequestAttributesWithDefaults()
 	correctionCategory := datadogV1.SLOCorrectionCategory(d.Get("category").(string))
@@ -128,7 +126,6 @@ func resourceDatadogSloCorrectionRead(d *schema.ResourceData, meta interface{}) 
 	id := d.Id()
 
 	_, httpResp, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.GetSLOCorrection(auth, id).Execute()
-	// sloCorrection := resource.GetData()
 	if err != nil {
 		if httpResp.StatusCode == 404 {
 			// this condition takes on the job of the deprecated Exists handlers
