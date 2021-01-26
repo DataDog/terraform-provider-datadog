@@ -1993,7 +1993,7 @@ func createSyntheticsBrowserTestStepNewBrowserStep(accProvider *schema.Provider,
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(

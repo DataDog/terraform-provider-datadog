@@ -254,9 +254,9 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 		if v, ok := parseTestOptions.GetFieldOk(); ok {
 			localParseTestOptions["field"] = string(*v)
 		}
-		localParseTestOptions["parser"] = localParser
+		localParseTestOptions["parser"] = []map[string]string{localParser}
 
-		d.Set("parse_test_options", localParseTestOptions)
+		d.Set("parse_test_options", []map[string]interface{}{localParseTestOptions})
 	}
 
 	return nil
