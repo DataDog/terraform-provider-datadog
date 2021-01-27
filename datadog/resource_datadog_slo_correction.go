@@ -125,7 +125,7 @@ func resourceDatadogSloCorrectionRead(d *schema.ResourceData, meta interface{}) 
 
 	id := d.Id()
 
-	_, httpResp, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.GetSLOCorrection(auth, id).Execute()
+	sloCorrectionGetResp, httpResp, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.GetSLOCorrection(auth, id).Execute()
 	if err != nil {
 		if httpResp.StatusCode == 404 {
 			// this condition takes on the job of the deprecated Exists handlers
@@ -134,7 +134,27 @@ func resourceDatadogSloCorrectionRead(d *schema.ResourceData, meta interface{}) 
 		}
 		return translateClientError(err, "error reading SloCorrection")
 	}
-
+	sloCorrectionGetData := sloCorrectionGetResp.GetData()
+	if sloCorrectionAttributes, ok := sloCorrectionGetData.GetAttributesOk(); ok {
+		if category, ok := sloCorrectionAttributes.GetCategoryOk(); ok {
+			d.Set("category", string(*category))
+		}
+		if description, ok := sloCorrectionAttributes.GetDescriptionOk(); ok {
+			d.Set("description", *description)
+		}
+		if sloId, ok := sloCorrectionAttributes.GetSloIdOk(); ok {
+			d.Set("slo_id", *sloId)
+		}
+		if timezone, ok := sloCorrectionAttributes.GetTimezoneOk(); ok {
+			d.Set("timezone", *timezone)
+		}
+		if start, ok := sloCorrectionAttributes.GetStartOk(); ok {
+			d.Set("start", *start)
+		}
+		if end, ok := sloCorrectionAttributes.GetEndOk(); ok {
+			d.Set("end", *end)
+		}
+	}
 	return nil
 }
 
