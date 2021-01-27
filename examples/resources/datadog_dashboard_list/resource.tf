@@ -1,17 +1,3 @@
----
-page_title: "datadog_dashboard_list Resource - terraform-provider-datadog"
-subcategory: ""
-description: |-
-  Provides a Datadog dashboard_list resource. This can be used to create and manage Datadog Dashboard Lists and the individual dashboards within them.
----
-
-# Resource `datadog_dashboard_list`
-
-Provides a Datadog dashboard_list resource. This can be used to create and manage Datadog Dashboard Lists and the individual dashboards within them.
-
-## Example Usage
-
-```terraform
 # Create a new Dashboard List with two Dashboards
 resource "datadog_dashboard_list" "new_list" {
   depends_on = [
@@ -72,31 +58,3 @@ resource "datadog_dashboard" "screen" {
     }
   }
 }
-```
-
-## Schema
-
-### Required
-
-- **name** (String) The name of the Dashboard List
-
-### Optional
-
-- **dash_item** (Block Set) A set of dashboard items that belong to this list (see [below for nested schema](#nestedblock--dash_item))
-- **id** (String) The ID of this resource.
-
-<a id="nestedblock--dash_item"></a>
-### Nested Schema for `dash_item`
-
-Required:
-
-- **dash_id** (String) The ID of the dashboard to add
-- **type** (String) The type of this dashboard. Available options are: `custom_timeboard`, `custom_screenboard`, `integration_screenboard`, `integration_timeboard`, and `host_timeboard`
-
-## Import
-
-Import is supported using the following syntax:
-
-```shell
-terraform import datadog_dashboard_list.new_list 123456
-```
