@@ -1535,7 +1535,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 
 				localStep["params"] = []interface{}{localParams}
 
-				if forceElementUpdate, ok := d.GetOk("browser_step." + convertToString(stepIndex) + ".force_element_update"); ok {
+				if forceElementUpdate, ok := d.GetOk(fmt.Sprintf("browser_step.%d.force_element_update", stepIndex)); ok {
 					localStep["force_element_update"] = forceElementUpdate
 				}
 			}
