@@ -43,6 +43,7 @@ jobs:
             env:
                 CI: "true"
                 DD_AGENT_HOST: datadog-agent
+                DD_PROFILER_API_KEY: $(ddAPIKey)
                 DD_API_KEY: $(datadogAPIKey)
                 DD_APP_KEY: $(datadogAPPKey)
                 DD_ENV: prod

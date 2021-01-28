@@ -23,14 +23,20 @@ func TestMain(m *testing.M) {
 	)
 	defer tracer.Stop()
 
-	err := profiler.Start(
+	profilerOpts := []profiler.Option{
 		profiler.WithService(service),
 		profiler.WithTags(
 			fmt.Sprintf("terraform.sdk:%s", meta.SDKVersionString()),
 			// fmt.Sprintf("terraform.cli:%s", datadogProvider.TerraformVersion),
 		),
 		profiler.WithProfileTypes(profiler.BlockProfile, profiler.CPUProfile, profiler.GoroutineProfile, profiler.HeapProfile),
-	)
+	}
+
+	if v := os.Getenv("DD_PROFILER_API_KEY"); v != "" {
+		profilerOpts = append(profilerOpts, profiler.WithAPIKey(v))
+	}
+
+	err := profiler.Start(profilerOpts...)
 	if err != nil {
 		log.Fatal(err)
 	} else {
