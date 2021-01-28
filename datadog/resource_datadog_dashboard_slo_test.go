@@ -4,48 +4,6 @@ import (
 	"testing"
 )
 
-// JSON export used as test scenario
-//{
-//    "notify_list": [],
-//    "description": "",
-//    "author_name": "--redacted--",
-//    "id": "--redacted--",
-//    "url": "--redacted--",
-//    "template_variables": [],
-//    "is_read_only": false,
-//    "title": "TF - SLO Example",
-//    "created_at": "2020-06-09T13:41:36.039693+00:00",
-//    "modified_at": "2020-06-09T13:41:58.724155+00:00",
-//    "author_handle": "--redacted--m",
-//    "widgets": [
-//        {
-//            "definition": {
-//                "time_windows": [
-//                    "90d",
-//                    "previous_week",
-//                    "month_to_date"
-//                ],
-//                "title_size": "16",
-//                "show_error_budget": true,
-//                "title": "",
-//                "title_align": "center",
-//                "slo_id": "b4c7739b2af25f9d947f828730357832",
-//                "view_mode": "both",
-//                "view_type": "detail",
-//                "type": "slo"
-//            },
-//            "layout": {
-//                "y": 3,
-//                "x": 5,
-//                "height": 21,
-//                "width": 60
-//            },
-//            "id": 0
-//        }
-//    ],
-//    "layout_type": "free"
-//}
-
 const datadogDashboardSLOConfig = `
 resource "datadog_dashboard" "slo_dashboard" {
 	title         = "{{uniq}}"

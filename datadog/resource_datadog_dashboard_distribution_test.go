@@ -4,99 +4,6 @@ import (
 	"testing"
 )
 
-// JSON export used as test scenario
-//{
-//    "notify_list": [],
-//    "description": "",
-//    "author_name": "--redacted--",
-//    "id": "--redacted--",
-//    "url": "--redacted--",
-//    "template_variables": [],
-//    "is_read_only": false,
-//    "title": "TF - Distribution Example",
-//    "created_at": "2020-06-09T13:22:05.545823+00:00",
-//    "modified_at": "2020-06-09T13:22:57.196703+00:00",
-//    "author_handle": "--redacted--",
-//    "widgets": [
-//        {
-//            "definition": {
-//                "title_size": "13",
-//                "title": "Avg of system.cpu.user over account:prod by service,account",
-//                "title_align": "center",
-//                "time": {
-//                    "live_span": "1d"
-//                },
-//                "requests": [
-//                    {
-//                        "q": "avg:system.cpu.user{account:prod} by {service,account}",
-//                        "style": {
-//                            "palette": "purple"
-//                        }
-//                    }
-//                ],
-//                "type": "distribution",
-//                "show_legend": true,
-//                "legend_size": "2"
-//            },
-//            "layout": {
-//                "y": 3,
-//                "x": 2,
-//                "height": 15,
-//                "width": 47
-//            },
-//            "id": 0
-//        }
-//    ],
-//    "layout_type": "free"
-//}
-
-const datadogDashboardDistributionConfigDeprecated = `
-resource "datadog_dashboard" "distribution_dashboard" {
-	title         = "{{uniq}}"
-	description   = "Created using the Datadog provider in Terraform"
-	layout_type   = "ordered"
-	is_read_only  = "true"
-	
-	widget {
-		distribution_definition {
-			title = "Avg of system.cpu.user over account:prod by service,account"
-			title_align = "left"
-			title_size = "16"
-			show_legend = "true"
-			legend_size = "2"
-			time = {
-				live_span = "1h"
-			}
-			request {
-				q = "avg:system.cpu.user{account:prod} by {service,account}"
-				style {
-					palette = "purple"
-				}
-			}
-		}
-	}
-}
-`
-
-var datadogDashboardDistributionAssertsDeprecated = []string{
-	"title = {{uniq}}",
-	"widget.0.distribution_definition.0.time.live_span = 1h",
-	"widget.0.distribution_definition.0.title = Avg of system.cpu.user over account:prod by service,account",
-	"widget.0.distribution_definition.0.title_size = 16",
-	"widget.0.distribution_definition.0.title_align = left",
-	"widget.0.distribution_definition.0.show_legend = true",
-	"widget.0.distribution_definition.0.legend_size = 2",
-	"description = Created using the Datadog provider in Terraform",
-	"widget.0.distribution_definition.0.request.0.q = avg:system.cpu.user{account:prod} by {service,account}",
-	"widget.0.distribution_definition.0.request.0.style.0.palette = purple",
-	"layout_type = ordered",
-	"is_read_only = true",
-}
-
-func TestAccDatadogDashboardDistributionDeprecated(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil(t, datadogDashboardDistributionConfigDeprecated, "datadog_dashboard.distribution_dashboard", datadogDashboardDistributionAssertsDeprecated)
-}
-
 const datadogDashboardDistributionConfig = `
 resource "datadog_dashboard" "distribution_dashboard" {
 	title         = "{{uniq}}"
@@ -112,6 +19,24 @@ resource "datadog_dashboard" "distribution_dashboard" {
 			show_legend = "true"
 			legend_size = "2"
 			live_span = "1h"
+			request {
+				q = "avg:system.cpu.user{account:prod} by {service,account}"
+				style {
+					palette = "purple"
+				}
+			}
+		}
+	}
+	widget {
+		distribution_definition {
+			title = "Avg of system.cpu.user over account:prod by service,account"
+			title_align = "left"
+			title_size = "16"
+			show_legend = "true"
+			legend_size = "2"
+			time = {
+				live_span = "1h"
+			}
 			request {
 				q = "avg:system.cpu.user{account:prod} by {service,account}"
 				style {
@@ -136,6 +61,15 @@ var datadogDashboardDistributionAsserts = []string{
 	"widget.0.distribution_definition.0.request.0.style.0.palette = purple",
 	"layout_type = ordered",
 	"is_read_only = true",
+	// Deprecated widget
+	"widget.1.distribution_definition.0.time.live_span = 1h",
+	"widget.1.distribution_definition.0.title = Avg of system.cpu.user over account:prod by service,account",
+	"widget.1.distribution_definition.0.title_size = 16",
+	"widget.1.distribution_definition.0.title_align = left",
+	"widget.1.distribution_definition.0.show_legend = true",
+	"widget.1.distribution_definition.0.legend_size = 2",
+	"widget.1.distribution_definition.0.request.0.q = avg:system.cpu.user{account:prod} by {service,account}",
+	"widget.1.distribution_definition.0.request.0.style.0.palette = purple",
 }
 
 func TestAccDatadogDashboardDistribution(t *testing.T) {
