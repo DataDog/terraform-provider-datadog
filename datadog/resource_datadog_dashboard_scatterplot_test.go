@@ -88,6 +88,52 @@ resource "datadog_dashboard" "scatterplot_dashboard" {
 }
 `
 
+const datadogDashboardScatterplotConfigImport = `
+resource "datadog_dashboard" "scatterplot_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+
+	widget {
+		scatterplot_definition {
+			title_size = "16"
+			yaxis {
+				scale = "log"
+				include_zero = false
+				min = "1"
+				label = "mem (Gib)"
+			}
+			title_align = "right"
+			color_by_groups = ["app"]
+			xaxis {
+				scale = "log"
+				max = "100"
+				min = "0"
+				label = "cpu (%)"
+				include_zero = false
+			}
+			live_span = "15m"
+			title = "system.mem.used and system.cpu.user by service,team,app colored by app"
+			request {
+				y {
+					q = "avg:system.mem.used{env:prod} by {service, team, app}"
+					aggregator = "avg"
+				}
+				x {
+					q = "avg:system.cpu.user{account:prod} by {service, team, app}"
+					aggregator = "avg"
+				}
+			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				label = "Test Custom Link label"
+			}
+		}
+	}
+}
+`
+
 var datadogDashboardScatterplotAsserts = []string{
 	"widget.0.scatterplot_definition.0.xaxis.0.min = 0",
 	"widget.0.scatterplot_definition.0.color_by_groups.0 = app",
@@ -145,5 +191,5 @@ func TestAccDatadogDashboardScatterplot(t *testing.T) {
 }
 
 func TestAccDatadogDashboardScatterplot_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardScatterplotConfig, "datadog_dashboard.scatterplot_dashboard")
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardScatterplotConfigImport, "datadog_dashboard.scatterplot_dashboard")
 }

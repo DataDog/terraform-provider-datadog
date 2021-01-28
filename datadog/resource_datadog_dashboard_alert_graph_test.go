@@ -41,6 +41,31 @@ resource "datadog_dashboard" "alert_graph_dashboard" {
 }
 `
 
+const datadogDashboardAlertGraphConfigImport = `
+resource "datadog_dashboard" "alert_graph_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = true
+	widget {
+		alert_graph_definition {
+			alert_id = "895605"
+			viz_type = "timeseries"
+		}
+	}
+	widget {
+		alert_graph_definition {
+			alert_id = "895606"
+			viz_type = "toplist"
+			title = "Widget Title"
+			title_align = "right"
+			title_size = "16"
+			live_span = "1h"
+		}
+	}
+}
+`
+
 var datadogDashboardAlertGraphAsserts = []string{
 	"title = {{uniq}}",
 	"widget.0.alert_graph_definition.0.alert_id = 895605",
@@ -73,5 +98,5 @@ func TestAccDatadogDashboardAlertGraph(t *testing.T) {
 }
 
 func TestAccDatadogDashboardAlertGraph_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardAlertGraphConfig, "datadog_dashboard.alert_graph_dashboard")
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardAlertGraphConfigImport, "datadog_dashboard.alert_graph_dashboard")
 }

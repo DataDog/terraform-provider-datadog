@@ -64,6 +64,40 @@ resource "datadog_dashboard" "log_stream_dashboard" {
 }
 `
 
+const datadogDashboardLogStreamConfigImport = `
+resource "datadog_dashboard" "log_stream_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "free"
+	is_read_only  = "true"
+
+	widget {
+		log_stream_definition {
+			title = "Log Stream"
+			title_align = "right"
+			title_size = "16"
+			show_message_column = "true"
+			message_display = "expanded-md"
+			query = "status:error env:prod"
+			show_date_column = "true"
+			indexes = ["main"]
+			columns = ["core_host", "core_service"]
+			live_span = "1d"
+			sort {
+				column = "time"
+				order = "desc"
+			}
+		}
+		widget_layout {
+			height = 43
+			width = 32
+			x = 5
+			y = 5
+		}
+	}
+}
+`
+
 var datadogDashboardLogStreamAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.log_stream_definition.0.query = status:error env:prod",
@@ -113,7 +147,7 @@ func TestAccDatadogDashboardLogStream(t *testing.T) {
 }
 
 func TestAccDatadogDashboardLogStream_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardLogStreamConfig, "datadog_dashboard.log_stream_dashboard")
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardLogStreamConfigImport, "datadog_dashboard.log_stream_dashboard")
 }
 
 const datadogDashboardLogStreamLogSetConfig = `

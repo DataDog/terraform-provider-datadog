@@ -66,6 +66,41 @@ resource "datadog_dashboard" "trace_service_dashboard" {
 }
 `
 
+const datadogDashboardTraceServiceConfigImport = `
+resource "datadog_dashboard" "trace_service_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "free"
+	is_read_only  = "true"
+
+	widget {
+		trace_service_definition {
+			span_name = "postgres.connection.rollback"
+			title_size = "16"
+			service = "postgres"
+			title = "postgres #env:datadoghq.com"
+			size_format = "large"
+			show_hits = true
+			show_latency = true
+			title_align = "center"
+			show_errors = true
+			show_breakdown = true
+			env = "datadoghq.com"
+			live_span = "30m"
+			show_distribution = true
+			display_format = "three_column"
+			show_resource_list = true
+		}
+		widget_layout {
+			height = 43
+			width = 32
+			x = 5
+			y = 5
+		}
+	}
+}
+`
+
 var datadogDashboardTraceServiceAsserts = []string{
 	"widget.0.trace_service_definition.0.show_distribution = true",
 	"widget.0.trace_service_definition.0.title = postgres #env:datadoghq.com",
@@ -117,5 +152,5 @@ func TestAccDatadogDashboardTraceService(t *testing.T) {
 }
 
 func TestAccDatadogDashboardTraceService_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTraceServiceConfig, "datadog_dashboard.trace_service_dashboard")
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTraceServiceConfigImport, "datadog_dashboard.trace_service_dashboard")
 }

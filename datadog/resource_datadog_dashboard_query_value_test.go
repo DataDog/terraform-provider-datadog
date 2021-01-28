@@ -74,6 +74,45 @@ resource "datadog_dashboard" "query_value_dashboard" {
 }
 `
 
+const datadogDashboardQueryValueConfigImport = `
+resource "datadog_dashboard" "query_value_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+
+	widget {
+		query_value_definition {
+			title = "Avg of system.mem.free over account:prod"
+			title_align = "center"
+			title_size = "16"
+			custom_unit = "Gib"
+			precision = "3"
+			autoscale = "true"
+			request {
+				q = "avg:system.mem.free{account:prod}"
+				aggregator = "max"
+				conditional_formats {
+					palette = "white_on_red"
+					value = "9"
+					comparator = "<"
+				}
+				conditional_formats {
+					palette = "white_on_green"
+					value = "9"
+					comparator = ">="
+				}
+			}
+			live_span = "1h"
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				label = "Test Custom Link label"
+			}
+		}
+	}
+}
+`
+
 var datadogDashboardQueryValueAsserts = []string{
 	"widget.0.query_value_definition.0.request.0.conditional_formats.0.comparator = <",
 	"widget.0.query_value_definition.0.live_span = 1h",
@@ -147,5 +186,5 @@ func TestAccDatadogDashboardQueryValue(t *testing.T) {
 }
 
 func TestAccDatadogDashboardQueryValue_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardQueryValueConfig, "datadog_dashboard.query_value_dashboard")
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardQueryValueConfigImport, "datadog_dashboard.query_value_dashboard")
 }

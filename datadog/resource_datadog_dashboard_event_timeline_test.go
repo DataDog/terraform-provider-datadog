@@ -47,6 +47,31 @@ resource "datadog_dashboard" "event_timeline_dashboard" {
 	}
 }
 `
+const datadogDashboardEventTimelineConfigImport = `
+resource "datadog_dashboard" "event_timeline_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "free"
+	is_read_only  = "true"
+	
+	widget {
+		event_timeline_definition {
+			title = "Widget Title"
+			title_align = "right"
+			title_size = "16"
+			tags_execution = "and"
+			query = "status:error"
+			live_span = "1h"
+		}
+		widget_layout {
+			height = 43
+			width = 32
+			x = 5
+			y = 5
+		}
+	}
+}
+`
 
 var datadogDashboardEventTimelineAsserts = []string{
 	"widget.0.widget_layout.0.y = 5",
@@ -81,5 +106,5 @@ func TestAccDatadogDashboardEventTimeline(t *testing.T) {
 }
 
 func TestAccDatadogDashboardEventTimeline_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardEventTimelineConfig, "datadog_dashboard.event_timeline_dashboard")
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardEventTimelineConfigImport, "datadog_dashboard.event_timeline_dashboard")
 }

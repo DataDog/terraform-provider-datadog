@@ -366,6 +366,184 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 }
 `
 
+const datadogDashboardTimeseriesConfigImport = `
+resource "datadog_dashboard" "timeseries_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+	widget {
+		timeseries_definition {
+			title_size = "16"
+			title_align = "left"
+			show_legend = "true"
+			title = "system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d..."
+			legend_size = "2"
+			yaxis {
+				label = ""
+				min = "0"
+				include_zero = "true"
+				max = "599999"
+				scale = ""
+			}
+			right_yaxis {
+				label = ""
+				min = "1"
+				include_zero = "false"
+				max = "599998"
+				scale = ""
+			}
+			marker {
+				display_type = "error dashed"
+				value = "y=500000"
+				label = "y=500000"
+			}
+			marker {
+				display_type = "warning dashed"
+				value = "y=400000"
+				label = "y=400000"
+			}
+			live_span = "5m"
+			event {
+				q = "sources:test tags:1"
+				tags_execution = "and"
+			}
+			request {
+				q = "avg:system.cpu.user{env:prod} by {app}"
+				style {
+					line_width = "thin"
+					palette = "dog_classic"
+					line_type = "solid"
+				}
+				display_type = "line"
+				on_right_yaxis = "true"
+
+			}
+			request {
+				style {
+					line_width = "normal"
+					palette = "cool"
+					line_type = "solid"
+				}
+				display_type = "line"
+				log_query {
+					index = "*"
+					search_query = ""
+					group_by {
+						facet = "service"
+						sort_query {
+							aggregation = "count"
+							order = "desc"
+						}
+						limit = "10"
+					}
+					compute_query {
+						aggregation = "count"
+					}
+				}
+				on_right_yaxis = "false"
+			}
+			request {
+				style {
+					line_width = "thick"
+					palette = "warm"
+					line_type = "dashed"
+				}
+				apm_query {
+					index = "trace-search"
+					search_query = ""
+					group_by {
+						facet = "status"
+						sort_query {
+							facet = "env"
+							aggregation = "cardinality"
+							order = "desc"
+						}
+						limit = "10"
+					}
+					compute_query {
+						facet = "env"
+						interval = 1000
+						aggregation = "cardinality"
+					}
+				}
+				display_type = "line"
+				on_right_yaxis = "true"
+			}
+			request {
+				style {
+					line_width = "normal"
+					palette = "purple"
+					line_type = "solid"
+				}
+				process_query {
+					search_by = ""
+					metric = "process.stat.cpu.total_pct.norm"
+					limit = "10"
+					filter_by = ["account:prod"]
+				}
+				display_type = "line"
+				on_right_yaxis = "true"
+			}
+			request {
+				style {
+					line_width = "normal"
+					palette = "orange"
+					line_type = "solid"
+				}
+				display_type = "area"
+				network_query {
+					index = "netflow-search"
+					search_query = "network.transport:udp network.destination.ip:\"*\""
+					group_by {
+						facet = "source_region"
+					}
+					group_by {
+						facet = "dest_environment"
+					}
+					compute_query {
+						facet = "network.bytes_read"
+						aggregation = "sum"
+					}
+				}
+				on_right_yaxis = "true"
+			}
+			request {
+				style {
+					line_width = "normal"
+					palette = "grey"
+					line_type = "solid"
+				}
+				rum_query {
+					index = "*"
+					search_query = ""
+					group_by {
+						facet = "service"
+						sort_query {
+							facet = "@duration"
+							aggregation = "avg"
+							order = "desc"
+						}
+						limit = "10"
+					}
+					compute_query {
+						facet = "@duration"
+						interval = 10
+						aggregation = "avg"
+					}
+				}
+				display_type = "area"
+				on_right_yaxis = "true"
+			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				label = "Test Custom Link label"
+			}
+		}
+	}
+}
+`
+
 var datadogDashboardTimeseriesAsserts = []string{
 	"title = {{uniq}}",
 	"is_read_only = true",
@@ -660,7 +838,7 @@ func TestAccDatadogDashboardTimeseries(t *testing.T) {
 }
 
 func TestAccDatadogDashboardTimeseries_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTimeseriesConfig, "datadog_dashboard.timeseries_dashboard")
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTimeseriesConfigImport, "datadog_dashboard.timeseries_dashboard")
 }
 
 const datadogDashboardTimeseriesMultiComputeConfig = `
@@ -810,6 +988,82 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 }
 `
 
+const datadogDashboardTimeseriesMultiComputeConfigImport = `
+resource "datadog_dashboard" "timeseries_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+	widget {
+		timeseries_definition {
+			title_size = "16"
+			title_align = "left"
+			show_legend = "true"
+			title = "system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d..."
+			legend_size = "2"
+			yaxis {
+				label = ""
+				min = "0"
+				include_zero = "true"
+				max = "599999"
+				scale = ""
+			}
+			right_yaxis {
+				label = ""
+				min = "1"
+				include_zero = "false"
+				max = "599998"
+				scale = ""
+			}
+			marker {
+				display_type = "error dashed"
+				value = "y=500000"
+				label = "y=500000"
+			}
+			marker {
+				display_type = "warning dashed"
+				value = "y=400000"
+				label = "y=400000"
+			}
+			live_span = "5m"
+			event {
+				q = "sources:test tags:1"
+				tags_execution = "and"
+			}
+			request {
+				style {
+					line_width = "normal"
+					palette = "cool"
+					line_type = "solid"
+				}
+				display_type = "line"
+				log_query {
+					index = "*"
+					search_query = ""
+					group_by {
+						facet = "service"
+						sort_query {
+							aggregation = "count"
+							order = "desc"
+						}
+						limit = "10"
+					}
+					multi_compute {
+						aggregation = "count"
+					}
+					multi_compute {
+						facet = "env"
+						interval = "1000"
+						aggregation = "cardinality"
+					}
+				}
+				on_right_yaxis = "true"
+			}
+		}
+	}
+}
+`
+
 var datadogDashboardTimeseriesMultiComputeAsserts = []string{
 	"title = {{uniq}}",
 	"is_read_only = true",
@@ -907,5 +1161,5 @@ func TestAccDatadogDashboardTimeseriesMultiCompute(t *testing.T) {
 }
 
 func TestAccDatadogDashboardTimeseriesMultiCompute_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTimeseriesMultiComputeConfig, "datadog_dashboard.timeseries_dashboard")
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTimeseriesMultiComputeConfigImport, "datadog_dashboard.timeseries_dashboard")
 }

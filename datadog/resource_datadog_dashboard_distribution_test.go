@@ -48,6 +48,32 @@ resource "datadog_dashboard" "distribution_dashboard" {
 }
 `
 
+const datadogDashboardDistributionConfigImport = `
+resource "datadog_dashboard" "distribution_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+	
+	widget {
+		distribution_definition {
+			title = "Avg of system.cpu.user over account:prod by service,account"
+			title_align = "left"
+			title_size = "16"
+			show_legend = "true"
+			legend_size = "2"
+			live_span = "1h"
+			request {
+				q = "avg:system.cpu.user{account:prod} by {service,account}"
+				style {
+					palette = "purple"
+				}
+			}
+		}
+	}
+}
+`
+
 var datadogDashboardDistributionAsserts = []string{
 	"title = {{uniq}}",
 	"widget.0.distribution_definition.0.live_span = 1h",
@@ -77,5 +103,5 @@ func TestAccDatadogDashboardDistribution(t *testing.T) {
 }
 
 func TestAccDatadogDashboardDistribution_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardDistributionConfig, "datadog_dashboard.distribution_dashboard")
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardDistributionConfigImport, "datadog_dashboard.distribution_dashboard")
 }

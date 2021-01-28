@@ -56,6 +56,36 @@ resource "datadog_dashboard" "top_list_dashboard" {
 }
 `
 
+const datadogDashboardTopListConfigImport = `
+resource "datadog_dashboard" "top_list_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+
+	widget {
+		toplist_definition {
+			title_size = "16"
+			title = "Avg of system.core.user over account:prod by service,app"
+			title_align = "right"
+			live_span = "1w"
+			request {
+				q = "top(avg:system.core.user{account:prod} by {service,app}, 10, 'sum', 'desc')"
+				conditional_formats {
+					palette = "white_on_red"
+					value = 15000
+					comparator = ">"
+				}
+			}
+      		custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				label = "Test Custom Link label"
+			}
+		}
+	}
+}
+`
+
 var datadogDashboardTopListAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.toplist_definition.0.request.0.conditional_formats.0.timeframe =",
@@ -103,5 +133,5 @@ func TestAccDatadogDashboardTopList(t *testing.T) {
 }
 
 func TestAccDatadogDashboardTopList_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTopListConfig, "datadog_dashboard.top_list_dashboard")
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTopListConfigImport, "datadog_dashboard.top_list_dashboard")
 }

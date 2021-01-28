@@ -4,6 +4,44 @@ import (
 	"testing"
 )
 
+const datadogDashboardChangeConfigImport = `
+resource "datadog_dashboard" "change_dashboard" {
+   	title         = "{{uniq}}"
+   	description   = "Created using the Datadog provider in Terraform"
+   	layout_type   = "ordered"
+   	is_read_only  = true
+	widget {
+		change_definition {
+			request {
+				q = "sum:system.cpu.user{*} by {service,account}"
+			}
+		}
+	}
+
+	widget {
+		change_definition {
+			request {
+				q = "sum:system.cpu.user{*} by {service,account}"
+				compare_to = "day_before"
+				increase_good = "false"
+				order_by = "change"
+				change_type = "absolute"
+				order_dir = "desc"
+				show_present = "true"
+			}
+			title = "Sum of system.cpu.user over * by service,account"
+			title_size = "16"
+			title_align = "left"
+			live_span = "1h"
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				label = "Test Custom Link label"
+			}
+		}
+	}
+}
+`
+
 const datadogDashboardChangeConfig = `
 resource "datadog_dashboard" "change_dashboard" {
    	title         = "{{uniq}}"
@@ -39,7 +77,6 @@ resource "datadog_dashboard" "change_dashboard" {
 			}
 		}
 	}
-
 	widget {
 		change_definition {
 			request {
@@ -117,5 +154,5 @@ func TestAccDatadogDashboardChange(t *testing.T) {
 }
 
 func TestAccDatadogDashboardChange_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardChangeConfig, "datadog_dashboard.change_dashboard")
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardChangeConfigImport, "datadog_dashboard.change_dashboard")
 }

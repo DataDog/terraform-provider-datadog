@@ -115,6 +115,73 @@ resource "datadog_dashboard" "query_table_dashboard" {
 }
 `
 
+const datadogDashboardQueryTableConfigImport = `
+resource "datadog_dashboard" "query_table_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+
+	widget {
+		query_table_definition {
+			title_size = "16"
+			title = "system.cpu.user, system.load.1"
+			title_align = "right"
+			live_span = "1d"
+			request {
+				aggregator = "max"
+				conditional_formats {
+					palette = "white_on_green"
+					value = 90
+					comparator = "<"
+				}
+				conditional_formats {
+					palette = "white_on_red"
+					value = 90
+					comparator = ">="
+				}
+				q = "avg:system.cpu.user{account:prod} by {service, team}"
+				alias = "cpu user"
+				limit = 25
+				order = "desc"
+				cell_display_mode = ["number"]
+			}
+			request {
+				q = "avg:system.load.1{*} by {service, team}"
+				aggregator = "last"
+				conditional_formats {
+					palette = "custom_bg"
+					value = 50
+					comparator = ">"
+				}
+				alias = "system load"
+				cell_display_mode = ["number"]
+			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				label = "Test Custom Link label"
+			}
+			has_search_bar = "auto"
+		}
+	}
+
+	widget {
+		query_table_definition {
+			request {
+				apm_stats_query {
+					service = "service"
+					env = "env"
+					primary_tag = "tag:*"
+					name = "name"
+					row_type = "resource"
+				}
+			}
+			has_search_bar = "never"
+		}
+	}
+}
+`
+
 var datadogDashboardQueryTableAsserts = []string{
 	"widget.0.query_table_definition.0.live_span = 1d",
 	"widget.0.query_table_definition.0.request.1.order =",
@@ -222,5 +289,5 @@ func TestAccDatadogDashboardQueryTable(t *testing.T) {
 }
 
 func TestAccDatadogDashboardQueryTable_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardQueryTableConfig, "datadog_dashboard.query_table_dashboard")
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardQueryTableConfigImport, "datadog_dashboard.query_table_dashboard")
 }
