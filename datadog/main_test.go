@@ -27,7 +27,7 @@ func TestMain(m *testing.M) {
 		profiler.WithService(service),
 		profiler.WithTags(
 			fmt.Sprintf("terraform.sdk:%s", meta.SDKVersionString()),
-			fmt.Sprintf("terraform.cli:%s", datadogProvider.TerraformVersion),
+			// fmt.Sprintf("terraform.cli:%s", datadogProvider.TerraformVersion),
 		),
 		profiler.WithProfileTypes(profiler.BlockProfile, profiler.CPUProfile, profiler.GoroutineProfile, profiler.HeapProfile),
 	)
