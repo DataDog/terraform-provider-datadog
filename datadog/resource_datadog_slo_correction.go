@@ -65,7 +65,7 @@ func buildDatadogSloCorrection(d *schema.ResourceData) (*datadogV1.SLOCorrection
 	attributes.SetSloId(d.Get("slo_id").(string))
 
 	if timezone, ok := d.GetOk("timezone"); ok {
-		attributes.SetDescription(timezone.(string))
+		attributes.SetTimezone(timezone.(string))
 	}
 
 	if description, ok := d.GetOk("description"); ok {
@@ -84,7 +84,7 @@ func buildDatadogSloCorrectionUpdate(d *schema.ResourceData) (*datadogV1.SLOCorr
 		attributes.SetDescription(description.(string))
 	}
 	if timezone, ok := d.GetOk("timezone"); ok {
-		attributes.SetDescription(timezone.(string))
+		attributes.SetTimezone(timezone.(string))
 	}
 	if start, ok := d.GetOk("start"); ok {
 		attributes.SetStart(int64(start.(int)))
@@ -142,8 +142,8 @@ func resourceDatadogSloCorrectionRead(d *schema.ResourceData, meta interface{}) 
 		if description, ok := sloCorrectionAttributes.GetDescriptionOk(); ok {
 			d.Set("description", *description)
 		}
-		if sloId, ok := sloCorrectionAttributes.GetSloIdOk(); ok {
-			d.Set("slo_id", *sloId)
+		if sloID, ok := sloCorrectionAttributes.GetSloIdOk(); ok {
+			d.Set("slo_id", *sloID)
 		}
 		if timezone, ok := sloCorrectionAttributes.GetTimezoneOk(); ok {
 			d.Set("timezone", *timezone)

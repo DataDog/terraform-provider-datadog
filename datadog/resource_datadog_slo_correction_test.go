@@ -23,17 +23,17 @@ func TestAccDatadogSloCorrection_Basic(t *testing.T) {
 			{
 				Config: testAccCheckDatadogSloCorrectionConfig(sloName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogSloCorrectionExists(accProvider, "datadog_slo_correction.datadog_slo_correction"),
+					testAccCheckDatadogSloCorrectionExists(accProvider, "datadog_slo_correction.testing_slo_correction"),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.datadog_slo_correction", "description", "test correction on slo "+sloName),
+						"datadog_slo_correction.testing_slo_correction", "description", "test correction on slo "+sloName),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.datadog_slo_correction", "timezone", "UTC"),
+						"datadog_slo_correction.testing_slo_correction", "timezone", "UTC"),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.datadog_slo_correction", "start", "1735707000"),
+						"datadog_slo_correction.testing_slo_correction", "start", "1735707000"),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.datadog_slo_correction", "end", "1735718600"),
+						"datadog_slo_correction.testing_slo_correction", "end", "1735718600"),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.datadog_slo_correction", "category", "SCHEDULED MAINTENANCE"),
+						"datadog_slo_correction.testing_slo_correction", "category", "Scheduled Maintenance"),
 				),
 			},
 		},
@@ -54,33 +54,33 @@ func TestAccDatadogSloCorrection_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogSloCorrectionConfig(sloName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogSloCorrectionExists(accProvider, "datadog_slo_correction.datadog_slo_correction"),
+					testAccCheckDatadogSloCorrectionExists(accProvider, "datadog_slo_correction.testing_slo_correction"),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.datadog_slo_correction", "description", "test correction on slo "+sloName),
+						"datadog_slo_correction.testing_slo_correction", "description", "test correction on slo "+sloName),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.datadog_slo_correction", "timezone", "UTC"),
+						"datadog_slo_correction.testing_slo_correction", "timezone", "UTC"),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.datadog_slo_correction", "start", "1735707000"),
+						"datadog_slo_correction.testing_slo_correction", "start", "1735707000"),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.datadog_slo_correction", "end", "1735718600"),
+						"datadog_slo_correction.testing_slo_correction", "end", "1735718600"),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.datadog_slo_correction", "category", "SCHEDULED MAINTENANCE"),
+						"datadog_slo_correction.testing_slo_correction", "category", "Scheduled Maintenance"),
 				),
 			},
 			{
 				Config: testAccCheckDatadogSloCorrectionConfigUpdated(sloName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogSloCorrectionExists(accProvider, "datadog_slo_correction.datadog_slo_correction"),
+					testAccCheckDatadogSloCorrectionExists(accProvider, "datadog_slo_correction.testing_slo_correction"),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.datadog_slo_correction", "description", "updated test correction - "+sloName),
+						"datadog_slo_correction.testing_slo_correction", "description", "updated test correction - "+sloName),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.datadog_slo_correction", "timezone", "Africa/Lagos"),
+						"datadog_slo_correction.testing_slo_correction", "timezone", "Africa/Lagos"),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.datadog_slo_correction", "start", "1735707600"),
+						"datadog_slo_correction.testing_slo_correction", "start", "1735707600"),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.datadog_slo_correction", "end", "1735718000"),
+						"datadog_slo_correction.testing_slo_correction", "end", "1735718000"),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.datadog_slo_correction", "category", "Deployment"),
+						"datadog_slo_correction.testing_slo_correction", "category", "Deployment"),
 				),
 			},
 		},
@@ -130,33 +130,62 @@ func testAccCheckDatadogSloCorrectionConfig(uniq string) string {
 
 func testAccCheckDatadogSloCorrectionConfigUpdated(uniq string) string {
 	return fmt.Sprintf(`
+		resource "datadog_service_level_objective" "foo" {
+			name = "%s"
+			type = "metric"
+			description = "some updated description about foo SLO"
+			query {
+			numerator = "sum:my.metric{type:good}.as_count()"
+			denominator = "sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()"
+			}
+
+			thresholds {
+			timeframe = "7d"
+			target = 99.5
+			warning = 99.8
+			}
+
+			thresholds {
+			timeframe = "30d"
+			target = 98
+			warning = 99.0
+			}
+
+			thresholds {
+			timeframe = "90d"
+			target = 99.9
+			}
+
+			tags = ["foo:bar", "baz"]
+		}
         resource "datadog_slo_correction" "testing_slo_correction" {
 			category = "Deployment"
 			timezone = "Africa/Lagos"
 			description = "updated test correction - %s"
+			slo_id = datadog_service_level_objective.foo.id
 			start = 1735707600
 			end = 1735718000
         }
-    `, uniq)
+    `, uniq, uniq)
 }
 
 func testAccCheckDatadogSloCorrectionExists(accProvider *schema.Provider, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		meta := accProvider.Meta()
-		resourceID := s.RootModule().Resources[resourceName].Primary.ID
 		providerConf := meta.(*ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV1
 		auth := providerConf.AuthV1
 		var err error
 
-		id := resourceID
-
-		_, _, err = datadogClient.ServiceLevelObjectiveCorrectionsApi.GetSLOCorrection(auth, id).Execute()
-
-		if err != nil {
-			return translateClientError(err, "error checking slo_correction existence")
+		for _, r := range s.RootModule().Resources {
+			if r.Type != "datadog_slo_correction" {
+				continue
+			}
+			id := r.Primary.ID
+			if _, _, err = datadogClient.ServiceLevelObjectiveCorrectionsApi.GetSLOCorrection(auth, id).Execute(); err != nil {
+				return translateClientError(err, "error checking slo_correction existence")
+			}
 		}
-
 		return nil
 	}
 }
