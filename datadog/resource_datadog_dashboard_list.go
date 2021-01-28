@@ -28,14 +28,14 @@ func resourceDatadogDashboardList() *schema.Resource {
 			"dash_item": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "A set of dashbaord items that belong to this list",
+				Description: "A set of dashboard items that belong to this list",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"type": {
 							Type:         schema.TypeString,
 							Required:     true,
 							ValidateFunc: validateEnumValue(datadogV2.NewDashboardTypeFromValue),
-							Description:  "The type of this dashboard",
+							Description:  "The type of this dashboard. Available options are: `custom_timeboard`, `custom_screenboard`, `integration_screenboard`, `integration_timeboard`, and `host_timeboard`",
 						},
 						"dash_id": {
 							Type:        schema.TypeString,
