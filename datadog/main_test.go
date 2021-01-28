@@ -33,8 +33,9 @@ func TestMain(m *testing.M) {
 	)
 	if err != nil {
 		log.Fatal(err)
+	} else {
+		defer profiler.Stop()
 	}
-	defer profiler.Stop()
 
 	code := m.Run()
 	os.Exit(code)
