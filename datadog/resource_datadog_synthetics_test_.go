@@ -10,6 +10,7 @@ import (
 	_nethttp "net/http"
 	"regexp"
 	"strconv"
+	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -516,6 +517,11 @@ func syntheticsTestBrowserStep(detailedParams bool) *schema.Schema {
 					Optional:    true,
 				},
 				"params": &paramsSchema,
+				"force_element_update": {
+					Description: `Force update of the "element" parameter for the step`,
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 			},
 		},
 	}
@@ -567,6 +573,24 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Description: "Element to use for the step, json encoded string.",
 					Type:        schema.TypeString,
 					Optional:    true,
+					DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
+						// if there is no old value we let TF handle this
+						if old == "" {
+							return old == new
+						}
+
+						forceElementUpdateKey := strings.Replace(key, "params.0.element", "force_element_update", 1)
+
+						// if the field force_element_update is present we force the update
+						// of the step params
+						if attr, ok := d.GetOk(forceElementUpdateKey); ok && attr.(bool) {
+							return false
+						}
+
+						// by default we ignore the diff for step parameters because some of them
+						// are updated by the backend.
+						return true
+					},
 				},
 				"email": {
 					Description: `Details of the email for an "assert email" step.`,
@@ -1538,7 +1562,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 			useLegacyStep = true
 		}
 
-		for _, step := range steps {
+		for stepIndex, step := range steps {
 			localStep := make(map[string]interface{})
 			localStep["name"] = step.GetName()
 			localStep["type"] = string(step.GetType())
@@ -1560,6 +1584,10 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 				}
 
 				localStep["params"] = []interface{}{localParams}
+
+				if forceElementUpdate, ok := d.GetOk(fmt.Sprintf("browser_step.%d.force_element_update", stepIndex)); ok {
+					localStep["force_element_update"] = forceElementUpdate
+				}
 			}
 
 			localSteps = append(localSteps, localStep)
