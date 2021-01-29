@@ -13,6 +13,12 @@ import (
 
 // TestMain starts the tracer.
 func TestMain(m *testing.M) {
+	if _, ok := os.LookupEnv("DD_AGENT_HOST"); !ok {
+		log.Println("DD_AGENT_HOST is not configured. Tests are executed without tracer and profiler.")
+		code := m.Run()
+		os.Exit(code)
+	}
+
 	service, ok := os.LookupEnv("DD_SERVICE")
 	if !ok {
 		service = "terraform-datadog-provider"
