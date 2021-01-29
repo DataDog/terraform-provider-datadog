@@ -81,6 +81,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
 			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
 			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
+			"datadog_slo_correction":                       resourceDatadogSloCorrection(),
 			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
 			"datadog_synthetics_global_variable":           resourceDatadogSyntheticsGlobalVariable(),
 			"datadog_synthetics_private_location":          resourceDatadogSyntheticsPrivateLocation(),
@@ -182,6 +183,11 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	configV1.SetUnstableOperationEnabled("ListLogIndexes", true)
 	configV1.SetUnstableOperationEnabled("UpdateLogsIndex", true)
 	configV1.SetUnstableOperationEnabled("UpdateLogsIndexOrder", true)
+
+	configV1.SetUnstableOperationEnabled("CreateSLOCorrection", true)
+	configV1.SetUnstableOperationEnabled("GetSLOCorrection", true)
+	configV1.SetUnstableOperationEnabled("UpdateSLOCorrection", true)
+	configV1.SetUnstableOperationEnabled("DeleteSLOCorrection", true)
 	configV1.UserAgent = getUserAgent(configV1.UserAgent)
 	configV1.Debug = logging.IsDebugOrHigher()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {

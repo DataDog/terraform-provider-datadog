@@ -92,6 +92,7 @@ var testFiles2EndpointTags = map[string]string{
 	"resource_datadog_security_monitoring_default_rule_test":     "security-monitoring",
 	"resource_datadog_security_monitoring_rule_test":             "security-monitoring",
 	"resource_datadog_service_level_objective_test":              "service-level-objectives",
+	"resource_datadog_slo_correction_test":                       "slo_correction",
 	"resource_datadog_synthetics_test_test":                      "synthetics",
 	"resource_datadog_synthetics_global_variable_test":           "synthetics",
 	"resource_datadog_synthetics_private_location_test":          "synthetics",
@@ -419,6 +420,10 @@ func buildContext(ctx context.Context, apiKey string, appKey string, apiURL stri
 func buildDatadogClientV1(httpClient *http.Client) *datadogV1.APIClient {
 	//Datadog V1 API config.HTTPClient
 	configV1 := datadogV1.NewConfiguration()
+	configV1.SetUnstableOperationEnabled("CreateSLOCorrection", true)
+	configV1.SetUnstableOperationEnabled("GetSLOCorrection", true)
+	configV1.SetUnstableOperationEnabled("UpdateSLOCorrection", true)
+	configV1.SetUnstableOperationEnabled("DeleteSLOCorrection", true)
 	configV1.Debug = isDebug()
 	configV1.HTTPClient = httpClient
 	configV1.UserAgent = getUserAgent(configV1.UserAgent)
