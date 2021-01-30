@@ -1,0 +1,139 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"name":"tf-1612516319"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - CreateChildOrg
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.15+dev
+        (go go1.15.8; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/org
+    method: POST
+  response:
+    body: '{"org":{"public_id":"ahwy94zbzrasbtqp","name":"tf-1612516319","billing":{"type":"parent_billing"},"created":"2021-02-05
+      09:14:03","description":null,"settings":{"saml_can_be_enabled":false,"saml_idp_initiated_login":{"enabled":false},"private_widget_share":false,"saml":{"enabled":false},"saml_idp_endpoint":null,"saml_autocreate_users_domains":{"domains":[],"enabled":false},"saml_autocreate_access_role":"st","saml_login_url":null,"saml_idp_metadata_uploaded":false,"saml_strict_mode":{"enabled":false}},"subscription":{"started":1612516443,"finished":null,"is_custom":false,"is_expired":false,"billing_plan_id":0,"is_trial":true,"expires":1613812443,"type":"trial","id":697321}},"api_key":{"name":"API
+      Key created by andrew.mcclenaghan@gmail.com on 2021-02-05","created":"2021-02-05
+      09:14:04","disabled_by":"","is_active":true,"created_by":"andrew.mcclenaghan@gmail.com","disabled":"","key":"fcde57e4fc56823385f8da35cde5f05d"},"user":{"disabled":false,"handle":"andrew.mcclenaghan@gmail.com","name":"Andrew
+      McClenaghan","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"andrew.mcclenaghan@gmail.com","icon":"https://secure.gravatar.com/avatar/0a17d5b1093796a7b4864d630431f2d8?s=48&d=retro"},"application_key":{"owner":"andrew.mcclenaghan@gmail.com","org_id":533121,"hash":"4f52d22bc39eaa87ef44dc5dc1c130fa61d1b8dc","name":"andrew.mcclenaghan@gmail.com
+      (api)","revoked":false}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 05 Feb 2021 09:14:04 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=148; Max-Age=604800; Path=/; expires=Fri, 12-Feb-2021 09:14:03 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - dhiz/Dyc0ifGJ3p8n0ZLCOPtweri3UijMF4qJKOBaNfGrrOcaErZB4ziBlxRr/KS
+      X-Dd-Version:
+      - "35.3849916"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetOrg
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.15+dev
+        (go go1.15.8; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/org/ahwy94zbzrasbtqp
+    method: GET
+  response:
+    body: '{"errors": ["Not allowed to access this organization"]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "55"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 05 Feb 2021 09:14:04 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.3849916"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 400 Bad Request
+    code: 400
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetOrg
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.15+dev (go go1.15.8; os linux; arch amd64)
+    url: https://api.datadoghq.com/api/v1/org/ahwy94zbzrasbtqp
+    method: GET
+  response:
+    body: '{"errors": ["Not allowed to access this organization"]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "55"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 05 Feb 2021 09:14:05 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.3849916"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 400 Bad Request
+    code: 400
+    duration: ""

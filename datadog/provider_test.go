@@ -98,6 +98,7 @@ var testFiles2EndpointTags = map[string]string{
 	"resource_datadog_synthetics_private_location_test":          "synthetics",
 	"resource_datadog_timeboard_test":                            "dashboards",
 	"resource_datadog_user_test":                                 "users",
+	"resource_datadog_child_organization_test":                   "child_organization",
 }
 
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;

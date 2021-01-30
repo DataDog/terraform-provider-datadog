@@ -106,6 +106,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_synthetics_private_location":          resourceDatadogSyntheticsPrivateLocation(),
 			"datadog_timeboard":                            resourceDatadogTimeboard(),
 			"datadog_user":                                 resourceDatadogUser(),
+			"datadog_child_organization":                   resourceDatadogChildOrganisation(),
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
