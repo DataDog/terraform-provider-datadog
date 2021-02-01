@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -11,8 +12,8 @@ import (
 	"time"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 // Minimal interface between ResourceData and ResourceDiff so that we can use them interchangeably in buildMonitorStruct
@@ -87,48 +88,11 @@ func resourceDatadogMonitor() *schema.Resource {
 			},
 
 			// Options
-			"thresholds": {
-				Description:   "Alert thresholds of the monitor.",
-				Deprecated:    "Define `monitor_thresholds` list with one element instead.",
-				ConflictsWith: []string{"monitor_thresholds"},
-				Type:          schema.TypeMap,
-				Optional:      true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"ok": {
-							Type:     schema.TypeFloat,
-							Optional: true,
-						},
-						"warning": {
-							Type:     schema.TypeFloat,
-							Optional: true,
-						},
-						"critical": {
-							Type:     schema.TypeFloat,
-							Optional: true,
-						},
-						"unknown": {
-							Type:     schema.TypeFloat,
-							Optional: true,
-						},
-						"warning_recovery": {
-							Type:     schema.TypeFloat,
-							Optional: true,
-						},
-						"critical_recovery": {
-							Type:     schema.TypeFloat,
-							Optional: true,
-						},
-					},
-				},
-				DiffSuppressFunc: suppressDataDogFloatIntDiff,
-			},
 			"monitor_thresholds": {
-				Description:   "Alert thresholds of the monitor.",
-				Type:          schema.TypeList,
-				ConflictsWith: []string{"thresholds"},
-				MaxItems:      1,
-				Optional:      true,
+				Description: "Alert thresholds of the monitor.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"ok": {
@@ -171,33 +135,11 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 				DiffSuppressFunc: suppressDataDogFloatIntDiff,
 			},
-			"threshold_windows": {
-				Description:   "A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. Can only be used for, and are required for, anomaly monitors.",
-				Deprecated:    "Define `monitor_threshold_windows` list with one element instead.",
-				ConflictsWith: []string{"monitor_threshold_windows"},
-				Type:          schema.TypeMap,
-				Optional:      true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"recovery_window": {
-							Description: "Describes how long an anomalous metric must be normal before the alert recovers.",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
-						"trigger_window": {
-							Description: "Describes how long a metric must be anomalous before an alert triggers.",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
-					},
-				},
-			},
 			"monitor_threshold_windows": {
-				Description:   "A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors.",
-				Type:          schema.TypeList,
-				ConflictsWith: []string{"threshold_windows"},
-				MaxItems:      1,
-				Optional:      true,
+				Description: "A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"recovery_window": {
@@ -465,7 +407,7 @@ func buildMonitorStruct(d BuiltResource) (*datadogV1.Monitor, *datadogV1.Monitor
 }
 
 // Use CustomizeDiff to do monitor validation
-func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interface{}) error {
+func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 	if _, ok := diff.GetOk("query"); !ok {
 		// If "query" depends on other resources, we can't validate as the variables may not be interpolated yet.
 		return nil

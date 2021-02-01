@@ -1,7 +1,7 @@
 package datadog
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 )

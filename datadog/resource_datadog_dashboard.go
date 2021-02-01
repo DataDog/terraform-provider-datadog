@@ -1,15 +1,16 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strconv"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceDatadogDashboard() *schema.Resource {
@@ -19,7 +20,7 @@ func resourceDatadogDashboard() *schema.Resource {
 		Update:      resourceDatadogDashboardUpdate,
 		Read:        resourceDatadogDashboardRead,
 		Delete:      resourceDatadogDashboardDelete,
-		CustomizeDiff: func(diff *schema.ResourceDiff, meta interface{}) error {
+		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 			old, new := diff.GetChange("dashboard_lists")
 			if !old.(*schema.Set).Equal(new.(*schema.Set)) {
 				// Only calculate removed when the list change, to no create useless diffs
@@ -124,7 +125,8 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 	}
 	d.SetId(*dashboard.Id)
 
-	return resource.Retry(d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+	return resource.RetryContext(context.Background(), d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+		log.Println("lalalalalalallalalalallaa")
 		getDashboard, httpResponse, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, *dashboard.Id).Execute()
 		if err != nil {
 			if httpResponse.StatusCode == 404 {
@@ -136,7 +138,10 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 		// We only log the error, as failing to update the list shouldn't fail dashboard creation
 		updateDashboardLists(d, providerConf, *dashboard.Id)
 
-		return resource.NonRetryableError(loadDatadogDashboard(d, getDashboard))
+		if err = loadDatadogDashboard(d, getDashboard); err != nil {
+			return resource.NonRetryableError(err)
+		}
+		return nil
 	})
 }
 
@@ -532,15 +537,6 @@ func getWidgetSchema() map[string]*schema.Schema {
 
 func getNonGroupWidgetSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"layout": {
-			Type:        schema.TypeMap,
-			Deprecated:  "Define `widget_layout` list with one element instead.",
-			Optional:    true,
-			Description: "The layout of the widget on a 'free' dashboard.",
-			Elem: &schema.Resource{
-				Schema: getWidgetLayoutSchema(),
-			},
-		},
 		"widget_layout": {
 			Type:        schema.TypeList,
 			MaxItems:    1,
@@ -1214,22 +1210,7 @@ func getAlertGraphDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
-	}
-}
-
-func getDeprecatedTimeSchema() *schema.Schema {
-	return &schema.Schema{
-		Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
-		Deprecated:  "Define `live_span` directly in the widget definition instead.",
-		Type:        schema.TypeMap,
-		Optional:    true,
-		Elem: &schema.Resource{
-			Schema: map[string]*schema.Schema{
-				"live_span": getWidgetNestedLiveSpanSchema(),
-			},
-		},
 	}
 }
 
@@ -1412,7 +1393,6 @@ func getChangeDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -1665,7 +1645,6 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 	}
 }
@@ -1854,7 +1833,6 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"tags_execution": {
 			Description: "The execution method for multi-value filters. Can be either `and` or `or`.",
@@ -1952,7 +1930,6 @@ func getEventTimelineDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"tags_execution": {
 			Description: "The execution method for multi-value filters. Can be either `and` or `or`.",
@@ -2067,7 +2044,6 @@ func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 	}
 }
@@ -2279,7 +2255,6 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			Optional:     true,
 			ValidateFunc: validateTimeseriesWidgetLegendSize,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -2913,7 +2888,6 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 	}
 }
@@ -3376,7 +3350,6 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -3599,7 +3572,6 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -3918,7 +3890,6 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -4411,7 +4382,6 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			Optional:     true,
 			ValidateFunc: validateTimeseriesWidgetLegendSize,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -4742,7 +4712,6 @@ func getToplistDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -4994,7 +4963,6 @@ func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 	}
 }
@@ -5418,13 +5386,6 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 					Type:        schema.TypeString,
 					Required:    true,
 				},
-				"compute": {
-					Description: "One of `compute` or `multi_compute` is required. The map has the keys as below.",
-					Deprecated:  "Define `compute_query` list with one element instead.",
-					Type:        schema.TypeMap,
-					Optional:    true,
-					Elem:        getComputeSchema(),
-				},
 				"compute_query": {
 					Description: "One of `compute_query` or `multi_compute` is required. The map has the keys as below.",
 					Type:        schema.TypeList,
@@ -5437,21 +5398,6 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 					Type:        schema.TypeList,
 					Optional:    true,
 					Elem:        getComputeSchema(),
-				},
-				"search": {
-					Description: "Map defining the search query to use.",
-					Deprecated:  "Define `search_query` directly instead.",
-					Type:        schema.TypeMap,
-					Optional:    true,
-					Elem: &schema.Resource{
-						Schema: map[string]*schema.Schema{
-							"query": {
-								Description: "Query to use.",
-								Type:        schema.TypeString,
-								Required:    true,
-							},
-						},
-					},
 				},
 				"search_query": {
 					Description: "The search query to use.",
@@ -5473,13 +5419,6 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 								Description: "Maximum number of items in the group.",
 								Type:        schema.TypeInt,
 								Optional:    true,
-							},
-							"sort": {
-								Description: "One map is allowed with the keys as below.",
-								Deprecated:  "Define `sort_query` list with one element instead.",
-								Type:        schema.TypeMap,
-								Optional:    true,
-								Elem:        getQueryGroupBySortSchema(),
 							},
 							"sort_query": {
 								Description: "List of exactly one element describing the sort query to use.",

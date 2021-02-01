@@ -3,7 +3,7 @@ package datadog
 import (
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 func TestAccDatadogIpRangesDatasource_existing(t *testing.T) {

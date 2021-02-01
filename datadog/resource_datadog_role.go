@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/customdiff"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 // validPermissions is a map of all unrestricted permission IDs to their name
@@ -64,7 +64,7 @@ func getValidPermissions(client *datadog.APIClient, auth context.Context) (map[s
 	return validPermissions, nil
 }
 
-func validatePermissionsUnrestricted(value interface{}, meta interface{}) error {
+func validatePermissionsUnrestricted(ctx context.Context, value interface{}, meta interface{}) error {
 	client := meta.(*ProviderConfiguration).DatadogClientV2
 	auth := meta.(*ProviderConfiguration).AuthV2
 

@@ -22,10 +22,10 @@ import (
 	"github.com/dnaeon/go-vcr/cassette"
 	"github.com/dnaeon/go-vcr/recorder"
 	"github.com/hashicorp/go-cleanhttp"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	"github.com/jonboulle/clockwork"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 	ddhttp "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
@@ -362,7 +362,7 @@ func initAccProvider(ctx context.Context, t *testing.T, httpClient *http.Client)
 	ctx, finish := testSpan(context.Background(), t)
 	defer finish()
 
-	p := Provider().(*schema.Provider)
+	p := Provider()
 	p.ConfigureFunc = testProviderConfigure(ctx, httpClient, testClock(t))
 
 	return p
@@ -469,16 +469,16 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 	}
 }
 
-func testAccProvidersWithHTTPClient(t *testing.T, httpClient *http.Client) (map[string]terraform.ResourceProvider, func()) {
+func testAccProvidersWithHTTPClient(t *testing.T, httpClient *http.Client) (map[string]*schema.Provider, func()) {
 	ctx, finish := testSpan(context.Background(), t)
 
 	provider := initAccProvider(ctx, t, httpClient)
-	return map[string]terraform.ResourceProvider{
+	return map[string]*schema.Provider{
 		"datadog": provider,
 	}, finish
 }
 
-func testAccProviders(t *testing.T, rec *recorder.Recorder) (map[string]terraform.ResourceProvider, clockwork.FakeClock, func(t *testing.T)) {
+func testAccProviders(t *testing.T, rec *recorder.Recorder) (map[string]*schema.Provider, clockwork.FakeClock, func(t *testing.T)) {
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", rec)
 	p, finish := testAccProvidersWithHTTPClient(t, c)
@@ -488,12 +488,12 @@ func testAccProviders(t *testing.T, rec *recorder.Recorder) (map[string]terrafor
 	}
 }
 
-func testAccProvider(t *testing.T, accProviders map[string]terraform.ResourceProvider) *schema.Provider {
+func testAccProvider(t *testing.T, accProviders map[string]*schema.Provider) *schema.Provider {
 	accProvider, ok := accProviders["datadog"]
 	if !ok {
 		t.Fatal("could not find datadog provider")
 	}
-	return accProvider.(*schema.Provider)
+	return accProvider
 }
 
 func TestProvider(t *testing.T) {
@@ -513,7 +513,7 @@ func TestProvider(t *testing.T) {
 }
 
 func TestProvider_impl(t *testing.T) {
-	var _ terraform.ResourceProvider = Provider()
+	var _ *schema.Provider = Provider()
 }
 
 func testAccPreCheck(t *testing.T) {

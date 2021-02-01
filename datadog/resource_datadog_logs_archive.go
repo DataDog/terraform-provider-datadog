@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogLogsArchive() *schema.Resource {
@@ -21,58 +21,25 @@ func resourceDatadogLogsArchive() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"name":  {Description: "Your archive name.", Type: schema.TypeString, Required: true},
 			"query": {Description: "The archive query/filter. Logs matching this query are included in the archive.", Type: schema.TypeString, Required: true},
-			"s3": {
-				Description:   "Definition of an s3 archive.",
-				Type:          schema.TypeMap,
-				Deprecated:    "Define `s3_archive` list with one element instead.",
-				ConflictsWith: []string{"s3_archive"},
-				Optional:      true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"bucket":     {Description: "Name of your s3 bucket.", Type: schema.TypeString, Required: true},
-						"path":       {Description: "Path where the archive will be stored.", Type: schema.TypeString, Required: true},
-						"account_id": {Description: "Your AWS account id.", Type: schema.TypeString, Required: true},
-						"role_name":  {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
-					},
-				},
-			},
 			"s3_archive": {
-				Description:   "Definition of an s3 archive.",
-				Type:          schema.TypeList,
-				MaxItems:      1,
-				ConflictsWith: []string{"s3"},
-				Optional:      true,
+				Description: "Definition of an s3 archive.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"bucket":     {Description: "Name of your s3 bucket.", Type: schema.TypeString, Required: true},
 						"path":       {Description: "Path where the archive will be stored.", Type: schema.TypeString, Required: true},
 						"account_id": {Description: "Your AWS account id.", Type: schema.TypeString, Required: true},
 						"role_name":  {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
-					},
-				},
-			},
-			"azure": {
-				Description:   "Definition of an azure archive.",
-				Deprecated:    "Define `azure_archive` list with one element instead.",
-				ConflictsWith: []string{"azure_archive"},
-				Type:          schema.TypeMap,
-				Optional:      true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"container":       {Description: "The container where the archive will be stored.", Type: schema.TypeString, Required: true},
-						"client_id":       {Description: "Your client id.", Type: schema.TypeString, Required: true},
-						"tenant_id":       {Description: "Your tenant id.", Type: schema.TypeString, Required: true},
-						"storage_account": {Description: "The associated storage account.", Type: schema.TypeString, Required: true},
-						"path":            {Description: "The path where the archive will be stored.", Type: schema.TypeString, Optional: true},
 					},
 				},
 			},
 			"azure_archive": {
-				Description:   "Definition of an azure archive.",
-				ConflictsWith: []string{"azure"},
-				Type:          schema.TypeList,
-				MaxItems:      1,
-				Optional:      true,
+				Description: "Definition of an azure archive.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"container":       {Description: "The container where the archive will be stored.", Type: schema.TypeString, Required: true},
@@ -83,27 +50,11 @@ func resourceDatadogLogsArchive() *schema.Resource {
 					},
 				},
 			},
-			"gcs": {
-				Description:   "Definition of a GCS archive.",
-				Deprecated:    "Define `gcs_archive` list with one element instead.",
-				ConflictsWith: []string{"gcs_archive"},
-				Type:          schema.TypeMap,
-				Optional:      true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"bucket":       {Description: "Name of your GCS bucket.", Type: schema.TypeString, Required: true},
-						"path":         {Description: "Path where the archive will be stored.", Type: schema.TypeString, Required: true},
-						"client_email": {Description: "Your client email.", Type: schema.TypeString, Required: true},
-						"project_id":   {Description: "Your project id.", Type: schema.TypeString, Required: true},
-					},
-				},
-			},
 			"gcs_archive": {
-				Description:   "Definition of a GCS archive.",
-				ConflictsWith: []string{"gcs"},
-				Type:          schema.TypeList,
-				MaxItems:      1,
-				Optional:      true,
+				Description: "Definition of a GCS archive.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"bucket":       {Description: "Name of your GCS bucket.", Type: schema.TypeString, Required: true},

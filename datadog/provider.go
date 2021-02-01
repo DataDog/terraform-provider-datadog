@@ -13,10 +13,9 @@ import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/go-cleanhttp"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/meta"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/meta"
 	"github.com/terraform-providers/terraform-provider-datadog/version"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 )
@@ -26,7 +25,7 @@ var (
 	baseIpRangesSubdomain = "ip-ranges"
 )
 
-func Provider() terraform.ResourceProvider {
+func Provider() *schema.Provider {
 	datadogProvider = &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"api_key": {
@@ -81,7 +80,6 @@ func Provider() terraform.ResourceProvider {
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
 			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
 			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
-			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
 			"datadog_synthetics_global_variable":           resourceDatadogSyntheticsGlobalVariable(),
 			"datadog_synthetics_private_location":          resourceDatadogSyntheticsPrivateLocation(),
 			"datadog_timeboard":                            resourceDatadogTimeboard(),

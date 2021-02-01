@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {

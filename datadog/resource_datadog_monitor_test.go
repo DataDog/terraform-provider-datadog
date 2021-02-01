@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	"github.com/zorkian/go-datadog-api"
 )
 
@@ -760,7 +760,7 @@ func TestAccDatadogMonitor_ZeroDelay(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "type", "query alert"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
+						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 3"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "new_host_delay", "0"),
 				),
@@ -1199,7 +1199,7 @@ resource "datadog_monitor" "foo" {
 
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
 
-  thresholds = {
+  monitor_thresholds {
 	warning = "1.0"
 	critical = "2.0"
 	warning_recovery = "0.5"

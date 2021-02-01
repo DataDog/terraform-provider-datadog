@@ -2,7 +2,7 @@ package datadog
 
 import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogIntegrationAwsLogCollection() *schema.Resource {
