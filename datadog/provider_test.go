@@ -76,6 +76,7 @@ var testFiles2EndpointTags = map[string]string{
 	"resource_datadog_downtime_test":                             "downtimes",
 	"resource_datadog_integration_aws_lambda_arn_test":           "integration-aws",
 	"resource_datadog_integration_aws_log_collection_test":       "integration-aws",
+	"resource_datadog_integration_aws_tag_filter_test":           "integration-aws",
 	"resource_datadog_integration_aws_test":                      "integration-aws",
 	"resource_datadog_integration_azure_test":                    "integration-azure",
 	"resource_datadog_integration_gcp_test":                      "integration-gcp",
