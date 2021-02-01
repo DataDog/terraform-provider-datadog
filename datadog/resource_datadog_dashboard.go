@@ -4655,7 +4655,7 @@ func buildDatadogMetricQuery(data map[string]interface{}) datadogV1.FormulaAndFu
 		metricQuery.Name = &v
 	}
 	if v, ok := data["aggregator"].(string); ok && len(v) != 0 {
-		aggregator := datadogV1.FormulaAndFunctionAggregation(data["aggregator"].(string))
+		aggregator := datadogV1.FormulaAndFunctionMetricAggregation(data["aggregator"].(string))
 		metricQuery.SetAggregator(aggregator)
 	}
 
@@ -4683,7 +4683,7 @@ func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) dat
 
 	// Aggregator
 	if v, ok := data["aggregation"].(string); ok && len(v) != 0 {
-		aggregator := datadogV1.FormulaAndFunctionAggregation(v)
+		aggregator := datadogV1.FormulaAndFunctionMetricAggregation(v)
 		processQuery.SetAggregator(aggregator)
 	}
 
@@ -4694,7 +4694,7 @@ func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) dat
 
 	// Sort
 	if v, ok := data["sort"].(string); ok && len(v) != 0 {
-		sort := datadogV1.FormulaAndFunctionOrder(v)
+		sort := datadogV1.QuerySortOrder(v)
 		processQuery.SetSort(sort)
 	}
 
