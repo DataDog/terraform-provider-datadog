@@ -3,7 +3,7 @@
 resource "datadog_synthetics_test" "test_api" {
   type = "api"
   subtype = "http"
-  request = {
+  request_definition {
     method = "GET"
     url = "https://www.example.org"
   }
@@ -42,7 +42,7 @@ resource "datadog_synthetics_test" "test_api" {
 resource "datadog_synthetics_test" "test_ssl" {
   type = "api"
   subtype = "ssl"
-  request = {
+  request_definition {
     host = "example.org"
     port = 443
   }
@@ -69,7 +69,7 @@ resource "datadog_synthetics_test" "test_ssl" {
 resource "datadog_synthetics_test" "test_tcp" {
   type = "api"
   subtype = "tcp"
-  request = {
+  request_definition {
     host = "example.org"
     port = 443
   }
@@ -95,7 +95,7 @@ resource "datadog_synthetics_test" "test_tcp" {
 resource "datadog_synthetics_test" "test_dns" {
   type = "api"
   subtype = "dns"
-  request = {
+  request_definition {
     host = "example.org"
   }
   assertion {
@@ -122,7 +122,7 @@ resource "datadog_synthetics_test" "test_dns" {
 resource "datadog_synthetics_test" "test_browser" {
   type = "browser"
 
-  request = {
+  request_definition {
     method = "GET"
     url    = "https://app.datadoghq.com"
   }

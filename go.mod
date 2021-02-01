@@ -15,7 +15,10 @@ require (
 	github.com/kr/pretty v0.2.0
 	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/zorkian/go-datadog-api v2.30.0+incompatible
-	gopkg.in/DataDog/dd-trace-go.v1 v1.25.0
+	golang.org/x/crypto v0.0.0-20200204104054-c9f3fb736b72 // indirect
+	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
+	golang.org/x/text v0.3.3 // indirect
+	gopkg.in/DataDog/dd-trace-go.v1 v1.28.0
 )
 
 go 1.15
