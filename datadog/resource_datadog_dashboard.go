@@ -4639,8 +4639,16 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 
 func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
 	dataSource := datadogV1.FormulaAndFunctionEventsDataSource(data["data_source"].(string))
-	aggregation := datadogV1.FormulaAndFunctionEventAggregation(data["aggregation"].(string))
+	computeList := data["compute"].([]interface{})
+	computeMap := computeList[0].(map[string]interface{})
+	aggregation := datadogV1.FormulaAndFunctionEventAggregation(computeMap["aggregation"].(string))
 	compute := datadogV1.NewTimeSeriesFormulaAndFunctionEventQueryDefinitionCompute(aggregation)
+	if interval, ok := computeMap["interval"]; ok && interval.(int) != 0 {
+		compute.SetInterval(int64(interval.(int)))
+	}
+	if metric, ok := computeMap["metric"]; ok && len(metric.(string)) > 0 {
+		compute.SetMetric(metric.(string))
+	}
 	eventQuery := datadogV1.NewTimeSeriesFormulaAndFunctionEventQueryDefinition(*compute, dataSource)
 	if v, ok := data["name"].(string); ok && len(v) != 0 {
 		eventQuery.Name = &v
