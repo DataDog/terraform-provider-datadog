@@ -4653,6 +4653,19 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 	if v, ok := data["name"].(string); ok && len(v) != 0 {
 		eventQuery.Name = &v
 	}
+	eventQueryIndexes := data["indexes"].([]interface{})
+	indexes := make([]string, len(eventQueryIndexes))
+	for i, index := range eventQueryIndexes {
+		indexes[i] = index.(string)
+	}
+	eventQuery.SetIndexes(indexes)
+
+	if terraformSearch, ok := data["search"].(map[string]interface{}); ok && len(terraformSearch) > 0 {
+		eventQuery.Search = &datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionSearch{
+			Query: terraformSearch["query"].(string),
+		}
+	}
+
 	return datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionAsFormulaAndFunctionQueryDefinition(eventQuery)
 }
 
