@@ -4823,6 +4823,8 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
 			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
+			terraformRequest["query"] = buildTerraformQuery(*v)
 		}
 		if v, ok := datadogRequest.GetStyleOk(); ok {
 			style := buildTerraformWidgetRequestStyle(*v)
@@ -5719,6 +5721,7 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1
 	}
 	return datadogQuery
 }
+
 func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition) map[string]interface{} {
 	terraformQuery := map[string]interface{}{}
 	// Index
@@ -5788,6 +5791,29 @@ func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition) map[
 		terraformQuery["group_by"] = &terraformGroupBys
 	}
 	return terraformQuery
+}
+
+func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefinition) []map[string]interface{} {
+	queries := make([]map[string]interface{}, len(datadogQueries))
+	for i, query := range datadogQueries {
+		terraformQuery := map[string]interface{}{}
+		if query.TimeSeriesFormulaAndFunctionEventQueryDefinition != nil {
+			if compute, ok := query.TimeSeriesFormulaAndFunctionEventQueryDefinition.GetComputeOk(); ok {
+				terraformCompute := map[string]interface{}{}
+				if aggregation, ok := compute.GetAggregationOk(); ok {
+					terraformCompute["aggregation"] = aggregation
+				}
+				if interval, ok := compute.GetIntervalOk(); ok {
+					terraformCompute["interval"] = interval
+				}
+				if metric, ok := compute.GetMetricOk(); ok {
+					terraformCompute["metric"] = metric
+				}
+			}
+		}
+		queries[i] = terraformQuery
+	}
+	return queries
 }
 
 // Process Query
