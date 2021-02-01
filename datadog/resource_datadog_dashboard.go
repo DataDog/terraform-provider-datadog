@@ -4662,6 +4662,45 @@ func buildDatadogMetricQuery(data map[string]interface{}) datadogV1.FormulaAndFu
 	return datadogV1.TimeSeriesFormulaAndFunctionMetricQueryDefinitionAsFormulaAndFunctionQueryDefinition(metricQuery)
 }
 
+func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.FormulaAndFunctionProcessQueryDataSource(data["data_source"].(string))
+	processQuery := datadogV1.NewTimeSeriesFormulaAndFunctionProcessQueryDefinition(dataSource, data["metric"].(string))
+
+	// Text Filter
+	if v, ok := data["text_filter"].(string); ok && len(v) != 0 {
+		processQuery.SetTextFilter(v)
+	}
+
+	// Name
+	if v, ok := data["name"].(string); ok && len(v) != 0 {
+		processQuery.Name = &v
+	}
+
+	// Limit
+	if v, ok := data["limit"].(int); ok && v != 0 {
+		processQuery.SetLimit(int64(v))
+	}
+
+	// Aggregator
+	if v, ok := data["aggregation"].(string); ok && len(v) != 0 {
+		aggregator := datadogV1.FormulaAndFunctionAggregation(v)
+		processQuery.SetAggregator(aggregator)
+	}
+
+	// is_normalized_cpu
+	if v, ok := data["is_normalized_cpu"].(bool); ok {
+		processQuery.SetIsNormalizedCpu(v)
+	}
+
+	// Sort
+	if v, ok := data["sort"].(string); ok && len(v) != 0 {
+		sort := datadogV1.FormulaAndFunctionOrder(v)
+		processQuery.SetSort(sort)
+	}
+
+	return datadogV1.TimeSeriesFormulaAndFunctionProcessQueryDefinitionAsFormulaAndFunctionQueryDefinition(processQuery)
+}
+
 func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadogV1.TimeseriesWidgetRequest {
 	datadogRequests := make([]datadogV1.TimeseriesWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
@@ -4696,6 +4735,8 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = buildDatadogEventQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogTimeseriesRequest.Queries = &queries
