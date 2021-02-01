@@ -4397,6 +4397,10 @@ func getFormulaQuerySchema() *schema.Schema {
 					MaxItems: 1,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
 							"query": {
 								Type:     schema.TypeString,
 								Required: true,
@@ -4450,6 +4454,10 @@ func getFormulaQuerySchema() *schema.Schema {
 											Type:     schema.TypeString,
 											Required: true,
 										},
+										"interval": {
+											Type:     schema.TypeInt,
+											Optional: true,
+										},
 										"metric": {
 											Type:     schema.TypeString,
 											Optional: true,
@@ -4498,6 +4506,52 @@ func getFormulaQuerySchema() *schema.Schema {
 										},
 									},
 								},
+							},
+							"name": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+						},
+					},
+				},
+				"process_query": {
+					Type:     schema.TypeList,
+					Optional: true,
+					MaxItems: 1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"metric": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"text_filter": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"tag_filters": {
+								Type:     schema.TypeList,
+								Optional: true,
+								Elem:     &schema.Schema{Type: schema.TypeString},
+							},
+							"limit": {
+								Type:     schema.TypeInt,
+								Optional: true,
+							},
+							"sort": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"aggregator": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"is_normalized_cpu": {
+								Type:     schema.TypeBool,
+								Optional: true,
 							},
 							"name": {
 								Type:     schema.TypeString,
@@ -4584,11 +4638,14 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
-	dataSource := datadogV1.FormulaAndFunctionsEventsDataSource(data["data_source"].(string))
-	aggregation := datadogV1.FormulaAndFunctionsEventAggregation(data["aggregation"].(string))
-	compute := datadogV1.NewTimeSeriesFormulasAndFunctionEventQueryDefinitionCompute(aggregation)
-	eventQuery := datadogV1.NewTimeSeriesFormulasAndFunctionEventQueryDefinition(*compute, dataSource)
-	return datadogV1.TimeSeriesFormulasAndFunctionEventQueryDefinitionAsFormulaAndFunctionQueryDefinition(eventQuery)
+	dataSource := datadogV1.FormulaAndFunctionEventsDataSource(data["data_source"].(string))
+	aggregation := datadogV1.FormulaAndFunctionEventAggregation(data["aggregation"].(string))
+	compute := datadogV1.NewTimeSeriesFormulaAndFunctionEventQueryDefinitionCompute(aggregation)
+	eventQuery := datadogV1.NewTimeSeriesFormulaAndFunctionEventQueryDefinition(*compute, dataSource)
+	if v, ok := data["name"].(string); ok && len(v) != 0 {
+		eventQuery.Name = &v
+	}
+	return datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionAsFormulaAndFunctionQueryDefinition(eventQuery)
 }
 
 func buildDatadogMetricQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
@@ -4596,6 +4653,10 @@ func buildDatadogMetricQuery(data map[string]interface{}) datadogV1.FormulaAndFu
 	metricQuery := datadogV1.NewTimeSeriesFormulaAndFunctionMetricQueryDefinition(dataSource, data["query"].(string))
 	if v, ok := data["name"].(string); ok && len(v) != 0 {
 		metricQuery.Name = &v
+	}
+	if v, ok := data["aggregator"].(string); ok && len(v) != 0 {
+		aggregator := datadogV1.FormulaAndFunctionAggregation(data["aggregator"].(string))
+		metricQuery.SetAggregator(aggregator)
 	}
 
 	return datadogV1.TimeSeriesFormulaAndFunctionMetricQueryDefinitionAsFormulaAndFunctionQueryDefinition(metricQuery)
@@ -4632,9 +4693,9 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 			for i, q := range v {
 				query := q.(map[string]interface{})
 				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] =  buildDatadogEventQuery(w[0].(map[string]interface{}))
+					queries[i] = buildDatadogEventQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] =  buildDatadogMetricQuery(w[0].(map[string]interface{}))
+					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogTimeseriesRequest.Queries = &queries
