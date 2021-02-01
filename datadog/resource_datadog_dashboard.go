@@ -1276,7 +1276,7 @@ func buildTerraformAlertGraphDefinition(datadogDefinition datadogV1.AlertGraphWi
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
 		} else {
 			terraformDefinition["live_span"] = v.GetLiveSpan()
 		}
@@ -1469,7 +1469,7 @@ func buildTerraformChangeDefinition(datadogDefinition datadogV1.ChangeWidgetDefi
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
 		} else {
 			terraformDefinition["live_span"] = v.GetLiveSpan()
 		}
@@ -1723,7 +1723,7 @@ func buildTerraformDistributionDefinition(datadogDefinition datadogV1.Distributi
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
 		} else {
 			terraformDefinition["live_span"] = v.GetLiveSpan()
 		}
@@ -1914,7 +1914,7 @@ func buildTerraformEventStreamDefinition(datadogDefinition datadogV1.EventStream
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
 		} else {
 			terraformDefinition["live_span"] = v.GetLiveSpan()
 		}
@@ -2006,7 +2006,7 @@ func buildTerraformEventTimelineDefinition(datadogDefinition datadogV1.EventTime
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
 		} else {
 			terraformDefinition["live_span"] = v.GetLiveSpan()
 		}
@@ -2149,7 +2149,7 @@ func buildTerraformCheckStatusDefinition(datadogDefinition datadogV1.CheckStatus
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
 		} else {
 			terraformDefinition["live_span"] = v.GetLiveSpan()
 		}
@@ -2363,7 +2363,7 @@ func buildTerraformHeatmapDefinition(datadogDefinition datadogV1.HeatMapWidgetDe
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
 		} else {
 			terraformDefinition["live_span"] = v.GetLiveSpan()
 		}
@@ -3046,7 +3046,7 @@ func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidg
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
 		} else {
 			terraformDefinition["live_span"] = v.GetLiveSpan()
 		}
@@ -3457,7 +3457,7 @@ func buildTerraformQueryValueDefinition(datadogDefinition datadogV1.QueryValueWi
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
 		} else {
 			terraformDefinition["live_span"] = v.GetLiveSpan()
 		}
@@ -3665,7 +3665,7 @@ func buildTerraformQueryTableDefinition(datadogDefinition datadogV1.TableWidgetD
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
 		} else {
 			terraformDefinition["live_span"] = v.GetLiveSpan()
 		}
@@ -4031,7 +4031,7 @@ func buildTerraformScatterplotDefinition(datadogDefinition datadogV1.ScatterPlot
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
 		} else {
 			terraformDefinition["live_span"] = v.GetLiveSpan()
 		}
@@ -4506,7 +4506,7 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
 		} else {
 			terraformDefinition["live_span"] = v.GetLiveSpan()
 		}
@@ -4802,7 +4802,7 @@ func buildTerraformToplistDefinition(datadogDefinition datadogV1.ToplistWidgetDe
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
 		} else {
 			terraformDefinition["live_span"] = v.GetLiveSpan()
 		}
@@ -5095,7 +5095,7 @@ func buildTerraformTraceServiceDefinition(datadogDefinition datadogV1.ServiceSum
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTime(*v)
+			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
 		} else {
 			terraformDefinition["live_span"] = v.GetLiveSpan()
 		}
@@ -5322,7 +5322,7 @@ func buildDatadogWidgetTime(terraformWidgetTime map[string]interface{}) *datadog
 	}
 	return datadogWidgetTime
 }
-func buildTerraformWidgetTime(datadogWidgetTime datadogV1.WidgetTime) map[string]string {
+func buildTerraformWidgetTimeDeprecated(datadogWidgetTime datadogV1.WidgetTime) map[string]string {
 	terraformWidgetTime := map[string]string{}
 	if v, ok := datadogWidgetTime.GetLiveSpanOk(); ok {
 		terraformWidgetTime["live_span"] = string(*v)
