@@ -6,6 +6,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-sdk/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/meta"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 	"gopkg.in/DataDog/dd-trace-go.v1/profiler"
@@ -13,6 +14,7 @@ import (
 
 // TestMain starts the tracer.
 func TestMain(m *testing.M) {
+	acctest.UseBinaryDriver("datadog", Provider)
 	if _, ok := os.LookupEnv("DD_AGENT_HOST"); !ok {
 		log.Println("DD_AGENT_HOST is not configured. Tests are executed without tracer and profiler.")
 		code := m.Run()
@@ -48,7 +50,6 @@ func TestMain(m *testing.M) {
 	} else {
 		defer profiler.Stop()
 	}
-
 	code := m.Run()
 	os.Exit(code)
 }
