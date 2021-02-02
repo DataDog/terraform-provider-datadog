@@ -85,7 +85,6 @@ var arithmeticProcessor = &schema.Schema{
 	MaxItems: 1,
 	Optional: true,
 	Elem: &schema.Resource{
-		Description: "Provides a Datadog Logs Pipeline API resource, which is used to create and manage Datadog logs custom pipelines.",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Description: "Your pipeline name.",
@@ -334,6 +333,7 @@ func resourceDatadogLogsCustomPipeline() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
+		Description: "Provides a Datadog Logs Pipeline API resource, which is used to create and manage Datadog logs custom pipelines. Each `datadog_logs_custom_pipeline` resource defines a complete pipeline. The order of the pipelines is maintained in a different resource: `datadog_logs_pipeline_order`. When creating a new pipeline, you need to **explicitly** add this pipeline to the `datadog_logs_pipeline_order` resource to track the pipeline. Similarly, when a pipeline needs to be destroyed, remove its references from the `datadog_logs_pipeline_order` resource.",
 		Schema: getPipelineSchema(false),
 	}
 }
