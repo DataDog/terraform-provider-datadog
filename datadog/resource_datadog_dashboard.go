@@ -5810,7 +5810,7 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 			}
 			if search, ok := query.TimeSeriesFormulaAndFunctionEventQueryDefinition.GetSearchOk(); ok {
 				terraformSearch := map[string]interface{}{}
-				terraformSearch["query"] = search
+				terraformSearch["query"] = search.GetQuery()
 				terraformSearchList := []map[string]interface{}{terraformSearch}
 				terraformQuery["search"] = terraformSearchList
 			}
