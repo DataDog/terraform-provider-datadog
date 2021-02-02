@@ -493,7 +493,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 						text_filter = "abc"
 						metric = "process.stat.cpu.total_pct"
 						limit = 10
-						tag_filters = []
+						tag_filters = ["some_filter"]
 						name = "my_process_query"
 						sort = "asc"
 						is_normalized_cpu = true
@@ -657,9 +657,13 @@ var datadogDashboardTimeseriesFormulaAsserts = []string{
 	"is_read_only = true",
 	"layout_type = ordered",
 	"description = Created using the Datadog provider in Terraform",
-	"widget.0.timeseries_definition.0.show_legend = true",
-	"widget.0.timeseries_definition.0.yaxis.0.min = 0",
-	"widget.0.timeseries_definition.0.yaxis.0.max = 599999",
+	"widget.0.timeseries_definition.0.request.0.query.0.metric_query.0.data_source = metrics",
+	"widget.1.timeseries_definition.0.request.0.query.0.event_query.0.data_source = logs",
+	"widget.1.timeseries_definition.0.request.0.query.0.event_query.0.indexes.# = 1",
+	"widget.1.timeseries_definition.0.request.0.query.0.event_query.0.indexes.0 = days-3",
+	"widget.2.timeseries_definition.0.request.0.query.0.process_query.0.data_source = process",
+	"widget.2.timeseries_definition.0.request.0.query.0.process_query.0.tag_filters.# = 1",
+	"widget.2.timeseries_definition.0.request.0.query.0.process_query.0.tag_filters.0 = some_filter",
 }
 
 func TestAccDatadogDashboardTimeseries(t *testing.T) {
@@ -674,9 +678,9 @@ func TestAccDatadogDashboardTimeseriesFormula(t *testing.T) {
 	testAccDatadogDashboardWidgetUtil(t, datadogDashboardTimeseriesFormulaConfig, "datadog_dashboard.timeseries_dashboard", datadogDashboardTimeseriesFormulaAsserts)
 }
 
-//func TestAccDatadogDashboardTimeseriesFormula_import(t *testing.T) {
-//	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTimeseriesFormulaConfig, "datadog_dashboard.timeseries_dashboard")
-//}
+func TestAccDatadogDashboardTimeseriesFormula_import(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTimeseriesFormulaConfig, "datadog_dashboard.timeseries_dashboard")
+}
 
 const datadogDashboardTimeseriesMultiComputeConfig = `
 resource "datadog_dashboard" "timeseries_dashboard" {

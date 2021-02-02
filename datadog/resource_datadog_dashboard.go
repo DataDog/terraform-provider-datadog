@@ -4693,6 +4693,13 @@ func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) dat
 		processQuery.SetTextFilter(v)
 	}
 
+	terraformFilters := data["tag_filters"].([]interface{})
+	datadogFilters := make([]string, len(terraformFilters))
+	for i, filter := range terraformFilters {
+		datadogFilters[i] = filter.(string)
+	}
+	processQuery.SetTagFilters(datadogFilters)
+
 	// Name
 	if v, ok := data["name"].(string); ok && len(v) != 0 {
 		processQuery.Name = &v
@@ -5828,13 +5835,61 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 				terraformComputeList := []map[string]interface{}{terraformCompute}
 				terraformQuery["compute"] = terraformComputeList
 			}
+			terraformQueries := []map[string]interface{}{terraformQuery}
+			terraformEventQuery := map[string]interface{}{}
+			terraformEventQuery["event_query"] = terraformQueries
+			queries[i] = terraformEventQuery
 		}
-		queries[i] = terraformQuery
+		if query.TimeSeriesFormulaAndFunctionMetricQueryDefinition != nil {
+			if dataSource, ok := query.TimeSeriesFormulaAndFunctionMetricQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if metricQuery, ok := query.TimeSeriesFormulaAndFunctionMetricQueryDefinition.GetQueryOk(); ok {
+				terraformQuery["query"] = metricQuery
+			}
+			if aggregator, ok := query.TimeSeriesFormulaAndFunctionMetricQueryDefinition.GetAggregatorOk(); ok {
+				terraformQuery["aggregator"] = aggregator
+			}
+			if name, ok := query.TimeSeriesFormulaAndFunctionMetricQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			terraformQueries := []map[string]interface{}{terraformQuery}
+			terraformMetricQuery := map[string]interface{}{}
+			terraformMetricQuery["metric_query"] = terraformQueries
+			queries[i] = terraformMetricQuery
+		}
+		if query.TimeSeriesFormulaAndFunctionProcessQueryDefinition != nil {
+			if dataSource, ok := query.TimeSeriesFormulaAndFunctionProcessQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if metric, ok := query.TimeSeriesFormulaAndFunctionProcessQueryDefinition.GetMetricOk(); ok {
+				terraformQuery["metric"] = metric
+			}
+			if textFilter, ok := query.TimeSeriesFormulaAndFunctionProcessQueryDefinition.GetTextFilterOk(); ok {
+				terraformQuery["text_filter"] = textFilter
+			}
+			if tagFilters, ok := query.TimeSeriesFormulaAndFunctionProcessQueryDefinition.GetTagFiltersOk(); ok {
+				terraformQuery["tag_filters"] = tagFilters
+			}
+			if limit, ok := query.TimeSeriesFormulaAndFunctionProcessQueryDefinition.GetLimitOk(); ok {
+				terraformQuery["limit"] = limit
+			}
+			if sort, ok := query.TimeSeriesFormulaAndFunctionProcessQueryDefinition.GetSortOk(); ok {
+				terraformQuery["sort"] = sort
+			}
+			if isNormalizedCpu, ok := query.TimeSeriesFormulaAndFunctionProcessQueryDefinition.GetIsNormalizedCpuOk(); ok {
+				terraformQuery["is_normalized_cpu"] = isNormalizedCpu
+			}
+			if name, ok := query.TimeSeriesFormulaAndFunctionProcessQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			terraformQueries := []map[string]interface{}{terraformQuery}
+			terraformProcessQuery := map[string]interface{}{}
+			terraformProcessQuery["process_query"] = terraformQueries
+			queries[i] = terraformProcessQuery
+		}
 	}
-	terraformEventQuery := map[string]interface{}{}
-	terraformEventQuery["event_query"] = queries
-	terraformEventQueries := []map[string]interface{}{terraformEventQuery}
-	return terraformEventQueries
+	return queries
 }
 
 // Process Query
