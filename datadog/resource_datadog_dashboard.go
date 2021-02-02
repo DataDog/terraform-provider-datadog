@@ -253,7 +253,6 @@ func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) erro
 		}
 		return translateClientError(err, "error getting dashboard")
 	}
-	log.Printf("ZZZZZZZZZ")
 	return loadDatadogDashboard(d, dashboard)
 }
 
@@ -4661,7 +4660,8 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 	}
 	eventQuery.SetIndexes(indexes)
 
-	if terraformSearch, ok := data["search"].(map[string]interface{}); ok && len(terraformSearch) > 0 {
+	if terraformSearches, ok := data["search"].([]interface{}); ok && len(terraformSearches) > 0 {
+		terraformSearch := terraformSearches[0].(map[string]interface{})
 		eventQuery.Search = &datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionSearch{
 			Query: terraformSearch["query"].(string),
 		}
@@ -5809,7 +5809,10 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 				terraformQuery["indexes"] = indexes
 			}
 			if search, ok := query.TimeSeriesFormulaAndFunctionEventQueryDefinition.GetSearchOk(); ok {
-				terraformQuery["search"] = search
+				terraformSearch := map[string]interface{}{}
+				terraformSearch["query"] = search
+				terraformSearchList := []map[string]interface{}{terraformSearch}
+				terraformQuery["search"] = terraformSearchList
 			}
 			if compute, ok := query.TimeSeriesFormulaAndFunctionEventQueryDefinition.GetComputeOk(); ok {
 				terraformCompute := map[string]interface{}{}
