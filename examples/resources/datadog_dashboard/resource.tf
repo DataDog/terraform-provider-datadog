@@ -217,7 +217,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
       title_size  = "16"
       title_align = "left"
     }
-    layout = {
+    widget_layout {
       height = 43
       width  = 32
       x      = 5
@@ -243,18 +243,16 @@ resource "datadog_dashboard" "ordered_dashboard" {
       request {
         log_query {
           index = "mcnulty"
-          compute_query = {
+          compute_query {
             aggregation = "avg"
             facet       = "@duration"
             interval    = 5000
           }
-          search_query = {
-            query = "status:info"
-          }
+          search_query = "status:info"
           group_by {
             facet = "host"
             limit = 10
-            sort = {
+            sort_query {
               aggregation = "avg"
               order       = "desc"
               facet       = "@duration"
@@ -266,18 +264,16 @@ resource "datadog_dashboard" "ordered_dashboard" {
       request {
         apm_query {
           index = "apm-search"
-          compute_query = {
+          compute_query {
             aggregation = "avg"
             facet       = "@duration"
             interval    = 5000
           }
-          search_query = {
-            query = "type:web"
-          }
+          search_query = "type:web"
           group_by {
             facet = "resource_name"
             limit = 50
-            sort = {
+            sort_query {
               aggregation = "avg"
               order       = "desc"
               facet       = "@string_query.interval"
@@ -421,7 +417,7 @@ resource "datadog_dashboard" "free_dashboard" {
       title_align = "left"
       live_span   = "1h"
     }
-    layout = {
+    widget_layout {
       height = 43
       width  = 32
       x      = 5
@@ -437,7 +433,7 @@ resource "datadog_dashboard" "free_dashboard" {
       title_align = "left"
       live_span   = "1h"
     }
-    layout = {
+    widget_layout {
       height = 9
       width  = 65
       x      = 42
@@ -452,7 +448,7 @@ resource "datadog_dashboard" "free_dashboard" {
       font_size  = "88"
       text_align = "left"
     }
-    layout = {
+    widget_layout {
       height = 20
       width  = 30
       x      = 42
@@ -464,7 +460,7 @@ resource "datadog_dashboard" "free_dashboard" {
     iframe_definition {
       url = "http://google.com"
     }
-    layout = {
+    widget_layout {
       height = 46
       width  = 39
       x      = 111
@@ -478,7 +474,7 @@ resource "datadog_dashboard" "free_dashboard" {
       sizing = "fit"
       margin = "small"
     }
-    layout = {
+    widget_layout {
       height = 20
       width  = 30
       x      = 77
@@ -499,7 +495,7 @@ resource "datadog_dashboard" "free_dashboard" {
         order  = "desc"
       }
     }
-    layout = {
+    widget_layout {
       height = 36
       width  = 32
       x      = 5
@@ -520,7 +516,7 @@ resource "datadog_dashboard" "free_dashboard" {
       title_size          = 16
       title_align         = "left"
     }
-    layout = {
+    widget_layout {
       height = 40
       width  = 30
       x      = 112
@@ -546,7 +542,7 @@ resource "datadog_dashboard" "free_dashboard" {
       title_size         = "13"
       live_span          = "1h"
     }
-    layout = {
+    widget_layout {
       height = 38
       width  = 67
       x      = 40

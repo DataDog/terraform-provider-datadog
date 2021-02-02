@@ -15,18 +15,18 @@ Provides a Datadog dashboard_list resource. This can be used to create and manag
 # Create a new Dashboard List with two Dashboards
 resource "datadog_dashboard_list" "new_list" {
   depends_on = [
-    "datadog_dashboard.screen",
-    "datadog_dashboard.time"
+    datadog_dashboard.screen,
+    datadog_dashboard.time
   ]
 
   name = "Terraform Created List"
   dash_item {
     type    = "custom_timeboard"
-    dash_id = "${datadog_dashboard.time.id}"
+    dash_id = datadog_dashboard.time.id
   }
   dash_item {
     type    = "custom_screenboard"
-    dash_id = "${datadog_dashboard.screen.id}"
+    dash_id = datadog_dashboard.screen.id
   }
 }
 
@@ -37,12 +37,10 @@ resource "datadog_dashboard" "time" {
   is_read_only = true
   widget {
     alert_graph_definition {
-      alert_id = "1234"
-      viz_type = "timeseries"
-      title    = "Widget Title"
-      time = {
-        live_span = "1h"
-      }
+      alert_id  = "1234"
+      viz_type  = "timeseries"
+      title     = "Widget Title"
+      live_span = "1h"
     }
   }
 
@@ -62,7 +60,7 @@ resource "datadog_dashboard" "screen" {
       title_align = "left"
       live_span   = "1h"
     }
-    layout = {
+    widget_layout {
       height = 43
       width  = 32
       x      = 5
