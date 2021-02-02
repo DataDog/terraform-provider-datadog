@@ -46,9 +46,7 @@ resource "datadog_dashboard" "screen" {
       title       = "Widget Title"
       title_size  = 16
       title_align = "left"
-      time = {
-        live_span = "1h"
-      }
+      live_span   = "1h"
     }
     layout = {
       height = 43

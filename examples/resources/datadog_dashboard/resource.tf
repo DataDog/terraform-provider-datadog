@@ -7,12 +7,10 @@ resource "datadog_dashboard" "ordered_dashboard" {
 
   widget {
     alert_graph_definition {
-      alert_id = "895605"
-      viz_type = "timeseries"
-      title    = "Widget Title"
-      time = {
-        live_span = "1h"
-      }
+      alert_id  = "895605"
+      viz_type  = "timeseries"
+      title     = "Widget Title"
+      live_span = "1h"
     }
   }
 
@@ -47,10 +45,8 @@ resource "datadog_dashboard" "ordered_dashboard" {
         order_dir     = "desc"
         show_present  = true
       }
-      title = "Widget Title"
-      time = {
-        live_span = "1h"
-      }
+      title     = "Widget Title"
+      live_span = "1h"
     }
   }
 
@@ -62,23 +58,19 @@ resource "datadog_dashboard" "ordered_dashboard" {
           palette = "warm"
         }
       }
-      title = "Widget Title"
-      time = {
-        live_span = "1h"
-      }
+      title     = "Widget Title"
+      live_span = "1h"
     }
   }
 
   widget {
     check_status_definition {
-      check    = "aws.ecs.agent_connected"
-      grouping = "cluster"
-      group_by = ["account", "cluster"]
-      tags     = ["account:demo", "cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"]
-      title    = "Widget Title"
-      time = {
-        live_span = "1h"
-      }
+      check     = "aws.ecs.agent_connected"
+      grouping  = "cluster"
+      group_by  = ["account", "cluster"]
+      tags      = ["account:demo", "cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"]
+      title     = "Widget Title"
+      live_span = "1h"
     }
   }
 
@@ -96,10 +88,8 @@ resource "datadog_dashboard" "ordered_dashboard" {
         include_zero = true
         scale        = "sqrt"
       }
-      title = "Widget Title"
-      time = {
-        live_span = "1h"
-      }
+      title     = "Widget Title"
+      live_span = "1h"
     }
   }
 
@@ -161,9 +151,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
       precision   = "4"
       text_align  = "right"
       title       = "Widget Title"
-      time = {
-        live_span = "1h"
-      }
+      live_span   = "1h"
     }
   }
 
@@ -184,10 +172,8 @@ resource "datadog_dashboard" "ordered_dashboard" {
           palette    = "white_on_red"
         }
       }
-      title = "Widget Title"
-      time = {
-        live_span = "1h"
-      }
+      title     = "Widget Title"
+      live_span = "1h"
     }
   }
 
@@ -218,10 +204,8 @@ resource "datadog_dashboard" "ordered_dashboard" {
         max          = "2222"
         scale        = "log"
       }
-      title = "Widget Title"
-      time = {
-        live_span = "1h"
-      }
+      title     = "Widget Title"
+      live_span = "1h"
     }
   }
 
@@ -259,12 +243,12 @@ resource "datadog_dashboard" "ordered_dashboard" {
       request {
         log_query {
           index = "mcnulty"
-          compute = {
+          compute_query = {
             aggregation = "avg"
             facet       = "@duration"
             interval    = 5000
           }
-          search = {
+          search_query = {
             query = "status:info"
           }
           group_by {
@@ -282,12 +266,12 @@ resource "datadog_dashboard" "ordered_dashboard" {
       request {
         apm_query {
           index = "apm-search"
-          compute = {
+          compute_query = {
             aggregation = "avg"
             facet       = "@duration"
             interval    = 5000
           }
-          search = {
+          search_query = {
             query = "type:web"
           }
           group_by {
@@ -324,9 +308,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
       title       = "Widget Title"
       show_legend = true
       legend_size = "2"
-      time = {
-        live_span = "1h"
-      }
+      live_span   = "1h"
       event {
         q = "sources:test tags:1"
       }
@@ -379,12 +361,10 @@ resource "datadog_dashboard" "ordered_dashboard" {
 
       widget {
         alert_graph_definition {
-          alert_id = "123"
-          viz_type = "toplist"
-          title    = "Alert Graph"
-          time = {
-            live_span = "1h"
-          }
+          alert_id  = "123"
+          viz_type  = "toplist"
+          title     = "Alert Graph"
+          live_span = "1h"
         }
       }
     }
@@ -439,9 +419,7 @@ resource "datadog_dashboard" "free_dashboard" {
       title       = "Widget Title"
       title_size  = 16
       title_align = "left"
-      time = {
-        live_span = "1h"
-      }
+      live_span   = "1h"
     }
     layout = {
       height = 43
@@ -457,9 +435,7 @@ resource "datadog_dashboard" "free_dashboard" {
       title       = "Widget Title"
       title_size  = 16
       title_align = "left"
-      time = {
-        live_span = "1h"
-      }
+      live_span   = "1h"
     }
     layout = {
       height = 9
@@ -568,9 +544,7 @@ resource "datadog_dashboard" "free_dashboard" {
       title              = "alerting-cassandra #env:datad0g.com"
       title_align        = "center"
       title_size         = "13"
-      time = {
-        live_span = "1h"
-      }
+      live_span          = "1h"
     }
     layout = {
       height = 38
