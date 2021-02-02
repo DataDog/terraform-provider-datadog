@@ -4667,6 +4667,23 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 		}
 	}
 
+	// GroupBy
+	if terraformGroupBys, ok := data["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
+		datadogGroupBys := make([]datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionGroupBy, len(terraformGroupBys))
+		for i, g := range terraformGroupBys {
+			groupBy := g.(map[string]interface{})
+			// Facet
+			datadogGroupBy := datadogV1.NewTimeSeriesFormulaAndFunctionEventQueryDefinitionGroupBy(groupBy["facet"].(string))
+
+			// Limit
+			if v, ok := groupBy["limit"].(int); ok && v != 0 {
+				datadogGroupBy.SetLimit(int64(v))
+			}
+			datadogGroupBys[i] = *datadogGroupBy
+		}
+		eventQuery.SetGroupBy(datadogGroupBys[0])
+	}
+
 	return datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionAsFormulaAndFunctionQueryDefinition(eventQuery)
 }
 
@@ -4711,8 +4728,8 @@ func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) dat
 	}
 
 	// Aggregator
-	if v, ok := data["aggregation"].(string); ok && len(v) != 0 {
-		aggregator := datadogV1.FormulaAndFunctionMetricAggregation(v)
+	if v, ok := data["aggregator"].(string); ok && len(v) != 0 {
+		aggregator := datadogV1.FormulaAndFunctionMetricAggregation(data["aggregator"].(string))
 		processQuery.SetAggregator(aggregator)
 	}
 
@@ -5879,6 +5896,9 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 			}
 			if isNormalizedCpu, ok := query.TimeSeriesFormulaAndFunctionProcessQueryDefinition.GetIsNormalizedCpuOk(); ok {
 				terraformQuery["is_normalized_cpu"] = isNormalizedCpu
+			}
+			if aggregator, ok := query.TimeSeriesFormulaAndFunctionProcessQueryDefinition.GetAggregatorOk(); ok {
+				terraformQuery["aggregator"] = aggregator
 			}
 			if name, ok := query.TimeSeriesFormulaAndFunctionProcessQueryDefinition.GetNameOk(); ok {
 				terraformQuery["name"] = name
