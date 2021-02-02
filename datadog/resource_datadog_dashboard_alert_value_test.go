@@ -4,43 +4,6 @@ import (
 	"testing"
 )
 
-// JSON export used as test scenario
-//{
-//    "notify_list": [],
-//    "description": "",
-//    "author_name": "--redacted--",
-//    "id": "--redacted--",
-//    "url": "--redacted--",
-//    "template_variables": [],
-//    "is_read_only": false,
-//    "title": "TF - Alert Value Example",
-//    "created_at": "2020-06-09T13:28:26.474869+00:00",
-//    "modified_at": "2020-06-09T13:29:06.581646+00:00",
-//    "author_handle": "--redacted--",
-//    "widgets": [
-//        {
-//            "definition": {
-//                "title_size": "16",
-//                "title": "",
-//                "title_align": "center",
-//                "text_align": "center",
-//                "precision": 1,
-//                "alert_id": "10605849",
-//                "type": "alert_value",
-//                "unit": "b"
-//            },
-//            "layout": {
-//                "y": 2,
-//                "x": 8,
-//                "height": 8,
-//                "width": 15
-//            },
-//            "id": 0
-//        }
-//    ],
-//    "layout_type": "free"
-//}
-
 const datadogDashboardAlertValueConfig = `
 resource "datadog_dashboard" "alert_value_dashboard" {
 	title         = "{{uniq}}"
