@@ -43,13 +43,13 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 				Required:    true,
 			},
 			"filter_tags": {
-				Description: "Array of EC2 tags (in the form key:value) defines a filter that Datadog use when collecting metrics from EC2. Wildcards, such as `?` (for single characters) and `*` (for multiple characters) can also be used.\n\nOnly hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. Host matching a given tag can also be excluded by adding `!` before the tag.\n\ne.x. `env:production,instance-type:c1.*,!region:us-east-1`.",
+				Description: "Array of EC2 tags (in the form `key:value`) defines a filter that Datadog uses when collecting metrics from EC2. Wildcards, such as `?` (for single characters) and `*` (for multiple characters) can also be used. Only hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. Host matching a given tag can also be excluded by adding `!` before the tag. e.x. `env:production,instance-type:c1.*,!region:us-east-1`.",
 				Type:        schema.TypeList,
 				Optional:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"host_tags": {
-				Description: "Array of tags (in the form key:value) to add to all hosts and metrics reporting through this integration.",
+				Description: "Array of tags (in the form `key:value`) to add to all hosts and metrics reporting through this integration.",
 				Type:        schema.TypeList,
 				Optional:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
