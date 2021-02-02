@@ -445,6 +445,66 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 }
 `
 
+const datadogDashboardTimeseriesFormulaConfig = `
+resource "datadog_dashboard" "timeseries_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+	widget {
+		timeseries_definition {
+			request {
+				query {
+					 metric_query {
+						 data_source = "metrics"
+						 query = "avg:system.cpu.user{app:general} by {env}"
+						 name = "my-metric"
+						 aggregator = "sum"
+					}
+				}
+			}
+		}
+	}
+	widget {
+		timeseries_definition {
+			request {
+				query {
+					event_query {
+						data_source = "logs"
+						indexes = ["days-3"]
+						name = "my_event_query"
+						compute {
+							aggregation = "count"
+						}
+						search {
+							query = "abc"
+						}
+					}
+				}
+			}
+		}
+	}
+	widget {
+		timeseries_definition {
+			request {
+				query {
+					process_query {
+						data_source = "process"
+						text_filter = "abc"
+						metric = "process.stat.cpu.total_pct"
+						limit = 10
+						tag_filters = []
+						name = "my_process_query"
+						sort = "asc"
+						is_normalized_cpu = true
+					}
+				}
+			}
+		}
+	}
+}
+`
+
 var datadogDashboardTimeseriesAsserts = []string{
 	"title = {{uniq}}",
 	"is_read_only = true",
@@ -592,6 +652,16 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
 }
 
+var datadogDashboardTimeseriesFormulaAsserts = []string{
+	"title = {{uniq}}",
+	"is_read_only = true",
+	"layout_type = ordered",
+	"description = Created using the Datadog provider in Terraform",
+	"widget.0.timeseries_definition.0.show_legend = true",
+	"widget.0.timeseries_definition.0.yaxis.0.min = 0",
+	"widget.0.timeseries_definition.0.yaxis.0.max = 599999",
+}
+
 func TestAccDatadogDashboardTimeseries(t *testing.T) {
 	testAccDatadogDashboardWidgetUtil(t, datadogDashboardTimeseriesConfig, "datadog_dashboard.timeseries_dashboard", datadogDashboardTimeseriesAsserts)
 }
@@ -599,6 +669,14 @@ func TestAccDatadogDashboardTimeseries(t *testing.T) {
 func TestAccDatadogDashboardTimeseries_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTimeseriesConfig, "datadog_dashboard.timeseries_dashboard")
 }
+
+func TestAccDatadogDashboardTimeseriesFormula(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardTimeseriesFormulaConfig, "datadog_dashboard.timeseries_dashboard", datadogDashboardTimeseriesFormulaAsserts)
+}
+
+//func TestAccDatadogDashboardTimeseriesFormula_import(t *testing.T) {
+//	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTimeseriesFormulaConfig, "datadog_dashboard.timeseries_dashboard")
+//}
 
 const datadogDashboardTimeseriesMultiComputeConfig = `
 resource "datadog_dashboard" "timeseries_dashboard" {
