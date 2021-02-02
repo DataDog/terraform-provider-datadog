@@ -253,7 +253,7 @@ func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) erro
 		}
 		return translateClientError(err, "error getting dashboard")
 	}
-
+	log.Printf("ZZZZZZZZZ")
 	return loadDatadogDashboard(d, dashboard)
 }
 
@@ -4576,6 +4576,7 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 		"process_query":  getProcessQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		"query":          getFormulaQuerySchema(),
+		// TODO: formulas
 		// Settings specific to Timeseries requests
 		"style": {
 			Description: "Style of the widget graph. Exactly one `style` block is allowed with the structure below.",
@@ -5798,6 +5799,18 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 	for i, query := range datadogQueries {
 		terraformQuery := map[string]interface{}{}
 		if query.TimeSeriesFormulaAndFunctionEventQueryDefinition != nil {
+			if dataSource, ok := query.TimeSeriesFormulaAndFunctionEventQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if name, ok := query.TimeSeriesFormulaAndFunctionEventQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			if indexes, ok := query.TimeSeriesFormulaAndFunctionEventQueryDefinition.GetIndexesOk(); ok {
+				terraformQuery["indexes"] = indexes
+			}
+			if search, ok := query.TimeSeriesFormulaAndFunctionEventQueryDefinition.GetSearchOk(); ok {
+				terraformQuery["search"] = search
+			}
 			if compute, ok := query.TimeSeriesFormulaAndFunctionEventQueryDefinition.GetComputeOk(); ok {
 				terraformCompute := map[string]interface{}{}
 				if aggregation, ok := compute.GetAggregationOk(); ok {
@@ -5809,11 +5822,16 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 				if metric, ok := compute.GetMetricOk(); ok {
 					terraformCompute["metric"] = metric
 				}
+				terraformComputeList := []map[string]interface{}{terraformCompute}
+				terraformQuery["compute"] = terraformComputeList
 			}
 		}
 		queries[i] = terraformQuery
 	}
-	return queries
+	terraformEventQuery := map[string]interface{}{}
+	terraformEventQuery["event_query"] = queries
+	terraformEventQueries := []map[string]interface{}{terraformEventQuery}
+	return terraformEventQueries
 }
 
 // Process Query
