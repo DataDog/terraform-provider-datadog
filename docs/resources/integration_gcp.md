@@ -1,14 +1,17 @@
 ---
-page_title: "datadog_integration_gcp"
+page_title: "datadog_integration_gcp Resource - terraform-provider-datadog"
+subcategory: ""
+description: |-
+  Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.
 ---
 
-# datadog_integration_gcp Resource
+# Resource `datadog_integration_gcp`
 
 Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.
 
 ## Example Usage
 
-```hcl
+```terraform
 # Create a new Datadog - Google Cloud Platform integration
 resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
   project_id     = "awesome-project-id"
@@ -20,34 +23,26 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
 }
 ```
 
-## Argument Reference
+## Schema
 
-The following arguments are supported:
+### Required
 
--   `project_id`: (Required) Your Google Cloud project ID found in your JSON service account key.
--   `private_key_id`: (Required) Your private key ID found in your JSON service account key.
--   `private_key`: (Required) Your private key name found in your JSON service account key.
--   `client_email`: (Required) Your email found in your JSON service account key.
--   `client_id`: (Required) Your ID found in your JSON service account key.
--   `host_filters`: (Optional) Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.
+- **client_email** (String, Required) Your email found in your JSON service account key.
+- **client_id** (String, Required) Your ID found in your JSON service account key.
+- **private_key** (String, Required) Your private key name found in your JSON service account key.
+- **private_key_id** (String, Required) Your private key ID found in your JSON service account key.
+- **project_id** (String, Required) Your Google Cloud project ID found in your JSON service account key.
 
-### See also
+### Optional
 
--   [Google Cloud > Creating and Managing Service Account Keys](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
--   [Datadog API Reference > Integrations > Google Cloud Platform](https://docs.datadoghq.com/api/v1/gcp-integration/)
-
-## Attributes Reference
-
-The following attributes are exported:
-
--   `project_id`: Google Cloud project ID
--   `client_email`: Google Cloud project service account email
--   `host_filters`: Host filters
+- **host_filters** (String, Optional) Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.
+- **id** (String, Optional) The ID of this resource.
 
 ## Import
 
-Google Cloud Platform integrations can be imported using their project ID, e.g.
+Import is supported using the following syntax:
 
-```
-$ terraform import datadog_integration_gcp.awesome_gcp_project_integration project_id
+```shell
+# Google Cloud Platform integrations can be imported using their project ID, e.g.
+terraform import datadog_integration_gcp.awesome_gcp_project_integration project_id
 ```
