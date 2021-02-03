@@ -4384,6 +4384,54 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 	return terraformDefinition
 }
 
+func getFormulaSchema() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"formula_definition": {
+					Type:     schema.TypeList,
+					Optional: true,
+					MaxItems: 1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"formula_expression": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "String expression built from queries, formulas and functions.",
+							},
+							"limit": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Description: "Options for limiting results returned.",
+								MaxItems:    1,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"count": {
+											Type:     schema.TypeInt,
+											Optional: true,
+										},
+										"order": {
+											Type:     schema.TypeString,
+											Optional: true,
+										},
+									},
+								},
+							},
+							"alias": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Expression alias.",
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 func getFormulaQuerySchema() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,
@@ -4575,6 +4623,7 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 		"process_query":  getProcessQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		"query":          getFormulaQuerySchema(),
+		"formula":        getFormulaSchema(),
 		// TODO: formulas
 		// Settings specific to Timeseries requests
 		"style": {
@@ -4637,6 +4686,14 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 	}
 }
 
+func buildDatadogFormula(data map[string]interface{}) datadogV1.WidgetFormula {
+	formulaExpression := datadogV1.WidgetFormula{}
+	if formula, ok := data["formula_expression"].(string); ok && len(formula) != 0 {
+		formulaExpression.Formula = formula
+	}
+	return formulaExpression
+}
+
 func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
 	dataSource := datadogV1.FormulaAndFunctionEventsDataSource(data["data_source"].(string))
 	computeList := data["compute"].([]interface{})
@@ -4672,6 +4729,7 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 		datadogGroupBys := make([]datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionGroupBy, len(terraformGroupBys))
 		for i, g := range terraformGroupBys {
 			groupBy := g.(map[string]interface{})
+
 			// Facet
 			datadogGroupBy := datadogV1.NewTimeSeriesFormulaAndFunctionEventQueryDefinitionGroupBy(groupBy["facet"].(string))
 
@@ -4679,9 +4737,27 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 			if v, ok := groupBy["limit"].(int); ok && v != 0 {
 				datadogGroupBy.SetLimit(int64(v))
 			}
+
+			// Sort
+			if sort, ok := groupBy["sort"].(map[string]interface{}); ok && len(sort) > 0 {
+				sortMap := &datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionSort{}
+				if aggr, ok := sort["aggregation"].(string); ok && len(aggr) > 0 {
+					aggregation := datadogV1.FormulaAndFunctionEventAggregation(sort["aggregation"].(string))
+					sortMap.SetAggregation(aggregation)
+				}
+				if order, ok := sort["order"].(string); ok && len(order) > 0 {
+					eventSort := datadogV1.QuerySortOrder(order)
+					sortMap.SetOrder(eventSort)
+				}
+				if metric, ok := sort["metric"].(string); ok && len(metric) > 0 {
+					sortMap.SetMetric(metric)
+				}
+				datadogGroupBy.SetSort(*sortMap)
+			}
+
 			datadogGroupBys[i] = *datadogGroupBy
 		}
-		eventQuery.SetGroupBy(datadogGroupBys[0])
+		eventQuery.SetGroupBy(datadogGroupBys)
 	}
 
 	return datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionAsFormulaAndFunctionQueryDefinition(eventQuery)
@@ -4787,6 +4863,15 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 			}
 			datadogTimeseriesRequest.Queries = &queries
 			datadogTimeseriesRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("timeseries"))
+		} else if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+			formulas := make([]datadogV1.WidgetFormula, len(v))
+			for i, f := range v {
+				formula := f.(map[string]interface{})
+				if w, ok := formula["formula_definition"].([]interface{}); ok && len(w) > 0 {
+					formulas[i] = buildDatadogFormula(w[0].(map[string]interface{}))
+				}
+			}
+			datadogTimeseriesRequest.Formulas = &formulas
 		}
 		if style, ok := terraformRequest["style"].([]interface{}); ok && len(style) > 0 {
 			if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
@@ -4851,6 +4936,10 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
 			terraformRequest["query"] = buildTerraformQuery(*v)
 		}
+
+		// else if v, ok := datadogRequest.GetFormulasOk(); ok {
+		// 	terraformRequest["formula"] = buildTerraformFormula(*v)
+		// }
 		if v, ok := datadogRequest.GetStyleOk(); ok {
 			style := buildTerraformWidgetRequestStyle(*v)
 			terraformRequest["style"] = []map[string]interface{}{style}
