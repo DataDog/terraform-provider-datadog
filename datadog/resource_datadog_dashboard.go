@@ -4536,10 +4536,6 @@ func getFormulaQuerySchema() *schema.Schema {
 														Type:     schema.TypeString,
 														Optional: true,
 													},
-													"type": {
-														Type:     schema.TypeString,
-														Optional: true,
-													},
 												},
 											},
 										},
@@ -4616,7 +4612,6 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		"query":          getFormulaQuerySchema(),
 		"formula":        getFormulaSchema(),
-		// TODO: formulas
 		// Settings specific to Timeseries requests
 		"style": {
 			Description: "Style of the widget graph. Exactly one `style` block is allowed with the structure below.",
@@ -4745,20 +4740,22 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 			}
 
 			// Sort
-			if sort, ok := groupBy["sort"].(map[string]interface{}); ok && len(sort) > 0 {
-				sortMap := &datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionSort{}
-				if aggr, ok := sort["aggregation"].(string); ok && len(aggr) > 0 {
-					aggregation := datadogV1.FormulaAndFunctionEventAggregation(sort["aggregation"].(string))
-					sortMap.SetAggregation(aggregation)
+			if v, ok := groupBy["sort"].([]interface{}); ok && len(v) > 0 {
+				if v, ok := v[0].(map[string]interface{}); ok && len(v) > 0 {
+					sortMap := &datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionSort{}
+					if aggr, ok := v["aggregation"].(string); ok && len(aggr) > 0 {
+						aggregation := datadogV1.FormulaAndFunctionEventAggregation(v["aggregation"].(string))
+						sortMap.SetAggregation(aggregation)
+					}
+					if order, ok := v["order"].(string); ok && len(order) > 0 {
+						eventSort := datadogV1.QuerySortOrder(order)
+						sortMap.SetOrder(eventSort)
+					}
+					if metric, ok := v["metric"].(string); ok && len(metric) > 0 {
+						sortMap.SetMetric(metric)
+					}
+					datadogGroupBy.SetSort(*sortMap)
 				}
-				if order, ok := sort["order"].(string); ok && len(order) > 0 {
-					eventSort := datadogV1.QuerySortOrder(order)
-					sortMap.SetOrder(eventSort)
-				}
-				if metric, ok := sort["metric"].(string); ok && len(metric) > 0 {
-					sortMap.SetMetric(metric)
-				}
-				datadogGroupBy.SetSort(*sortMap)
 			}
 
 			datadogGroupBys[i] = *datadogGroupBy
@@ -5945,6 +5942,35 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 				}
 				terraformComputeList := []map[string]interface{}{terraformCompute}
 				terraformQuery["compute"] = terraformComputeList
+			}
+			if v, ok := query.TimeSeriesFormulaAndFunctionEventQueryDefinition.GetGroupByOk(); ok {
+				terraformGroupBys := make([]map[string]interface{}, len(query.TimeSeriesFormulaAndFunctionEventQueryDefinition.GetGroupBy()))
+				for i, groupBy := range *v {
+					// Facet
+					terraformGroupBy := map[string]interface{}{
+						"facet": groupBy.GetFacet(),
+					}
+					// Limit
+					if v, ok := groupBy.GetLimitOk(); ok {
+						terraformGroupBy["limit"] = *v
+					}
+					// Sort
+					if v, ok := groupBy.GetSortOk(); ok {
+						terraformSort := map[string]interface{}{}
+						if metric, ok := v.GetMetricOk(); ok {
+							terraformSort["metric"] = metric
+						}
+						if order, ok := v.GetOrderOk(); ok {
+							terraformSort["order"] = order
+						}
+						if aggregation, ok := v.GetAggregationOk(); ok {
+							terraformSort["aggregation"] = aggregation
+						}
+						terraformGroupBy["sort"] = []map[string]interface{}{terraformSort}
+					}
+					terraformGroupBys[i] = terraformGroupBy
+				}
+				terraformQuery["group_by"] = &terraformGroupBys
 			}
 			terraformQueries := []map[string]interface{}{terraformQuery}
 			terraformEventQuery := map[string]interface{}{}
