@@ -4390,42 +4390,33 @@ func getFormulaSchema() *schema.Schema {
 		Optional: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"formula_definition": {
-					Type:     schema.TypeList,
-					Optional: true,
-					MaxItems: 1,
+				"formula_expression": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "String expression built from queries, formulas and functions.",
+				},
+				"limit": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "Options for limiting results returned.",
+					MaxItems:    1,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
-							"formula_expression": {
-								Type:        schema.TypeString,
-								Required:    true,
-								Description: "String expression built from queries, formulas and functions.",
+							"count": {
+								Type:     schema.TypeInt,
+								Optional: true,
 							},
-							"limit": {
-								Type:        schema.TypeList,
-								Optional:    true,
-								Description: "Options for limiting results returned.",
-								MaxItems:    1,
-								Elem: &schema.Resource{
-									Schema: map[string]*schema.Schema{
-										"count": {
-											Type:     schema.TypeInt,
-											Optional: true,
-										},
-										"order": {
-											Type:     schema.TypeString,
-											Optional: true,
-										},
-									},
-								},
-							},
-							"alias": {
-								Type:        schema.TypeString,
-								Optional:    true,
-								Description: "Expression alias.",
+							"order": {
+								Type:     schema.TypeString,
+								Optional: true,
 							},
 						},
 					},
+				},
+				"alias": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Expression alias.",
 				},
 			},
 		},
@@ -4687,11 +4678,14 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 }
 
 func buildDatadogFormula(data map[string]interface{}) datadogV1.WidgetFormula {
-	formulaExpression := datadogV1.WidgetFormula{}
-	if formula, ok := data["formula_expression"].(string); ok && len(formula) != 0 {
-		formulaExpression.Formula = formula
+	formula := datadogV1.WidgetFormula{}
+	if formulaExpression, ok := data["formula_expression"].(string); ok && len(formulaExpression) != 0 {
+		formula.Formula = formulaExpression
 	}
-	return formulaExpression
+	if alias, ok := data["alias"].(string); ok && len(alias) != 0 {
+		formula.SetAlias(alias)
+	}
+	return formula
 }
 
 func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
@@ -4863,13 +4857,11 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 			}
 			datadogTimeseriesRequest.Queries = &queries
 			datadogTimeseriesRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("timeseries"))
-		} else if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+		}
+		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
-			for i, f := range v {
-				formula := f.(map[string]interface{})
-				if w, ok := formula["formula_definition"].([]interface{}); ok && len(w) > 0 {
-					formulas[i] = buildDatadogFormula(w[0].(map[string]interface{}))
-				}
+			for i, formula := range v {
+				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogTimeseriesRequest.Formulas = &formulas
 		}
@@ -4937,9 +4929,10 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 			terraformRequest["query"] = buildTerraformQuery(*v)
 		}
 
-		// else if v, ok := datadogRequest.GetFormulasOk(); ok {
-		// 	terraformRequest["formula"] = buildTerraformFormula(*v)
-		// }
+		if v, ok := datadogRequest.GetFormulasOk(); ok {
+			terraformRequest["formula"] = buildTerraformFormula(*v)
+		}
+
 		if v, ok := datadogRequest.GetStyleOk(); ok {
 			style := buildTerraformWidgetRequestStyle(*v)
 			terraformRequest["style"] = []map[string]interface{}{style}
@@ -5999,6 +5992,19 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 		}
 	}
 	return queries
+}
+
+func buildTerraformFormula(datadogFormulas []datadogV1.WidgetFormula) []map[string]interface{} {
+	formulas := make([]map[string]interface{}, len(datadogFormulas))
+	for i, formula := range datadogFormulas {
+		terraformFormula := map[string]interface{}{}
+		terraformFormula["formula_expression"] = formula.GetFormula()
+		if alias, ok := formula.GetAliasOk(); ok {
+			terraformFormula["alias"] = alias
+		}
+		formulas[i] = terraformFormula
+	}
+	return formulas
 }
 
 // Process Query

@@ -454,14 +454,26 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 	widget {
 		timeseries_definition {
 			request {
+				formula {
+					formula_expression = "my_query_1 + my_query_2"
+				}
 				query {
 					 metric_query {
 						 data_source = "metrics"
 						 query = "avg:system.cpu.user{app:general} by {env}"
-						 name = "my-metric"
+						 name = "my_query_1"
 						 aggregator = "sum"
 					}
 				}
+				query {
+					 metric_query {
+						 data_source = "metrics"
+						 query = "avg:system.cpu.user{app:general} by {env}"
+						 name = "my_query_2"
+						 aggregator = "sum"
+					}
+				}
+
 			}
 		}
 	}
