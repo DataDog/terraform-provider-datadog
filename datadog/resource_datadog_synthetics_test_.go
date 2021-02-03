@@ -111,7 +111,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Type:          schema.TypeList,
 				Optional:      true,
 				ConflictsWith: []string{"assertion"},
-				Deprecated:    "Use assertion instead",
+				Deprecated:    "Define `assertion` blocks instead.",
 				Elem: &schema.Schema{
 					Type: schema.TypeMap,
 				},
@@ -303,7 +303,7 @@ func syntheticsTestOptions() *schema.Schema {
 	return &schema.Schema{
 		Type:          schema.TypeMap,
 		ConflictsWith: []string{"options_list"},
-		Deprecated:    "This parameter is deprecated, please use `options_list`",
+		Deprecated:    "Define `options_list` blocks instead.",
 		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
 			if key == "options.follow_redirects" || key == "options.accept_self_signed" || key == "options.allow_insecure" {
 				// TF nested schemas is limited to string values only
@@ -528,7 +528,7 @@ func syntheticsTestBrowserStep(detailedParams bool) *schema.Schema {
 
 	if detailedParams == false {
 		browserStepSchema.ConflictsWith = []string{"browser_step"}
-		browserStepSchema.Deprecated = "This parameter is deprecated, please use `browser_step`"
+		browserStepSchema.Deprecated = "Define `browser_step` blocks instead."
 	}
 
 	return &browserStepSchema
@@ -682,7 +682,7 @@ func syntheticsBrowserVariableLegacy() *schema.Schema {
 		Description:   "Variables used for a browser test steps. Multiple `browser_variable` blocks are allowed with the structure below.",
 		Optional:      true,
 		ConflictsWith: []string{"browser_variable"},
-		Deprecated:    "This parameter is deprecated, please use `browser_variable`",
+		Deprecated:    "Define `browser_variable` blocks instead.",
 		Elem:          syntheticsBrowserVariableElem(),
 	}
 }
