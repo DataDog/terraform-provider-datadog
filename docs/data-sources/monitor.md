@@ -46,8 +46,8 @@ data "datadog_monitor" "test" {
 - **renotify_interval** (Number, Read-only) The number of minutes after the last notification before the monitor re-notifies on the current status.
 - **require_full_window** (Boolean, Read-only) Whether or not the monitor needs a full window of data before it is evaluated.
 - **tags** (Set of String, Read-only) List of tags associated with the monitor.
-- **threshold_windows** (Map of String, Read-only, Deprecated) Mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. This is only used by anomaly monitors.
-- **thresholds** (Map of String, Read-only, Deprecated) Alert thresholds of the monitor.
+- **threshold_windows** (Map of String, Read-only, Deprecated) Mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. This is only used by anomaly monitors. **Deprecated.** Define `monitor_threshold_windows` list with one element instead.
+- **thresholds** (Map of String, Read-only, Deprecated) Alert thresholds of the monitor. **Deprecated.** Define `monitor_thresholds` list with one element instead.
 - **timeout_h** (Number, Read-only) Number of hours of the monitor not reporting data before it automatically resolves from a triggered state.
 - **type** (String, Read-only) Type of the monitor.
 

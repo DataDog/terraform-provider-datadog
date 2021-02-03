@@ -21,4 +21,4 @@ require (
 go 1.15
 
 // Use custom fork with performance fix in DecoderSpec
-replace github.com/hashicorp/terraform-plugin-sdk v1.15.0 => github.com/therve/terraform-plugin-sdk v1.16.1-0.20210130134147-8b29b18683ec
+replace github.com/hashicorp/terraform-plugin-sdk v1.15.0 => github.com/therve/terraform-plugin-sdk v1.16.1-0.20210202202613-4d59f03d3b5f
