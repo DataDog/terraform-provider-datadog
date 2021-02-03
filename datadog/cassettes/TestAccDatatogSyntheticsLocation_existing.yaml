@@ -10,14 +10,8 @@ interactions:
       Dd-Operation-Id:
       - ListLocations
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "2098121212837046218"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2938456858505057245"
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.15+dev
+        (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/locations
     method: GET
   response:
@@ -28,7 +22,7 @@ interactions:
       (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London
       (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o
       Paulo (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N.
-      California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606068-7209ef059ca2770dfb5894b3b9235d43","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606068"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606093-73f1f31d77ffd777730831e6a8825d89","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606093"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606122-99f7d291ec05150ade65f9cf30cfd2ef","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606122"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1606125041-1a44b6a209df41e39b615de02a91f74d","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1606125041"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-35133-1607099125-ea8bf7adb5eb526f696f248debea7715","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-35133-1607099125"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-35133-1607099125-567d06c8f1e423d691703cf3eacb9276","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-35133-1607099125"}]}'
+      California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-43815-1612022834-f6ce12798a2fc36327047983e7dbada8","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-43815-1612022834"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1612367614-fb997f84756cdf86e7f384e53ec856ad","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1612367614"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_importbasic-43379-1611911246-405379ada9a0bbf69ef0b00214f4ac18","name":"tf-TestAccDatadogSyntheticsPrivateLocation_importBasic-43379-1611911246"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_importbasic-43815-1612022834-84a2af1b7fede82769ab4934fedff8e2","name":"tf-TestAccDatadogSyntheticsPrivateLocation_importBasic-43815-1612022834"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_importbasic-local-1612367575-5350c81d8d81834ebbd490b80e7655f0","name":"tf-TestAccDatadogSyntheticsPrivateLocation_importBasic-local-1612367575"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1612367575-f8735c7e472ee5a11a93da68fe2280ab","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1612367575_updated"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1612367614-2caa69fb2fb2fca31251f6eff819c3f5","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1612367614"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -39,11 +33,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:53:37 GMT
+      - Wed, 03 Feb 2021 15:56:59 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:37 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 10-Feb-2021 15:56:59 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -52,9 +46,70 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - KcNcHUGB08YdugVH3r9bPpps+kNHA5hdt/i0HnHlCpX4wCTIXYMJnhyM7E+8Tni0
+      - S1wfaMZOKGT/IoMw6fqAwAwGWo2vQ44sjF3YzuETnQfxZO2T5eJbs0aX3UKb9Dwu
       X-Dd-Version:
-      - "35.3622023"
+      - "35.3835302"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "120"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "111"
+      X-Ratelimit-Reset:
+      - "1"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListLocations
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.15+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/synthetics/locations
+    method: GET
+  response:
+    body: '{"locations":[{"id":"aws:ap-northeast-1","name":"Tokyo (AWS)"},{"id":"aws:ap-northeast-2","name":"Seoul
+      (AWS)"},{"id":"aws:ap-south-1","name":"Mumbai (AWS)"},{"id":"aws:ap-southeast-1","name":"Singapore
+      (AWS)"},{"id":"aws:ap-southeast-2","name":"Sydney (AWS)"},{"id":"aws:ca-central-1","name":"Canada
+      Central (AWS)"},{"id":"aws:eu-central-1","name":"Frankfurt (AWS)"},{"id":"aws:eu-north-1","name":"Stockholm
+      (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London
+      (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o
+      Paulo (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N.
+      California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-43815-1612022834-f6ce12798a2fc36327047983e7dbada8","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-43815-1612022834"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1612367614-fb997f84756cdf86e7f384e53ec856ad","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1612367614"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_importbasic-43379-1611911246-405379ada9a0bbf69ef0b00214f4ac18","name":"tf-TestAccDatadogSyntheticsPrivateLocation_importBasic-43379-1611911246"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_importbasic-43815-1612022834-84a2af1b7fede82769ab4934fedff8e2","name":"tf-TestAccDatadogSyntheticsPrivateLocation_importBasic-43815-1612022834"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_importbasic-local-1612367575-5350c81d8d81834ebbd490b80e7655f0","name":"tf-TestAccDatadogSyntheticsPrivateLocation_importBasic-local-1612367575"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1612367575-f8735c7e472ee5a11a93da68fe2280ab","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1612367575_updated"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1612367614-2caa69fb2fb2fca31251f6eff819c3f5","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1612367614"}]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 03 Feb 2021 15:57:00 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 10-Feb-2021 15:57:00 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
+      X-Dd-Version:
+      - "35.3835302"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -64,7 +119,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "119"
       X-Ratelimit-Reset:
-      - "23"
+      - "60"
     status: 200 OK
     code: 200
     duration: ""
@@ -77,14 +132,8 @@ interactions:
       Dd-Operation-Id:
       - ListLocations
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "4892813884024537855"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2938456858505057245"
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.15+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/locations
     method: GET
   response:
@@ -95,7 +144,7 @@ interactions:
       (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London
       (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o
       Paulo (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N.
-      California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606068-7209ef059ca2770dfb5894b3b9235d43","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606068"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606093-73f1f31d77ffd777730831e6a8825d89","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606093"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606122-99f7d291ec05150ade65f9cf30cfd2ef","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606122"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1606125041-1a44b6a209df41e39b615de02a91f74d","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1606125041"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-35133-1607099125-ea8bf7adb5eb526f696f248debea7715","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-35133-1607099125"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-35133-1607099125-567d06c8f1e423d691703cf3eacb9276","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-35133-1607099125"}]}'
+      California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-43815-1612022834-f6ce12798a2fc36327047983e7dbada8","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-43815-1612022834"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1612367614-fb997f84756cdf86e7f384e53ec856ad","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1612367614"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_importbasic-43379-1611911246-405379ada9a0bbf69ef0b00214f4ac18","name":"tf-TestAccDatadogSyntheticsPrivateLocation_importBasic-43379-1611911246"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_importbasic-43815-1612022834-84a2af1b7fede82769ab4934fedff8e2","name":"tf-TestAccDatadogSyntheticsPrivateLocation_importBasic-43815-1612022834"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_importbasic-local-1612367575-5350c81d8d81834ebbd490b80e7655f0","name":"tf-TestAccDatadogSyntheticsPrivateLocation_importBasic-local-1612367575"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1612367575-f8735c7e472ee5a11a93da68fe2280ab","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1612367575_updated"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1612367614-2caa69fb2fb2fca31251f6eff819c3f5","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1612367614"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -106,11 +155,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:53:37 GMT
+      - Wed, 03 Feb 2021 15:57:00 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:37 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 10-Feb-2021 15:57:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -119,9 +168,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 84uqub9zpmlgg8irRO/sOXYuWjXevKJ3PeFDkydS20gUrNiRDeiB84n5Q67dF4oL
+      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
       X-Dd-Version:
-      - "35.3622023"
+      - "35.3835302"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -131,7 +180,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "118"
       X-Ratelimit-Reset:
-      - "23"
+      - "60"
     status: 200 OK
     code: 200
     duration: ""
@@ -144,14 +193,8 @@ interactions:
       Dd-Operation-Id:
       - ListLocations
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "7996931481296631206"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2938456858505057245"
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.15+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/locations
     method: GET
   response:
@@ -162,7 +205,7 @@ interactions:
       (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London
       (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o
       Paulo (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N.
-      California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606068-7209ef059ca2770dfb5894b3b9235d43","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606068"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606093-73f1f31d77ffd777730831e6a8825d89","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606093"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606122-99f7d291ec05150ade65f9cf30cfd2ef","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606122"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1606125041-1a44b6a209df41e39b615de02a91f74d","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1606125041"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-35133-1607099125-ea8bf7adb5eb526f696f248debea7715","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-35133-1607099125"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-35133-1607099125-567d06c8f1e423d691703cf3eacb9276","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-35133-1607099125"}]}'
+      California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-43815-1612022834-f6ce12798a2fc36327047983e7dbada8","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-43815-1612022834"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1612367614-fb997f84756cdf86e7f384e53ec856ad","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1612367614"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_importbasic-43379-1611911246-405379ada9a0bbf69ef0b00214f4ac18","name":"tf-TestAccDatadogSyntheticsPrivateLocation_importBasic-43379-1611911246"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_importbasic-43815-1612022834-84a2af1b7fede82769ab4934fedff8e2","name":"tf-TestAccDatadogSyntheticsPrivateLocation_importBasic-43815-1612022834"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_importbasic-local-1612367575-5350c81d8d81834ebbd490b80e7655f0","name":"tf-TestAccDatadogSyntheticsPrivateLocation_importBasic-local-1612367575"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1612367575-f8735c7e472ee5a11a93da68fe2280ab","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1612367575_updated"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1612367614-2caa69fb2fb2fca31251f6eff819c3f5","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1612367614"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -173,11 +216,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:53:37 GMT
+      - Wed, 03 Feb 2021 15:57:00 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:37 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 10-Feb-2021 15:57:00 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -186,9 +229,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - IGILlPY3s4a9aUQtJHHVlvsXLPi5u8MQt/Dx/1ZwzrUgiVNBtJEB93e+6VlWNrdA
+      - B1nwy/pPNqX+q4pQT22cdp1QCexE35IF8qwSHy0Nf7IW0Y881qtn4tXN1lpmzaKc
       X-Dd-Version:
-      - "35.3622023"
+      - "35.3835302"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -198,74 +241,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "117"
       X-Ratelimit-Reset:
-      - "23"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListLocations
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "4579743826036981645"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2938456858505057245"
-    url: https://api.datadoghq.com/api/v1/synthetics/locations
-    method: GET
-  response:
-    body: '{"locations":[{"id":"aws:ap-northeast-1","name":"Tokyo (AWS)"},{"id":"aws:ap-northeast-2","name":"Seoul
-      (AWS)"},{"id":"aws:ap-south-1","name":"Mumbai (AWS)"},{"id":"aws:ap-southeast-1","name":"Singapore
-      (AWS)"},{"id":"aws:ap-southeast-2","name":"Sydney (AWS)"},{"id":"aws:ca-central-1","name":"Canada
-      Central (AWS)"},{"id":"aws:eu-central-1","name":"Frankfurt (AWS)"},{"id":"aws:eu-north-1","name":"Stockholm
-      (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London
-      (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o
-      Paulo (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N.
-      California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606068-7209ef059ca2770dfb5894b3b9235d43","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606068"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606093-73f1f31d77ffd777730831e6a8825d89","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606093"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606122-99f7d291ec05150ade65f9cf30cfd2ef","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606122"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1606125041-1a44b6a209df41e39b615de02a91f74d","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1606125041"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-35133-1607099125-ea8bf7adb5eb526f696f248debea7715","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-35133-1607099125"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-35133-1607099125-567d06c8f1e423d691703cf3eacb9276","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-35133-1607099125"}]}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 31 Dec 2020 14:53:37 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:37 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - s8aX5NtChXwcC0ZqCGPgUtbvI/yT4gadlVvE6/Mqbm4BIdrCBC60TudMJNU/SbvE
-      X-Dd-Version:
-      - "35.3622023"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "120"
-      X-Ratelimit-Period:
       - "60"
-      X-Ratelimit-Remaining:
-      - "116"
-      X-Ratelimit-Reset:
-      - "23"
     status: 200 OK
     code: 200
     duration: ""
