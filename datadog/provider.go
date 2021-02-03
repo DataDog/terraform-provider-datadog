@@ -39,7 +39,7 @@ func init() {
 		//	desc += fmt.Sprintf(" Defaults to `%v`.", s.Default)
 		//}
 		if s.Deprecated != "" {
-			desc = fmt.Sprintf("**DEPRECATED** %s %s", s.Deprecated, desc)
+			desc = fmt.Sprintf("%s **DEPRECATED** %s", desc, s.Deprecated)
 		}
 		return strings.TrimSpace(desc)
 	}
