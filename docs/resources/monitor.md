@@ -79,10 +79,10 @@ We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes fo
 - **require_full_window** (Boolean, Optional) A boolean indicating whether this monitor needs a full window of data before it's evaluated.
 
 We highly recommend you set this to `false` for sparse metrics, otherwise some evaluations will be skipped. Default: `true` for `on average`, `at all times` and `in total` aggregation. `false` otherwise.
-- **silenced** (Map of Number, Optional, Deprecated) Each scope will be muted until the given POSIX timestamp or forever if the value is `0`. Use `-1` if you want to unmute the scope. Deprecated: the silenced parameter is being deprecated in favor of the downtime resource. This will be removed in the next major version of the Terraform Provider. **DEPRECATED** Use the Downtime resource instead.
+- **silenced** (Map of Number, Optional, Deprecated) Each scope will be muted until the given POSIX timestamp or forever if the value is `0`. Use `-1` if you want to unmute the scope. Deprecated: the silenced parameter is being deprecated in favor of the downtime resource. This will be removed in the next major version of the Terraform Provider. **Deprecated.** Use the Downtime resource instead.
 - **tags** (Set of String, Optional) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
-- **threshold_windows** (Map of String, Optional, Deprecated) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. Can only be used for, and are required for, anomaly monitors. **DEPRECATED** Define `monitor_threshold_windows` list with one element instead.
-- **thresholds** (Map of String, Optional, Deprecated) Alert thresholds of the monitor. **DEPRECATED** Define `monitor_thresholds` list with one element instead.
+- **threshold_windows** (Map of String, Optional, Deprecated) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. Can only be used for, and are required for, anomaly monitors. **Deprecated.** Define `monitor_threshold_windows` list with one element instead.
+- **thresholds** (Map of String, Optional, Deprecated) Alert thresholds of the monitor. **Deprecated.** Define `monitor_thresholds` list with one element instead.
 - **timeout_h** (Number, Optional) The number of hours of the monitor not reporting data before it will automatically resolve from a triggered state.
 - **validate** (Boolean, Optional) If set to `false`, skip the validation call done during plan.
 
