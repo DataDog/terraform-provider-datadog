@@ -197,25 +197,25 @@ resource "datadog_synthetics_test" "test_browser" {
 ### Optional
 
 - **assertion** (Block List) Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--assertion))
-- **assertions** (List of Map of String, Optional, Deprecated) List of assertions.
+- **assertions** (List of Map of String, Optional, Deprecated) List of assertions. **Deprecated.** Define `assertion` blocks instead.
 - **browser_step** (Block List) Steps for browser tests. (see [below for nested schema](#nestedblock--browser_step))
 - **browser_variable** (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
 - **config_variable** (Block List) Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--config_variable))
 - **device_ids** (List of String, Optional) Array with the different device IDs used to run the test. Allowed enum values: `laptop_large`, `tablet`, `mobile_small` (only available for `browser` tests).
 - **id** (String, Optional) The ID of this resource.
 - **message** (String, Optional) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.
-- **options** (Map of String, Optional, Deprecated)
+- **options** (Map of String, Optional, Deprecated) **Deprecated.** Define `options_list` blocks instead.
 - **options_list** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
-- **request** (Map of String, Optional, Deprecated) The synthetics test request. Required if `type = "api"`.
+- **request** (Map of String, Optional, Deprecated) The synthetics test request. Required if `type = "api"`. **Deprecated.** Define `request_definition` list with one element instead.
 - **request_basicauth** (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
 - **request_client_certificate** (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
 - **request_definition** (Block List, Max: 1) The synthetics test request. Required if `type = "api"`. (see [below for nested schema](#nestedblock--request_definition))
 - **request_headers** (Map of String, Optional) Header name and value map.
 - **request_query** (Map of String, Optional) Query arguments name and value map.
-- **step** (Block List, Deprecated) Steps for browser tests. (see [below for nested schema](#nestedblock--step))
+- **step** (Block List, Deprecated) Steps for browser tests. **Deprecated.** Define `browser_step` blocks instead. (see [below for nested schema](#nestedblock--step))
 - **subtype** (String, Optional) When `type` is `api`, choose from `http`, `ssl`, `tcp` or `dns`. Defaults to `http`.
 - **tags** (List of String, Optional) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).
-- **variable** (Block List, Deprecated) Variables used for a browser test steps. Multiple `browser_variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--variable))
+- **variable** (Block List, Deprecated) Variables used for a browser test steps. Multiple `browser_variable` blocks are allowed with the structure below. **Deprecated.** Define `browser_variable` blocks instead. (see [below for nested schema](#nestedblock--variable))
 
 ### Read-only
 
