@@ -19,7 +19,7 @@ data "datadog_role" "ro_role" {
 
 # Create a new Datadog user
 resource "datadog_user" "foo" {
-  email  = "new@example.com"
+  email = "new@example.com"
 
   roles = [data.datadog_role.ro_role.id]
 }
@@ -33,13 +33,13 @@ resource "datadog_user" "foo" {
 
 ### Optional
 
-- **access_role** (String, Optional, Deprecated) Role description for user. Can be `st` (standard user), `adm` (admin user) or `ro` (read-only user). Default is `st`. `access_role` is ignored for new users created with this resource. New users have to use the `roles` attribute.
+- **access_role** (String, Optional, Deprecated) **DEPRECATED** This parameter is replaced by `roles` and will be removed from the next Major version Role description for user. Can be `st` (standard user), `adm` (admin user) or `ro` (read-only user). Default is `st`. `access_role` is ignored for new users created with this resource. New users have to use the `roles` attribute.
 - **disabled** (Boolean, Optional) Whether the user is disabled.
-- **handle** (String, Optional, Deprecated) The user handle, must be a valid email.
+- **handle** (String, Optional, Deprecated) **DEPRECATED** This parameter is deprecated and will be removed from the next Major version The user handle, must be a valid email.
 - **id** (String, Optional) The ID of this resource.
-- **is_admin** (Boolean, Optional, Deprecated) Whether the user is an administrator. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
+- **is_admin** (Boolean, Optional, Deprecated) **DEPRECATED** This parameter is replaced by `roles` and will be removed from the next Major version Whether the user is an administrator. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
 - **name** (String, Optional) Name for user.
-- **role** (String, Optional, Deprecated) Role description for user. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
+- **role** (String, Optional, Deprecated) **DEPRECATED** This parameter was removed from the API and has no effect Role description for user. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.
 - **roles** (Set of String, Optional) A list a role IDs to assign to the user.
 - **send_user_invitation** (Boolean, Optional) Whether an invitation email should be sent when the user is created.
 
