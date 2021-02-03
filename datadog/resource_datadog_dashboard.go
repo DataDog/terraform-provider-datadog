@@ -4409,6 +4409,7 @@ func getFormulaSchema() *schema.Schema {
 							"order": {
 								Type:     schema.TypeString,
 								Optional: true,
+								Default:  "desc",
 							},
 						},
 					},
@@ -4684,6 +4685,17 @@ func buildDatadogFormula(data map[string]interface{}) datadogV1.WidgetFormula {
 	}
 	if alias, ok := data["alias"].(string); ok && len(alias) != 0 {
 		formula.SetAlias(alias)
+	}
+	if limits, ok := data["limit"].([]interface{}); ok && len(limits) != 0 {
+		datadogLimit := datadogV1.NewWidgetFormulaLimit()
+		limit := limits[0].(map[string]interface{})
+		if count, ok := limit["count"].(int); ok && count != 0 {
+			datadogLimit.SetCount(int64(count))
+		}
+		if order, ok := limit["order"].(string); ok && len(order) > 0 {
+			datadogLimit.SetOrder(datadogV1.QuerySortOrder(order))
+		}
+		formula.SetLimit(*datadogLimit)
 	}
 	return formula
 }
@@ -6001,6 +6013,16 @@ func buildTerraformFormula(datadogFormulas []datadogV1.WidgetFormula) []map[stri
 		terraformFormula["formula_expression"] = formula.GetFormula()
 		if alias, ok := formula.GetAliasOk(); ok {
 			terraformFormula["alias"] = alias
+		}
+		if limit, ok := formula.GetLimitOk(); ok {
+			terraFormLimit := make(map[string]interface{})
+			if count, ok := limit.GetCountOk(); ok {
+				terraFormLimit["count"] = count
+			}
+			if order, ok := limit.GetOrderOk(); ok {
+				terraFormLimit["order"] = string(*order)
+			}
+			terraformFormula["limit"] = []map[string]interface{}{terraFormLimit}
 		}
 		formulas[i] = terraformFormula
 	}

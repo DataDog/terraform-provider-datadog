@@ -456,6 +456,9 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 			request {
 				formula {
 					formula_expression = "my_query_1 + my_query_2"
+					limit {
+						count = 5
+					}
 				}
 				query {
 					 metric_query {
