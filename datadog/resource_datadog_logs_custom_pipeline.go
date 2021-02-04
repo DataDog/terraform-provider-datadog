@@ -83,6 +83,7 @@ var ddProcessorTypes = map[string]string{
 var arithmeticProcessor = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
+	Description: "Arithmetic Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#arithmetic-processor)",
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
@@ -118,6 +119,7 @@ var arithmeticProcessor = &schema.Schema{
 var attributeRemapper = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
+	Description: "Attribute Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#remapper)",
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
@@ -142,6 +144,7 @@ var attributeRemapper = &schema.Schema{
 var categoryProcessor = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
+	Description: "Category Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#category-processor)",
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
@@ -166,6 +169,7 @@ var categoryProcessor = &schema.Schema{
 var dateRemapper = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
+	Description: "Date Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-date-remapper)",
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: sourceRemapper,
@@ -175,6 +179,7 @@ var dateRemapper = &schema.Schema{
 var geoIPParser = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
+	Description: "Date GeoIP Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#geoip-parser)",
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
@@ -189,6 +194,7 @@ var geoIPParser = &schema.Schema{
 var grokParser = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
+	Description: "Grok Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#grok-parser)",
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
@@ -219,6 +225,7 @@ var grokParser = &schema.Schema{
 var lookupProcessor = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
+	Description: "Lookup Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor)",
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
@@ -240,6 +247,7 @@ var lookupProcessor = &schema.Schema{
 var messageRemapper = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
+	Description: "Message Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-message-remapper)",
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: sourceRemapper,
@@ -249,6 +257,7 @@ var messageRemapper = &schema.Schema{
 var serviceRemapper = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
+	Description: "Service Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#service-remapper)",
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: sourceRemapper,
@@ -258,6 +267,7 @@ var serviceRemapper = &schema.Schema{
 var statusRemmaper = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
+	Description: "Status Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-status-remapper)",
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: sourceRemapper,
@@ -267,6 +277,7 @@ var statusRemmaper = &schema.Schema{
 var stringBuilderProcessor = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
+	Description: "String Builder Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#string-builder-processor)",
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
@@ -282,6 +293,7 @@ var stringBuilderProcessor = &schema.Schema{
 var traceIDRemapper = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
+	Description: "Trace ID Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#trace-remapper)",
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: sourceRemapper,
@@ -297,6 +309,7 @@ var sourceRemapper = map[string]*schema.Schema{
 var urlParser = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
+	Description: "URL Parser Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#url-parser)",
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
@@ -312,6 +325,7 @@ var urlParser = &schema.Schema{
 var userAgentParser = &schema.Schema{
 	Type:     schema.TypeList,
 	MaxItems: 1,
+	Description: "User-Agent Parser Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#user-agent-parser)",
 	Optional: true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
@@ -333,7 +347,7 @@ func resourceDatadogLogsCustomPipeline() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
-		Description: "Provides a Datadog Logs Pipeline API resource, which is used to create and manage Datadog logs custom pipelines. Each `datadog_logs_custom_pipeline` resource defines a complete pipeline. The order of the pipelines is maintained in a different resource: `datadog_logs_pipeline_order`. When creating a new pipeline, you need to **explicitly** add this pipeline to the `datadog_logs_pipeline_order` resource to track the pipeline. Similarly, when a pipeline needs to be destroyed, remove its references from the `datadog_logs_pipeline_order` resource.",
+		Description: "Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/) resource, which is used to create and manage Datadog logs custom pipelines. Each `datadog_logs_custom_pipeline` resource defines a complete pipeline. The order of the pipelines is maintained in a different resource: `datadog_logs_pipeline_order`. When creating a new pipeline, you need to **explicitly** add this pipeline to the `datadog_logs_pipeline_order` resource to track the pipeline. Similarly, when a pipeline needs to be destroyed, remove its references from the `datadog_logs_pipeline_order` resource.",
 		Schema: getPipelineSchema(false),
 	}
 }

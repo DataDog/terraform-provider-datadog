@@ -2,12 +2,12 @@
 page_title: "datadog_logs_custom_pipeline Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Logs Pipeline API resource, which is used to create and manage Datadog logs custom pipelines. Each datadog_logs_custom_pipeline resource defines a complete pipeline. The order of the pipelines is maintained in a different resource: datadog_logs_pipeline_order. When creating a new pipeline, you need to explicitly add this pipeline to the datadog_logs_pipeline_order resource to track the pipeline. Similarly, when a pipeline needs to be destroyed, remove its references from the datadog_logs_pipeline_order resource.
+  Provides a Datadog Logs Pipeline API https://docs.datadoghq.com/api/v1/logs-pipelines/ resource, which is used to create and manage Datadog logs custom pipelines. Each datadog_logs_custom_pipeline resource defines a complete pipeline. The order of the pipelines is maintained in a different resource: datadog_logs_pipeline_order. When creating a new pipeline, you need to explicitly add this pipeline to the datadog_logs_pipeline_order resource to track the pipeline. Similarly, when a pipeline needs to be destroyed, remove its references from the datadog_logs_pipeline_order resource.
 ---
 
 # Resource `datadog_logs_custom_pipeline`
 
-Provides a Datadog Logs Pipeline API resource, which is used to create and manage Datadog logs custom pipelines. Each `datadog_logs_custom_pipeline` resource defines a complete pipeline. The order of the pipelines is maintained in a different resource: `datadog_logs_pipeline_order`. When creating a new pipeline, you need to **explicitly** add this pipeline to the `datadog_logs_pipeline_order` resource to track the pipeline. Similarly, when a pipeline needs to be destroyed, remove its references from the `datadog_logs_pipeline_order` resource.
+Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/) resource, which is used to create and manage Datadog logs custom pipelines. Each `datadog_logs_custom_pipeline` resource defines a complete pipeline. The order of the pipelines is maintained in a different resource: `datadog_logs_pipeline_order`. When creating a new pipeline, you need to **explicitly** add this pipeline to the `datadog_logs_pipeline_order` resource to track the pipeline. Similarly, when a pipeline needs to be destroyed, remove its references from the `datadog_logs_pipeline_order` resource.
 
 ## Example Usage
 
@@ -188,21 +188,21 @@ Required:
 
 Optional:
 
-- **arithmetic_processor** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--arithmetic_processor))
-- **attribute_remapper** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--attribute_remapper))
-- **category_processor** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--category_processor))
-- **date_remapper** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--date_remapper))
-- **geo_ip_parser** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--geo_ip_parser))
-- **grok_parser** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--grok_parser))
-- **lookup_processor** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--lookup_processor))
-- **message_remapper** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--message_remapper))
+- **arithmetic_processor** (Block List, Max: 1) Arithmetic Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#arithmetic-processor) (see [below for nested schema](#nestedblock--processor--arithmetic_processor))
+- **attribute_remapper** (Block List, Max: 1) Attribute Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#remapper) (see [below for nested schema](#nestedblock--processor--attribute_remapper))
+- **category_processor** (Block List, Max: 1) Category Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#category-processor) (see [below for nested schema](#nestedblock--processor--category_processor))
+- **date_remapper** (Block List, Max: 1) Date Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-date-remapper) (see [below for nested schema](#nestedblock--processor--date_remapper))
+- **geo_ip_parser** (Block List, Max: 1) Date GeoIP Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#geoip-parser) (see [below for nested schema](#nestedblock--processor--geo_ip_parser))
+- **grok_parser** (Block List, Max: 1) Grok Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#grok-parser) (see [below for nested schema](#nestedblock--processor--grok_parser))
+- **lookup_processor** (Block List, Max: 1) Lookup Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor) (see [below for nested schema](#nestedblock--processor--lookup_processor))
+- **message_remapper** (Block List, Max: 1) Message Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-message-remapper) (see [below for nested schema](#nestedblock--processor--message_remapper))
 - **pipeline** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline))
-- **service_remapper** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--service_remapper))
-- **status_remapper** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--status_remapper))
-- **string_builder_processor** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--string_builder_processor))
-- **trace_id_remapper** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--trace_id_remapper))
-- **url_parser** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--url_parser))
-- **user_agent_parser** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--user_agent_parser))
+- **service_remapper** (Block List, Max: 1) Service Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#service-remapper) (see [below for nested schema](#nestedblock--processor--service_remapper))
+- **status_remapper** (Block List, Max: 1) Status Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-status-remapper) (see [below for nested schema](#nestedblock--processor--status_remapper))
+- **string_builder_processor** (Block List, Max: 1) String Builder Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#string-builder-processor) (see [below for nested schema](#nestedblock--processor--string_builder_processor))
+- **trace_id_remapper** (Block List, Max: 1) Trace ID Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#trace-remapper) (see [below for nested schema](#nestedblock--processor--trace_id_remapper))
+- **url_parser** (Block List, Max: 1) URL Parser Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#url-parser) (see [below for nested schema](#nestedblock--processor--url_parser))
+- **user_agent_parser** (Block List, Max: 1) User-Agent Parser Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#user-agent-parser) (see [below for nested schema](#nestedblock--processor--user_agent_parser))
 
 <a id="nestedblock--processor--arithmetic_processor"></a>
 ### Nested Schema for `processor.arithmetic_processor`
@@ -375,20 +375,20 @@ Required:
 
 Optional:
 
-- **arithmetic_processor** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--arithmetic_processor))
-- **attribute_remapper** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--attribute_remapper))
-- **category_processor** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--category_processor))
-- **date_remapper** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--date_remapper))
-- **geo_ip_parser** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--geo_ip_parser))
-- **grok_parser** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--grok_parser))
-- **lookup_processor** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--lookup_processor))
-- **message_remapper** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--message_remapper))
-- **service_remapper** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--service_remapper))
-- **status_remapper** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--status_remapper))
-- **string_builder_processor** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--string_builder_processor))
-- **trace_id_remapper** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--trace_id_remapper))
-- **url_parser** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--url_parser))
-- **user_agent_parser** (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--user_agent_parser))
+- **arithmetic_processor** (Block List, Max: 1) Arithmetic Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#arithmetic-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--arithmetic_processor))
+- **attribute_remapper** (Block List, Max: 1) Attribute Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--attribute_remapper))
+- **category_processor** (Block List, Max: 1) Category Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#category-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--category_processor))
+- **date_remapper** (Block List, Max: 1) Date Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-date-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--date_remapper))
+- **geo_ip_parser** (Block List, Max: 1) Date GeoIP Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#geoip-parser) (see [below for nested schema](#nestedblock--processor--pipeline--processor--geo_ip_parser))
+- **grok_parser** (Block List, Max: 1) Grok Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#grok-parser) (see [below for nested schema](#nestedblock--processor--pipeline--processor--grok_parser))
+- **lookup_processor** (Block List, Max: 1) Lookup Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--lookup_processor))
+- **message_remapper** (Block List, Max: 1) Message Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-message-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--message_remapper))
+- **service_remapper** (Block List, Max: 1) Service Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#service-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--service_remapper))
+- **status_remapper** (Block List, Max: 1) Status Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-status-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--status_remapper))
+- **string_builder_processor** (Block List, Max: 1) String Builder Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#string-builder-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--string_builder_processor))
+- **trace_id_remapper** (Block List, Max: 1) Trace ID Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#trace-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--trace_id_remapper))
+- **url_parser** (Block List, Max: 1) URL Parser Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#url-parser) (see [below for nested schema](#nestedblock--processor--pipeline--processor--url_parser))
+- **user_agent_parser** (Block List, Max: 1) User-Agent Parser Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#user-agent-parser) (see [below for nested schema](#nestedblock--processor--pipeline--processor--user_agent_parser))
 
 <a id="nestedblock--processor--pipeline--processor--arithmetic_processor"></a>
 ### Nested Schema for `processor.pipeline.processor.user_agent_parser`
