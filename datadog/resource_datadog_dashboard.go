@@ -6066,81 +6066,6 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1
 	return datadogQuery
 }
 
-func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition) map[string]interface{} {
-	terraformQuery := map[string]interface{}{}
-	// Index
-	terraformQuery["index"] = datadogQuery.GetIndex()
-	// Compute
-	if compute, ok := datadogQuery.GetComputeOk(); ok {
-		// Set in deprecated field if that's what's in the config, set in new field otherwise
-		if _, ok := k.GetOkWith("compute"); ok {
-			terraformQuery["compute"] = buildTerraformApmOrLogQueryComputeDeprecated(compute)
-		} else {
-			terraformQuery["compute_query"] = []map[string]interface{}{buildTerraformApmOrLogQueryCompute(compute)}
-		}
-	}
-	// Multi-compute
-	if multiCompute, ok := datadogQuery.GetMultiComputeOk(); ok {
-		terraformComputeList := make([]map[string]interface{}, len(*multiCompute))
-		for i, compute := range *multiCompute {
-			terraformCompute := map[string]interface{}{
-				"aggregation": compute.GetAggregation(),
-			}
-			if v, ok := compute.GetFacetOk(); ok {
-				terraformCompute["facet"] = *v
-			}
-			if compute.Interval != nil {
-				terraformCompute["interval"] = *compute.Interval
-			}
-			terraformComputeList[i] = terraformCompute
-		}
-		terraformQuery["multi_compute"] = terraformComputeList
-	}
-	// Search
-	if datadogQuery.Search != nil {
-		// Set in deprecated field if that's what's in the config, set in new field otherwise
-		if _, ok := k.GetOkWith("search"); ok {
-			terraformQuery["search"] = map[string]interface{}{"query": datadogQuery.Search.Query}
-		} else {
-			terraformQuery["search_query"] = datadogQuery.Search.Query
-		}
-	}
-	// GroupBy
-	if v, ok := datadogQuery.GetGroupByOk(); ok {
-		terraformGroupBys := make([]map[string]interface{}, len(datadogQuery.GetGroupBy()))
-		for i, groupBy := range *v {
-			// Facet
-			terraformGroupBy := map[string]interface{}{
-				"facet": groupBy.GetFacet(),
-			}
-			// Limit
-			if v, ok := groupBy.GetLimitOk(); ok {
-				terraformGroupBy["limit"] = *v
-			}
-			// Sort
-			if v, ok := groupBy.GetSortOk(); ok {
-				sort := map[string]string{
-					"aggregation": v.GetAggregation(),
-					"order":       string(v.GetOrder()),
-				}
-				if groupBy.Sort.Facet != nil {
-					sort["facet"] = *groupBy.Sort.Facet
-				}
-				// Set in deprecated field if that's what's in the config, set in new field otherwise
-				if _, ok := k.GetOkWith(fmt.Sprintf("group_by.%d.sort", i)); ok {
-					terraformGroupBy["sort"] = sort
-				} else {
-					terraformGroupBy["sort_query"] = []map[string]string{sort}
-				}
-			}
-
-			terraformGroupBys[i] = terraformGroupBy
-		}
-		terraformQuery["group_by"] = &terraformGroupBys
-	}
-	return terraformQuery
-}
-
 func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefinition) []map[string]interface{} {
 	queries := make([]map[string]interface{}, len(datadogQueries))
 	for i, query := range datadogQueries {
@@ -6285,6 +6210,109 @@ func buildTerraformFormula(datadogFormulas []datadogV1.WidgetFormula) []map[stri
 		formulas[i] = terraformFormula
 	}
 	return formulas
+}
+
+func buildTerraformApmOrLogQueryComputeDeprecated(compute *datadogV1.LogsQueryCompute) map[string]string {
+	terraformCompute := map[string]string{
+		"aggregation": compute.GetAggregation(),
+	}
+	if v, ok := compute.GetFacetOk(); ok {
+		terraformCompute["facet"] = *v
+	}
+	if v, ok := compute.GetIntervalOk(); ok {
+		terraformCompute["interval"] = strconv.FormatInt(*v, 10)
+	}
+
+	return terraformCompute
+}
+
+func buildTerraformApmOrLogQueryCompute(compute *datadogV1.LogsQueryCompute) map[string]interface{} {
+	terraformCompute := map[string]interface{}{
+		"aggregation": compute.GetAggregation(),
+	}
+	if v, ok := compute.GetFacetOk(); ok {
+		terraformCompute["facet"] = *v
+	}
+	if v, ok := compute.GetIntervalOk(); ok {
+		terraformCompute["interval"] = *v
+	}
+
+	return terraformCompute
+}
+
+func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition, k *ResourceDataKey) map[string]interface{} {
+	terraformQuery := map[string]interface{}{}
+	// Index
+	terraformQuery["index"] = datadogQuery.GetIndex()
+	// Compute
+	if compute, ok := datadogQuery.GetComputeOk(); ok {
+		// Set in deprecated field if that's what's in the config, set in new field otherwise
+		if _, ok := k.GetOkWith("compute"); ok {
+			terraformQuery["compute"] = buildTerraformApmOrLogQueryComputeDeprecated(compute)
+		} else {
+			terraformQuery["compute_query"] = []map[string]interface{}{buildTerraformApmOrLogQueryCompute(compute)}
+		}
+	}
+	// Multi-compute
+	if multiCompute, ok := datadogQuery.GetMultiComputeOk(); ok {
+		terraformComputeList := make([]map[string]interface{}, len(*multiCompute))
+		for i, compute := range *multiCompute {
+			terraformCompute := map[string]interface{}{
+				"aggregation": compute.GetAggregation(),
+			}
+			if v, ok := compute.GetFacetOk(); ok {
+				terraformCompute["facet"] = *v
+			}
+			if compute.Interval != nil {
+				terraformCompute["interval"] = *compute.Interval
+			}
+			terraformComputeList[i] = terraformCompute
+		}
+		terraformQuery["multi_compute"] = terraformComputeList
+	}
+	// Search
+	if datadogQuery.Search != nil {
+		// Set in deprecated field if that's what's in the config, set in new field otherwise
+		if _, ok := k.GetOkWith("search"); ok {
+			terraformQuery["search"] = map[string]interface{}{"query": datadogQuery.Search.Query}
+		} else {
+			terraformQuery["search_query"] = datadogQuery.Search.Query
+		}
+	}
+	// GroupBy
+	if v, ok := datadogQuery.GetGroupByOk(); ok {
+		terraformGroupBys := make([]map[string]interface{}, len(datadogQuery.GetGroupBy()))
+		for i, groupBy := range *v {
+			// Facet
+			terraformGroupBy := map[string]interface{}{
+				"facet": groupBy.GetFacet(),
+			}
+			// Limit
+			if v, ok := groupBy.GetLimitOk(); ok {
+				terraformGroupBy["limit"] = *v
+			}
+			// Sort
+			if v, ok := groupBy.GetSortOk(); ok {
+				sort := map[string]string{
+					"aggregation": v.GetAggregation(),
+					"order":       string(v.GetOrder()),
+				}
+				if groupBy.Sort.Facet != nil {
+					sort["facet"] = *groupBy.Sort.Facet
+				}
+				// Set in deprecated field if that's what's in the config, set in new field otherwise
+				if _, ok := k.GetOkWith(fmt.Sprintf("group_by.%d.sort", i)); ok {
+					terraformGroupBy["sort"] = sort
+				} else {
+					terraformGroupBy["sort_query"] = []map[string]string{sort}
+				}
+			}
+
+			terraformGroupBys[i] = terraformGroupBy
+		}
+		terraformQuery["group_by"] = &terraformGroupBys
+	}
+	return terraformQuery
 }
 
 // Process Query
