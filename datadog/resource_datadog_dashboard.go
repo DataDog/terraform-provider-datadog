@@ -4602,7 +4602,7 @@ func getFormulaQuerySchema() *schema.Schema {
 					Type:     schema.TypeList,
 					Optional: true,
 					MaxItems: 1,
-					Description: "A timeseries formula and functions events query."
+					Description: "A timeseries formula and functions events query.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"data_source": {
