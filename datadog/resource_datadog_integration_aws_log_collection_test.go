@@ -19,17 +19,22 @@ resource "datadog_integration_aws" "account" {
   role_name                        = "testacc-datadog-integration-role"
 }
 
-resource "datadog_integration_aws_log_collection" "main" {
-  account_id = "%s"
-  services = ["lambda"]
+resource "datadog_integration_aws_lambda_arn" "lambda" {
+  account_id = datadog_integration_aws.account.account_id
+  lambda_arn = "arn:aws:lambda:us-east-1:%s:function:datadog-forwarder-Forwarder"
   depends_on = [datadog_integration_aws.account]
+}
+
+resource "datadog_integration_aws_log_collection" "main" {
+  account_id = datadog_integration_aws.account.account_id
+  services = ["lambda"]
+  depends_on = [datadog_integration_aws_lambda_arn.lambda]
 }`, uniq, uniq)
 }
 
 func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	accountID := uniqueAWSAccountID(clock, t)
-	accountID = "1234567890"
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
