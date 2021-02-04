@@ -26,6 +26,25 @@ var (
 	baseIpRangesSubdomain = "ip-ranges"
 )
 
+func init() {
+	// Set descriptions to support markdown syntax, this will be used in document generation
+	// and the language server.
+	//schema.DescriptionKind = configschema.StringMarkdown
+
+	// Customize the content of descriptions when output. For example you can add defaults on
+	// to the exported descriptions if present.
+	schema.SchemaDescriptionBuilder = func(s *schema.Schema) string {
+		desc := s.Description
+		//if s.Default != nil {
+		//	desc += fmt.Sprintf(" Defaults to `%v`.", s.Default)
+		//}
+		if s.Deprecated != "" {
+			desc = fmt.Sprintf("%s **Deprecated.** %s", desc, s.Deprecated)
+		}
+		return strings.TrimSpace(desc)
+	}
+}
+
 func Provider() terraform.ResourceProvider {
 	datadogProvider = &schema.Provider{
 		Schema: map[string]*schema.Schema{

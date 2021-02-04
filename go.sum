@@ -35,8 +35,8 @@ cloud.google.com/go/storage v1.10.0/go.mod h1:FLPqc6j+Ki4BU591ie1oL6qBQGu2Bl/tZ9
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/DataDog/datadog-api-client-go v1.0.0-beta.14.0.20210122081158-6572f0eda74d h1:c3OZXTnGFtVbS9FvSAGI3GhdX7RRGX+5h10lhYlyHDA=
-github.com/DataDog/datadog-api-client-go v1.0.0-beta.14.0.20210122081158-6572f0eda74d/go.mod h1:/bMeu+q33QzX2JuO5PkGkhU1VYOXIXKEPF6Ck4yR06M=
+github.com/DataDog/datadog-api-client-go v1.0.0-beta.14.0.20210201224620-a672b0849e55 h1:ZxXp0lPDV4oES1vnjGDFDn3jDGB9dKJis3AQJY/e/sQ=
+github.com/DataDog/datadog-api-client-go v1.0.0-beta.14.0.20210201224620-a672b0849e55/go.mod h1:/bMeu+q33QzX2JuO5PkGkhU1VYOXIXKEPF6Ck4yR06M=
 github.com/DataDog/datadog-go v3.6.0+incompatible h1:ILg7c5Y1KvZFDOaVS0higGmJ5Fal5O1KQrkrT9j6dSM=
 github.com/DataDog/datadog-go v3.6.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/agext/levenshtein v1.2.1/go.mod h1:JEDfjyjHDjOF/1e4FlBE/PkbqA9OfWu2ki2W0IB5558=
@@ -352,8 +352,8 @@ github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UV
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
 github.com/stretchr/testify v1.5.1 h1:nOGnQDM7FYENwehXlg/kFVnos3rEvtKTjRvOWSzb6H4=
 github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
-github.com/therve/terraform-plugin-sdk v1.16.1-0.20210130134147-8b29b18683ec h1:1mbfbE+0cRwqK4FIEaYXHc5MfKTbjZX2QI9PWkLDLR4=
-github.com/therve/terraform-plugin-sdk v1.16.1-0.20210130134147-8b29b18683ec/go.mod h1:5sVxrwW6/xzFhZyql+Q9zXCUEJaGWcBIxBbZFLpVXOI=
+github.com/therve/terraform-plugin-sdk v1.16.1-0.20210202202613-4d59f03d3b5f h1:jzFwako/x4rwQE0uGRudx8eZwKFjOXIPZuz9zNnatxA=
+github.com/therve/terraform-plugin-sdk v1.16.1-0.20210202202613-4d59f03d3b5f/go.mod h1:5sVxrwW6/xzFhZyql+Q9zXCUEJaGWcBIxBbZFLpVXOI=
 github.com/tinylib/msgp v1.1.2 h1:gWmO7n0Ys2RBEb7GPYB9Ujq8Mk5p2U08lRnmMcGy6BQ=
 github.com/tinylib/msgp v1.1.2/go.mod h1:+d+yLhGm8mzTaHzB+wgMYrodPfmZrzkirds8fDWklFE=
 github.com/ulikunitz/xz v0.5.5 h1:pFrO0lVpTBXLpYw+pnLj6TbvHuyjXMfjGeCwSqCVwok=
