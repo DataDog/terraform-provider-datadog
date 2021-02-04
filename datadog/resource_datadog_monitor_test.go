@@ -769,6 +769,30 @@ func TestAccDatadogMonitor_ZeroDelay(t *testing.T) {
 	})
 }
 
+func TestAccDatadogMonitor_RestrictedRoles(t *testing.T) {
+	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	monitorName := uniqueEntityName(clock, t)
+	defer cleanup(t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorConfigRestrictedRoles(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "restricted_roles.#", "1"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogMonitorSilenceZero(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
@@ -1208,6 +1232,26 @@ resource "datadog_monitor" "foo" {
 
   new_host_delay = 0
 }`, uniq)
+}
+
+func testAccCheckDatadogMonitorConfigRestrictedRoles(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_role" "foo" {
+  name      = "%s"
+}
+
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "query alert"
+  message = "some message Notify: @hipchat-channel"
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+  thresholds = {
+	critical = "2.0"
+  }
+
+  restricted_roles = ["${datadog_role.foo.id}"]
+}`, uniq, uniq)
 }
 
 func destroyHelper(s *terraform.State, client *datadog.Client) error {

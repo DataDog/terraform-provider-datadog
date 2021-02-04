@@ -47,7 +47,22 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				},
 				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTestDetailsSubTypeFromValue),
 			},
-			"request": syntheticsTestRequest(),
+			"request": {
+				Description:   "The synthetics test request. Required if `type = \"api\"`.",
+				Deprecated:    "Define `request_definition` list with one element instead.",
+				ConflictsWith: []string{"request_definition"},
+				Type:          schema.TypeMap,
+				Optional:      true,
+				Elem:          syntheticsTestRequest(),
+			},
+			"request_definition": {
+				Description:   "The synthetics test request. Required if `type = \"api\"`.",
+				ConflictsWith: []string{"request"},
+				Type:          schema.TypeList,
+				MaxItems:      1,
+				Optional:      true,
+				Elem:          syntheticsTestRequest(),
+			},
 			"request_headers": {
 				Description: "Header name and value map.",
 				Type:        schema.TypeMap,
@@ -96,7 +111,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Type:          schema.TypeList,
 				Optional:      true,
 				ConflictsWith: []string{"assertion"},
-				Deprecated:    "Use assertion instead",
+				Deprecated:    "Define `assertion` blocks instead.",
 				Elem: &schema.Schema{
 					Type: schema.TypeMap,
 				},
@@ -214,51 +229,44 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 	}
 }
 
-func syntheticsTestRequest() *schema.Schema {
-	return &schema.Schema{
-		Description: "The synthetics test request. Required if `type = \"api\"` and `subtype = \"http\"`.",
-		Type:        schema.TypeMap,
-		Required:    true,
-		Elem: &schema.Resource{
-			Schema: map[string]*schema.Schema{
-				"method": {
-					Description:  "The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.",
-					Type:         schema.TypeString,
-					Optional:     true,
-					ValidateFunc: validateEnumValue(datadogV1.NewHTTPMethodFromValue),
-				},
-				"url": {
-					Description: "The URL to send the request to.",
-					Type:        schema.TypeString,
-					Optional:    true,
-				},
-				"body": {
-					Description: "The request body.",
-					Type:        schema.TypeString,
-					Optional:    true,
-				},
-				"timeout": {
-					Description: "Timeout in seconds for the test. Defaults to `60`.",
-					Type:        schema.TypeInt,
-					Optional:    true,
-					Default:     60,
-				},
-				"host": {
-					Description: "Host name to perform the test with.",
-					Type:        schema.TypeString,
-					Optional:    true,
-				},
-				"port": {
-					Description: "Port to use when performing the test.",
-					Type:        schema.TypeInt,
-					Optional:    true,
-					Default:     60,
-				},
-				"dns_server": {
-					Description: "DNS server to use for DNS tests (`subtype = \"dns\"`).",
-					Type:        schema.TypeString,
-					Optional:    true,
-				},
+func syntheticsTestRequest() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"method": {
+				Description:  "The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.",
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validateEnumValue(datadogV1.NewHTTPMethodFromValue),
+			},
+			"url": {
+				Description: "The URL to send the request to.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"body": {
+				Description: "The request body.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"timeout": {
+				Description: "Timeout in seconds for the test. Defaults to `60`.",
+				Type:        schema.TypeInt,
+				Optional:    true,
+			},
+			"host": {
+				Description: "Host name to perform the test with.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"port": {
+				Description: "Port to use when performing the test.",
+				Type:        schema.TypeInt,
+				Optional:    true,
+			},
+			"dns_server": {
+				Description: "DNS server to use for DNS tests (`subtype = \"dns\"`).",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 		},
 	}
@@ -295,7 +303,7 @@ func syntheticsTestOptions() *schema.Schema {
 	return &schema.Schema{
 		Type:          schema.TypeMap,
 		ConflictsWith: []string{"options_list"},
-		Deprecated:    "This parameter is deprecated, please use `options_list`",
+		Deprecated:    "Define `options_list` blocks instead.",
 		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
 			if key == "options.follow_redirects" || key == "options.accept_self_signed" || key == "options.allow_insecure" {
 				// TF nested schemas is limited to string values only
@@ -520,7 +528,7 @@ func syntheticsTestBrowserStep(detailedParams bool) *schema.Schema {
 
 	if detailedParams == false {
 		browserStepSchema.ConflictsWith = []string{"browser_step"}
-		browserStepSchema.Deprecated = "This parameter is deprecated, please use `browser_step`"
+		browserStepSchema.Deprecated = "Define `browser_step` blocks instead."
 	}
 
 	return &browserStepSchema
@@ -674,7 +682,7 @@ func syntheticsBrowserVariableLegacy() *schema.Schema {
 		Description:   "Variables used for a browser test steps. Multiple `browser_variable` blocks are allowed with the structure below.",
 		Optional:      true,
 		ConflictsWith: []string{"browser_variable"},
-		Deprecated:    "This parameter is deprecated, please use `browser_variable`",
+		Deprecated:    "Define `browser_variable` blocks instead.",
 		Elem:          syntheticsBrowserVariableElem(),
 	}
 }
@@ -854,29 +862,50 @@ func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType, assertio
 
 func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTestDetails {
 	request := datadogV1.NewSyntheticsTestRequest()
-	if attr, ok := d.GetOk("request.method"); ok {
+	k := NewResourceDataKey(d, "")
+	parts := ""
+	if v, ok := k.GetOkWith("request"); ok && v != nil && len(v.(map[string]interface{})) != 0 {
+		parts = "request"
+	} else {
+		parts = "request_definition.0"
+	}
+	k.Add(parts)
+	if attr, ok := k.GetOkWith("method"); ok {
 		request.SetMethod(datadogV1.HTTPMethod(attr.(string)))
 	}
-	if attr, ok := d.GetOk("request.url"); ok {
+	if attr, ok := k.GetOkWith("url"); ok {
 		request.SetUrl(attr.(string))
 	}
-	if attr, ok := d.GetOk("request.body"); ok {
+	if attr, ok := k.GetOkWith("body"); ok {
 		request.SetBody(attr.(string))
 	}
-	if attr, ok := d.GetOk("request.timeout"); ok {
-		timeoutInt, _ := strconv.Atoi(attr.(string))
+	if attr, ok := k.GetOkWith("timeout"); ok {
+		var timeoutInt int
+		// first try to convert to int if we're getting from the new TypeList field
+		timeoutInt, ok = attr.(int)
+		if !ok {
+			// if it's not an int, means we are in the deprecated TypeMap field, so convert from string
+			timeoutInt, _ = strconv.Atoi(attr.(string))
+		}
 		request.SetTimeout(float64(timeoutInt))
 	}
-	if attr, ok := d.GetOk("request.host"); ok {
+	if attr, ok := k.GetOkWith("host"); ok {
 		request.SetHost(attr.(string))
 	}
-	if attr, ok := d.GetOk("request.port"); ok {
-		portInt, _ := strconv.Atoi(attr.(string))
+	if attr, ok := k.GetOkWith("port"); ok {
+		var portInt int
+		// first try to convert to int if we're getting from the new TypeList field
+		portInt, ok = attr.(int)
+		if !ok {
+			// if it's not an int, means we are in the deprecated TypeMap field, so convert from string
+			portInt, _ = strconv.Atoi(attr.(string))
+		}
 		request.SetPort(int64(portInt))
 	}
-	if attr, ok := d.GetOk("request.dns_server"); ok {
+	if attr, ok := k.GetOkWith("dns_server"); ok {
 		request.SetDnsServer(attr.(string))
 	}
+	k.Remove(parts)
 	if attr, ok := d.GetOk("request_query"); ok {
 		query := attr.(map[string]interface{})
 		if len(query) > 0 {
@@ -1260,7 +1289,11 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 
 	config := syntheticsTest.GetConfig()
 	actualRequest := config.GetRequest()
-	localRequest := make(map[string]string)
+	localRequest := make(map[string]interface{})
+	setDeprecated := false
+	if v, ok := d.GetOk("request"); ok && len(v.(map[string]interface{})) != 0 {
+		setDeprecated = true
+	}
 	if actualRequest.HasBody() {
 		localRequest["body"] = actualRequest.GetBody()
 	}
@@ -1268,7 +1301,11 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		localRequest["method"] = convertToString(actualRequest.GetMethod())
 	}
 	if actualRequest.HasTimeout() {
-		localRequest["timeout"] = convertToString(actualRequest.GetTimeout())
+		if setDeprecated {
+			localRequest["timeout"] = convertToString(actualRequest.GetTimeout())
+		} else {
+			localRequest["timeout"] = actualRequest.GetTimeout()
+		}
 	}
 	if actualRequest.HasUrl() {
 		localRequest["url"] = actualRequest.GetUrl()
@@ -1277,12 +1314,25 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		localRequest["host"] = actualRequest.GetHost()
 	}
 	if actualRequest.HasPort() {
-		localRequest["port"] = convertToString(actualRequest.GetPort())
+		if setDeprecated {
+			localRequest["port"] = convertToString(actualRequest.GetPort())
+		} else {
+			localRequest["port"] = actualRequest.GetPort()
+		}
 	}
 	if actualRequest.HasDnsServer() {
 		localRequest["dns_server"] = convertToString(actualRequest.GetDnsServer())
 	}
-	d.Set("request", localRequest)
+	// Set deprecated field if that's what's in the config, new field otherwise
+	if setDeprecated {
+		if err := d.Set("request", localRequest); err != nil {
+			return err
+		}
+	} else {
+		if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
+			return err
+		}
+	}
 	d.Set("request_headers", actualRequest.Headers)
 	d.Set("request_query", actualRequest.GetQuery())
 	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok {
