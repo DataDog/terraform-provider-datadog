@@ -6066,6 +6066,20 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1
 	return datadogQuery
 }
 
+func buildDatadogGroupBySort(sort map[string]interface{}) *datadogV1.LogQueryDefinitionSort {
+	ddSort := &datadogV1.LogQueryDefinitionSort{}
+	if aggr, ok := sort["aggregation"].(string); ok && len(aggr) > 0 {
+		ddSort.SetAggregation(aggr)
+	}
+	if order, ok := sort["order"].(string); ok && len(order) > 0 {
+		ddSort.SetOrder(datadogV1.WidgetSort(order))
+	}
+	if facet, ok := sort["facet"].(string); ok && len(facet) > 0 {
+		ddSort.SetFacet(facet)
+	}
+	return ddSort
+}
+
 func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefinition) []map[string]interface{} {
 	queries := make([]map[string]interface{}, len(datadogQueries))
 	for i, query := range datadogQueries {
