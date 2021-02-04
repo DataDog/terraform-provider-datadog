@@ -268,9 +268,32 @@ func resourceDatadogMonitor() *schema.Resource {
 				Default:     true,
 			},
 			"locked": {
-				Description: "A boolean indicating whether changes to to this monitor should be restricted to the creator or admins. Defaults to `false`.",
-				Type:        schema.TypeBool,
-				Optional:    true,
+				Description:   "A boolean indicating whether changes to to this monitor should be restricted to the creator or admins. Defaults to `false`.",
+				Type:          schema.TypeBool,
+				Optional:      true,
+				ConflictsWith: []string{"restricted_roles"},
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// if restricted_roles is defined, ignore locked
+					if _, ok := d.GetOk("restricted_roles"); ok {
+						return true
+					}
+					return false
+				},
+			},
+			"restricted_roles": {
+				// Uncomment when generally available
+				// Description: "A list of role identifiers to associate with the monitor. Cannot be used with `locked`.",
+				Type:          schema.TypeSet,
+				Optional:      true,
+				Elem:          &schema.Schema{Type: schema.TypeString},
+				ConflictsWith: []string{"locked"},
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// if locked is defined, ignore restricted_roles
+					if _, ok := d.GetOk("locked"); ok {
+						return true
+					}
+					return false
+				},
 			},
 			"silenced": {
 				Description: "Each scope will be muted until the given POSIX timestamp or forever if the value is `0`. Use `-1` if you want to unmute the scope. Deprecated: the silenced parameter is being deprecated in favor of the downtime resource. This will be removed in the next major version of the Terraform Provider.",
@@ -451,6 +474,17 @@ func buildMonitorStruct(d BuiltResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	u.SetPriority(int64(d.Get("priority").(int)))
 	u.SetOptions(o)
 
+	roles := make([]string, 0)
+	if attr, ok := d.GetOk("restricted_roles"); ok {
+		for _, r := range attr.(*schema.Set).List() {
+			roles = append(roles, r.(string))
+		}
+		sort.Strings(roles)
+		// don't pass an empty array, it's not accepted
+		m.SetRestrictedRoles(roles)
+		u.SetRestrictedRoles(roles)
+	}
+
 	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
 		for _, s := range attr.(*schema.Set).List() {
@@ -603,6 +637,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("query", m.GetQuery())
 	d.Set("type", m.GetType())
 	d.Set("priority", m.GetPriority())
+	d.Set("restricted_roles", m.GetRestrictedRoles())
 
 	// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 	if _, ok := d.GetOk("thresholds"); ok {
