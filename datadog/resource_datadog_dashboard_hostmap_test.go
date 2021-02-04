@@ -4,63 +4,6 @@ import (
 	"testing"
 )
 
-// JSON export used as test scenario
-//{
-//   "notify_list":[],
-//   "description":"Created using the Datadog provider in Terraform",
-//   "author_name":"--redacted--",
-//   "template_variable_presets":[],
-//   "template_variables":[],
-//   "is_read_only":true,
-//   "id":"--redacted--",
-//   "title":"{{uniq}}",
-//   "url":"--redacted--",
-//   "created_at":"2020-10-07T20:59:53.507865+00:00",
-//   "modified_at":"2020-10-07T21:02:00.601049+00:00",
-//   "author_handle":"--redacted--",
-//   "widgets":[
-//      {
-//         "definition":{
-//            "style":{
-//               "fill_min":"10",
-//               "fill_max":"30",
-//               "palette":"YlOrRd",
-//               "palette_flip":true
-//            },
-//            "custom_links":[
-//               {
-//                  "link":"https://app.datadoghq.com/dashboard/lists",
-//                  "label":"Test Custom Link label"
-//               }
-//            ],
-//            "title_size":"16",
-//            "title":"system.cpu.idle, system.cpu.user",
-//            "title_align":"right",
-//            "node_type":"host",
-//            "no_metric_hosts":true,
-//            "group":[
-//               "region"
-//            ],
-//            "requests":{
-//               "size":{
-//                  "q":"max:system.cpu.user{env:prod} by {host}"
-//               },
-//               "fill":{
-//                  "q":"avg:system.cpu.idle{env:prod} by {host}"
-//               }
-//            },
-//            "no_group_hosts":true,
-//            "type":"hostmap",
-//            "scope":[
-//               "env:prod"
-//            ]
-//         },
-//         "id": "--redacted--"
-//      }
-//   ],
-//   "layout_type":"ordered"
-//}
-
 const datadogDashboardHostMapConfig = `
 resource "datadog_dashboard" "hostmap_dashboard" {
 	title         = "{{uniq}}"

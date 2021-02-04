@@ -300,7 +300,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				Type:        schema.TypeMap,
 				Optional:    true,
 				Elem:        schema.TypeInt,
-				Deprecated:  "use Downtime Resource instead",
+				Deprecated:  "Use the Downtime resource instead.",
 			},
 			"include_tags": {
 				Description: "A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to `true`.",
