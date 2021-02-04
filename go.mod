@@ -1,7 +1,7 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
-	github.com/DataDog/datadog-api-client-go v1.0.0-beta.14.0.20210122081158-6572f0eda74d
+	github.com/DataDog/datadog-api-client-go v1.0.0-beta.14.0.20210201224620-a672b0849e55
 	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
 	github.com/dnaeon/go-vcr v1.0.1
 	github.com/fatih/color v1.9.0 // indirect
@@ -21,4 +21,4 @@ require (
 go 1.15
 
 // Use custom fork with performance fix in DecoderSpec
-replace github.com/hashicorp/terraform-plugin-sdk v1.15.0 => github.com/therve/terraform-plugin-sdk v1.16.1-0.20210130134147-8b29b18683ec
+replace github.com/hashicorp/terraform-plugin-sdk v1.15.0 => github.com/therve/terraform-plugin-sdk v1.16.1-0.20210202202613-4d59f03d3b5f
