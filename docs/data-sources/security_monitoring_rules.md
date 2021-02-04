@@ -32,44 +32,61 @@ data "datadog_security_monitoring_rules" "test" {
 ### Read-only
 
 - **rule_ids** (List of String, Read-only) List of IDs of the matched rules.
-- **rules** (List of Object, Read-only) List of rules. (see [below for nested schema](#nestedatt--rules))
+- **rules** (Block List) List of rules. (see [below for nested schema](#nestedblock--rules))
 
-<a id="nestedatt--rules"></a>
+<a id="nestedblock--rules"></a>
 ### Nested Schema for `rules`
 
-- **case** (List of Object) (see [below for nested schema](#nestedobjatt--rules--case))
-- **enabled** (Boolean)
-- **message** (String)
-- **name** (String)
-- **options** (List of Object) (see [below for nested schema](#nestedobjatt--rules--options))
-- **query** (List of Object) (see [below for nested schema](#nestedobjatt--rules--query))
-- **tags** (List of String)
+Required:
 
-<a id="nestedobjatt--rules--case"></a>
+- **case** (Block List, Min: 1, Max: 5) Cases for generating signals. (see [below for nested schema](#nestedblock--rules--case))
+- **message** (String, Required) Message for generated signals.
+- **name** (String, Required) The name of the rule.
+- **query** (Block List, Min: 1) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--rules--query))
+
+Optional:
+
+- **enabled** (Boolean, Optional) Whether the rule is enabled.
+- **options** (Block List, Max: 1) Options on rules. (see [below for nested schema](#nestedblock--rules--options))
+- **tags** (List of String, Optional) Tags for generated signals.
+
+<a id="nestedblock--rules--case"></a>
 ### Nested Schema for `rules.case`
 
-- **condition** (String)
-- **name** (String)
-- **notifications** (List of String)
-- **status** (String)
+Required:
+
+- **status** (String, Required) Severity of the Security Signal.
+
+Optional:
+
+- **condition** (String, Optional) A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries.
+- **name** (String, Optional) Name of the case.
+- **notifications** (List of String, Optional) Notification targets for each rule case.
 
 
-<a id="nestedobjatt--rules--options"></a>
-### Nested Schema for `rules.options`
-
-- **evaluation_window** (Number)
-- **keep_alive** (Number)
-- **max_signal_duration** (Number)
-
-
-<a id="nestedobjatt--rules--query"></a>
+<a id="nestedblock--rules--query"></a>
 ### Nested Schema for `rules.query`
 
-- **aggregation** (String)
-- **distinct_fields** (List of String)
-- **group_by_fields** (List of String)
-- **metric** (String)
-- **name** (String)
-- **query** (String)
+Required:
+
+- **query** (String, Required) Query to run on logs.
+
+Optional:
+
+- **aggregation** (String, Optional) The aggregation type.
+- **distinct_fields** (List of String, Optional) Field for which the cardinality is measured. Sent as an array.
+- **group_by_fields** (List of String, Optional) Fields to group by.
+- **metric** (String, Optional) The target field to aggregate over when using the sum or max aggregations.
+- **name** (String, Optional) Name of the query.
+
+
+<a id="nestedblock--rules--options"></a>
+### Nested Schema for `rules.options`
+
+Required:
+
+- **evaluation_window** (Number, Required) A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time.
+- **keep_alive** (Number, Required) Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window.
+- **max_signal_duration** (Number, Required) A signal will “close” regardless of the query being matched once the time exceeds the maximum duration. This time is calculated from the first seen timestamp.
 
 
