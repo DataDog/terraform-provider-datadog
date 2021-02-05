@@ -15,27 +15,27 @@ Provides a Datadog synthetics test resource. This can be used to create and mana
 # Example Usage (Synthetics API test)
 # Create a new Datadog Synthetics API/HTTP test on https://www.example.org
 resource "datadog_synthetics_test" "test_api" {
-  type = "api"
+  type    = "api"
   subtype = "http"
   request_definition {
     method = "GET"
-    url = "https://www.example.org"
+    url    = "https://www.example.org"
   }
   request_headers = {
-    Content-Type = "application/json"
+    Content-Type   = "application/json"
     Authentication = "Token: 1234566789"
   }
   assertion {
-      type = "statusCode"
-      operator = "is"
-      target = "200"
+    type     = "statusCode"
+    operator = "is"
+    target   = "200"
   }
-  locations = [ "aws:eu-central-1" ]
+  locations = ["aws:eu-central-1"]
   options_list {
     tick_every = 900
 
     retry {
-      count = 2
+      count    = 2
       interval = 300
     }
 
@@ -43,9 +43,9 @@ resource "datadog_synthetics_test" "test_api" {
       renotify_interval = 100
     }
   }
-  name = "An API test on example.org"
+  name    = "An API test on example.org"
   message = "Notify @pagerduty"
-  tags = ["foo:bar", "foo", "env:test"]
+  tags    = ["foo:bar", "foo", "env:test"]
 
   status = "live"
 }
@@ -54,25 +54,25 @@ resource "datadog_synthetics_test" "test_api" {
 # Example Usage (Synthetics SSL test)
 # Create a new Datadog Synthetics API/SSL test on example.org
 resource "datadog_synthetics_test" "test_ssl" {
-  type = "api"
+  type    = "api"
   subtype = "ssl"
   request_definition {
     host = "example.org"
     port = 443
   }
   assertion {
-      type = "certificate"
-      operator = "isInMoreThan"
-      target = 30
+    type     = "certificate"
+    operator = "isInMoreThan"
+    target   = 30
   }
-  locations = [ "aws:eu-central-1" ]
+  locations = ["aws:eu-central-1"]
   options_list {
-    tick_every = 900
+    tick_every         = 900
     accept_self_signed = true
   }
-  name = "An API test on example.org"
+  name    = "An API test on example.org"
   message = "Notify @pagerduty"
-  tags = ["foo:bar", "foo", "env:test"]
+  tags    = ["foo:bar", "foo", "env:test"]
 
   status = "live"
 }
@@ -81,24 +81,24 @@ resource "datadog_synthetics_test" "test_ssl" {
 # Example Usage (Synthetics TCP test)
 # Create a new Datadog Synthetics API/TCP test on example.org
 resource "datadog_synthetics_test" "test_tcp" {
-  type = "api"
+  type    = "api"
   subtype = "tcp"
   request_definition {
     host = "example.org"
     port = 443
   }
   assertion {
-      type = "responseTime"
-      operator = "lessThan"
-      target = 2000
+    type     = "responseTime"
+    operator = "lessThan"
+    target   = 2000
   }
-  locations = [ "aws:eu-central-1" ]
+  locations = ["aws:eu-central-1"]
   options_list {
     tick_every = 900
   }
-  name = "An API test on example.org"
+  name    = "An API test on example.org"
   message = "Notify @pagerduty"
-  tags = ["foo:bar", "foo", "env:test"]
+  tags    = ["foo:bar", "foo", "env:test"]
 
   status = "live"
 }
@@ -107,24 +107,24 @@ resource "datadog_synthetics_test" "test_tcp" {
 # Example Usage (Synthetics DNS test)
 # Create a new Datadog Synthetics API/DNS test on example.org
 resource "datadog_synthetics_test" "test_dns" {
-  type = "api"
+  type    = "api"
   subtype = "dns"
   request_definition {
     host = "example.org"
   }
   assertion {
-    type = "recordSome"
+    type     = "recordSome"
     operator = "is"
     property = "A"
-    target = "0.0.0.0"
+    target   = "0.0.0.0"
   }
-  locations = [ "aws:eu-central-1" ]
+  locations = ["aws:eu-central-1"]
   options_list {
     tick_every = 900
   }
-  name = "An API test on example.org"
+  name    = "An API test on example.org"
   message = "Notify @pagerduty"
-  tags = ["foo:bar", "foo", "env:test"]
+  tags    = ["foo:bar", "foo", "env:test"]
 
   status = "live"
 }
@@ -148,7 +148,7 @@ resource "datadog_synthetics_test" "test_browser" {
     tick_every = 3600
   }
 
-  name = "A Browser test on example.org"
+  name    = "A Browser test on example.org"
   message = "Notify @qa"
   tags    = []
 
@@ -158,8 +158,8 @@ resource "datadog_synthetics_test" "test_browser" {
     name = "Check current url"
     type = "assertCurrentUrl"
     params = jsonencode({
-        "check": "contains",
-        "value": "datadoghq"
+      "check" : "contains",
+      "value" : "datadoghq"
     })
   }
 
