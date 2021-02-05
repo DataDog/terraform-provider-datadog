@@ -16,7 +16,8 @@ fi
 echo "==> Checking that examples pass with terraform fmt requirements"
 if [[ -n $(terraform fmt -recursive -check -diff examples)  ]]; then
     echo "Files in the \`example\` folder aren't terraform formatted"
-    echo "You can use the command \`make fmt\` to reformat"
+    echo "You can use the command \`make fmt\` to reformat the following:"
+    echo "$(terraform fmt -recursive -diff examples)"
     EXIT_CODE=2
 fi
 
