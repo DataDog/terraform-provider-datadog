@@ -54,9 +54,10 @@ vet:
 
 fmt:
 	gofmt -w $(GOFMT_FILES)
+	terraform fmt -recursive examples
 
 fmtcheck:
-	@sh -c "'$(CURDIR)/scripts/gofmtcheck.sh'"
+	@sh -c "'$(CURDIR)/scripts/fmtcheck.sh'"
 
 errcheck:
 	@sh -c "'$(CURDIR)/scripts/errcheck.sh'"
