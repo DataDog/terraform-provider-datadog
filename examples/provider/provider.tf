@@ -3,7 +3,7 @@
 terraform {
   required_providers {
     datadog = {
-      source  = "DataDog/datadog"
+      source = "DataDog/datadog"
     }
   }
 }

@@ -21,7 +21,7 @@ Use the navigation to the left to read about the available resources.
 terraform {
   required_providers {
     datadog = {
-      source  = "DataDog/datadog"
+      source = "DataDog/datadog"
     }
   }
 }

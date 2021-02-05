@@ -13,7 +13,7 @@ Use this data source to retrieve information about an existing monitor for use i
 
 ```terraform
 data "datadog_monitor" "test" {
-  name_filter = "My awesome monitor"
+  name_filter         = "My awesome monitor"
   monitor_tags_filter = ["foo:bar"]
 }
 ```
