@@ -170,7 +170,7 @@ func resourceDatadogSecurityMonitoringRuleCreate(d *schema.ResourceData, meta in
 	}
 	response, _, err := datadogClientV2.SecurityMonitoringApi.CreateSecurityMonitoringRule(authV2).Body(ruleCreate).Execute()
 	if err != nil {
-		return translateClientError(err, "error creating security monitoring rule")
+		return TranslateClientError(err, "error creating security monitoring rule")
 	}
 
 	d.SetId(response.GetId())
@@ -398,7 +398,7 @@ func resourceDatadogSecurityMonitoringRuleUpdate(d *schema.ResourceData, meta in
 	ruleUpdate := buildUpdatePayload(d)
 	response, _, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, d.Id()).Body(ruleUpdate).Execute()
 	if err != nil {
-		return translateClientError(err, "error updating security monitoring rule")
+		return TranslateClientError(err, "error updating security monitoring rule")
 	}
 
 	updateResourceDataFromResponse(d, response)
@@ -534,7 +534,7 @@ func resourceDatadogSecurityMonitoringRuleDelete(d *schema.ResourceData, meta in
 	authV2 := providerConf.AuthV2
 
 	if _, err := datadogClientV2.SecurityMonitoringApi.DeleteSecurityMonitoringRule(authV2, d.Id()).Execute(); err != nil {
-		return translateClientError(err, "error deleting security monitoring rule")
+		return TranslateClientError(err, "error deleting security monitoring rule")
 	}
 
 	return nil

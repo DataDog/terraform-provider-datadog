@@ -251,7 +251,7 @@ func dataSourceDatadogMonitorsRead(d *schema.ResourceData, meta interface{}) err
 
 	monitors, _, err := req.Execute()
 	if err != nil {
-		return translateClientError(err, "error querying monitors")
+		return TranslateClientError(err, "error querying monitors")
 	}
 	if len(monitors) > 1 {
 		return fmt.Errorf("your query returned more than one result, please try a more specific search criteria")

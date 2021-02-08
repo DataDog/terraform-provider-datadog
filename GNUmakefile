@@ -35,7 +35,7 @@ test: get-test-deps fmtcheck
 	go test -i $(TEST) || exit 1
 	echo $(TEST) | \
 		xargs -t -n4 gotestsum --format testname -- $(TESTARGS) -timeout=30s -parallel=4
-	DD_API_KEY=fake DD_APP_KEY=fake RECORD=false TF_ACC=1 gotestsum --format testname -- $(TEST) -v $(TESTARGS) -timeout=30m
+	DD_API_KEY=fake DD_APP_KEY=fake RECORD=false TF_ACC=1 gotestsum --format testname -- $(TEST) -v $(TESTARGS) -timeout=30m $(go list .\...)
 
 testacc: get-test-deps fmtcheck
 	TF_ACC=1 gotestsum --format testname -- $(TEST) -v $(TESTARGS) -timeout 120m

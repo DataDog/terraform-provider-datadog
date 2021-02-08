@@ -285,7 +285,7 @@ func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 					Required:    true,
 					Sensitive:   true,
 					StateFunc: func(val interface{}) string {
-						return convertToSha256(val.(string))
+						return ConvertToSha256(val.(string))
 					},
 				},
 				"filename": {
@@ -774,7 +774,7 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 	createdSyntheticsTest, _, err := datadogClientV1.SyntheticsApi.CreateTest(authV1).Body(*syntheticsTest).Execute()
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
-		return translateClientError(err, "error creating synthetics test")
+		return TranslateClientError(err, "error creating synthetics test")
 	}
 
 	// If the Create callback returns with or without an error without an ID set using SetId,
@@ -811,7 +811,7 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error getting synthetics test")
+		return TranslateClientError(err, "error getting synthetics test")
 	}
 
 	return updateSyntheticsTestLocalState(d, &syntheticsTest)
@@ -825,7 +825,7 @@ func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{
 	syntheticsTest := buildSyntheticsTestStruct(d)
 	if _, _, err := datadogClientV1.SyntheticsApi.UpdateTest(authV1, d.Id()).Body(*syntheticsTest).Execute(); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
-		return translateClientError(err, "error updating synthetics test")
+		return TranslateClientError(err, "error updating synthetics test")
 	}
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
@@ -840,7 +840,7 @@ func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{
 	syntheticsDeleteTestsPayload := datadogV1.SyntheticsDeleteTestsPayload{PublicIds: &[]string{d.Id()}}
 	if _, _, err := datadogClientV1.SyntheticsApi.DeleteTests(authV1).Body(syntheticsDeleteTestsPayload).Execute(); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
-		return translateClientError(err, "error deleting synthetics test")
+		return TranslateClientError(err, "error deleting synthetics test")
 	}
 
 	// The resource is assumed to be destroyed, and all state is removed.
@@ -1238,7 +1238,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 			step.SetAllowFailure(stepMap["allow_failure"].(bool))
 			step.SetTimeout(int64(stepMap["timeout"].(int)))
 			params := make(map[string]interface{})
-			getMetadataFromJSON([]byte(stepMap["params"].(string)), &params)
+			GetMetadataFromJSON([]byte(stepMap["params"].(string)), &params)
 			step.SetParams(params)
 
 			steps = append(steps, step)
@@ -1653,7 +1653,7 @@ func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []s
 	return
 }
 
-func convertToSha256(content string) string {
+func ConvertToSha256(content string) string {
 	data := []byte(content)
 	hash := sha256.Sum256(data)
 	return fmt.Sprintf("%x", hash[:])
@@ -1671,7 +1671,7 @@ func getCertificateStateValue(content string) string {
 		return content
 	}
 
-	return convertToSha256(content)
+	return ConvertToSha256(content)
 }
 
 func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
@@ -1756,7 +1756,7 @@ func convertStepParamsValueForConfig(stepType datadogV1.SyntheticsStepType, key 
 	switch key {
 	case "element", "email", "file", "request":
 		result := make(map[string]interface{})
-		getMetadataFromJSON([]byte(value.(string)), &result)
+		GetMetadataFromJSON([]byte(value.(string)), &result)
 		return result
 
 	case "playing_tab_id":

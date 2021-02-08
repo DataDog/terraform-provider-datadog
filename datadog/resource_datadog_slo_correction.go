@@ -109,7 +109,7 @@ func resourceDatadogSloCorrectionCreate(d *schema.ResourceData, meta interface{}
 
 	response, _, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.CreateSLOCorrection(auth).Body(*ddObject).Execute()
 	if err != nil {
-		return translateClientError(err, "error creating SloCorrection")
+		return TranslateClientError(err, "error creating SloCorrection")
 	}
 	sloCorrection := response.GetData()
 	d.SetId(sloCorrection.GetId())
@@ -132,7 +132,7 @@ func resourceDatadogSloCorrectionRead(d *schema.ResourceData, meta interface{}) 
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error reading SloCorrection")
+		return TranslateClientError(err, "error reading SloCorrection")
 	}
 	sloCorrectionGetData := sloCorrectionGetResp.GetData()
 	if sloCorrectionAttributes, ok := sloCorrectionGetData.GetAttributesOk(); ok {
@@ -168,7 +168,7 @@ func resourceDatadogSloCorrectionUpdate(d *schema.ResourceData, meta interface{}
 
 	_, _, err = datadogClient.ServiceLevelObjectiveCorrectionsApi.UpdateSLOCorrection(auth, id).Body(*ddObject).Execute()
 	if err != nil {
-		return translateClientError(err, "error creating SloCorrection")
+		return TranslateClientError(err, "error creating SloCorrection")
 	}
 
 	return resourceDatadogSloCorrectionRead(d, meta)
@@ -185,7 +185,7 @@ func resourceDatadogSloCorrectionDelete(d *schema.ResourceData, meta interface{}
 	_, err = datadogClient.ServiceLevelObjectiveCorrectionsApi.DeleteSLOCorrection(auth, id).Execute()
 
 	if err != nil {
-		return translateClientError(err, "error deleting SloCorrection")
+		return TranslateClientError(err, "error deleting SloCorrection")
 	}
 
 	return nil

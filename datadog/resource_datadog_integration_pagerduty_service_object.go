@@ -66,7 +66,7 @@ func resourceDatadogIntegrationPagerdutySOCreate(d *schema.ResourceData, meta in
 	so := buildIntegrationPagerdutySO(d)
 	if _, _, err := datadogClientV1.PagerDutyIntegrationApi.CreatePagerDutyIntegrationService(authV1).Body(*so).Execute(); err != nil {
 		// TODO: warn user that PD integration must be enabled to be able to create service objects
-		return translateClientError(err, "error creating PagerDuty integration service")
+		return TranslateClientError(err, "error creating PagerDuty integration service")
 	}
 	d.SetId(so.GetServiceName())
 
@@ -84,7 +84,7 @@ func resourceDatadogIntegrationPagerdutySORead(d *schema.ResourceData, meta inte
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error getting PagerDuty integration service")
+		return TranslateClientError(err, "error getting PagerDuty integration service")
 	}
 
 	d.Set("service_name", so.GetServiceName())
@@ -107,7 +107,7 @@ func resourceDatadogIntegrationPagerdutySOUpdate(d *schema.ResourceData, meta in
 
 	serviceKey := buildIntegrationPagerdutyServiceKey(d)
 	if _, err := datadogClientV1.PagerDutyIntegrationApi.UpdatePagerDutyIntegrationService(authV1, d.Id()).Body(*serviceKey).Execute(); err != nil {
-		return translateClientError(err, "error updating PagerDuty integration service")
+		return TranslateClientError(err, "error updating PagerDuty integration service")
 	}
 
 	return resourceDatadogIntegrationPagerdutySORead(d, meta)
@@ -122,7 +122,7 @@ func resourceDatadogIntegrationPagerdutySODelete(d *schema.ResourceData, meta in
 	defer integrationPdMutex.Unlock()
 
 	if _, err := datadogClientV1.PagerDutyIntegrationApi.DeletePagerDutyIntegrationService(authV1, d.Id()).Execute(); err != nil {
-		return translateClientError(err, "error deleting PagerDuty integration service")
+		return TranslateClientError(err, "error deleting PagerDuty integration service")
 	}
 
 	return nil

@@ -12,7 +12,7 @@ import (
 
 var integrationAwsMutex = sync.Mutex{}
 
-func accountAndRoleFromID(id string) (string, string, error) {
+func AccountAndRoleFromID(id string) (string, string, error) {
 	result := strings.SplitN(id, ":", 2)
 	if len(result) != 2 {
 		return "", "", fmt.Errorf("error extracting account ID and Role name from an Amazon Web Services integration id: %s", id)
@@ -131,7 +131,7 @@ func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{
 	response, _, err := datadogClientV1.AWSIntegrationApi.CreateAWSAccount(authV1).Body(*iaws).Execute()
 
 	if err != nil {
-		return translateClientError(err, "error creating AWS integration")
+		return TranslateClientError(err, "error creating AWS integration")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", accountID, roleName))
@@ -145,14 +145,14 @@ func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{})
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	accountID, roleName, err := accountAndRoleFromID(d.Id())
+	accountID, roleName, err := AccountAndRoleFromID(d.Id())
 	if err != nil {
 		return err
 	}
 
 	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(authV1).Execute()
 	if err != nil {
-		return translateClientError(err, "error getting AWS integration")
+		return TranslateClientError(err, "error getting AWS integration")
 	}
 
 	for _, integration := range integrations.GetAccounts() {
@@ -178,7 +178,7 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
-	existingAccountID, existingRoleName, err := accountAndRoleFromID(d.Id())
+	existingAccountID, existingRoleName, err := AccountAndRoleFromID(d.Id())
 	if err != nil {
 		return err
 	}
@@ -189,7 +189,7 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 	_, _, err = datadogClientV1.AWSIntegrationApi.UpdateAWSAccount(authV1).
 		Body(*iaws).AccountId(existingAccountID).RoleName(existingRoleName).Execute()
 	if err != nil {
-		return translateClientError(err, "error updating AWS integration")
+		return TranslateClientError(err, "error updating AWS integration")
 	}
 	d.SetId(fmt.Sprintf("%s:%s", iaws.GetAccountId(), iaws.GetRoleName()))
 	return resourceDatadogIntegrationAwsRead(d, meta)
@@ -202,7 +202,7 @@ func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
-	accountID, roleName, err := accountAndRoleFromID(d.Id())
+	accountID, roleName, err := AccountAndRoleFromID(d.Id())
 	if err != nil {
 		return err
 	}
@@ -210,7 +210,7 @@ func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{
 
 	_, _, err = datadogClientV1.AWSIntegrationApi.DeleteAWSAccount(authV1).Body(*iaws).Execute()
 	if err != nil {
-		return translateClientError(err, "error deleting AWS integration")
+		return TranslateClientError(err, "error deleting AWS integration")
 	}
 
 	return nil

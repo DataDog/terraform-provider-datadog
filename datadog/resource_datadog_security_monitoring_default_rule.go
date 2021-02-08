@@ -111,7 +111,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(d *schema.ResourceData, 
 			return errors.New("default rule does not exist")
 		}
 
-		return translateClientError(err, "error fetching default rule")
+		return TranslateClientError(err, "error fetching default rule")
 	}
 
 	if !response.GetIsDefault() {
@@ -126,7 +126,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(d *schema.ResourceData, 
 
 	if shouldUpdate {
 		if _, _, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, ruleId).Body(*ruleUpdate).Execute(); err != nil {
-			return translateClientError(err, "error updating security monitoring rule on resource creation")
+			return TranslateClientError(err, "error updating security monitoring rule on resource creation")
 		}
 	}
 

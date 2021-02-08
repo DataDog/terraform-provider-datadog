@@ -277,7 +277,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Description:  "Only for widgets of type `query_value`. The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.",
 					Type:         schema.TypeString,
 					Optional:     true,
-					ValidateFunc: validateAggregatorMethod,
+					ValidateFunc: ValidateAggregatorMethod,
 				},
 				"compare_to": {
 					Description: "Only for widgets of type `change`. Choose from when to compare current data to. One of `hour_before`, `day_before`, `week_before` or `month_before`.",
@@ -824,7 +824,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 // # Convenience functions to safely pass info from Terraform to the Datadog API wrapper #
 // #######################################################################################
 
-func getMetadataFromJSON(jsonBytes []byte, unmarshalled interface{}) error {
+func GetMetadataFromJSON(jsonBytes []byte, unmarshalled interface{}) error {
 	decoder := json.NewDecoder(bytes.NewReader(jsonBytes))
 	// make sure we return errors on attributes that we don't expect in metadata
 	decoder.DisallowUnknownFields()
@@ -836,7 +836,7 @@ func getMetadataFromJSON(jsonBytes []byte, unmarshalled interface{}) error {
 }
 
 func validateMetadataJSON(v interface{}, k string) (ws []string, errors []error) {
-	err := getMetadataFromJSON([]byte(v.(string)), &map[string]datadog.TileDefMetadata{})
+	err := GetMetadataFromJSON([]byte(v.(string)), &map[string]datadog.TileDefMetadata{})
 	if err != nil {
 		errors = append(errors, fmt.Errorf("%q contains an invalid JSON: %s", k, err))
 	}
@@ -1079,7 +1079,7 @@ func buildTileDefRequests(source interface{}) []datadog.TileDefRequest {
 	for _, request := range requests {
 		requestMap := request.(map[string]interface{})
 		metadata := map[string]datadog.TileDefMetadata{}
-		getMetadataFromJSON([]byte(requestMap["metadata_json"].(string)), &metadata)
+		GetMetadataFromJSON([]byte(requestMap["metadata_json"].(string)), &metadata)
 		requestMap["metadata"] = metadata
 		d := datadog.TileDefRequest{}
 		batchSetFromDict(batch{
@@ -1396,7 +1396,7 @@ func resourceDatadogScreenboardCreate(d *schema.ResourceData, meta interface{}) 
 	client := providerConf.CommunityClient
 	screenboard, err = client.CreateScreenboard(screenboard)
 	if err != nil {
-		return translateClientError(err, "error creating screenboard")
+		return TranslateClientError(err, "error creating screenboard")
 	}
 	d.SetId(strconv.Itoa(screenboard.GetId()))
 
@@ -1869,7 +1869,7 @@ func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) er
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error getting screenboard")
+		return TranslateClientError(err, "error getting screenboard")
 	}
 	log.Printf("[DataDog] screenboard: %v", pretty.Sprint(screenboard))
 	if err := d.Set("title", screenboard.GetTitle()); err != nil {
@@ -1937,7 +1937,7 @@ func resourceDatadogScreenboardUpdate(d *schema.ResourceData, meta interface{}) 
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	if err = client.UpdateScreenboard(screenboard); err != nil {
-		return translateClientError(err, "error updating screenboard")
+		return TranslateClientError(err, "error updating screenboard")
 	}
 	return resourceDatadogScreenboardRead(d, meta)
 }
@@ -1950,7 +1950,7 @@ func resourceDatadogScreenboardDelete(d *schema.ResourceData, meta interface{}) 
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	if err = client.DeleteScreenboard(id); err != nil {
-		return translateClientError(err, "error deleting screenboard")
+		return TranslateClientError(err, "error deleting screenboard")
 	}
 	return nil
 }

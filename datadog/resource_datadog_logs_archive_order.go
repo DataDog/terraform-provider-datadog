@@ -48,7 +48,7 @@ func resourceDatadogLogsArchiveOrderCreate(d *schema.ResourceData, meta interfac
 		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
 			fmt.Printf("cannot map archives to existing ones, will try to import it with Id `archiveOrderID`\n")
 		} else {
-			return translateClientError(err, "error creating logs archive order")
+			return TranslateClientError(err, "error creating logs archive order")
 		}
 	}
 	d.SetId("archiveOrderID")
@@ -61,7 +61,7 @@ func resourceDatadogLogsArchiveOrderRead(d *schema.ResourceData, meta interface{
 	authV2 := providerConf.AuthV2
 	ddList, _, err := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2).Execute()
 	if err != nil {
-		return translateClientError(err, "error getting logs archive order")
+		return TranslateClientError(err, "error getting logs archive order")
 	}
 
 	if err = d.Set("archive_ids", ddList.Data.Attributes.ArchiveIds); err != nil {
@@ -85,13 +85,13 @@ func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interfac
 		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
 			ddArchiveOrder, _, getErr := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2).Execute()
 			if getErr != nil {
-				return translateClientError(err, "error getting logs archive order")
+				return TranslateClientError(err, "error getting logs archive order")
 			}
 			return fmt.Errorf("cannot map archives to existing ones\n existing archives: %s\n archive to be updated: %s",
 				ddArchiveOrder.Data.Attributes.ArchiveIds,
 				ddArchiveList.Data.Attributes.GetArchiveIds())
 		}
-		return translateClientError(err, "error updating logs archive order")
+		return TranslateClientError(err, "error updating logs archive order")
 	}
 	d.SetId("archiveOrderID")
 	return resourceDatadogLogsArchiveOrderRead(d, meta)

@@ -57,7 +57,7 @@ func resourceDatadogIntegrationAwsLogCollectionCreate(d *schema.ResourceData, me
 	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
 	_, _, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1).Body(*enableLogCollectionServices).Execute()
 	if err != nil {
-		return translateClientError(err, "error enabling log collection services for Amazon Web Services integration account")
+		return TranslateClientError(err, "error enabling log collection services for Amazon Web Services integration account")
 	}
 
 	d.SetId(accountID)
@@ -73,7 +73,7 @@ func resourceDatadogIntegrationAwsLogCollectionUpdate(d *schema.ResourceData, me
 	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
 	_, _, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1).Body(*enableLogCollectionServices).Execute()
 	if err != nil {
-		return translateClientError(err, "error updating log collection services for Amazon Web Services integration account")
+		return TranslateClientError(err, "error updating log collection services for Amazon Web Services integration account")
 	}
 
 	return resourceDatadogIntegrationAwsLogCollectionRead(d, meta)
@@ -88,7 +88,7 @@ func resourceDatadogIntegrationAwsLogCollectionRead(d *schema.ResourceData, meta
 
 	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
 	if err != nil {
-		return translateClientError(err, "error getting log collection for aws integration.")
+		return TranslateClientError(err, "error getting log collection for aws integration.")
 	}
 	for _, logCollection := range logCollections {
 		if logCollection.GetAccountId() == accountID {
@@ -113,7 +113,7 @@ func resourceDatadogIntegrationAwsLogCollectionDelete(d *schema.ResourceData, me
 	_, _, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1).Body(*deleteLogCollectionServices).Execute()
 
 	if err != nil {
-		return translateClientError(err, "error disabling Amazon Web Services log collection")
+		return TranslateClientError(err, "error disabling Amazon Web Services log collection")
 	}
 
 	return nil

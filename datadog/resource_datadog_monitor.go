@@ -521,9 +521,9 @@ func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interfa
 		_, httpresp, err := datadogClientV1.MonitorsApi.ValidateMonitor(authV1).Body(*m).Execute()
 		if err != nil {
 			if httpresp != nil && httpresp.StatusCode == 502 {
-				return resource.RetryableError(translateClientError(err, "error validating monitor, retrying"))
+				return resource.RetryableError(TranslateClientError(err, "error validating monitor, retrying"))
 			}
-			return resource.NonRetryableError(translateClientError(err, "error validating monitor"))
+			return resource.NonRetryableError(TranslateClientError(err, "error validating monitor"))
 		}
 		return nil
 	})
@@ -551,7 +551,7 @@ func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) erro
 	m, _ := buildMonitorStruct(d)
 	mCreated, _, err := datadogClientV1.MonitorsApi.CreateMonitor(authV1).Body(*m).Execute()
 	if err != nil {
-		return translateClientError(err, "error creating monitor")
+		return TranslateClientError(err, "error creating monitor")
 	}
 	mCreatedId := strconv.FormatInt(mCreated.GetId(), 10)
 	d.SetId(mCreatedId)
@@ -580,10 +580,10 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 					d.SetId("")
 					return nil
 				} else if httpresp.StatusCode == 502 {
-					return resource.RetryableError(translateClientError(err, "error getting monitor, retrying"))
+					return resource.RetryableError(TranslateClientError(err, "error getting monitor, retrying"))
 				}
 			}
-			return resource.NonRetryableError(translateClientError(err, "error getting monitor"))
+			return resource.NonRetryableError(TranslateClientError(err, "error getting monitor"))
 		}
 		return nil
 	}); err != nil {
@@ -723,7 +723,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 
 	monitorResp, _, err := datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
 	if err != nil {
-		return translateClientError(err, "error updating monitor")
+		return TranslateClientError(err, "error updating monitor")
 	}
 
 	var retval error
@@ -749,7 +749,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		}
 		monitorResp, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
 		if err != nil {
-			return translateClientError(err, "error updating monitor")
+			return TranslateClientError(err, "error updating monitor")
 		}
 		d.Set("silenced", map[string]int{})
 	} else {
@@ -772,7 +772,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 			}
 		}
 		if _, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute(); err != nil {
-			return translateClientError(err, "error updating monitor")
+			return TranslateClientError(err, "error updating monitor")
 		}
 	}
 
@@ -796,7 +796,7 @@ func resourceDatadogMonitorDelete(d *schema.ResourceData, meta interface{}) erro
 	}
 
 	if err != nil {
-		return translateClientError(err, "error deleting monitor")
+		return TranslateClientError(err, "error deleting monitor")
 	}
 
 	return nil

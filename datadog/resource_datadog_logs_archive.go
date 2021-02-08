@@ -142,7 +142,7 @@ func resourceDatadogLogsArchiveCreate(d *schema.ResourceData, meta interface{}) 
 	}
 	createdArchive, _, err := datadogClientV2.LogsArchivesApi.CreateLogsArchive(authV2).Body(*ddArchive).Execute()
 	if err != nil {
-		return translateClientError(err, "failed to create logs archive using Datadog API")
+		return TranslateClientError(err, "failed to create logs archive using Datadog API")
 	}
 	d.SetId(*createdArchive.GetData().Id)
 	return resourceDatadogLogsArchiveRead(d, meta)
@@ -159,7 +159,7 @@ func resourceDatadogLogsArchiveRead(d *schema.ResourceData, meta interface{}) er
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "failed to get logs archive using Datadog API")
+		return TranslateClientError(err, "failed to get logs archive using Datadog API")
 	}
 	if !ddArchive.HasData() {
 		d.SetId("")
@@ -206,7 +206,7 @@ func resourceDatadogLogsArchiveUpdate(d *schema.ResourceData, meta interface{}) 
 		return err
 	}
 	if _, _, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchive(authV2, d.Id()).Body(*ddArchive).Execute(); err != nil {
-		return translateClientError(err, "error updating logs archive")
+		return TranslateClientError(err, "error updating logs archive")
 	}
 	return resourceDatadogLogsArchiveRead(d, meta)
 }
@@ -221,7 +221,7 @@ func resourceDatadogLogsArchiveDelete(d *schema.ResourceData, meta interface{}) 
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			return nil
 		}
-		return translateClientError(err, "error deleting logs archive")
+		return TranslateClientError(err, "error deleting logs archive")
 	}
 	return nil
 }

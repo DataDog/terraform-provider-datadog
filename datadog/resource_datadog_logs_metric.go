@@ -175,7 +175,7 @@ func resourceDatadogLogsMetricCreate(d *schema.ResourceData, meta interface{}) e
 
 	resultLogsMetricCreateData, err := buildDatadogLogsMetric(d)
 	if err != nil {
-		return translateClientError(err, "error building LogsMetric object")
+		return TranslateClientError(err, "error building LogsMetric object")
 	}
 
 	ddObject := datadogV2.NewLogsMetricCreateRequestWithDefaults()
@@ -183,7 +183,7 @@ func resourceDatadogLogsMetricCreate(d *schema.ResourceData, meta interface{}) e
 
 	response, _, err := datadogClient.LogsMetricsApi.CreateLogsMetric(auth).Body(*ddObject).Execute()
 	if err != nil {
-		return translateClientError(err, "error creating LogsMetric")
+		return TranslateClientError(err, "error creating LogsMetric")
 	}
 	id := *response.GetData().Id
 	d.SetId(id)
@@ -207,7 +207,7 @@ func resourceDatadogLogsMetricRead(d *schema.ResourceData, meta interface{}) err
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error reading LogsMetric")
+		return TranslateClientError(err, "error reading LogsMetric")
 	}
 
 	resource := resourceLogsMetricResponse.GetData()
@@ -283,7 +283,7 @@ func resourceDatadogLogsMetricUpdate(d *schema.ResourceData, meta interface{}) e
 
 	resultLogsMetricUpdateData, err := buildDatadogLogsMetricUpdate(d)
 	if err != nil {
-		return translateClientError(err, "error building LogsMetric object")
+		return TranslateClientError(err, "error building LogsMetric object")
 	}
 
 	ddObject := datadogV2.NewLogsMetricUpdateRequestWithDefaults()
@@ -292,7 +292,7 @@ func resourceDatadogLogsMetricUpdate(d *schema.ResourceData, meta interface{}) e
 
 	_, _, err = datadogClient.LogsMetricsApi.UpdateLogsMetric(auth, id).Body(*ddObject).Execute()
 	if err != nil {
-		return translateClientError(err, "error updating LogsMetric")
+		return TranslateClientError(err, "error updating LogsMetric")
 	}
 
 	return resourceDatadogLogsMetricRead(d, meta)
@@ -309,7 +309,7 @@ func resourceDatadogLogsMetricDelete(d *schema.ResourceData, meta interface{}) e
 	_, err = datadogClient.LogsMetricsApi.DeleteLogsMetric(auth, id).Execute()
 
 	if err != nil {
-		return translateClientError(err, "error deleting LogsMetric")
+		return TranslateClientError(err, "error deleting LogsMetric")
 	}
 
 	return nil

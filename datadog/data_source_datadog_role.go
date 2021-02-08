@@ -45,7 +45,7 @@ func dataSourceDatadogRoleRead(d *schema.ResourceData, meta interface{}) error {
 
 	res, _, err := req.Execute()
 	if err != nil {
-		return translateClientError(err, "error querying roles")
+		return TranslateClientError(err, "error querying roles")
 	}
 	roles := res.GetData()
 	roleIndex := 0

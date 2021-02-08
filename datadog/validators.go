@@ -13,7 +13,7 @@ func validateFloatString(v interface{}, k string) (ws []string, errors []error) 
 	return validation.StringMatch(regexp.MustCompile("\\d*(\\.\\d*)?"), "value must be a float")(v, k)
 }
 
-func validateAggregatorMethod(v interface{}, k string) (ws []string, errors []error) {
+func ValidateAggregatorMethod(v interface{}, k string) (ws []string, errors []error) {
 	value := v.(string)
 	validMethods := map[string]struct{}{
 		"avg":   {},

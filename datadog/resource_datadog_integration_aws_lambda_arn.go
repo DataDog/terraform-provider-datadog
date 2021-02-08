@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
-func accountAndLambdaArnFromID(id string) (string, string, error) {
+func AccountAndLambdaArnFromID(id string) (string, string, error) {
 	result := strings.Split(id, " ")
 	if len(result) != 2 {
 		return "", "", fmt.Errorf("error extracting account ID and Lambda ARN from an AWS integration id: %s", id)
@@ -59,7 +59,7 @@ func resourceDatadogIntegrationAwsLambdaArnCreate(d *schema.ResourceData, meta i
 	attachLambdaArnRequest := buildDatadogIntegrationAwsLambdaArnStruct(d)
 	_, _, err := datadogClientV1.AWSLogsIntegrationApi.CreateAWSLambdaARN(authV1).Body(*attachLambdaArnRequest).Execute()
 	if err != nil {
-		return translateClientError(err, "error attaching Lambda ARN to AWS integration account")
+		return TranslateClientError(err, "error attaching Lambda ARN to AWS integration account")
 	}
 
 	d.SetId(fmt.Sprintf("%s %s", attachLambdaArnRequest.GetAccountId(), attachLambdaArnRequest.GetLambdaArn()))
@@ -72,14 +72,14 @@ func resourceDatadogIntegrationAwsLambdaArnRead(d *schema.ResourceData, meta int
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	accountID, lambdaArn, err := accountAndLambdaArnFromID(d.Id())
+	accountID, lambdaArn, err := AccountAndLambdaArnFromID(d.Id())
 	if err != nil {
-		return translateClientError(err, fmt.Sprintf("error getting aws account ID and lambda ARN from id: %s", d.Id()))
+		return TranslateClientError(err, fmt.Sprintf("error getting aws account ID and lambda ARN from id: %s", d.Id()))
 	}
 
 	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
 	if err != nil {
-		return translateClientError(err, "error getting aws log integrations for datadog account.")
+		return TranslateClientError(err, "error getting aws log integrations for datadog account.")
 	}
 	for _, logCollection := range logCollections {
 		if logCollection.GetAccountId() == accountID {
@@ -102,15 +102,15 @@ func resourceDatadogIntegrationAwsLambdaArnDelete(d *schema.ResourceData, meta i
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	accountID, lambdaArn, err := accountAndLambdaArnFromID(d.Id())
+	accountID, lambdaArn, err := AccountAndLambdaArnFromID(d.Id())
 	if err != nil {
-		return translateClientError(err, fmt.Sprintf("error parsing account ID and lamdba ARN from ID: %s", d.Id()))
+		return TranslateClientError(err, fmt.Sprintf("error parsing account ID and lamdba ARN from ID: %s", d.Id()))
 	}
 
 	attachLambdaArnRequest := datadogV1.NewAWSAccountAndLambdaRequest(accountID, lambdaArn)
 	_, _, err = datadogClientV1.AWSLogsIntegrationApi.DeleteAWSLambdaARN(authV1).Body(*attachLambdaArnRequest).Execute()
 	if err != nil {
-		return translateClientError(err, "error deleting an AWS integration Lambda ARN")
+		return TranslateClientError(err, "error deleting an AWS integration Lambda ARN")
 	}
 
 	return nil
@@ -118,7 +118,7 @@ func resourceDatadogIntegrationAwsLambdaArnDelete(d *schema.ResourceData, meta i
 
 func resourceDatadogIntegrationAwsLambdaArnImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
 	if err := resourceDatadogIntegrationAwsLambdaArnRead(d, meta); err != nil {
-		return nil, translateClientError(err, "error importing lambda arn resource.")
+		return nil, TranslateClientError(err, "error importing lambda arn resource.")
 	}
 	return []*schema.ResourceData{d}, nil
 }

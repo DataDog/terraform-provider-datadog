@@ -104,7 +104,7 @@ func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) erro
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error getting logs index")
+		return TranslateClientError(err, "error getting logs index")
 	}
 	if err = d.Set("name", ddIndex.GetName()); err != nil {
 		return err
@@ -132,7 +132,7 @@ func resourceDatadogLogsIndexUpdate(d *schema.ResourceData, meta interface{}) er
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return fmt.Errorf("logs index creation is not allowed, index_name: %s", tfName)
 		}
-		return translateClientError(err, "error updating logs index")
+		return TranslateClientError(err, "error updating logs index")
 	}
 	d.SetId(tfName)
 	return resourceDatadogLogsIndexRead(d, meta)

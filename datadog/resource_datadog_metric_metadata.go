@@ -75,7 +75,7 @@ func resourceDatadogMetricMetadataCreate(d *schema.ResourceData, meta interface{
 	id, m := buildMetricMetadataStruct(d)
 	_, _, err := datadogClientV1.MetricsApi.UpdateMetricMetadata(authV1, id).Body(*m).Execute()
 	if err != nil {
-		return translateClientError(err, "error creating metric metadata")
+		return TranslateClientError(err, "error creating metric metadata")
 	}
 
 	d.SetId(id)
@@ -96,7 +96,7 @@ func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{})
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error getting metric metadata")
+		return TranslateClientError(err, "error getting metric metadata")
 	}
 
 	d.Set("type", m.GetType())
@@ -137,7 +137,7 @@ func resourceDatadogMetricMetadataUpdate(d *schema.ResourceData, meta interface{
 	}
 
 	if _, _, err := datadogClientV1.MetricsApi.UpdateMetricMetadata(authV1, id).Body(*m).Execute(); err != nil {
-		return translateClientError(err, "error updating metric metadata")
+		return TranslateClientError(err, "error updating metric metadata")
 	}
 
 	return resourceDatadogMetricMetadataRead(d, meta)

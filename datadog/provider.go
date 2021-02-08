@@ -133,11 +133,7 @@ type ProviderConfiguration struct {
 	AuthV1          context.Context
 	AuthV2          context.Context
 
-	now func() time.Time
-}
-
-func (p *ProviderConfiguration) Now() time.Time {
-	return p.now()
+	Now func() time.Time
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
@@ -158,7 +154,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", c.Transport)
-	communityClient.ExtraHeader["User-Agent"] = getUserAgent(fmt.Sprintf(
+	communityClient.ExtraHeader["User-Agent"] = GetUserAgent(fmt.Sprintf(
 		"datadog-api-client-go/%s (go %s; os %s; arch %s)",
 		"go-datadog-api",
 		runtime.Version(),
@@ -207,7 +203,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	configV1.SetUnstableOperationEnabled("GetSLOCorrection", true)
 	configV1.SetUnstableOperationEnabled("UpdateSLOCorrection", true)
 	configV1.SetUnstableOperationEnabled("DeleteSLOCorrection", true)
-	configV1.UserAgent = getUserAgent(configV1.UserAgent)
+	configV1.UserAgent = GetUserAgent(configV1.UserAgent)
 	configV1.Debug = logging.IsDebugOrHigher()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedApiUrl, parseErr := url.Parse(apiURL)
@@ -259,7 +255,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		},
 	)
 	configV2 := datadogV2.NewConfiguration()
-	configV2.UserAgent = getUserAgent(configV2.UserAgent)
+	configV2.UserAgent = GetUserAgent(configV2.UserAgent)
 	configV2.Debug = logging.IsDebugOrHigher()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedApiUrl, parseErr := url.Parse(apiURL)
@@ -286,11 +282,11 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		AuthV1:          authV1,
 		AuthV2:          authV2,
 
-		now: time.Now,
+		Now: time.Now,
 	}, nil
 }
 
-func translateClientError(err error, msg string) error {
+func TranslateClientError(err error, msg string) error {
 	if msg == "" {
 		msg = "an error occurred"
 	}
@@ -308,7 +304,7 @@ func translateClientError(err error, msg string) error {
 	return fmt.Errorf(msg+": %s", err.Error())
 }
 
-func getUserAgent(clientUserAgent string) string {
+func GetUserAgent(clientUserAgent string) string {
 	return fmt.Sprintf("terraform-provider-datadog/%s (terraform %s; terraform-cli %s) %s",
 		version.ProviderVersion,
 		meta.SDKVersionString(),
