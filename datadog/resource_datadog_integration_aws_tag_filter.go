@@ -109,6 +109,8 @@ func resourceDatadogIntegrationAwsTagFilterRead(d *schema.ResourceData, meta int
 		}
 	}
 
+	// Set ID to an empty string if namespace is not found.
+	// This allows Terraform to destroy the resource in state.
 	d.SetId("")
 	return nil
 }
