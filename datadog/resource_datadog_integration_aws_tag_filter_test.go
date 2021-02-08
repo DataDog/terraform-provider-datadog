@@ -64,7 +64,7 @@ func testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider *schema.Provid
 			return err
 		}
 
-		for _, filter := range filters {
+		for _, filter := range *filters {
 			if filter.GetNamespace() == namespace {
 				if len(filter.GetTagFilterStr()) == 0 {
 					return translateClientError(nil, fmt.Sprintf("tag_filter_str is empty for resource %s", namespace))
@@ -85,13 +85,14 @@ func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider *schema.Provi
 
 		filters, err := listFiltersHelper(accProvider, resourceId)
 		if err != nil {
-			if matched, _ := regexp.MatchString("AWS account [0-9]+ does not exist in integration", err.Error()); matched {
+			errObj := err.(datadogV1.GenericOpenAPIError)
+			if matched, _ := regexp.MatchString("AWS account [0-9]+ does not exist in integration", string(errObj.Body())); matched {
 				return nil
 			}
 			return err
 		}
 
-		for _, filter := range filters {
+		for _, filter := range *filters {
 			if filter.GetNamespace() == namespace {
 				if len(filter.GetTagFilterStr()) != 0 {
 					return translateClientError(nil, fmt.Sprintf("tag_filter_str is not empty for namespace %s", namespace))
@@ -104,7 +105,7 @@ func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider *schema.Provi
 	}
 }
 
-func listFiltersHelper(accProvider *schema.Provider, resourceId string) ([]datadogV1.AWSTagFilterListResponseFilters, error) {
+func listFiltersHelper(accProvider *schema.Provider, resourceId string) (*[]datadogV1.AWSTagFilterListResponseFilters, error) {
 	meta := accProvider.Meta()
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV1
@@ -122,5 +123,5 @@ func listFiltersHelper(accProvider *schema.Provider, resourceId string) ([]datad
 	}
 	filters = append(filters, resp.GetFilters()...)
 
-	return filters, nil
+	return &filters, nil
 }

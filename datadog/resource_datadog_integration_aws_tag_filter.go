@@ -12,7 +12,7 @@ func resourceDatadogIntegrationAwsTagFilter() *schema.Resource {
 	return &schema.Resource{
 		Description: "Provides a Datadog AWS tag filter resource. This can be used to create and manage Datadog AWS tag filters - US site’s endpoint only",
 		Create:      resourceDatadogIntegrationAwsTagFilterCreate,
-		Update:      resourceDatadogIntegrationAwsTagFilterCreate,
+		Update:      resourceDatadogIntegrationAwsTagFilterUpdate,
 		Read:        resourceDatadogIntegrationAwsTagFilterRead,
 		Delete:      resourceDatadogIntegrationAwsTagFilterDelete,
 		Importer: &schema.ResourceImporter{
@@ -64,10 +64,23 @@ func resourceDatadogIntegrationAwsTagFilterCreate(d *schema.ResourceData, meta i
 
 	req := buildDatadogIntegrationAwsTagFilter(d)
 	if _, _, err := datadogClientV1.AWSIntegrationApi.CreateAWSTagFilter(authV1).Body(*req).Execute(); err != nil {
-		return translateClientError(err, "error creating/updating aws tag filter")
+		return translateClientError(err, "error creating aws tag filter")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", req.GetAccountId(), req.GetNamespace()))
+	return resourceDatadogIntegrationAwsTagFilterRead(d, meta)
+}
+
+func resourceDatadogIntegrationAwsTagFilterUpdate(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+
+	req := buildDatadogIntegrationAwsTagFilter(d)
+	if _, _, err := datadogClientV1.AWSIntegrationApi.CreateAWSTagFilter(authV1).Body(*req).Execute(); err != nil {
+		return translateClientError(err, "error updating aws tag filter")
+	}
+
 	return resourceDatadogIntegrationAwsTagFilterRead(d, meta)
 }
 
@@ -101,24 +114,23 @@ func resourceDatadogIntegrationAwsTagFilterRead(d *schema.ResourceData, meta int
 }
 
 func resourceDatadogIntegrationAwsTagFilterDelete(d *schema.ResourceData, meta interface{}) error {
-	//providerConf := meta.(*ProviderConfiguration)
-	//datadogClientV1 := providerConf.DatadogClientV1
-	//authV1 := providerConf.AuthV1
-	//
-	//accountID, tfNamespace, err := accountAndNamespaceFromID(d.Id())
-	//if err != nil {
-	//	return err
-	//}
-	//namespace := datadogV1.AWSNamespace(tfNamespace)
-	//deleteRequest := datadogV1.AWSTagFilterDeleteRequest{
-	//  FIXME: Rename 'AwsAccountIdentifier' to 'AccountId' once spec change is merged and client's updated.
-	//	AwsAccountIdentifier: &accountID,
-	//	Namespace:            &namespace,
-	//}
-	//
-	//if _, _, err := datadogClientV1.AWSIntegrationApi.DeleteAWSTagFilter(authV1).Body(deleteRequest).Execute(); err != nil {
-	//	return translateClientError(err, "error deleting aws tag filter")
-	//}
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+
+	accountID, tfNamespace, err := accountAndNamespaceFromID(d.Id())
+	if err != nil {
+		return err
+	}
+	namespace := datadogV1.AWSNamespace(tfNamespace)
+	deleteRequest := datadogV1.AWSTagFilterDeleteRequest{
+		AccountId: &accountID,
+		Namespace: &namespace,
+	}
+
+	if _, _, err := datadogClientV1.AWSIntegrationApi.DeleteAWSTagFilter(authV1).Body(deleteRequest).Execute(); err != nil {
+		return translateClientError(err, "error deleting aws tag filter")
+	}
 
 	return nil
 }
