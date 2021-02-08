@@ -1,44 +1,53 @@
-## page_title: "datadog_security_monitoring_default_rule"
+---
+page_title: "datadog_security_monitoring_default_rule Resource - terraform-provider-datadog"
+subcategory: ""
+description: |-
+  Provides a Datadog Security Monitoring Rule API resource for default rules.
+---
 
-# datadog_security_monitoring_default_rule Resource
+# Resource `datadog_security_monitoring_default_rule`
 
-Provides a Datadog [Security Monitoring Rule API](https://docs.datadoghq.com/api/v2/security-monitoring/) resource for default rules.
+Provides a Datadog Security Monitoring Rule API resource for default rules.
 
 ## Example Usage
 
-Enable a default rule and configure it's notifications.
-
-```hcl
+```terraform
 resource "datadog_security_monitoring_default_rule" "adefaultrule" {
-    rule_id = "ojo-qef-3g3"
-    enabled = true
+  rule_id = "ojo-qef-3g3"
+  enabled = true
 
-    # Change the notifications for the high case
-    case {
-        status = "high"
-        notifications = ["@me"]
-    }
+  # Change the notifications for the high case
+  case {
+    status        = "high"
+    notifications = ["@me"]
+  }
 }
 ```
 
-## Argument Reference
+## Schema
 
-The following arguments are supported:
+### Optional
 
--   `enabled`: (Optional, default = True) Whether the default rule is enabled.
--   `case`: (Optional) Change the notifications of a case.
-    -   `status`: Severity of the case.
-    -   `notifications`: Notification targets for the case.
+- **case** (Block List, Max: 5) Cases of the rule, this is used to update notifications. (see [below for nested schema](#nestedblock--case))
+- **enabled** (Boolean, Optional) Enable the rule.
+- **id** (String, Optional) The ID of this resource.
 
-## Importing
+<a id="nestedblock--case"></a>
+### Nested Schema for `case`
 
-Default rules need to be imported using their ID before applying.
+Required:
 
-```hcl
+- **notifications** (List of String, Required) Notification targets for each rule case.
+- **status** (String, Required) Status of the rule case to match.
+
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+# Default rules need to be imported using their ID before applying.
 resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 }
-```
 
-```
 terraform import datadog_security_monitoring_default_rule.adefaultrule m0o-hto-lkb
 ```

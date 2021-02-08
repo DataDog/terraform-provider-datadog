@@ -21,7 +21,7 @@ Use the navigation to the left to read about the available resources.
 terraform {
   required_providers {
     datadog = {
-      source  = "DataDog/datadog"
+      source = "DataDog/datadog"
     }
   }
 }
@@ -33,36 +33,15 @@ provider "datadog" {
   app_key = var.datadog_app_key
 }
 
-# Create a new monitor
-resource "datadog_monitor" "default" {
-  # ...
-}
-
-# Create a new dashboard
-resource "datadog_dashboard" "default" {
-  # ...
-}
-
-
 
 
 # Terraform 0.12- can be specified as:
 
 # Configure the Datadog provider
-provider "datadog" {
-  api_key = "${var.datadog_api_key}"
-  app_key = "${var.datadog_app_key}"
-}
-
-# Create a new monitor
-resource "datadog_monitor" "default" {
-  # ...
-}
-
-# Create a new dashboard
-resource "datadog_dashboard" "default" {
-  # ...
-}
+# provider "datadog" {
+#   api_key = "${var.datadog_api_key}"
+#   app_key = "${var.datadog_app_key}"
+# }
 ```
 
 ## Schema
