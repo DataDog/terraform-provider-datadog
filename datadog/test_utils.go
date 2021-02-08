@@ -7,8 +7,9 @@ import (
 	"time"
 )
 
-// Retry calls the call function for count times every interval while it returns true
-// Call function should return either a RetryableError or FatalError
+// Retry calls the call function for count times every interval while it returns nil
+// Call function should return either: nil, RetryableError, or FatalError
+// nil indicates a success condition was met
 // RetryableError means we'll retry up to the count
 // FatalError indicates we shouldn't try the request again
 func Retry(interval time.Duration, count int, call func() error) error {
@@ -19,10 +20,10 @@ func Retry(interval time.Duration, count int, call func() error) error {
 		if err == nil {
 			return nil
 		} else if errors.Is(err, retryErrorType) {
-			log.Printf("[INFO] %s\n", err)
+			log.Printf(err.Error())
 			time.Sleep(interval)
 		} else if errors.Is(err, fatalErrorType) {
-			log.Printf("[ERROR] %s\n", err)
+			log.Printf(err.Error())
 			return err
 		}
 	}
