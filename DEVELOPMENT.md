@@ -1,0 +1,63 @@
+# Development
+Terraform provides helpful [Extending Terraform][1] documentation for best practices around writing provider code.
+This document provides some guidelines for working with this project.
+
+## Prerequisites:
+  -   [Terraform][2] 0.10.x
+  -   [Go][3] 1.15 (to build the provider plugin)
+  -   A clone of this repository and the [$GOPATH environment variable][7] set
+
+## Makefile
+The root of this project contains a `GNUmakefile` with the purpose of making each development step easier. 
+While some commands are outlined here, please see [GNUmakefile][5] for all available commands. 
+
+## Building the provider
+The Datadog Provider can be built to use the binary as a terraform plugin. This is most useful when attempting to build off a feature branch
+and manually run the `terraform plan|apply` commands on a real HCL configuration.
+
+This provider can be built by running `make build`, or just `make`. This will place the binary in `$GOPATH/bin`
+
+Running `terraform init` in a folder containing `.tf` files will let terraform look for any needed providers. The default behavior is to pull the latest released 
+binary, but you can tell the terraform CLI to look for your locally built binary instead.
+
+The steps for this approach can differ depending on the version of Terraform being used. More information can be found on the official [Terraform documentation][4]. 
+
+## Testing the Provider
+
+The Datadog terraform provider uses the standard [Terraform Testing Framework][6] to define its tests.
+
+**NOTE** Use the API and APP keys for a sandbox/test organization, never an account hosting production data. This test suite 
+will create/update/delete real resources.
+  - `DD_API_KEY="<api_key>" DD_APP_KEY=<app_key> make testacc` will run the test suite against the real Datadog API.
+
+We also use `cassettes` to record API request/responses, which allows the test suite to be reliable and run very quickly.
+There are a few environment variables that can control this behavior (All commands are assumed to be prefixed with `DD_API_KEY=` and `DD_APP_KEY=`)
+
+  - `TESTARGS`: Allows passing extra flags directly to the underlying `go test` command. Most often used to run individual tests:
+    - Ex: `TESTARGS="-run TestAccDatadogServiceLevelObjective_Basic" make test`
+  - `RECORD`: This denotes whether the test suite should interact with the real Datadog API. Available options are:    
+    - `RECORD=none make testacc`: Run against the real Datadog API.
+    - `RECORD=true make testacc`: Run against the real Datadog API and record the request/response to be used later.
+    - `RECORD=false make testacc`: Don't interact with the real Datadog API, instead playback against the recorded cassettes.
+
+
+## Updating the underlying Datadog SDK Clients
+In order to update the underlying API Clients that are used by this provider to interact with the Datadog API, run:
+
+```sh
+API_CLIENT_VERSION=vx.y.z ZORKIAN_VERSION=vx.y.z make update-go-client
+```
+
+where:
+
+-   `API_CLIENT_VERSION` is the version or commit ref of the https://github.com/DataDog/datadog-api-client-go client.
+-   `ZORKIAN_VERSION` is the version or commit ref of the https://github.com/zorkian/go-datadog-api client.
+
+
+[1]: https://www.terraform.io/docs/extend/index.html
+[2]: https://www.terraform.io/downloads.html
+[3]: https://golang.org/doc/install
+[4]: https://www.terraform.io/docs/extend/how-terraform-works.html#discovery
+[5]: https://github.com/DataDog/terraform-provider-datadog/blob/master/GNUmakefile
+[6]: https://www.terraform.io/docs/extend/testing/index.html
+[7]: https://golang.org/cmd/go/#hdr-GOPATH_environment_variable
