@@ -1,26 +1,48 @@
 package datadog
 
 import (
+	"errors"
 	"fmt"
+	"log"
 	"time"
 )
 
 // Retry calls the call function for count times every interval while it returns true
-// Call function should return (false, nil) to indicate a success
-// (true, err) to indicate there was an error but we should retry
-// and (false, err) to indicate there was a fatal error
-func Retry(interval time.Duration, count int, call func() (bool, error)) error {
+// Call function should return either a RetryableError or FatalError
+// RetryableError means we'll retry up to the count
+// FatalError indicates we shouldn't try the request again
+func Retry(interval time.Duration, count int, call func() error) error {
+	var retryErrorType *RetryableError
+	var fatalErrorType *FatalError
 	for i := 0; i < count; i++ {
-		shouldRetry, err := call()
-		if !shouldRetry && err == nil {
+		err := call()
+		if err == nil {
 			return nil
-		} else if shouldRetry {
-			fmt.Errorf("Failed with retry-able error: %s", err)
+		} else if errors.Is(err, retryErrorType) {
+			log.Printf("[INFO] %s\n", err)
 			time.Sleep(interval)
-		} else {
-			fmt.Errorf("Failed with an error and shouldn't retry: %s", err)
+		} else if errors.Is(err, fatalErrorType) {
+			log.Printf("[ERROR] %s\n", err)
 			return err
 		}
 	}
-	return fmt.Errorf("Retry error: failed to satisfy the condition after %d times", count)
+	return &FatalError{prob: fmt.Sprintf("Retry error: failed to satisfy the condition after %d times\n", count)}
+}
+
+// RetryableError represents a transient error and means its safe to try the request again
+type RetryableError struct {
+	prob string
+}
+
+func (e *RetryableError) Error() string {
+	return fmt.Sprintf("[INFO] Failed with retry-able error: %s", e.prob)
+}
+
+// FatalError should be considered final and not trigger any retries
+type FatalError struct {
+	prob string
+}
+
+func (e *FatalError) Error() string {
+	return fmt.Sprintf("[ERROR] Failed with an error and shouldn't retry: %s", e.prob)
 }
