@@ -26,7 +26,7 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
-					checkPostEvent(t, accProvider, clock),
+					checkPostEvent(accProvider, clock),
 					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
@@ -58,7 +58,7 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
-					checkPostEvent(t, accProvider, clock),
+					checkPostEvent(accProvider, clock),
 					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
@@ -125,7 +125,7 @@ func checkMetricMetadataExists(accProvider *schema.Provider) resource.TestCheckF
 	}
 }
 
-func checkPostEvent(t *testing.T, accProvider *schema.Provider, clock clockwork.FakeClock) resource.TestCheckFunc {
+func checkPostEvent(accProvider *schema.Provider, clock clockwork.FakeClock) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
 		client := providerConf.CommunityClient
