@@ -1264,7 +1264,7 @@ func destroyHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, aut
 		_, httpresp, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
 
 		if err != nil {
-			if httpresp.StatusCode == 404 {
+			if httpresp != nil && httpresp.StatusCode == 404 {
 				continue
 			}
 			return fmt.Errorf("received an error retrieving monitor %s", err)
