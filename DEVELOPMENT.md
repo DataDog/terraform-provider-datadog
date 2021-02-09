@@ -4,7 +4,8 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 
 ## Prerequisites:
 
--   [Terraform][2] 0.10.x
+-   [Terraform][2] 0.12.x and higher.
+    -   The [`tfenv`](https://github.com/tfutils/tfenv) project lets you easily install and switch between terraform versions
 -   [Go][3] 1.15 (to build the provider plugin)
 -   A clone of this repository and the [\$GOPATH environment variable][7] set
 -   [tfplugindocs][8]
@@ -60,6 +61,8 @@ where:
 
 -   `API_CLIENT_VERSION` is the version or commit ref of the https://github.com/DataDog/datadog-api-client-go client.
 -   `ZORKIAN_VERSION` is the version or commit ref of the https://github.com/zorkian/go-datadog-api client.
+
+**NOTE** If you run this command just after a release of the underlying clients, this will automatically pick up the latest tag without needing to specify the version.
 
 [1]: https://www.terraform.io/docs/extend/index.html
 [2]: https://www.terraform.io/downloads.html
