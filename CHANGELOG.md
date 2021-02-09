@@ -1,3 +1,32 @@
+## 2.21.0 (February 9, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_integration_aws_filter`: Add new resource ([#881](https://github.com/Datadog/terraform-provider-datadog/pull/881)).
+-   `datadog_slo_correction`: Add new resource ([#866](https://github.com/Datadog/terraform-provider-datadog/pull/866)).
+
+FEATURES:
+
+-   `datadog_monitor`: Add restricted roles. ([#883](https://github.com/Datadog/terraform-provider-datadog/pull/883)).
+-   `datadog_synthetics_test`: Add parameter to prevent useless diffs for browser tests ([#854](https://github.com/Datadog/terraform-provider-datadog/pull/854)).
+-   `datadog_synthetics_test`: Add new `browser_step` field for browser tests ([#849](https://github.com/Datadog/terraform-provider-datadog/pull/849)).
+
+BUGFIXES:
+
+-   `datadog_synthetics_global_variable`: Fix setting `parse_test_options` attribute ([#867](https://github.com/Datadog/terraform-provider-datadog/pull/867)).
+-   `datadog_security_monitoring_rule`: Fix enabled attribute retrieval ([#862](https://github.com/Datadog/terraform-provider-datadog/pull/862)).
+-   `datadog_metric_metadata`: Fix id retrieval when calling the read function ([#856](https://github.com/Datadog/terraform-provider-datadog/pull/856)).
+-   `datadog_logs_custom_pipeline`: Support empty strings for filter query ([#855](https://github.com/Datadog/terraform-provider-datadog/pull/855)).
+-   `datadog_dashboard`: Handle crash in `timeseries_definition` ([#863](https://github.com/Datadog/terraform-provider-datadog/pull/863)).
+-   `datadog_synthetics_test`: Turn locations into a set ([#864](https://github.com/Datadog/terraform-provider-datadog/pull/864)).
+
+NOTES:
+
+-   `datadog_dashboard`: Deprecate TypeMap complex fields ([#853](https://github.com/Datadog/terraform-provider-datadog/pull/853)).
+-   `datadog_synthetics_test`: Deprecate TypeMap field ([#870](https://github.com/Datadog/terraform-provider-datadog/pull/870)).
+-   `datadog_monitor` : Include SDK when a tag is a unexpected prefix ([#781](https://github.com/DataDog/terraform-provider-datadog/issues/781)).
+-   Backport performance fix to SDK v1.
+
 ## 2.20.0 (January 20, 2021)
 
 IMPROVEMENTS:
