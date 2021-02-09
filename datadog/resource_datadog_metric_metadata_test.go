@@ -1,11 +1,13 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
 	"github.com/jonboulle/clockwork"
 
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
@@ -94,18 +96,30 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 	})
 }
 
+func metadataExistsHelper(s *terraform.State, datadogV1Client *datadogV1.APIClient, authV1 context.Context) error {
+	for _, r := range s.RootModule().Resources {
+		metric, ok := r.Primary.Attributes["metric"]
+		if !ok {
+			continue
+		}
+
+		_, _, err := datadogV1Client.MetricsApi.GetMetricMetadata(authV1, metric).Execute()
+
+		if err != nil {
+			return fmt.Errorf("received an error retrieving metric_metadata %s", err)
+		}
+	}
+	return nil
+}
+
 func checkMetricMetadataExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
-		for _, r := range s.RootModule().Resources {
-			metric, ok := r.Primary.Attributes["metric"]
-			if !ok {
-				continue
-			}
-			if _, err := client.ViewMetricMetadata(metric); err != nil {
-				return fmt.Errorf("received an error retrieving metric_metadata %s", err)
-			}
+		datadogV1Client := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
+
+		if err := metadataExistsHelper(s, datadogV1Client, authV1); err != nil {
+			return err
 		}
 		return nil
 	}
