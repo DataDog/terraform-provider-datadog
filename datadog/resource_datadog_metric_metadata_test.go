@@ -2,7 +2,6 @@ package datadog
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/jonboulle/clockwork"
@@ -103,7 +102,7 @@ func metadataExistsHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClie
 			continue
 		}
 
-		_, _, err := datadogV1Client.MetricsApi.GetMetricMetadata(authV1, metric).Execute()
+		_, _, err := datadogClientV1.MetricsApi.GetMetricMetadata(authV1, metric).Execute()
 		if err != nil {
 			return translateClientError(err, "error retrieving metric_metadata")
 		}
