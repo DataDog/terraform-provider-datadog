@@ -4746,6 +4746,7 @@ func getFormulaQuerySchema() *schema.Schema {
 								Type:        schema.TypeString,
 								Optional:    true,
 								Description: "Direction of sort.",
+								Default:     "desc",
 							},
 							"aggregator": {
 								Type:        schema.TypeString,
