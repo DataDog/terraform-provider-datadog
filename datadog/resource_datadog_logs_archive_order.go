@@ -10,7 +10,7 @@ import (
 
 func resourceDatadogLogsArchiveOrder() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog Logs Archive API resource, which is used to manage Datadog log archives order.",
+		Description: "Provides a Datadog [Logs Archive API](https://docs.datadoghq.com/api/v2/logs-archives/) resource, which is used to manage Datadog log archives order.",
 		Create:      resourceDatadogLogsArchiveOrderCreate,
 		Update:      resourceDatadogLogsArchiveOrderUpdate,
 		Read:        resourceDatadogLogsArchiveOrderRead,

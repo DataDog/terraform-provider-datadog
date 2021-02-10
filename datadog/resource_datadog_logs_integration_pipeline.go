@@ -9,7 +9,7 @@ import (
 
 func resourceDatadogLogsIntegrationPipeline() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog Logs Pipeline API resource to manage the integrations.\n\nIntegration pipelines are the pipelines that are automatically installed for your organization when sending the logs with specific sources. You don't need to maintain or update these types of pipelines. Keeping them as resources, however, allows you to manage the order of your pipelines by referencing them in your datadog_logs_pipeline_order resource. If you don't need the pipeline_order feature, this resource declaration can be omitted.",
+		Description: "Provides a Datadog Logs Pipeline API resource to manage the integrations. Integration pipelines are the pipelines that are automatically installed for your organization when sending the logs with specific sources. You don't need to maintain or update these types of pipelines. Keeping them as resources, however, allows you to manage the order of your pipelines by referencing them in your `datadog_logs_pipeline_order` resource. If you don't need the `pipeline_order` feature, this resource declaration can be omitted.",
 		Create:      resourceDatadogLogsIntegrationPipelineCreate,
 		Update:      resourceDatadogLogsIntegrationPipelineUpdate,
 		Read:        resourceDatadogLogsIntegrationPipelineRead,

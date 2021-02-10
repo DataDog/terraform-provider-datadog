@@ -26,6 +26,25 @@ var (
 	baseIpRangesSubdomain = "ip-ranges"
 )
 
+func init() {
+	// Set descriptions to support markdown syntax, this will be used in document generation
+	// and the language server.
+	//schema.DescriptionKind = configschema.StringMarkdown
+
+	// Customize the content of descriptions when output. For example you can add defaults on
+	// to the exported descriptions if present.
+	schema.SchemaDescriptionBuilder = func(s *schema.Schema) string {
+		desc := s.Description
+		//if s.Default != nil {
+		//	desc += fmt.Sprintf(" Defaults to `%v`.", s.Default)
+		//}
+		if s.Deprecated != "" {
+			desc = fmt.Sprintf("%s **Deprecated.** %s", desc, s.Deprecated)
+		}
+		return strings.TrimSpace(desc)
+	}
+}
+
 func Provider() terraform.ResourceProvider {
 	datadogProvider = &schema.Provider{
 		Schema: map[string]*schema.Schema{
@@ -60,6 +79,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_dashboard_list":                       resourceDatadogDashboardList(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
 			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
+			"datadog_integration_aws_tag_filter":           resourceDatadogIntegrationAwsTagFilter(),
 			"datadog_integration_aws_lambda_arn":           resourceDatadogIntegrationAwsLambdaArn(),
 			"datadog_integration_aws_log_collection":       resourceDatadogIntegrationAwsLogCollection(),
 			"datadog_integration_azure":                    resourceDatadogIntegrationAzure(),
@@ -81,6 +101,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
 			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
 			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
+			"datadog_slo_correction":                       resourceDatadogSloCorrection(),
 			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
 			"datadog_synthetics_global_variable":           resourceDatadogSyntheticsGlobalVariable(),
 			"datadog_synthetics_private_location":          resourceDatadogSyntheticsPrivateLocation(),
@@ -182,6 +203,11 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	configV1.SetUnstableOperationEnabled("ListLogIndexes", true)
 	configV1.SetUnstableOperationEnabled("UpdateLogsIndex", true)
 	configV1.SetUnstableOperationEnabled("UpdateLogsIndexOrder", true)
+
+	configV1.SetUnstableOperationEnabled("CreateSLOCorrection", true)
+	configV1.SetUnstableOperationEnabled("GetSLOCorrection", true)
+	configV1.SetUnstableOperationEnabled("UpdateSLOCorrection", true)
+	configV1.SetUnstableOperationEnabled("DeleteSLOCorrection", true)
 	configV1.UserAgent = getUserAgent(configV1.UserAgent)
 	configV1.Debug = logging.IsDebugOrHigher()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {

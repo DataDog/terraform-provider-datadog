@@ -19,10 +19,10 @@ data "datadog_permissions" "permissions" {}
 
 ### Optional
 
-- **id** (String) The ID of this resource.
+- **id** (String, Optional) The ID of this resource.
 
 ### Read-only
 
-- **permissions** (Map of String) Map of permissions names to their corresponding ID.
+- **permissions** (Map of String, Read-only) Map of permissions names to their corresponding ID.
 
 
