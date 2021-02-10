@@ -17,12 +17,49 @@ The root of this project contains a `GNUmakefile` with the purpose of making eac
 ## Building the provider
 
 The Datadog Provider can be built to use the binary as a terraform plugin. This is most useful when attempting to build off a feature branch and manually run the `terraform plan|apply` commands on a real HCL configuration.
+The steps for this approach can differ depending on the version of Terraform being used. More information can be found on the official [Terraform documentation][4].
 
 This provider can be built by running `make build`, or just `make`. This will place the binary in `$GOPATH/bin`
 
-Running `terraform init` in a folder containing `.tf` files will let terraform look for any needed providers. The default behavior is to pull the latest released binary, but you can tell the terraform CLI to look for your locally built binary instead.
 
-The steps for this approach can differ depending on the version of Terraform being used. More information can be found on the official [Terraform documentation][4].
+### Using Terraform 0.14.x
+1. Setup a `~/.terraformrc` file with the following content:
+```shell
+provider_installation {
+   dev_overrides {
+     "DataDog/datadog" = "<YOUR expanded $GOPATH/bin> directory>"
+   }
+
+   # For all other providers, install them directly from their origin provider
+   # registries as normal. If you omit this, Terraform will _only_ use
+   # the dev_overrides block, and so no other providers will be available.
+   direct {}
+ }
+```
+2. Create a directory to put HCL files in, for example `terraform_examples`
+3. Create a `main.tf` file:
+```shell
+# terraform_examples/main.tf
+terraform {
+  required_providers {
+    datadog = {
+      source = "DataDog/datadog"
+    }
+  }
+}
+
+provider "datadog" {
+  api_key = "<YOUR_API_KEY>"
+  app_key = "<YOUR_APP_KEY>"
+}
+
+# ... any resource config
+```
+5. In your `terraform_examples` folder, run `terraform init` once to initialize the directory
+6. In the datadog terraform provider folder, run `make`, which will build and place the binary in $GOPATH/bin
+7. Run `terraform plan|apply` in your `terraform_examples` folder to use your locally built provider.
+8. Iterate by making changes to the provider, running `make`, and just running `terraform plan|apply` in your `terraform_examples` folder.
+
 
 ## Testing the Provider
 
