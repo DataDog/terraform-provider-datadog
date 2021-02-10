@@ -4890,8 +4890,10 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 
 	if terraformSearches, ok := data["search"].([]interface{}); ok && len(terraformSearches) > 0 {
 		terraformSearch := terraformSearches[0].(map[string]interface{})
-		eventQuery.Search = &datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionSearch{
-			Query: terraformSearch["query"].(string),
+		if len(terraformSearch["query"].(string)) > 0 {
+			eventQuery.Search = &datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionSearch{
+				Query: terraformSearch["query"].(string),
+			}
 		}
 	}
 
@@ -6095,10 +6097,12 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 				terraformQuery["indexes"] = indexes
 			}
 			if search, ok := query.TimeSeriesFormulaAndFunctionEventQueryDefinition.GetSearchOk(); ok {
-				terraformSearch := map[string]interface{}{}
-				terraformSearch["query"] = search.GetQuery()
-				terraformSearchList := []map[string]interface{}{terraformSearch}
-				terraformQuery["search"] = terraformSearchList
+				if len(search.GetQuery()) > 0 {
+					terraformSearch := map[string]interface{}{}
+					terraformSearch["query"] = search.GetQuery()
+					terraformSearchList := []map[string]interface{}{terraformSearch}
+					terraformQuery["search"] = terraformSearchList
+				}
 			}
 			if compute, ok := query.TimeSeriesFormulaAndFunctionEventQueryDefinition.GetComputeOk(); ok {
 				terraformCompute := map[string]interface{}{}
