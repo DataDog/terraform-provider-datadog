@@ -683,10 +683,10 @@ func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
 func testAccCheckDatadogMonitorDestroy(accProvider *schema.Provider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		datadogV1Client := providerConf.DatadogClientV1
+		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		if err := destroyHelper(s, datadogV1Client, authV1); err != nil {
+		if err := destroyHelper(s, datadogClientV1, authV1); err != nil {
 			return err
 		}
 		return nil
@@ -696,10 +696,10 @@ func testAccCheckDatadogMonitorDestroy(accProvider *schema.Provider) func(*terra
 func testAccCheckDatadogMonitorExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		datadogV1Client := providerConf.DatadogClientV1
+		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		if err := existsHelper(s, datadogV1Client, authV1); err != nil {
+		if err := existsHelper(s, datadogClientV1, authV1); err != nil {
 			return err
 		}
 		return nil
@@ -1262,7 +1262,6 @@ func destroyHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, aut
 	for _, r := range s.RootModule().Resources {
 		i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
 		_, httpresp, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
-
 		if err != nil {
 			if httpresp != nil && httpresp.StatusCode == 404 {
 				continue
@@ -1275,10 +1274,10 @@ func destroyHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, aut
 	return nil
 }
 
-func existsHelper(s *terraform.State, datadogV1Client *datadogV1.APIClient, authV1 context.Context) error {
+func existsHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, authV1 context.Context) error {
 	for _, r := range s.RootModule().Resources {
 		i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
-		_, _, err := datadogV1Client.MonitorsApi.GetMonitor(authV1, i).Execute()
+		_, _, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
 		if err != nil {
 			return fmt.Errorf("received an error retrieving monitor %s", err)
 		}
