@@ -327,7 +327,7 @@ func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) err
 
 	d.SetId(strconv.Itoa(int(dt.GetId())))
 
-	return resourceDatadogDowntimeRead(d, meta)
+	return updateDowntimeState(d, &dt)
 }
 
 func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error {
@@ -354,6 +354,10 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 		return nil
 	}
 
+	return updateDowntimeState(d, &dt)
+}
+
+func updateDowntimeState(d *schema.ResourceData, dt *datadogV1.Downtime) error {
 	log.Printf("[DEBUG] downtime: %v", dt)
 
 	if err := d.Set("active", dt.GetActive()); err != nil {
@@ -403,15 +407,22 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 			recurrence["rrule"] = attr
 		}
 		recurrenceList = append(recurrenceList, recurrence)
-		d.Set("recurrence", recurrenceList)
+		if err := d.Set("recurrence", recurrenceList); err != nil {
+			return err
+		}
 	}
-	d.Set("scope", dt.Scope)
+	if err := d.Set("scope", dt.Scope); err != nil {
+		return err
+	}
 	// See the comment for monitor_tags in the schema definition above
 	if !reflect.DeepEqual(dt.GetMonitorTags(), []string{"*"}) {
-		d.Set("monitor_tags", dt.GetMonitorTags())
+		if err := d.Set("monitor_tags", dt.GetMonitorTags()); err != nil {
+			return err
+		}
 	}
-	d.Set("start", dt.GetStart())
-
+	if err := d.Set("start", dt.GetStart()); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -432,13 +443,14 @@ func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) err
 	// is replaced, the ID of the downtime will be set to 0.
 	dt.SetId(id)
 
-	if _, _, err = datadogClientV1.DowntimesApi.UpdateDowntime(authV1, id).Body(*dt).Execute(); err != nil {
+	updatedDowntime, _, err := datadogClientV1.DowntimesApi.UpdateDowntime(authV1, id).Body(*dt).Execute()
+	if err != nil {
 		return translateClientError(err, "error updating downtime")
 	}
 	// handle the case when a downtime is replaced
 	d.SetId(strconv.FormatInt(dt.GetId(), 10))
 
-	return resourceDatadogDowntimeRead(d, meta)
+	return updateDowntimeState(d, &updatedDowntime)
 }
 
 func resourceDatadogDowntimeDelete(d *schema.ResourceData, meta interface{}) error {
