@@ -4,6 +4,9 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -29,7 +32,7 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 						"status": {
 							Type:         schema.TypeString,
-							ValidateFunc: validateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
+							ValidateFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
 							Required:     true,
 							Description:  "Status of the rule case to match.",
 						},
@@ -111,7 +114,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(d *schema.ResourceData, 
 			return errors.New("default rule does not exist")
 		}
 
-		return TranslateClientError(err, "error fetching default rule")
+		return utils.TranslateClientError(err, "error fetching default rule")
 	}
 
 	if !response.GetIsDefault() {
@@ -126,7 +129,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(d *schema.ResourceData, 
 
 	if shouldUpdate {
 		if _, _, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, ruleId).Body(*ruleUpdate).Execute(); err != nil {
-			return TranslateClientError(err, "error updating security monitoring rule on resource creation")
+			return utils.TranslateClientError(err, "error updating security monitoring rule on resource creation")
 		}
 	}
 

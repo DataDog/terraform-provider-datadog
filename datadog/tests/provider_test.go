@@ -5,7 +5,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,6 +17,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -427,7 +429,7 @@ func buildDatadogClientV1(httpClient *http.Client) *datadogV1.APIClient {
 	configV1.SetUnstableOperationEnabled("DeleteSLOCorrection", true)
 	configV1.Debug = isDebug()
 	configV1.HTTPClient = httpClient
-	configV1.UserAgent = datadog.GetUserAgent(configV1.UserAgent)
+	configV1.UserAgent = utils.GetUserAgent(configV1.UserAgent)
 	return datadogV1.NewAPIClient(configV1)
 }
 
@@ -436,7 +438,7 @@ func buildDatadogClientV2(httpClient *http.Client) *datadogV2.APIClient {
 	configV2 := datadogV2.NewConfiguration()
 	configV2.Debug = isDebug()
 	configV2.HTTPClient = httpClient
-	configV2.UserAgent = datadog.GetUserAgent(configV2.UserAgent)
+	configV2.UserAgent = utils.GetUserAgent(configV2.UserAgent)
 	return datadogV2.NewAPIClient(configV2)
 }
 
@@ -450,7 +452,7 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 		c := ddhttp.WrapClient(httpClient)
 
 		communityClient.HttpClient = c
-		communityClient.ExtraHeader["User-Agent"] = datadog.GetUserAgent(fmt.Sprintf(
+		communityClient.ExtraHeader["User-Agent"] = utils.GetUserAgent(fmt.Sprintf(
 			"datadog-api-client-go/%s (go %s; os %s; arch %s)",
 			"go-datadog-api",
 			runtime.Version(),

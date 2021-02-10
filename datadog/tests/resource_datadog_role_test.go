@@ -2,10 +2,12 @@ package test
 
 import (
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"regexp"
 	"strings"
 	"testing"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -113,7 +115,7 @@ func testAccCheckDatadogRoleDestroy(accProvider *schema.Provider) func(*terrafor
 			_, httpresp, err := client.RolesApi.GetRole(auth, r.Primary.ID).Execute()
 			if err != nil {
 				if !(httpresp != nil && httpresp.StatusCode == 404) {
-					return datadog.TranslateClientError(err, "error getting role")
+					return utils.TranslateClientError(err, "error getting role")
 				}
 				// Role was successfully deleted
 				continue
@@ -133,7 +135,7 @@ func testAccCheckDatadogRoleExists(accProvider *schema.Provider, rolename string
 		id := s.RootModule().Resources[rolename].Primary.ID
 		_, _, err := client.RolesApi.GetRole(auth, id).Execute()
 		if err != nil {
-			return datadog.TranslateClientError(err, "error checking role existence")
+			return utils.TranslateClientError(err, "error checking role existence")
 		}
 		return nil
 	}

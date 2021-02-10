@@ -2,9 +2,10 @@ package test
 
 import (
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"strings"
 	"testing"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	"github.com/jonboulle/clockwork"
 

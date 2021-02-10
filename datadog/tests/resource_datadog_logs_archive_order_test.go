@@ -3,10 +3,11 @@ package test
 import (
 	"context"
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"

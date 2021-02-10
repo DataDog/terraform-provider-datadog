@@ -1,8 +1,9 @@
 package test
 
 import (
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"testing"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )

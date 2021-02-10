@@ -2,6 +2,8 @@ package datadog
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 )
@@ -48,7 +50,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 					},
 					"status": {
 						Type:         schema.TypeString,
-						ValidateFunc: validateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
+						ValidateFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
 						Required:     true,
 						Description:  "Severity of the Security Signal.",
 					},
@@ -85,21 +87,21 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 				Schema: map[string]*schema.Schema{
 					"evaluation_window": {
 						Type:         schema.TypeInt,
-						ValidateFunc: validateEnumValue(datadogV2.NewSecurityMonitoringRuleEvaluationWindowFromValue),
+						ValidateFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleEvaluationWindowFromValue),
 						Required:     true,
 						Description:  "A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time.",
 					},
 
 					"keep_alive": {
 						Type:         schema.TypeInt,
-						ValidateFunc: validateEnumValue(datadogV2.NewSecurityMonitoringRuleKeepAliveFromValue),
+						ValidateFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleKeepAliveFromValue),
 						Required:     true,
 						Description:  "Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window.",
 					},
 
 					"max_signal_duration": {
 						Type:         schema.TypeInt,
-						ValidateFunc: validateEnumValue(datadogV2.NewSecurityMonitoringRuleMaxSignalDurationFromValue),
+						ValidateFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleMaxSignalDurationFromValue),
 						Required:     true,
 						Description:  "A signal will “close” regardless of the query being matched once the time exceeds the maximum duration. This time is calculated from the first seen timestamp.",
 					},
@@ -115,7 +117,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 				Schema: map[string]*schema.Schema{
 					"aggregation": {
 						Type:         schema.TypeString,
-						ValidateFunc: validateEnumValue(datadogV2.NewSecurityMonitoringRuleQueryAggregationFromValue),
+						ValidateFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleQueryAggregationFromValue),
 						Optional:     true,
 						Description:  "The aggregation type.",
 					},
@@ -170,7 +172,7 @@ func resourceDatadogSecurityMonitoringRuleCreate(d *schema.ResourceData, meta in
 	}
 	response, _, err := datadogClientV2.SecurityMonitoringApi.CreateSecurityMonitoringRule(authV2).Body(ruleCreate).Execute()
 	if err != nil {
-		return TranslateClientError(err, "error creating security monitoring rule")
+		return utils.TranslateClientError(err, "error creating security monitoring rule")
 	}
 
 	d.SetId(response.GetId())
@@ -398,7 +400,7 @@ func resourceDatadogSecurityMonitoringRuleUpdate(d *schema.ResourceData, meta in
 	ruleUpdate := buildUpdatePayload(d)
 	response, _, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, d.Id()).Body(ruleUpdate).Execute()
 	if err != nil {
-		return TranslateClientError(err, "error updating security monitoring rule")
+		return utils.TranslateClientError(err, "error updating security monitoring rule")
 	}
 
 	updateResourceDataFromResponse(d, response)
@@ -534,7 +536,7 @@ func resourceDatadogSecurityMonitoringRuleDelete(d *schema.ResourceData, meta in
 	authV2 := providerConf.AuthV2
 
 	if _, err := datadogClientV2.SecurityMonitoringApi.DeleteSecurityMonitoringRule(authV2, d.Id()).Execute(); err != nil {
-		return TranslateClientError(err, "error deleting security monitoring rule")
+		return utils.TranslateClientError(err, "error deleting security monitoring rule")
 	}
 
 	return nil

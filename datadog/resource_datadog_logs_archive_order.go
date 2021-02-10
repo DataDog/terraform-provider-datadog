@@ -6,6 +6,7 @@ import (
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func resourceDatadogLogsArchiveOrder() *schema.Resource {
@@ -48,7 +49,7 @@ func resourceDatadogLogsArchiveOrderCreate(d *schema.ResourceData, meta interfac
 		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
 			fmt.Printf("cannot map archives to existing ones, will try to import it with Id `archiveOrderID`\n")
 		} else {
-			return TranslateClientError(err, "error creating logs archive order")
+			return utils.TranslateClientError(err, "error creating logs archive order")
 		}
 	}
 	d.SetId("archiveOrderID")
@@ -61,7 +62,7 @@ func resourceDatadogLogsArchiveOrderRead(d *schema.ResourceData, meta interface{
 	authV2 := providerConf.AuthV2
 	ddList, _, err := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2).Execute()
 	if err != nil {
-		return TranslateClientError(err, "error getting logs archive order")
+		return utils.TranslateClientError(err, "error getting logs archive order")
 	}
 
 	if err = d.Set("archive_ids", ddList.Data.Attributes.ArchiveIds); err != nil {
@@ -85,13 +86,13 @@ func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interfac
 		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
 			ddArchiveOrder, _, getErr := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2).Execute()
 			if getErr != nil {
-				return TranslateClientError(err, "error getting logs archive order")
+				return utils.TranslateClientError(err, "error getting logs archive order")
 			}
 			return fmt.Errorf("cannot map archives to existing ones\n existing archives: %s\n archive to be updated: %s",
 				ddArchiveOrder.Data.Attributes.ArchiveIds,
 				ddArchiveList.Data.Attributes.GetArchiveIds())
 		}
-		return TranslateClientError(err, "error updating logs archive order")
+		return utils.TranslateClientError(err, "error updating logs archive order")
 	}
 	d.SetId("archiveOrderID")
 	return resourceDatadogLogsArchiveOrderRead(d, meta)

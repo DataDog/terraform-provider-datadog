@@ -7,6 +7,7 @@ import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 const (
@@ -362,7 +363,7 @@ func resourceDatadogLogsPipelineCreate(d *schema.ResourceData, meta interface{})
 	}
 	createdPipeline, _, err := datadogClientV1.LogsPipelinesApi.CreateLogsPipeline(authV1).Body(*ddPipeline).Execute()
 	if err != nil {
-		return TranslateClientError(err, "failed to create logs pipeline using Datadog API")
+		return utils.TranslateClientError(err, "failed to create logs pipeline using Datadog API")
 	}
 	d.SetId(*createdPipeline.Id)
 	return resourceDatadogLogsPipelineRead(d, meta)
@@ -379,7 +380,7 @@ func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) e
 			d.SetId("")
 			return nil
 		}
-		return TranslateClientError(err, "failed to get logs pipeline using Datadog API")
+		return utils.TranslateClientError(err, "failed to get logs pipeline using Datadog API")
 	}
 	if err = d.Set("name", ddPipeline.GetName()); err != nil {
 		return err
@@ -410,7 +411,7 @@ func resourceDatadogLogsPipelineUpdate(d *schema.ResourceData, meta interface{})
 		return err
 	}
 	if _, _, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipeline(authV1, d.Id()).Body(*ddPipeline).Execute(); err != nil {
-		return TranslateClientError(err, "error updating logs pipeline")
+		return utils.TranslateClientError(err, "error updating logs pipeline")
 	}
 	return resourceDatadogLogsPipelineRead(d, meta)
 }
@@ -425,7 +426,7 @@ func resourceDatadogLogsPipelineDelete(d *schema.ResourceData, meta interface{})
 		if strings.Contains(err.Error(), "400 Bad Request") {
 			return nil
 		}
-		return TranslateClientError(err, "error deleting logs pipeline")
+		return utils.TranslateClientError(err, "error deleting logs pipeline")
 	}
 	return nil
 }

@@ -2,8 +2,10 @@ package test
 
 import (
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"testing"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -184,7 +186,7 @@ func testAccCheckDatadogSloCorrectionExists(accProvider *schema.Provider, resour
 			}
 			id := r.Primary.ID
 			if _, _, err = datadogClient.ServiceLevelObjectiveCorrectionsApi.GetSLOCorrection(auth, id).Execute(); err != nil {
-				return datadog.TranslateClientError(err, "error checking slo_correction existence")
+				return utils.TranslateClientError(err, "error checking slo_correction existence")
 			}
 		}
 		return nil

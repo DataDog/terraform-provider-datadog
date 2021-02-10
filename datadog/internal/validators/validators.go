@@ -1,4 +1,4 @@
-package datadog
+package validators
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 )
 
-func validateFloatString(v interface{}, k string) (ws []string, errors []error) {
+func ValidateFloatString(v interface{}, k string) (ws []string, errors []error) {
 	return validation.StringMatch(regexp.MustCompile("\\d*(\\.\\d*)?"), "value must be a float")(v, k)
 }
 
@@ -30,9 +30,9 @@ func ValidateAggregatorMethod(v interface{}, k string) (ws []string, errors []er
 	return
 }
 
-// validateEnumValue returns a validate func for an enum value. It takes the constructor with validation for the enum as an argument.
+// ValidateEnumValue returns a validate func for an enum value. It takes the constructor with validation for the enum as an argument.
 // Such a constructor is for instance `datadogV1.NewWidgetLineWidthFromValue`
-func validateEnumValue(newEnumFunc interface{}) schema.SchemaValidateFunc {
+func ValidateEnumValue(newEnumFunc interface{}) schema.SchemaValidateFunc {
 
 	// Get type of arg to convert int to int32/64 for instance
 	f := reflect.TypeOf(newEnumFunc)

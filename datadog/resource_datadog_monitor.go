@@ -10,6 +10,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -69,7 +72,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				Type:         schema.TypeString,
 				Required:     true,
 				ForceNew:     true,
-				ValidateFunc: validateEnumValue(datadogV1.NewMonitorTypeFromValue),
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewMonitorTypeFromValue),
 				// Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
 					if (oldVal == "query alert" && newVal == "metric alert") ||
@@ -134,37 +137,37 @@ func resourceDatadogMonitor() *schema.Resource {
 						"ok": {
 							Description:  "The monitor `OK` threshold. Must be a number.",
 							Type:         schema.TypeString,
-							ValidateFunc: validateFloatString,
+							ValidateFunc: validators.ValidateFloatString,
 							Optional:     true,
 						},
 						"warning": {
 							Description:  "The monitor `WARNING` threshold. Must be a number.",
 							Type:         schema.TypeString,
-							ValidateFunc: validateFloatString,
+							ValidateFunc: validators.ValidateFloatString,
 							Optional:     true,
 						},
 						"critical": {
 							Description:  "The monitor `CRITICAL` recovery threshold. Must be a number.",
 							Type:         schema.TypeString,
-							ValidateFunc: validateFloatString,
+							ValidateFunc: validators.ValidateFloatString,
 							Optional:     true,
 						},
 						"unknown": {
 							Description:  "The monitor `UNKNOWN` threshold. Must be a number.",
 							Type:         schema.TypeString,
-							ValidateFunc: validateFloatString,
+							ValidateFunc: validators.ValidateFloatString,
 							Optional:     true,
 						},
 						"warning_recovery": {
 							Description:  "The monitor `WARNING` recovery threshold. Must be a number.",
 							Type:         schema.TypeString,
-							ValidateFunc: validateFloatString,
+							ValidateFunc: validators.ValidateFloatString,
 							Optional:     true,
 						},
 						"critical_recovery": {
 							Description:  "The monitor `CRITICAL` recovery threshold. Must be a number.",
 							Type:         schema.TypeString,
-							ValidateFunc: validateFloatString,
+							ValidateFunc: validators.ValidateFloatString,
 							Optional:     true,
 						},
 					},
@@ -521,9 +524,9 @@ func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interfa
 		_, httpresp, err := datadogClientV1.MonitorsApi.ValidateMonitor(authV1).Body(*m).Execute()
 		if err != nil {
 			if httpresp != nil && httpresp.StatusCode == 502 {
-				return resource.RetryableError(TranslateClientError(err, "error validating monitor, retrying"))
+				return resource.RetryableError(utils.TranslateClientError(err, "error validating monitor, retrying"))
 			}
-			return resource.NonRetryableError(TranslateClientError(err, "error validating monitor"))
+			return resource.NonRetryableError(utils.TranslateClientError(err, "error validating monitor"))
 		}
 		return nil
 	})
@@ -551,7 +554,7 @@ func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) erro
 	m, _ := buildMonitorStruct(d)
 	mCreated, _, err := datadogClientV1.MonitorsApi.CreateMonitor(authV1).Body(*m).Execute()
 	if err != nil {
-		return TranslateClientError(err, "error creating monitor")
+		return utils.TranslateClientError(err, "error creating monitor")
 	}
 	mCreatedId := strconv.FormatInt(mCreated.GetId(), 10)
 	d.SetId(mCreatedId)
@@ -580,10 +583,10 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 					d.SetId("")
 					return nil
 				} else if httpresp.StatusCode == 502 {
-					return resource.RetryableError(TranslateClientError(err, "error getting monitor, retrying"))
+					return resource.RetryableError(utils.TranslateClientError(err, "error getting monitor, retrying"))
 				}
 			}
-			return resource.NonRetryableError(TranslateClientError(err, "error getting monitor"))
+			return resource.NonRetryableError(utils.TranslateClientError(err, "error getting monitor"))
 		}
 		return nil
 	}); err != nil {
@@ -723,7 +726,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 
 	monitorResp, _, err := datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
 	if err != nil {
-		return TranslateClientError(err, "error updating monitor")
+		return utils.TranslateClientError(err, "error updating monitor")
 	}
 
 	var retval error
@@ -749,7 +752,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		}
 		monitorResp, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
 		if err != nil {
-			return TranslateClientError(err, "error updating monitor")
+			return utils.TranslateClientError(err, "error updating monitor")
 		}
 		d.Set("silenced", map[string]int{})
 	} else {
@@ -772,7 +775,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 			}
 		}
 		if _, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute(); err != nil {
-			return TranslateClientError(err, "error updating monitor")
+			return utils.TranslateClientError(err, "error updating monitor")
 		}
 	}
 
@@ -796,7 +799,7 @@ func resourceDatadogMonitorDelete(d *schema.ResourceData, meta interface{}) erro
 	}
 
 	if err != nil {
-		return TranslateClientError(err, "error deleting monitor")
+		return utils.TranslateClientError(err, "error deleting monitor")
 	}
 
 	return nil

@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func dataSourceDatadogRole() *schema.Resource {
@@ -45,7 +46,7 @@ func dataSourceDatadogRoleRead(d *schema.ResourceData, meta interface{}) error {
 
 	res, _, err := req.Execute()
 	if err != nil {
-		return TranslateClientError(err, "error querying roles")
+		return utils.TranslateClientError(err, "error querying roles")
 	}
 	roles := res.GetData()
 	roleIndex := 0

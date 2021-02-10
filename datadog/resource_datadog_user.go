@@ -8,6 +8,7 @@ import (
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/zorkian/go-datadog-api"
 )
 
@@ -178,14 +179,14 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 	createResponse, httpresp, err := datadogClientV2.UsersApi.CreateUser(authV2).Body(*userRequest).Execute()
 	if err != nil {
 		if httpresp == nil || httpresp.StatusCode != 409 {
-			return TranslateClientError(err, "error creating user")
+			return utils.TranslateClientError(err, "error creating user")
 		}
 		email := d.Get("email").(string)
 		log.Printf("[INFO] Updating existing Datadog user %s", email)
 		// Find user ID by listing user and filtering by email
 		listResponse, _, err := datadogClientV2.UsersApi.ListUsers(authV2).Filter(email).Execute()
 		if err != nil {
-			return TranslateClientError(err, "error searching user")
+			return utils.TranslateClientError(err, "error searching user")
 		}
 		responseData := listResponse.GetData()
 		if len(responseData) != 1 {
@@ -195,7 +196,7 @@ func resourceDatadogUserCreate(d *schema.ResourceData, meta interface{}) error {
 		userRequest := buildDatadogUserV2UpdateStruct(d, userID)
 
 		if _, _, err = datadogClientV2.UsersApi.UpdateUser(authV2, userID).Body(*userRequest).Execute(); err != nil {
-			return TranslateClientError(err, "error updating user")
+			return utils.TranslateClientError(err, "error updating user")
 		}
 	} else {
 		userData := createResponse.GetData()
@@ -232,7 +233,7 @@ func sendUserInvitation(userID string, d *schema.ResourceData, meta interface{})
 
 	res, _, err := datadogClientV2.UsersApi.SendInvitations(authV2).Body(body).Execute()
 	if err != nil {
-		return TranslateClientError(err, "error sending user invitation")
+		return utils.TranslateClientError(err, "error sending user invitation")
 	}
 	if err := d.Set("user_invitation_id", res.GetData()[0].GetId()); err != nil {
 		return err
@@ -254,7 +255,7 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 				d.SetId("")
 				return nil
 			}
-			return TranslateClientError(err, "error getting user")
+			return utils.TranslateClientError(err, "error getting user")
 		}
 
 		userData := userResponse.GetData()
@@ -330,7 +331,7 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 		// Find user ID by listing user and filtering by email
 		listResponse, _, err := datadogClientV2.UsersApi.ListUsers(authV2).Filter(email).Execute()
 		if err != nil {
-			return TranslateClientError(err, "error searching user")
+			return utils.TranslateClientError(err, "error searching user")
 		}
 		responseData := listResponse.GetData()
 		if len(responseData) != 1 {
@@ -347,7 +348,7 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 		userRequest := buildDatadogUserV2UpdateStruct(d, d.Id())
 
 		if _, _, err := datadogClientV2.UsersApi.UpdateUser(authV2, d.Id()).Body(*userRequest).Execute(); err != nil {
-			return TranslateClientError(err, "error updating user")
+			return utils.TranslateClientError(err, "error updating user")
 		}
 		if d.HasChange("roles") {
 			oldRolesI, newRolesI := d.GetChange("roles")
@@ -363,7 +364,7 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 				userRelation.SetData(*userRelationData)
 				_, _, err := datadogClientV2.RolesApi.RemoveUserFromRole(authV2, role).Body(*userRelation).Execute()
 				if err != nil {
-					return TranslateClientError(err, "error removing user from role")
+					return utils.TranslateClientError(err, "error removing user from role")
 				}
 			}
 			for _, roleI := range rolesToAdd.List() {
@@ -374,7 +375,7 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 				roleRelation.SetData(*roleRelationData)
 				_, _, err := datadogClientV2.RolesApi.AddUserToRole(authV2, role).Body(*roleRelation).Execute()
 				if err != nil {
-					return TranslateClientError(err, "error adding user to role")
+					return utils.TranslateClientError(err, "error adding user to role")
 				}
 			}
 		}
@@ -385,7 +386,7 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 		u.SetHandle(d.Id())
 
 		if err := client.UpdateUser(*u); err != nil {
-			return TranslateClientError(err, "error updating user")
+			return utils.TranslateClientError(err, "error updating user")
 		}
 	}
 
@@ -403,7 +404,7 @@ func resourceDatadogUserDelete(d *schema.ResourceData, meta interface{}) error {
 			if httpResponse != nil && httpResponse.StatusCode == 404 {
 				return nil
 			}
-			return TranslateClientError(err, "error disabling user")
+			return utils.TranslateClientError(err, "error disabling user")
 		}
 	} else {
 		client := providerConf.CommunityClient
@@ -415,7 +416,7 @@ func resourceDatadogUserDelete(d *schema.ResourceData, meta interface{}) error {
 		}
 
 		if err := client.DeleteUser(d.Id()); err != nil {
-			return TranslateClientError(err, "error deleting user")
+			return utils.TranslateClientError(err, "error deleting user")
 		}
 	}
 

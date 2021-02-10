@@ -2,10 +2,12 @@ package test
 
 import (
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -400,7 +402,7 @@ func TestValidateAggregatorMethod(t *testing.T) {
 		"sum",
 	}
 	for _, v := range validMethods {
-		_, errors := datadog.ValidateAggregatorMethod(v, "request")
+		_, errors := validators.ValidateAggregatorMethod(v, "request")
 		if len(errors) != 0 {
 			t.Fatalf("%q should be a valid aggregator method: %q", v, errors)
 		}
@@ -413,7 +415,7 @@ func TestValidateAggregatorMethod(t *testing.T) {
 		"foo",
 	}
 	for _, v := range invalidMethods {
-		_, errors := datadog.ValidateAggregatorMethod(v, "request")
+		_, errors := validators.ValidateAggregatorMethod(v, "request")
 		if len(errors) == 0 {
 			t.Fatalf("%q should be an invalid aggregator method", v)
 		}

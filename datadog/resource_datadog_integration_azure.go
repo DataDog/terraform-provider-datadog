@@ -6,6 +6,7 @@ import (
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func resourceDatadogIntegrationAzure() *schema.Resource {
@@ -57,7 +58,7 @@ func resourceDatadogIntegrationAzureRead(d *schema.ResourceData, meta interface{
 
 	integrations, _, err := datadogClientV1.AzureIntegrationApi.ListAzureIntegration(authV1).Execute()
 	if err != nil {
-		return TranslateClientError(err, "error listing azure integration")
+		return utils.TranslateClientError(err, "error listing azure integration")
 	}
 	for _, integration := range integrations {
 		if integration.GetTenantName() == tenantName {
@@ -84,7 +85,7 @@ func resourceDatadogIntegrationAzureCreate(d *schema.ResourceData, meta interfac
 	iazure := buildDatadogAzureIntegrationDefinition(d, tenantName, clientID, false)
 
 	if _, _, err := datadogClientV1.AzureIntegrationApi.CreateAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
-		return TranslateClientError(err, "error creating an Azure integration")
+		return utils.TranslateClientError(err, "error creating an Azure integration")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", iazure.GetTenantName(), iazure.GetClientId()))
@@ -105,7 +106,7 @@ func resourceDatadogIntegrationAzureUpdate(d *schema.ResourceData, meta interfac
 	iazure := buildDatadogAzureIntegrationDefinition(d, existingTenantName, existingClientID, true)
 
 	if _, _, err := datadogClientV1.AzureIntegrationApi.UpdateAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
-		return TranslateClientError(err, "error updating an Azure integration")
+		return utils.TranslateClientError(err, "error updating an Azure integration")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", iazure.GetNewTenantName(), iazure.GetNewClientId()))
@@ -125,7 +126,7 @@ func resourceDatadogIntegrationAzureDelete(d *schema.ResourceData, meta interfac
 	iazure := buildDatadogAzureIntegrationDefinition(d, tenantName, clientID, false)
 
 	if _, _, err := datadogClientV1.AzureIntegrationApi.DeleteAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
-		return TranslateClientError(err, "error deleting an Azure integration")
+		return utils.TranslateClientError(err, "error deleting an Azure integration")
 	}
 
 	return nil

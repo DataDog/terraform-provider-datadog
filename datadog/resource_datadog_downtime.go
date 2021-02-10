@@ -15,6 +15,7 @@ import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func resourceDatadogDowntime() *schema.Resource {
@@ -237,7 +238,7 @@ func buildDowntimeStruct(authV1 context.Context, d *schema.ResourceData, client 
 		var currdt datadogV1.Downtime
 		currdt, _, err = client.DowntimesApi.GetDowntime(authV1, id).Execute()
 		if err != nil {
-			return nil, TranslateClientError(err, "error getting downtime")
+			return nil, utils.TranslateClientError(err, "error getting downtime")
 		}
 		currentStart = currdt.GetStart()
 		currentEnd = currdt.GetEnd()
@@ -322,7 +323,7 @@ func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) err
 	}
 	dt, _, err := datadogClientV1.DowntimesApi.CreateDowntime(authV1).Body(*dts).Execute()
 	if err != nil {
-		return TranslateClientError(err, "error creating downtime")
+		return utils.TranslateClientError(err, "error creating downtime")
 	}
 
 	d.SetId(strconv.Itoa(int(dt.GetId())))
@@ -346,7 +347,7 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 			d.SetId("")
 			return nil
 		}
-		return TranslateClientError(err, "error getting downtime")
+		return utils.TranslateClientError(err, "error getting downtime")
 	}
 
 	if canceled, ok := dt.GetCanceledOk(); ok && canceled != nil {
@@ -433,7 +434,7 @@ func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) err
 	dt.SetId(id)
 
 	if _, _, err = datadogClientV1.DowntimesApi.UpdateDowntime(authV1, id).Body(*dt).Execute(); err != nil {
-		return TranslateClientError(err, "error updating downtime")
+		return utils.TranslateClientError(err, "error updating downtime")
 	}
 	// handle the case when a downtime is replaced
 	d.SetId(strconv.FormatInt(dt.GetId(), 10))
@@ -452,7 +453,7 @@ func resourceDatadogDowntimeDelete(d *schema.ResourceData, meta interface{}) err
 	}
 
 	if _, err = datadogClientV1.DowntimesApi.CancelDowntime(authV1, id).Execute(); err != nil {
-		return TranslateClientError(err, "error deleting downtime")
+		return utils.TranslateClientError(err, "error deleting downtime")
 	}
 
 	return nil

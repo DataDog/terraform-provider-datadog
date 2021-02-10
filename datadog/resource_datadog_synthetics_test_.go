@@ -12,6 +12,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
@@ -32,7 +35,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Description:  "Synthetics test type (`api` or `browser`).",
 				Type:         schema.TypeString,
 				Required:     true,
-				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
 			},
 			"subtype": {
 				Description: "When `type` is `api`, choose from `http`, `ssl`, `tcp` or `dns`. Defaults to `http`.",
@@ -45,7 +48,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					}
 					return old == new
 				},
-				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTestDetailsSubTypeFromValue),
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsSubTypeFromValue),
 			},
 			"request": {
 				Description:   "The synthetics test request. Required if `type = \"api\"`.",
@@ -126,7 +129,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 						"type": {
 							Description:  "Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation)).",
 							Type:         schema.TypeString,
-							ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue),
+							ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue),
 							Required:     true,
 						},
 						"operator": {
@@ -182,7 +185,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Optional:    true,
 				Elem: &schema.Schema{
 					Type:         schema.TypeString,
-					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsDeviceIDFromValue),
+					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsDeviceIDFromValue),
 				},
 			},
 			"locations": {
@@ -216,7 +219,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Description:  "Define whether you want to start (`live`) or pause (`paused`) a Synthetic test. Allowed enum values: `live`, `paused`",
 				Type:         schema.TypeString,
 				Required:     true,
-				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTestPauseStatusFromValue),
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestPauseStatusFromValue),
 			},
 			"monitor_id": {
 				Description: "ID of the monitor associated with the Datadog synthetics test.",
@@ -236,7 +239,7 @@ func syntheticsTestRequest() *schema.Resource {
 				Description:  "The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.",
 				Type:         schema.TypeString,
 				Optional:     true,
-				ValidateFunc: validateEnumValue(datadogV1.NewHTTPMethodFromValue),
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewHTTPMethodFromValue),
 			},
 			"url": {
 				Description: "The URL to send the request to.",
@@ -371,7 +374,7 @@ func syntheticsTestOptions() *schema.Schema {
 				},
 				"tick_every": {
 					Type:         schema.TypeInt,
-					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
+					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
 					Required:     true,
 				},
 				"accept_self_signed": {
@@ -417,7 +420,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Description:  "How often the test should run (in seconds). Current possible values are `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` plus `60` for API tests or `300` for browser tests.",
 					Type:         schema.TypeInt,
 					Optional:     true,
-					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
+					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
 				},
 				"accept_self_signed": {
 					Description: "For SSL test, whether or not the test should allow self signed certificates.",
@@ -504,7 +507,7 @@ func syntheticsTestBrowserStep(detailedParams bool) *schema.Schema {
 					Description:  "Type of the step. Refer to [Datadog documentation](https://docs.datadoghq.com/api/v1/synthetics/#create-a-test) for the complete list of available types.",
 					Type:         schema.TypeString,
 					Required:     true,
-					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsStepTypeFromValue),
+					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsStepTypeFromValue),
 				},
 				"allow_failure": {
 					Description: "Determines if the step should be allowed to fail.",
@@ -551,7 +554,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Description:  "Check type to use for an assertion step.",
 					Type:         schema.TypeString,
 					Optional:     true,
-					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsCheckTypeFromValue),
+					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsCheckTypeFromValue),
 				},
 				"click_type": {
 					Description:  `Type of click to use for a "click" step.`,
@@ -725,7 +728,7 @@ func syntheticsBrowserVariableElem() *schema.Resource {
 				Description:  "Type of browser test variable. Allowed enum values: `element`, `email`, `global`, `javascript`, `text`.",
 				Type:         schema.TypeString,
 				Required:     true,
-				ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsBrowserVariableTypeFromValue),
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsBrowserVariableTypeFromValue),
 			},
 		},
 	}
@@ -758,7 +761,7 @@ func syntheticsConfigVariable() *schema.Schema {
 					Description:  "Type of test configuration variable. Allowed enum values: `text`.",
 					Type:         schema.TypeString,
 					Required:     true,
-					ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsConfigVariableTypeFromValue),
+					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsConfigVariableTypeFromValue),
 				},
 			},
 		},
@@ -774,7 +777,7 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 	createdSyntheticsTest, _, err := datadogClientV1.SyntheticsApi.CreateTest(authV1).Body(*syntheticsTest).Execute()
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
-		return TranslateClientError(err, "error creating synthetics test")
+		return utils.TranslateClientError(err, "error creating synthetics test")
 	}
 
 	// If the Create callback returns with or without an error without an ID set using SetId,
@@ -811,7 +814,7 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 			d.SetId("")
 			return nil
 		}
-		return TranslateClientError(err, "error getting synthetics test")
+		return utils.TranslateClientError(err, "error getting synthetics test")
 	}
 
 	return updateSyntheticsTestLocalState(d, &syntheticsTest)
@@ -825,7 +828,7 @@ func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{
 	syntheticsTest := buildSyntheticsTestStruct(d)
 	if _, _, err := datadogClientV1.SyntheticsApi.UpdateTest(authV1, d.Id()).Body(*syntheticsTest).Execute(); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
-		return TranslateClientError(err, "error updating synthetics test")
+		return utils.TranslateClientError(err, "error updating synthetics test")
 	}
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
@@ -840,7 +843,7 @@ func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{
 	syntheticsDeleteTestsPayload := datadogV1.SyntheticsDeleteTestsPayload{PublicIds: &[]string{d.Id()}}
 	if _, _, err := datadogClientV1.SyntheticsApi.DeleteTests(authV1).Body(syntheticsDeleteTestsPayload).Execute(); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
-		return TranslateClientError(err, "error deleting synthetics test")
+		return utils.TranslateClientError(err, "error deleting synthetics test")
 	}
 
 	// The resource is assumed to be destroyed, and all state is removed.

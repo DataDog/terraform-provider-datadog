@@ -6,6 +6,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -55,7 +58,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 							Description:  "The time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Available options to choose from are: `7d`, `30d`, `90d`.",
 							Type:         schema.TypeString,
 							Required:     true,
-							ValidateFunc: validateEnumValue(datadogV1.NewSLOTimeframeFromValue),
+							ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSLOTimeframeFromValue),
 						},
 						"target": {
 							Description:      "The objective's target in`[0,100]`.",
@@ -89,7 +92,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Type:         schema.TypeString,
 				Required:     true,
 				ForceNew:     true,
-				ValidateFunc: validateEnumValue(datadogV1.NewSLOTypeFromValue),
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSLOTypeFromValue),
 			},
 			"force_delete": {
 				Description: "A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. dashboards).",
@@ -187,7 +190,7 @@ func resourceDatadogServiceLevelObjectiveCustomizeDiff(diff *schema.ResourceDiff
 		for _, v := range attr.(*schema.Set).List() {
 			// Check that each monitor being added to the SLO exists
 			if _, _, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, int64(v.(int))).Execute(); err != nil {
-				return TranslateClientError(err, "error finding monitor to add to SLO")
+				return utils.TranslateClientError(err, "error finding monitor to add to SLO")
 			}
 		}
 	}
@@ -337,7 +340,7 @@ func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta int
 	_, slor := buildServiceLevelObjectiveStructs(d)
 	sloResp, _, err := datadogClientV1.ServiceLevelObjectivesApi.CreateSLO(authV1).Body(*slor).Execute()
 	if err != nil {
-		return TranslateClientError(err, "error creating service level objective")
+		return utils.TranslateClientError(err, "error creating service level objective")
 	}
 
 	slo := &sloResp.GetData()[0]
@@ -357,7 +360,7 @@ func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta inter
 			d.SetId("")
 			return nil
 		}
-		return TranslateClientError(err, "error getting service level objective")
+		return utils.TranslateClientError(err, "error getting service level objective")
 	}
 	slo := sloResp.GetData()
 
@@ -415,7 +418,7 @@ func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta int
 	slo, _ := buildServiceLevelObjectiveStructs(d)
 
 	if _, _, err := datadogClientV1.ServiceLevelObjectivesApi.UpdateSLO(authV1, d.Id()).Body(*slo).Execute(); err != nil {
-		return TranslateClientError(err, "error updating service level objective")
+		return utils.TranslateClientError(err, "error updating service level objective")
 	}
 
 	return resourceDatadogServiceLevelObjectiveRead(d, meta)
@@ -433,7 +436,7 @@ func resourceDatadogServiceLevelObjectiveDelete(d *schema.ResourceData, meta int
 		_, _, err = datadogClientV1.ServiceLevelObjectivesApi.DeleteSLO(authV1, d.Id()).Execute()
 	}
 	if err != nil {
-		return TranslateClientError(err, "error deleting service level objective")
+		return utils.TranslateClientError(err, "error deleting service level objective")
 	}
 	return nil
 

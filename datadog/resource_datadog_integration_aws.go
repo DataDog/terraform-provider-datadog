@@ -6,6 +6,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -131,7 +133,7 @@ func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{
 	response, _, err := datadogClientV1.AWSIntegrationApi.CreateAWSAccount(authV1).Body(*iaws).Execute()
 
 	if err != nil {
-		return TranslateClientError(err, "error creating AWS integration")
+		return utils.TranslateClientError(err, "error creating AWS integration")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", accountID, roleName))
@@ -152,7 +154,7 @@ func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{})
 
 	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(authV1).Execute()
 	if err != nil {
-		return TranslateClientError(err, "error getting AWS integration")
+		return utils.TranslateClientError(err, "error getting AWS integration")
 	}
 
 	for _, integration := range integrations.GetAccounts() {
@@ -189,7 +191,7 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 	_, _, err = datadogClientV1.AWSIntegrationApi.UpdateAWSAccount(authV1).
 		Body(*iaws).AccountId(existingAccountID).RoleName(existingRoleName).Execute()
 	if err != nil {
-		return TranslateClientError(err, "error updating AWS integration")
+		return utils.TranslateClientError(err, "error updating AWS integration")
 	}
 	d.SetId(fmt.Sprintf("%s:%s", iaws.GetAccountId(), iaws.GetRoleName()))
 	return resourceDatadogIntegrationAwsRead(d, meta)
@@ -210,7 +212,7 @@ func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{
 
 	_, _, err = datadogClientV1.AWSIntegrationApi.DeleteAWSAccount(authV1).Body(*iaws).Execute()
 	if err != nil {
-		return TranslateClientError(err, "error deleting AWS integration")
+		return utils.TranslateClientError(err, "error deleting AWS integration")
 	}
 
 	return nil

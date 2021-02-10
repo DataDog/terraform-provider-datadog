@@ -2,9 +2,11 @@ package test
 
 import (
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"strings"
 	"testing"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -111,7 +113,7 @@ func testAccCheckDatadogLogsMetricExists(accProvider *schema.Provider, resourceN
 		_, _, err = datadogClient.LogsMetricsApi.GetLogsMetric(auth, id).Execute()
 
 		if err != nil {
-			return datadog.TranslateClientError(err, "error checking logs_metric existence")
+			return utils.TranslateClientError(err, "error checking logs_metric existence")
 		}
 
 		return nil

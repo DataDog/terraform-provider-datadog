@@ -8,6 +8,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/kr/pretty"
 	"github.com/zorkian/go-datadog-api"
@@ -277,7 +280,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 					Description:  "Only for widgets of type `query_value`. The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.",
 					Type:         schema.TypeString,
 					Optional:     true,
-					ValidateFunc: ValidateAggregatorMethod,
+					ValidateFunc: validators.ValidateAggregatorMethod,
 				},
 				"compare_to": {
 					Description: "Only for widgets of type `change`. Choose from when to compare current data to. One of `hour_before`, `day_before`, `week_before` or `month_before`.",
@@ -1396,7 +1399,7 @@ func resourceDatadogScreenboardCreate(d *schema.ResourceData, meta interface{}) 
 	client := providerConf.CommunityClient
 	screenboard, err = client.CreateScreenboard(screenboard)
 	if err != nil {
-		return TranslateClientError(err, "error creating screenboard")
+		return utils.TranslateClientError(err, "error creating screenboard")
 	}
 	d.SetId(strconv.Itoa(screenboard.GetId()))
 
@@ -1869,7 +1872,7 @@ func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) er
 			d.SetId("")
 			return nil
 		}
-		return TranslateClientError(err, "error getting screenboard")
+		return utils.TranslateClientError(err, "error getting screenboard")
 	}
 	log.Printf("[DataDog] screenboard: %v", pretty.Sprint(screenboard))
 	if err := d.Set("title", screenboard.GetTitle()); err != nil {
@@ -1937,7 +1940,7 @@ func resourceDatadogScreenboardUpdate(d *schema.ResourceData, meta interface{}) 
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	if err = client.UpdateScreenboard(screenboard); err != nil {
-		return TranslateClientError(err, "error updating screenboard")
+		return utils.TranslateClientError(err, "error updating screenboard")
 	}
 	return resourceDatadogScreenboardRead(d, meta)
 }
@@ -1950,7 +1953,7 @@ func resourceDatadogScreenboardDelete(d *schema.ResourceData, meta interface{}) 
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	if err = client.DeleteScreenboard(id); err != nil {
-		return TranslateClientError(err, "error deleting screenboard")
+		return utils.TranslateClientError(err, "error deleting screenboard")
 	}
 	return nil
 }
