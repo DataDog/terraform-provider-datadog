@@ -400,7 +400,7 @@ func resourceDatadogScreenboard() *schema.Resource {
 				"type": {
 					Type:        schema.TypeString,
 					Required:    true,
-					Description: "The type of the widget. One of [ 'free_text', 'timeseries', 'query_value', 'toplist', 'change', 'event_timeline', 'event_stream', 'image', 'note', 'alert_graph', 'alert_value', 'iframe', 'check_status', 'trace_service', 'hostmap', 'manage_status', 'log_stream', 'uptime', 'process']",
+					Description: "The type of the widget. One of [ 'free_text', 'timeseries', 'query_value', 'toplist', 'change', 'event_timeline', 'event_stream', 'image', 'note', 'alert_graph', 'alert_value', 'iframe', 'check_status', 'trace_service', 'hostmap', 'manage_status', 'log_stream', 'process']",
 				},
 				"title": {
 					Type:        schema.TypeString,

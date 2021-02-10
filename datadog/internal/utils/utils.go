@@ -2,16 +2,17 @@ package utils
 
 import (
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"net/url"
+	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/meta"
 	"github.com/terraform-providers/terraform-provider-datadog/version"
 )
 
-var datadogProvider *schema.Provider
+var DatadogProvider *schema.Provider
 
 func TranslateClientError(err error, msg string) error {
 	if msg == "" {
@@ -35,6 +36,14 @@ func GetUserAgent(clientUserAgent string) string {
 	return fmt.Sprintf("terraform-provider-datadog/%s (terraform %s; terraform-cli %s) %s",
 		version.ProviderVersion,
 		meta.SDKVersionString(),
-		datadogProvider.TerraformVersion,
+		DatadogProvider.TerraformVersion,
 		clientUserAgent)
+}
+
+func AccountAndNamespaceFromID(id string) (string, string, error) {
+	result := strings.SplitN(id, ":", 2)
+	if len(result) != 2 {
+		return "", "", fmt.Errorf("error extracting account ID and namespace: %s", id)
+	}
+	return result[0], result[1], nil
 }

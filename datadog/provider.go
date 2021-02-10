@@ -22,7 +22,6 @@ import (
 )
 
 var (
-	datadogProvider       *schema.Provider
 	baseIpRangesSubdomain = "ip-ranges"
 )
 
@@ -46,7 +45,7 @@ func init() {
 }
 
 func Provider() terraform.ResourceProvider {
-	datadogProvider = &schema.Provider{
+	utils.DatadogProvider = &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"api_key": {
 				Type:        schema.TypeString,
@@ -79,6 +78,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_dashboard_list":                       resourceDatadogDashboardList(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
 			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
+			"datadog_integration_aws_tag_filter":           resourceDatadogIntegrationAwsTagFilter(),
 			"datadog_integration_aws_lambda_arn":           resourceDatadogIntegrationAwsLambdaArn(),
 			"datadog_integration_aws_log_collection":       resourceDatadogIntegrationAwsLogCollection(),
 			"datadog_integration_azure":                    resourceDatadogIntegrationAzure(),
@@ -122,7 +122,7 @@ func Provider() terraform.ResourceProvider {
 		ConfigureFunc: providerConfigure,
 	}
 
-	return datadogProvider
+	return utils.DatadogProvider
 }
 
 //ProviderConfiguration contains the initialized API clients to communicate with the Datadog API
