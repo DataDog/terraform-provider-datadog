@@ -105,7 +105,7 @@ func metadataExistsHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClie
 
 		_, _, err := datadogV1Client.MetricsApi.GetMetricMetadata(authV1, metric).Execute()
 		if err != nil {
-			return fmt.Errorf("received an error retrieving metric_metadata %s", err)
+			return translateClientError(err, "error retrieving metric_metadata")
 		}
 	}
 	return nil

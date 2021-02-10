@@ -1266,7 +1266,7 @@ func destroyHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, aut
 			if httpresp != nil && httpresp.StatusCode == 404 {
 				continue
 			}
-			return fmt.Errorf("received an error retrieving monitor %s", err)
+			return translateClientError(err, "error retrieving monitor")
 		}
 		return fmt.Errorf("monitor still exists")
 	}
@@ -1279,7 +1279,7 @@ func existsHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, auth
 		i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
 		_, _, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
 		if err != nil {
-			return fmt.Errorf("received an error retrieving monitor %s", err)
+			return translateClientError(err, "error retrieving monitor")
 		}
 	}
 	return nil
