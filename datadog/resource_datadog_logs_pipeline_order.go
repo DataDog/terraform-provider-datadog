@@ -92,7 +92,7 @@ func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interfa
 
 // The deletion of pipeline order is not supported from config API.
 // This function simply delete the pipeline order resource from terraform state.
-func resourceDatadogLogsPipelineOrderDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsPipelineOrderDelete(_ *schema.ResourceData, _ interface{}) error {
 
 	return nil
 }
