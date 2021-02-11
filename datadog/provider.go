@@ -202,6 +202,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	configV1.SetUnstableOperationEnabled("GetLogsIndex", true)
 	configV1.SetUnstableOperationEnabled("ListLogIndexes", true)
 	configV1.SetUnstableOperationEnabled("UpdateLogsIndex", true)
+	configV1.SetUnstableOperationEnabled("GetLogsIndexOrder", true)
 	configV1.SetUnstableOperationEnabled("UpdateLogsIndexOrder", true)
 
 	configV1.SetUnstableOperationEnabled("CreateSLOCorrection", true)
