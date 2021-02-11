@@ -43,31 +43,36 @@ func resourceDatadogLogsArchiveOrderCreate(d *schema.ResourceData, meta interfac
 	if len(ddArchiveList.Data.Attributes.GetArchiveIds()) > 0 {
 		return resourceDatadogLogsArchiveOrderUpdate(d, meta)
 	}
-	_, _, err = datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2).Body(*ddArchiveList).Execute()
+	order, _, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2).Body(*ddArchiveList).Execute()
 	if err != nil {
 		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
 			fmt.Printf("cannot map archives to existing ones, will try to import it with Id `archiveOrderID`\n")
+			d.SetId("archiveOrderID")
+			return resourceDatadogLogsArchiveOrderRead(d, meta)
 		} else {
 			return translateClientError(err, "error creating logs archive order")
 		}
 	}
 	d.SetId("archiveOrderID")
-	return resourceDatadogLogsArchiveOrderRead(d, meta)
+	return updateLogsArchiveOrderState(d, &order)
 }
 
 func resourceDatadogLogsArchiveOrderRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
-	ddList, _, err := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2).Execute()
+	order, _, err := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2).Execute()
 	if err != nil {
 		return translateClientError(err, "error getting logs archive order")
 	}
 
-	if err = d.Set("archive_ids", ddList.Data.Attributes.ArchiveIds); err != nil {
+	return updateLogsArchiveOrderState(d, &order)
+}
+
+func updateLogsArchiveOrderState(d *schema.ResourceData, order *datadogV2.LogsArchiveOrder) error {
+	if err := d.Set("archive_ids", order.Data.Attributes.ArchiveIds); err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -80,7 +85,8 @@ func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interfac
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
-	if _, _, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2).Body(*ddArchiveList).Execute(); err != nil {
+	updatedOrder, _, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2).Body(*ddArchiveList).Execute()
+	if err != nil {
 		// Cannot map archives to existing ones
 		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
 			ddArchiveOrder, _, getErr := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2).Execute()
@@ -94,7 +100,7 @@ func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interfac
 		return translateClientError(err, "error updating logs archive order")
 	}
 	d.SetId("archiveOrderID")
-	return resourceDatadogLogsArchiveOrderRead(d, meta)
+	return updateLogsArchiveOrderState(d, &updatedOrder)
 }
 
 // The deletion of archive order is not supported from config API.
