@@ -1284,7 +1284,7 @@ func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc 
 					}
 					return &FatalError{prob: fmt.Sprintf("received an error retrieving Dashboard %s", err)}
 				}
-				return &RetryableError{prob: fmt.Sprintf("Dashboard still xists")}
+				return &RetryableError{prob: fmt.Sprintf("Dashboard still exists")}
 			}
 			return nil
 		})
