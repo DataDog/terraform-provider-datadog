@@ -1354,7 +1354,7 @@ Required:
 
 Optional:
 
-- **event_size** (String, Optional) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **event_size** (String, Optional) The size to use to display an event. One of `s`, `l`.
 - **live_span** (String, Optional) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **tags_execution** (String, Optional) The execution method for multi-value filters. Can be either `and` or `or`.
 - **time** (Map of String, Optional, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
