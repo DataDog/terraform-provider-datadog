@@ -343,7 +343,7 @@ func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta int
 	slo := &sloResp.GetData()[0]
 	d.SetId(slo.GetId())
 
-	return resourceDatadogServiceLevelObjectiveRead(d, meta)
+	return updateSLOState(d, slo)
 }
 
 func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta interface{}) error {
@@ -359,8 +359,11 @@ func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta inter
 		}
 		return translateClientError(err, "error getting service level objective")
 	}
-	slo := sloResp.GetData()
 
+	return updateSLOState(d, sloResp.Data)
+}
+
+func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective) error {
 	thresholds := make([]map[string]interface{}, 0)
 	for _, threshold := range slo.GetThresholds() {
 		t := map[string]interface{}{
@@ -384,27 +387,42 @@ func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta inter
 		tags = append(tags, s)
 	}
 
-	d.Set("name", slo.GetName())
-	d.Set("description", slo.GetDescription())
-	d.Set("type", slo.GetType())
-	d.Set("tags", tags)
-	d.Set("thresholds", thresholds)
+	if err := d.Set("name", slo.GetName()); err != nil {
+		return err
+	}
+	if err := d.Set("description", slo.GetDescription()); err != nil {
+		return err
+	}
+	if err := d.Set("type", slo.GetType()); err != nil {
+		return err
+	}
+	if err := d.Set("tags", tags); err != nil {
+		return err
+	}
+	if err := d.Set("thresholds", thresholds); err != nil {
+		return err
+	}
 	switch slo.GetType() {
 	case datadogV1.SLOTYPE_MONITOR:
 		// monitor type
 		if len(slo.GetMonitorIds()) > 0 {
-			d.Set("monitor_ids", slo.GetMonitorIds())
+			if err := d.Set("monitor_ids", slo.GetMonitorIds()); err != nil {
+				return err
+			}
 		}
-		d.Set("groups", slo.GetGroups())
+		if err := d.Set("groups", slo.GetGroups()); err != nil {
+			return err
+		}
 	default:
 		// metric type
 		query := make(map[string]interface{})
 		q := slo.GetQuery()
 		query["numerator"] = q.GetNumerator()
 		query["denominator"] = q.GetDenominator()
-		d.Set("query", []map[string]interface{}{query})
+		if err := d.Set("query", []map[string]interface{}{query}); err != nil {
+			return err
+		}
 	}
-
 	return nil
 }
 
@@ -414,11 +432,12 @@ func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta int
 	authV1 := providerConf.AuthV1
 	slo, _ := buildServiceLevelObjectiveStructs(d)
 
-	if _, _, err := datadogClientV1.ServiceLevelObjectivesApi.UpdateSLO(authV1, d.Id()).Body(*slo).Execute(); err != nil {
+	updatedSLO, _, err := datadogClientV1.ServiceLevelObjectivesApi.UpdateSLO(authV1, d.Id()).Body(*slo).Execute()
+	if err != nil {
 		return translateClientError(err, "error updating service level objective")
 	}
 
-	return resourceDatadogServiceLevelObjectiveRead(d, meta)
+	return updateSLOState(d, &updatedSLO.GetData()[0])
 }
 
 func resourceDatadogServiceLevelObjectiveDelete(d *schema.ResourceData, meta interface{}) error {
@@ -469,6 +488,6 @@ func trimStateValue(val interface{}) string {
 }
 
 // Ignore any diff for trimmed state values.
-func diffTrimmedValues(k, old, new string, d *schema.ResourceData) bool {
+func diffTrimmedValues(_, old, new string, _ *schema.ResourceData) bool {
 	return strings.TrimSpace(old) == strings.TrimSpace(new)
 }
