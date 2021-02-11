@@ -140,7 +140,7 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 		// We only log the error, as failing to update the list shouldn't fail dashboard creation
 		updateDashboardLists(d, providerConf, *dashboard.Id)
 
-		return resource.NonRetryableError(loadDatadogDashboard(d, &getDashboard))
+		return resource.NonRetryableError(updateDashboardState(d, &getDashboard))
 	})
 }
 
@@ -160,7 +160,7 @@ func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) er
 
 	updateDashboardLists(d, providerConf, *dashboard.Id)
 
-	return loadDatadogDashboard(d, &updatedDashboard)
+	return updateDashboardState(d, &updatedDashboard)
 }
 
 func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardId string) {
@@ -198,7 +198,7 @@ func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfigur
 	}
 }
 
-func loadDatadogDashboard(d *schema.ResourceData, dashboard *datadogV1.Dashboard) error {
+func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard) error {
 	if err := d.Set("title", dashboard.GetTitle()); err != nil {
 		return err
 	}
@@ -259,7 +259,7 @@ func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) erro
 		return translateClientError(err, "error getting dashboard")
 	}
 
-	return loadDatadogDashboard(d, &dashboard)
+	return updateDashboardState(d, &dashboard)
 }
 
 func resourceDatadogDashboardDelete(d *schema.ResourceData, meta interface{}) error {
