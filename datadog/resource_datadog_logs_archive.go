@@ -245,7 +245,7 @@ func buildDestination(archiveDestination datadogV2.NullableLogsArchiveDestinatio
 			return "s3", buildS3Map(*d), nil
 		}
 	}
-	return "", emptyDestination, fmt.Errorf("Destination should be not null.")
+	return "", emptyDestination, fmt.Errorf("destination should be not null")
 }
 
 func buildAzureMap(destination datadogV2.LogsArchiveDestinationAzure) map[string]interface{} {
@@ -329,7 +329,7 @@ func buildCreateReqDestination(d *schema.ResourceData) (*datadogV2.LogsArchiveCr
 			return &result, nil
 		}
 	default:
-		return nil, fmt.Errorf("Archive type '%s' doesn't exist", archiveType)
+		return nil, fmt.Errorf("archive type '%s' doesn't exist", archiveType)
 	}
 }
 
