@@ -27,7 +27,7 @@ func Retry(interval time.Duration, count int, call func() error) error {
 			return err
 		}
 	}
-	return &FatalError{prob: fmt.Sprintf("failed to satisfy the condition after %d times\n", count)}
+	return &FatalError{prob: fmt.Sprintf("failed to satisfy the condition after %d times", count)}
 }
 
 // RetryableError represents a transient error and means its safe to try the request again
