@@ -38,20 +38,23 @@ func resourceDatadogLogsPipelineOrderCreate(d *schema.ResourceData, meta interfa
 	return resourceDatadogLogsPipelineOrderUpdate(d, meta)
 }
 
+func updateLogsPipelineOrderState(d *schema.ResourceData, order *datadogV1.LogsPipelinesOrder) error {
+	if err := d.Set("pipelines", order.PipelineIds); err != nil {
+		return err
+	}
+	return nil
+}
+
 func resourceDatadogLogsPipelineOrderRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
-	ddList, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipelineOrder(authV1).Execute()
+	order, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipelineOrder(authV1).Execute()
 	if err != nil {
 		return translateClientError(err, "error getting logs pipeline order")
 	}
 
-	if err = d.Set("pipelines", ddList.PipelineIds); err != nil {
-		return err
-	}
-
-	return nil
+	return updateLogsPipelineOrderState(d, &order)
 }
 
 func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -69,7 +72,8 @@ func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interfa
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
-	if _, _, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipelineOrder(authV1).Body(ddPipelineList).Execute(); err != nil {
+	updatedOrder, _, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipelineOrder(authV1).Body(ddPipelineList).Execute()
+	if err != nil {
 		// Cannot map pipelines to existing ones
 		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
 			ddPipelineOrder, _, getErr := datadogClientV1.LogsPipelinesApi.GetLogsPipelineOrder(authV1).Execute()
@@ -83,7 +87,7 @@ func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interfa
 		return translateClientError(err, "error updating logs pipeline order")
 	}
 	d.SetId(tfId)
-	return resourceDatadogLogsPipelineOrderRead(d, meta)
+	return updateLogsPipelineOrderState(d, &updatedOrder)
 }
 
 // The deletion of pipeline order is not supported from config API.
