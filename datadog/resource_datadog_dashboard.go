@@ -1836,7 +1836,7 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"event_size": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Description:  "The size to use to display an event. One of `s`, `l`",
 			Type:         schema.TypeString,
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetEventSizeFromValue),
 			Optional:     true,
