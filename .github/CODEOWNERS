@@ -26,6 +26,9 @@ docs/data-sources/monitor*                @DataDog/integrations-tools-and-librar
 docs/resources/monitor*                   @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
 datadog/*datadog_screenboard*             @DataDog/integrations-tools-and-libraries @DataDog/dashboards
 docs/resources/screenboard*               @DataDog/integrations-tools-and-libraries @DataDog/dashboards
+datadog/*security_monitoring*             @DataDog/integrations-tools-and-libraries @DataDog/security-monitoring
+docs/data-sources/security_monitoring*    @DataDog/integrations-tools-and-libraries @DataDog/security-monitoring
+docs/resources/security_monitoring*       @DataDog/integrations-tools-and-libraries @DataDog/security-monitoring
 datadog/*datadog_service_level_objective* @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
 docs/resources/service_level_objective*   @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
 datadog/*datadog_synthetics_test*         @DataDog/integrations-tools-and-libraries @DataDog/synthetics-app
