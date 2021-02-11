@@ -378,20 +378,22 @@ func testAccCheckPipelineDestroy(accProvider *schema.Provider) func(*terraform.S
 func pipelineDestroyHelper(s *terraform.State, authV1 context.Context, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_custom_pipeline" {
-			id := r.Primary.ID
-			p, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, id).Execute()
-
-			if err != nil {
-				if strings.Contains(err.Error(), "400 Bad Request") {
-					continue
+			err := Retry(2, 5, func() error {
+				id := r.Primary.ID
+				p, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, id).Execute()
+				if err != nil {
+					if strings.Contains(err.Error(), "400 Bad Request") {
+						return nil
+					}
+					return &FatalError{prob: fmt.Sprintf("received an error when retrieving pipeline, (%s)", err)}
 				}
-				return fmt.Errorf("received an error when retrieving pipeline, (%s)", err)
-			}
-			if &p != nil {
-				return fmt.Errorf("pipeline still exists")
-			}
+				if &p != nil {
+					return &RetryableError{prob: fmt.Sprintf("pipeline still exists")}
+				}
+				return nil
+			})
+			return err
 		}
-
 	}
 	return nil
 }

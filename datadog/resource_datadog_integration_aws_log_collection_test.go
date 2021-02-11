@@ -105,11 +105,21 @@ func checkIntegrationAWSLogCollectionDestroyHelper(s *terraform.State, authV1 co
 	}
 	for _, r := range s.RootModule().Resources {
 		accountId := r.Primary.Attributes["account_id"]
-		for _, logCollection := range logCollections {
-			if *logCollection.AccountId == accountId && len(logCollection.GetServices()) > 0 {
-				return fmt.Errorf("The AWS Log Collection is still enabled for the account: accountId=%s", accountId)
+		err = Retry(2, 5, func() error {
+			for _, r := range s.RootModule().Resources {
+				if r.Primary.ID != "" {
+					for _, logCollection := range logCollections {
+						if *logCollection.AccountId == accountId && len(logCollection.GetServices()) > 0 {
+							return &RetryableError{prob: fmt.Sprintf("The AWS Log Collection is still enabled for the account: accountId=%s", accountId)}
+						} else {
+							return nil
+						}
+					}
+				}
 			}
-		}
+			return nil
+		})
+		return err
 	}
 	return nil
 }
