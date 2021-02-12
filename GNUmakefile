@@ -1,28 +1,15 @@
 TEST?=$$(go list ./...)
+RECORD?=false
 GOFMT_FILES?=$$(find . -name '*.go')
 PKG_NAME=datadog
 DIR=~/.terraform.d/plugins
 ZORKIAN_VERSION=master
 API_CLIENT_VERSION=master
 
-# Local variables for installing the plugin to a local
-# plugin mirror, used for manual build/testing with terraform 0.13
-VERSION=0.0.1
-LOCAL_PROVIDERS="$$HOME/.terraform.d/plugins_local"
-BINARY_PATH="registry.terraform.io/datadog/datadog/${VERSION}/$$(go env GOOS)_$$(go env GOARCH)/terraform-provider-datadog_v${VERSION}"
-
-
 default: build
 
 build: fmtcheck
 	go install
-
-# Builds the provider and adds it to an independently configured filesystem_mirror folder.
-# Taken from - https://github.com/hashicorp/terraform/issues/25906#issuecomment-676495452
-build_013:
-	@echo "Please configure your .terraformrc file to contain a filesystem_mirror block pointed at '${LOCAL_PROVIDERS}' for 'registry.terraform.io/Datadog/datadog'"
-	@echo "You MUST delete existing cached plugins from any .terraform directories in Terraform installations you want to test against so that it will perform a lookup on the local mirror"
-	go build -o "${LOCAL_PROVIDERS}/${BINARY_PATH}"
 
 install: fmtcheck
 	mkdir -vp $(DIR)
@@ -31,17 +18,20 @@ install: fmtcheck
 uninstall:
 	@rm -vf $(DIR)/terraform-provider-datadog
 
+# Run unit tests; these tests don't interact with the API and don't support/need RECORD
 test: get-test-deps fmtcheck
-	go test -i $(TEST) || exit 1
 	echo $(TEST) | \
-		xargs -t -n4 gotestsum --format testname -- $(TESTARGS) -timeout=30s -parallel=4
-	DD_API_KEY=fake DD_APP_KEY=fake RECORD=false TF_ACC=1 gotestsum --format testname -- $(TEST) -v $(TESTARGS) -timeout=30m
+		xargs -t -n4 gotestsum --hide-summary skipped --format testname --packages $(TEST) -- $(TESTARGS) -timeout=30s
 
+# Run acceptance tests (this runs integration CRUD tests through the terraform test framework)
 testacc: get-test-deps fmtcheck
-	TF_ACC=1 gotestsum --format testname -- $(TEST) -v $(TESTARGS) -timeout 120m
+	RECORD=$(RECORD) TF_ACC=1 gotestsum --rerun-fails --format testname --packages $(TEST) -- -v $(TESTARGS) -timeout 120m
+
+# Run both unit and acceptance tests
+testall: test testacc
 
 cassettes: get-test-deps fmtcheck
-	RECORD=true TF_ACC=1 gotestsum --format testname -- $(TEST) -v $(TESTARGS) -timeout 120m
+	RECORD=true TF_ACC=1 gotestsum --rerun-fails --format testname  --packages $(TEST) -- -v $(TESTARGS) -timeout 120m
 
 vet:
 	@echo "go vet ."

@@ -44,4 +44,6 @@ jobs:
             - name: Vet
               run: make vet
             - name: Test
-              run: make test
+              run: make testall
+              env:
+                RECORD: false

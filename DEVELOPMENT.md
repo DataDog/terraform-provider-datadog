@@ -69,16 +69,16 @@ The Datadog terraform provider uses the standard [Terraform Testing Framework][6
 
 **NOTE** Use the API and APP keys for a sandbox/test organization, never an account hosting production data. This test suite will create/update/delete real resources.
 
--   `DD_API_KEY="<api_key>" DD_APP_KEY=<app_key> make testacc` will run the test suite against the real Datadog API.
+-   `DD_API_KEY="<api_key>" DD_APP_KEY=<app_key> make testall` will run the test suite against the real Datadog API.
 
 We also use `cassettes` to record API request/responses, which allows the test suite to be reliable and run very quickly. There are a few environment variables that can control this behavior (All commands are assumed to be prefixed with `DD_API_KEY=` and `DD_APP_KEY=`)
 
 -   `TESTARGS`: Allows passing extra flags directly to the underlying `go test` command. Most often used to run individual tests:
-    -   Ex: `TESTARGS="-run TestAccDatadogServiceLevelObjective_Basic" make test`
+    -   Ex: `TESTARGS="-run TestAccDatadogServiceLevelObjective_Basic" make testall`
 -   `RECORD`: This denotes whether the test suite should interact with the real Datadog API. Available options are:
-    -   `RECORD=none make testacc`: Run against the real Datadog API.
-    -   `RECORD=true make testacc`: Run against the real Datadog API and record the request/response to be used later.
-    -   `RECORD=false make testacc`: Don't interact with the real Datadog API, instead playback against the recorded cassettes.
+    -   `RECORD=none make testall`: Run against the real Datadog API.
+    -   `RECORD=true make testall`: Run against the real Datadog API and record the request/response to be used later.
+    -   `RECORD=false make testall`: Don't interact with the real Datadog API, instead playback against the recorded cassettes.
 
 ## Generating Documentation
 
