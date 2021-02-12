@@ -59,5 +59,3 @@ jobs:
                 DD_SERVICE: terraform-provider-datadog
                 DD_VERSION: $(Build.SourceVersion)
                 DD_TAGS: "team:integration-tools-and-libraries,build.requested_by:$(Build.RequestedForId),build.attempt:$(System.StageAttempt),pull_request.number:$(System.PullRequest.PullRequestNumber)"
-                # rerun-fails/packages is incompatible with running a single test, so we only rerun-fails in CI so devs can locally run single tests
-                GOTESTSUMARGS: "--rerun-fails --packages $(go list ./...)"

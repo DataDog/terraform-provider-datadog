@@ -21,18 +21,17 @@ uninstall:
 # Run unit tests; these tests don't interact with the API and don't support/need RECORD
 test: get-test-deps fmtcheck
 	echo $(TEST) | \
-		xargs -t -n4 gotestsum --hide-summary skipped --format testname --debug $(GOTESTSUMARGS) -- $(TESTARGS) -timeout=30s
+		xargs -t -n4 gotestsum --hide-summary skipped --format testname --debug --packages ./... -- $(TESTARGS) -timeout=30s
 
 # Run acceptance tests (this runs integration CRUD tests through the terraform test framework)
-# gotestsum's rerun-fails/packages isn't compatible with running a single test (`-run <TEST>`). Pass this through GOTESTSUMARGS if running the full suite.
 testacc: get-test-deps fmtcheck
-	RECORD=$(RECORD) TF_ACC=1 gotestsum --format testname --debug $(GOTESTSUMARGS) -- -v $(TESTARGS) -timeout 120m
+	RECORD=$(RECORD) TF_ACC=1 gotestsum --format testname --debug --rerun-fails --packages ./... -- -v $(TESTARGS) -timeout 120m
 
 # Run both unit and acceptance tests
 testall: test testacc
 
 cassettes: get-test-deps fmtcheck
-	RECORD=true TF_ACC=1 gotestsum --format testname -- -v $(TESTARGS) -timeout 120m
+	RECORD=true TF_ACC=1 gotestsum --format testname --packages ./... -- -v $(TESTARGS) -timeout 120m
 
 vet:
 	@echo "go vet ."
