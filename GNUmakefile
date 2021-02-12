@@ -32,7 +32,7 @@ testacc: get-test-deps fmtcheck
 testall: test testacc
 
 cassettes: get-test-deps fmtcheck
-	RECORD=true TF_ACC=1 gotestsum --rerun-fails --format testname  --packages $(TEST) -- -v $(TESTARGS) -timeout 120m
+	RECORD=true TF_ACC=1 gotestsum --format testname -- -v $(TESTARGS) -timeout 120m
 
 vet:
 	@echo "go vet ."
