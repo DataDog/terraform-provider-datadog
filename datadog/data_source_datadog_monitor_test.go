@@ -47,7 +47,7 @@ func TestAccDatadogMonitorDatasource(t *testing.T) {
 
 func checkDatasourceAttrs(accProvider *schema.Provider, uniq string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
-		testAccCheckDatadogMonitorExists(accProvider, "datadog_monitor.foo"),
+		testAccCheckDatadogMonitorExists(accProvider),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "name", uniq),
 		resource.TestCheckResourceAttr(

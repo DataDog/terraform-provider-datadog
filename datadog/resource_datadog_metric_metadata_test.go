@@ -1,11 +1,12 @@
 package datadog
 
 import (
-	"fmt"
+	"context"
 	"testing"
 
 	"github.com/jonboulle/clockwork"
 
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
@@ -24,7 +25,7 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
-					checkPostEvent(t, accProvider, clock),
+					checkPostEvent(accProvider, clock),
 					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
@@ -56,7 +57,7 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
-					checkPostEvent(t, accProvider, clock),
+					checkPostEvent(accProvider, clock),
 					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
@@ -94,24 +95,35 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 	})
 }
 
+func metadataExistsHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, authV1 context.Context) error {
+	for _, r := range s.RootModule().Resources {
+		metric, ok := r.Primary.Attributes["metric"]
+		if !ok {
+			continue
+		}
+
+		_, _, err := datadogClientV1.MetricsApi.GetMetricMetadata(authV1, metric).Execute()
+		if err != nil {
+			return translateClientError(err, "error retrieving metric_metadata")
+		}
+	}
+	return nil
+}
+
 func checkMetricMetadataExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
-		client := providerConf.CommunityClient
-		for _, r := range s.RootModule().Resources {
-			metric, ok := r.Primary.Attributes["metric"]
-			if !ok {
-				continue
-			}
-			if _, err := client.ViewMetricMetadata(metric); err != nil {
-				return fmt.Errorf("received an error retrieving metric_metadata %s", err)
-			}
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
+
+		if err := metadataExistsHelper(s, datadogClientV1, authV1); err != nil {
+			return err
 		}
 		return nil
 	}
 }
 
-func checkPostEvent(t *testing.T, accProvider *schema.Provider, clock clockwork.FakeClock) resource.TestCheckFunc {
+func checkPostEvent(accProvider *schema.Provider, clock clockwork.FakeClock) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		providerConf := accProvider.Meta().(*ProviderConfiguration)
 		client := providerConf.CommunityClient
