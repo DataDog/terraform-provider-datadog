@@ -9,6 +9,14 @@ pr:
         include:
             - master
 
+schedules:
+  - cron: "0 */12 * * *"
+    displayName: Scheduled CI run every 12 hours
+    always: true
+    branches:
+      include:
+        - master
+
 resources:
     containers:
         - container: datadog-agent
