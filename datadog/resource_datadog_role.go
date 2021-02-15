@@ -160,12 +160,12 @@ func updateRolePermissionsState(d *schema.ResourceData, rolePermsI interface{}, 
 	var perms []map[string]string
 	switch rolePerms := rolePermsI.(type) {
 	case []datadog.RelationshipToPermissionData:
-		for _, permI := range rolePerms {
-			perms = appendPerm(perms, &permI, permsIDToName)
+		for _, perm := range rolePerms {
+			perms = appendPerm(perms, perm.GetId(), permsIDToName)
 		}
 	case []datadog.Permission:
-		for _, permI := range rolePerms {
-			perms = appendPerm(perms, &permI, permsIDToName)
+		for _, perm := range rolePerms {
+			perms = appendPerm(perms, perm.GetId(), permsIDToName)
 		}
 	default:
 		return fmt.Errorf("unexpected type %s for permissions list", reflect.TypeOf(rolePermsI).String())
@@ -177,11 +177,7 @@ func updateRolePermissionsState(d *schema.ResourceData, rolePermsI interface{}, 
 	return nil
 }
 
-func appendPerm(perms []map[string]string, perm interface{}, permsIDToName map[string]string) []map[string]string {
-	type ider interface {
-		GetId() string
-	}
-	permID := perm.(ider).GetId()
+func appendPerm(perms []map[string]string, permID string, permsIDToName map[string]string) []map[string]string {
 	// If perm ID is not restricted, add it to the state
 	if permName, ok := permsIDToName[permID]; ok {
 		permR := map[string]string{
