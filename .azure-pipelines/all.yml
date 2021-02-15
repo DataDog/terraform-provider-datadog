@@ -46,9 +46,10 @@ jobs:
       services:
           datadog-agent: datadog-agent
       steps:
-          - script: make testacc
-            displayName: Run integration tests
+          - script: make testall
+            displayName: Run all tests
             env:
+                RECORD: "none"
                 CI: "true"
                 DD_AGENT_HOST: datadog-agent
                 DD_PROFILER_API_KEY: $(ddAPIKey)
