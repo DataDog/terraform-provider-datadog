@@ -10,21 +10,15 @@ interactions:
       Dd-Operation-Id:
       - ListPermissions
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.11 (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "480176405281822955"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "6503707223877808662"
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/permissions
     method: GET
   response:
     body: '{"data":[{"type":"permissions","id":"984a2bd4-d3b4-11e8-a1ff-a7f660d43029","attributes":{"name":"admin","display_name":"Privileged
       Access","description":"This permission gives you the ability to view and edit
       everything in your Datadog organization that does not have an explicitly defined
-      permission. This includes billing and usage, user, key, and organization management.
+      permission. This includes billing and usage, key, and organization management.
       This permission is inclusive of all Standard access permissions.","created":"2018-10-19T15:35:23.734317+00:00","group_name":"General","display_type":"other","restricted":false}},{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987","attributes":{"name":"standard","display_name":"Standard
       Access","description":"This permission gives you the ability to view and edit
       components in your Datadog organization that do not have explicitly defined
@@ -77,9 +71,53 @@ interactions:
       Access","display_type":"other","restricted":false}},{"type":"permissions","id":"9de604d8-e707-11ea-aa2d-93f1a783b3a3","attributes":{"name":"user_access_manage","display_name":"Access
       Management","description":"Grants the permission to disable users, manage user
       roles and SAML-to-role mappings.","created":"2020-08-25T19:17:28.810412+00:00","group_name":"User
-      Access","display_type":"other","restricted":false}},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e","attributes":{"name":"logs_write_historical_view","display_name":"Logs
-      Historical View","description":"The capability to rehydrate logs from Archives.","created":"2020-09-16T08:38:44.242076+00:00","group_name":"Logs","display_type":"write","restricted":false}},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39","attributes":{"name":"logs_write_facets","display_name":"Logs
-      Facets","description":"The capability to create or edit logs facets.","created":"2020-10-14T12:40:20.271908+00:00","group_name":"Logs","display_type":"write","restricted":false}}]}'
+      Access","display_type":"other","restricted":false}},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee","attributes":{"name":"user_app_keys","display_name":"User
+      Application Keys","description":"The ability to view and manage Application
+      Keys owned by the user.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"API
+      and Application Keys","display_type":"other","restricted":false}},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e","attributes":{"name":"org_app_keys_read","display_name":"Organization
+      Application Keys","description":"The ability to view Application Keys owned
+      by all users in the organization.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"API
+      and Application Keys","display_type":"read","restricted":false}},{"type":"permissions","id":"46a301dc-ec5c-11ea-aa9f-13b33f8f46ea","attributes":{"name":"org_app_keys_write","display_name":"Organization
+      Application Keys","description":"The ability to manage Application Keys owned
+      by all users in the organization.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"API
+      and Application Keys","display_type":"write","restricted":false}},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc","attributes":{"name":"metric_tags_write","display_name":"Manage
+      Tags for Metrics","description":"The ability to edit and save tag configurations
+      for custom metrics.","created":"2020-09-01T14:06:05.444705+00:00","group_name":"Metrics","display_type":"write","restricted":false}},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e","attributes":{"name":"logs_write_historical_view","display_name":"Logs
+      Historical View","description":"The capability to rehydrate logs from Archives.","created":"2020-09-16T08:38:44.242076+00:00","group_name":"Logs","display_type":"write","restricted":false}},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d","attributes":{"name":"api_keys_read","display_name":"API
+      Keys","description":"The ability to list and retrive the key values of all API
+      Keys in your organization.","created":"2020-09-17T20:20:23.279769+00:00","group_name":"API
+      and Application Keys","display_type":"read","restricted":false}},{"type":"permissions","id":"3e4d4d28-f923-11ea-adbc-e3565938c12e","attributes":{"name":"api_keys_write","display_name":"API
+      Keys","description":"The ability to create, rename, and revoke API Keys for
+      your organization.","created":"2020-09-17T20:20:35.264430+00:00","group_name":"API
+      and Application Keys","display_type":"write","restricted":false}},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39","attributes":{"name":"logs_write_facets","display_name":"Logs
+      Facets","description":"The capability to create or edit logs facets.","created":"2020-10-14T12:40:20.271908+00:00","group_name":"Logs","display_type":"write","restricted":false}},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625","attributes":{"name":"integrations_api","display_name":"Integrations
+      API Access","description":"The ability to use the Integrations APIs to configure
+      Integrations that the user has access to. This permission does not restrict
+      or grant access to Integrations.","created":"2020-11-16T19:43:23.198568+00:00","group_name":"Integrations","display_type":"other","restricted":false}},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0","attributes":{"name":"apm_read","display_name":"APM
+      Read Access","description":"The ability to read and query APM and Trace Analytics.","created":"2020-11-23T20:55:45.006110+00:00","group_name":"APM","display_type":"read","restricted":true}},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287","attributes":{"name":"apm_retention_filter_read","display_name":"Manage
+      Retention Filters","description":"The ability to read trace retention filters.
+      A user with this permission can view the retention filters page, list of filters,
+      their statistics, and creation info.","created":"2020-11-23T20:55:49.190595+00:00","group_name":"APM","display_type":"read","restricted":false}},{"type":"permissions","id":"465cfe66-2dce-11eb-84c0-6baa888239fa","attributes":{"name":"apm_retention_filter_write","display_name":"Manage
+      Retention Filters","description":"The ability to create, edit and delete trace
+      retention filters. A user with this permission can create new retention filters,
+      and update or delete to existing retention filters.","created":"2020-11-23T20:55:53.194236+00:00","group_name":"APM","display_type":"write","restricted":false}},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8","attributes":{"name":"apm_service_ingest_read","display_name":"Manage
+      Service Ingestion","description":"The ability to access Service Ingestion pages.
+      A user with this permission can view the service ingestion page, list of root
+      service, their statistics, and creation info.","created":"2020-11-23T20:55:57.768261+00:00","group_name":"APM","display_type":"read","restricted":false}},{"type":"permissions","id":"4e3f02b4-2dce-11eb-84c0-2fca946a6efc","attributes":{"name":"apm_service_ingest_write","display_name":"Manage
+      Service Ingestion","description":"The ability to edit Service Ingestion pages
+      root services. A user with this permission can edit the root service ingestion
+      and generate a code snippet to increase ingestion per service.","created":"2020-11-23T20:56:06.419518+00:00","group_name":"APM","display_type":"write","restricted":false}},{"type":"permissions","id":"53950c54-2dce-11eb-84c0-a79ae108f6f8","attributes":{"name":"apm_apdex_manage_write","display_name":"Apdex
+      Management","description":"The ability to set Apdex T value on any service.
+      A user with this permission can set the T value from the Apdex graph on the
+      service page.","created":"2020-11-23T20:56:15.371926+00:00","group_name":"APM","display_type":"write","restricted":false}},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076","attributes":{"name":"apm_tag_management_write","display_name":"Primary
+      Tag Management","description":"The ability to edit second primary tag selection.
+      A user with this permission can modify the second primary tag dropdown in the
+      APM settings page.","created":"2020-11-23T20:56:30.742299+00:00","group_name":"APM","display_type":"write","restricted":false}},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f","attributes":{"name":"apm_primary_operation_write","display_name":"Primary
+      Operation","description":"The ability to edit the operation name value selection.
+      A user with this permission can modify the operation name list in the APM settings
+      page and can modify the operation name controller on the service page.","created":"2020-11-23T20:56:38.658649+00:00","group_name":"APM","display_type":"write","restricted":false}},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b","attributes":{"name":"rum_apps_write","display_name":"RUM
+      Applications","description":"The ability to create, edit, and delete RUM Applications.","created":"2021-01-12T16:59:16.324480+00:00","group_name":"Real
+      User Monitoring","display_type":"write","restricted":false}}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -90,13 +128,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 23 Nov 2020 13:16:21 GMT
-      Dd-Pool:
-      - dogweb
+      - Mon, 15 Feb 2021 13:21:58 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 30-Nov-2020 13:16:21 GMT;
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 22-Feb-2021 13:21:58 GMT;
         secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
@@ -105,9 +141,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - POuDbGLugqXrJfoVh1EySG2rrzsK54DWLRF5/pTAPkxizo7RlYf80RrCYTzc0hnv
+      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
       X-Dd-Version:
-      - "35.3416029"
+      - "35.3909743"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
