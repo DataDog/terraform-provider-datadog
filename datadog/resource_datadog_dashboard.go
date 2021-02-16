@@ -4578,7 +4578,7 @@ func getFormulaQuerySchema() *schema.Schema {
 							"data_source": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "A timeseries formula and functions metrics query.",
+								Description: "Data source for metrics queries.",
 							},
 							"query": {
 								Type:        schema.TypeString,
@@ -4719,7 +4719,7 @@ func getFormulaQuerySchema() *schema.Schema {
 							"data_source": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "Data sources that rely on the process backend.",
+								Description: "Data source for process queries.",
 							},
 							"metric": {
 								Type:        schema.TypeString,
@@ -6116,7 +6116,7 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 				terraformQuery["compute"] = terraformComputeList
 			}
 			if v, ok := query.TimeSeriesFormulaAndFunctionEventQueryDefinition.GetGroupByOk(); ok {
-				terraformGroupBys := make([]map[string]interface{}, len(query.TimeSeriesFormulaAndFunctionEventQueryDefinition.GetGroupBy()))
+				terraformGroupBys := make([]map[string]interface{}, len(*v))
 				for i, groupBy := range *v {
 					// Facet
 					terraformGroupBy := map[string]interface{}{
