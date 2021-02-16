@@ -680,7 +680,7 @@ func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{
 		}
 		if v, ok := t["metadata_json"]; ok {
 			d.Metadata = map[string]datadog.GraphDefinitionMetadata{}
-			GetMetadataFromJSON([]byte(v.(string)), &d.Metadata)
+			utils.GetMetadataFromJSON([]byte(v.(string)), &d.Metadata)
 		}
 		datadogGraph.Definition.Requests = append(datadogGraph.Definition.Requests, d)
 	}

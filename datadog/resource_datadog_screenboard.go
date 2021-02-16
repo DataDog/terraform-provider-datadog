@@ -1,7 +1,6 @@
 package datadog
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -825,21 +824,11 @@ func resourceDatadogScreenboard() *schema.Resource {
 
 // #######################################################################################
 // # Convenience functions to safely pass info from Terraform to the Datadog API wrapper #
+// # DEPRECATED - All utils methods are moved to the internal package
 // #######################################################################################
 
-func GetMetadataFromJSON(jsonBytes []byte, unmarshalled interface{}) error {
-	decoder := json.NewDecoder(bytes.NewReader(jsonBytes))
-	// make sure we return errors on attributes that we don't expect in metadata
-	decoder.DisallowUnknownFields()
-	err := decoder.Decode(unmarshalled)
-	if err != nil {
-		return fmt.Errorf("failed to unmarshal metadata_json: %s", err)
-	}
-	return nil
-}
-
 func validateMetadataJSON(v interface{}, k string) (ws []string, errors []error) {
-	err := GetMetadataFromJSON([]byte(v.(string)), &map[string]datadog.TileDefMetadata{})
+	err := utils.GetMetadataFromJSON([]byte(v.(string)), &map[string]datadog.TileDefMetadata{})
 	if err != nil {
 		errors = append(errors, fmt.Errorf("%q contains an invalid JSON: %s", k, err))
 	}
@@ -1082,7 +1071,7 @@ func buildTileDefRequests(source interface{}) []datadog.TileDefRequest {
 	for _, request := range requests {
 		requestMap := request.(map[string]interface{})
 		metadata := map[string]datadog.TileDefMetadata{}
-		GetMetadataFromJSON([]byte(requestMap["metadata_json"].(string)), &metadata)
+		utils.GetMetadataFromJSON([]byte(requestMap["metadata_json"].(string)), &metadata)
 		requestMap["metadata"] = metadata
 		d := datadog.TileDefRequest{}
 		batchSetFromDict(batch{

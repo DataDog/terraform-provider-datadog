@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"strings"
 	"testing"
 
@@ -64,7 +65,7 @@ func checkIntegrationAzureExistsHelper(s *terraform.State, authV1 context.Contex
 		return err
 	}
 	for _, r := range s.RootModule().Resources {
-		tenantName, _, err := datadog.TenantAndClientFromID(r.Primary.ID)
+		tenantName, _, err := utils.TenantAndClientFromID(r.Primary.ID)
 		if err != nil {
 			return err
 		}
@@ -98,7 +99,7 @@ func checkIntegrationAzureDestroyHelper(s *terraform.State, authV1 context.Conte
 	}
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_integration_azure" {
-			tenantName, _, err := datadog.TenantAndClientFromID(r.Primary.ID)
+			tenantName, _, err := utils.TenantAndClientFromID(r.Primary.ID)
 			if err != nil {
 				return err
 			}

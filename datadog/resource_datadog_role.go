@@ -8,7 +8,6 @@ import (
 	"github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -36,7 +35,7 @@ func resourceDatadogRole() *schema.Resource {
 				Type:        schema.TypeSet,
 				Optional:    true,
 				Description: "Set of objects containing the permission ID and the name of the permissions granted to this role.",
-				Elem:        GetRolePermissionSchema(),
+				Elem:        utils.GetRolePermissionSchema(),
 			},
 			"user_count": {
 				Type:        schema.TypeInt,
@@ -89,24 +88,6 @@ func validatePermissionsUnrestricted(value interface{}, meta interface{}) error 
 	}
 
 	return nil
-}
-
-func GetRolePermissionSchema() *schema.Resource {
-	return &schema.Resource{
-		Schema: map[string]*schema.Schema{
-			"id": {
-				Type:         schema.TypeString,
-				Required:     true,
-				Description:  "ID of the permission to assign.",
-				ValidateFunc: validation.StringIsNotEmpty,
-			},
-			"name": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "Name of the permission.",
-			},
-		},
-	}
 }
 
 func resourceDatadogRoleCreate(d *schema.ResourceData, meta interface{}) error {

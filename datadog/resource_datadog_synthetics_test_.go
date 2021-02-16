@@ -3,7 +3,6 @@
 package datadog
 
 import (
-	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -288,7 +287,7 @@ func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 					Required:    true,
 					Sensitive:   true,
 					StateFunc: func(val interface{}) string {
-						return ConvertToSha256(val.(string))
+						return utils.ConvertToSha256(val.(string))
 					},
 				},
 				"filename": {
@@ -1241,7 +1240,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 			step.SetAllowFailure(stepMap["allow_failure"].(bool))
 			step.SetTimeout(int64(stepMap["timeout"].(int)))
 			params := make(map[string]interface{})
-			GetMetadataFromJSON([]byte(stepMap["params"].(string)), &params)
+			utils.GetMetadataFromJSON([]byte(stepMap["params"].(string)), &params)
 			step.SetParams(params)
 
 			steps = append(steps, step)
@@ -1656,12 +1655,6 @@ func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []s
 	return
 }
 
-func ConvertToSha256(content string) string {
-	data := []byte(content)
-	hash := sha256.Sum256(data)
-	return fmt.Sprintf("%x", hash[:])
-}
-
 // get the sha256 of a client certificate content
 // in some case where Terraform compares the state value
 // we already get the hashed value so we don't need to
@@ -1674,7 +1667,7 @@ func getCertificateStateValue(content string) string {
 		return content
 	}
 
-	return ConvertToSha256(content)
+	return utils.ConvertToSha256(content)
 }
 
 func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
@@ -1759,7 +1752,7 @@ func convertStepParamsValueForConfig(stepType datadogV1.SyntheticsStepType, key 
 	switch key {
 	case "element", "email", "file", "request":
 		result := make(map[string]interface{})
-		GetMetadataFromJSON([]byte(value.(string)), &result)
+		utils.GetMetadataFromJSON([]byte(value.(string)), &result)
 		return result
 
 	case "playing_tab_id":

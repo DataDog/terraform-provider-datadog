@@ -1,8 +1,12 @@
 package utils
 
 import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"net/url"
 	"strings"
 
@@ -40,10 +44,65 @@ func GetUserAgent(clientUserAgent string) string {
 		clientUserAgent)
 }
 
+func GetMetadataFromJSON(jsonBytes []byte, unmarshalled interface{}) error {
+	decoder := json.NewDecoder(bytes.NewReader(jsonBytes))
+	// make sure we return errors on attributes that we don't expect in metadata
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(unmarshalled)
+	if err != nil {
+		return fmt.Errorf("failed to unmarshal metadata_json: %s", err)
+	}
+	return nil
+}
+
+func ConvertToSha256(content string) string {
+	data := []byte(content)
+	hash := sha256.Sum256(data)
+	return fmt.Sprintf("%x", hash[:])
+}
+
+// aws utils
 func AccountAndNamespaceFromID(id string) (string, string, error) {
 	result := strings.SplitN(id, ":", 2)
 	if len(result) != 2 {
 		return "", "", fmt.Errorf("error extracting account ID and namespace: %s", id)
 	}
 	return result[0], result[1], nil
+}
+
+// aws lambda arn utils
+func AccountAndLambdaArnFromID(id string) (string, string, error) {
+	result := strings.Split(id, " ")
+	if len(result) != 2 {
+		return "", "", fmt.Errorf("error extracting account ID and Lambda ARN from an AWS integration id: %s", id)
+	}
+	return result[0], result[1], nil
+}
+
+// azure utils
+func TenantAndClientFromID(id string) (string, string, error) {
+	result := strings.SplitN(id, ":", 2)
+	if len(result) != 2 {
+		return "", "", fmt.Errorf("error extracting tenant name and client ID from an Azure integration id: %s", id)
+	}
+	return result[0], result[1], nil
+}
+
+// role utils
+func GetRolePermissionSchema() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"id": {
+				Type:         schema.TypeString,
+				Required:     true,
+				Description:  "ID of the permission to assign.",
+				ValidateFunc: validation.StringIsNotEmpty,
+			},
+			"name": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "Name of the permission.",
+			},
+		},
+	}
 }

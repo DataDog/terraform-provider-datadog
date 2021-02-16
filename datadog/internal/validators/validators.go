@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"reflect"
 	"regexp"
+	"strings"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
@@ -46,4 +48,48 @@ func ValidateEnumValue(newEnumFunc interface{}) schema.SchemaValidateFunc {
 		}
 		return
 	}
+}
+
+func ValidateDatadogDowntimeRecurrenceType(v interface{}, k string) (ws []string, errors []error) {
+	value := v.(string)
+	switch value {
+	case "days", "months", "weeks", "years", "rrule":
+		break
+	default:
+		errors = append(errors, fmt.Errorf(
+			"%q contains an invalid recurrence type parameter %q. Valid parameters are days, months, weeks, years, or rrule", k, value))
+	}
+	return
+}
+
+func ValidateDatadogDowntimeRecurrenceWeekDays(v interface{}, k string) (ws []string, errors []error) {
+	value := v.(string)
+	switch value {
+	case "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun":
+		break
+	default:
+		errors = append(errors, fmt.Errorf(
+			"%q contains an invalid recurrence week day parameter %q. Valid parameters are Mon, Tue, Wed, Thu, Fri, Sat, or Sun", k, value))
+	}
+	return
+}
+
+func ValidateDatadogDowntimeTimezone(v interface{}, k string) (ws []string, errors []error) {
+	value := v.(string)
+	switch strings.ToLower(value) {
+	case "utc", "":
+		break
+	case "local", "localtime":
+		// get current zone from machine
+		zone, _ := time.Now().Local().Zone()
+		return ValidateDatadogDowntimeRecurrenceType(zone, k)
+	default:
+		_, err := time.LoadLocation(value)
+		if err != nil {
+			errors = append(errors, fmt.Errorf(
+				"%q contains an invalid timezone parameter: %q, Valid parameters are IANA Time Zone names",
+				k, value))
+		}
+	}
+	return
 }

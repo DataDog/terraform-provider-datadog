@@ -2,20 +2,11 @@ package datadog
 
 import (
 	"fmt"
-	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
-
-func AccountAndLambdaArnFromID(id string) (string, string, error) {
-	result := strings.Split(id, " ")
-	if len(result) != 2 {
-		return "", "", fmt.Errorf("error extracting account ID and Lambda ARN from an AWS integration id: %s", id)
-	}
-	return result[0], result[1], nil
-}
 
 func buildDatadogIntegrationAwsLambdaArnStruct(d *schema.ResourceData) *datadogV1.AWSAccountAndLambdaRequest {
 	accountID := d.Get("account_id").(string)
@@ -73,7 +64,7 @@ func resourceDatadogIntegrationAwsLambdaArnRead(d *schema.ResourceData, meta int
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	accountID, lambdaArn, err := AccountAndLambdaArnFromID(d.Id())
+	accountID, lambdaArn, err := utils.AccountAndLambdaArnFromID(d.Id())
 	if err != nil {
 		return utils.TranslateClientError(err, fmt.Sprintf("error getting aws account ID and lambda ARN from id: %s", d.Id()))
 	}
@@ -103,7 +94,7 @@ func resourceDatadogIntegrationAwsLambdaArnDelete(d *schema.ResourceData, meta i
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	accountID, lambdaArn, err := AccountAndLambdaArnFromID(d.Id())
+	accountID, lambdaArn, err := utils.AccountAndLambdaArnFromID(d.Id())
 	if err != nil {
 		return utils.TranslateClientError(err, fmt.Sprintf("error parsing account ID and lamdba ARN from ID: %s", d.Id()))
 	}

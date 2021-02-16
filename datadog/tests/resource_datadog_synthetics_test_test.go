@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"strings"
 	"testing"
 
@@ -748,11 +749,11 @@ func createSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_basicauth.0.password", "secret"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.content", datadog.ConvertToSha256("content-certificate")),
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.content", utils.ConvertToSha256("content-certificate")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.filename", "Provided in Terraform config"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.content", datadog.ConvertToSha256("content-key")),
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.content", utils.ConvertToSha256("content-key")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
 			resource.TestCheckResourceAttr(
@@ -1068,11 +1069,11 @@ func updateSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provide
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.timeout", "60"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.content", datadog.ConvertToSha256("content-certificate-updated")),
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.content", utils.ConvertToSha256("content-certificate-updated")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.filename", "Provided in Terraform config"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.content", datadog.ConvertToSha256("content-key-updated")),
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.content", utils.ConvertToSha256("content-key-updated")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key-updated"),
 			resource.TestCheckResourceAttr(
@@ -2739,7 +2740,7 @@ func editSyntheticsTestMML(accProvider *schema.Provider) resource.TestCheckFunc 
 			step.SetType(datadogV1.SYNTHETICSSTEPTYPE_CLICK)
 			params := make(map[string]interface{})
 			elementParams := `{"element":` + MML_MANUAL_UPDATE + "}"
-			datadog.GetMetadataFromJSON([]byte(elementParams), &params)
+			utils.GetMetadataFromJSON([]byte(elementParams), &params)
 			step.SetParams(params)
 			steps := []datadogV1.SyntheticsStep{step}
 			syntheticsTestUpdate.SetSteps(steps)

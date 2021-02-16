@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 	"log"
 	"reflect"
 	"strconv"
@@ -83,7 +84,7 @@ func resourceDatadogDowntime() *schema.Resource {
 				Default:      "UTC",
 				Optional:     true,
 				Description:  "The timezone for the downtime, default UTC",
-				ValidateFunc: validateDatadogDowntimeTimezone,
+				ValidateFunc: validators.ValidateDatadogDowntimeTimezone,
 			},
 			"message": {
 				Type:        schema.TypeString,
@@ -108,7 +109,7 @@ func resourceDatadogDowntime() *schema.Resource {
 						"type": {
 							Type:         schema.TypeString,
 							Required:     true,
-							ValidateFunc: ValidateDatadogDowntimeRecurrenceType,
+							ValidateFunc: validators.ValidateDatadogDowntimeRecurrenceType,
 							Description:  "One of `days`, `weeks`, `months`, or `years`",
 						},
 						"until_date": {
@@ -129,7 +130,7 @@ func resourceDatadogDowntime() *schema.Resource {
 							Description: "A list of week days to repeat on. Choose from: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat` or `Sun`. Only applicable when `type` is `weeks`. First letter must be capitalized.",
 							Elem: &schema.Schema{
 								Type:         schema.TypeString,
-								ValidateFunc: ValidateDatadogDowntimeRecurrenceWeekDays,
+								ValidateFunc: validators.ValidateDatadogDowntimeRecurrenceWeekDays,
 							},
 						},
 						"rrule": {
@@ -476,48 +477,4 @@ func resourceDatadogDowntimeImport(d *schema.ResourceData, meta interface{}) ([]
 		return nil, err
 	}
 	return []*schema.ResourceData{d}, nil
-}
-
-func ValidateDatadogDowntimeRecurrenceType(v interface{}, k string) (ws []string, errors []error) {
-	value := v.(string)
-	switch value {
-	case "days", "months", "weeks", "years", "rrule":
-		break
-	default:
-		errors = append(errors, fmt.Errorf(
-			"%q contains an invalid recurrence type parameter %q. Valid parameters are days, months, weeks, years, or rrule", k, value))
-	}
-	return
-}
-
-func ValidateDatadogDowntimeRecurrenceWeekDays(v interface{}, k string) (ws []string, errors []error) {
-	value := v.(string)
-	switch value {
-	case "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun":
-		break
-	default:
-		errors = append(errors, fmt.Errorf(
-			"%q contains an invalid recurrence week day parameter %q. Valid parameters are Mon, Tue, Wed, Thu, Fri, Sat, or Sun", k, value))
-	}
-	return
-}
-
-func validateDatadogDowntimeTimezone(v interface{}, k string) (ws []string, errors []error) {
-	value := v.(string)
-	switch strings.ToLower(value) {
-	case "utc", "":
-		break
-	case "local", "localtime":
-		// get current zone from machine
-		zone, _ := time.Now().Local().Zone()
-		return ValidateDatadogDowntimeRecurrenceType(zone, k)
-	default:
-		_, err := time.LoadLocation(value)
-		if err != nil {
-			errors = append(errors, fmt.Errorf(
-				"%q contains an invalid timezone parameter: %q, Valid parameters are IANA Time Zone names",
-				k, value))
-		}
-	}
-	return
 }
