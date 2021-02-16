@@ -32,6 +32,7 @@ import (
 	"github.com/jonboulle/clockwork"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 	ddhttp "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
+	ddtesting "gopkg.in/DataDog/dd-trace-go.v1/contrib/testing"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/ext"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
@@ -348,23 +349,18 @@ func testSpan(ctx context.Context, t *testing.T) (context.Context, func()) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	span, ctx := tracer.StartSpanFromContext(
-		ctx,
-		"test",
-		tracer.SpanType("test"),
-		tracer.ResourceName(t.Name()),
-		tracer.Tag(ext.AnalyticsEvent, true),
-		tracer.Measured(),
-	)
-	span.SetTag("version", tag)
-	return ctx, func() {
-		span.SetTag(ext.Error, t.Failed())
-		span.Finish()
-	}
+	return ddtesting.StartSpanWithFinish(ctx, t, ddtesting.WithSkipFrames(4), ddtesting.WithSpanOptions(
+		// We need to make the tag be something that is then searchable in monitors
+		// https://docs.datadoghq.com/tracing/guide/metrics_namespace/#errors
+		// "version" is really the only one we can use here
+		// NOTE: version is treated in slightly different way, because it's a special tag;
+		// if we set it in StartSpanFromContext, it would get overwritten
+		tracer.Tag(ext.Version, tag),
+	))
 }
 
 func initAccProvider(ctx context.Context, t *testing.T, httpClient *http.Client) *schema.Provider {
-	ctx, finish := testSpan(context.Background(), t)
+	ctx, finish := testSpan(ctx, t)
 	defer finish()
 
 	p := datadog.Provider().(*schema.Provider)

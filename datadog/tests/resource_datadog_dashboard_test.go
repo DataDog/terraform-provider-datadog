@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"strings"
 	"testing"
 
@@ -1278,16 +1279,19 @@ func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc 
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		for _, r := range s.RootModule().Resources {
-			if _, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID).Execute(); err != nil {
-				if strings.Contains(err.Error(), "404 Not Found") {
-					continue
+		err := utils.Retry(2, 5, func() error {
+			for _, r := range s.RootModule().Resources {
+				if _, httpResp, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID).Execute(); err != nil {
+					if httpResp != nil && httpResp.StatusCode == 404 {
+						return nil
+					}
+					return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving Dashboard %s", err)}
 				}
-				return fmt.Errorf("received an error retrieving dashboard2 %s", err)
+				return &utils.RetryableError{Prob: fmt.Sprintf("Dashboard still exists")}
 			}
-			return fmt.Errorf("dashboard still exists")
-		}
-		return nil
+			return nil
+		})
+		return err
 	}
 }
 

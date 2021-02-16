@@ -146,30 +146,18 @@ func resourceDatadogLogsArchiveCreate(d *schema.ResourceData, meta interface{}) 
 		return utils.TranslateClientError(err, "failed to create logs archive using Datadog API")
 	}
 	d.SetId(*createdArchive.GetData().Id)
-	return resourceDatadogLogsArchiveRead(d, meta)
+	return updateLogsArchiveState(d, &createdArchive)
 }
 
-func resourceDatadogLogsArchiveRead(d *schema.ResourceData, meta interface{}) error {
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
-
-	ddArchive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, d.Id()).Execute()
-	if err != nil {
-		if httpresp != nil && httpresp.StatusCode == 404 {
-			d.SetId("")
-			return nil
-		}
-		return utils.TranslateClientError(err, "failed to get logs archive using Datadog API")
-	}
+func updateLogsArchiveState(d *schema.ResourceData, ddArchive *datadogV2.LogsArchive) error {
 	if !ddArchive.HasData() {
 		d.SetId("")
 		return nil
 	}
-	if err = d.Set("name", ddArchive.Data.Attributes.Name); err != nil {
+	if err := d.Set("name", ddArchive.Data.Attributes.Name); err != nil {
 		return err
 	}
-	if err = d.Set("query", ddArchive.Data.Attributes.Query); err != nil {
+	if err := d.Set("query", ddArchive.Data.Attributes.Query); err != nil {
 		return err
 	}
 	archiveType, destination, err := buildDestination(ddArchive.Data.Attributes.Destination)
@@ -197,6 +185,22 @@ func resourceDatadogLogsArchiveRead(d *schema.ResourceData, meta interface{}) er
 	return nil
 }
 
+func resourceDatadogLogsArchiveRead(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
+
+	ddArchive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, d.Id()).Execute()
+	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
+		return utils.TranslateClientError(err, "failed to get logs archive using Datadog API")
+	}
+	return updateLogsArchiveState(d, &ddArchive)
+}
+
 func resourceDatadogLogsArchiveUpdate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
@@ -206,10 +210,11 @@ func resourceDatadogLogsArchiveUpdate(d *schema.ResourceData, meta interface{}) 
 	if err != nil {
 		return err
 	}
-	if _, _, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchive(authV2, d.Id()).Body(*ddArchive).Execute(); err != nil {
+	updatedArchive, _, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchive(authV2, d.Id()).Body(*ddArchive).Execute()
+	if err != nil {
 		return utils.TranslateClientError(err, "error updating logs archive")
 	}
-	return resourceDatadogLogsArchiveRead(d, meta)
+	return updateLogsArchiveState(d, &updatedArchive)
 }
 
 func resourceDatadogLogsArchiveDelete(d *schema.ResourceData, meta interface{}) error {
@@ -241,7 +246,7 @@ func buildDestination(archiveDestination datadogV2.NullableLogsArchiveDestinatio
 			return "s3", buildS3Map(*d), nil
 		}
 	}
-	return "", emptyDestination, fmt.Errorf("Destination should be not null.")
+	return "", emptyDestination, fmt.Errorf("destination should be not null")
 }
 
 func buildAzureMap(destination datadogV2.LogsArchiveDestinationAzure) map[string]interface{} {
@@ -325,7 +330,7 @@ func buildCreateReqDestination(d *schema.ResourceData) (*datadogV2.LogsArchiveCr
 			return &result, nil
 		}
 	default:
-		return nil, fmt.Errorf("Archive type '%s' doesn't exist", archiveType)
+		return nil, fmt.Errorf("archive type '%s' doesn't exist", archiveType)
 	}
 }
 

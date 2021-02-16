@@ -190,30 +190,10 @@ func resourceDatadogLogsMetricCreate(d *schema.ResourceData, meta interface{}) e
 	id := *response.GetData().Id
 	d.SetId(id)
 
-	return resourceDatadogLogsMetricRead(d, meta)
+	return updateLogsMetricState(d, response.Data)
 }
 
-func resourceDatadogLogsMetricRead(d *schema.ResourceData, meta interface{}) error {
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClientV2
-	auth := providerConf.AuthV2
-	var err error
-
-	id := d.Id()
-
-	resourceLogsMetricResponse, httpResp, err := datadogClient.LogsMetricsApi.GetLogsMetric(auth, id).Execute()
-
-	if err != nil {
-		if httpResp.StatusCode == 404 {
-			// this condition takes on the job of the deprecated Exists handlers
-			d.SetId("")
-			return nil
-		}
-		return utils.TranslateClientError(err, "error reading LogsMetric")
-	}
-
-	resource := resourceLogsMetricResponse.GetData()
-
+func updateLogsMetricState(d *schema.ResourceData, resource *datadogV2.LogsMetricResponseData) error {
 	if ddAttributes, ok := resource.GetAttributesOk(); ok {
 		if computeDDModel, ok := ddAttributes.GetComputeOk(); ok {
 			computeMap := map[string]interface{}{}
@@ -223,14 +203,18 @@ func resourceDatadogLogsMetricRead(d *schema.ResourceData, meta interface{}) err
 			if v, ok := computeDDModel.GetPathOk(); ok {
 				computeMap["path"] = *v
 			}
-			d.Set("compute", []map[string]interface{}{computeMap})
+			if err := d.Set("compute", []map[string]interface{}{computeMap}); err != nil {
+				return err
+			}
 		}
 		if filterDDModel, ok := ddAttributes.GetFilterOk(); ok {
 			filterMap := map[string]interface{}{}
 			if v, ok := filterDDModel.GetQueryOk(); ok {
 				filterMap["query"] = *v
 			}
-			d.Set("filter", []map[string]interface{}{filterMap})
+			if err := d.Set("filter", []map[string]interface{}{filterMap}); err != nil {
+				return err
+			}
 		}
 		if groupByArray, ok := ddAttributes.GetGroupByOk(); ok {
 			mapAttributesArray := make([]map[string]interface{}, 0)
@@ -246,15 +230,42 @@ func resourceDatadogLogsMetricRead(d *schema.ResourceData, meta interface{}) err
 
 				mapAttributesArray = append(mapAttributesArray, mapAttributesArrayIntf)
 			}
-			d.Set("group_by", mapAttributesArray)
+			if err := d.Set("group_by", mapAttributesArray); err != nil {
+				return err
+			}
 		}
 	}
 
 	if v, ok := resource.GetIdOk(); ok {
-		d.Set("name", *v)
+		if err := d.Set("name", *v); err != nil {
+			return err
+		}
 	}
 
 	return nil
+}
+
+func resourceDatadogLogsMetricRead(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClient := providerConf.DatadogClientV2
+	auth := providerConf.AuthV2
+	var err error
+
+	id := d.Id()
+
+	resourceLogsMetricResponse, httpResp, err := datadogClient.LogsMetricsApi.GetLogsMetric(auth, id).Execute()
+
+	if err != nil {
+		if httpResp != nil && httpResp.StatusCode == 404 {
+			// this condition takes on the job of the deprecated Exists handlers
+			d.SetId("")
+			return nil
+		}
+		return utils.TranslateClientError(err, "error reading LogsMetric")
+	}
+
+	resource := resourceLogsMetricResponse.GetData()
+	return updateLogsMetricState(d, &resource)
 }
 
 func buildDatadogLogsMetricUpdate(d *schema.ResourceData) (*datadogV2.LogsMetricUpdateData, error) {
@@ -292,12 +303,12 @@ func resourceDatadogLogsMetricUpdate(d *schema.ResourceData, meta interface{}) e
 	ddObject.SetData(*resultLogsMetricUpdateData)
 	id := d.Id()
 
-	_, _, err = datadogClient.LogsMetricsApi.UpdateLogsMetric(auth, id).Body(*ddObject).Execute()
+	response, _, err := datadogClient.LogsMetricsApi.UpdateLogsMetric(auth, id).Body(*ddObject).Execute()
 	if err != nil {
 		return utils.TranslateClientError(err, "error updating LogsMetric")
 	}
 
-	return resourceDatadogLogsMetricRead(d, meta)
+	return updateLogsMetricState(d, response.Data)
 }
 
 func resourceDatadogLogsMetricDelete(d *schema.ResourceData, meta interface{}) error {

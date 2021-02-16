@@ -28,8 +28,15 @@ func resourceDatadogLogsIntegrationPipeline() *schema.Resource {
 	}
 }
 
-func resourceDatadogLogsIntegrationPipelineCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsIntegrationPipelineCreate(_ *schema.ResourceData, _ interface{}) error {
 	return fmt.Errorf("cannot create an integration pipeline, please import it first to make changes")
+}
+
+func updateLogsIntegrationPipelineState(d *schema.ResourceData, pipeline *datadogV1.LogsPipeline) error {
+	if err := d.Set("is_enabled", pipeline.GetIsEnabled()); err != nil {
+		return err
+	}
+	return nil
 }
 
 func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta interface{}) error {
@@ -48,10 +55,7 @@ func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta int
 		d.SetId("")
 		return nil
 	}
-	if err := d.Set("is_enabled", ddPipeline.GetIsEnabled()); err != nil {
-		return err
-	}
-	return nil
+	return updateLogsIntegrationPipelineState(d, &ddPipeline)
 }
 
 func resourceDatadogLogsIntegrationPipelineUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -65,9 +69,9 @@ func resourceDatadogLogsIntegrationPipelineUpdate(d *schema.ResourceData, meta i
 		return utils.TranslateClientError(err, "error updating logs integration pipeline")
 	}
 	d.SetId(*updatedPipeline.Id)
-	return resourceDatadogLogsIntegrationPipelineRead(d, meta)
+	return updateLogsIntegrationPipelineState(d, &updatedPipeline)
 }
 
-func resourceDatadogLogsIntegrationPipelineDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsIntegrationPipelineDelete(_ *schema.ResourceData, _ interface{}) error {
 	return nil
 }

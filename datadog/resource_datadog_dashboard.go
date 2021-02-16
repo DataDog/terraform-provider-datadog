@@ -23,13 +23,17 @@ func resourceDatadogDashboard() *schema.Resource {
 		Read:        resourceDatadogDashboardRead,
 		Delete:      resourceDatadogDashboardDelete,
 		CustomizeDiff: func(diff *schema.ResourceDiff, meta interface{}) error {
-			old, new := diff.GetChange("dashboard_lists")
-			if !old.(*schema.Set).Equal(new.(*schema.Set)) {
+			oldValue, newValue := diff.GetChange("dashboard_lists")
+			if !oldValue.(*schema.Set).Equal(newValue.(*schema.Set)) {
 				// Only calculate removed when the list change, to no create useless diffs
-				removed := old.(*schema.Set).Difference(new.(*schema.Set))
-				diff.SetNew("dashboard_lists_removed", removed)
+				removed := oldValue.(*schema.Set).Difference(newValue.(*schema.Set))
+				if err := diff.SetNew("dashboard_lists_removed", removed); err != nil {
+					return err
+				}
 			} else {
-				diff.Clear("dashboard_lists_removed")
+				if err := diff.Clear("dashboard_lists_removed"); err != nil {
+					return err
+				}
 			}
 
 			return nil
@@ -130,7 +134,7 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 	return resource.Retry(d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
 		getDashboard, httpResponse, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, *dashboard.Id).Execute()
 		if err != nil {
-			if httpResponse.StatusCode == 404 {
+			if httpResponse != nil && httpResponse.StatusCode == 404 {
 				return resource.RetryableError(fmt.Errorf("dashboard not created yet"))
 			}
 			return resource.NonRetryableError(err)
@@ -139,7 +143,7 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 		// We only log the error, as failing to update the list shouldn't fail dashboard creation
 		updateDashboardLists(d, providerConf, *dashboard.Id)
 
-		return resource.NonRetryableError(loadDatadogDashboard(d, getDashboard))
+		return resource.NonRetryableError(updateDashboardState(d, &getDashboard))
 	})
 }
 
@@ -152,13 +156,14 @@ func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) er
 	if err != nil {
 		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	if _, _, err = datadogClientV1.DashboardsApi.UpdateDashboard(authV1, id).Body(*dashboard).Execute(); err != nil {
+	updatedDashboard, _, err := datadogClientV1.DashboardsApi.UpdateDashboard(authV1, id).Body(*dashboard).Execute()
+	if err != nil {
 		return utils.TranslateClientError(err, "error updating dashboard")
 	}
 
 	updateDashboardLists(d, providerConf, *dashboard.Id)
 
-	return resourceDatadogDashboardRead(d, meta)
+	return updateDashboardState(d, &updatedDashboard)
 }
 
 func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardId string) {
@@ -196,7 +201,7 @@ func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfigur
 	}
 }
 
-func loadDatadogDashboard(d *schema.ResourceData, dashboard datadogV1.Dashboard) error {
+func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard) error {
 	if err := d.Set("title", dashboard.GetTitle()); err != nil {
 		return err
 	}
@@ -257,7 +262,7 @@ func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) erro
 		return utils.TranslateClientError(err, "error getting dashboard")
 	}
 
-	return loadDatadogDashboard(d, dashboard)
+	return updateDashboardState(d, &dashboard)
 }
 
 func resourceDatadogDashboardDelete(d *schema.ResourceData, meta interface{}) error {

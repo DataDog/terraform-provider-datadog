@@ -52,24 +52,30 @@ func resourceDatadogLogsIndexOrderUpdate(d *schema.ResourceData, meta interface{
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	if _, _, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndexOrder(authV1).Body(ddIndexList).Execute(); err != nil {
+	updatedOrder, _, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndexOrder(authV1).Body(ddIndexList).Execute()
+	if err != nil {
 		return utils.TranslateClientError(err, "error updating logs index list")
 	}
 	d.SetId(tfId)
-	return resourceDatadogLogsIndexOrderRead(d, meta)
+	return updateLogsIndexOrderState(d, &updatedOrder)
+}
+
+func updateLogsIndexOrderState(d *schema.ResourceData, order *datadogV1.LogsIndexesOrder) error {
+	if err := d.Set("indexes", order.GetIndexNames()); err != nil {
+		return err
+	}
+	return nil
 }
 
 func resourceDatadogLogsIndexOrderRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.CommunityClient
-	ddIndexList, err := client.GetLogsIndexList()
+	client := providerConf.DatadogClientV1
+	auth := providerConf.AuthV1
+	ddIndexList, _, err := client.LogsIndexesApi.GetLogsIndexOrder(auth).Execute()
 	if err != nil {
 		return utils.TranslateClientError(err, "error getting logs index list")
 	}
-	if err := d.Set("indexes", ddIndexList.IndexNames); err != nil {
-		return err
-	}
-	return nil
+	return updateLogsIndexOrderState(d, &ddIndexList)
 }
 
 func resourceDatadogLogsIndexOrderDelete(d *schema.ResourceData, meta interface{}) error {

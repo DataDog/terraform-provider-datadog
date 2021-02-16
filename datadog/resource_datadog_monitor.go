@@ -562,40 +562,8 @@ func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) erro
 	return resourceDatadogMonitorRead(d, meta)
 }
 
-func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error {
+func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.Monitor) error {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-
-	i, err := strconv.ParseInt(d.Id(), 10, 64)
-	if err != nil {
-		return err
-	}
-	var (
-		m        datadogV1.Monitor
-		httpresp *http.Response
-	)
-	if err = resource.Retry(d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
-		m, httpresp, err = datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
-		if err != nil {
-			if httpresp != nil {
-				if httpresp.StatusCode == 404 {
-					d.SetId("")
-					return nil
-				} else if httpresp.StatusCode == 502 {
-					return resource.RetryableError(utils.TranslateClientError(err, "error getting monitor, retrying"))
-				}
-			}
-			return resource.NonRetryableError(utils.TranslateClientError(err, "error getting monitor"))
-		}
-		return nil
-	}); err != nil {
-		return err
-	}
-
-	if d.Id() == "" {
-		return nil
-	}
 
 	thresholds := make(map[string]string)
 
@@ -635,16 +603,30 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	sort.Strings(tags)
 
 	log.Printf("[DEBUG] monitor: %+v", m)
-	d.Set("name", m.GetName())
-	d.Set("message", m.GetMessage())
-	d.Set("query", m.GetQuery())
-	d.Set("type", m.GetType())
-	d.Set("priority", m.GetPriority())
-	d.Set("restricted_roles", m.GetRestrictedRoles())
+	if err := d.Set("name", m.GetName()); err != nil {
+		return err
+	}
+	if err := d.Set("message", m.GetMessage()); err != nil {
+		return err
+	}
+	if err := d.Set("query", m.GetQuery()); err != nil {
+		return err
+	}
+	if err := d.Set("type", m.GetType()); err != nil {
+		return err
+	}
+	if err := d.Set("priority", m.GetPriority()); err != nil {
+		return err
+	}
+	if err := d.Set("restricted_roles", m.GetRestrictedRoles()); err != nil {
+		return err
+	}
 
 	// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 	if _, ok := d.GetOk("thresholds"); ok {
-		d.Set("thresholds", thresholds)
+		if err := d.Set("thresholds", thresholds); err != nil {
+			return err
+		}
 	} else if len(thresholds) > 0 { // Only set if there are values in the map to avoid diff
 		if err := d.Set("monitor_thresholds", []interface{}{thresholds}); err != nil {
 			return err
@@ -652,28 +634,57 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	}
 	// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
 	if _, ok := d.GetOk("threshold_windows"); ok {
-		d.Set("threshold_windows", thresholdWindows)
+		if err := d.Set("threshold_windows", thresholdWindows); err != nil {
+			return err
+		}
 	} else if len(thresholdWindows) > 0 { // Only set if there are values in the map to avoid diff
 		if err := d.Set("monitor_threshold_windows", []interface{}{thresholdWindows}); err != nil {
 			return err
 		}
 	}
 
-	d.Set("new_host_delay", m.Options.GetNewHostDelay())
-	d.Set("evaluation_delay", m.Options.GetEvaluationDelay())
-	d.Set("notify_no_data", m.Options.GetNotifyNoData())
-	d.Set("no_data_timeframe", m.Options.NoDataTimeframe.Get())
-	d.Set("renotify_interval", m.Options.GetRenotifyInterval())
-	d.Set("notify_audit", m.Options.GetNotifyAudit())
-	d.Set("timeout_h", m.Options.GetTimeoutH())
-	d.Set("escalation_message", m.Options.GetEscalationMessage())
-	d.Set("include_tags", m.Options.GetIncludeTags())
-	d.Set("tags", tags)
-	d.Set("require_full_window", m.Options.GetRequireFullWindow()) // TODO Is this one of those options that we neeed to check?
-	d.Set("locked", m.Options.GetLocked())
+	if err := d.Set("new_host_delay", m.Options.GetNewHostDelay()); err != nil {
+		return err
+	}
+	if err := d.Set("evaluation_delay", m.Options.GetEvaluationDelay()); err != nil {
+		return err
+	}
+	if err := d.Set("notify_no_data", m.Options.GetNotifyNoData()); err != nil {
+		return err
+	}
+	if err := d.Set("no_data_timeframe", m.Options.NoDataTimeframe.Get()); err != nil {
+		return err
+	}
+	if err := d.Set("renotify_interval", m.Options.GetRenotifyInterval()); err != nil {
+		return err
+	}
+	if err := d.Set("notify_audit", m.Options.GetNotifyAudit()); err != nil {
+		return err
+	}
+	if err := d.Set("timeout_h", m.Options.GetTimeoutH()); err != nil {
+		return err
+	}
+	if err := d.Set("escalation_message", m.Options.GetEscalationMessage()); err != nil {
+		return err
+	}
+	if err := d.Set("include_tags", m.Options.GetIncludeTags()); err != nil {
+		return err
+	}
+	if err := d.Set("tags", tags); err != nil {
+		return err
+	}
+	// TODO Is this one of those options that we neeed to check?
+	if err := d.Set("require_full_window", m.Options.GetRequireFullWindow()); err != nil {
+		return err
+	}
+	if err := d.Set("locked", m.Options.GetLocked()); err != nil {
+		return err
+	}
 
 	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {
-		d.Set("enable_logs_sample", m.Options.GetEnableLogsSample())
+		if err := d.Set("enable_logs_sample", m.Options.GetEnableLogsSample()); err != nil {
+			return err
+		}
 	}
 
 	// The Datadog API doesn't return old timestamps or support a special value for unmuting scopes
@@ -694,9 +705,49 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 			apiSilenced[k] = int64(v.(int))
 		}
 	}
-	d.Set("silenced", apiSilenced)
+	if err := d.Set("silenced", apiSilenced); err != nil {
+		return err
+	}
 
 	return nil
+}
+
+func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+
+	i, err := strconv.ParseInt(d.Id(), 10, 64)
+	if err != nil {
+		return err
+	}
+	var (
+		m        datadogV1.Monitor
+		httpresp *http.Response
+	)
+	if err = resource.Retry(d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
+		m, httpresp, err = datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
+		if err != nil {
+			if httpresp != nil {
+				if httpresp.StatusCode == 404 {
+					d.SetId("")
+					return nil
+				} else if httpresp.StatusCode == 502 {
+					return resource.RetryableError(utils.TranslateClientError(err, "error getting monitor, retrying"))
+				}
+			}
+			return resource.NonRetryableError(utils.TranslateClientError(err, "error getting monitor"))
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	if d.Id() == "" {
+		return nil
+	}
+
+	return updateMonitorState(d, meta, &m)
 }
 
 func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -729,9 +780,8 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		return utils.TranslateClientError(err, "error updating monitor")
 	}
 
-	var retval error
-	if retval = resourceDatadogMonitorRead(d, meta); retval != nil {
-		return retval
+	if err := updateMonitorState(d, meta, &monitorResp); err != nil {
+		return err
 	}
 
 	// if the silenced section was removed from the config, we unmute it via the API
@@ -745,7 +795,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		// we need to set this attribute from one to the other.
 		m.Options.SetSilenced(monitorResp.Options.GetSilenced())
 		mSilenced := m.Options.GetSilenced()
-		for k, _ := range mSilenced {
+		for k := range mSilenced {
 			// Since the Datadog GO client doesn't support unmuting on all scopes, loop over GetSilenced() and set the
 			// end timestamp to time.Now().Unix()
 			mSilenced[k] = providerConf.Now().Unix()
@@ -754,7 +804,9 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		if err != nil {
 			return utils.TranslateClientError(err, "error updating monitor")
 		}
-		d.Set("silenced", map[string]int{})
+		if err := d.Set("silenced", map[string]int{}); err != nil {
+			return err
+		}
 	} else {
 		for scope := range newSilenced.(map[string]interface{}) {
 			if _, ok := configuredSilenced[scope]; !ok {
@@ -774,12 +826,13 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 				delete(silencedList, scope)
 			}
 		}
-		if _, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute(); err != nil {
+		monitorResp, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
+		if err != nil {
 			return utils.TranslateClientError(err, "error updating monitor")
 		}
 	}
 
-	return resourceDatadogMonitorRead(d, meta)
+	return updateMonitorState(d, meta, &monitorResp)
 }
 
 func resourceDatadogMonitorDelete(d *schema.ResourceData, meta interface{}) error {
@@ -814,7 +867,7 @@ func resourceDatadogMonitorImport(d *schema.ResourceData, meta interface{}) ([]*
 
 // Ignore any diff that results from the mix of ints or floats returned from the
 // DataDog API.
-func suppressDataDogFloatIntDiff(k, old string, new string, d *schema.ResourceData) bool {
+func suppressDataDogFloatIntDiff(_, old, new string, _ *schema.ResourceData) bool {
 	oF, err := strconv.ParseFloat(old, 64)
 	if err != nil {
 		log.Printf("Error parsing float of old value (%s): %s", old, err)
