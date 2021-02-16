@@ -52,7 +52,6 @@ fmtcheck:
 errcheck:
 	@sh -c "'$(CURDIR)/scripts/errcheck.sh'"
 
-
 test-compile: get-test-deps
 	@if [ "$(TEST)" = "./..." ]; then \
 		echo "ERROR: Set TEST to a specific package. For example,"; \
@@ -70,4 +69,7 @@ update-go-client:
 get-test-deps:
 	gotestsum --version || (cd `mktemp -d`;	GO111MODULE=off GOFLAGS='' go get -u gotest.tools/gotestsum; cd -)
 
-.PHONY: build test testall testacc cassettes vet fmt fmtcheck errcheck test-compile get-test-deps
+license-check:
+	@sh -c "'$(CURDIR)/scripts/license-check.sh'"
+
+.PHONY: build test testall testacc cassettes vet fmt fmtcheck errcheck test-compile get-test-deps license-check
