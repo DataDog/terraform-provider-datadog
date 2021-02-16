@@ -357,7 +357,7 @@ func testSpan(ctx context.Context, t *testing.T) (context.Context, func()) {
 }
 
 func initAccProvider(ctx context.Context, t *testing.T, httpClient *http.Client) *schema.Provider {
-	ctx, finish := testSpan(context.Background(), t)
+	ctx, finish := testSpan(ctx, t)
 	defer finish()
 
 	p := Provider().(*schema.Provider)
