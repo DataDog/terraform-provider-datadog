@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -34,7 +37,7 @@ func resourceDatadogDashboardList() *schema.Resource {
 						"type": {
 							Type:         schema.TypeString,
 							Required:     true,
-							ValidateFunc: validateEnumValue(datadogV2.NewDashboardTypeFromValue),
+							ValidateFunc: validators.ValidateEnumValue(datadogV2.NewDashboardTypeFromValue),
 							Description:  "The type of this dashboard. Available options are: `custom_timeboard`, `custom_screenboard`, `integration_screenboard`, `integration_timeboard`, and `host_timeboard`",
 						},
 						"dash_id": {
@@ -62,7 +65,7 @@ func resourceDatadogDashboardListCreate(d *schema.ResourceData, meta interface{}
 	}
 	dashboardList, _, err := datadogClientV1.DashboardListsApi.CreateDashboardList(authV1).Body(*dashboardListPayload).Execute()
 	if err != nil {
-		return translateClientError(err, "error creating dashboard list")
+		return utils.TranslateClientError(err, "error creating dashboard list")
 	}
 	id := dashboardList.GetId()
 	d.SetId(strconv.Itoa(int(id)))
@@ -75,7 +78,7 @@ func resourceDatadogDashboardListCreate(d *schema.ResourceData, meta interface{}
 		}
 		_, _, err = datadogClientV2.DashboardListsApi.UpdateDashboardListItems(authV2, id).Body(*dashboardListV2Items).Execute()
 		if err != nil {
-			return translateClientError(err, "error updating dashboard list item")
+			return utils.TranslateClientError(err, "error updating dashboard list item")
 		}
 	}
 
@@ -102,21 +105,21 @@ func resourceDatadogDashboardListUpdate(d *schema.ResourceData, meta interface{}
 	dashList.SetName(d.Get("name").(string))
 	_, _, err = datadogClientV1.DashboardListsApi.UpdateDashboardList(authV1, id).Body(*dashList).Execute()
 	if err != nil {
-		return translateClientError(err, "error updating dashboard list")
+		return utils.TranslateClientError(err, "error updating dashboard list")
 	}
 
 	// Delete all elements from the dash list and add back only the ones in the config
 	completeDashListV2, _, err := datadogClientV2.DashboardListsApi.GetDashboardListItems(authV2, id).Execute()
 	if err != nil {
-		return translateClientError(err, "error getting dashboard list item")
+		return utils.TranslateClientError(err, "error getting dashboard list item")
 	}
 	completeDashListDeleteV2, err := buildDatadogDashboardListDeleteItemsV2(completeDashListV2)
 	if err != nil {
-		return translateClientError(err, "error creating dashboard list delete item")
+		return utils.TranslateClientError(err, "error creating dashboard list delete item")
 	}
 	_, _, err = datadogClientV2.DashboardListsApi.DeleteDashboardListItems(authV2, id).Body(*completeDashListDeleteV2).Execute()
 	if err != nil {
-		return translateClientError(err, "error deleting dashboard list item")
+		return utils.TranslateClientError(err, "error deleting dashboard list item")
 	}
 	if len(d.Get("dash_item").(*schema.Set).List()) > 0 {
 		dashboardListV2Items, err := buildDatadogDashboardListUpdateItemsV2(d)
@@ -125,7 +128,7 @@ func resourceDatadogDashboardListUpdate(d *schema.ResourceData, meta interface{}
 		}
 		_, _, err = datadogClientV2.DashboardListsApi.UpdateDashboardListItems(authV2, id).Body(*dashboardListV2Items).Execute()
 		if err != nil {
-			return translateClientError(err, "error updating dashboard list item")
+			return utils.TranslateClientError(err, "error updating dashboard list item")
 		}
 	}
 
@@ -148,14 +151,14 @@ func resourceDatadogDashboardListRead(d *schema.ResourceData, meta interface{}) 
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error getting dashboard list")
+		return utils.TranslateClientError(err, "error getting dashboard list")
 	}
 	d.Set("name", dashList.GetName())
 
 	// Read and set all the dashboard list elements
 	completeItemListV2, _, err := datadogClientV2.DashboardListsApi.GetDashboardListItems(authV2, id).Execute()
 	if err != nil {
-		return translateClientError(err, "error getting dashboard list item")
+		return utils.TranslateClientError(err, "error getting dashboard list item")
 	}
 	dashItemListV2, err := buildTerraformDashboardListItemsV2(completeItemListV2)
 	if err != nil {
@@ -176,7 +179,7 @@ func resourceDatadogDashboardListDelete(d *schema.ResourceData, meta interface{}
 	// Note this doesn't delete the actual dashboards, just removes them from the deleted list
 	_, _, err := datadogClientV1.DashboardListsApi.DeleteDashboardList(authV1, id).Execute()
 	if err != nil {
-		return translateClientError(err, "error deleting dashboard list")
+		return utils.TranslateClientError(err, "error deleting dashboard list")
 	}
 	return nil
 }

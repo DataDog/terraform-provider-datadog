@@ -6,6 +6,7 @@ import (
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var indexSchema = map[string]*schema.Schema{
@@ -117,7 +118,7 @@ func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) erro
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error getting logs index")
+		return utils.TranslateClientError(err, "error getting logs index")
 	}
 	return updateLogsIndexState(d, &ddIndex)
 }
@@ -137,7 +138,7 @@ func resourceDatadogLogsIndexUpdate(d *schema.ResourceData, meta interface{}) er
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return fmt.Errorf("logs index creation is not allowed, index_name: %s", tfName)
 		}
-		return translateClientError(err, "error updating logs index")
+		return utils.TranslateClientError(err, "error updating logs index")
 	}
 	d.SetId(tfName)
 	return updateLogsIndexState(d, &updatedIndex)

@@ -7,6 +7,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/kr/pretty"
 	"github.com/zorkian/go-datadog-api"
@@ -172,7 +175,7 @@ func resourceDatadogTimeboard() *schema.Resource {
 					Description:  "The aggregation method used when the number of data points outnumbers the max that can be shown.",
 					Type:         schema.TypeString,
 					Optional:     true,
-					ValidateFunc: validateAggregatorMethod,
+					ValidateFunc: validators.ValidateAggregatorMethod,
 				},
 				"style": {
 					Description: "Nested block to customize the graph style.",
@@ -677,7 +680,7 @@ func appendRequests(datadogGraph *datadog.Graph, terraformRequests *[]interface{
 		}
 		if v, ok := t["metadata_json"]; ok {
 			d.Metadata = map[string]datadog.GraphDefinitionMetadata{}
-			getMetadataFromJSON([]byte(v.(string)), &d.Metadata)
+			utils.GetMetadataFromJSON([]byte(v.(string)), &d.Metadata)
 		}
 		datadogGraph.Definition.Requests = append(datadogGraph.Definition.Requests, d)
 	}
@@ -861,7 +864,7 @@ func resourceDatadogTimeboardCreate(d *schema.ResourceData, meta interface{}) er
 	client := providerConf.CommunityClient
 	timeboard, err = client.CreateDashboard(timeboard)
 	if err != nil {
-		return translateClientError(err, "error creating timeboard")
+		return utils.TranslateClientError(err, "error creating timeboard")
 	}
 	d.SetId(strconv.Itoa(timeboard.GetId()))
 	return resourceDatadogTimeboardRead(d, meta)
@@ -875,7 +878,7 @@ func resourceDatadogTimeboardUpdate(d *schema.ResourceData, meta interface{}) er
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	if err = client.UpdateDashboard(timeboard); err != nil {
-		return translateClientError(err, "error updating timeboard")
+		return utils.TranslateClientError(err, "error updating timeboard")
 	}
 	return resourceDatadogTimeboardRead(d, meta)
 }
@@ -1160,7 +1163,7 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error getting timeboard")
+		return utils.TranslateClientError(err, "error getting timeboard")
 	}
 	log.Printf("[DataDog] timeboard: %v", pretty.Sprint(timeboard))
 	if err := d.Set("title", timeboard.GetTitle()); err != nil {
@@ -1210,7 +1213,7 @@ func resourceDatadogTimeboardDelete(d *schema.ResourceData, meta interface{}) er
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	if err = client.DeleteDashboard(id); err != nil {
-		return translateClientError(err, "error deleting timeboard")
+		return utils.TranslateClientError(err, "error deleting timeboard")
 	}
 	return nil
 }

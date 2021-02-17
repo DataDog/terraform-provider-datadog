@@ -3,6 +3,7 @@ package datadog
 import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func resourceDatadogLogsIndexOrder() *schema.Resource {
@@ -53,7 +54,7 @@ func resourceDatadogLogsIndexOrderUpdate(d *schema.ResourceData, meta interface{
 
 	updatedOrder, _, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndexOrder(authV1).Body(ddIndexList).Execute()
 	if err != nil {
-		return translateClientError(err, "error updating logs index list")
+		return utils.TranslateClientError(err, "error updating logs index list")
 	}
 	d.SetId(tfId)
 	return updateLogsIndexOrderState(d, &updatedOrder)
@@ -72,7 +73,7 @@ func resourceDatadogLogsIndexOrderRead(d *schema.ResourceData, meta interface{})
 	auth := providerConf.AuthV1
 	ddIndexList, _, err := client.LogsIndexesApi.GetLogsIndexOrder(auth).Execute()
 	if err != nil {
-		return translateClientError(err, "error getting logs index list")
+		return utils.TranslateClientError(err, "error getting logs index list")
 	}
 	return updateLogsIndexOrderState(d, &ddIndexList)
 }
