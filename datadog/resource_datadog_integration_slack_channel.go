@@ -85,6 +85,7 @@ func buildDatadogSlackChannel(d *schema.ResourceData) (*datadogV1.SlackIntegrati
 	resultDisplay.SetSnapshot(k.GetWith("snapshot").(bool))
 	resultDisplay.SetTags(k.GetWith("tags").(bool))
 	k.Remove("display.0")
+
 	datadogSlackChannel.SetDisplay(*resultDisplay)
 
 	return datadogSlackChannel, nil
@@ -100,34 +101,11 @@ func resourceDatadogIntegrationSlackChannelCreate(d *schema.ResourceData, meta i
 
 	createdChannel, _, err := datadogClient.SlackIntegrationApi.CreateSlackIntegrationChannel(auth, teamName).Body(*ddSlackChannel).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error creating SlackChannel")
+		return utils.TranslateClientError(err, "error creating slack channel")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", teamName, ddSlackChannel.GetName()))
 	return updateSlackChannelState(d, &createdChannel)
-}
-
-func updateSlackChannelState(d *schema.ResourceData, slackChannel *datadogV1.SlackIntegrationChannel) error {
-	if err := d.Set("channel_name", slackChannel.GetName()); err != nil {
-		return err
-	}
-
-	tfChannelDisplay := buildTerraformSlackChannelDisplay(slackChannel.GetDisplay())
-	if err := d.Set("display", []map[string]interface{}{tfChannelDisplay}); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func buildTerraformSlackChannelDisplay(ddChannelDisplay datadogV1.SlackIntegrationChannelDisplay) map[string]interface{} {
-	tfChannelDisplay := map[string]interface{}{}
-	tfChannelDisplay["message"] = ddChannelDisplay.GetMessage()
-	tfChannelDisplay["notified"] = ddChannelDisplay.GetNotified()
-	tfChannelDisplay["snapshot"] = ddChannelDisplay.GetSnapshot()
-	tfChannelDisplay["tags"] = ddChannelDisplay.GetTags()
-
-	return tfChannelDisplay
 }
 
 func resourceDatadogIntegrationSlackChannelRead(d *schema.ResourceData, meta interface{}) error {
@@ -167,7 +145,8 @@ func resourceDatadogIntegrationSlackChannelUpdate(d *schema.ResourceData, meta i
 	if err != nil {
 		return utils.TranslateClientError(err, "error updating slack channel")
 	}
-	// Handle case where channel name is changed
+
+	// Handle case where channel name is updated
 	d.SetId(fmt.Sprintf("%s:%s", teamName, slackChannel.GetName()))
 
 	return updateSlackChannelState(d, &slackChannel)
@@ -187,6 +166,29 @@ func resourceDatadogIntegrationSlackChannelDelete(d *schema.ResourceData, meta i
 	}
 
 	return nil
+}
+
+func updateSlackChannelState(d *schema.ResourceData, slackChannel *datadogV1.SlackIntegrationChannel) error {
+	if err := d.Set("channel_name", slackChannel.GetName()); err != nil {
+		return err
+	}
+
+	tfChannelDisplay := buildTerraformSlackChannelDisplay(slackChannel.GetDisplay())
+	if err := d.Set("display", []map[string]interface{}{tfChannelDisplay}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func buildTerraformSlackChannelDisplay(ddChannelDisplay datadogV1.SlackIntegrationChannelDisplay) map[string]interface{} {
+	tfChannelDisplay := map[string]interface{}{}
+	tfChannelDisplay["message"] = ddChannelDisplay.GetMessage()
+	tfChannelDisplay["notified"] = ddChannelDisplay.GetNotified()
+	tfChannelDisplay["snapshot"] = ddChannelDisplay.GetSnapshot()
+	tfChannelDisplay["tags"] = ddChannelDisplay.GetTags()
+
+	return tfChannelDisplay
 }
 
 func teamNameAndChannelNameFromID(id string) (string, string, error) {
