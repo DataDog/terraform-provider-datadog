@@ -6,6 +6,7 @@ import (
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var indexSchema = map[string]*schema.Schema{
@@ -93,6 +94,19 @@ func resourceDatadogLogsIndexCreate(d *schema.ResourceData, meta interface{}) er
 	return resourceDatadogLogsIndexUpdate(d, meta)
 }
 
+func updateLogsIndexState(d *schema.ResourceData, index *datadogV1.LogsIndex) error {
+	if err := d.Set("name", index.GetName()); err != nil {
+		return err
+	}
+	if err := d.Set("filter", buildTerraformIndexFilter(index.GetFilter())); err != nil {
+		return err
+	}
+	if err := d.Set("exclusion_filter", buildTerraformExclusionFilters(index.GetExclusionFilters())); err != nil {
+		return err
+	}
+	return nil
+}
+
 func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -104,18 +118,9 @@ func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) erro
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error getting logs index")
+		return utils.TranslateClientError(err, "error getting logs index")
 	}
-	if err = d.Set("name", ddIndex.GetName()); err != nil {
-		return err
-	}
-	if err = d.Set("filter", buildTerraformIndexFilter(ddIndex.GetFilter())); err != nil {
-		return err
-	}
-	if err = d.Set("exclusion_filter", buildTerraformExclusionFilters(ddIndex.GetExclusionFilters())); err != nil {
-		return err
-	}
-	return nil
+	return updateLogsIndexState(d, &ddIndex)
 }
 
 func resourceDatadogLogsIndexUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -128,17 +133,18 @@ func resourceDatadogLogsIndexUpdate(d *schema.ResourceData, meta interface{}) er
 	authV1 := providerConf.AuthV1
 
 	tfName := d.Get("name").(string)
-	if _, _, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndex(authV1, tfName).Body(*ddIndex).Execute(); err != nil {
+	updatedIndex, _, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndex(authV1, tfName).Body(*ddIndex).Execute()
+	if err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
 			return fmt.Errorf("logs index creation is not allowed, index_name: %s", tfName)
 		}
-		return translateClientError(err, "error updating logs index")
+		return utils.TranslateClientError(err, "error updating logs index")
 	}
 	d.SetId(tfName)
-	return resourceDatadogLogsIndexRead(d, meta)
+	return updateLogsIndexState(d, &updatedIndex)
 }
 
-func resourceDatadogLogsIndexDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsIndexDelete(_ *schema.ResourceData, _ interface{}) error {
 	return nil
 }
 

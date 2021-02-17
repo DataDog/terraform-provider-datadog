@@ -43,5 +43,9 @@ jobs:
               uses: actions/checkout@v2
             - name: Vet
               run: make vet
+            - name: License Check
+              run: make license-check
             - name: Test
-              run: make test
+              run: make testall
+              env:
+                  RECORD: false

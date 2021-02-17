@@ -7,6 +7,7 @@ import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 const (
@@ -362,10 +363,30 @@ func resourceDatadogLogsPipelineCreate(d *schema.ResourceData, meta interface{})
 	}
 	createdPipeline, _, err := datadogClientV1.LogsPipelinesApi.CreateLogsPipeline(authV1).Body(*ddPipeline).Execute()
 	if err != nil {
-		return translateClientError(err, "failed to create logs pipeline using Datadog API")
+		return utils.TranslateClientError(err, "failed to create logs pipeline using Datadog API")
 	}
 	d.SetId(*createdPipeline.Id)
-	return resourceDatadogLogsPipelineRead(d, meta)
+	return updateLogsCustomPipelineState(d, &createdPipeline)
+}
+
+func updateLogsCustomPipelineState(d *schema.ResourceData, pipeline *datadogV1.LogsPipeline) error {
+	if err := d.Set("name", pipeline.GetName()); err != nil {
+		return err
+	}
+	if err := d.Set("is_enabled", pipeline.GetIsEnabled()); err != nil {
+		return err
+	}
+	if err := d.Set("filter", buildTerraformFilter(pipeline.Filter)); err != nil {
+		return err
+	}
+	tfProcessors, err := buildTerraformProcessors(pipeline.GetProcessors())
+	if err != nil {
+		return err
+	}
+	if err := d.Set("processor", tfProcessors); err != nil {
+		return err
+	}
+	return nil
 }
 
 func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) error {
@@ -379,25 +400,9 @@ func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) e
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "failed to get logs pipeline using Datadog API")
+		return utils.TranslateClientError(err, "failed to get logs pipeline using Datadog API")
 	}
-	if err = d.Set("name", ddPipeline.GetName()); err != nil {
-		return err
-	}
-	if err = d.Set("is_enabled", ddPipeline.GetIsEnabled()); err != nil {
-		return err
-	}
-	if err := d.Set("filter", buildTerraformFilter(ddPipeline.Filter)); err != nil {
-		return err
-	}
-	tfProcessors, err := buildTerraformProcessors(ddPipeline.GetProcessors())
-	if err != nil {
-		return err
-	}
-	if err := d.Set("processor", tfProcessors); err != nil {
-		return err
-	}
-	return nil
+	return updateLogsCustomPipelineState(d, &ddPipeline)
 }
 
 func resourceDatadogLogsPipelineUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -409,10 +414,11 @@ func resourceDatadogLogsPipelineUpdate(d *schema.ResourceData, meta interface{})
 	if err != nil {
 		return err
 	}
-	if _, _, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipeline(authV1, d.Id()).Body(*ddPipeline).Execute(); err != nil {
-		return translateClientError(err, "error updating logs pipeline")
+	updatedPipeline, _, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipeline(authV1, d.Id()).Body(*ddPipeline).Execute()
+	if err != nil {
+		return utils.TranslateClientError(err, "error updating logs pipeline")
 	}
-	return resourceDatadogLogsPipelineRead(d, meta)
+	return updateLogsCustomPipelineState(d, &updatedPipeline)
 }
 
 func resourceDatadogLogsPipelineDelete(d *schema.ResourceData, meta interface{}) error {
@@ -425,7 +431,7 @@ func resourceDatadogLogsPipelineDelete(d *schema.ResourceData, meta interface{})
 		if strings.Contains(err.Error(), "400 Bad Request") {
 			return nil
 		}
-		return translateClientError(err, "error deleting logs pipeline")
+		return utils.TranslateClientError(err, "error deleting logs pipeline")
 	}
 	return nil
 }

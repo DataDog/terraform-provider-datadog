@@ -8,6 +8,8 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 
@@ -110,7 +112,7 @@ func dataSourceDatadogSecurityMonitoringRulesRead(d *schema.ResourceData, meta i
 			Execute()
 
 		if err != nil {
-			return translateClientError(err, "error listing rules")
+			return utils.TranslateClientError(err, "error listing rules")
 		}
 
 		for _, rule := range response.GetData() {

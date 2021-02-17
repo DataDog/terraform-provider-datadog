@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -251,7 +253,7 @@ func dataSourceDatadogMonitorsRead(d *schema.ResourceData, meta interface{}) err
 
 	monitors, _, err := req.Execute()
 	if err != nil {
-		return translateClientError(err, "error querying monitors")
+		return utils.TranslateClientError(err, "error querying monitors")
 	}
 	if len(monitors) > 1 {
 		return fmt.Errorf("your query returned more than one result, please try a more specific search criteria")

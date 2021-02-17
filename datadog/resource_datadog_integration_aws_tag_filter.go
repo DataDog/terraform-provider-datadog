@@ -2,7 +2,9 @@ package datadog
 
 import (
 	"fmt"
-	"strings"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -30,7 +32,7 @@ func resourceDatadogIntegrationAwsTagFilter() *schema.Resource {
 				Type:         schema.TypeString,
 				Required:     true,
 				ForceNew:     true,
-				ValidateFunc: validateEnumValue(datadogV1.NewAWSNamespaceFromValue),
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewAWSNamespaceFromValue),
 			},
 			"tag_filter_str": {
 				Description: "The tag filter string.",
@@ -64,7 +66,7 @@ func resourceDatadogIntegrationAwsTagFilterCreate(d *schema.ResourceData, meta i
 
 	req := buildDatadogIntegrationAwsTagFilter(d)
 	if _, _, err := datadogClientV1.AWSIntegrationApi.CreateAWSTagFilter(authV1).Body(*req).Execute(); err != nil {
-		return translateClientError(err, "error creating aws tag filter")
+		return utils.TranslateClientError(err, "error creating aws tag filter")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", req.GetAccountId(), req.GetNamespace()))
@@ -78,7 +80,7 @@ func resourceDatadogIntegrationAwsTagFilterUpdate(d *schema.ResourceData, meta i
 
 	req := buildDatadogIntegrationAwsTagFilter(d)
 	if _, _, err := datadogClientV1.AWSIntegrationApi.CreateAWSTagFilter(authV1).Body(*req).Execute(); err != nil {
-		return translateClientError(err, "error updating aws tag filter")
+		return utils.TranslateClientError(err, "error updating aws tag filter")
 	}
 
 	return resourceDatadogIntegrationAwsTagFilterRead(d, meta)
@@ -89,7 +91,7 @@ func resourceDatadogIntegrationAwsTagFilterRead(d *schema.ResourceData, meta int
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	accountID, tfNamespace, err := accountAndNamespaceFromID(d.Id())
+	accountID, tfNamespace, err := utils.AccountAndNamespaceFromID(d.Id())
 	if err != nil {
 		return err
 	}
@@ -97,7 +99,7 @@ func resourceDatadogIntegrationAwsTagFilterRead(d *schema.ResourceData, meta int
 
 	resp, _, err := datadogClientV1.AWSIntegrationApi.ListAWSTagFilters(authV1).AccountId(accountID).Execute()
 	if err != nil {
-		return translateClientError(err, "error listing aws tag filter")
+		return utils.TranslateClientError(err, "error listing aws tag filter")
 	}
 
 	for _, ns := range resp.GetFilters() {
@@ -120,7 +122,7 @@ func resourceDatadogIntegrationAwsTagFilterDelete(d *schema.ResourceData, meta i
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	accountID, tfNamespace, err := accountAndNamespaceFromID(d.Id())
+	accountID, tfNamespace, err := utils.AccountAndNamespaceFromID(d.Id())
 	if err != nil {
 		return err
 	}
@@ -131,16 +133,8 @@ func resourceDatadogIntegrationAwsTagFilterDelete(d *schema.ResourceData, meta i
 	}
 
 	if _, _, err := datadogClientV1.AWSIntegrationApi.DeleteAWSTagFilter(authV1).Body(deleteRequest).Execute(); err != nil {
-		return translateClientError(err, "error deleting aws tag filter")
+		return utils.TranslateClientError(err, "error deleting aws tag filter")
 	}
 
 	return nil
-}
-
-func accountAndNamespaceFromID(id string) (string, string, error) {
-	result := strings.SplitN(id, ":", 2)
-	if len(result) != 2 {
-		return "", "", fmt.Errorf("error extracting account ID and namespace: %s", id)
-	}
-	return result[0], result[1], nil
 }

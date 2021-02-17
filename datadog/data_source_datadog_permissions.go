@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func dataSourceDatadogPermissions() *schema.Resource {
@@ -30,7 +31,7 @@ func dataSourceDatadogPermissionsRead(d *schema.ResourceData, meta interface{}) 
 
 	res, _, err := datadogClientV2.RolesApi.ListPermissions(authV2).Execute()
 	if err != nil {
-		return translateClientError(err, "error listing permissions")
+		return utils.TranslateClientError(err, "error listing permissions")
 	}
 	perms := res.GetData()
 	permsNameToID := make(map[string]string, len(perms))

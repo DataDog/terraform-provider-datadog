@@ -2,6 +2,8 @@ package datadog
 
 import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -19,7 +21,7 @@ func resourceDatadogSloCorrection() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"category": {
 				Type:         schema.TypeString,
-				ValidateFunc: validateEnumValue(datadogV1.NewSLOCorrectionCategoryFromValue),
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSLOCorrectionCategoryFromValue),
 				Required:     true,
 				Description:  "Category the SLO correction belongs to",
 			},
@@ -109,12 +111,48 @@ func resourceDatadogSloCorrectionCreate(d *schema.ResourceData, meta interface{}
 
 	response, _, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.CreateSLOCorrection(auth).Body(*ddObject).Execute()
 	if err != nil {
-		return translateClientError(err, "error creating SloCorrection")
+		return utils.TranslateClientError(err, "error creating SloCorrection")
 	}
 	sloCorrection := response.GetData()
 	d.SetId(sloCorrection.GetId())
 
-	return resourceDatadogSloCorrectionRead(d, meta)
+	return updateSLOCorrectionState(d, response.Data)
+}
+
+func updateSLOCorrectionState(d *schema.ResourceData, sloCorrectionData *datadogV1.SLOCorrectionResponseData) error {
+	if sloCorrectionAttributes, ok := sloCorrectionData.GetAttributesOk(); ok {
+		if category, ok := sloCorrectionAttributes.GetCategoryOk(); ok {
+			if err := d.Set("category", string(*category)); err != nil {
+				return err
+			}
+		}
+		if description, ok := sloCorrectionAttributes.GetDescriptionOk(); ok {
+			if err := d.Set("description", *description); err != nil {
+				return err
+			}
+		}
+		if sloID, ok := sloCorrectionAttributes.GetSloIdOk(); ok {
+			if err := d.Set("slo_id", *sloID); err != nil {
+				return err
+			}
+		}
+		if timezone, ok := sloCorrectionAttributes.GetTimezoneOk(); ok {
+			if err := d.Set("timezone", *timezone); err != nil {
+				return err
+			}
+		}
+		if start, ok := sloCorrectionAttributes.GetStartOk(); ok {
+			if err := d.Set("start", *start); err != nil {
+				return err
+			}
+		}
+		if end, ok := sloCorrectionAttributes.GetEndOk(); ok {
+			if err := d.Set("end", *end); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 func resourceDatadogSloCorrectionRead(d *schema.ResourceData, meta interface{}) error {
@@ -132,30 +170,9 @@ func resourceDatadogSloCorrectionRead(d *schema.ResourceData, meta interface{}) 
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error reading SloCorrection")
+		return utils.TranslateClientError(err, "error reading SloCorrection")
 	}
-	sloCorrectionGetData := sloCorrectionGetResp.GetData()
-	if sloCorrectionAttributes, ok := sloCorrectionGetData.GetAttributesOk(); ok {
-		if category, ok := sloCorrectionAttributes.GetCategoryOk(); ok {
-			d.Set("category", string(*category))
-		}
-		if description, ok := sloCorrectionAttributes.GetDescriptionOk(); ok {
-			d.Set("description", *description)
-		}
-		if sloID, ok := sloCorrectionAttributes.GetSloIdOk(); ok {
-			d.Set("slo_id", *sloID)
-		}
-		if timezone, ok := sloCorrectionAttributes.GetTimezoneOk(); ok {
-			d.Set("timezone", *timezone)
-		}
-		if start, ok := sloCorrectionAttributes.GetStartOk(); ok {
-			d.Set("start", *start)
-		}
-		if end, ok := sloCorrectionAttributes.GetEndOk(); ok {
-			d.Set("end", *end)
-		}
-	}
-	return nil
+	return updateSLOCorrectionState(d, sloCorrectionGetResp.Data)
 }
 
 func resourceDatadogSloCorrectionUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -166,12 +183,12 @@ func resourceDatadogSloCorrectionUpdate(d *schema.ResourceData, meta interface{}
 	ddObject, err := buildDatadogSloCorrectionUpdate(d)
 	id := d.Id()
 
-	_, _, err = datadogClient.ServiceLevelObjectiveCorrectionsApi.UpdateSLOCorrection(auth, id).Body(*ddObject).Execute()
+	response, _, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.UpdateSLOCorrection(auth, id).Body(*ddObject).Execute()
 	if err != nil {
-		return translateClientError(err, "error creating SloCorrection")
+		return utils.TranslateClientError(err, "error creating SloCorrection")
 	}
 
-	return resourceDatadogSloCorrectionRead(d, meta)
+	return updateSLOCorrectionState(d, response.Data)
 }
 
 func resourceDatadogSloCorrectionDelete(d *schema.ResourceData, meta interface{}) error {
@@ -185,7 +202,7 @@ func resourceDatadogSloCorrectionDelete(d *schema.ResourceData, meta interface{}
 	_, err = datadogClient.ServiceLevelObjectiveCorrectionsApi.DeleteSLOCorrection(auth, id).Execute()
 
 	if err != nil {
-		return translateClientError(err, "error deleting SloCorrection")
+		return utils.TranslateClientError(err, "error deleting SloCorrection")
 	}
 
 	return nil

@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/zorkian/go-datadog-api"
 )
 
@@ -16,12 +17,11 @@ var integrationPdMutex = sync.Mutex{}
 
 func resourceDatadogIntegrationPagerduty() *schema.Resource {
 	return &schema.Resource{
-		Description:        "Provides a Datadog - PagerDuty resource. This can be used to create and manage Datadog - PagerDuty integration. See also [PagerDuty Integration Guide](https://www.pagerduty.com/docs/guides/datadog-integration-guide/). This resource is deprecated and should only be used for legacy purposes.",
-		DeprecationMessage: "This resource is deprecated. You can use datadog_integration_pagerduty_service_object resources directly once the integration is activated",
-		Create:             resourceDatadogIntegrationPagerdutyCreate,
-		Read:               resourceDatadogIntegrationPagerdutyRead,
-		Update:             resourceDatadogIntegrationPagerdutyUpdate,
-		Delete:             resourceDatadogIntegrationPagerdutyDelete,
+		Description: "Provides a Datadog - PagerDuty resource. This can be used to create and manage Datadog - PagerDuty integration. See also [PagerDuty Integration Guide](https://www.pagerduty.com/docs/guides/datadog-integration-guide/).",
+		Create:      resourceDatadogIntegrationPagerdutyCreate,
+		Read:        resourceDatadogIntegrationPagerdutyRead,
+		Update:      resourceDatadogIntegrationPagerdutyUpdate,
+		Delete:      resourceDatadogIntegrationPagerdutyDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -121,12 +121,12 @@ func resourceDatadogIntegrationPagerdutyCreate(d *schema.ResourceData, meta inte
 	}
 
 	if err := client.CreateIntegrationPD(pd); err != nil {
-		return translateClientError(err, "error creating PagerDuty integration")
+		return utils.TranslateClientError(err, "error creating PagerDuty integration")
 	}
 
 	pdIntegration, err := client.GetIntegrationPD()
 	if err != nil {
-		return translateClientError(err, "error getting PagerDuty integration")
+		return utils.TranslateClientError(err, "error getting PagerDuty integration")
 	}
 
 	d.SetId(pdIntegration.GetSubdomain())
@@ -144,7 +144,7 @@ func resourceDatadogIntegrationPagerdutyRead(d *schema.ResourceData, meta interf
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error getting PagerDuty integration")
+		return utils.TranslateClientError(err, "error getting PagerDuty integration")
 	}
 
 	var services []map[string]string
@@ -179,7 +179,7 @@ func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta inte
 	}
 
 	if err := client.UpdateIntegrationPD(pd); err != nil {
-		return translateClientError(err, "error updating PagerDuty integration")
+		return utils.TranslateClientError(err, "error updating PagerDuty integration")
 	}
 
 	// if there are none currently configured services, we actually
@@ -190,11 +190,11 @@ func resourceDatadogIntegrationPagerdutyUpdate(d *schema.ResourceData, meta inte
 		if len(currentServices) == 0 {
 			pd, err := client.GetIntegrationPD()
 			if err != nil {
-				return translateClientError(err, "error getting PagerDuty integration")
+				return utils.TranslateClientError(err, "error getting PagerDuty integration")
 			}
 			for _, service := range pd.Services {
 				if err := client.DeleteIntegrationPDService(*service.ServiceName); err != nil {
-					return translateClientError(err, "error deleting PagerDuty integration service")
+					return utils.TranslateClientError(err, "error deleting PagerDuty integration service")
 				}
 			}
 		}
