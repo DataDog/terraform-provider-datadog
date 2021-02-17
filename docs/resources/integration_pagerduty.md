@@ -2,12 +2,12 @@
 page_title: "datadog_integration_pagerduty Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog - PagerDuty resource. This can be used to create and manage Datadog - PagerDuty integration. See also PagerDuty Integration Guide https://www.pagerduty.com/docs/guides/datadog-integration-guide/. This resource is deprecated and should only be used for legacy purposes.
+  Provides a Datadog - PagerDuty resource. This can be used to create and manage Datadog - PagerDuty integration. See also PagerDuty Integration Guide https://www.pagerduty.com/docs/guides/datadog-integration-guide/.
 ---
 
 # Resource `datadog_integration_pagerduty`
 
-Provides a Datadog - PagerDuty resource. This can be used to create and manage Datadog - PagerDuty integration. See also [PagerDuty Integration Guide](https://www.pagerduty.com/docs/guides/datadog-integration-guide/). This resource is deprecated and should only be used for legacy purposes.
+Provides a Datadog - PagerDuty resource. This can be used to create and manage Datadog - PagerDuty integration. See also [PagerDuty Integration Guide](https://www.pagerduty.com/docs/guides/datadog-integration-guide/).
 
 ## Example Usage
 

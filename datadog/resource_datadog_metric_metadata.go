@@ -3,6 +3,7 @@ package datadog
 import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func resourceDatadogMetricMetadata() *schema.Resource {
@@ -73,14 +74,37 @@ func resourceDatadogMetricMetadataCreate(d *schema.ResourceData, meta interface{
 	authV1 := providerConf.AuthV1
 
 	id, m := buildMetricMetadataStruct(d)
-	_, _, err := datadogClientV1.MetricsApi.UpdateMetricMetadata(authV1, id).Body(*m).Execute()
+	createdMetadata, _, err := datadogClientV1.MetricsApi.UpdateMetricMetadata(authV1, id).Body(*m).Execute()
 	if err != nil {
-		return translateClientError(err, "error creating metric metadata")
+		return utils.TranslateClientError(err, "error creating metric metadata")
 	}
 
 	d.SetId(id)
 
-	return resourceDatadogMetricMetadataRead(d, meta)
+	return updateMetricMetadataState(d, &createdMetadata)
+}
+
+func updateMetricMetadataState(d *schema.ResourceData, metadata *datadogV1.MetricMetadata) error {
+	if err := d.Set("type", metadata.GetType()); err != nil {
+		return err
+	}
+	if err := d.Set("description", metadata.GetDescription()); err != nil {
+		return err
+	}
+	if err := d.Set("short_name", metadata.GetShortName()); err != nil {
+		return err
+	}
+	if err := d.Set("unit", metadata.GetUnit()); err != nil {
+		return err
+	}
+	if err := d.Set("per_unit", metadata.GetPerUnit()); err != nil {
+		return err
+	}
+	if err := d.Set("statsd_interval", metadata.GetStatsdInterval()); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{}) error {
@@ -96,17 +120,9 @@ func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{})
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error getting metric metadata")
+		return utils.TranslateClientError(err, "error getting metric metadata")
 	}
-
-	d.Set("type", m.GetType())
-	d.Set("description", m.GetDescription())
-	d.Set("short_name", m.GetShortName())
-	d.Set("unit", m.GetUnit())
-	d.Set("per_unit", m.GetPerUnit())
-	d.Set("statsd_interval", m.GetStatsdInterval())
-
-	return nil
+	return updateMetricMetadataState(d, &m)
 }
 
 func resourceDatadogMetricMetadataUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -136,14 +152,15 @@ func resourceDatadogMetricMetadataUpdate(d *schema.ResourceData, meta interface{
 		m.SetStatsdInterval(int64(attr.(int)))
 	}
 
-	if _, _, err := datadogClientV1.MetricsApi.UpdateMetricMetadata(authV1, id).Body(*m).Execute(); err != nil {
-		return translateClientError(err, "error updating metric metadata")
+	updatedMetadata, _, err := datadogClientV1.MetricsApi.UpdateMetricMetadata(authV1, id).Body(*m).Execute()
+	if err != nil {
+		return utils.TranslateClientError(err, "error updating metric metadata")
 	}
 
-	return resourceDatadogMetricMetadataRead(d, meta)
+	return updateMetricMetadataState(d, &updatedMetadata)
 }
 
-func resourceDatadogMetricMetadataDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogMetricMetadataDelete(_ *schema.ResourceData, _ interface{}) error {
 	return nil
 }
 

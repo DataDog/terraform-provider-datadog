@@ -3,6 +3,9 @@ package datadog
 import (
 	"regexp"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
@@ -69,7 +72,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 							Description:  "Defines the source to use to extract the value. Allowed enum values: `http_body`, `http_header`.",
 							Type:         schema.TypeString,
 							Required:     true,
-							ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsGlobalVariableParseTestOptionsTypeFromValue),
+							ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParseTestOptionsTypeFromValue),
 						},
 						"parser": {
 							Type:     schema.TypeList,
@@ -81,7 +84,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 										Description:  "Type of parser to extract the value. Allowed enum values: `raw`, `json_path`, `regex`",
 										Type:         schema.TypeString,
 										Required:     true,
-										ValidateFunc: validateEnumValue(datadogV1.NewSyntheticsGlobalVariableParserTypeFromValue),
+										ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParserTypeFromValue),
 									},
 									"value": {
 										Description: "Value for the parser to use, required for type `json_path` or `regex`.",
@@ -107,7 +110,7 @@ func resourceDatadogSyntheticsGlobalVariableCreate(d *schema.ResourceData, meta 
 	createdSyntheticsGlobalVariable, _, err := datadogClientV1.SyntheticsApi.CreateGlobalVariable(authV1).Body(*syntheticsGlobalVariable).Execute()
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
-		return translateClientError(err, "error creating synthetics global variable")
+		return utils.TranslateClientError(err, "error creating synthetics global variable")
 	}
 
 	// If the Create callback returns with or without an error without an ID set using SetId,
@@ -131,7 +134,7 @@ func resourceDatadogSyntheticsGlobalVariableRead(d *schema.ResourceData, meta in
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error getting synthetics global variable")
+		return utils.TranslateClientError(err, "error getting synthetics global variable")
 	}
 
 	return updateSyntheticsGlobalVariableLocalState(d, &syntheticsGlobalVariable)
@@ -145,7 +148,7 @@ func resourceDatadogSyntheticsGlobalVariableUpdate(d *schema.ResourceData, meta 
 	syntheticsGlobalVariable := buildSyntheticsGlobalVariableStruct(d)
 	if _, _, err := datadogClientV1.SyntheticsApi.EditGlobalVariable(authV1, d.Id()).Body(*syntheticsGlobalVariable).Execute(); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
-		translateClientError(err, "error updating synthetics global variable")
+		utils.TranslateClientError(err, "error updating synthetics global variable")
 	}
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
@@ -159,7 +162,7 @@ func resourceDatadogSyntheticsGlobalVariableDelete(d *schema.ResourceData, meta 
 
 	if _, err := datadogClientV1.SyntheticsApi.DeleteGlobalVariable(authV1, d.Id()).Execute(); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
-		return translateClientError(err, "error deleting synthetics global variable")
+		return utils.TranslateClientError(err, "error deleting synthetics global variable")
 	}
 
 	// The resource is assumed to be destroyed, and all state is removed.

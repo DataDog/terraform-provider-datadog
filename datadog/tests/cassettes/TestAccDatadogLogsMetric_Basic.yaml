@@ -1,0 +1,336 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"compute":{"aggregation_type":"distribution","path":"@duration"},"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}]},"id":"tf_TestAccDatadogLogsMetric_Basic_local_1613069817","type":"logs_metrics"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - CreateLogsMetric
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics
+    method: POST
+  response:
+    body: '{"data":{"id":"tf_TestAccDatadogLogsMetric_Basic_local_1613069817","attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"aggregation_type":"distribution","path":"@duration"}},"type":"logs_metrics"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Thu, 11 Feb 2021 18:56:58 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 18-Feb-2021 18:56:57 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - bgHykj7A9bfZx0Y5ZO3swhhp5tGUSNJHqFWR868+qg087CYrDOd5hQslC+noiEtH
+      X-Dd-Version:
+      - "35.3893030"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "300"
+      X-Ratelimit-Period:
+      - "300"
+      X-Ratelimit-Remaining:
+      - "299"
+      X-Ratelimit-Reset:
+      - "183"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetLogsMetric
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1613069817
+    method: GET
+  response:
+    body: '{"data":{"id":"tf_TestAccDatadogLogsMetric_Basic_local_1613069817","attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"aggregation_type":"distribution","path":"@duration"}},"type":"logs_metrics"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Thu, 11 Feb 2021 18:56:58 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 18-Feb-2021 18:56:58 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - gYZcaADwbKcv7Hm19HJx6WsLoKuOijDWAt2viPeCfWqUgyKY+9e1xZdmMJeXV3YV
+      X-Dd-Version:
+      - "35.3893030"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "5000"
+      X-Ratelimit-Period:
+      - "3600"
+      X-Ratelimit-Remaining:
+      - "4654"
+      X-Ratelimit-Reset:
+      - "182"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetLogsMetric
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1613069817
+    method: GET
+  response:
+    body: '{"data":{"id":"tf_TestAccDatadogLogsMetric_Basic_local_1613069817","attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"aggregation_type":"distribution","path":"@duration"}},"type":"logs_metrics"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Thu, 11 Feb 2021 18:56:58 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 18-Feb-2021 18:56:58 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - tpRCH6w417YjBovRJ8VmtuXmNONVYiRp2c8d2AxjPdGBn8PCtgG4vAztrx3qUZAN
+      X-Dd-Version:
+      - "35.3893030"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "5000"
+      X-Ratelimit-Period:
+      - "3600"
+      X-Ratelimit-Remaining:
+      - "4652"
+      X-Ratelimit-Reset:
+      - "182"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetLogsMetric
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1613069817
+    method: GET
+  response:
+    body: '{"data":{"id":"tf_TestAccDatadogLogsMetric_Basic_local_1613069817","attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"aggregation_type":"distribution","path":"@duration"}},"type":"logs_metrics"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Thu, 11 Feb 2021 18:56:58 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 18-Feb-2021 18:56:58 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 2328yjLSqI4XmR1pVqrPRR/SFcQsbafjEpPmZx7/3PfxUK1nJQQsX+wrMelyVyj+
+      X-Dd-Version:
+      - "35.3893030"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "5000"
+      X-Ratelimit-Period:
+      - "3600"
+      X-Ratelimit-Remaining:
+      - "4649"
+      X-Ratelimit-Reset:
+      - "182"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - DeleteLogsMetric
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1613069817
+    method: DELETE
+  response:
+    body: '{}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Length:
+      - "2"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Thu, 11 Feb 2021 18:56:59 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 18-Feb-2021 18:56:59 GMT;
+        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - dCmL/3rURV6BPeaqeP3Rxigq41m5CAb17XjrRE42uZ01zpr07HVhbL5/3TWMkvgu
+      X-Dd-Version:
+      - "35.3893030"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "5000"
+      X-Ratelimit-Period:
+      - "3600"
+      X-Ratelimit-Remaining:
+      - "4647"
+      X-Ratelimit-Reset:
+      - "181"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetLogsMetric
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
+        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1613069817
+    method: GET
+  response:
+    body: '{"errors":["not_found(Metric with name ''tf_TestAccDatadogLogsMetric_Basic_local_1613069817''
+      not found)"]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 11 Feb 2021 18:56:59 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.3893030"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "5000"
+      X-Ratelimit-Period:
+      - "3600"
+      X-Ratelimit-Remaining:
+      - "4646"
+      X-Ratelimit-Reset:
+      - "181"
+    status: 404 Not Found
+    code: 404
+    duration: ""

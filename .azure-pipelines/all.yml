@@ -9,6 +9,14 @@ pr:
         include:
             - master
 
+schedules:
+    - cron: "0 */12 * * *"
+      displayName: Scheduled CI run every 12 hours
+      always: true
+      branches:
+          include:
+              - master
+
 resources:
     containers:
         - container: datadog-agent
@@ -38,9 +46,10 @@ jobs:
       services:
           datadog-agent: datadog-agent
       steps:
-          - script: make testacc
-            displayName: Run integration tests
+          - script: make testall
+            displayName: Run all tests
             env:
+                RECORD: "none"
                 CI: "true"
                 DD_AGENT_HOST: datadog-agent
                 DD_PROFILER_API_KEY: $(ddAPIKey)
@@ -49,4 +58,4 @@ jobs:
                 DD_ENV: prod
                 DD_SERVICE: terraform-provider-datadog
                 DD_VERSION: $(Build.SourceVersion)
-                DD_TAGS: "team:integration-tools-and-libraries,build.requested_by:$(Build.RequestedForId),build.attempt:$(System.StageAttempt),pull_request.number:$(System.PullRequest.PullRequestNumber)"
+                DD_TAGS: "team:integration-tools-and-libraries"
