@@ -1,4 +1,4 @@
-package datadog
+package test
 
 import (
 	"fmt"
@@ -50,7 +50,7 @@ func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {
 
 func testAccCheckDatadogIntegrationSlackChannelConfig_Create() string {
 	return `
-        resource "datadog_integration_slack_channel" "slack_channel" {
+       resource "datadog_integration_slack_channel" "slack_channel" {
 			display {
 				message = true
 				notified = true
@@ -59,13 +59,13 @@ func testAccCheckDatadogIntegrationSlackChannelConfig_Create() string {
 			}
 			channel_name = "#general"
 			team_name    = "test_team"
-        }
-    `
+       }
+   `
 }
 
 func testAccCheckDatadogIntegrationSlackChannelConfig_Update() string {
 	return `
-        resource "datadog_integration_slack_channel" "slack_channel" {
+       resource "datadog_integration_slack_channel" "slack_channel" {
 			display {
 				message = false
 				notified = false
@@ -74,15 +74,15 @@ func testAccCheckDatadogIntegrationSlackChannelConfig_Update() string {
 			}
 			channel_name = "#general"
 			team_name    = "test_team"
-        }
-    `
+       }
+   `
 }
 
 func emptyLogsArchiveConfig() string {
 	return fmt.Sprintf(`
-        resource "datadog_logs_archive_order" "archives" {
+       resource "datadog_logs_archive_order" "archives" {
 		}
-    `)
+   `)
 }
 
 func testAccCheckDatadogIntegrationSlackChannelExists(accProvider *schema.Provider, resourceName string) resource.TestCheckFunc {
