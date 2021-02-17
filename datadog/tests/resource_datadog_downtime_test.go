@@ -3,9 +3,9 @@ package test
 import (
 	"context"
 	"fmt"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"regexp"
 	"strconv"
-	"strings"
 	"testing"
 	"time"
 
@@ -790,20 +790,27 @@ func datadogDowntimeDestroyHelper(authV1 context.Context, s *terraform.State, da
 		}
 
 		id, _ := strconv.Atoi(r.Primary.ID)
-		dt, _, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, int64(id)).Execute()
 
-		if err != nil {
-			if strings.Contains(err.Error(), "404 Not Found") {
-				continue
+		err := utils.Retry(2, 5, func() error {
+			for _, r := range s.RootModule().Resources {
+				if r.Primary.ID != "" {
+					if dt, httpResp, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, int64(id)).Execute(); err != nil {
+						if httpResp != nil && httpResp.StatusCode == 404 {
+							return nil
+						}
+						return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving Downtime %s", err)}
+					} else {
+						// Datadog only cancels downtime on DELETE so if its not Active, its deleted
+						if !dt.GetActive() {
+							return nil
+						}
+					}
+					return &utils.RetryableError{Prob: fmt.Sprintf("Downtime still exists or is active")}
+				}
 			}
-			return fmt.Errorf("received an error retrieving downtime %s", err)
-		}
-
-		// Datadog only cancels downtime on DELETE
-		if !dt.GetActive() {
-			continue
-		}
-		return fmt.Errorf("downtime still exists")
+			return nil
+		})
+		return err
 	}
 	return nil
 }
