@@ -100,7 +100,7 @@ func testAccCheckDatadogIntegrationSlackChannelConfig_Update(uniq string) string
 
 func emptyLogsArchiveConfig() string {
 	return fmt.Sprintf(`
-       resource "datadog_logs_archive_order" "archives" {
+		data "datadog_ip_ranges" "test" {
 		}
    `)
 }

@@ -94,3 +94,13 @@ func TenantAndClientFromID(id string) (string, string, error) {
 	}
 	return result[0], result[1], nil
 }
+
+// slack utils
+func TeamNameAndChannelNameFromID(id string) (string, string, error) {
+	result := strings.SplitN(id, ":", 2)
+	if len(result) != 2 {
+		return "", "", fmt.Errorf("error extracting team name and channel name: %s", id)
+	}
+	return result[0], result[1], nil
+}
+

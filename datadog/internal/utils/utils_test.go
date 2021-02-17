@@ -66,3 +66,33 @@ func TestAccountAndRoleFromID(t *testing.T) {
 		}
 	}
 }
+
+func TestTeamNameAndChannelNameFromID(t *testing.T) {
+	cases := map[string]struct {
+		id        string
+		teamName string
+		channelName  string
+		err       error
+	}{
+		"basic":        {"test-team:#channel", "test-team", "#channel", nil},
+		"no delimeter": {"test-team", "", "", fmt.Errorf("error extracting team name and channel name: test-team")},
+	}
+	for name, tc := range cases {
+		accountID, roleName, err := TeamNameAndChannelNameFromID(tc.id)
+
+		if err != nil && tc.err != nil && err.Error() != tc.err.Error() {
+			t.Errorf("%s: errors should be '%s', not `%s`", name, tc.err.Error(), err.Error())
+		} else if err != nil && tc.err == nil {
+			t.Errorf("%s: errors should be nil, not `%s`", name, err.Error())
+		} else if err == nil && tc.err != nil {
+			t.Errorf("%s: errors should be '%s', not nil", name, tc.err.Error())
+		}
+
+		if accountID != tc.teamName {
+			t.Errorf("%s: account ID '%s' didn't match `%s`", name, accountID, tc.teamName)
+		}
+		if roleName != tc.channelName {
+			t.Errorf("%s: role name '%s' didn't match `%s`", name, roleName, tc.channelName)
+		}
+	}
+}

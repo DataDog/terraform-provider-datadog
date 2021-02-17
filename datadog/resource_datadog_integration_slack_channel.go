@@ -2,8 +2,6 @@ package datadog
 
 import (
 	"fmt"
-	"strings"
-
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
@@ -113,7 +111,7 @@ func resourceDatadogIntegrationSlackChannelRead(d *schema.ResourceData, meta int
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
 
-	teamName, channelName, err := teamNameAndChannelNameFromID(d.Id())
+	teamName, channelName, err := utils.TeamNameAndChannelNameFromID(d.Id())
 	if err != nil {
 		return err
 	}
@@ -136,7 +134,7 @@ func resourceDatadogIntegrationSlackChannelUpdate(d *schema.ResourceData, meta i
 	auth := providerConf.AuthV1
 
 	ddObject, err := buildDatadogSlackChannel(d)
-	teamName, channelName, err := teamNameAndChannelNameFromID(d.Id())
+	teamName, channelName, err := utils.TeamNameAndChannelNameFromID(d.Id())
 	if err != nil {
 		return err
 	}
@@ -157,7 +155,7 @@ func resourceDatadogIntegrationSlackChannelDelete(d *schema.ResourceData, meta i
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
 
-	teamName, channelName, err := teamNameAndChannelNameFromID(d.Id())
+	teamName, channelName, err := utils.TeamNameAndChannelNameFromID(d.Id())
 
 	_, err = datadogClient.SlackIntegrationApi.RemoveSlackIntegrationChannel(auth, teamName, channelName).Execute()
 
@@ -189,12 +187,4 @@ func buildTerraformSlackChannelDisplay(ddChannelDisplay datadogV1.SlackIntegrati
 	tfChannelDisplay["tags"] = ddChannelDisplay.GetTags()
 
 	return tfChannelDisplay
-}
-
-func teamNameAndChannelNameFromID(id string) (string, string, error) {
-	result := strings.SplitN(id, ":", 2)
-	if len(result) != 2 {
-		return "", "", fmt.Errorf("error extracting team name and channel name: %s", id)
-	}
-	return result[0], result[1], nil
 }
