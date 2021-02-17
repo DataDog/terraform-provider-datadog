@@ -1,9 +1,7 @@
-package test
+package utils
 
 import (
 	"testing"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -13,7 +11,7 @@ func TestResourceDataKey(t *testing.T) {
 	// so we won't test any actual data access with Get/GetOk/GetWith/GetWithOk
 	d := schema.ResourceData{}
 
-	k := datadog.NewResourceDataKey(&d, "")
+	k := NewResourceDataKey(&d, "")
 	assertKeyS(t, k, "")
 
 	k.Add("foo")
@@ -32,14 +30,14 @@ func TestResourceDataKey(t *testing.T) {
 	assertKeyS(t, k, "")
 }
 
-func assertKeyS(t *testing.T, k *datadog.ResourceDataKey, s string) {
+func assertKeyS(t *testing.T, k *ResourceDataKey, s string) {
 	result := k.S()
 	if result != s {
 		t.Errorf("Expected k.S() to be \"%s\", got \"%s\"", s, result)
 	}
 }
 
-func assertKeyWith(t *testing.T, k *datadog.ResourceDataKey, additionalParts interface{}, s string) {
+func assertKeyWith(t *testing.T, k *ResourceDataKey, additionalParts interface{}, s string) {
 	result := k.With(additionalParts)
 	if result != s {
 		t.Errorf("Expected k.With(\"%s\") to be \"%s\", got \"%s\"", additionalParts, s, result)

@@ -913,7 +913,7 @@ func buildTerraformWidgets(datadogWidgets *[]datadogV1.Widget, d *schema.Resourc
 
 	terraformWidgets := make([]map[string]interface{}, len(*datadogWidgets))
 	for i, datadogWidget := range *datadogWidgets {
-		terraformWidget, err := buildTerraformWidget(datadogWidget, NewResourceDataKey(d, fmt.Sprintf("widget.%d", i)))
+		terraformWidget, err := buildTerraformWidget(datadogWidget, utils.NewResourceDataKey(d, fmt.Sprintf("widget.%d", i)))
 		if err != nil {
 			return nil, err
 		}
@@ -923,7 +923,7 @@ func buildTerraformWidgets(datadogWidgets *[]datadogV1.Widget, d *schema.Resourc
 }
 
 // Helper to build a Terraform widget from a Datadog widget
-func buildTerraformWidget(datadogWidget datadogV1.Widget, k *ResourceDataKey) (map[string]interface{}, error) {
+func buildTerraformWidget(datadogWidget datadogV1.Widget, k *utils.ResourceDataKey) (map[string]interface{}, error) {
 	terraformWidget := map[string]interface{}{}
 
 	// Build layout
@@ -1168,7 +1168,7 @@ func buildDatadogGroupDefinition(terraformGroupDefinition map[string]interface{}
 	return datadogGroupDefinition, nil
 }
 
-func buildTerraformGroupDefinition(datadogGroupDefinition datadogV1.GroupWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformGroupDefinition(datadogGroupDefinition datadogV1.GroupWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformGroupDefinition := map[string]interface{}{}
 
 	var groupWidgets []map[string]interface{}
@@ -1266,7 +1266,7 @@ func buildDatadogAlertGraphDefinition(terraformDefinition map[string]interface{}
 	return datadogDefinition
 }
 
-func buildTerraformAlertGraphDefinition(datadogDefinition datadogV1.AlertGraphWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformAlertGraphDefinition(datadogDefinition datadogV1.AlertGraphWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["alert_id"] = datadogDefinition.AlertId
@@ -1459,7 +1459,7 @@ func buildDatadogChangeDefinition(terraformDefinition map[string]interface{}) *d
 	}
 	return datadogDefinition
 }
-func buildTerraformChangeDefinition(datadogDefinition datadogV1.ChangeWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformChangeDefinition(datadogDefinition datadogV1.ChangeWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["request"] = buildTerraformChangeRequests(&datadogDefinition.Requests, k.Add("request"))
@@ -1582,7 +1582,7 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 	}
 	return &datadogRequests
 }
-func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidgetRequest, k *ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogChangeRequests))
 	for i, datadogRequest := range *datadogChangeRequests {
 		terraformRequest := map[string]interface{}{}
@@ -1707,7 +1707,7 @@ func buildDatadogDistributionDefinition(terraformDefinition map[string]interface
 	}
 	return datadogDefinition
 }
-func buildTerraformDistributionDefinition(datadogDefinition datadogV1.DistributionWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformDistributionDefinition(datadogDefinition datadogV1.DistributionWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["request"] = buildTerraformDistributionRequests(&datadogDefinition.Requests, k.Add("request"))
@@ -1794,7 +1794,7 @@ func buildDatadogDistributionRequests(terraformRequests *[]interface{}) *[]datad
 	}
 	return &datadogRequests
 }
-func buildTerraformDistributionRequests(datadogDistributionRequests *[]datadogV1.DistributionWidgetRequest, k *ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformDistributionRequests(datadogDistributionRequests *[]datadogV1.DistributionWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogDistributionRequests))
 	for i, datadogRequest := range *datadogDistributionRequests {
 		terraformRequest := map[string]interface{}{}
@@ -1902,7 +1902,7 @@ func buildDatadogEventStreamDefinition(terraformDefinition map[string]interface{
 	return datadogDefinition
 }
 
-func buildTerraformEventStreamDefinition(datadogDefinition datadogV1.EventStreamWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformEventStreamDefinition(datadogDefinition datadogV1.EventStreamWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["query"] = datadogDefinition.Query
@@ -1997,7 +1997,7 @@ func buildDatadogEventTimelineDefinition(terraformDefinition map[string]interfac
 	return datadogDefinition
 }
 
-func buildTerraformEventTimelineDefinition(datadogDefinition datadogV1.EventTimelineWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformEventTimelineDefinition(datadogDefinition datadogV1.EventTimelineWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["query"] = datadogDefinition.GetQuery()
@@ -2122,7 +2122,7 @@ func buildDatadogCheckStatusDefinition(terraformDefinition map[string]interface{
 	return datadogDefinition
 }
 
-func buildTerraformCheckStatusDefinition(datadogDefinition datadogV1.CheckStatusWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformCheckStatusDefinition(datadogDefinition datadogV1.CheckStatusWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["check"] = datadogDefinition.GetCheck()
@@ -2340,7 +2340,7 @@ func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *
 	}
 	return datadogDefinition
 }
-func buildTerraformHeatmapDefinition(datadogDefinition datadogV1.HeatMapWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformHeatmapDefinition(datadogDefinition datadogV1.HeatMapWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["request"] = buildTerraformHeatmapRequests(&datadogDefinition.Requests, k.Add("request"))
@@ -2436,7 +2436,7 @@ func buildDatadogHeatmapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 	}
 	return &datadogRequests
 }
-func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWidgetRequest, k *ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogHeatmapRequests))
 	for i, datadogRequest := range *datadogHeatmapRequests {
 		terraformRequest := map[string]interface{}{}
@@ -2649,7 +2649,7 @@ func buildDatadogHostmapDefinition(terraformDefinition map[string]interface{}) *
 	}
 	return datadogDefinition
 }
-func buildTerraformHostmapDefinition(datadogDefinition datadogV1.HostMapWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformHostmapDefinition(datadogDefinition datadogV1.HostMapWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformRequests := map[string]interface{}{}
@@ -2742,7 +2742,7 @@ func buildDatadogHostmapRequest(terraformRequest map[string]interface{}) *datado
 
 	return datadogHostmapRequest
 }
-func buildTerraformHostmapRequest(datadogHostmapRequest *datadogV1.HostMapRequest, k *ResourceDataKey) *map[string]interface{} {
+func buildTerraformHostmapRequest(datadogHostmapRequest *datadogV1.HostMapRequest, k *utils.ResourceDataKey) *map[string]interface{} {
 	terraformRequest := map[string]interface{}{}
 	if v, ok := datadogHostmapRequest.GetQOk(); ok {
 		terraformRequest["q"] = v
@@ -3007,7 +3007,7 @@ func buildDatadogWidgetFieldSort(terraformWidgetFieldSort map[string]interface{}
 	return datadogWidgetFieldSort
 }
 
-func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Optional params
 
@@ -3435,7 +3435,7 @@ func buildDatadogQueryValueDefinition(terraformDefinition map[string]interface{}
 	}
 	return datadogDefinition
 }
-func buildTerraformQueryValueDefinition(datadogDefinition datadogV1.QueryValueWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformQueryValueDefinition(datadogDefinition datadogV1.QueryValueWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["request"] = buildTerraformQueryValueRequests(&datadogDefinition.Requests, k.Add("request"))
@@ -3538,7 +3538,7 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 	}
 	return &datadogRequests
 }
-func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.QueryValueWidgetRequest, k *ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.QueryValueWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogQueryValueRequests))
 	for i, datadogRequest := range *datadogQueryValueRequests {
 		terraformRequest := map[string]interface{}{}
@@ -3655,7 +3655,7 @@ func buildDatadogQueryTableDefinition(terraformDefinition map[string]interface{}
 	}
 	return datadogDefinition
 }
-func buildTerraformQueryTableDefinition(datadogDefinition datadogV1.TableWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformQueryTableDefinition(datadogDefinition datadogV1.TableWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["request"] = buildTerraformQueryTableRequests(&datadogDefinition.Requests, k.Add("request"))
@@ -3794,7 +3794,7 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 	}
 	return &datadogRequests
 }
-func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.TableWidgetRequest, k *ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.TableWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogQueryTableRequests))
 	for i, datadogRequest := range *datadogQueryTableRequests {
 		terraformRequest := map[string]interface{}{}
@@ -3994,7 +3994,7 @@ func buildDatadogScatterplotDefinition(terraformDefinition map[string]interface{
 	}
 	return datadogDefinition
 }
-func buildTerraformScatterplotDefinition(datadogDefinition datadogV1.ScatterPlotWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformScatterplotDefinition(datadogDefinition datadogV1.ScatterPlotWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformRequests := map[string]interface{}{}
@@ -4096,7 +4096,7 @@ func buildDatadogScatterplotRequest(terraformRequest map[string]interface{}) *da
 
 	return datadogScatterplotRequest
 }
-func buildTerraformScatterplotRequest(datadogScatterplotRequest *datadogV1.ScatterPlotRequest, k *ResourceDataKey) *map[string]interface{} {
+func buildTerraformScatterplotRequest(datadogScatterplotRequest *datadogV1.ScatterPlotRequest, k *utils.ResourceDataKey) *map[string]interface{} {
 	terraformRequest := map[string]interface{}{}
 	if v, ok := datadogScatterplotRequest.GetQOk(); ok {
 		terraformRequest["q"] = *v
@@ -4482,7 +4482,7 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	return datadogDefinition
 }
 
-func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["request"] = buildTerraformTimeseriesRequests(&datadogDefinition.Requests, k.Add("request"))
@@ -4661,7 +4661,7 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 	}
 	return &datadogRequests
 }
-func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.TimeseriesWidgetRequest, k *ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.TimeseriesWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogTimeseriesRequests))
 	for i, datadogRequest := range *datadogTimeseriesRequests {
 		terraformRequest := map[string]interface{}{}
@@ -4792,7 +4792,7 @@ func buildDatadogToplistDefinition(terraformDefinition map[string]interface{}) *
 	}
 	return datadogDefinition
 }
-func buildTerraformToplistDefinition(datadogDefinition datadogV1.ToplistWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformToplistDefinition(datadogDefinition datadogV1.ToplistWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["request"] = buildTerraformToplistRequests(&datadogDefinition.Requests, k.Add("request"))
@@ -4886,7 +4886,7 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 	}
 	return &datadogRequests
 }
-func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWidgetRequest, k *ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogToplistRequests))
 	for i, datadogRequest := range *datadogToplistRequests {
 		terraformRequest := map[string]interface{}{}
@@ -5060,7 +5060,7 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 	return datadogDefinition
 }
 
-func buildTerraformTraceServiceDefinition(datadogDefinition datadogV1.ServiceSummaryWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformTraceServiceDefinition(datadogDefinition datadogV1.ServiceSummaryWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["env"] = datadogDefinition.GetEnv()
@@ -5685,7 +5685,7 @@ func buildTerraformApmOrLogQueryCompute(compute *datadogV1.LogsQueryCompute) map
 	return terraformCompute
 }
 
-func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformQuery := map[string]interface{}{}
 	// Index
 	terraformQuery["index"] = datadogQuery.GetIndex()

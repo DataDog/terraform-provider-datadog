@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"reflect"
 
 	"github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -35,12 +36,30 @@ func resourceDatadogRole() *schema.Resource {
 				Type:        schema.TypeSet,
 				Optional:    true,
 				Description: "Set of objects containing the permission ID and the name of the permissions granted to this role.",
-				Elem:        utils.GetRolePermissionSchema(),
+				Elem:        GetRolePermissionSchema(),
 			},
 			"user_count": {
 				Type:        schema.TypeInt,
 				Computed:    true,
 				Description: "Number of users that have this role.",
+			},
+		},
+	}
+}
+
+func GetRolePermissionSchema() *schema.Resource {
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"id": {
+				Type:         schema.TypeString,
+				Required:     true,
+				Description:  "ID of the permission to assign.",
+				ValidateFunc: validation.StringIsNotEmpty,
+			},
+			"name": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "Name of the permission.",
 			},
 		},
 	}

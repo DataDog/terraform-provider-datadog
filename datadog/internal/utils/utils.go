@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"net/url"
 	"strings"
 
@@ -70,6 +69,14 @@ func AccountAndNamespaceFromID(id string) (string, string, error) {
 	return result[0], result[1], nil
 }
 
+func AccountAndRoleFromID(id string) (string, string, error) {
+	result := strings.SplitN(id, ":", 2)
+	if len(result) != 2 {
+		return "", "", fmt.Errorf("error extracting account ID and Role name from an Amazon Web Services integration id: %s", id)
+	}
+	return result[0], result[1], nil
+}
+
 // aws lambda arn utils
 func AccountAndLambdaArnFromID(id string) (string, string, error) {
 	result := strings.Split(id, " ")
@@ -86,23 +93,4 @@ func TenantAndClientFromID(id string) (string, string, error) {
 		return "", "", fmt.Errorf("error extracting tenant name and client ID from an Azure integration id: %s", id)
 	}
 	return result[0], result[1], nil
-}
-
-// role utils
-func GetRolePermissionSchema() *schema.Resource {
-	return &schema.Resource{
-		Schema: map[string]*schema.Schema{
-			"id": {
-				Type:         schema.TypeString,
-				Required:     true,
-				Description:  "ID of the permission to assign.",
-				ValidateFunc: validation.StringIsNotEmpty,
-			},
-			"name": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "Name of the permission.",
-			},
-		},
-	}
 }

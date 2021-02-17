@@ -3,7 +3,6 @@ package datadog
 import (
 	"fmt"
 	"os"
-	"strings"
 	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -13,14 +12,6 @@ import (
 )
 
 var integrationAwsMutex = sync.Mutex{}
-
-func AccountAndRoleFromID(id string) (string, string, error) {
-	result := strings.SplitN(id, ":", 2)
-	if len(result) != 2 {
-		return "", "", fmt.Errorf("error extracting account ID and Role name from an Amazon Web Services integration id: %s", id)
-	}
-	return result[0], result[1], nil
-}
 
 func resourceDatadogIntegrationAws() *schema.Resource {
 	return &schema.Resource{
@@ -147,7 +138,7 @@ func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{})
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	accountID, roleName, err := AccountAndRoleFromID(d.Id())
+	accountID, roleName, err := utils.AccountAndRoleFromID(d.Id())
 	if err != nil {
 		return err
 	}
@@ -180,7 +171,7 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
-	existingAccountID, existingRoleName, err := AccountAndRoleFromID(d.Id())
+	existingAccountID, existingRoleName, err := utils.AccountAndRoleFromID(d.Id())
 	if err != nil {
 		return err
 	}
@@ -204,7 +195,7 @@ func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
-	accountID, roleName, err := AccountAndRoleFromID(d.Id())
+	accountID, roleName, err := utils.AccountAndRoleFromID(d.Id())
 	if err != nil {
 		return err
 	}

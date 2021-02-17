@@ -95,7 +95,7 @@ func testCheckRolePermission(rolename string, permissionsSource string, permissi
 		perm := map[string]interface{}{
 			"id": permissionID,
 		}
-		permissionIDHash := schema.HashResource(utils.GetRolePermissionSchema())(perm)
+		permissionIDHash := schema.HashResource(datadog.GetRolePermissionSchema())(perm)
 
 		return resource.TestCheckResourceAttr(rolename, fmt.Sprintf("permission.%d.id", permissionIDHash), permissionID)(s)
 	}

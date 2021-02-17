@@ -864,7 +864,7 @@ func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType, assertio
 
 func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTestDetails {
 	request := datadogV1.NewSyntheticsTestRequest()
-	k := NewResourceDataKey(d, "")
+	k := utils.NewResourceDataKey(d, "")
 	parts := ""
 	if v, ok := k.GetOkWith("request"); ok && v != nil && len(v.(map[string]interface{})) != 0 {
 		parts = "request"
