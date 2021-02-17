@@ -16,11 +16,11 @@ var integrationPdMutex = sync.Mutex{}
 
 func resourceDatadogIntegrationPagerduty() *schema.Resource {
 	return &schema.Resource{
-		Description:        "Provides a Datadog - PagerDuty resource. This can be used to create and manage Datadog - PagerDuty integration. See also [PagerDuty Integration Guide](https://www.pagerduty.com/docs/guides/datadog-integration-guide/).",
-		Create:             resourceDatadogIntegrationPagerdutyCreate,
-		Read:               resourceDatadogIntegrationPagerdutyRead,
-		Update:             resourceDatadogIntegrationPagerdutyUpdate,
-		Delete:             resourceDatadogIntegrationPagerdutyDelete,
+		Description: "Provides a Datadog - PagerDuty resource. This can be used to create and manage Datadog - PagerDuty integration. See also [PagerDuty Integration Guide](https://www.pagerduty.com/docs/guides/datadog-integration-guide/).",
+		Create:      resourceDatadogIntegrationPagerdutyCreate,
+		Read:        resourceDatadogIntegrationPagerdutyRead,
+		Update:      resourceDatadogIntegrationPagerdutyUpdate,
+		Delete:      resourceDatadogIntegrationPagerdutyDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
