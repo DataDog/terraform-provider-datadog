@@ -120,6 +120,8 @@ func Provider() terraform.ResourceProvider {
 			"datadog_permissions":               dataSourceDatadogPermissions(),
 			"datadog_role":                      dataSourceDatadogRole(),
 			"datadog_security_monitoring_rules": dataSourceDatadogSecurityMonitoringRules(),
+			"datadog_service_level_objective":   dataSourceDatadogServiceLevelObjective(),
+			"datadog_service_level_objectives":  dataSourceDatadogServiceLevelObjectives(),
 			"datadog_synthetics_locations":      dataSourceDatadogSyntheticsLocations(),
 		},
 
