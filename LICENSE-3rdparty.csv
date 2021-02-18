@@ -18,7 +18,7 @@ go.sum,github.com/aws/aws-sdk-go,Apache-2.0,2014-2015 Stripe Inc. and 2015 Amazo
 go.sum,github.com/bgentry/go-netrc,MIT,2010 Fazlul Shahriar and 2014 Blake Gentry
 go.sum,github.com/bgentry/speakeasy,MIT,2017 Blake Gentry
 go.sum,github.com/cenkalti/backoff,MIT,2014 Cenk Altı
-go.sum,github.com/census-instrumentation/opencensus-proto,Apache-2.0,2019, OpenCensus Authors
+go.sum,github.com/census-instrumentation/opencensus-proto,Apache-2.0,"2019, OpenCensus Authors"
 go.sum,github.com/cheggaaa/pb,BSD-3-Clause,2012-2015 Sergey Cherepanov
 go.sum,github.com/client9/misspell,MIT,2015-2017 Nick Galbreath
 go.sum,github.com/creack/pty,MIT,2011 Keith Rarick
@@ -108,7 +108,7 @@ go.sum,github.com/vmihailenco/msgpack,BSD-2-Clause,2013 The github.com/vmihailen
 go.sum,github.com/zclconf/go-cty,MIT,2017-2018 Martin Atkins
 go.sum,github.com/zclconf/go-cty-yaml,Apache-2.0,2011-2016 Canonical Ltd and 2019 Martin Atkins
 go.sum,github.com/zorkian/go-datadog-api,BSD-3-Clause,2013 by authors and contributors
-go.sum,go.opencensus.io,Apache-2.0,2018, OpenCensus Authors
+go.sum,go.opencensus.io,Apache-2.0,"2018, OpenCensus Authors"
 go.sum,golang.org/x/crypto,BSD-3-Clause,2009 The Go Authors
 go.sum,golang.org/x/exp,BSD-3-Clause,2009 The Go Authors
 go.sum,golang.org/x/image,BSD-3-Clause,2009 The Go Authors
