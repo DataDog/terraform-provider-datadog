@@ -25,7 +25,6 @@ func TestAccDatadogIpRangesDatasource_existing(t *testing.T) {
 					resource.TestCheckResourceAttrSet("data.datadog_ip_ranges.test", "logs_ipv4.#"),
 					resource.TestCheckResourceAttrSet("data.datadog_ip_ranges.test", "process_ipv4.#"),
 					resource.TestCheckResourceAttrSet("data.datadog_ip_ranges.test", "synthetics_ipv4.#"),
-					resource.TestCheckResourceAttrSet("data.datadog_ip_ranges.test", "synthetics_ipv4_by_location.#"),
 					resource.TestCheckResourceAttrSet("data.datadog_ip_ranges.test", "webhooks_ipv4.#"),
 					//ipv6
 					resource.TestCheckResourceAttrSet("data.datadog_ip_ranges.test", "agents_ipv6.#"),
@@ -34,7 +33,6 @@ func TestAccDatadogIpRangesDatasource_existing(t *testing.T) {
 					resource.TestCheckResourceAttrSet("data.datadog_ip_ranges.test", "logs_ipv6.#"),
 					resource.TestCheckResourceAttrSet("data.datadog_ip_ranges.test", "process_ipv6.#"),
 					resource.TestCheckResourceAttrSet("data.datadog_ip_ranges.test", "synthetics_ipv6.#"),
-					resource.TestCheckResourceAttrSet("data.datadog_ip_ranges.test", "synthetics_ipv6_by_location.#"),
 					resource.TestCheckResourceAttrSet("data.datadog_ip_ranges.test", "webhooks_ipv6.#"),
 				),
 			},
