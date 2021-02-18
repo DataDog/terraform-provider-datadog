@@ -172,7 +172,7 @@ go.sum,github.com/yuin/goldmark,MIT,2019 Yusuke Inuzuka
 go.sum,golang.org/x/mod,BSD-3-Clause,2009 The Go Authors.
 go.sum,google.golang.org/protobuf,BSD-3-Clause,2018 The Go Authors.
 go.sum,gopkg.in/errgo.v2,BSD-3-Clause,"Copyright © 2013, Roger Peppe"
-go.sum,gopkg.in/warnings.v0,BSD 2-Clause "Simplified" License,2016 Péter Surányi.
+go.sum,gopkg.in/warnings.v0,BSD 2-Clause,2016 Péter Surányi.
 go.sum,rsc.io/quote/v3,BSD-3-Clause,2009 The Go Authors.
 go.sum,rsc.io/sampler,BSD-3-Clause,2009 The Go Authors.
 go.sum,github.com/Masterminds/goutils,Apache-2.0,Copyright 2014 Alexander Okoli
