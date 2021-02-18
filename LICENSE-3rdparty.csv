@@ -175,3 +175,15 @@ go.sum,gopkg.in/errgo.v2,BSD-3-Clause,"Copyright © 2013, Roger Peppe"
 go.sum,gopkg.in/warnings.v0,BSD 2-Clause "Simplified" License,2016 Péter Surányi.
 go.sum,rsc.io/quote/v3,BSD-3-Clause,2009 The Go Authors.
 go.sum,rsc.io/sampler,BSD-3-Clause,2009 The Go Authors.
+go.sum,github.com/Masterminds/goutils,Apache-2.0,Copyright 2014 Alexander Okoli
+go.sum,github.com/Masterminds/semver,MIT,"2014-2019, Matt Butcher and Matt Farina"
+go.sum,github.com/Masterminds/sprig,MIT,2013-2020 Masterminds
+go.sum,github.com/andybalholm/crlf,BSD-2-Clause,2015 Andy Balholm.
+go.sum,github.com/apparentlymart/go-textseg/v12,<LICENSE>,<COPYRIGHT>
+go.sum,github.com/hashicorp/terraform-plugin-docs,,MPL-2.0,
+go.sum,github.com/huandu/xstrings,MIT,2015 Huan Du.
+go.sum,github.com/russross/blackfriday,BSD-2-Clause,2011 Russ Ross
+go.sum,github.com/vmihailenco/msgpack/v4,BSD-2-Clause,2013 The github.com/vmihailenco/msgpack Authors.
+go.sum,github.com/vmihailenco/tagparser,BSD-2-Clause,2019 The github.com/vmihailenco/tagparser Authors.
+go.sum,github.com/zclconf/go-cty-debug,MIT,2019 Martin Atkins
+go.sum,gopkg.in/yaml.v3,<LICENSE>,<COPYRIGHT>
