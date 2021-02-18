@@ -4,9 +4,9 @@ go.sum,cloud.google.com/go/bigquery,Apache-2.0,2014 Google LLC
 go.sum,cloud.google.com/go/datastore,Apache-2.0,2014 Google LLC
 go.sum,github.com/BurntSushi/toml,MIT,2013 TOML authors
 go.sum,github.com/BurntSushi/xgb,BSD-3-Clause,2009 The XGB Authors
-go.sum,github.com/DataDog/datadog-api-client-go,Apache-2.0,2019-Present Datadog, Inc.
-go.sum,github.com/DataDog/datadog-go,MIT,2015 Datadog, Inc
-go.sum,github.com/DataDog/dd-trace-go,Apache-2.0 OR BSD-3-Clause,2016-Present Datadog, Inc.
+go.sum,github.com/DataDog/datadog-api-client-go,Apache-2.0,"2019-Present Datadog, Inc."
+go.sum,github.com/DataDog/datadog-go,MIT,"2015 Datadog, Inc"
+go.sum,github.com/DataDog/dd-trace-go,Apache-2.0 OR BSD-3-Clause,"2016-Present Datadog, Inc."
 go.sum,github.com/agext/levenshtein,Apache-2.0,2016 ALRUX Inc.
 go.sum,github.com/agl/ed25519,BSD-3-Clause,2012 The Go Authors
 go.sum,github.com/apparentlymart/go-cidr,MIT,2015 Martin Atkins
@@ -126,7 +126,7 @@ go.sum,google.golang.org/api,BSD-3-Clause,2011 Google Inc
 go.sum,google.golang.org/appengine,Apache-2.0,Google Inc.
 go.sum,google.golang.org/genproto,Apache-2.0,2018 Google Inc.
 go.sum,google.golang.org/grpc,Apache-2.0,2016 gRPC authors.
-go.sum,gopkg.in/DataDog/dd-trace-go.v1,Apache-2.0,2016-Present Datadog, Inc.
+go.sum,gopkg.in/DataDog/dd-trace-go.v1,Apache-2.0,"2016-Present Datadog, Inc."
 go.sum,gopkg.in/check.v1,BSD-2-Clause,2010-2013 Gustavo Niemeyer <gustavo@niemeyer.net>
 go.sum,gopkg.in/cheggaaa/pb.v1,BSD-3-Clause,2012-2015 Sergey Cherepanov
 go.sum,gopkg.in/h2non/gock.v1,MIT,2016-2019 Tomas Aparicio
