@@ -550,6 +550,82 @@ resource "datadog_dashboard" "free_dashboard" {
     }
   }
 
+  widget {
+    timeseries_definition {
+      request {
+        formula {
+          formula_expression = "my_query_1 + my_query_2"
+          alias              = "my ff query"
+        }
+        formula {
+          formula_expression = "my_query_1 * my_query_2"
+          limit {
+            count = 5
+            order = "desc"
+          }
+          alias = "my second ff query"
+        }
+        query {
+          metric_query {
+            data_source = "metrics"
+            query       = "avg:system.cpu.user{app:general} by {env}"
+            name        = "my_query_1"
+            aggregator  = "sum"
+          }
+        }
+        query {
+          metric_query {
+            query      = "avg:system.cpu.user{app:general} by {env}"
+            name       = "my_query_2"
+            aggregator = "sum"
+          }
+        }
+      }
+    }
+  }
+  widget {
+    timeseries_definition {
+      request {
+        query {
+          event_query {
+            data_source = "logs"
+            indexes     = ["days-3"]
+            compute {
+              aggregation = "count"
+            }
+            group_by {
+              facet = "host"
+              sort {
+                metric      = "@lambda.max_memory_used"
+                aggregation = "avg"
+              }
+              limit = 10
+            }
+          }
+        }
+      }
+    }
+  }
+  widget {
+    timeseries_definition {
+      request {
+        query {
+          process_query {
+            data_source       = "process"
+            text_filter       = "abc"
+            metric            = "process.stat.cpu.total_pct"
+            limit             = 10
+            tag_filters       = ["some_filter"]
+            name              = "my_process_query"
+            sort              = "asc"
+            is_normalized_cpu = true
+            aggregator        = "sum"
+          }
+        }
+      }
+    }
+  }
+
   template_variable {
     name    = "var_1"
     prefix  = "host"
