@@ -30,9 +30,8 @@ resource "datadog_integration_aws_lambda_arn" "main_collector" {
 }
 
 func TestAccDatadogIntegrationAWSLambdaArn(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	accountID := uniqueAWSAccountID(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{

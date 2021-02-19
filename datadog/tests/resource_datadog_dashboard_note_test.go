@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 	"testing"
@@ -68,9 +69,8 @@ func TestAccDatadogDashboardNote_import(t *testing.T) {
 }
 
 func TestAccDatadogDashboardNoteContentError(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniq := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(ctx, t) },

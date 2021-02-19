@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
@@ -9,9 +10,8 @@ import (
 
 func TestDatadogMonitor_import(t *testing.T) {
 	resourceName := "datadog_monitor.foo"
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -33,9 +33,8 @@ func TestDatadogMonitor_import(t *testing.T) {
 
 func TestDatadogMonitor_import_no_recovery(t *testing.T) {
 	resourceName := "datadog_monitor.foo"
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -57,9 +56,8 @@ func TestDatadogMonitor_import_no_recovery(t *testing.T) {
 
 func TestDatadogMonitor_importNoDataTimeFrame(t *testing.T) {
 	resourceName := "datadog_monitor.foo"
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{

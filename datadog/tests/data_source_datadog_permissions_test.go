@@ -1,14 +1,14 @@
 package test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
 func TestAccDatadogPermissionsDatasource(t *testing.T) {
-	ctx, accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
 
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(ctx, t) },

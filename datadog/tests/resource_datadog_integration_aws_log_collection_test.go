@@ -36,9 +36,8 @@ resource "datadog_integration_aws_log_collection" "main" {
 }
 
 func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	accountID := uniqueAWSAccountID(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{

@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"strings"
@@ -1145,11 +1146,10 @@ var datadogFreeDashboardAsserts = []string{
 }
 
 func TestAccDatadogDashboard_update(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	dbName := uniqueEntityName(clock, t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	dbName := uniqueEntityName(ctx, t)
 	asserts := datadogOrderedDashboardAsserts
 	asserts = append(asserts, fmt.Sprintf("title = %s", dbName))
-	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 	checks := testCheckResourceAttrs("datadog_dashboard.ordered_dashboard", checkDashboardExists(accProvider), asserts)
 	for i := 0; i < 16; i++ {
@@ -1171,11 +1171,10 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 }
 
 func TestAccDatadogFreeDashboard(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	dbName := uniqueEntityName(clock, t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	dbName := uniqueEntityName(ctx, t)
 	asserts := datadogFreeDashboardAsserts
 	asserts = append(asserts, fmt.Sprintf("title = %s", dbName))
-	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 	checks := testCheckResourceAttrs("datadog_dashboard.free_dashboard", checkDashboardExists(accProvider), asserts)
 	for i := 0; i < 8; i++ {
@@ -1197,13 +1196,12 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 }
 
 func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	dbName := uniqueEntityName(clock, t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	dbName := uniqueEntityName(ctx, t)
 	freeAsserts := datadogSimpleFreeDashboardAsserts
 	freeAsserts = append(freeAsserts, fmt.Sprintf("title = %s", dbName))
 	orderedAsserts := datadogSimpleOrderedDashboardAsserts
 	orderedAsserts = append(orderedAsserts, fmt.Sprintf("title = %s", dbName))
-	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -1228,9 +1226,8 @@ func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
 }
 
 func TestAccDatadogDashboard_import(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	dbName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	dbName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -1296,14 +1293,13 @@ func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc 
 }
 
 func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string, assertions []string) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniq := uniqueEntityName(clock, t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	uniq := uniqueEntityName(ctx, t)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
 	for i := range assertions {
 		assertions[i] = replacer.Replace(assertions[i])
 	}
-	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -1322,11 +1318,10 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 }
 
 func testAccDatadogDashboardWidgetUtil_import(t *testing.T, config string, name string) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniq := uniqueEntityName(clock, t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	uniq := uniqueEntityName(ctx, t)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
-	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{

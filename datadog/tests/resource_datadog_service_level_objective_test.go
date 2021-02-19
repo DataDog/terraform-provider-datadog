@@ -106,10 +106,9 @@ resource "datadog_service_level_objective" "foo" {
 // tests
 
 func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	sloName := uniqueEntityName(clock, t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	sloName := uniqueEntityName(ctx, t)
 	sloNameUpdated := sloName + "-updated"
-	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -210,9 +209,8 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 }
 
 func TestAccDatadogServiceLevelObjective_InvalidMonitor(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	sloName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	sloName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{

@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -224,9 +225,8 @@ resource "datadog_timeboard" "acceptance_test" {
 }
 
 func TestAccDatadogTimeboard_update(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	tbName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	tbName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	step0 := resource.TestStep{

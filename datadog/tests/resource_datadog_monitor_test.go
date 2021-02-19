@@ -15,9 +15,8 @@ import (
 )
 
 func TestAccDatadogMonitor_Basic(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -76,9 +75,8 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -134,9 +132,8 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -178,10 +175,9 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_Updated(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	monitorNameUpdated := monitorName + "-updated"
-	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -319,10 +315,9 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	monitorNameUpdated := monitorName + "-updated"
-	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -453,9 +448,8 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -496,9 +490,8 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -540,9 +533,8 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_Log(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -579,9 +571,8 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_NoThresholdWindows(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -603,9 +594,8 @@ func TestAccDatadogMonitor_NoThresholdWindows(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -657,9 +647,8 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -709,9 +698,8 @@ func testAccCheckDatadogMonitorExists(accProvider *schema.Provider) resource.Tes
 }
 
 func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -744,9 +732,8 @@ func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_ZeroDelay(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -775,9 +762,8 @@ func TestAccDatadogMonitor_ZeroDelay(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_RestrictedRoles(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{

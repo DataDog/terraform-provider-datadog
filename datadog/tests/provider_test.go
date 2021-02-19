@@ -37,6 +37,8 @@ import (
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
+type clockContextKey string
+
 var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_dashboard_test":                         "dashboard",
 	"tests/data_source_datadog_dashboard_list_test":                    "dashboard-lists",
@@ -213,11 +215,15 @@ func testClock(t *testing.T) clockwork.FakeClock {
 	return clockwork.NewFakeClockAt(clockwork.NewRealClock().Now())
 }
 
+func clockFromContext(ctx context.Context) clockwork.FakeClock {
+	return ctx.Value(clockContextKey("clock")).(clockwork.FakeClock)
+}
+
 // uniqueEntityName will return a unique string that can be used as a title/description/summary/...
 // of an API entity. When used in Azure Pipelines and RECORD=true or RECORD=none, it will include
 // BuildId to enable mapping resources that weren't deleted to builds.
-func uniqueEntityName(clock clockwork.FakeClock, t *testing.T) string {
-	name := withUniqueSurrounding(clock, t.Name())
+func uniqueEntityName(ctx context.Context, t *testing.T) string {
+	name := withUniqueSurrounding(clockFromContext(ctx), t.Name())
 	return name
 }
 
@@ -250,8 +256,8 @@ func withUniqueSurrounding(clock clockwork.FakeClock, name string) string {
 // uniqueAWSAccountID takes uniqueEntityName result, hashes it to get a unique string
 // and then returns first 12 characters (numerical only), so that the value can be used
 // as AWS account ID and is still as unique as possible, it changes in CI, but is stable locally
-func uniqueAWSAccountID(clock clockwork.FakeClock, t *testing.T) string {
-	uniq := uniqueEntityName(clock, t)
+func uniqueAWSAccountID(ctx context.Context, t *testing.T) string {
+	uniq := uniqueEntityName(ctx, t)
 	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniq)))
 	result := ""
 	for _, r := range hash {
@@ -478,14 +484,16 @@ func testAccProvidersWithHTTPClient(ctx context.Context, t *testing.T, httpClien
 	}
 }
 
-func testAccProviders(t *testing.T, rec *recorder.Recorder) (context.Context, map[string]terraform.ResourceProvider, clockwork.FakeClock, func(t *testing.T)) {
-	ctx := context.Background()
+func testAccProviders(ctx context.Context, t *testing.T, rec *recorder.Recorder) (context.Context, map[string]terraform.ResourceProvider) {
+	ctx = context.WithValue(ctx, clockContextKey("clock"), testClock(t))
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", rec)
 	p := testAccProvidersWithHTTPClient(ctx, t, c)
-	return ctx, p, testClock(t), func(t *testing.T) {
+	t.Cleanup(func() {
 		rec.Stop()
-	}
+	})
+
+	return ctx, p
 }
 
 func testAccProvider(t *testing.T, accProviders map[string]terraform.ResourceProvider) *schema.Provider {

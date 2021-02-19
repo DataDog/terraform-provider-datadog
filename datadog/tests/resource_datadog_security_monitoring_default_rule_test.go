@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
@@ -11,8 +12,7 @@ import (
 const tfSecurityDefaultRuleName = "datadog_security_monitoring_default_rule.acceptance_test"
 
 func TestAccDatadogSecurityMonitoringDefaultRule_Basic(t *testing.T) {
-	ctx, accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
 
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(ctx, t) },

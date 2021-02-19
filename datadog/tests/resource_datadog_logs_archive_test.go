@@ -44,9 +44,8 @@ resource "datadog_logs_archive" "my_azure_archive" {
 }
 
 func TestAccDatadogLogsArchiveAzure_basicDeprecated(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	tenantName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	tenantName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -81,9 +80,8 @@ func TestAccDatadogLogsArchiveAzure_basicDeprecated(t *testing.T) {
 }
 
 func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	tenantName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	tenantName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -147,9 +145,8 @@ resource "datadog_logs_archive" "my_gcs_archive" {
 }
 
 func TestAccDatadogLogsArchiveGCS_basicDeprecated(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	client := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	client := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -182,9 +179,8 @@ func TestAccDatadogLogsArchiveGCS_basicDeprecated(t *testing.T) {
 }
 
 func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	client := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	client := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -244,9 +240,8 @@ resource "datadog_logs_archive" "my_s3_archive" {
 }
 
 func TestAccDatadogLogsArchiveS3_basicDeprecated(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	accountID := uniqueAWSAccountID(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -283,9 +278,8 @@ func TestAccDatadogLogsArchiveS3_basicDeprecated(t *testing.T) {
 }
 
 func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	accountID := uniqueAWSAccountID(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -344,9 +338,8 @@ resource "datadog_logs_archive" "my_s3_archive" {
 }
 
 func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	accountID := uniqueAWSAccountID(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(ctx, t) },

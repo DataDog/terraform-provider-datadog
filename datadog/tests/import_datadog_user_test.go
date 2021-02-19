@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testing"
@@ -10,9 +11,8 @@ import (
 
 func TestDatadogUser_import(t *testing.T) {
 	resourceName := "datadog_user.foo"
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	username := strings.ToLower(uniqueEntityName(clock, t)) + "@example.com"
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{

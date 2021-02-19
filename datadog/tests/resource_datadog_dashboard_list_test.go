@@ -131,9 +131,8 @@ resource "datadog_dashboard" "time" {
 
 func TestDatadogDashListImport(t *testing.T) {
 	resourceName := "datadog_dashboard_list.new_list"
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniqueName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	uniqueName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	// Getting the hash for a TypeSet element that has dynamic elements isn't possible
@@ -156,9 +155,8 @@ func TestDatadogDashListImport(t *testing.T) {
 }
 
 func TestDatadogDashListInDashboard(t *testing.T) {
-	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniqueName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	uniqueName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
