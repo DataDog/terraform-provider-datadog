@@ -26,11 +26,12 @@ resource "datadog_integration_azure" "an_azure_integration" {
 }
 
 func TestAccDatadogIntegrationAzure(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	tenantName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	test(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkIntegrationAzureDestroy(accProvider),

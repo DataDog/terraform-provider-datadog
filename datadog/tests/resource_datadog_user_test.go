@@ -16,11 +16,13 @@ import (
 )
 
 func TestAccDatadogUser_Updated(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 	accProvider := testAccProvider(t, accProviders)
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
@@ -57,11 +59,13 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 }
 
 func TestAccDatadogUser_Invitation(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 	accProvider := testAccProvider(t, accProviders)
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
@@ -85,11 +89,13 @@ func TestAccDatadogUser_Invitation(t *testing.T) {
 }
 
 func TestAccDatadogUser_NoInvitation(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 	accProvider := testAccProvider(t, accProviders)
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
@@ -113,11 +119,13 @@ func TestAccDatadogUser_NoInvitation(t *testing.T) {
 }
 
 func TestAccDatadogUser_Existing(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 	accProvider := testAccProvider(t, accProviders)
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
@@ -151,11 +159,13 @@ func TestAccDatadogUser_Existing(t *testing.T) {
 }
 
 func TestAccDatadogUser_RoleDatasource(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 	accProvider := testAccProvider(t, accProviders)
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogUserDestroy(accProvider),
@@ -176,11 +186,13 @@ func TestAccDatadogUser_RoleDatasource(t *testing.T) {
 }
 
 func TestAccDatadogUser_UpdateRole(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 	accProvider := testAccProvider(t, accProviders)
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogUserDestroy(accProvider),

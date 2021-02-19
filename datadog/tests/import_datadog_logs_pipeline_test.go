@@ -131,11 +131,13 @@ resource "datadog_logs_custom_pipeline" "test_import" {
 }
 
 func TestAccLogsCustomPipeline_importBasic(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	pipelineName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckPipelineDestroy(accProvider),

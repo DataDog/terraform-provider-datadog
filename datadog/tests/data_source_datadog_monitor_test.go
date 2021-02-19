@@ -11,11 +11,13 @@ import (
 )
 
 func TestAccDatadogMonitorDatasource(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	uniq := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),

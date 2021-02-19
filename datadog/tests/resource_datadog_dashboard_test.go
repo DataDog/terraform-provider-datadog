@@ -1146,7 +1146,9 @@ var datadogFreeDashboardAsserts = []string{
 }
 
 func TestAccDatadogDashboard_update(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	dbName := uniqueEntityName(ctx, t)
 	asserts := datadogOrderedDashboardAsserts
 	asserts = append(asserts, fmt.Sprintf("title = %s", dbName))
@@ -1157,7 +1159,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 			"datadog_dashboard.ordered_dashboard", fmt.Sprintf("widget.%d.id", i)))
 	}
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
@@ -1171,7 +1173,9 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 }
 
 func TestAccDatadogFreeDashboard(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	dbName := uniqueEntityName(ctx, t)
 	asserts := datadogFreeDashboardAsserts
 	asserts = append(asserts, fmt.Sprintf("title = %s", dbName))
@@ -1182,7 +1186,7 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 			"datadog_dashboard.free_dashboard", fmt.Sprintf("widget.%d.id", i)))
 	}
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
@@ -1196,7 +1200,9 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 }
 
 func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	dbName := uniqueEntityName(ctx, t)
 	freeAsserts := datadogSimpleFreeDashboardAsserts
 	freeAsserts = append(freeAsserts, fmt.Sprintf("title = %s", dbName))
@@ -1204,7 +1210,7 @@ func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
 	orderedAsserts = append(orderedAsserts, fmt.Sprintf("title = %s", dbName))
 	accProvider := testAccProvider(t, accProviders)
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
@@ -1226,11 +1232,13 @@ func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
 }
 
 func TestAccDatadogDashboard_import(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	dbName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
@@ -1293,7 +1301,9 @@ func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc 
 }
 
 func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string, assertions []string) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	uniq := uniqueEntityName(ctx, t)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
@@ -1302,7 +1312,7 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 	}
 	accProvider := testAccProvider(t, accProviders)
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
@@ -1318,13 +1328,15 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 }
 
 func testAccDatadogDashboardWidgetUtil_import(t *testing.T, config string, name string) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	uniq := uniqueEntityName(ctx, t)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
 	accProvider := testAccProvider(t, accProviders)
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),

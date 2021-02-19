@@ -349,13 +349,13 @@ func matchInteraction(r *http.Request, i cassette.Request) bool {
 	return matched
 }
 
-func testSpan(ctx context.Context, t *testing.T) (context.Context, func()) {
+func testSpan(ctx context.Context, t *testing.T) context.Context {
 	t.Helper()
 	tag, err := getEndpointTagValue(t)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	return ddtesting.StartSpanWithFinish(ctx, t, ddtesting.WithSkipFrames(3), ddtesting.WithSpanOptions(
+	ctx, finish := ddtesting.StartSpanWithFinish(ctx, t, ddtesting.WithSkipFrames(3), ddtesting.WithSpanOptions(
 		// We need to make the tag be something that is then searchable in monitors
 		// https://docs.datadoghq.com/tracing/guide/metrics_namespace/#errors
 		// "version" is really the only one we can use here
@@ -363,6 +363,8 @@ func testSpan(ctx context.Context, t *testing.T) (context.Context, func()) {
 		// if we set it in StartSpanFromContext, it would get overwritten
 		tracer.Tag(ext.Version, tag),
 	))
+	t.Cleanup(finish)
+	return ctx
 }
 
 func initAccProvider(ctx context.Context, t *testing.T, httpClient *http.Client) *schema.Provider {
@@ -598,16 +600,4 @@ func CheckResourceAttr(name, key, value string) resource.TestCheckFunc {
 		}
 		return nil
 	}
-}
-
-func parallelTest(ctx context.Context, t *testing.T, c resource.TestCase) {
-	t.Helper()
-	t.Parallel()
-	test(ctx, t, c)
-}
-
-func test(ctx context.Context, t *testing.T, c resource.TestCase) {
-	_, finish := testSpan(ctx, t)
-	t.Cleanup(finish)
-	resource.Test(t, c)
 }

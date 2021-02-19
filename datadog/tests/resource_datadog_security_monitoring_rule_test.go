@@ -15,11 +15,13 @@ import (
 const tfSecurityRuleName = "datadog_security_monitoring_rule.acceptance_test"
 
 func TestAccDatadogSecurityMonitoringRule_Basic(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	ruleName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
@@ -41,11 +43,13 @@ func TestAccDatadogSecurityMonitoringRule_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	ruleName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
@@ -63,11 +67,13 @@ func TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields(t *testing.T) {
 }
 
 func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
+	t.Parallel()
+	ctx := testSpan(context.Background(), t)
+	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
 	ruleName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	parallelTest(ctx, t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
