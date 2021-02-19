@@ -471,22 +471,19 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 	}
 }
 
-func testAccProvidersWithHTTPClient(t *testing.T, httpClient *http.Client) (map[string]terraform.ResourceProvider, func()) {
-	ctx, finish := testSpan(context.Background(), t)
-
-	provider := initAccProvider(ctx, t, httpClient)
+func testAccProvidersWithHTTPClient(t *testing.T, httpClient *http.Client) map[string]terraform.ResourceProvider {
+	provider := initAccProvider(context.Background(), t, httpClient)
 	return map[string]terraform.ResourceProvider{
 		"datadog": provider,
-	}, finish
+	}
 }
 
 func testAccProviders(t *testing.T, rec *recorder.Recorder) (map[string]terraform.ResourceProvider, clockwork.FakeClock, func(t *testing.T)) {
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", rec)
-	p, finish := testAccProvidersWithHTTPClient(t, c)
+	p := testAccProvidersWithHTTPClient(t, c)
 	return p, testClock(t), func(t *testing.T) {
 		rec.Stop()
-		finish()
 	}
 }
 
@@ -522,6 +519,9 @@ func testAccPreCheck(t *testing.T) {
 	if isReplaying() {
 		return
 	}
+	_, finish := testSpan(context.Background(), t)
+	t.Cleanup(finish)
+
 	if !isAPIKeySet() {
 		t.Fatal("DD_API_KEY must be set for acceptance tests")
 	}

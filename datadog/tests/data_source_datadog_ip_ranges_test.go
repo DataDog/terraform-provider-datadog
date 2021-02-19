@@ -11,6 +11,7 @@ func TestAccDatadogIpRangesDatasource_existing(t *testing.T) {
 	defer cleanup(t)
 
 	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: accProviders,
 		Steps: []resource.TestStep{
 			{

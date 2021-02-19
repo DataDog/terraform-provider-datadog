@@ -12,6 +12,7 @@ func TestAccDatatogSyntheticsLocation_existing(t *testing.T) {
 
 	resource.ParallelTest(t, resource.TestCase{
 		Providers: accProviders,
+		PreCheck:  func() { testAccPreCheck(t) },
 		Steps: []resource.TestStep{
 			{
 				Config: `
