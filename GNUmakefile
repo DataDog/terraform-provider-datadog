@@ -72,4 +72,7 @@ get-test-deps:
 license-check:
 	@sh -c "'$(CURDIR)/scripts/license-check.sh'"
 
-.PHONY: build test testall testacc cassettes vet fmt fmtcheck errcheck test-compile get-test-deps license-check
+tools:
+	go generate -tags tools tools/tools.go
+
+.PHONY: build test testall testacc cassettes vet fmt fmtcheck errcheck test-compile tools get-test-deps license-check
