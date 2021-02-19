@@ -360,9 +360,6 @@ func testSpan(ctx context.Context, t *testing.T) (context.Context, func()) {
 }
 
 func initAccProvider(ctx context.Context, t *testing.T, httpClient *http.Client) *schema.Provider {
-	ctx, finish := testSpan(ctx, t)
-	defer finish()
-
 	p := datadog.Provider().(*schema.Provider)
 	p.ConfigureFunc = testProviderConfigure(ctx, httpClient, testClock(t))
 
