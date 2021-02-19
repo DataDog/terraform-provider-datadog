@@ -36,13 +36,13 @@ resource "datadog_integration_aws_log_collection" "main" {
 }
 
 func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	accountID := uniqueAWSAccountID(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: checkIntegrationAWSLogCollectionDestroy(accProvider),
 		Steps: []resource.TestStep{

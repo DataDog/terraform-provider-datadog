@@ -13,13 +13,13 @@ import (
 )
 
 func TestAccDatadogSloCorrection_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	sloName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogSloCorrectionDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -44,13 +44,13 @@ func TestAccDatadogSloCorrection_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSloCorrection_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	sloName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogSloCorrectionDestroy(accProvider),
 		Steps: []resource.TestStep{

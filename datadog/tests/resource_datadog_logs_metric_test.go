@@ -15,13 +15,13 @@ import (
 
 func TestAccDatadogLogsMetric_import(t *testing.T) {
 	resourceName := "datadog_logs_metric.testing_logs_metric"
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	uniqueLogsMetric := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogLogsMetricDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -38,13 +38,13 @@ func TestAccDatadogLogsMetric_import(t *testing.T) {
 }
 
 func TestAccDatadogLogsMetric_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	uniqueLogsMetric := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogLogsMetricDestroy(accProvider),
 		Steps: []resource.TestStep{

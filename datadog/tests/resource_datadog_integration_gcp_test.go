@@ -35,13 +35,13 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
 }
 
 func TestAccDatadogIntegrationGCP(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	client := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: checkIntegrationGCPDestroy(accProvider),
 		Steps: []resource.TestStep{

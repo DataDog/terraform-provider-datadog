@@ -224,7 +224,7 @@ resource "datadog_timeboard" "acceptance_test" {
 }
 
 func TestAccDatadogTimeboard_update(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	tbName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
@@ -355,7 +355,7 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 	}
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDestroy(accProvider),
 		Steps:        []resource.TestStep{step0, step1, step2, step3},

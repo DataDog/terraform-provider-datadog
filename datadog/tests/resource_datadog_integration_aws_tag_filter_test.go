@@ -14,13 +14,13 @@ import (
 )
 
 func TestAccDatadogIntegrationAwsTagFilter_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	uniqueID := uniqueAWSAccountID(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
 		Steps: []resource.TestStep{

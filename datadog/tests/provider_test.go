@@ -471,18 +471,19 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 	}
 }
 
-func testAccProvidersWithHTTPClient(t *testing.T, httpClient *http.Client) map[string]terraform.ResourceProvider {
-	provider := initAccProvider(context.Background(), t, httpClient)
+func testAccProvidersWithHTTPClient(ctx context.Context, t *testing.T, httpClient *http.Client) map[string]terraform.ResourceProvider {
+	provider := initAccProvider(ctx, t, httpClient)
 	return map[string]terraform.ResourceProvider{
 		"datadog": provider,
 	}
 }
 
-func testAccProviders(t *testing.T, rec *recorder.Recorder) (map[string]terraform.ResourceProvider, clockwork.FakeClock, func(t *testing.T)) {
+func testAccProviders(t *testing.T, rec *recorder.Recorder) (context.Context, map[string]terraform.ResourceProvider, clockwork.FakeClock, func(t *testing.T)) {
+	ctx := context.Background()
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", rec)
-	p := testAccProvidersWithHTTPClient(t, c)
-	return p, testClock(t), func(t *testing.T) {
+	p := testAccProvidersWithHTTPClient(ctx, t, c)
+	return ctx, p, testClock(t), func(t *testing.T) {
 		rec.Stop()
 	}
 }
@@ -515,11 +516,11 @@ func TestProvider_impl(t *testing.T) {
 	var _ terraform.ResourceProvider = datadog.Provider()
 }
 
-func testAccPreCheck(t *testing.T) {
+func testAccPreCheck(ctx context.Context, t *testing.T) {
 	if isReplaying() {
 		return
 	}
-	_, finish := testSpan(context.Background(), t)
+	_, finish := testSpan(ctx, t)
 	t.Cleanup(finish)
 
 	if !isAPIKeySet() {

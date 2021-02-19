@@ -16,13 +16,13 @@ import (
 )
 
 func TestAccDatadogUser_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	username := strings.ToLower(uniqueEntityName(clock, t)) + "@example.com"
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
@@ -58,13 +58,13 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 }
 
 func TestAccDatadogUser_Invitation(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	username := strings.ToLower(uniqueEntityName(clock, t)) + "@example.com"
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
@@ -87,13 +87,13 @@ func TestAccDatadogUser_Invitation(t *testing.T) {
 }
 
 func TestAccDatadogUser_NoInvitation(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	username := strings.ToLower(uniqueEntityName(clock, t)) + "@example.com"
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
@@ -116,13 +116,13 @@ func TestAccDatadogUser_NoInvitation(t *testing.T) {
 }
 
 func TestAccDatadogUser_Existing(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	username := strings.ToLower(uniqueEntityName(clock, t)) + "@example.com"
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
@@ -155,13 +155,13 @@ func TestAccDatadogUser_Existing(t *testing.T) {
 }
 
 func TestAccDatadogUser_RoleDatasource(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	username := strings.ToLower(uniqueEntityName(clock, t)) + "@example.com"
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogUserDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -181,13 +181,13 @@ func TestAccDatadogUser_RoleDatasource(t *testing.T) {
 }
 
 func TestAccDatadogUser_UpdateRole(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	username := strings.ToLower(uniqueEntityName(clock, t)) + "@example.com"
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogUserDestroy(accProvider),
 		Steps: []resource.TestStep{

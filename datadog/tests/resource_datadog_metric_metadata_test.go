@@ -17,12 +17,12 @@ import (
 )
 
 func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
+		PreCheck:  func() { testAccPreCheck(ctx, t) },
 		Providers: accProviders,
 		Steps: []resource.TestStep{
 			{
@@ -49,12 +49,12 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
+		PreCheck:  func() { testAccPreCheck(ctx, t) },
 		Providers: accProviders,
 		Steps: []resource.TestStep{
 			{

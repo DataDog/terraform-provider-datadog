@@ -236,14 +236,14 @@ resource "datadog_logs_custom_pipeline" "empty_filter_query_pipeline" {
 
 func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 	rec := initRecorder(t)
-	accProviders, clock, cleanup := testAccProviders(t, rec)
+	ctx, accProviders, clock, cleanup := testAccProviders(t, rec)
 	pipelineName := uniqueEntityName(clock, t)
 	pipelineName2 := pipelineName + "-updated"
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckPipelineDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -314,13 +314,13 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 
 func TestAccDatadogLogsPipelineEmptyFilterQuery(t *testing.T) {
 	rec := initRecorder(t)
-	accProviders, clock, cleanup := testAccProviders(t, rec)
+	ctx, accProviders, clock, cleanup := testAccProviders(t, rec)
 	pipelineName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckPipelineDestroy(accProvider),
 		Steps: []resource.TestStep{

@@ -1145,7 +1145,7 @@ var datadogFreeDashboardAsserts = []string{
 }
 
 func TestAccDatadogDashboard_update(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	dbName := uniqueEntityName(clock, t)
 	asserts := datadogOrderedDashboardAsserts
 	asserts = append(asserts, fmt.Sprintf("title = %s", dbName))
@@ -1158,7 +1158,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 	}
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -1171,7 +1171,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 }
 
 func TestAccDatadogFreeDashboard(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	dbName := uniqueEntityName(clock, t)
 	asserts := datadogFreeDashboardAsserts
 	asserts = append(asserts, fmt.Sprintf("title = %s", dbName))
@@ -1184,7 +1184,7 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 	}
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -1197,7 +1197,7 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 }
 
 func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	dbName := uniqueEntityName(clock, t)
 	freeAsserts := datadogSimpleFreeDashboardAsserts
 	freeAsserts = append(freeAsserts, fmt.Sprintf("title = %s", dbName))
@@ -1207,7 +1207,7 @@ func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -1228,13 +1228,13 @@ func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
 }
 
 func TestAccDatadogDashboard_import(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	dbName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -1296,7 +1296,7 @@ func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc 
 }
 
 func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string, assertions []string) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	uniq := uniqueEntityName(clock, t)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
@@ -1307,7 +1307,7 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -1322,7 +1322,7 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 }
 
 func testAccDatadogDashboardWidgetUtil_import(t *testing.T, config string, name string) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	uniq := uniqueEntityName(clock, t)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
@@ -1330,7 +1330,7 @@ func testAccDatadogDashboardWidgetUtil_import(t *testing.T, config string, name 
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{

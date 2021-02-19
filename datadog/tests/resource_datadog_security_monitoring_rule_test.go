@@ -14,13 +14,13 @@ import (
 const tfSecurityRuleName = "datadog_security_monitoring_rule.acceptance_test"
 
 func TestAccDatadogSecurityMonitoringRule_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	ruleName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -41,13 +41,13 @@ func TestAccDatadogSecurityMonitoringRule_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	ruleName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -64,13 +64,13 @@ func TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields(t *testing.T) {
 }
 
 func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	ruleName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{

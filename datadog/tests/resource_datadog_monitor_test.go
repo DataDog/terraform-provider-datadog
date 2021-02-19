@@ -15,13 +15,13 @@ import (
 )
 
 func TestAccDatadogMonitor_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -76,13 +76,13 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -134,13 +134,13 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -178,14 +178,14 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	monitorNameUpdated := monitorName + "-updated"
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -319,14 +319,14 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	monitorNameUpdated := monitorName + "-updated"
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -453,13 +453,13 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -496,13 +496,13 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -540,13 +540,13 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_Log(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -579,13 +579,13 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_NoThresholdWindows(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -603,13 +603,13 @@ func TestAccDatadogMonitor_NoThresholdWindows(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -657,13 +657,13 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -709,13 +709,13 @@ func testAccCheckDatadogMonitorExists(accProvider *schema.Provider) resource.Tes
 }
 
 func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -744,13 +744,13 @@ func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_ZeroDelay(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -775,13 +775,13 @@ func TestAccDatadogMonitor_ZeroDelay(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_RestrictedRoles(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{

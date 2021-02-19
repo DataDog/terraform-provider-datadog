@@ -17,13 +17,13 @@ import (
 )
 
 func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	testName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -40,13 +40,13 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	testName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -63,13 +63,13 @@ func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsTCPTest_importBasic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	testName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -86,13 +86,13 @@ func TestAccDatadogSyntheticsTCPTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsDNSTest_importBasic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	testName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -109,13 +109,13 @@ func TestAccDatadogSyntheticsDNSTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	testName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -133,12 +133,12 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_BasicDeprecated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -148,12 +148,12 @@ func TestAccDatadogSyntheticsAPITest_BasicDeprecated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -163,12 +163,12 @@ func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_UpdatedDeprecated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -179,12 +179,12 @@ func TestAccDatadogSyntheticsAPITest_UpdatedDeprecated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -195,12 +195,12 @@ func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -210,12 +210,12 @@ func TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -226,12 +226,12 @@ func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -241,12 +241,12 @@ func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -257,12 +257,12 @@ func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -272,12 +272,12 @@ func TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsTCPTest_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -287,12 +287,12 @@ func TestAccDatadogSyntheticsTCPTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsTCPTest_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -303,12 +303,12 @@ func TestAccDatadogSyntheticsTCPTest_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsDNSTest_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -318,12 +318,12 @@ func TestAccDatadogSyntheticsDNSTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsDNSTest_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -334,12 +334,12 @@ func TestAccDatadogSyntheticsDNSTest_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -349,12 +349,12 @@ func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -365,12 +365,12 @@ func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTestBrowserVariables_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -380,13 +380,13 @@ func TestAccDatadogSyntheticsBrowserTestBrowserVariables_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 	testName := uniqueEntityName(clock, t)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -396,13 +396,13 @@ func TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic(t *testing.T
 }
 
 func TestAccDatadogSyntheticsTestBrowserMML_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 	testName := uniqueEntityName(clock, t)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{

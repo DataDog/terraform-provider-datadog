@@ -9,13 +9,13 @@ import (
 
 func TestDatadogMonitor_import(t *testing.T) {
 	resourceName := "datadog_monitor.foo"
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -33,13 +33,13 @@ func TestDatadogMonitor_import(t *testing.T) {
 
 func TestDatadogMonitor_import_no_recovery(t *testing.T) {
 	resourceName := "datadog_monitor.foo"
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -57,13 +57,13 @@ func TestDatadogMonitor_import_no_recovery(t *testing.T) {
 
 func TestDatadogMonitor_importNoDataTimeFrame(t *testing.T) {
 	resourceName := "datadog_monitor.foo"
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	monitorName := uniqueEntityName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{

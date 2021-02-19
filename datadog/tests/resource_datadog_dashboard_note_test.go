@@ -68,12 +68,12 @@ func TestAccDatadogDashboardNote_import(t *testing.T) {
 }
 
 func TestAccDatadogDashboardNoteContentError(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	uniq := uniqueEntityName(clock, t)
 	defer cleanup(t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
+		PreCheck:  func() { testAccPreCheck(ctx, t) },
 		Providers: accProviders,
 		Steps: []resource.TestStep{
 			{

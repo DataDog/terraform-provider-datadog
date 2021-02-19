@@ -15,13 +15,13 @@ import (
 )
 
 func TestAccDatadogRole_CreateUpdate(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	rolename := strings.ToLower(uniqueEntityName(clock, t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogRoleDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -72,12 +72,12 @@ func TestAccDatadogRole_CreateUpdate(t *testing.T) {
 	})
 }
 func TestAccDatadogRole_InvalidPerm(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	rolename := strings.ToLower(uniqueEntityName(clock, t))
 	defer cleanup(t)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
+		PreCheck:  func() { testAccPreCheck(ctx, t) },
 		Providers: accProviders,
 		Steps: []resource.TestStep{
 			{

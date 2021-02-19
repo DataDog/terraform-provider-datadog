@@ -7,12 +7,12 @@ import (
 )
 
 func TestAccDatatogSyntheticsLocation_existing(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 
 	resource.ParallelTest(t, resource.TestCase{
 		Providers: accProviders,
-		PreCheck:  func() { testAccPreCheck(t) },
+		PreCheck:  func() { testAccPreCheck(ctx, t) },
 		Steps: []resource.TestStep{
 			{
 				Config: `

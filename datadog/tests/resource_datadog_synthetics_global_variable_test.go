@@ -19,13 +19,13 @@ func getUniqueVariableName(clock clockwork.FakeClock, t *testing.T) string {
 }
 
 func TestAccDatadogSyntheticsGlobalVariable_importBasic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	variableName := getUniqueVariableName(clock, t)
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsGlobalVariableIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -42,12 +42,12 @@ func TestAccDatadogSyntheticsGlobalVariable_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariable_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsGlobalVariableIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -57,12 +57,12 @@ func TestAccDatadogSyntheticsGlobalVariable_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableSecure_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsGlobalVariableIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -72,12 +72,12 @@ func TestAccDatadogSyntheticsGlobalVariableSecure_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariable_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsGlobalVariableIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -88,12 +88,12 @@ func TestAccDatadogSyntheticsGlobalVariable_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableSecure_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsGlobalVariableIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -104,12 +104,12 @@ func TestAccDatadogSyntheticsGlobalVariableSecure_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableFromTest_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { testAccPreCheck(ctx, t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsGlobalVariableIsDestroyed(accProvider),
 		Steps: []resource.TestStep{

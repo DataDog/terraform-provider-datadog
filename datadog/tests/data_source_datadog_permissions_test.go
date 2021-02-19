@@ -7,11 +7,11 @@ import (
 )
 
 func TestAccDatadogPermissionsDatasource(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
 	defer cleanup(t)
 
 	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
+		PreCheck:  func() { testAccPreCheck(ctx, t) },
 		Providers: accProviders,
 		Steps: []resource.TestStep{
 			{
