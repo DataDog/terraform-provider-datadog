@@ -40,8 +40,8 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 	client := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	test(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkIntegrationGCPDestroy(accProvider),
 		Steps: []resource.TestStep{

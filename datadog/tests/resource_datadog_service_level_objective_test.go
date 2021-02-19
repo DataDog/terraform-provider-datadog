@@ -111,8 +111,8 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 	sloNameUpdated := sloName + "-updated"
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -213,8 +213,8 @@ func TestAccDatadogServiceLevelObjective_InvalidMonitor(t *testing.T) {
 	sloName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
 		Steps: []resource.TestStep{

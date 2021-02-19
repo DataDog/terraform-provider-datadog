@@ -137,8 +137,8 @@ func TestDatadogDashListImport(t *testing.T) {
 
 	// Getting the hash for a TypeSet element that has dynamic elements isn't possible
 	// So instead we use an import test to make sure the resource can be imported properly.
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDashListDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -159,8 +159,8 @@ func TestDatadogDashListInDashboard(t *testing.T) {
 	uniqueName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDashListDestroy(accProvider),
 		Steps: []resource.TestStep{

@@ -117,13 +117,13 @@ func getEndpointTagValue(t *testing.T) (string, error) {
 	n := runtime.Callers(1, pcs[:])
 	frames := runtime.CallersFrames(pcs[:n])
 	functionFile := ""
+	testName := t.Name()
 	for more {
 		frame, more = frames.Next()
 		// nested test functions like `TestAuthenticationValidate/200_Valid` will have frame.Function ending with
 		// ".funcX", `e.g. datadog.TestAuthenticationValidate.func1`, so trim everything after last "/" in test name
 		// and everything after last "." in frame function name
 		frameFunction := frame.Function
-		testName := t.Name()
 		if strings.Contains(testName, "/") {
 			testName = testName[:strings.LastIndex(testName, "/")]
 			frameFunction = frameFunction[:strings.LastIndex(frameFunction, ".")]
@@ -132,7 +132,7 @@ func getEndpointTagValue(t *testing.T) (string, error) {
 			functionFile = frame.File
 			// when we find the frame with the current test function, match it against testFiles2EndpointTags
 			for file, tag := range testFiles2EndpointTags {
-				if strings.HasSuffix(frame.File, fmt.Sprintf("datadog/%s.go", file)) {
+				if strings.HasSuffix(functionFile, fmt.Sprintf("datadog/%s.go", file)) {
 					return tag, nil
 				}
 			}
@@ -521,12 +521,10 @@ func TestProvider_impl(t *testing.T) {
 	var _ terraform.ResourceProvider = datadog.Provider()
 }
 
-func testAccPreCheck(ctx context.Context, t *testing.T) {
+func testAccPreCheck(t *testing.T) {
 	if isReplaying() {
 		return
 	}
-	_, finish := testSpan(ctx, t)
-	t.Cleanup(finish)
 
 	if !isAPIKeySet() {
 		t.Fatal("DD_API_KEY must be set for acceptance tests")
@@ -600,4 +598,16 @@ func CheckResourceAttr(name, key, value string) resource.TestCheckFunc {
 		}
 		return nil
 	}
+}
+
+func parallelTest(ctx context.Context, t *testing.T, c resource.TestCase) {
+	t.Helper()
+	t.Parallel()
+	test(ctx, t, c)
+}
+
+func test(ctx context.Context, t *testing.T, c resource.TestCase) {
+	_, finish := testSpan(ctx, t)
+	t.Cleanup(finish)
+	resource.Test(t, c)
 }

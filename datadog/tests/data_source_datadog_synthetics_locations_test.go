@@ -10,9 +10,8 @@ import (
 func TestAccDatatogSyntheticsLocation_existing(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
 
-	resource.ParallelTest(t, resource.TestCase{
+	parallelTest(ctx, t, resource.TestCase{
 		Providers: accProviders,
-		PreCheck:  func() { testAccPreCheck(ctx, t) },
 		Steps: []resource.TestStep{
 			{
 				Config: `

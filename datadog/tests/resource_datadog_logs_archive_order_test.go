@@ -33,8 +33,8 @@ func TestAccDatadogLogsArchiveOrder_basic(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t, rec)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	test(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckPipelineDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -57,8 +57,8 @@ func TestAccDatadogLogsArchiveOrder_empty(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t, rec)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	test(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckPipelineDestroy(accProvider),
 		Steps: []resource.TestStep{

@@ -21,8 +21,8 @@ func TestAccDatadogSecurityMonitoringRuleDatasource(t *testing.T) {
 	ruleName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	test(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{

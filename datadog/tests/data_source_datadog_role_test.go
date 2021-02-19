@@ -13,8 +13,8 @@ import (
 func TestAccDatadogRoleDatasource(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: accProviders,
 		Steps: []resource.TestStep{
 			{
@@ -30,8 +30,8 @@ func TestAccDatadogRoleDatasourceExactMatch(t *testing.T) {
 	rolename := strings.ToLower(uniqueEntityName(ctx, t))
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		CheckDestroy: testAccCheckDatadogRoleDestroy(accProvider),
 		Providers:    accProviders,
 		Steps: []resource.TestStep{
@@ -56,8 +56,8 @@ func TestAccDatadogRoleDatasourceError(t *testing.T) {
 	rolename := strings.ToLower(uniqueEntityName(ctx, t))
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		CheckDestroy: testAccCheckDatadogRoleDestroy(accProvider),
 		Providers:    accProviders,
 		Steps: []resource.TestStep{

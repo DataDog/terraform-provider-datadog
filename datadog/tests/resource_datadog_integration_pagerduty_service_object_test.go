@@ -16,8 +16,8 @@ func TestAccDatadogIntegrationPagerdutyServiceObject_Basic(t *testing.T) {
 	serviceName := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	test(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{

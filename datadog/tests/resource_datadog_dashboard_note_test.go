@@ -72,8 +72,8 @@ func TestAccDatadogDashboardNoteContentError(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
 	uniq := uniqueEntityName(ctx, t)
 
-	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(ctx, t) },
+	test(ctx, t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: accProviders,
 		Steps: []resource.TestStep{
 			{

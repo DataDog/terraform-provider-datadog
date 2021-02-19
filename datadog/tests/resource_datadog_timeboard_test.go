@@ -354,8 +354,8 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 		),
 	}
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDestroy(accProvider),
 		Steps:        []resource.TestStep{step0, step1, step2, step3},

@@ -10,8 +10,8 @@ import (
 func TestAccDatadogPermissionsDatasource(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: accProviders,
 		Steps: []resource.TestStep{
 			{

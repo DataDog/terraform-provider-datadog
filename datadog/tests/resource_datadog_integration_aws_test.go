@@ -41,8 +41,8 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	test(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkIntegrationAWSDestroy(accProvider),
 		Steps: []resource.TestStep{

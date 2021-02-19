@@ -48,8 +48,8 @@ func TestAccDatadogLogsArchiveAzure_basicDeprecated(t *testing.T) {
 	tenantName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	test(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckArchiveAndIntegrationAzureDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -84,8 +84,8 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 	tenantName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	test(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckArchiveAndIntegrationAzureDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -149,8 +149,8 @@ func TestAccDatadogLogsArchiveGCS_basicDeprecated(t *testing.T) {
 	client := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	test(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckArchiveAndIntegrationGCSDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -183,8 +183,8 @@ func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 	client := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	test(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckArchiveAndIntegrationGCSDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -244,8 +244,8 @@ func TestAccDatadogLogsArchiveS3_basicDeprecated(t *testing.T) {
 	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	test(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -282,8 +282,8 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	test(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -341,8 +341,8 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
 	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	test(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
 		Steps: []resource.TestStep{

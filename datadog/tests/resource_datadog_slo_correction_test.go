@@ -18,8 +18,8 @@ func TestAccDatadogSloCorrection_Basic(t *testing.T) {
 	sloName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogSloCorrectionDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -48,8 +48,8 @@ func TestAccDatadogSloCorrection_Updated(t *testing.T) {
 	sloName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogSloCorrectionDestroy(accProvider),
 		Steps: []resource.TestStep{

@@ -17,8 +17,8 @@ func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
 	privateLocationName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsPrivateLocationIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -39,8 +39,8 @@ func TestAccDatadogSyntheticsPrivateLocation_Basic(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsPrivateLocationIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
@@ -53,8 +53,8 @@ func TestAccDatadogSyntheticsPrivateLocation_Updated(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t, initRecorder(t))
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsPrivateLocationIsDestroyed(accProvider),
 		Steps: []resource.TestStep{

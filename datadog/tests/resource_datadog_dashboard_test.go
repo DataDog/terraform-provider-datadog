@@ -1157,8 +1157,8 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 			"datadog_dashboard.ordered_dashboard", fmt.Sprintf("widget.%d.id", i)))
 	}
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -1182,8 +1182,8 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 			"datadog_dashboard.free_dashboard", fmt.Sprintf("widget.%d.id", i)))
 	}
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -1204,8 +1204,8 @@ func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
 	orderedAsserts = append(orderedAsserts, fmt.Sprintf("title = %s", dbName))
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -1230,8 +1230,8 @@ func TestAccDatadogDashboard_import(t *testing.T) {
 	dbName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -1302,8 +1302,8 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 	}
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -1324,8 +1324,8 @@ func testAccDatadogDashboardWidgetUtil_import(t *testing.T, config string, name 
 	config = replacer.Replace(config)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(ctx, t) },
+	parallelTest(ctx, t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
