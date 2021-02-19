@@ -349,7 +349,7 @@ func testSpan(ctx context.Context, t *testing.T) (context.Context, func()) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	return ddtesting.StartSpanWithFinish(ctx, t, ddtesting.WithSkipFrames(5), ddtesting.WithSpanOptions(
+	return ddtesting.StartSpanWithFinish(ctx, t, ddtesting.WithSkipFrames(3), ddtesting.WithSpanOptions(
 		// We need to make the tag be something that is then searchable in monitors
 		// https://docs.datadoghq.com/tracing/guide/metrics_namespace/#errors
 		// "version" is really the only one we can use here
