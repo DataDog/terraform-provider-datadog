@@ -3,6 +3,7 @@ package datadog
 import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func resourceDatadogMetricMetadata() *schema.Resource {
@@ -75,7 +76,7 @@ func resourceDatadogMetricMetadataCreate(d *schema.ResourceData, meta interface{
 	id, m := buildMetricMetadataStruct(d)
 	createdMetadata, _, err := datadogClientV1.MetricsApi.UpdateMetricMetadata(authV1, id).Body(*m).Execute()
 	if err != nil {
-		return translateClientError(err, "error creating metric metadata")
+		return utils.TranslateClientError(err, "error creating metric metadata")
 	}
 
 	d.SetId(id)
@@ -119,7 +120,7 @@ func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{})
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error getting metric metadata")
+		return utils.TranslateClientError(err, "error getting metric metadata")
 	}
 	return updateMetricMetadataState(d, &m)
 }
@@ -153,7 +154,7 @@ func resourceDatadogMetricMetadataUpdate(d *schema.ResourceData, meta interface{
 
 	updatedMetadata, _, err := datadogClientV1.MetricsApi.UpdateMetricMetadata(authV1, id).Body(*m).Execute()
 	if err != nil {
-		return translateClientError(err, "error updating metric metadata")
+		return utils.TranslateClientError(err, "error updating metric metadata")
 	}
 
 	return updateMetricMetadataState(d, &updatedMetadata)

@@ -2,10 +2,9 @@ package datadog
 
 import (
 	"fmt"
-	"strings"
-
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func resourceDatadogIntegrationAzure() *schema.Resource {
@@ -50,14 +49,14 @@ func resourceDatadogIntegrationAzureRead(d *schema.ResourceData, meta interface{
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	tenantName, _, err := tenantAndClientFromID(d.Id())
+	tenantName, _, err := utils.TenantAndClientFromID(d.Id())
 	if err != nil {
 		return err
 	}
 
 	integrations, _, err := datadogClientV1.AzureIntegrationApi.ListAzureIntegration(authV1).Execute()
 	if err != nil {
-		return translateClientError(err, "error listing azure integration")
+		return utils.TranslateClientError(err, "error listing azure integration")
 	}
 	for _, integration := range integrations {
 		if integration.GetTenantName() == tenantName {
@@ -84,7 +83,7 @@ func resourceDatadogIntegrationAzureCreate(d *schema.ResourceData, meta interfac
 	iazure := buildDatadogAzureIntegrationDefinition(d, tenantName, clientID, false)
 
 	if _, _, err := datadogClientV1.AzureIntegrationApi.CreateAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
-		return translateClientError(err, "error creating an Azure integration")
+		return utils.TranslateClientError(err, "error creating an Azure integration")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", iazure.GetTenantName(), iazure.GetClientId()))
@@ -97,7 +96,7 @@ func resourceDatadogIntegrationAzureUpdate(d *schema.ResourceData, meta interfac
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	existingTenantName, existingClientID, err := tenantAndClientFromID(d.Id())
+	existingTenantName, existingClientID, err := utils.TenantAndClientFromID(d.Id())
 	if err != nil {
 		return err
 	}
@@ -105,7 +104,7 @@ func resourceDatadogIntegrationAzureUpdate(d *schema.ResourceData, meta interfac
 	iazure := buildDatadogAzureIntegrationDefinition(d, existingTenantName, existingClientID, true)
 
 	if _, _, err := datadogClientV1.AzureIntegrationApi.UpdateAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
-		return translateClientError(err, "error updating an Azure integration")
+		return utils.TranslateClientError(err, "error updating an Azure integration")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", iazure.GetNewTenantName(), iazure.GetNewClientId()))
@@ -118,14 +117,14 @@ func resourceDatadogIntegrationAzureDelete(d *schema.ResourceData, meta interfac
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	tenantName, clientID, err := tenantAndClientFromID(d.Id())
+	tenantName, clientID, err := utils.TenantAndClientFromID(d.Id())
 	if err != nil {
 		return err
 	}
 	iazure := buildDatadogAzureIntegrationDefinition(d, tenantName, clientID, false)
 
 	if _, _, err := datadogClientV1.AzureIntegrationApi.DeleteAzureIntegration(authV1).Body(*iazure).Execute(); err != nil {
-		return translateClientError(err, "error deleting an Azure integration")
+		return utils.TranslateClientError(err, "error deleting an Azure integration")
 	}
 
 	return nil
@@ -136,14 +135,6 @@ func resourceDatadogIntegrationAzureImport(d *schema.ResourceData, meta interfac
 		return nil, err
 	}
 	return []*schema.ResourceData{d}, nil
-}
-
-func tenantAndClientFromID(id string) (string, string, error) {
-	result := strings.SplitN(id, ":", 2)
-	if len(result) != 2 {
-		return "", "", fmt.Errorf("error extracting tenant name and client ID from an Azure integration id: %s", id)
-	}
-	return result[0], result[1], nil
 }
 
 func buildDatadogAzureIntegrationDefinition(terraformDefinition *schema.ResourceData, tenantName string, clientID string, update bool) *datadogV1.AzureAccount {

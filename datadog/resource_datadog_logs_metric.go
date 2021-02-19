@@ -2,6 +2,9 @@ package datadog
 
 import (
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -30,7 +33,7 @@ func resourceDatadogLogsMetric() *schema.Resource {
 							Type:         schema.TypeString,
 							Required:     true,
 							ForceNew:     true,
-							ValidateFunc: validateEnumValue(datadogV2.NewLogsMetricComputeAggregationTypeFromValue),
+							ValidateFunc: validators.ValidateEnumValue(datadogV2.NewLogsMetricComputeAggregationTypeFromValue),
 							Description:  "The type of aggregation to use. This field can't be updated after creation.",
 						},
 
@@ -174,7 +177,7 @@ func resourceDatadogLogsMetricCreate(d *schema.ResourceData, meta interface{}) e
 
 	resultLogsMetricCreateData, err := buildDatadogLogsMetric(d)
 	if err != nil {
-		return translateClientError(err, "error building LogsMetric object")
+		return utils.TranslateClientError(err, "error building LogsMetric object")
 	}
 
 	ddObject := datadogV2.NewLogsMetricCreateRequestWithDefaults()
@@ -182,7 +185,7 @@ func resourceDatadogLogsMetricCreate(d *schema.ResourceData, meta interface{}) e
 
 	response, _, err := datadogClient.LogsMetricsApi.CreateLogsMetric(auth).Body(*ddObject).Execute()
 	if err != nil {
-		return translateClientError(err, "error creating LogsMetric")
+		return utils.TranslateClientError(err, "error creating LogsMetric")
 	}
 	id := *response.GetData().Id
 	d.SetId(id)
@@ -258,7 +261,7 @@ func resourceDatadogLogsMetricRead(d *schema.ResourceData, meta interface{}) err
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error reading LogsMetric")
+		return utils.TranslateClientError(err, "error reading LogsMetric")
 	}
 
 	resource := resourceLogsMetricResponse.GetData()
@@ -293,7 +296,7 @@ func resourceDatadogLogsMetricUpdate(d *schema.ResourceData, meta interface{}) e
 
 	resultLogsMetricUpdateData, err := buildDatadogLogsMetricUpdate(d)
 	if err != nil {
-		return translateClientError(err, "error building LogsMetric object")
+		return utils.TranslateClientError(err, "error building LogsMetric object")
 	}
 
 	ddObject := datadogV2.NewLogsMetricUpdateRequestWithDefaults()
@@ -302,7 +305,7 @@ func resourceDatadogLogsMetricUpdate(d *schema.ResourceData, meta interface{}) e
 
 	response, _, err := datadogClient.LogsMetricsApi.UpdateLogsMetric(auth, id).Body(*ddObject).Execute()
 	if err != nil {
-		return translateClientError(err, "error updating LogsMetric")
+		return utils.TranslateClientError(err, "error updating LogsMetric")
 	}
 
 	return updateLogsMetricState(d, response.Data)
@@ -319,7 +322,7 @@ func resourceDatadogLogsMetricDelete(d *schema.ResourceData, meta interface{}) e
 	_, err = datadogClient.LogsMetricsApi.DeleteLogsMetric(auth, id).Execute()
 
 	if err != nil {
-		return translateClientError(err, "error deleting LogsMetric")
+		return utils.TranslateClientError(err, "error deleting LogsMetric")
 	}
 
 	return nil

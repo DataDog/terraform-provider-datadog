@@ -5,6 +5,9 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
@@ -57,7 +60,7 @@ func resourceDatadogDashboard() *schema.Resource {
 				Required:     true,
 				ForceNew:     true,
 				Description:  "The layout type of the dashboard, either 'free' or 'ordered'.",
-				ValidateFunc: validateEnumValue(datadogV1.NewDashboardLayoutTypeFromValue),
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewDashboardLayoutTypeFromValue),
 			},
 			"description": {
 				Type:        schema.TypeString,
@@ -124,7 +127,7 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 	}
 	dashboard, _, err := datadogClientV1.DashboardsApi.CreateDashboard(authV1).Body(*dashboardPayload).Execute()
 	if err != nil {
-		return translateClientError(err, "error creating dashboard")
+		return utils.TranslateClientError(err, "error creating dashboard")
 	}
 	d.SetId(*dashboard.Id)
 
@@ -155,7 +158,7 @@ func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) er
 	}
 	updatedDashboard, _, err := datadogClientV1.DashboardsApi.UpdateDashboard(authV1, id).Body(*dashboard).Execute()
 	if err != nil {
-		return translateClientError(err, "error updating dashboard")
+		return utils.TranslateClientError(err, "error updating dashboard")
 	}
 
 	updateDashboardLists(d, providerConf, *dashboard.Id)
@@ -256,7 +259,7 @@ func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) erro
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error getting dashboard")
+		return utils.TranslateClientError(err, "error getting dashboard")
 	}
 
 	return updateDashboardState(d, &dashboard)
@@ -268,7 +271,7 @@ func resourceDatadogDashboardDelete(d *schema.ResourceData, meta interface{}) er
 	authV1 := providerConf.AuthV1
 	id := d.Id()
 	if _, _, err := datadogClientV1.DashboardsApi.DeleteDashboard(authV1, id).Execute(); err != nil {
-		return translateClientError(err, "error deleting dashboard")
+		return utils.TranslateClientError(err, "error deleting dashboard")
 	}
 	return nil
 }
@@ -910,7 +913,7 @@ func buildTerraformWidgets(datadogWidgets *[]datadogV1.Widget, d *schema.Resourc
 
 	terraformWidgets := make([]map[string]interface{}, len(*datadogWidgets))
 	for i, datadogWidget := range *datadogWidgets {
-		terraformWidget, err := buildTerraformWidget(datadogWidget, NewResourceDataKey(d, fmt.Sprintf("widget.%d", i)))
+		terraformWidget, err := buildTerraformWidget(datadogWidget, utils.NewResourceDataKey(d, fmt.Sprintf("widget.%d", i)))
 		if err != nil {
 			return nil, err
 		}
@@ -920,7 +923,7 @@ func buildTerraformWidgets(datadogWidgets *[]datadogV1.Widget, d *schema.Resourc
 }
 
 // Helper to build a Terraform widget from a Datadog widget
-func buildTerraformWidget(datadogWidget datadogV1.Widget, k *ResourceDataKey) (map[string]interface{}, error) {
+func buildTerraformWidget(datadogWidget datadogV1.Widget, k *utils.ResourceDataKey) (map[string]interface{}, error) {
 	terraformWidget := map[string]interface{}{}
 
 	// Build layout
@@ -1135,7 +1138,7 @@ func getGroupDefinitionSchema() map[string]*schema.Schema {
 			Type:         schema.TypeString,
 			Required:     true,
 			Description:  "The layout type of the group, only 'ordered' for now.",
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetLayoutTypeFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLayoutTypeFromValue),
 		},
 		"title": {
 			Type:        schema.TypeString,
@@ -1165,7 +1168,7 @@ func buildDatadogGroupDefinition(terraformGroupDefinition map[string]interface{}
 	return datadogGroupDefinition, nil
 }
 
-func buildTerraformGroupDefinition(datadogGroupDefinition datadogV1.GroupWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformGroupDefinition(datadogGroupDefinition datadogV1.GroupWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformGroupDefinition := map[string]interface{}{}
 
 	var groupWidgets []map[string]interface{}
@@ -1200,7 +1203,7 @@ func getAlertGraphDefinitionSchema() map[string]*schema.Schema {
 		"viz_type": {
 			Description:  "Type of visualization to use when displaying the widget. Either `timeseries` or `toplist`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetVizTypeFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetVizTypeFromValue),
 			Required:     true,
 		},
 		"title": {
@@ -1216,7 +1219,7 @@ func getAlertGraphDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time":      getDeprecatedTimeSchema(),
@@ -1263,7 +1266,7 @@ func buildDatadogAlertGraphDefinition(terraformDefinition map[string]interface{}
 	return datadogDefinition
 }
 
-func buildTerraformAlertGraphDefinition(datadogDefinition datadogV1.AlertGraphWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformAlertGraphDefinition(datadogDefinition datadogV1.AlertGraphWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["alert_id"] = datadogDefinition.AlertId
@@ -1313,7 +1316,7 @@ func getAlertValueDefinitionSchema() map[string]*schema.Schema {
 		"text_align": {
 			Description:  "The alignment of the text in the widget.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"title": {
@@ -1329,7 +1332,7 @@ func getAlertValueDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 	}
@@ -1414,7 +1417,7 @@ func getChangeDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time":      getDeprecatedTimeSchema(),
@@ -1456,7 +1459,7 @@ func buildDatadogChangeDefinition(terraformDefinition map[string]interface{}) *d
 	}
 	return datadogDefinition
 }
-func buildTerraformChangeDefinition(datadogDefinition datadogV1.ChangeWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformChangeDefinition(datadogDefinition datadogV1.ChangeWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["request"] = buildTerraformChangeRequests(&datadogDefinition.Requests, k.Add("request"))
@@ -1498,13 +1501,13 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 		"change_type": {
 			Description:  "Whether to show absolute or relative change. One of `absolute`, `relative`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetChangeTypeFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetChangeTypeFromValue),
 			Optional:     true,
 		},
 		"compare_to": {
 			Description:  "Choose from when to compare current data to. One of `hour_before`, `day_before`, `week_before` or `month_before`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetCompareToFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetCompareToFromValue),
 			Optional:     true,
 		},
 		"increase_good": {
@@ -1515,13 +1518,13 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 		"order_by": {
 			Description:  "One of `change`, `name`, `present` (present value) or `past` (past value).",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetOrderByFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetOrderByFromValue),
 			Optional:     true,
 		},
 		"order_dir": {
 			Description:  "Either `asc` (ascending) or `desc` (descending).",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
 			Optional:     true,
 		},
 		"show_present": {
@@ -1579,7 +1582,7 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 	}
 	return &datadogRequests
 }
-func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidgetRequest, k *ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogChangeRequests))
 	for i, datadogRequest := range *datadogChangeRequests {
 		terraformRequest := map[string]interface{}{}
@@ -1656,7 +1659,7 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"legend_size": {
@@ -1704,7 +1707,7 @@ func buildDatadogDistributionDefinition(terraformDefinition map[string]interface
 	}
 	return datadogDefinition
 }
-func buildTerraformDistributionDefinition(datadogDefinition datadogV1.DistributionWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformDistributionDefinition(datadogDefinition datadogV1.DistributionWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["request"] = buildTerraformDistributionRequests(&datadogDefinition.Requests, k.Add("request"))
@@ -1791,7 +1794,7 @@ func buildDatadogDistributionRequests(terraformRequests *[]interface{}) *[]datad
 	}
 	return &datadogRequests
 }
-func buildTerraformDistributionRequests(datadogDistributionRequests *[]datadogV1.DistributionWidgetRequest, k *ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformDistributionRequests(datadogDistributionRequests *[]datadogV1.DistributionWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogDistributionRequests))
 	for i, datadogRequest := range *datadogDistributionRequests {
 		terraformRequest := map[string]interface{}{}
@@ -1840,7 +1843,7 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 		"event_size": {
 			Description:  "The size to use to display an event. One of `s`, `l`",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetEventSizeFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetEventSizeFromValue),
 			Optional:     true,
 		},
 		"title": {
@@ -1856,7 +1859,7 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time":      getDeprecatedTimeSchema(),
@@ -1899,7 +1902,7 @@ func buildDatadogEventStreamDefinition(terraformDefinition map[string]interface{
 	return datadogDefinition
 }
 
-func buildTerraformEventStreamDefinition(datadogDefinition datadogV1.EventStreamWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformEventStreamDefinition(datadogDefinition datadogV1.EventStreamWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["query"] = datadogDefinition.Query
@@ -1954,7 +1957,7 @@ func getEventTimelineDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time":      getDeprecatedTimeSchema(),
@@ -1994,7 +1997,7 @@ func buildDatadogEventTimelineDefinition(terraformDefinition map[string]interfac
 	return datadogDefinition
 }
 
-func buildTerraformEventTimelineDefinition(datadogDefinition datadogV1.EventTimelineWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformEventTimelineDefinition(datadogDefinition datadogV1.EventTimelineWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["query"] = datadogDefinition.GetQuery()
@@ -2036,7 +2039,7 @@ func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 		"grouping": {
 			Description:  "Either `check` or `cluster`, depending on whether the widget should use a single check or a cluster of checks.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetGroupingFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetGroupingFromValue),
 			Required:     true,
 		},
 		"group": {
@@ -2069,7 +2072,7 @@ func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time":      getDeprecatedTimeSchema(),
@@ -2119,7 +2122,7 @@ func buildDatadogCheckStatusDefinition(terraformDefinition map[string]interface{
 	return datadogDefinition
 }
 
-func buildTerraformCheckStatusDefinition(datadogDefinition datadogV1.CheckStatusWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformCheckStatusDefinition(datadogDefinition datadogV1.CheckStatusWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["check"] = datadogDefinition.GetCheck()
@@ -2186,7 +2189,7 @@ func getFreeTextDefinitionSchema() map[string]*schema.Schema {
 		"text_align": {
 			Description:  "The alignment of the text in the widget.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 	}
@@ -2262,7 +2265,7 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"event": {
@@ -2337,7 +2340,7 @@ func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *
 	}
 	return datadogDefinition
 }
-func buildTerraformHeatmapDefinition(datadogDefinition datadogV1.HeatMapWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformHeatmapDefinition(datadogDefinition datadogV1.HeatMapWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["request"] = buildTerraformHeatmapRequests(&datadogDefinition.Requests, k.Add("request"))
@@ -2433,7 +2436,7 @@ func buildDatadogHeatmapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 	}
 	return &datadogRequests
 }
-func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWidgetRequest, k *ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogHeatmapRequests))
 	for i, datadogRequest := range *datadogHeatmapRequests {
 		terraformRequest := map[string]interface{}{}
@@ -2504,7 +2507,7 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 		"node_type": {
 			Description:  "The type of node used. Either `host` or `container`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetNodeTypeFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetNodeTypeFromValue),
 			Optional:     true,
 		},
 		"no_metric_hosts": {
@@ -2572,7 +2575,7 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"custom_link": {
@@ -2646,7 +2649,7 @@ func buildDatadogHostmapDefinition(terraformDefinition map[string]interface{}) *
 	}
 	return datadogDefinition
 }
-func buildTerraformHostmapDefinition(datadogDefinition datadogV1.HostMapWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformHostmapDefinition(datadogDefinition datadogV1.HostMapWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformRequests := map[string]interface{}{}
@@ -2739,7 +2742,7 @@ func buildDatadogHostmapRequest(terraformRequest map[string]interface{}) *datado
 
 	return datadogHostmapRequest
 }
-func buildTerraformHostmapRequest(datadogHostmapRequest *datadogV1.HostMapRequest, k *ResourceDataKey) *map[string]interface{} {
+func buildTerraformHostmapRequest(datadogHostmapRequest *datadogV1.HostMapRequest, k *utils.ResourceDataKey) *map[string]interface{} {
 	terraformRequest := map[string]interface{}{}
 	if v, ok := datadogHostmapRequest.GetQOk(); ok {
 		terraformRequest["q"] = v
@@ -2808,13 +2811,13 @@ func getImageDefinitionSchema() map[string]*schema.Schema {
 		"sizing": {
 			Description:  "The preferred method to adapt the dimensions of the image to those of the widget. One of `center` (center the image in the tile), `zoom` (zoom the image to cover the whole tile) or `fit` (fit the image dimensions to those of the tile).",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetImageSizingFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetImageSizingFromValue),
 			Optional:     true,
 		},
 		"margin": {
 			Description:  "The margins to use around the image. Either `small` or `large`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMarginFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMarginFromValue),
 			Optional:     true,
 		},
 	}
@@ -2891,7 +2894,7 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			Type:         schema.TypeString,
 			Optional:     true,
 			Description:  "One of: ['inline', 'expanded-md', 'expanded-lg']",
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMessageDisplayFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMessageDisplayFromValue),
 		},
 		"sort": {
 			Description: "The facet and order to sort the data based upon. Example: `{\"column\": \"time\", \"order\": \"desc\"}`.",
@@ -2915,7 +2918,7 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time":      getDeprecatedTimeSchema(),
@@ -2934,7 +2937,7 @@ func getWidgetFieldSortSchema() map[string]*schema.Schema {
 			Description:  "Widget sorting methods.",
 			Type:         schema.TypeString,
 			Required:     true,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
 		},
 	}
 }
@@ -3004,7 +3007,7 @@ func buildDatadogWidgetFieldSort(terraformWidgetFieldSort map[string]interface{}
 	return datadogWidgetFieldSort
 }
 
-func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Optional params
 
@@ -3084,12 +3087,12 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Type:         schema.TypeString,
 			Optional:     true,
 			Description:  "One of: ['monitors', 'groups', 'combined']",
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSummaryTypeFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSummaryTypeFromValue),
 		},
 		"sort": {
 			Description:  "The method to use to sort monitors. Example: `status,asc`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMonitorSummarySortFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMonitorSummarySortFromValue),
 			Optional:     true,
 		},
 		// The count param is deprecated
@@ -3110,13 +3113,13 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 		"display_format": {
 			Description:  "The display setting to use. One of `counts`, `list`, or `countsAndList`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetMonitorSummaryDisplayFormatFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMonitorSummaryDisplayFormatFromValue),
 			Optional:     true,
 		},
 		"color_preference": {
 			Description:  "Whether to colorize text or background. One of `text`, `background`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetColorPreferenceFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetColorPreferenceFromValue),
 			Optional:     true,
 		},
 		"hide_zero_counts": {
@@ -3142,7 +3145,7 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 	}
@@ -3256,7 +3259,7 @@ func getNoteDefinitionSchema() map[string]*schema.Schema {
 		"text_align": {
 			Description:  "The alignment of the widget's text. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"show_tick": {
@@ -3272,7 +3275,7 @@ func getNoteDefinitionSchema() map[string]*schema.Schema {
 		"tick_edge": {
 			Description:  "When `tick = true`, string indicating on which side of the widget the tick should be displayed. One of `bottom`, `top`, `left`, `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTickEdgeFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTickEdgeFromValue),
 			Optional:     true,
 		},
 	}
@@ -3362,7 +3365,7 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 		"text_align": {
 			Description:  "The alignment of the widget's text. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"title": {
@@ -3378,7 +3381,7 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time":      getDeprecatedTimeSchema(),
@@ -3432,7 +3435,7 @@ func buildDatadogQueryValueDefinition(terraformDefinition map[string]interface{}
 	}
 	return datadogDefinition
 }
-func buildTerraformQueryValueDefinition(datadogDefinition datadogV1.QueryValueWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformQueryValueDefinition(datadogDefinition datadogV1.QueryValueWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["request"] = buildTerraformQueryValueRequests(&datadogDefinition.Requests, k.Add("request"))
@@ -3494,7 +3497,7 @@ func getQueryValueRequestSchema() map[string]*schema.Schema {
 		"aggregator": {
 			Description:  "The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
 			Optional:     true,
 		},
 	}
@@ -3535,7 +3538,7 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 	}
 	return &datadogRequests
 }
-func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.QueryValueWidgetRequest, k *ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.QueryValueWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogQueryValueRequests))
 	for i, datadogRequest := range *datadogQueryValueRequests {
 		terraformRequest := map[string]interface{}{}
@@ -3601,7 +3604,7 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time":      getDeprecatedTimeSchema(),
@@ -3617,7 +3620,7 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 		"has_search_bar": {
 			Description:  "Controls the display of the search bar. One of `auto`, `always`, `never`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewTableWidgetHasSearchBarFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetHasSearchBarFromValue),
 			Optional:     true,
 		},
 	}
@@ -3652,7 +3655,7 @@ func buildDatadogQueryTableDefinition(terraformDefinition map[string]interface{}
 	}
 	return datadogDefinition
 }
-func buildTerraformQueryTableDefinition(datadogDefinition datadogV1.TableWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformQueryTableDefinition(datadogDefinition datadogV1.TableWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["request"] = buildTerraformQueryTableRequests(&datadogDefinition.Requests, k.Add("request"))
@@ -3711,7 +3714,7 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 		"aggregator": {
 			Description:  "The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
 			Optional:     true,
 		},
 		"limit": {
@@ -3722,7 +3725,7 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 		"order": {
 			Description:  "The sort order for the rows. One of `desc` or `asc`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
 			Optional:     true,
 		},
 		"cell_display_mode": {
@@ -3731,7 +3734,7 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 			Optional:    true,
 			Elem: &schema.Schema{
 				Type:         schema.TypeString,
-				ValidateFunc: validateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
 			},
 		},
 	}
@@ -3791,7 +3794,7 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 	}
 	return &datadogRequests
 }
-func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.TableWidgetRequest, k *ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.TableWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogQueryTableRequests))
 	for i, datadogRequest := range *datadogQueryTableRequests {
 		terraformRequest := map[string]interface{}{}
@@ -3920,7 +3923,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time":      getDeprecatedTimeSchema(),
@@ -3991,7 +3994,7 @@ func buildDatadogScatterplotDefinition(terraformDefinition map[string]interface{
 	}
 	return datadogDefinition
 }
-func buildTerraformScatterplotDefinition(datadogDefinition datadogV1.ScatterPlotWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformScatterplotDefinition(datadogDefinition datadogV1.ScatterPlotWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformRequests := map[string]interface{}{}
@@ -4060,7 +4063,7 @@ func getScatterplotRequestSchema() map[string]*schema.Schema {
 		"aggregator": {
 			Description:  "Aggregator used for the request.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
 			Optional:     true,
 		},
 	}
@@ -4093,7 +4096,7 @@ func buildDatadogScatterplotRequest(terraformRequest map[string]interface{}) *da
 
 	return datadogScatterplotRequest
 }
-func buildTerraformScatterplotRequest(datadogScatterplotRequest *datadogV1.ScatterPlotRequest, k *ResourceDataKey) *map[string]interface{} {
+func buildTerraformScatterplotRequest(datadogScatterplotRequest *datadogV1.ScatterPlotRequest, k *utils.ResourceDataKey) *map[string]interface{} {
 	terraformRequest := map[string]interface{}{}
 	if v, ok := datadogScatterplotRequest.GetQOk(); ok {
 		terraformRequest["q"] = *v
@@ -4154,7 +4157,7 @@ func getServiceMapDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"custom_link": {
@@ -4236,7 +4239,7 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"view_type": {
@@ -4257,7 +4260,7 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 		"view_mode": {
 			Description:  "View mode for the widget. One of `overall`, `component`, or `both`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetViewModeFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetViewModeFromValue),
 			Required:     true,
 		},
 		"time_windows": {
@@ -4266,7 +4269,7 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 			Required:    true,
 			Elem: &schema.Schema{
 				Type:         schema.TypeString,
-				ValidateFunc: validateEnumValue(datadogV1.NewWidgetTimeWindowsFromValue),
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTimeWindowsFromValue),
 			},
 		},
 	}
@@ -4402,7 +4405,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"show_legend": {
@@ -4479,7 +4482,7 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	return datadogDefinition
 }
 
-func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["request"] = buildTerraformTimeseriesRequests(&datadogDefinition.Requests, k.Add("request"))
@@ -4554,13 +4557,13 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 					"line_type": {
 						Description:  "Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.",
 						Type:         schema.TypeString,
-						ValidateFunc: validateEnumValue(datadogV1.NewWidgetLineTypeFromValue),
+						ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLineTypeFromValue),
 						Optional:     true,
 					},
 					"line_width": {
 						Description:  "Width of line displayed. Available values are: `normal`, `thick`, or `thin`.",
 						Type:         schema.TypeString,
-						ValidateFunc: validateEnumValue(datadogV1.NewWidgetLineWidthFromValue),
+						ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLineWidthFromValue),
 						Optional:     true,
 					},
 				},
@@ -4588,7 +4591,7 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 		"display_type": {
 			Description:  "How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetDisplayTypeFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetDisplayTypeFromValue),
 			Optional:     true,
 		},
 		"on_right_yaxis": {
@@ -4658,7 +4661,7 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 	}
 	return &datadogRequests
 }
-func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.TimeseriesWidgetRequest, k *ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.TimeseriesWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogTimeseriesRequests))
 	for i, datadogRequest := range *datadogTimeseriesRequests {
 		terraformRequest := map[string]interface{}{}
@@ -4747,7 +4750,7 @@ func getToplistDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time":      getDeprecatedTimeSchema(),
@@ -4789,7 +4792,7 @@ func buildDatadogToplistDefinition(terraformDefinition map[string]interface{}) *
 	}
 	return datadogDefinition
 }
-func buildTerraformToplistDefinition(datadogDefinition datadogV1.ToplistWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformToplistDefinition(datadogDefinition datadogV1.ToplistWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["request"] = buildTerraformToplistRequests(&datadogDefinition.Requests, k.Add("request"))
@@ -4883,7 +4886,7 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 	}
 	return &datadogRequests
 }
-func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWidgetRequest, k *ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogToplistRequests))
 	for i, datadogRequest := range *datadogToplistRequests {
 		terraformRequest := map[string]interface{}{}
@@ -4977,13 +4980,13 @@ func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
 		"size_format": {
 			Description:  "Size of the widget. Available values are: `small`, `medium`, or `large`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetSizeFormatFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSizeFormatFromValue),
 			Optional:     true,
 		},
 		"display_format": {
 			Description:  "Number of columns to display. Available values are: `one_column`, `two_column`, or `three_column`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetServiceSummaryDisplayFormatFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetServiceSummaryDisplayFormatFromValue),
 			Optional:     true,
 		},
 		"title": {
@@ -4999,7 +5002,7 @@ func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
 		"title_align": {
 			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
 		"time":      getDeprecatedTimeSchema(),
@@ -5057,7 +5060,7 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 	return datadogDefinition
 }
 
-func buildTerraformTraceServiceDefinition(datadogDefinition datadogV1.ServiceSummaryWidgetDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformTraceServiceDefinition(datadogDefinition datadogV1.ServiceSummaryWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["env"] = datadogDefinition.GetEnv()
@@ -5114,7 +5117,7 @@ func getWidgetConditionalFormatSchema() map[string]*schema.Schema {
 		"comparator": {
 			Description:  "Comparator to use. One of `>`, `>=`, `<`, or `<=`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetComparatorFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetComparatorFromValue),
 			Required:     true,
 		},
 		"value": {
@@ -5125,7 +5128,7 @@ func getWidgetConditionalFormatSchema() map[string]*schema.Schema {
 		"palette": {
 			Description:  "Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.",
 			Type:         schema.TypeString,
-			ValidateFunc: validateEnumValue(datadogV1.NewWidgetPaletteFromValue),
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetPaletteFromValue),
 			Required:     true,
 		},
 		"custom_bg_color": {
@@ -5315,7 +5318,7 @@ func getWidgetLiveSpanSchema() *schema.Schema {
 	return &schema.Schema{
 		Description:  "The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.",
 		Type:         schema.TypeString,
-		ValidateFunc: validateEnumValue(datadogV1.NewWidgetLiveSpanFromValue),
+		ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLiveSpanFromValue),
 		Optional:     true,
 	}
 }
@@ -5506,7 +5509,7 @@ func getQueryGroupBySortSchema() *schema.Resource {
 			"order": {
 				Description:  "Widget sorting methods.",
 				Type:         schema.TypeString,
-				ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
 				Required:     true,
 			},
 			"facet": {
@@ -5682,7 +5685,7 @@ func buildTerraformApmOrLogQueryCompute(compute *datadogV1.LogsQueryCompute) map
 	return terraformCompute
 }
 
-func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition, k *ResourceDataKey) map[string]interface{} {
+func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformQuery := map[string]interface{}{}
 	// Index
 	terraformQuery["index"] = datadogQuery.GetIndex()
@@ -5868,7 +5871,7 @@ func getApmStatsQuerySchema() *schema.Schema {
 				"row_type": {
 					Description:  "The level of detail for the request.",
 					Type:         schema.TypeString,
-					ValidateFunc: validateEnumValue(datadogV1.NewApmStatsQueryRowTypeFromValue),
+					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewApmStatsQueryRowTypeFromValue),
 					Required:     true,
 				},
 				"resource": {
@@ -5895,13 +5898,13 @@ func getApmStatsQuerySchema() *schema.Schema {
 							"order": {
 								Description:  "Widget sorting methods.",
 								Type:         schema.TypeString,
-								ValidateFunc: validateEnumValue(datadogV1.NewWidgetSortFromValue),
+								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
 								Optional:     true,
 							},
 							"cell_display_mode": {
 								Description:  "A list of display modes for each table cell.",
 								Type:         schema.TypeString,
-								ValidateFunc: validateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
+								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
 								Optional:     true,
 							},
 						},

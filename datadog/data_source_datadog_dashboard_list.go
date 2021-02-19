@@ -7,6 +7,7 @@ import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func dataSourceDatadogDashboardList() *schema.Resource {
@@ -34,7 +35,7 @@ func dataSourceDatadogDashboardListRead(d *schema.ResourceData, meta interface{}
 	listResponse, _, err := datadogClientV1.DashboardListsApi.ListDashboardLists(authV1).Execute()
 
 	if err != nil {
-		return translateClientError(err, "error querying dashboard lists")
+		return utils.TranslateClientError(err, "error querying dashboard lists")
 	}
 
 	searchedName := d.Get("name")

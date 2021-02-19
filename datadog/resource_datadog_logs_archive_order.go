@@ -6,6 +6,7 @@ import (
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func resourceDatadogLogsArchiveOrder() *schema.Resource {
@@ -50,7 +51,7 @@ func resourceDatadogLogsArchiveOrderCreate(d *schema.ResourceData, meta interfac
 			d.SetId("archiveOrderID")
 			return resourceDatadogLogsArchiveOrderRead(d, meta)
 		} else {
-			return translateClientError(err, "error creating logs archive order")
+			return utils.TranslateClientError(err, "error creating logs archive order")
 		}
 	}
 	d.SetId("archiveOrderID")
@@ -63,7 +64,7 @@ func resourceDatadogLogsArchiveOrderRead(d *schema.ResourceData, meta interface{
 	authV2 := providerConf.AuthV2
 	order, _, err := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2).Execute()
 	if err != nil {
-		return translateClientError(err, "error getting logs archive order")
+		return utils.TranslateClientError(err, "error getting logs archive order")
 	}
 
 	return updateLogsArchiveOrderState(d, &order)
@@ -91,13 +92,13 @@ func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interfac
 		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
 			ddArchiveOrder, _, getErr := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2).Execute()
 			if getErr != nil {
-				return translateClientError(err, "error getting logs archive order")
+				return utils.TranslateClientError(err, "error getting logs archive order")
 			}
 			return fmt.Errorf("cannot map archives to existing ones\n existing archives: %s\n archive to be updated: %s",
 				ddArchiveOrder.Data.Attributes.ArchiveIds,
 				ddArchiveList.Data.Attributes.GetArchiveIds())
 		}
-		return translateClientError(err, "error updating logs archive order")
+		return utils.TranslateClientError(err, "error updating logs archive order")
 	}
 	d.SetId("archiveOrderID")
 	return updateLogsArchiveOrderState(d, &updatedOrder)

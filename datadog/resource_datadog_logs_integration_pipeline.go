@@ -5,6 +5,7 @@ import (
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func resourceDatadogLogsIntegrationPipeline() *schema.Resource {
@@ -48,7 +49,7 @@ func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta int
 			d.SetId("")
 			return nil
 		}
-		return translateClientError(err, "error getting logs integration pipeline")
+		return utils.TranslateClientError(err, "error getting logs integration pipeline")
 	}
 	if !ddPipeline.GetIsReadOnly() {
 		d.SetId("")
@@ -65,7 +66,7 @@ func resourceDatadogLogsIntegrationPipelineUpdate(d *schema.ResourceData, meta i
 	authV1 := providerConf.AuthV1
 	updatedPipeline, _, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipeline(authV1, d.Id()).Body(ddPipeline).Execute()
 	if err != nil {
-		return translateClientError(err, "error updating logs integration pipeline")
+		return utils.TranslateClientError(err, "error updating logs integration pipeline")
 	}
 	d.SetId(*updatedPipeline.Id)
 	return updateLogsIntegrationPipelineState(d, &updatedPipeline)
