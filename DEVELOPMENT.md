@@ -9,6 +9,7 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 -   [Go][3] 1.15 (to build the provider plugin)
 -   A clone of this repository and the [\$GOPATH environment variable][7] set
 -   [tfplugindocs][8]
+-   [gotestsum][9] (to run project tests) `gotestsum` executable binary is installed into `$GOPATH/bin` when running `make get-test-deps`. Add the `$GOPATH/bin` directory to your `$PATH`
 
 ## Makefile
 
@@ -111,3 +112,4 @@ where:
 [6]: https://www.terraform.io/docs/extend/testing/index.html
 [7]: https://golang.org/cmd/go/#hdr-GOPATH_environment_variable
 [8]: https://github.com/hashicorp/terraform-plugin-docs
+[9]: https://github.com/gotestyourself/gotestsum
