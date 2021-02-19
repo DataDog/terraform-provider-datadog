@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
@@ -466,18 +467,23 @@ func archiveDestroyHelper(authV2 context.Context, s *terraform.State, datadogCli
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_archive" {
 			id := r.Primary.ID
-			archive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, id).Execute()
-			if err != nil {
-				if httpresp != nil && httpresp.StatusCode == 404 {
-					continue
+			err := utils.Retry(2, 5, func() error {
+				if r.Primary.ID != "" {
+					archive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, id).Execute()
+					if err != nil {
+						if httpresp != nil && httpresp.StatusCode == 404 {
+							return nil
+						}
+						return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving logs archives %s", err)}
+					}
+					if &archive != nil {
+						return &utils.RetryableError{Prob: fmt.Sprintf("logs archive still exists")}
+					}
 				}
-				return fmt.Errorf("received an error when retrieving pipeline, (%s)", err)
-			}
-			if &archive != nil {
-				return fmt.Errorf("archive still exists")
-			}
+				return nil
+			})
+			return err
 		}
-
 	}
 	return nil
 }

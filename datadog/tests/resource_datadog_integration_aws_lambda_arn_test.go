@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"strings"
 	"testing"
 
@@ -103,16 +104,24 @@ func checkIntegrationAWSLambdaArnDestroyHelper(authV1 context.Context, s *terraf
 	if err != nil {
 		return err
 	}
-	for _, r := range s.RootModule().Resources {
-		accountId := r.Primary.Attributes["account_id"]
-		lambdaArn := r.Primary.Attributes["lambda_arn"]
-		for _, logCollection := range logCollections {
-			for _, logCollectionLambdaArn := range logCollection.GetLambdas() {
-				if logCollection.GetAccountId() == accountId && logCollectionLambdaArn.GetArn() == lambdaArn {
-					return fmt.Errorf("The AWS Lambda ARN is still attached to the account: accountId=%s, lambdaArn=%s", accountId, lambdaArn)
+
+	err = utils.Retry(2, 5, func() error {
+		for _, r := range s.RootModule().Resources {
+			if r.Primary.ID != "" {
+				accountId := r.Primary.Attributes["account_id"]
+				lambdaArn := r.Primary.Attributes["lambda_arn"]
+				for _, logCollection := range logCollections {
+					for _, logCollectionLambdaArn := range logCollection.GetLambdas() {
+						if logCollection.GetAccountId() == accountId && logCollectionLambdaArn.GetArn() == lambdaArn {
+							return &utils.RetryableError{Prob: fmt.Sprintf("The AWS Lambda ARN is still attached to the account: accountId=%s, lambdaArn=%s", accountId, lambdaArn)}
+						} else {
+							return nil
+						}
+					}
 				}
 			}
 		}
-	}
-	return nil
+		return nil
+	})
+	return err
 }
